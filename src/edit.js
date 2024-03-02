@@ -801,7 +801,7 @@ export default function Edit(props) {
 	console.log('Is Table Resolving - ' + isTableResolving);
 	console.log('gridColumnStyle = ' + gridColumnStyle);
 	console.log('gridRowStyle = ' + gridRowStyle);
-
+	// git
 	return (
 		<div {...blockProps} >
 
