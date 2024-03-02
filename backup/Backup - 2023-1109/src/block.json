@@ -1,0 +1,32 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "dynamic-tables/dynamic-tables",
+	"version": "0.1.0",
+	"title": "Dynamic Tables",
+	"category": "widgets",
+	"icon": "editor-table",
+	"description": "Create custom table blocks with highly customizable and responsive formats",
+	"example": {},
+	"supports": {
+		"html": false
+	},
+	"textdomain": "dynamic-tables",
+	"attributes": {
+		"table_id_wp": {
+			"type": "integer"
+		},
+		"state_value": {
+			"type": "integer"
+		}
+	},
+	"usesContext": [
+		"postId",
+		"postType"
+	],
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php",
+	"viewScript": "file:./view.js"
+}

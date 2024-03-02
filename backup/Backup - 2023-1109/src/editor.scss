@@ -1,0 +1,27 @@
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-dynamic-tables-dynamic-tables {
+	border: 1px dotted #f00;
+}
+
+.grid-control {
+	//css variables
+	--gridTemplateColumns: auto;
+
+	display: grid;
+	grid-template-columns: var(--gridTemplateColumns);
+}
+
+.header {
+	justify-self: center;
+	align-self: end;
+	font-weight: bold;
+}
+
+.body {
+	justify-self: start;
+}

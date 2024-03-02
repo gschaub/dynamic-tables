@@ -1,0 +1,114 @@
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-dynamic-tables-dynamic-tables {
+	border: 1px dotted #f00;
+}
+
+.grid-control {
+	//css variables
+	--gridTemplateColumns: auto;
+	--gridTemplateRows: auto;
+
+	// background-color: #21759b;
+	display: grid;
+	grid-template-columns: var(--gridTemplateColumns);
+	grid-template-rows: var(--gridTemplateRows);
+	gap: 0px 0px;
+	overflow-x: auto;
+}
+
+.grid-cell {
+	padding: 5px;
+}
+
+.header {
+	justify-self: center;
+	align-self: end;
+	font-weight: bold;
+}
+
+.body {
+	justify-self: start;
+}
+
+.border {
+	font-size: small;
+	font-weight: bold;
+	text-align: center;
+	vertical-align: middle;
+	margin: 0px;
+	padding: 0px;
+	color: dimgray;
+	background-color: ghostwhite;
+	border-color: lightgray;
+	border-style: solid;
+	border-width: 1px;
+
+	// mercury - For Selected Column/Row
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+.column-menu {
+	visibility: hidden;
+}
+
+.wp-block-table {
+	// Remove default <figure> style.
+	margin: 0;
+
+	.wp-block[data-align="left"]>&,
+	.wp-block[data-align="right"]>&,
+	.wp-block[data-align="center"]>& {
+		// Stop table block from collapsing when tables are floated.
+		height: auto;
+
+		table {
+			// Ensure the table element is not full-width when aligned.
+			width: auto;
+		}
+	}
+
+	.wp-block[data-align="center"]>& {
+		text-align: initial;
+
+		table {
+			margin: 0 auto;
+		}
+	}
+
+}
+
+.blocks-table__placeholder-form.blocks-table__placeholder-form {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+
+	// >* {
+	// 	margin-bottom: $grid-unit-10;
+	// }
+
+	// @include break-medium() {
+	// 	flex-direction: row;
+	// 	align-items: flex-end;
+
+	// 	>* {
+	// 		margin-bottom: 0;
+	// 	}
+	// }
+}
+
+.blocks-table__placeholder-input {
+	// width: $grid-unit-10 * 14;
+	// margin-right: $grid-unit-10;
+	margin-bottom: 0;
+
+	// input {
+	// 	height: $button-size;
+	// }
+}
