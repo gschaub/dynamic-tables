@@ -917,14 +917,7 @@ const deleteTableEntity = tableId => async ({
 }) => {
   console.log('In Action deleteTableEntity');
   try {
-    // const deletedTableEntity = await registry
-    //     .dispatch(coreStore)
-    //     .deleteEntityRecord(
-    //         'dynamic-tables/v1',
-    //         'table',
-    //         tableId
-    //     );
-
+    const deletedTableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).deleteEntityRecord('dynamic-tables/v1', 'table', tableId);
     dispatch({
       type: DELETE_TABLE,
       tableId
