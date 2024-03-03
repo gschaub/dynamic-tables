@@ -37,6 +37,7 @@ export function getTables(state) {
  * @returns 
  */
 export function getUnmountedTables(state) {
+    console.log(state.tables)
     const unmountedTables = Object.keys(state.tables)
         .reduce((acc, key) => {
             if (state.tables[key].unmounted_blockid) {

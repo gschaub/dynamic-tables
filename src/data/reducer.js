@@ -340,18 +340,21 @@ const reducer = (
                 console.log(acc)
                 if (key !== String(action.tableId)) {
                     acc[key] = {
-                        [key]: {
-                            ...state.tables[key],
-                            rows: [...state.tables[key].rows],
-                            columns: [...state.tables[key].columns],
-                            cells: [...state.tables[key].cells],
-                        }
+                        ...state.tables[key],
+                        rows: [...state.tables[key].rows],
+                        columns: [...state.tables[key].columns],
+                        cells: [...state.tables[key].cells],
                     }
                 }
                 return acc
             }, {})
 
         console.log(deleteTablesState)
+        return {
+            tables: {
+                ...deleteTablesState
+            }
+        }
     }
 
     if (action.type === 'PERSIST') {

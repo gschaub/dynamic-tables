@@ -917,7 +917,14 @@ const deleteTableEntity = tableId => async ({
 }) => {
   console.log('In Action deleteTableEntity');
   try {
-    const deletedTableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).deleteEntityRecord('dynamic-tables/v1', 'table', tableId);
+    // const deletedTableEntity = await registry
+    //     .dispatch(coreStore)
+    //     .deleteEntityRecord(
+    //         'dynamic-tables/v1',
+    //         'table',
+    //         tableId
+    //     );
+
     dispatch({
       type: DELETE_TABLE,
       tableId
@@ -933,6 +940,7 @@ const processDeletedTables = deletedTables => ({
 }) => {
   Object.keys(deletedTables).forEach(key => {
     const deletedTableId = deletedTables[key].table_id;
+    console.log(deletedTableId);
     dispatch.deleteTableEntity(deletedTables[key].table_id);
   });
 };
@@ -1459,17 +1467,20 @@ const reducer = (state = {
       console.log(acc);
       if (key !== String(action.tableId)) {
         acc[key] = {
-          [key]: {
-            ...state.tables[key],
-            rows: [...state.tables[key].rows],
-            columns: [...state.tables[key].columns],
-            cells: [...state.tables[key].cells]
-          }
+          ...state.tables[key],
+          rows: [...state.tables[key].rows],
+          columns: [...state.tables[key].columns],
+          cells: [...state.tables[key].cells]
         };
       }
       return acc;
     }, {});
     console.log(deleteTablesState);
+    return {
+      tables: {
+        ...deleteTablesState
+      }
+    };
   }
   if (action.type === 'PERSIST') {
     console.log('PERSIST...');
@@ -1608,6 +1619,7 @@ function getTables(state) {
  * @returns 
  */
 function getUnmountedTables(state) {
+  console.log(state.tables);
   const unmountedTables = Object.keys(state.tables).reduce((acc, key) => {
     if (state.tables[key].unmounted_blockid) {
       acc[key] = {
@@ -1743,6 +1755,9 @@ function Edit(props) {
   const {
     processUnmountedTables
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  const {
+    processDeletedTables
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
 
   /**
    * Local State declarations
@@ -1813,7 +1828,8 @@ function Edit(props) {
     if (postChangesAreSaved) {
       alert('Sync REST Now');
       if (Object.keys(deletedTables).length > 0) {
-        processUnmountedTables(deletedTables);
+        console.log(deletedTables);
+        processDeletedTables(deletedTables);
       }
     }
   }, [postChangesAreSaved, unmountedTables]);
@@ -2371,6 +2387,7 @@ function Edit(props) {
   console.log('Is Table Resolving - ' + isTableResolving);
   console.log('gridColumnStyle = ' + gridColumnStyle);
   console.log('gridRowStyle = ' + gridRowStyle);
+  // git
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
   }, !isNewBlock && !isTableResolving && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Panel, {

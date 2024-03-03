@@ -100,6 +100,7 @@ export default function Edit(props) {
 	const { updateTableEntity } = useDispatch(tableStore);
 	const { updateTableBorder } = useDispatch(tableStore);
 	const { processUnmountedTables } = useDispatch(tableStore);
+	const { processDeletedTables } = useDispatch(tableStore);
 
 	/**
 	 * Local State declarations
@@ -168,9 +169,9 @@ export default function Edit(props) {
 		if (postChangesAreSaved) {
 			alert('Sync REST Now')
 			if (Object.keys(deletedTables).length > 0) {
-				processUnmountedTables(deletedTables)
+				console.log(deletedTables)
+				processDeletedTables(deletedTables)
 			}
-
 		}
 
 	}, [postChangesAreSaved, unmountedTables]);

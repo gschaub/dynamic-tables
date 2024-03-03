@@ -187,13 +187,13 @@ export const deleteTableEntity =
             console.log('In Action deleteTableEntity')
 
             try {
-                const deletedTableEntity = await registry
-                    .dispatch(coreStore)
-                    .deleteEntityRecord(
-                        'dynamic-tables/v1',
-                        'table',
-                        tableId
-                    );
+                // const deletedTableEntity = await registry
+                //     .dispatch(coreStore)
+                //     .deleteEntityRecord(
+                //         'dynamic-tables/v1',
+                //         'table',
+                //         tableId
+                //     );
 
                 dispatch({
                     type: DELETE_TABLE,
@@ -210,6 +210,7 @@ export const processDeletedTables =
         ({ dispatch, registry }) => {
             Object.keys(deletedTables).forEach(key => {
                 const deletedTableId = deletedTables[key].table_id
+                console.log(deletedTableId)
                 dispatch.deleteTableEntity(deletedTables[key].table_id)
             })
         }
