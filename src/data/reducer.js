@@ -12,6 +12,7 @@ const {
     DELETE_TABLE,
     DELETE_COLUMN,
     DELETE_ROW,
+    CHANGE_TABLE_ID,
     UPDATE_TABLE_PROP,
     REMOVE_TABLE_PROP,
     UPDATE_ROW,
@@ -42,6 +43,19 @@ const table = (
                 table: {
                     ...action.table
                 }
+            }
+
+        case CHANGE_TABLE_ID:
+            console.log('In Reducer UPDATE_TABLE_PROP')
+            const updatedTableId = {
+                ...state,
+                table_id: action.newTableId,
+                new_table: true
+            }
+            console.log(updatedTableId)
+
+            return {
+                table: updatedTableId
             }
 
         case UPDATE_TABLE_PROP:
@@ -302,10 +316,10 @@ const reducer = (
         tables: {}
     },
     action) => {
-    // console.log('MAIN REDUCER')
-    // console.log(state)
-    // console.log('  Action Table ID = ' + action.tableId)
-    // console.log(action)
+    console.log('MAIN REDUCER')
+    console.log(state)
+    console.log('  Action Table ID = ' + action.tableId)
+    console.log(action)
 
     let tableKey = action.tableId
     console.log(state.tables[tableKey])
@@ -321,54 +335,124 @@ const reducer = (
     }
     console.log(returnedTable)
 
-    let newTablesState = { ...state.tables }
-    let newTablesStateKeys = Object.keys(state.tables)
-    if (action.type === 'UPDATE_TABLE_PROP' && action.attribute === 'table_id') {
-        newTablesState = Object.keys(state.tables)
-            .filter((key) =>
-                state.tables[key] !== '0'
-            )
-    }
+    const newTablesState = { ...state.tables }
+    // let newTablesStateKeys = Object.keys(state.tables)
 
-    if (action.type === 'DELETE_TABLE') {
-        console.log('DELETE_TABLE...')
+    switch (action.type) {
+        case CHANGE_TABLE_ID:
+            console.log('In Reducer CHANGE_TABLE_ID for state')
 
-        const deleteTablesState = Object.keys(state.tables)
-            .reduce((acc, key) => {
-                console.log('Reducer key = ' + key)
-                console.log('TableId to delete = ' + String(action.tableId))
-                console.log(acc)
-                if (key !== String(action.tableId)) {
-                    acc[key] = {
-                        ...state.tables[key],
-                        rows: [...state.tables[key].rows],
-                        columns: [...state.tables[key].columns],
-                        cells: [...state.tables[key].cells],
-                    }
-                }
-                return acc
-            }, {})
-
-        console.log(deleteTablesState)
-        return {
-            tables: {
-                ...deleteTablesState
+            const returnedTableNewId =
+            {
+                [action.newTableId]:
+                    newTableState.table
             }
-        }
+            console.log(returnedTableNewId)
+
+            const filteredTablesState = Object.keys(state.tables)
+                .reduce((acc, key) => {
+                    console.log(state.tables[key])
+                    if (state.tables[key].table_id !== action.tableId) {
+                        acc[key] = { ...state.tables[key] }
+                    }
+                    return acc
+                }, {})
+            // const filteredTablesState = Object.keys(state.tables)
+            // .filter((key) =>
+            //     state.tables[key] !== '0'
+            // )
+            console.log(filteredTablesState)
+
+            return {
+                tables: {
+                    ...filteredTablesState,
+                    ...returnedTableNewId
+                }
+            }
+
+        case DELETE_TABLE:
+            console.log('In Reducer DELETE_TABLE...')
+
+            const deleteTablesState = Object.keys(state.tables)
+                .reduce((acc, key) => {
+                    console.log('Reducer key = ' + key)
+                    console.log('TableId to delete = ' + String(action.tableId))
+                    console.log(acc)
+                    if (key !== String(action.tableId)) {
+                        acc[key] = {
+                            ...state.tables[key],
+                            rows: [...state.tables[key].rows],
+                            columns: [...state.tables[key].columns],
+                            cells: [...state.tables[key].cells],
+                        }
+                    }
+                    return acc
+                }, {})
+
+            console.log(deleteTablesState)
+            return {
+                tables: {
+                    ...deleteTablesState
+                }
+            }
+
+        default:
+            console.log('In Reducer Default State Handling')
+            const returnedTableDefault =
+            {
+                [action.tableId]:
+                    newTableState.table
+            }
+
+            return {
+                tables: {
+                    ...newTablesState,
+                    ...returnedTableDefault
+                }
+            }
     }
 
-    if (action.type === 'PERSIST') {
-        console.log('PERSIST...')
-        // console.log('...Deleted table key = ' + JSON.stringify(newTablesState, null, 4))
 
-    }
 
-    return {
-        tables: {
-            ...state.tables,
-            ...returnedTable
-        }
-    }
+    // if (action.type === 'UPDATE_TABLE_PROP' && action.attribute === 'table_id') {
+    //     newTablesState = Object.keys(state.tables)
+    //         .filter((key) =>
+    //             state.tables[key] !== '0'
+    //         )
+    // }
+
+    // if (action.type === 'DELETE_TABLE') {
+    //     console.log('DELETE_TABLE...')
+
+    //     const deleteTablesState = Object.keys(state.tables)
+    //         .reduce((acc, key) => {
+    //             console.log('Reducer key = ' + key)
+    //             console.log('TableId to delete = ' + String(action.tableId))
+    //             console.log(acc)
+    //             if (key !== String(action.tableId)) {
+    //                 acc[key] = {
+    //                     ...state.tables[key],
+    //                     rows: [...state.tables[key].rows],
+    //                     columns: [...state.tables[key].columns],
+    //                     cells: [...state.tables[key].cells],
+    //                 }
+    //             }
+    //             return acc
+    //         }, {})
+
+    //     console.log(deleteTablesState)
+    //     return {
+    //         tables: {
+    //             ...deleteTablesState
+    //         }
+    //     }
+    // }
+
+    // if (action.type === 'PERSIST') {
+    //     console.log('PERSIST...')
+    // console.log('...Deleted table key = ' + JSON.stringify(newTablesState, null, 4))
+
+    // }
 }
 
 export default reducer;

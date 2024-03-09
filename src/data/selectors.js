@@ -30,6 +30,22 @@ export function getTables(state) {
 
 }
 
+export function getNewTableIdbyBlock(state, block_table_ref) {
+    console.log(state.tables)
+    const newTable = Object.keys(state.tables)
+        .reduce((acc, key) => {
+            if (state.tables[key]?.block_table_ref === block_table_ref) {
+                acc[key] = { ...state.tables[key] }
+            }
+            return acc
+        }, {})
+
+    if(newTable.length !== 1) {
+        return false
+    }
+    return Object.keys(newTable)
+}
+
 /**
  * Return all tables that are associated with unmounted blocks
  * 

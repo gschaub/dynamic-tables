@@ -141,7 +141,7 @@ export function initTable(newBlockTableRef, columnCount, rowCount) {
         table: {
             table_id: '0',
             block_table_ref: newBlockTableRef,
-            post_id: 0,
+            post_id: '0',
             table_status: 'new',
             table_name: 'Test Table',
             table_attributes: getDefaultTableAttributes('table'),

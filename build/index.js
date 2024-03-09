@@ -692,7 +692,7 @@ const TYPES = {
   DELETE_TABLE: "DELETE_TABLE",
   DELETE_COLUMN: "DELETE_COLUMN",
   DELETE_ROW: "DELETE_ROW",
-  UPDATE_HEADER: "UPDATE_HEADER",
+  CHANGE_TABLE_ID: "CHANGE_TABLE_ID",
   UPDATE_TABLE_PROP: "UPDATE_TABLE_PROP",
   REMOVE_TABLE_PROP: "REMOVE_TABLE_PROP",
   UPDATE_ROW: "UPDATE_ROW",
@@ -718,6 +718,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   addColumn: function() { return /* binding */ addColumn; },
 /* harmony export */   addRow: function() { return /* binding */ addRow; },
 /* harmony export */   addTableEntity: function() { return /* binding */ addTableEntity; },
+/* harmony export */   assignTableId: function() { return /* binding */ assignTableId; },
 /* harmony export */   createTableEntity: function() { return /* binding */ createTableEntity; },
 /* harmony export */   deleteTableEntity: function() { return /* binding */ deleteTableEntity; },
 /* harmony export */   processDeletedTables: function() { return /* binding */ processDeletedTables; },
@@ -757,6 +758,7 @@ const {
   DELETE_TABLE,
   DELETE_COLUMN,
   DELETE_ROW,
+  CHANGE_TABLE_ID,
   UPDATE_TABLE_PROP,
   REMOVE_TABLE_PROP,
   UPDATE_ROW,
@@ -857,7 +859,8 @@ const createTableEntity = () => async ({
   console.log(newTable);
   try {
     const tableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).saveEntityRecord('dynamic-tables/v1', 'table', newTable);
-    dispatch.updateTableProp(tableEntity.id, 'table_id', tableEntity.id);
+    dispatch.assignTableId(tableEntity.id);
+    return tableEntity.id;
   } catch (error) {
     console.log('            ...Resolver - async error - ' + error);
   }
@@ -980,6 +983,14 @@ const removeColumn = columnId => async ({
 const removeRow = () => {
   return {
     type: DELETE_ROW
+  };
+};
+const assignTableId = tableId => {
+  console.log('In Action updateTableProp');
+  return {
+    type: CHANGE_TABLE_ID,
+    tableId: '0',
+    newTableId: String(tableId)
   };
 };
 const updateTableProp = (tableId, attribute, value) => {
@@ -1173,6 +1184,7 @@ const {
   DELETE_TABLE,
   DELETE_COLUMN,
   DELETE_ROW,
+  CHANGE_TABLE_ID,
   UPDATE_TABLE_PROP,
   REMOVE_TABLE_PROP,
   UPDATE_ROW,
@@ -1196,6 +1208,17 @@ const table = (state = {
         table: {
           ...action.table
         }
+      };
+    case CHANGE_TABLE_ID:
+      console.log('In Reducer UPDATE_TABLE_PROP');
+      const updatedTableId = {
+        ...state,
+        table_id: action.newTableId,
+        new_table: true
+      };
+      console.log(updatedTableId);
+      return {
+        table: updatedTableId
       };
     case UPDATE_TABLE_PROP:
       console.log('In Reducer UPDATE_TABLE_PROP');
@@ -1430,11 +1453,10 @@ const table = (state = {
 const reducer = (state = {
   tables: {}
 }, action) => {
-  // console.log('MAIN REDUCER')
-  // console.log(state)
-  // console.log('  Action Table ID = ' + action.tableId)
-  // console.log(action)
-
+  console.log('MAIN REDUCER');
+  console.log(state);
+  console.log('  Action Table ID = ' + action.tableId);
+  console.log(action);
   let tableKey = action.tableId;
   console.log(state.tables[tableKey]);
   let newTableState = table(state.tables[tableKey], action);
@@ -1445,48 +1467,114 @@ const reducer = (state = {
     return state;
   }
   console.log(returnedTable);
-  let newTablesState = {
+  const newTablesState = {
     ...state.tables
   };
-  let newTablesStateKeys = Object.keys(state.tables);
-  if (action.type === 'UPDATE_TABLE_PROP' && action.attribute === 'table_id') {
-    newTablesState = Object.keys(state.tables).filter(key => state.tables[key] !== '0');
-  }
-  if (action.type === 'DELETE_TABLE') {
-    console.log('DELETE_TABLE...');
-    const deleteTablesState = Object.keys(state.tables).reduce((acc, key) => {
-      console.log('Reducer key = ' + key);
-      console.log('TableId to delete = ' + String(action.tableId));
-      console.log(acc);
-      if (key !== String(action.tableId)) {
-        acc[key] = {
-          ...state.tables[key],
-          rows: [...state.tables[key].rows],
-          columns: [...state.tables[key].columns],
-          cells: [...state.tables[key].cells]
-        };
-      }
-      return acc;
-    }, {});
-    console.log(deleteTablesState);
-    return {
-      tables: {
-        ...deleteTablesState
-      }
-    };
-  }
-  if (action.type === 'PERSIST') {
-    console.log('PERSIST...');
-    // console.log('...Deleted table key = ' + JSON.stringify(newTablesState, null, 4))
+  // let newTablesStateKeys = Object.keys(state.tables)
+
+  switch (action.type) {
+    case CHANGE_TABLE_ID:
+      console.log('In Reducer CHANGE_TABLE_ID for state');
+      const returnedTableNewId = {
+        [action.newTableId]: newTableState.table
+      };
+      console.log(returnedTableNewId);
+      const filteredTablesState = Object.keys(state.tables).reduce((acc, key) => {
+        console.log(state.tables[key]);
+        if (state.tables[key].table_id !== action.tableId) {
+          acc[key] = {
+            ...state.tables[key]
+          };
+        }
+        return acc;
+      }, {});
+      // const filteredTablesState = Object.keys(state.tables)
+      // .filter((key) =>
+      //     state.tables[key] !== '0'
+      // )
+      console.log(filteredTablesState);
+      return {
+        tables: {
+          ...filteredTablesState,
+          ...returnedTableNewId
+        }
+      };
+    case DELETE_TABLE:
+      console.log('In Reducer DELETE_TABLE...');
+      const deleteTablesState = Object.keys(state.tables).reduce((acc, key) => {
+        console.log('Reducer key = ' + key);
+        console.log('TableId to delete = ' + String(action.tableId));
+        console.log(acc);
+        if (key !== String(action.tableId)) {
+          acc[key] = {
+            ...state.tables[key],
+            rows: [...state.tables[key].rows],
+            columns: [...state.tables[key].columns],
+            cells: [...state.tables[key].cells]
+          };
+        }
+        return acc;
+      }, {});
+      console.log(deleteTablesState);
+      return {
+        tables: {
+          ...deleteTablesState
+        }
+      };
+    default:
+      console.log('In Reducer Default State Handling');
+      const returnedTableDefault = {
+        [action.tableId]: newTableState.table
+      };
+      return {
+        tables: {
+          ...newTablesState,
+          ...returnedTableDefault
+        }
+      };
   }
 
-  return {
-    tables: {
-      ...state.tables,
-      ...returnedTable
-    }
-  };
+  // if (action.type === 'UPDATE_TABLE_PROP' && action.attribute === 'table_id') {
+  //     newTablesState = Object.keys(state.tables)
+  //         .filter((key) =>
+  //             state.tables[key] !== '0'
+  //         )
+  // }
+
+  // if (action.type === 'DELETE_TABLE') {
+  //     console.log('DELETE_TABLE...')
+
+  //     const deleteTablesState = Object.keys(state.tables)
+  //         .reduce((acc, key) => {
+  //             console.log('Reducer key = ' + key)
+  //             console.log('TableId to delete = ' + String(action.tableId))
+  //             console.log(acc)
+  //             if (key !== String(action.tableId)) {
+  //                 acc[key] = {
+  //                     ...state.tables[key],
+  //                     rows: [...state.tables[key].rows],
+  //                     columns: [...state.tables[key].columns],
+  //                     cells: [...state.tables[key].cells],
+  //                 }
+  //             }
+  //             return acc
+  //         }, {})
+
+  //     console.log(deleteTablesState)
+  //     return {
+  //         tables: {
+  //             ...deleteTablesState
+  //         }
+  //     }
+  // }
+
+  // if (action.type === 'PERSIST') {
+  //     console.log('PERSIST...')
+  // console.log('...Deleted table key = ' + JSON.stringify(newTablesState, null, 4))
+
+  // }
 };
+
 /* harmony default export */ __webpack_exports__["default"] = (reducer);
 
 /***/ }),
@@ -1569,6 +1657,7 @@ const getTable = (tableId, tableStatus) => async ({
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   getDeletedTables: function() { return /* binding */ getDeletedTables; },
+/* harmony export */   getNewTableIdbyBlock: function() { return /* binding */ getNewTableIdbyBlock; },
 /* harmony export */   getTable: function() { return /* binding */ getTable; },
 /* harmony export */   getTableBlockId: function() { return /* binding */ getTableBlockId; },
 /* harmony export */   getTableTest: function() { return /* binding */ getTableTest; },
@@ -1603,6 +1692,21 @@ function getTable(state, tableId, tableStatus) {
 }
 function getTables(state) {
   return state.tables;
+}
+function getNewTableIdbyBlock(state, block_table_ref) {
+  console.log(state.tables);
+  const newTable = Object.keys(state.tables).reduce((acc, key) => {
+    if (state.tables[key]?.block_table_ref === block_table_ref) {
+      acc[key] = {
+        ...state.tables[key]
+      };
+    }
+    return acc;
+  }, {});
+  if (newTable.length !== 1) {
+    return false;
+  }
+  return Object.keys(newTable);
 }
 
 /**
@@ -1731,6 +1835,9 @@ function Edit(props) {
     updateTableProp
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
+    removeTableProp
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  const {
     updateRow
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
@@ -1767,6 +1874,7 @@ function Edit(props) {
   const [numColumns, setNumColumns] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(2);
   const [numRows, setNumRows] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(2);
   const [gridCells, setGridCells] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)([]);
+  const [awaitingTableEntityCreation, setawaitingTableEntityCreation] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
   const priorTableRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)({});
   const {
     table_id,
@@ -2272,22 +2380,19 @@ function Edit(props) {
     var newBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.generateBlockTableRef)();
     const newTable = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.initTable)(newBlockTableRef, columnCount, rowCount);
     console.log(JSON.stringify(newTable, null, 4));
-    receiveNewTable(newTable);
     props.setAttributes({
       block_table_ref: newBlockTableRef
     });
+    receiveNewTable(newTable);
+    setawaitingTableEntityCreation(true);
     createTableEntity();
-    console.log('new table id - ' + table.table_id);
     //		setTableStatus('New');
   }
 
   function onCreateTable(event) {
     event.preventDefault();
     createTable(numColumns, numRows);
-
-    // setHasTableCreated(true);
   }
-
   function onChangeInitialColumnCount(num_columns) {
     console.log(num_columns);
     setNumColumns(num_columns);
@@ -2768,7 +2873,7 @@ function initTable(newBlockTableRef, columnCount, rowCount) {
     table: {
       table_id: '0',
       block_table_ref: newBlockTableRef,
-      post_id: 0,
+      post_id: '0',
       table_status: 'new',
       table_name: 'Test Table',
       table_attributes: getDefaultTableAttributes('table'),

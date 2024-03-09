@@ -94,6 +94,7 @@ export default function Edit(props) {
 	const { removeColumn } = useDispatch(tableStore);
 	const { removeRow } = useDispatch(tableStore);
 	const { updateTableProp } = useDispatch(tableStore);
+	const { removeTableProp } = useDispatch(tableStore);
 	const { updateRow } = useDispatch(tableStore);
 	const { updateColumn } = useDispatch(tableStore);
 	const { updateCell } = useDispatch(tableStore);
@@ -117,6 +118,7 @@ export default function Edit(props) {
 	const [numColumns, setNumColumns] = useState(2);
 	const [numRows, setNumRows] = useState(2);
 	const [gridCells, setGridCells] = useState([])
+	const [awaitingTableEntityCreation, setawaitingTableEntityCreation] = useState(false)
 
 	const priorTableRef = useRef({})
 	const { table_id, block_table_ref } = props.attributes;
@@ -687,18 +689,16 @@ export default function Edit(props) {
 		const newTable = initTable(newBlockTableRef, columnCount, rowCount)
 
 		console.log(JSON.stringify(newTable, null, 4));
-		receiveNewTable(newTable)
 		props.setAttributes({ block_table_ref: newBlockTableRef })
+		receiveNewTable(newTable)
+		setawaitingTableEntityCreation(true)
 		createTableEntity();
-		console.log('new table id - ' + table.table_id)
 		//		setTableStatus('New');
 	}
 
 	function onCreateTable(event) {
 		event.preventDefault();
 		createTable(numColumns, numRows)
-
-		// setHasTableCreated(true);
 	}
 
 	function onChangeInitialColumnCount(num_columns) {

@@ -12,6 +12,7 @@ const {
     DELETE_TABLE,
     DELETE_COLUMN,
     DELETE_ROW,
+    CHANGE_TABLE_ID,
     UPDATE_TABLE_PROP,
     REMOVE_TABLE_PROP,
     UPDATE_ROW,
@@ -113,13 +114,14 @@ export const createTableEntity =
                         newTable
                     );
 
-                dispatch.updateTableProp(tableEntity.id, 'table_id', tableEntity.id);
+                dispatch.assignTableId(tableEntity.id);
+
+                return tableEntity.id
 
             } catch (error) {
                 console.log('            ...Resolver - async error - ' + error);
             }
             console.log('            Resolver - async completed');
-
         };
 
 
@@ -269,6 +271,15 @@ export const removeColumn =
 export const removeRow = () => {
     return {
         type: DELETE_ROW
+    }
+}
+
+export const assignTableId = (tableId) => {
+    console.log('In Action updateTableProp')
+    return {
+        type: CHANGE_TABLE_ID,
+        tableId: '0',
+        newTableId: String(tableId),
     }
 }
 
