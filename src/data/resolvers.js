@@ -20,12 +20,12 @@ function computeCellId(fetchedCells) {
 }
 
 export const getTable =
-    (tableId, tableStatus) =>
+    (tableId, blockTableStatus) =>
         async ({ dispatch, registry }) => {
             console.log('            ...Resolver - Before fetch')
             console.log('            ...Table ID = ' + tableId)
-            console.log('            ...Table Status = ' + tableStatus)
-            if (tableStatus === 'New' || tableStatus === 'Saved' || tableId == '0') {
+            console.log('            ...Table Status = ' + blockTableStatus)
+            if (blockTableStatus === 'New' || blockTableStatus === 'Saved' || tableId == '0') {
                 console.log('Bypassing API Call')
                 return
             }

@@ -1,10 +1,10 @@
 import { createRegistrySelector } from "@wordpress/data";
 import { store as coreStore } from "@wordpress/core-data"
 
-export function getTable(state, tableId, tableStatus) {
+export function getTable(state, tableId, blockTableStatus) {
 
     console.log('Selector...GetTable ' + tableId)
-    console.log('        ...Current Table Status ' + tableStatus)
+    console.log('        ...Current Table Status ' + blockTableStatus)
     console.log(state)
 
     if (!state.tables.hasOwnProperty(tableId)) {
@@ -30,17 +30,17 @@ export function getTables(state) {
 
 }
 
-export function getNewTableIdbyBlock(state, block_table_ref) {
-    console.log(state.tables)
+export function getNewTableIdByBlock(state, block_table_ref) {
     const newTable = Object.keys(state.tables)
         .reduce((acc, key) => {
             if (state.tables[key]?.block_table_ref === block_table_ref) {
+                console.log({ ...state.tables[key]?.block_table_ref })
                 acc[key] = { ...state.tables[key] }
             }
             return acc
         }, {})
 
-    if(newTable.length !== 1) {
+    if (newTable.length === 0) {
         return false
     }
     return Object.keys(newTable)
