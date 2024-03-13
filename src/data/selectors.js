@@ -1,10 +1,10 @@
 import { createRegistrySelector } from "@wordpress/data";
 import { store as coreStore } from "@wordpress/core-data"
 
-export function getTable(state, tableId, blockTableStatus) {
+export function getTable(state, tableId, isTableStale) {
 
     console.log('Selector...GetTable ' + tableId)
-    console.log('        ...Current Table Status ' + blockTableStatus)
+    console.log('        ...Current Table Stale ' + isTableStale)
     console.log(state)
 
     if (!state.tables.hasOwnProperty(tableId)) {

@@ -1615,14 +1615,15 @@ function computeCellId(fetchedCells) {
     fetchedCells
   };
 }
-const getTable = (tableId, blockTableStatus) => async ({
+const getTable = (tableId, isTableStale) => async ({
   dispatch,
   registry
 }) => {
   console.log('            ...Resolver - Before fetch');
   console.log('            ...Table ID = ' + tableId);
-  console.log('            ...Table Status = ' + blockTableStatus);
-  if (blockTableStatus === 'New' || blockTableStatus === 'Saved' || tableId == '0') {
+  console.log('            ...Table Stale = ' + isTableStale);
+  // if (blockTableStatus === 'New' || blockTableStatus === 'Saved' || tableId == '0') {
+  if (!isTableStale || tableId == '0') {
     console.log('Bypassing API Call');
     return;
   }
@@ -1670,9 +1671,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_1__);
 
 
-function getTable(state, tableId, blockTableStatus) {
+function getTable(state, tableId, isTableStale) {
   console.log('Selector...GetTable ' + tableId);
-  console.log('        ...Current Table Status ' + blockTableStatus);
+  console.log('        ...Current Table Stale ' + isTableStale);
   console.log(state);
   if (!state.tables.hasOwnProperty(tableId)) {
     console.log('State not defined');
@@ -1967,7 +1968,7 @@ function Edit(props) {
     tableHasFinishedResolving,
     tableIsResolving
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useSelect)(select => {
-    console.log('Table ID = ' + table_id + ', Status = ' + blockTableStatus + ', Block Table Ref = ' + block_table_ref);
+    console.log('Table ID = ' + table_id + ', Stale = ' + isTableStale + ', Block Table Ref = ' + block_table_ref);
     const {
       getTable,
       getNewTableIdByBlock,
@@ -1975,21 +1976,23 @@ function Edit(props) {
       hasFinishedResolution,
       isResolving
     } = select(_data__WEBPACK_IMPORTED_MODULE_7__.store);
-    const selectorArgs = [table_id, blockTableStatus];
-    if (blockTableStatus === 'None') {
+    const selectorArgs = [table_id, isTableStale];
+    if (block_table_ref === '') {
       return {
         table: {},
+        tableStatus: '',
         tableHasStartedResolving: false,
         tableHasFinishedResolving: false,
         tableIsResolving: false
       };
     }
-    const getBlockTable = (table_id, tableStatus, block_table_ref) => {
-      let selectedTable = getTable(table_id, tableStatus);
+    console.log('isTableStale = ' + isTableStale);
+    const getBlockTable = (table_id, isTableStale, block_table_ref) => {
+      let selectedTable = getTable(table_id, isTableStale);
       console.log(selectedTable);
       if (table_id === '0' && selectedTable.block_table_ref.length === 0 && awaitingTableEntityCreation) {
         const newTableId = getNewTableIdByBlock(block_table_ref);
-        selectedTable = getTable(newTableId, tableStatus);
+        selectedTable = getTable(newTableId, isTableStale);
         setAwaitingTableEntityCreation(false);
         props.setAttributes({
           table_id: Number(selectedTable.table_id)
@@ -1997,15 +2000,27 @@ function Edit(props) {
       }
       return selectedTable;
     };
-    const blockTable = getBlockTable(table_id, tableStatus, block_table_ref);
+    const blockTable = getBlockTable(table_id, isTableStale, block_table_ref);
+    const tableHasStartedResolving = hasStartedResolution('getTable', selectorArgs);
+    const tableHasFinishedResolving = hasFinishedResolution('getTable', selectorArgs);
+    const tableIsResolving = isResolving('getTable', selectorArgs);
+    if (tableHasFinishedResolving) {
+      setTableStale(() => false);
+    }
+
+    // console.log('isTableStale = ' + isTableStale)
+    // console.log('tableHasStartedResolving = ' + hasStartedResolution('getTable', selectorArgs))
+    // console.log('tableHasFinishedResolving = ' + hasFinishedResolution('getTable', selectorArgs))
+    // console.log('tableIsResolving = ' + isResolving('getTable', selectorArgs))
+
     return {
       table: blockTable,
       tableStatus: blockTable.table_status,
-      tableHasStartedResolving: hasStartedResolution('getTable', selectorArgs),
-      tableHasFinishedResolving: hasFinishedResolution('getTable', selectorArgs),
-      tableIsResolving: isResolving('getTable', selectorArgs)
+      tableHasStartedResolving: tableHasStartedResolving,
+      tableHasFinishedResolving: tableHasFinishedResolving,
+      tableIsResolving: tableIsResolving
     };
-  }, [table_id, blockTableStatus]);
+  }, [table_id, isTableStale, block_table_ref]);
 
   /**
    * Perform clean-up for deleted table block at time of deletion
@@ -2284,12 +2299,12 @@ function Edit(props) {
    * Establish grid css grid-template-columns based upon attributes associated with columns
    * 
    * @param {*} isNewBlock 
-   * @param {*} isTableResolving 
+   * @param {*} tableIsResolving 
    * @param {*} columns 
    * @returns 
    */
-  function processColumns(isNewBlock, isTableResolving, columns) {
-    if (isNewBlock || isTableResolving) {
+  function processColumns(isNewBlock, tableIsResolving, columns) {
+    if (isNewBlock || tableIsResolving) {
       return undefined;
     }
     let newGridColumnStyle = '';
@@ -2364,12 +2379,12 @@ function Edit(props) {
    * Establish grid css grid-template-rowss based upon attributes associated with rows
    * 
    * @param {*} isNewBlock 
-   * @param {*} isTableResolving 
+   * @param {*} tableIsResolving 
    * @param {*} rows 
    * @returns 
    */
-  function processRows(isNewBlock, isTableResolving, rows) {
-    if (isNewBlock || isTableResolving) {
+  function processRows(isNewBlock, tableIsResolving, rows) {
+    if (isNewBlock || tableIsResolving) {
       return undefined;
     }
     let newGridRowStyle = '';
@@ -2483,15 +2498,13 @@ function Edit(props) {
     // return <ColumnMenu>Column Menu</ColumnMenu>
     setTableStale(false);
   }
-  const isTableResolving = tableIsResolving;
-  // const isTableResolving = setIsTableResolving(table)
 
   // const gridStyle = 
 
-  const gridColumnStyle = processColumns(isNewBlock, isTableResolving, table.columns);
-  const gridRowStyle = processRows(isNewBlock, isTableResolving, table.rows);
+  const gridColumnStyle = processColumns(isNewBlock, tableIsResolving, table.columns);
+  const gridRowStyle = processRows(isNewBlock, tableIsResolving, table.rows);
   console.log('Grid Column Style = ' + gridColumnStyle);
-  // const gridStyle = setGridStyle(isNewBlock, isTableResolving, table)
+  // const gridStyle = setGridStyle(isNewBlock, tableIsResolving, table)
 
   console.log('MATCH VALUE FOR TABLE:');
   console.log(table);
@@ -2499,13 +2512,12 @@ function Edit(props) {
   console.log(JSON.stringify(table));
   console.log('Is Block New - ' + isNewBlock);
   console.log('Block Table Status - ' + blockTableStatus);
-  console.log('Is Table Resolving - ' + isTableResolving);
+  console.log('Is Table Resolving - ' + tableIsResolving);
   console.log('gridColumnStyle = ' + gridColumnStyle);
   console.log('gridRowStyle = ' + gridRowStyle);
-  // git
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
-  }, !isNewBlock && !isTableResolving && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Panel, {
+  }, !isNewBlock && !tableIsResolving && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Panel, {
     header: "Table Definition head"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
     title: "Table Definition",
@@ -2584,7 +2596,7 @@ function Edit(props) {
       onChange: e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e),
       value: content
     }));
-  })))), !isNewBlock && isTableResolving && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Spinner, null, "Retrieving Table Data"), isNewBlock && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Placeholder, {
+  })))), !isNewBlock && tableIsResolving && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Spinner, null, "Retrieving Table Data"), isNewBlock && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Placeholder, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Dynamic Table'),
     icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockIcon, {
       icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_12__["default"],

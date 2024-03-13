@@ -215,53 +215,58 @@ export default function Edit(props) {
 		tableIsResolving
 	} = useSelect(
 		(select) => {
-			console.log('Table ID = ' + table_id + ', Status = ' + blockTableStatus + ', Block Table Ref = ' + block_table_ref);
+			console.log('Table ID = ' + table_id + ', Stale = ' + isTableStale + ', Block Table Ref = ' + block_table_ref);
 			const { getTable, getNewTableIdByBlock, hasStartedResolution, hasFinishedResolution, isResolving } = select(tableStore);
-			const selectorArgs = [table_id, blockTableStatus]
+			const selectorArgs = [table_id, isTableStale]
 
-			if (blockTableStatus === 'None') {
+			if (block_table_ref === '') {
 				return {
 					table: {},
+					tableStatus: '',
 					tableHasStartedResolving: false,
 					tableHasFinishedResolving: false,
 					tableIsResolving: false
 				}
 			}
-
-			const getBlockTable = (table_id, tableStatus, block_table_ref) => {
-				let selectedTable = getTable(table_id, tableStatus);
+			console.log('isTableStale = ' + isTableStale)
+			const getBlockTable = (table_id, isTableStale, block_table_ref) => {
+				let selectedTable = getTable(table_id, isTableStale);
 				console.log(selectedTable)
 				if (table_id === '0' && selectedTable.block_table_ref.length === 0 && awaitingTableEntityCreation) {
 					const newTableId = getNewTableIdByBlock(block_table_ref);
-					selectedTable = getTable(newTableId, tableStatus);
+					selectedTable = getTable(newTableId, isTableStale);
 					setAwaitingTableEntityCreation(false)
 					props.setAttributes({ table_id: Number(selectedTable.table_id) })
 				}
 				return selectedTable;
 			};
 
-			const blockTable = getBlockTable(table_id, tableStatus, block_table_ref)
+			const blockTable = getBlockTable(table_id, isTableStale, block_table_ref)
+			const tableHasStartedResolving = hasStartedResolution('getTable', selectorArgs)
+			const tableHasFinishedResolving = hasFinishedResolution('getTable', selectorArgs)
+			const tableIsResolving = isResolving('getTable', selectorArgs)
+
+			if (tableHasFinishedResolving) {
+				setTableStale(() => false)
+			}
+
+			// console.log('isTableStale = ' + isTableStale)
+			// console.log('tableHasStartedResolving = ' + hasStartedResolution('getTable', selectorArgs))
+			// console.log('tableHasFinishedResolving = ' + hasFinishedResolution('getTable', selectorArgs))
+			// console.log('tableIsResolving = ' + isResolving('getTable', selectorArgs))
 
 			return {
 				table: blockTable,
 				tableStatus: blockTable.table_status,
-				tableHasStartedResolving: hasStartedResolution(
-					'getTable',
-					selectorArgs
-				),
-				tableHasFinishedResolving: hasFinishedResolution(
-					'getTable',
-					selectorArgs
-				),
-				tableIsResolving: isResolving(
-					'getTable',
-					selectorArgs
-				)
+				tableHasStartedResolving: tableHasStartedResolving,
+				tableHasFinishedResolving: tableHasFinishedResolving,
+				tableIsResolving: tableIsResolving
 			};
 		},
 		[
 			table_id,
-			blockTableStatus
+			isTableStale,
+			block_table_ref
 		]
 	);
 
@@ -589,12 +594,12 @@ export default function Edit(props) {
 	 * Establish grid css grid-template-columns based upon attributes associated with columns
 	 * 
 	 * @param {*} isNewBlock 
-	 * @param {*} isTableResolving 
+	 * @param {*} tableIsResolving 
 	 * @param {*} columns 
 	 * @returns 
 	 */
-	function processColumns(isNewBlock, isTableResolving, columns) {
-		if (isNewBlock || isTableResolving) {
+	function processColumns(isNewBlock, tableIsResolving, columns) {
+		if (isNewBlock || tableIsResolving) {
 			return undefined
 		}
 
@@ -666,12 +671,12 @@ export default function Edit(props) {
 	 * Establish grid css grid-template-rowss based upon attributes associated with rows
 	 * 
 	 * @param {*} isNewBlock 
-	 * @param {*} isTableResolving 
+	 * @param {*} tableIsResolving 
 	 * @param {*} rows 
 	 * @returns 
 	 */
-	function processRows(isNewBlock, isTableResolving, rows) {
-		if (isNewBlock || isTableResolving) {
+	function processRows(isNewBlock, tableIsResolving, rows) {
+		if (isNewBlock || tableIsResolving) {
 			return undefined
 		}
 
@@ -792,17 +797,14 @@ export default function Edit(props) {
 
 	}
 
-	const isTableResolving = tableIsResolving
-	// const isTableResolving = setIsTableResolving(table)
-
 	// const gridStyle = 
 
-	const gridColumnStyle = processColumns(isNewBlock, isTableResolving, table.columns)
-	const gridRowStyle = processRows(isNewBlock, isTableResolving, table.rows)
+	const gridColumnStyle = processColumns(isNewBlock, tableIsResolving, table.columns)
+	const gridRowStyle = processRows(isNewBlock, tableIsResolving, table.rows)
 
 
 	console.log('Grid Column Style = ' + gridColumnStyle)
-	// const gridStyle = setGridStyle(isNewBlock, isTableResolving, table)
+	// const gridStyle = setGridStyle(isNewBlock, tableIsResolving, table)
 
 	console.log('MATCH VALUE FOR TABLE:')
 	console.log(table)
@@ -810,14 +812,14 @@ export default function Edit(props) {
 	console.log(JSON.stringify(table))
 	console.log('Is Block New - ' + isNewBlock)
 	console.log('Block Table Status - ' + blockTableStatus);
-	console.log('Is Table Resolving - ' + isTableResolving);
+	console.log('Is Table Resolving - ' + tableIsResolving);
 	console.log('gridColumnStyle = ' + gridColumnStyle);
 	console.log('gridRowStyle = ' + gridRowStyle);
-	// git
+
 	return (
 		<div {...blockProps} >
 
-			{!isNewBlock && !isTableResolving && (
+			{!isNewBlock && !tableIsResolving && (
 				<>
 					<InspectorControls>
 						<Panel header="Table Definition head">
@@ -916,7 +918,7 @@ export default function Edit(props) {
 				</>
 			)}
 
-			{!isNewBlock && isTableResolving && (
+			{!isNewBlock && tableIsResolving && (
 				<Spinner>Retrieving Table Data</Spinner>
 			)}
 
