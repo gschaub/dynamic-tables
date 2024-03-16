@@ -116,7 +116,7 @@ export default function Edit(props) {
 	const [rowAttributes, setRowAttributes] = useState({});
 	const [render, setRender] = useState(0);
 	const [showBorders, setShowBorders] = useState(false);
-	const [showBandedRows, setshowBandedRows] = useState(false);
+	// const [showBandedRows, setshowBandedRows] = useState(false);
 	const [numColumns, setNumColumns] = useState(2);
 	const [numRows, setNumRows] = useState(2);
 	const [gridCells, setGridCells] = useState([]);
@@ -285,6 +285,17 @@ export default function Edit(props) {
 			block_table_ref
 		]
 	);
+
+	function getTablePropAttribute(tableAttributes, attributeName) {
+		const attributeValue = tableAttributes?.[attributeName]
+		return attributeValue
+	}
+
+	const showGridLines = getTablePropAttribute(table.table_attributes, 'showGridLines')
+	const bandedRows = getTablePropAttribute(table.table_attributes, 'bandedRows')
+	const gridLineWidth = getTablePropAttribute(table.table_attributes, 'gridLineWidth')
+	const horizontalAlignment = getTablePropAttribute(table.table_attributes, 'horizontalAlignment')
+	const verticalAlignment = getTablePropAttribute(table.table_attributes, 'verticalAlignment')
 
 	/**
 	 * Perform clean-up for deleted table block at time of deletion
@@ -802,18 +813,19 @@ export default function Edit(props) {
 
 	}
 
+	/**
+	 * Show colored bands on even numbered table rows
+	 * 
+	 * @param {*} table 
+	 * @param {*} isChecked 
+	 */
 	function onShowBandedRows(table, isChecked) {
-		console.log('In onShowBandedRows')
-		console.log(table.table_attributes)
-
 		const updatedTableAttributes = {
 			...table.table_attributes,
 			bandedRows: isChecked
 		}
-
-		console.log(updatedTableAttributes)
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
-		setshowBandedRows(isChecked)
+		// setshowBandedRows(isChecked)
 	}
 	// const gridStyle = 
 
@@ -833,6 +845,10 @@ export default function Edit(props) {
 	console.log('Is Table Resolving - ' + tableIsResolving);
 	console.log('gridColumnStyle = ' + gridColumnStyle);
 	console.log('gridRowStyle = ' + gridRowStyle);
+
+	if (!tableIsResolving) {
+		// console.log(table.table_attributes?.bandedRows)
+	}
 
 	return (
 		<div {...blockProps} >
@@ -857,7 +873,8 @@ export default function Edit(props) {
 
 								<PanelRow>
 									<CheckboxControl label="Display Banded Rows"
-										checked={showBandedRows}
+										checked={table.table_attributes?.bandedRows}
+										// checked={true}
 										onChange={(e) => onShowBandedRows(table, e)}
 									/>
 								</PanelRow>
@@ -899,7 +916,18 @@ export default function Edit(props) {
 								const borderContent = setBorderContent(row_id, column_id, content)
 								const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id)
 
+								let calculatedClasses = ''
+								console.log(Number(row_id))
+								console.log(Number(row_id) % 2)
+								if (bandedRows) {
+									if (Number(row_id) % 2 === 0) {
+										console.log('...found banded row')
+										calculatedClasses = calculatedClasses + 'bandedRow '
+									}
+								}
+
 								console.log('...Rendering - ' + cell_id)
+								console.log('Calculated Classes = ' + calculatedClasses)
 								console.log('Column Menu Visible = ' + columnMenuVisible)
 								console.log('Open Column = ' + openColumnRow)
 								console.log('Open Current Column Menu = ' + isOpenCurrentColumnMenu)
@@ -926,7 +954,7 @@ export default function Edit(props) {
 										{!isBorder && (
 											<RichText
 												id={cell_id}
-												className={"grid-cell " + classes}
+												className={"grid-cell " + calculatedClasses + classes}
 												tabIndex="0"
 												tagName="div"
 												//allowedFormats={['core/bold', 'core/italic']}

@@ -122,8 +122,8 @@ function create_table_data($request)
         $tableName = '';
     }
 
-    if (isset($request[ 'header' ][ 'attributes' ])) {
-        $attributes = $request[ 'header' ][ 'attributes' ];
+    if (isset($request[ 'header' ][ 'table_attributes' ])) {
+        $attributes = $request[ 'header' ][ 'table_attributes' ];
     } else {
         $attributes = '{}';
     }
@@ -235,12 +235,12 @@ function update_table_data($request)
         $tableName = $existingTable[ 'header' ][ 'table_name' ];
     }
 
-    if (isset($request[ 'header' ][ 'attributes' ])) {
-        $attributes = $request[ 'header' ][ 'attributes' ];
+    if (isset($request[ 'header' ][ 'table_attributes' ])) {
+        $attributes = $request[ 'header' ][ 'table_attributes' ];
         error_log('Attributes found in PUT');
         error_log(json_encode($attributes));
     } else {
-        $attributes = $existingTable[ 'header' ][ 'attributes' ];
+        $attributes = $existingTable[ 'header' ][ 'table_attributes' ];
     }
     $serializedAttributes = maybe_serialize($attributes);
     error_log('Serialized table attributes = ' . json_encode($serializedAttributes));

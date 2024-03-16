@@ -877,6 +877,7 @@ const updateTableEntity = tableId => ({
     block_table_ref,
     post_id,
     table_name,
+    table_attributes,
     table_classes,
     rows,
     columns,
@@ -898,6 +899,7 @@ const updateTableEntity = tableId => ({
       block_table_ref: block_table_ref,
       post_id: post_id,
       table_name: table_name,
+      table_attributes: table_attributes,
       table_classes: table_classes
     },
     rows: [...filteredRows],
@@ -1683,6 +1685,7 @@ function getTable(state, tableId, isTableStale) {
       post_id: '',
       table_status: '',
       table_name: '',
+      table_attributes: [],
       table_classes: '',
       rows: [],
       columns: [],
@@ -1887,7 +1890,7 @@ function Edit(props) {
   const [rowAttributes, setRowAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({});
   const [render, setRender] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(0);
   const [showBorders, setShowBorders] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
-  const [showBandedRows, setshowBandedRows] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
+  // const [showBandedRows, setshowBandedRows] = useState(false);
   const [numColumns, setNumColumns] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(2);
   const [numRows, setNumRows] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(2);
   const [gridCells, setGridCells] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)([]);
@@ -2048,6 +2051,15 @@ function Edit(props) {
       tableIsResolving: tableIsResolving
     };
   }, [table_id, isTableStale, block_table_ref]);
+  function getTablePropAttribute(tableAttributes, attributeName) {
+    const attributeValue = tableAttributes?.[attributeName];
+    return attributeValue;
+  }
+  const showGridLines = getTablePropAttribute(table.table_attributes, 'showGridLines');
+  const bandedRows = getTablePropAttribute(table.table_attributes, 'bandedRows');
+  const gridLineWidth = getTablePropAttribute(table.table_attributes, 'gridLineWidth');
+  const horizontalAlignment = getTablePropAttribute(table.table_attributes, 'horizontalAlignment');
+  const verticalAlignment = getTablePropAttribute(table.table_attributes, 'verticalAlignment');
 
   /**
    * Perform clean-up for deleted table block at time of deletion
@@ -2515,16 +2527,20 @@ function Edit(props) {
     // return <ColumnMenu>Column Menu</ColumnMenu>
     setTableStale(false);
   }
+
+  /**
+   * Show colored bands on even numbered table rows
+   * 
+   * @param {*} table 
+   * @param {*} isChecked 
+   */
   function onShowBandedRows(table, isChecked) {
-    console.log('In onShowBandedRows');
-    console.log(table.table_attributes);
     const updatedTableAttributes = {
       ...table.table_attributes,
       bandedRows: isChecked
     };
-    console.log(updatedTableAttributes);
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
-    setshowBandedRows(isChecked);
+    // setshowBandedRows(isChecked)
   }
   // const gridStyle = 
 
@@ -2542,6 +2558,9 @@ function Edit(props) {
   console.log('Is Table Resolving - ' + tableIsResolving);
   console.log('gridColumnStyle = ' + gridColumnStyle);
   console.log('gridRowStyle = ' + gridRowStyle);
+  if (!tableIsResolving) {
+    // console.log(table.table_attributes?.bandedRows)
+  }
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
   }, !isNewBlock && !tableIsResolving && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Panel, {
@@ -2559,7 +2578,9 @@ function Edit(props) {
     onChange: e => onToggleBorders(table, e)
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
     label: "Display Banded Rows",
-    checked: showBandedRows,
+    checked: table.table_attributes?.bandedRows
+    // checked={true}
+    ,
     onChange: e => onShowBandedRows(table, e)
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
     label: "Table Columns",
@@ -2602,7 +2623,17 @@ function Edit(props) {
     }
     const borderContent = setBorderContent(row_id, column_id, content);
     const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id);
+    let calculatedClasses = '';
+    console.log(Number(row_id));
+    console.log(Number(row_id) % 2);
+    if (bandedRows) {
+      if (Number(row_id) % 2 === 0) {
+        console.log('...found banded row');
+        calculatedClasses = calculatedClasses + 'bandedRow ';
+      }
+    }
     console.log('...Rendering - ' + cell_id);
+    console.log('Calculated Classes = ' + calculatedClasses);
     console.log('Column Menu Visible = ' + columnMenuVisible);
     console.log('Open Column = ' + openColumnRow);
     console.log('Open Current Column Menu = ' + isOpenCurrentColumnMenu);
@@ -2618,7 +2649,7 @@ function Edit(props) {
       updatedColumn: onUpdateColumn
     })), !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
       id: cell_id,
-      className: "grid-cell " + classes,
+      className: "grid-cell " + calculatedClasses + classes,
       tabIndex: "0",
       tagName: "div"
       //allowedFormats={['core/bold', 'core/italic']}

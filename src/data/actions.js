@@ -131,7 +131,17 @@ export const updateTableEntity =
 
             const testTable = select.getTable(tableId, 'Saved')
             console.log(testTable)
-            const { table_id, block_table_ref, post_id, table_name, table_classes, rows, columns, cells } = select.getTable(tableId, 'Saved')
+            const {
+                table_id,
+                block_table_ref,
+                post_id,
+                table_name,
+                table_attributes,
+                table_classes,
+                rows,
+                columns,
+                cells
+            } = select.getTable(tableId, 'Saved')
 
             // Remove border row if it exists
             var filteredRows = rows
@@ -158,6 +168,7 @@ export const updateTableEntity =
                     block_table_ref: block_table_ref,
                     post_id: post_id,
                     table_name: table_name,
+                    table_attributes: table_attributes,
                     table_classes: table_classes
                 },
                 rows: [...filteredRows],

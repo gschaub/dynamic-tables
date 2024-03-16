@@ -34,6 +34,10 @@
   justify-self: start;
 }
 
+.bandedRow {
+  background-color: aqua;
+}
+
 .border {
   font-size: small;
   font-weight: bold;
