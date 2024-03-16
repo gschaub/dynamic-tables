@@ -107,20 +107,22 @@ export default function Edit(props) {
 	 * Local State declarations
 	 */
 	const [isTableStale, setTableStale] = useState(true);
-	const [openColumnRow, setOpenColumnRow] = useState(0)
-	const [columnAttributes, setColumnAttributes] = useState({})
-	const [columnMenuVisible, setColumnMenuVisible] = useState(false)
-	const [rowMenuVisible, setRowMenuVisible] = useState(false)
-	const [openRowColumn, setOpenRowColumn] = useState(0)
-	const [rowAttributes, setRowAttributes] = useState({})
+	const [openColumnRow, setOpenColumnRow] = useState(0);
+	const [tablePropAttributes, setTablePropAttributes] = useState({});
+	const [columnAttributes, setColumnAttributes] = useState({});
+	const [columnMenuVisible, setColumnMenuVisible] = useState(false);
+	const [rowMenuVisible, setRowMenuVisible] = useState(false);
+	const [openRowColumn, setOpenRowColumn] = useState(0);
+	const [rowAttributes, setRowAttributes] = useState({});
 	const [render, setRender] = useState(0);
 	const [showBorders, setShowBorders] = useState(false);
+	const [showBandedRows, setshowBandedRows] = useState(false);
 	const [numColumns, setNumColumns] = useState(2);
 	const [numRows, setNumRows] = useState(2);
-	const [gridCells, setGridCells] = useState([])
-	const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = useState(false)
+	const [gridCells, setGridCells] = useState([]);
+	const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = useState(false);
 
-	const priorTableRef = useRef({})
+	const priorTableRef = useRef({});
 	const { table_id, block_table_ref } = props.attributes;
 
 	console.log('Block Table Ref - ' + block_table_ref)
@@ -167,13 +169,28 @@ export default function Edit(props) {
 		})
 
 	const postChangesAreSaved = usePostChangesSaved()
+	console.log(postChangesAreSaved)
+	console.log(unmountedTables)
 	useEffect(() => {
 		if (postChangesAreSaved) {
 			alert('Sync REST Now')
+			/**
+			 * Remove deleted tables from persisted store
+			 */
 			if (Object.keys(deletedTables).length > 0) {
 				console.log(deletedTables)
 				processDeletedTables(deletedTables)
 			}
+
+			/**
+			 * Update status of new tables to saved
+			 */
+			if (table.table_status == 'new') {
+				console.log('Saving new table - ' + table.table_id)
+				setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved')
+				console.log(table)
+			}
+
 		}
 
 	}, [postChangesAreSaved, unmountedTables]);
@@ -228,7 +245,6 @@ export default function Edit(props) {
 					tableIsResolving: false
 				}
 			}
-			console.log('isTableStale = ' + isTableStale)
 			const getBlockTable = (table_id, isTableStale, block_table_ref) => {
 				let selectedTable = getTable(table_id, isTableStale);
 				console.log(selectedTable)
@@ -279,22 +295,6 @@ export default function Edit(props) {
 			setTableAttributes(table.table_id, 'unmounted_blockid', '', 'PROP', blockProps["data-block"], false)
 		};
 	}, [])
-
-	/**
-	 * Process block table attibutes for new tables and status updates
-	 * - Remove table 'stale' flag once table refresb has been completed
-	 */
-	useEffect(() => {
-		// if (table.table_id != + '0' && blockTableStatus === 'New') {
-		// 	props.setAttributes({ table_id: table.table_id });
-		// }
-
-		if (blockTableStatus === 'Stale' && table.cells.length > 0) {
-			setTableStale(false)
-		}
-	},
-		[table.table_id, blockTableStatus]
-	)
 
 	const tableColumnLength = (JSON.stringify(table.table) === '{}' || blockTableStatus == 'None') ? 0 : table.columns.length
 	const tableRowLength = (JSON.stringify(table.table) === '{}' || blockTableStatus == 'None') ? 0 : table.rows.length
@@ -410,6 +410,11 @@ export default function Edit(props) {
 						console.log(value)
 						setColumnAttributes(value)
 						updateColumn(id, 'attributes', value)
+					} else if (attribute === 'table') {
+						console.log('...Updating Table Attributes')
+						console.log(value)
+						updateTableProp(tableId, 'table_attributes', value)
+
 					}
 					break;
 				}
@@ -797,6 +802,19 @@ export default function Edit(props) {
 
 	}
 
+	function onShowBandedRows(table, isChecked) {
+		console.log('In onShowBandedRows')
+		console.log(table.table_attributes)
+
+		const updatedTableAttributes = {
+			...table.table_attributes,
+			bandedRows: isChecked
+		}
+
+		console.log(updatedTableAttributes)
+		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+		setshowBandedRows(isChecked)
+	}
 	// const gridStyle = 
 
 	const gridColumnStyle = processColumns(isNewBlock, tableIsResolving, table.columns)
@@ -834,6 +852,13 @@ export default function Edit(props) {
 									<CheckboxControl label="Show table borders"
 										checked={showBorders}
 										onChange={(e) => onToggleBorders(table, e)}
+									/>
+								</PanelRow>
+
+								<PanelRow>
+									<CheckboxControl label="Display Banded Rows"
+										checked={showBandedRows}
+										onChange={(e) => onShowBandedRows(table, e)}
 									/>
 								</PanelRow>
 

@@ -49,8 +49,7 @@ const table = (
             console.log('In Reducer UPDATE_TABLE_PROP')
             const updatedTableId = {
                 ...state,
-                table_id: action.newTableId,
-                new_table: true
+                table_id: action.newTableId
             }
             console.log(updatedTableId)
 

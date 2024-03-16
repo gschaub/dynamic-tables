@@ -76,6 +76,18 @@ export function getDeletedTables(state) {
     return deletedTables
 }
 
+export function getUnsavedTables(state) {
+    const deletedTables = Object.keys(state.tables)
+        .reduce((acc, key) => {
+            console.log(state.tables[key].table_status)
+            if (state.tables[key].table_status === 'new') {
+                acc[key] = { ...state.tables[key] }
+            }
+            return acc
+        }, {})
+    return deletedTables
+}
+
 export function getTableBlockId(state) {
 
 }

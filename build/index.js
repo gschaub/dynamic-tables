@@ -1213,8 +1213,7 @@ const table = (state = {
       console.log('In Reducer UPDATE_TABLE_PROP');
       const updatedTableId = {
         ...state,
-        table_id: action.newTableId,
-        new_table: true
+        table_id: action.newTableId
       };
       console.log(updatedTableId);
       return {
@@ -1663,7 +1662,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   getTableBlockId: function() { return /* binding */ getTableBlockId; },
 /* harmony export */   getTableTest: function() { return /* binding */ getTableTest; },
 /* harmony export */   getTables: function() { return /* binding */ getTables; },
-/* harmony export */   getUnmountedTables: function() { return /* binding */ getUnmountedTables; }
+/* harmony export */   getUnmountedTables: function() { return /* binding */ getUnmountedTables; },
+/* harmony export */   getUnsavedTables: function() { return /* binding */ getUnsavedTables; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
@@ -1734,6 +1734,18 @@ function getDeletedTables(state) {
   const deletedTables = Object.keys(state.tables).reduce((acc, key) => {
     console.log(state.tables[key].table_status);
     if (state.tables[key].table_status === 'deleted') {
+      acc[key] = {
+        ...state.tables[key]
+      };
+    }
+    return acc;
+  }, {});
+  return deletedTables;
+}
+function getUnsavedTables(state) {
+  const deletedTables = Object.keys(state.tables).reduce((acc, key) => {
+    console.log(state.tables[key].table_status);
+    if (state.tables[key].table_status === 'new') {
       acc[key] = {
         ...state.tables[key]
       };
@@ -1867,6 +1879,7 @@ function Edit(props) {
    */
   const [isTableStale, setTableStale] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(true);
   const [openColumnRow, setOpenColumnRow] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(0);
+  const [tablePropAttributes, setTablePropAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({});
   const [columnAttributes, setColumnAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({});
   const [columnMenuVisible, setColumnMenuVisible] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
   const [rowMenuVisible, setRowMenuVisible] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
@@ -1874,6 +1887,7 @@ function Edit(props) {
   const [rowAttributes, setRowAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({});
   const [render, setRender] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(0);
   const [showBorders, setShowBorders] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
+  const [showBandedRows, setshowBandedRows] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
   const [numColumns, setNumColumns] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(2);
   const [numRows, setNumRows] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(2);
   const [gridCells, setGridCells] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)([]);
@@ -1928,12 +1942,26 @@ function Edit(props) {
     };
   });
   const postChangesAreSaved = (0,_hooks__WEBPACK_IMPORTED_MODULE_8__.usePostChangesSaved)();
+  console.log(postChangesAreSaved);
+  console.log(unmountedTables);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
     if (postChangesAreSaved) {
       alert('Sync REST Now');
+      /**
+       * Remove deleted tables from persisted store
+       */
       if (Object.keys(deletedTables).length > 0) {
         console.log(deletedTables);
         processDeletedTables(deletedTables);
+      }
+
+      /**
+       * Update status of new tables to saved
+       */
+      if (table.table_status == 'new') {
+        console.log('Saving new table - ' + table.table_id);
+        setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
+        console.log(table);
       }
     }
   }, [postChangesAreSaved, unmountedTables]);
@@ -1986,7 +2014,6 @@ function Edit(props) {
         tableIsResolving: false
       };
     }
-    console.log('isTableStale = ' + isTableStale);
     const getBlockTable = (table_id, isTableStale, block_table_ref) => {
       let selectedTable = getTable(table_id, isTableStale);
       console.log(selectedTable);
@@ -2030,20 +2057,6 @@ function Edit(props) {
       setTableAttributes(table.table_id, 'unmounted_blockid', '', 'PROP', blockProps["data-block"], false);
     };
   }, []);
-
-  /**
-   * Process block table attibutes for new tables and status updates
-   * - Remove table 'stale' flag once table refresb has been completed
-   */
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
-    // if (table.table_id != + '0' && blockTableStatus === 'New') {
-    // 	props.setAttributes({ table_id: table.table_id });
-    // }
-
-    if (blockTableStatus === 'Stale' && table.cells.length > 0) {
-      setTableStale(false);
-    }
-  }, [table.table_id, blockTableStatus]);
   const tableColumnLength = JSON.stringify(table.table) === '{}' || blockTableStatus == 'None' ? 0 : table.columns.length;
   const tableRowLength = JSON.stringify(table.table) === '{}' || blockTableStatus == 'None' ? 0 : table.rows.length;
 
@@ -2148,6 +2161,10 @@ function Edit(props) {
             console.log(value);
             setColumnAttributes(value);
             updateColumn(id, 'attributes', value);
+          } else if (attribute === 'table') {
+            console.log('...Updating Table Attributes');
+            console.log(value);
+            updateTableProp(tableId, 'table_attributes', value);
           }
           break;
         }
@@ -2498,7 +2515,17 @@ function Edit(props) {
     // return <ColumnMenu>Column Menu</ColumnMenu>
     setTableStale(false);
   }
-
+  function onShowBandedRows(table, isChecked) {
+    console.log('In onShowBandedRows');
+    console.log(table.table_attributes);
+    const updatedTableAttributes = {
+      ...table.table_attributes,
+      bandedRows: isChecked
+    };
+    console.log(updatedTableAttributes);
+    setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+    setshowBandedRows(isChecked);
+  }
   // const gridStyle = 
 
   const gridColumnStyle = processColumns(isNewBlock, tableIsResolving, table.columns);
@@ -2530,6 +2557,10 @@ function Edit(props) {
     label: "Show table borders",
     checked: showBorders,
     onChange: e => onToggleBorders(table, e)
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+    label: "Display Banded Rows",
+    checked: showBandedRows,
+    onChange: e => onShowBandedRows(table, e)
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
     label: "Table Columns",
     value: numColumns,
@@ -2924,27 +2955,9 @@ function initTableCells(init_num_columns, init_num_rows) {
       let columnLetter = numberToLetter(x);
       if (y == 1) {
         let cell = getDefaultCell('0', String(x), String(y));
-        // {
-        // 	table_id: '0',
-        // 	column_id: String(x),
-        // 	row_id: String(y),
-        // 	cell_id: columnLetter + y,
-        // 	attributes: getDefaultTableAttributes('cells'),
-        // 	classes: getDefaultTableClasses('cells'),
-        // 	content: 'Cell' + columnLetter + y
-        // }
         tableCells.push(cell);
       } else {
         let cell = getDefaultCell('0', String(x), String(y));
-        // {
-        // 	table_id: '0',
-        // 	column_id: String(x),
-        // 	row_id: String(y),
-        // 	cell_id: columnLetter + y,
-        // 	attributes: getDefaultTableAttributes('cells'),
-        // 	classes: getDefaultTableClasses('cells'),
-        // 	content: 'Cell' + columnLetter + y
-        // }
         tableCells.push(cell);
       }
       x++;
@@ -2952,10 +2965,6 @@ function initTableCells(init_num_columns, init_num_rows) {
     var x = 1;
     y++;
   }
-
-  // setGridCells(tableCells)
-  // console.log('CREATE TABLE - cells...')
-  // console.log(JSON.stringify(tableCells, null, 4))
   return tableCells;
 }
 function getDefaultRow(tableId, rowId, rowLocation = 'Body') {

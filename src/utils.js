@@ -167,27 +167,9 @@ export function initTableCells(init_num_columns, init_num_rows) {
             let columnLetter = numberToLetter(x)
             if (y == 1) {
                 let cell = getDefaultCell('0', String(x), String(y))
-                // {
-                // 	table_id: '0',
-                // 	column_id: String(x),
-                // 	row_id: String(y),
-                // 	cell_id: columnLetter + y,
-                // 	attributes: getDefaultTableAttributes('cells'),
-                // 	classes: getDefaultTableClasses('cells'),
-                // 	content: 'Cell' + columnLetter + y
-                // }
                 tableCells.push(cell)
             } else {
                 let cell = getDefaultCell('0', String(x), String(y))
-                // {
-                // 	table_id: '0',
-                // 	column_id: String(x),
-                // 	row_id: String(y),
-                // 	cell_id: columnLetter + y,
-                // 	attributes: getDefaultTableAttributes('cells'),
-                // 	classes: getDefaultTableClasses('cells'),
-                // 	content: 'Cell' + columnLetter + y
-                // }
                 tableCells.push(cell)
             }
             x++
@@ -196,9 +178,6 @@ export function initTableCells(init_num_columns, init_num_rows) {
         y++
     }
 
-    // setGridCells(tableCells)
-    // console.log('CREATE TABLE - cells...')
-    // console.log(JSON.stringify(tableCells, null, 4))
     return tableCells;
 }
 
