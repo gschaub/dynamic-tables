@@ -2434,6 +2434,47 @@ function Edit(props) {
     // setTableStale(false)
     return newGridRowStyle;
   }
+
+  /**
+  * Create Styling Variable for showing inner grid borders/lines
+  * 
+  * @param {*} isNewBlock 
+  * @param {*} tableIsResolving 
+  * @param {*} showGridLines 
+  * @returns 
+  */
+  function gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines) {
+    if (isNewBlock || tableIsResolving) {
+      return undefined;
+    }
+    ;
+    console.log('show grid lines = ' + showGridLines);
+    if (showGridLines) {
+      return 'solid';
+    }
+    ;
+    return 'hidden';
+  }
+
+  /**
+  * Create Styling Variable for inner grid borders/lines width
+  * 
+  * @param {*} isNewBlock 
+  * @param {*} tableIsResolving 
+  * @param {*} showGridLines 
+  * @returns 
+  */
+  function gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, gridLineWidth) {
+    if (isNewBlock || tableIsResolving) {
+      return undefined;
+    }
+    ;
+    if (!showGridLines) {
+      return '0px';
+    }
+    ;
+    return String(gridLineWidth) + 'px';
+  }
   function createTable(columnCount, rowCount) {
     console.log('FUNCTION - CREATE TABLE');
     console.log('InitialRows - ' + rowCount);
@@ -2540,12 +2581,39 @@ function Edit(props) {
       bandedRows: isChecked
     };
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
-    // setshowBandedRows(isChecked)
   }
-  // const gridStyle = 
 
+  /**
+    * Show inner grid lines
+  * 
+  * @param {*} table 
+  * @param {*} isChecked 
+   */
+  function onShowGridLines(table, isChecked) {
+    const updatedTableAttributes = {
+      ...table.table_attributes,
+      showGridLines: isChecked
+    };
+    setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+  }
+
+  /**
+    * Inner grid line width
+  * 
+  * @param {*} table 
+  * @param {*} gridLineWidth
+   */
+  function onGridLineWidth(table, gridLineWidth) {
+    const updatedTableAttributes = {
+      ...table.table_attributes,
+      gridLineWidth: Number(gridLineWidth)
+    };
+    setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+  }
   const gridColumnStyle = processColumns(isNewBlock, tableIsResolving, table.columns);
   const gridRowStyle = processRows(isNewBlock, tableIsResolving, table.rows);
+  const gridShowInnerLines = gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines);
+  const gridInnerLineWidth = gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, gridLineWidth);
   console.log('Grid Column Style = ' + gridColumnStyle);
   // const gridStyle = setGridStyle(isNewBlock, tableIsResolving, table)
 
@@ -2578,10 +2646,21 @@ function Edit(props) {
     onChange: e => onToggleBorders(table, e)
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
     label: "Display Banded Rows",
-    checked: table.table_attributes?.bandedRows
+    checked: bandedRows
     // checked={true}
     ,
     onChange: e => onShowBandedRows(table, e)
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+    label: "Display Inner Grid Lines",
+    checked: showGridLines
+    // checked={true}
+    ,
+    onChange: e => onShowGridLines(table, e)
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
+    label: "Inner Grid Line Width",
+    value: gridLineWidth,
+    labelPosition: "side",
+    onChange: e => onGridLineWidth(table, e)
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
     label: "Table Columns",
     value: numColumns,
@@ -2624,17 +2703,16 @@ function Edit(props) {
     const borderContent = setBorderContent(row_id, column_id, content);
     const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id);
     let calculatedClasses = '';
-    console.log(Number(row_id));
-    console.log(Number(row_id) % 2);
     if (bandedRows) {
       if (Number(row_id) % 2 === 0) {
-        console.log('...found banded row');
         calculatedClasses = calculatedClasses + 'bandedRow ';
       }
     }
     console.log('...Rendering - ' + cell_id);
-    console.log('Calculated Classes = ' + calculatedClasses);
-    console.log('Column Menu Visible = ' + columnMenuVisible);
+    // console.log('Calculated Classes = ' + calculatedClasses)
+    // console.log('Column Menu Visible = ' + columnMenuVisible)
+    console.log('Show Inner Grid Lines = ' + gridShowInnerLines);
+    console.log('Inner Grid Line Width = ' + gridInnerLineWidth);
     console.log('Open Column = ' + openColumnRow);
     console.log('Open Current Column Menu = ' + isOpenCurrentColumnMenu);
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -2650,6 +2728,10 @@ function Edit(props) {
     })), !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
       id: cell_id,
       className: "grid-cell " + calculatedClasses + classes,
+      style: {
+        "--showGridLines": gridShowInnerLines,
+        "--gridLineWidth": gridInnerLineWidth
+      },
       tabIndex: "0",
       tagName: "div"
       //allowedFormats={['core/bold', 'core/italic']}

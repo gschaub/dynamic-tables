@@ -22,7 +22,13 @@
 }
 
 .grid-cell {
+	//css variables
+	--showGridLines: hidden;
+	--gridLineWidth: 0px;
+
 	padding: 5px;
+	border-style: var(--showGridLines);
+	border-width: var(--gridLinesWidth);
 }
 
 .header {
