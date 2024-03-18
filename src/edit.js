@@ -19,6 +19,7 @@ import {
 	TextControl,
 	Spinner,
 	Placeholder,
+	ColorPicker,
 	ToggleControl,
 	CheckboxControl,
 	DropdownMenu,
@@ -28,17 +29,18 @@ import {
 } from '@wordpress/components';
 import {
 	RichText,
+	useBlockProps,
 	BlockIcon,
 	AlignmentToolbar,
 	InspectorControls,
-	BlockControls,
-	useBlockProps
+	BlockControls
 } from '@wordpress/block-editor';
 import {
 	column,
 	// alignLeft,
 	// alignRight,
 	// alignCenter,
+	search,
 	blockTable as icon
 	// tableColumnAfter,
 	// tableColumnBefore,
@@ -293,6 +295,7 @@ export default function Edit(props) {
 
 	const showGridLines = getTablePropAttribute(table.table_attributes, 'showGridLines')
 	const bandedRows = getTablePropAttribute(table.table_attributes, 'bandedRows')
+	const bandedRowColor = getTablePropAttribute(table.table_attributes, 'bandedRowColor')
 	const gridLineWidth = getTablePropAttribute(table.table_attributes, 'gridLineWidth')
 	const horizontalAlignment = getTablePropAttribute(table.table_attributes, 'horizontalAlignment')
 	const verticalAlignment = getTablePropAttribute(table.table_attributes, 'verticalAlignment')
@@ -639,6 +642,9 @@ export default function Edit(props) {
 
 				let sizing = '';
 
+				if (column_id === '1') {
+					newGridColumnStyle = newGridColumnStyle + '40px '
+				}
 				switch (columnWidthType) {
 					case 'Proportional':
 						{
@@ -712,13 +718,30 @@ export default function Edit(props) {
 	}
 
 	/**
- * Create Styling Variable for showing inner grid borders/lines
- * 
- * @param {*} isNewBlock 
- * @param {*} tableIsResolving 
- * @param {*} showGridLines 
- * @returns 
- */
+	 * Create Styling Variable for showing inner grid borders/lines
+	  * 
+	  * @param {*} isNewBlock 
+	  * @param {*} tableIsResolving 
+	  * @param {*} showGridLines 
+	  * @returns 
+	  */
+	function gridBandedColorStyle(isNewBlock, tableIsResolving, color) {
+		if (isNewBlock || tableIsResolving) {
+			return undefined;
+		};
+
+		return color;
+	}
+
+
+	/**
+	 * Create Styling Variable for showing inner grid borders/lines
+	  * 
+	  * @param {*} isNewBlock 
+	  * @param {*} tableIsResolving 
+	  * @param {*} showGridLines 
+	  * @returns 
+	  */
 	function gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines) {
 		if (isNewBlock || tableIsResolving) {
 			return undefined;
@@ -868,6 +891,21 @@ export default function Edit(props) {
 	}
 
 	/**
+ * Show colored bands on even numbered table rows
+ * 
+ * @param {*} table 
+ * @param {*} color 
+ */
+	function onBandedRowColor(table, color) {
+		const updatedTableAttributes = {
+			...table.table_attributes,
+			bandedRowColor: color
+		}
+		console.log(updatedTableAttributes)
+		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+	}
+
+	/**
 	  * Show inner grid lines
 	* 
 	* @param {*} table 
@@ -897,11 +935,13 @@ export default function Edit(props) {
 
 	const gridColumnStyle = processColumns(isNewBlock, tableIsResolving, table.columns)
 	const gridRowStyle = processRows(isNewBlock, tableIsResolving, table.rows)
+	const gridBandedColor = gridBandedColorStyle(isNewBlock, tableIsResolving, bandedRowColor)
 	const gridShowInnerLines = gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines)
 	const gridInnerLineWidth = gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, gridLineWidth)
 
 	console.log('Grid Column Style = ' + gridColumnStyle)
 	// const gridStyle = setGridStyle(isNewBlock, tableIsResolving, table)
+	console.log('Banded Grid Color = ' + gridBandedColor)
 
 	console.log('MATCH VALUE FOR TABLE:')
 	console.log(table)
@@ -939,6 +979,17 @@ export default function Edit(props) {
 								</PanelRow>
 
 								<PanelRow>
+									<NumberControl label="Table Columns" value={numColumns} labelPosition="side" onChange={(e) => defineColumns(e)} />
+								</PanelRow>
+
+								<PanelRow>
+									<NumberControl label="Table Rows" value={numRows} labelPosition="side" onChange={(e) => defineRows(e)} />
+								</PanelRow>
+
+							</PanelBody>
+
+							<PanelBody title="Banded Table Rows" initialOpen={false}>
+								<PanelRow>
 									<CheckboxControl label="Display Banded Rows"
 										checked={bandedRows}
 										// checked={true}
@@ -946,6 +997,17 @@ export default function Edit(props) {
 									/>
 								</PanelRow>
 
+								<PanelRow>
+									<ColorPicker
+										color={bandedRowColor}
+										enableAlpha={false}
+										defaultValue={"#d8dbda"}
+										onChange={(e) => onBandedRowColor(table, e)}
+									/>
+								</PanelRow>
+							</PanelBody>
+
+							<PanelBody title="Grid Lines" initialOpen={false}>
 								<PanelRow>
 									<CheckboxControl label="Display Inner Grid Lines"
 										checked={showGridLines}
@@ -961,15 +1023,8 @@ export default function Edit(props) {
 										onChange={(e) => onGridLineWidth(table, e)}
 									/>
 								</PanelRow>
-
-								<PanelRow>
-									<NumberControl label="Table Columns" value={numColumns} labelPosition="side" onChange={(e) => defineColumns(e)} />
-								</PanelRow>
-
-								<PanelRow>
-									<NumberControl label="Table Rows" value={numRows} labelPosition="side" onChange={(e) => defineRows(e)} />
-								</PanelRow>
 							</PanelBody>
+
 						</Panel>
 					</InspectorControls>
 
@@ -998,24 +1053,29 @@ export default function Edit(props) {
 
 								const borderContent = setBorderContent(row_id, column_id, content)
 								const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id)
+								const isFirstColumn = column_id === '1' ? true : false;
 
 								let calculatedClasses = ''
 								if (bandedRows) {
 									if (Number(row_id) % 2 === 0) {
-										calculatedClasses = calculatedClasses + 'bandedRow '
+										calculatedClasses = calculatedClasses + 'banded-row '
 									}
 								}
 
 								console.log('...Rendering - ' + cell_id)
-								// console.log('Calculated Classes = ' + calculatedClasses)
+								console.log('Calculated Classes = ' + calculatedClasses)
 								// console.log('Column Menu Visible = ' + columnMenuVisible)
-								console.log('Show Inner Grid Lines = ' + gridShowInnerLines)
-								console.log('Inner Grid Line Width = ' + gridInnerLineWidth)
+								// console.log('Show Inner Grid Lines = ' + gridShowInnerLines)
+								// console.log('Inner Grid Line Width = ' + gridInnerLineWidth)
 								console.log('Open Column = ' + openColumnRow)
 								console.log('Open Current Column Menu = ' + isOpenCurrentColumnMenu)
 
 								return (
 									<>
+										{isFirstColumn && isBorder && (
+											<div className={"border"} />
+										)}
+
 										{isBorder && (
 											<div
 												id={cell_id}
@@ -1033,11 +1093,29 @@ export default function Edit(props) {
 												)}
 											</div>
 										)}
+
+										{isFirstColumn && !isBorder && (
+											<div
+												className={"grid-cell grid-row-zoom " + calculatedClasses}
+												style={{
+													"--bandedRowColor": gridBandedColor,
+													"--showGridLines": gridShowInnerLines,
+													"--gridLineWidth": gridInnerLineWidth
+												}}
+											>
+												<Button
+													href="#"
+													icon={search}
+												/>
+											</div>
+										)}
+
 										{!isBorder && (
 											<RichText
 												id={cell_id}
 												className={"grid-cell " + calculatedClasses + classes}
 												style={{
+													"--bandedRowColor": gridBandedColor,
 													"--showGridLines": gridShowInnerLines,
 													"--gridLineWidth": gridInnerLineWidth
 												}}

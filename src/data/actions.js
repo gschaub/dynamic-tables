@@ -86,7 +86,7 @@ export const createTableEntity =
         async ({ select, dispatch, registry }) => {
 
             const { table_id, block_table_ref, post_id, table_name, table_attributes, table_classes, rows, columns, cells } = select.getTable('0', 'Saved');
-            const testTable = select.getTable('0', 'Saved');
+            const testTable = select.getTable('0', false);
             console.log(testTable);
             const newTable = {
                 header: {
@@ -129,7 +129,7 @@ export const updateTableEntity =
     (tableId) =>
         ({ select, registry }) => {
 
-            const testTable = select.getTable(tableId, 'Saved')
+            const testTable = select.getTable(tableId, false)
             console.log(testTable)
             const {
                 table_id,
@@ -141,7 +141,7 @@ export const updateTableEntity =
                 rows,
                 columns,
                 cells
-            } = select.getTable(tableId, 'Saved')
+            } = select.getTable(tableId, false)
 
             // Remove border row if it exists
             var filteredRows = rows

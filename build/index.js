@@ -110,6 +110,33 @@ const moreVertical = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordp
 
 /***/ }),
 
+/***/ "./node_modules/@wordpress/icons/build-module/library/search.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/search.js ***!
+  \**********************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
+
+/**
+ * WordPress dependencies
+ */
+
+const search = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24"
+}, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
+  d: "M13 5c-3.3 0-6 2.7-6 6 0 1.4.5 2.7 1.3 3.7l-3.8 3.8 1.1 1.1 3.8-3.8c1 .8 2.3 1.3 3.7 1.3 3.3 0 6-2.7 6-6S16.3 5 13 5zm0 10.5c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5 4.5 2 4.5 4.5-2 4.5-4.5 4.5z"
+}));
+/* harmony default export */ __webpack_exports__["default"] = (search);
+//# sourceMappingURL=search.js.map
+
+/***/ }),
+
 /***/ "./node_modules/@wordpress/icons/build-module/library/trash.js":
 /*!*********************************************************************!*\
   !*** ./node_modules/@wordpress/icons/build-module/library/trash.js ***!
@@ -840,7 +867,7 @@ const createTableEntity = () => async ({
     columns,
     cells
   } = select.getTable('0', 'Saved');
-  const testTable = select.getTable('0', 'Saved');
+  const testTable = select.getTable('0', false);
   console.log(testTable);
   const newTable = {
     header: {
@@ -870,7 +897,7 @@ const updateTableEntity = tableId => ({
   select,
   registry
 }) => {
-  const testTable = select.getTable(tableId, 'Saved');
+  const testTable = select.getTable(tableId, false);
   console.log(testTable);
   const {
     table_id,
@@ -882,7 +909,7 @@ const updateTableEntity = tableId => ({
     rows,
     columns,
     cells
-  } = select.getTable(tableId, 'Saved');
+  } = select.getTable(tableId, false);
 
   // Remove border row if it exists
   var filteredRows = rows.filter(row => row.row_id !== '0');
@@ -1790,7 +1817,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/block-table.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/search.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/block-table.js");
 /* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./data */ "./src/data/index.js");
 /* harmony import */ var _hooks__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./hooks */ "./src/hooks.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
@@ -2057,6 +2085,7 @@ function Edit(props) {
   }
   const showGridLines = getTablePropAttribute(table.table_attributes, 'showGridLines');
   const bandedRows = getTablePropAttribute(table.table_attributes, 'bandedRows');
+  const bandedRowColor = getTablePropAttribute(table.table_attributes, 'bandedRowColor');
   const gridLineWidth = getTablePropAttribute(table.table_attributes, 'gridLineWidth');
   const horizontalAlignment = getTablePropAttribute(table.table_attributes, 'horizontalAlignment');
   const verticalAlignment = getTablePropAttribute(table.table_attributes, 'verticalAlignment');
@@ -2360,6 +2389,9 @@ function Edit(props) {
           horizontalAlignment
         } = attributes;
         let sizing = '';
+        if (column_id === '1') {
+          newGridColumnStyle = newGridColumnStyle + '40px ';
+        }
         switch (columnWidthType) {
           case 'Proportional':
             {
@@ -2436,13 +2468,29 @@ function Edit(props) {
   }
 
   /**
-  * Create Styling Variable for showing inner grid borders/lines
-  * 
-  * @param {*} isNewBlock 
-  * @param {*} tableIsResolving 
-  * @param {*} showGridLines 
-  * @returns 
-  */
+   * Create Styling Variable for showing inner grid borders/lines
+    * 
+    * @param {*} isNewBlock 
+    * @param {*} tableIsResolving 
+    * @param {*} showGridLines 
+    * @returns 
+    */
+  function gridBandedColorStyle(isNewBlock, tableIsResolving, color) {
+    if (isNewBlock || tableIsResolving) {
+      return undefined;
+    }
+    ;
+    return color;
+  }
+
+  /**
+   * Create Styling Variable for showing inner grid borders/lines
+    * 
+    * @param {*} isNewBlock 
+    * @param {*} tableIsResolving 
+    * @param {*} showGridLines 
+    * @returns 
+    */
   function gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines) {
     if (isNewBlock || tableIsResolving) {
       return undefined;
@@ -2584,6 +2632,21 @@ function Edit(props) {
   }
 
   /**
+  * Show colored bands on even numbered table rows
+  * 
+  * @param {*} table 
+  * @param {*} color 
+  */
+  function onBandedRowColor(table, color) {
+    const updatedTableAttributes = {
+      ...table.table_attributes,
+      bandedRowColor: color
+    };
+    console.log(updatedTableAttributes);
+    setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+  }
+
+  /**
     * Show inner grid lines
   * 
   * @param {*} table 
@@ -2612,11 +2675,12 @@ function Edit(props) {
   }
   const gridColumnStyle = processColumns(isNewBlock, tableIsResolving, table.columns);
   const gridRowStyle = processRows(isNewBlock, tableIsResolving, table.rows);
+  const gridBandedColor = gridBandedColorStyle(isNewBlock, tableIsResolving, bandedRowColor);
   const gridShowInnerLines = gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines);
   const gridInnerLineWidth = gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, gridLineWidth);
   console.log('Grid Column Style = ' + gridColumnStyle);
   // const gridStyle = setGridStyle(isNewBlock, tableIsResolving, table)
-
+  console.log('Banded Grid Color = ' + gridBandedColor);
   console.log('MATCH VALUE FOR TABLE:');
   console.log(table);
   // console.log(isRetrievingTable(table))
@@ -2644,23 +2708,6 @@ function Edit(props) {
     label: "Show table borders",
     checked: showBorders,
     onChange: e => onToggleBorders(table, e)
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
-    label: "Display Banded Rows",
-    checked: bandedRows
-    // checked={true}
-    ,
-    onChange: e => onShowBandedRows(table, e)
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
-    label: "Display Inner Grid Lines",
-    checked: showGridLines
-    // checked={true}
-    ,
-    onChange: e => onShowGridLines(table, e)
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
-    label: "Inner Grid Line Width",
-    value: gridLineWidth,
-    labelPosition: "side",
-    onChange: e => onGridLineWidth(table, e)
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
     label: "Table Columns",
     value: numColumns,
@@ -2671,6 +2718,34 @@ function Edit(props) {
     value: numRows,
     labelPosition: "side",
     onChange: e => defineRows(e)
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+    title: "Banded Table Rows",
+    initialOpen: false
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+    label: "Display Banded Rows",
+    checked: bandedRows
+    // checked={true}
+    ,
+    onChange: e => onShowBandedRows(table, e)
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ColorPicker, {
+    color: bandedRowColor,
+    enableAlpha: false,
+    defaultValue: "#d8dbda",
+    onChange: e => onBandedRowColor(table, e)
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+    title: "Grid Lines",
+    initialOpen: false
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+    label: "Display Inner Grid Lines",
+    checked: showGridLines
+    // checked={true}
+    ,
+    onChange: e => onShowGridLines(table, e)
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
+    label: "Inner Grid Line Width",
+    value: gridLineWidth,
+    labelPosition: "side",
+    onChange: e => onGridLineWidth(table, e)
   }))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, table.table_name), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TabbableContainer, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "grid-control",
     style: {
@@ -2702,20 +2777,23 @@ function Edit(props) {
     }
     const borderContent = setBorderContent(row_id, column_id, content);
     const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id);
+    const isFirstColumn = column_id === '1' ? true : false;
     let calculatedClasses = '';
     if (bandedRows) {
       if (Number(row_id) % 2 === 0) {
-        calculatedClasses = calculatedClasses + 'bandedRow ';
+        calculatedClasses = calculatedClasses + 'banded-row ';
       }
     }
     console.log('...Rendering - ' + cell_id);
-    // console.log('Calculated Classes = ' + calculatedClasses)
+    console.log('Calculated Classes = ' + calculatedClasses);
     // console.log('Column Menu Visible = ' + columnMenuVisible)
-    console.log('Show Inner Grid Lines = ' + gridShowInnerLines);
-    console.log('Inner Grid Line Width = ' + gridInnerLineWidth);
+    // console.log('Show Inner Grid Lines = ' + gridShowInnerLines)
+    // console.log('Inner Grid Line Width = ' + gridInnerLineWidth)
     console.log('Open Column = ' + openColumnRow);
     console.log('Open Current Column Menu = ' + isOpenCurrentColumnMenu);
-    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, isFirstColumn && isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "border"
+    }), isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       id: cell_id,
       onMouseDown: e => onMouseColumnClick(column_id, row_id, table, e),
       className: classes
@@ -2725,10 +2803,21 @@ function Edit(props) {
       columnLabel: borderContent,
       columnAttributes: columnAttributes,
       updatedColumn: onUpdateColumn
+    })), isFirstColumn && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "grid-cell grid-row-zoom " + calculatedClasses,
+      style: {
+        "--bandedRowColor": gridBandedColor,
+        "--showGridLines": gridShowInnerLines,
+        "--gridLineWidth": gridInnerLineWidth
+      }
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
+      href: "#",
+      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_12__["default"]
     })), !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
       id: cell_id,
       className: "grid-cell " + calculatedClasses + classes,
       style: {
+        "--bandedRowColor": gridBandedColor,
         "--showGridLines": gridShowInnerLines,
         "--gridLineWidth": gridInnerLineWidth
       },
@@ -2743,7 +2832,7 @@ function Edit(props) {
   })))), !isNewBlock && tableIsResolving && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Spinner, null, "Retrieving Table Data"), isNewBlock && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Placeholder, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Dynamic Table'),
     icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockIcon, {
-      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_12__["default"],
+      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_13__["default"],
       showColors: true
     }),
     instructions: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Create a new dynamic table.')

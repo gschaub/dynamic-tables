@@ -41,8 +41,10 @@
 	justify-self: start;
 }
 
-.bandedRow {
-	background-color: aqua;
+.banded-row {
+	--bandedRowColor: #d8dbda;
+
+	background-color: var(--bandedRowColor);
 }
 
 .border {
@@ -62,6 +64,14 @@
 	&:hover {
 		cursor: pointer;
 	}
+}
+
+.grid-row-zoom {
+	text-align: center;
+	vertical-align: middle;
+	margin: 0px;
+	padding: 0px;
+
 }
 
 .column-menu {
