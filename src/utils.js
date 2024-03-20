@@ -46,11 +46,11 @@ export function numberToLetter(letterNumber) {
 }
 
 export function updateArray(arrayIn, key, id, updatedData) {
-    // console.log('Update Array')
-    // console.log(arrayIn)
-    // console.log(key)
-    // console.log(id)
-    // console.log(updatedData)
+    console.log('Update Array')
+    console.log(arrayIn)
+    console.log(key)
+    console.log(id)
+    console.log(updatedData)
     return arrayIn.map((item) =>
         item[key] === id ? { ...item, ...updatedData } : item
     )
@@ -267,6 +267,7 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
     const tableBaseAttributes = {
         showGridLines: false,
         bandedRows: false,
+        bandedRowColor: '#d8dbda',
         gridLineWidth: 1,
         horizontalAlignment: 'none',
         verticalAlignment: 'none'

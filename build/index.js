@@ -1039,19 +1039,21 @@ const removeTableProp = (tableId, attribute) => {
     attribute
   };
 };
-const updateRow = (rowId, attribute, value) => {
+const updateRow = ($tableId, rowId, attribute, value) => {
   console.log('In Action updateRow');
   return {
     type: UPDATE_ROW,
+    tableId,
     rowId,
     attribute,
     value
   };
 };
-const updateColumn = (columnId, attribute, value) => {
+const updateColumn = (tableId, columnId, attribute, value) => {
   console.log('In Action updateColumn');
   return {
     type: UPDATE_COLUMN,
+    tableId,
     columnId,
     attribute,
     value
@@ -1414,9 +1416,11 @@ const table = (state = {
       }
       console.log(transformedValue);
       let newColumnsState = {
-        ...state.table
+        ...state
       };
       let updatedColumnData = JSON.parse('{ "' + action.attribute + '" :' + transformedValue + '}');
+      console.log(newColumnsState);
+      console.log(newColumnsState.columns);
       let updatedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newColumnsState.columns, 'column_id', action.columnId, updatedColumnData);
       console.log(updatedColumnData);
       console.log(updatedColumns);
@@ -1918,7 +1922,6 @@ function Edit(props) {
   const [rowAttributes, setRowAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({});
   const [render, setRender] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(0);
   const [showBorders, setShowBorders] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
-  // const [showBandedRows, setshowBandedRows] = useState(false);
   const [numColumns, setNumColumns] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(2);
   const [numRows, setNumRows] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(2);
   const [gridCells, setGridCells] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)([]);
@@ -2196,12 +2199,12 @@ function Edit(props) {
         {
           if (attribute === 'cell') {
             console.log('...Updating Cell');
-            updateCell(id, 'attributes', value);
+            updateCell(tableId, id, 'attributes', value);
           } else if (attribute === 'column') {
             console.log('...Updating Column');
             console.log(value);
             setColumnAttributes(value);
-            updateColumn(id, 'attributes', value);
+            updateColumn(tableId, id, 'attributes', value);
           } else if (attribute === 'table') {
             console.log('...Updating Table Attributes');
             console.log(value);
@@ -2212,9 +2215,9 @@ function Edit(props) {
       case 'CLASSES':
         {
           if (attribute === 'cell') {
-            updateCell(id, 'classes', value);
+            updateCell(tableId, id, 'classes', value);
           } else if (attribute === 'column') {
-            updateColumn(id, 'classes', value);
+            updateColumn(tableId, id, 'classes', value);
           }
           break;
         }
@@ -2280,7 +2283,7 @@ function Edit(props) {
           row_id: '0',
           cell_id: columnLetter + '0',
           attributes: cellAttributes,
-          classes: 'border hover',
+          classes: 'grid-control__cells--border hover',
           content: columnLetter
         };
         rowCells.push(cell);
@@ -2313,7 +2316,7 @@ function Edit(props) {
           row_id: String(i),
           cell_id: '0' + String(i),
           attributes: cellAttributes,
-          classes: 'border hover',
+          classes: 'grid-control__cells--border hover',
           content: String(i)
         };
         columnCells.push(cell);
@@ -2702,8 +2705,7 @@ function Edit(props) {
     initialOpen: true
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TextControl, {
     label: "Table Name",
-    value: table.table_name,
-    onChange: e => setTableAttributes(table_id, 'table_name', '', 'PROP', e)
+    value: table.table_name
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
     label: "Show table borders",
     checked: showBorders,
@@ -2746,7 +2748,17 @@ function Edit(props) {
     value: gridLineWidth,
     labelPosition: "side",
     onChange: e => onGridLineWidth(table, e)
-  }))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, table.table_name), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TabbableContainer, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText
+  // id={tableName}
+  // className={"grid-control__cells " + calculatedClasses + classes}
+  , {
+    tagName: "div"
+    //allowedFormats={['core/bold', 'core/italic']}
+    //onChange={cellContent => setGridCells([col, row, cellId, componentClass, cellContent])}
+    ,
+    onChange: e => setTableAttributes(table_id, 'table_name', '', 'PROP', e),
+    value: table.table_name
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TabbableContainer, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "grid-control",
     style: {
       "--gridTemplateColumns": gridColumnStyle,
@@ -2781,7 +2793,7 @@ function Edit(props) {
     let calculatedClasses = '';
     if (bandedRows) {
       if (Number(row_id) % 2 === 0) {
-        calculatedClasses = calculatedClasses + 'banded-row ';
+        calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row ';
       }
     }
     console.log('...Rendering - ' + cell_id);
@@ -2792,7 +2804,7 @@ function Edit(props) {
     console.log('Open Column = ' + openColumnRow);
     console.log('Open Current Column Menu = ' + isOpenCurrentColumnMenu);
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, isFirstColumn && isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "border"
+      className: "grid-control__cells--border"
     }), isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       id: cell_id,
       onMouseDown: e => onMouseColumnClick(column_id, row_id, table, e),
@@ -2804,7 +2816,7 @@ function Edit(props) {
       columnAttributes: columnAttributes,
       updatedColumn: onUpdateColumn
     })), isFirstColumn && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "grid-cell grid-row-zoom " + calculatedClasses,
+      className: "grid-control__cells grid-control__cells--zoom " + calculatedClasses,
       style: {
         "--bandedRowColor": gridBandedColor,
         "--showGridLines": gridShowInnerLines,
@@ -2815,7 +2827,7 @@ function Edit(props) {
       icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_12__["default"]
     })), !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
       id: cell_id,
-      className: "grid-cell " + calculatedClasses + classes,
+      className: "grid-control__cells " + calculatedClasses + classes,
       style: {
         "--bandedRowColor": gridBandedColor,
         "--showGridLines": gridShowInnerLines,
@@ -3051,11 +3063,11 @@ function numberToLetter(letterNumber) {
   return letterDigit;
 }
 function updateArray(arrayIn, key, id, updatedData) {
-  // console.log('Update Array')
-  // console.log(arrayIn)
-  // console.log(key)
-  // console.log(id)
-  // console.log(updatedData)
+  console.log('Update Array');
+  console.log(arrayIn);
+  console.log(key);
+  console.log(id);
+  console.log(updatedData);
   return arrayIn.map(item => item[key] === id ? {
     ...item,
     ...updatedData
@@ -3244,6 +3256,7 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
   const tableBaseAttributes = {
     showGridLines: false,
     bandedRows: false,
+    bandedRowColor: '#d8dbda',
     gridLineWidth: 1,
     horizontalAlignment: 'none',
     verticalAlignment: 'none'

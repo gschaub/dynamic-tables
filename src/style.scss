@@ -10,3 +10,26 @@
 	// color: #fff;
 	padding: 2px;
 }
+
+.grid-control {
+	//css variables
+	--gridTemplateColumns: auto;
+	--gridTemplateRows: auto;
+
+	// background-color: #21759b;
+	display: grid;
+	grid-template-columns: var(--gridTemplateColumns);
+	grid-template-rows: var(--gridTemplateRows);
+	gap: 0px 0px;
+	overflow-x: auto;
+}
+
+.grid-control__cells {
+	//css variables
+	--showGridLines: hidden;
+	--gridLineWidth: 0px;
+
+	padding: 5px;
+	border-style: var(--showGridLines);
+	border-width: var(--gridLineWidth);
+}

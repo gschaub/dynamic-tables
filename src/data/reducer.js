@@ -235,8 +235,10 @@ const table = (
             }
 
             console.log(transformedValue)
-            let newColumnsState = { ...state.table }
+            let newColumnsState = { ...state }
             let updatedColumnData = JSON.parse('{ "' + action.attribute + '" :' + transformedValue + '}')
+            console.log(newColumnsState);
+            console.log(newColumnsState.columns);
             let updatedColumns = updateArray(newColumnsState.columns, 'column_id', action.columnId, updatedColumnData)
 
             console.log(updatedColumnData)

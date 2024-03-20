@@ -118,7 +118,6 @@ export default function Edit(props) {
 	const [rowAttributes, setRowAttributes] = useState({});
 	const [render, setRender] = useState(0);
 	const [showBorders, setShowBorders] = useState(false);
-	// const [showBandedRows, setshowBandedRows] = useState(false);
 	const [numColumns, setNumColumns] = useState(2);
 	const [numRows, setNumRows] = useState(2);
 	const [gridCells, setGridCells] = useState([]);
@@ -418,12 +417,12 @@ export default function Edit(props) {
 				{
 					if (attribute === 'cell') {
 						console.log('...Updating Cell')
-						updateCell(id, 'attributes', value)
+						updateCell(tableId, id, 'attributes', value)
 					} else if (attribute === 'column') {
 						console.log('...Updating Column')
 						console.log(value)
 						setColumnAttributes(value)
-						updateColumn(id, 'attributes', value)
+						updateColumn(tableId, id, 'attributes', value)
 					} else if (attribute === 'table') {
 						console.log('...Updating Table Attributes')
 						console.log(value)
@@ -435,9 +434,9 @@ export default function Edit(props) {
 			case 'CLASSES':
 				{
 					if (attribute === 'cell') {
-						updateCell(id, 'classes', value)
+						updateCell(tableId, id, 'classes', value)
 					} else if (attribute === 'column') {
-						updateColumn(id, 'classes', value)
+						updateColumn(tableId, id, 'classes', value)
 					}
 					break;
 				}
@@ -525,7 +524,7 @@ export default function Edit(props) {
 					row_id: '0',
 					cell_id: columnLetter + '0',
 					attributes: cellAttributes,
-					classes: 'border hover',
+					classes: 'grid-control__cells--border hover',
 					content: columnLetter
 				}
 				rowCells.push(cell);
@@ -563,7 +562,7 @@ export default function Edit(props) {
 					row_id: String(i),
 					cell_id: '0' + String(i),
 					attributes: cellAttributes,
-					classes: 'border hover',
+					classes: 'grid-control__cells--border hover',
 					content: String(i)
 				}
 				columnCells.push(cell);
@@ -967,8 +966,8 @@ export default function Edit(props) {
 							<PanelBody title="Table Definition" initialOpen={true}>
 								<PanelRow>
 									<TextControl label="Table Name"
-										value={table.table_name}
-										onChange={e => setTableAttributes(table_id, 'table_name', '', 'PROP', e)} />
+										value={table.table_name} />
+									{/* onChange={e => setTableAttributes(table_id, 'table_name', '', 'PROP', e)} /> */}
 								</PanelRow>
 
 								<PanelRow>
@@ -1028,7 +1027,18 @@ export default function Edit(props) {
 						</Panel>
 					</InspectorControls>
 
-					<div>{table.table_name}</div>
+					{/* <div>{table.table_name}</div> */}
+
+					<RichText
+						// id={tableName}
+						// className={"grid-control__cells " + calculatedClasses + classes}
+						tagName="div"
+						//allowedFormats={['core/bold', 'core/italic']}
+						//onChange={cellContent => setGridCells([col, row, cellId, componentClass, cellContent])}
+						onChange={e => setTableAttributes(table_id, 'table_name', '', 'PROP', e)}
+						value={table.table_name}>
+					</RichText>
+
 
 					<TabbableContainer>
 						<div className="grid-control" style={{ "--gridTemplateColumns": gridColumnStyle, "--gridTemplateRows": gridRowStyle }}>
@@ -1058,7 +1068,7 @@ export default function Edit(props) {
 								let calculatedClasses = ''
 								if (bandedRows) {
 									if (Number(row_id) % 2 === 0) {
-										calculatedClasses = calculatedClasses + 'banded-row '
+										calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row '
 									}
 								}
 
@@ -1073,7 +1083,7 @@ export default function Edit(props) {
 								return (
 									<>
 										{isFirstColumn && isBorder && (
-											<div className={"border"} />
+											<div className={"grid-control__cells--border"} />
 										)}
 
 										{isBorder && (
@@ -1096,7 +1106,7 @@ export default function Edit(props) {
 
 										{isFirstColumn && !isBorder && (
 											<div
-												className={"grid-cell grid-row-zoom " + calculatedClasses}
+												className={"grid-control__cells grid-control__cells--zoom " + calculatedClasses}
 												style={{
 													"--bandedRowColor": gridBandedColor,
 													"--showGridLines": gridShowInnerLines,
@@ -1113,7 +1123,7 @@ export default function Edit(props) {
 										{!isBorder && (
 											<RichText
 												id={cell_id}
-												className={"grid-cell " + calculatedClasses + classes}
+												className={"grid-control__cells " + calculatedClasses + classes}
 												style={{
 													"--bandedRowColor": gridBandedColor,
 													"--showGridLines": gridShowInnerLines,

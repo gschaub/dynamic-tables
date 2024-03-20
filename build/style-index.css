@@ -10,6 +10,24 @@
 .wp-block-dynamic-tables-dynamic-tables {
   padding: 2px;
 }
+
+.grid-control {
+  --gridTemplateColumns: auto;
+  --gridTemplateRows: auto;
+  display: grid;
+  grid-template-columns: var(--gridTemplateColumns);
+  grid-template-rows: var(--gridTemplateRows);
+  gap: 0px 0px;
+  overflow-x: auto;
+}
+
+.grid-control__cells {
+  --showGridLines: hidden;
+  --gridLineWidth: 0px;
+  padding: 5px;
+  border-style: var(--showGridLines);
+  border-width: var(--gridLineWidth);
+}
 /*!*************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/components/configure-column-width/style.scss ***!
   \*************************************************************************************************************************************************************************************************************************************************************************/

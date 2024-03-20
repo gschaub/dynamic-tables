@@ -10,24 +10,6 @@
   border: 1px dotted #f00;
 }
 
-.grid-control {
-  --gridTemplateColumns: auto;
-  --gridTemplateRows: auto;
-  display: grid;
-  grid-template-columns: var(--gridTemplateColumns);
-  grid-template-rows: var(--gridTemplateRows);
-  gap: 0px 0px;
-  overflow-x: auto;
-}
-
-.grid-cell {
-  --showGridLines: hidden;
-  --gridLineWidth: 0px;
-  padding: 5px;
-  border-style: var(--showGridLines);
-  border-width: var(--gridLineWidth);
-}
-
 .header {
   justify-self: center;
   align-self: end;
@@ -38,12 +20,12 @@
   justify-self: start;
 }
 
-.banded-row {
+.grid-control__cells--banded-row {
   --bandedRowColor: #d8dbda;
   background-color: var(--bandedRowColor);
 }
 
-.border {
+.grid-control__cells--border {
   font-size: small;
   font-weight: bold;
   text-align: center;
@@ -56,11 +38,11 @@
   border-style: solid;
   border-width: 1px;
 }
-.border:hover {
+.grid-control__cells--border:hover {
   cursor: pointer;
 }
 
-.grid-row-zoom {
+.grid-control__cells--zoom {
   text-align: center;
   vertical-align: middle;
   margin: 0px;

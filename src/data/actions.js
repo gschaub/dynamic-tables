@@ -313,22 +313,24 @@ export const removeTableProp = (tableId, attribute) => {
     }
 }
 
-export const updateRow = (rowId, attribute, value) => {
+export const updateRow = ($tableId, rowId, attribute, value) => {
 
     console.log('In Action updateRow')
     return {
         type: UPDATE_ROW,
+        tableId,
         rowId,
         attribute,
         value
     }
 }
 
-export const updateColumn = (columnId, attribute, value) => {
+export const updateColumn = (tableId, columnId, attribute, value) => {
 
     console.log('In Action updateColumn')
     return {
         type: UPDATE_COLUMN,
+        tableId,
         columnId,
         attribute,
         value
