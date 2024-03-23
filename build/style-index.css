@@ -64,5 +64,41 @@ fieldset {
   font-style: italic;
   margin: 8px;
 }
+/*!***********************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/components/configure-row-height/style.scss ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************/
+fieldset {
+  border-style: solid;
+  border-width: thin;
+  border-color: black;
+  padding: 10px;
+  margin: 10px;
+}
+
+.column-width--not-visible {
+  display: none;
+}
+
+.column-width-span-input {
+  display: flex;
+  width: 100%;
+}
+
+.column-width-value-input {
+  width: 65%;
+  margin: 5px;
+}
+
+.column-width-unit-input {
+  width: 30%;
+  margin: 5px;
+}
+
+.column-label {
+  text-align: center;
+  font-size: large;
+  font-style: italic;
+  margin: 8px;
+}
 
 /*# sourceMappingURL=style-index.css.map*/

@@ -80,7 +80,7 @@ const table = (
 
         case INSERT_COLUMN:
             console.log('In Reducer INSERT_COLUMN')
-            let insertColumnState = { ...state.table }
+            let insertColumnState = { ...state }
 
             /**
              * Insert new column and update existing column_id's
@@ -114,6 +114,7 @@ const table = (
 
                     let newColumnId = String(Number(cell.column_id) + 1)
                     let columnLetter = numberToLetter(newColumnId)
+                    let cellContent = Number(cell.row_id) == 0 ? columnLetter : cell.content
                     let newCell = {
                         table_id: cell.table_id,
                         column_id: newColumnId,
@@ -121,7 +122,7 @@ const table = (
                         cell_id: columnLetter + cell.row_id,
                         attributes: cell.attributes,
                         classes: cell.classes,
-                        content: cell.content
+                        content: cellContent
                     }
                     cellsWithNewId.push(newCell)
                 }
@@ -139,13 +140,84 @@ const table = (
             }
 
             console.log(returnedTableNewColumn)
-            return returnedTableNewColumn;
+
+            return {
+                table: returnedTableNewColumn
+            }
 
         case INSERT_ROW:
+            console.log('In Reducer INSERT_ROW')
+            let insertRowState = { ...state }
+
+            /**
+             * Insert new row and update existing row_id's
+             */
+            var rowsWithNewId = []
+            insertRowState.rows.forEach((row) => {
+                if (row.row_id < action.rowId) {
+                    rowsWithNewId.push(row)
+                } else {
+                    let newRow = {
+                        table_id: row.table_id,
+                        row_id: String(Number(row.row_id) + 1),
+                        attributes: row.attributes,
+                        classes: row.classes
+                    }
+                    rowsWithNewId.push(newRow)
+                }
+            })
+            rowsWithNewId.push(action.newRow)
+            console.log(rowsWithNewId)
+
+            var sortedRows = tableSort('rows', rowsWithNewId)
+            console.log(sortedRows)
+
+            /**
+             * Insert new cells and update existing column_id's
+             */
+            var cellsWithNewId = []
+            insertRowState.cells.forEach((cell) => {
+                console.log(cell)
+                if (cell.row_id < action.rowId) {
+                    cellsWithNewId.push(cell)
+                } else {
+
+                    let newRowId = String(Number(cell.row_id) + 1)
+                    let columnLetter = cell.column_id == '0' ? '0' : numberToLetter(cell.column_id)
+                    let cellContent = Number(cell.column_id) == 0 ? newRowId : cell.content
+                    let newCell = {
+                        table_id: cell.table_id,
+                        column_id: cell.column_id,
+                        row_id: newRowId,
+                        cell_id: columnLetter + newRowId,
+                        attributes: cell.attributes,
+                        classes: cell.classes,
+                        content: cellContent
+                    }
+                    cellsWithNewId.push(newCell)
+                }
+            })
+
+            var allNewRowCells = [...cellsWithNewId, ...action.rowCells]
+            var sortedCells = tableSort('cells', allNewRowCells)
+
+            var returnedTableNewRow =
+            {
+                ...insertRowState,
+                rows: [...sortedRows],
+                columns: [...insertRowState.columns],
+                cells: [...sortedCells]
+            }
+
+            alert(returnedTableNewRow)
+
+            return {
+                table: returnedTableNewRow
+            }
 
         case DELETE_COLUMN:
             console.log('In Reducer DELETE_COLUMN')
-            let deleteColumnState = { ...state.table }
+            let deleteColumnState = { ...state }
 
             /**
              * Delete new column and update existing column_id's
@@ -178,6 +250,7 @@ const table = (
                 } else if (cell.column_id > action.columnId) {
                     let newColumnId = String(Number(cell.column_id) - 1)
                     let columnLetter = numberToLetter(newColumnId)
+                    let cellContent = Number(cell.row_id) == 0 ? columnLetter : cell.content
                     let newCell = {
                         table_id: cell.table_id,
                         column_id: newColumnId,
@@ -185,7 +258,7 @@ const table = (
                         cell_id: columnLetter + cell.row_id,
                         attributes: cell.attributes,
                         classes: cell.classes,
-                        content: cell.content
+                        content: cellContent
                     }
                     cellsWithNewId.push(newCell)
                 }
@@ -203,14 +276,17 @@ const table = (
             }
 
             console.log(returnedTableNewColumn)
-            return returnedTableNewColumn;
+
+            return {
+                table: returnedTableNewColumn
+            }
 
         case DELETE_ROW:
             return state
 
         case UPDATE_ROW:
             console.log('In Reducer UPDATE_COLUMN')
-            let newRowsState = { ...state.table }
+            let newRowsState = { ...state }
             let updatedRowData = JSON.parse('{ "' + action.attribute + '" : "' + action.value + '"}')
             let updatedRows = updateArray(newRowsState.rows, 'row_id', action.rowId, updatedRowData)
 

@@ -64,6 +64,7 @@ export function tableSort(tablePart, tableArray) {
     console.log(tableArray)
 
     if (tablePart === 'rows') {
+        console.log('...in Rows sort')
         var sortedRows = [...tableArray];
         sortedRows.sort((a, b) => {
             if ([a.row_id] < [b.row_id]) {
@@ -237,16 +238,17 @@ export function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') 
 
     let cell
     let columnLetter = numberToLetter(columnId)
+    let borderContent = rowId == 0 ? columnLetter : String(rowId)
 
     if (cellLocation === 'Border') {
         cell = {
             table_id: String(tableId),
             column_id: String(columnId),
             row_id: String(rowId),
-            cell_id: columnLetter + rowId,
+            cell_id: rowId === 0 ? columnLetter + '0' : '0' + String(columnId),
             attributes: getDefaultTableAttributes('cells', cellLocation),
-            classes: 'border hover',
-            content: columnLetter
+            classes: 'grid-control__cells--border hover',
+            content: borderContent
         }
     } else {
         cell = {
@@ -367,22 +369,14 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
 export function getDefaultTableClasses(tableComponent) {
 
 
-    const tableBaseClasses = [
+    const tableBaseClasses = ''
 
-    ]
-
-    const columnClasses = [
-
-    ]
+    const columnClasses = ''
 
 
-    const rowClasses = [
+    const rowClasses = ''
 
-    ]
-
-    const cellClasses = [
-        'cell-body'
-    ]
+    const cellClasses = ''
 
     switch (tableComponent) {
         case 'table':

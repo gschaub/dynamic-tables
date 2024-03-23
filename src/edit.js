@@ -75,7 +75,7 @@ import {
 	getDefaultTableClasses,
 	getDefaultTableAttributes
 } from './utils';
-import { ColumnMenu } from './components';
+import { ColumnMenu, RowMenu } from './components';
 // import TABLE_ATTRIBUTE_TYPES from './constants'
 import './editor.scss';
 
@@ -342,8 +342,7 @@ export default function Edit(props) {
 		const newColumn = getDefaultColumn(tableId, columnId)
 		var tableCells = []
 
-		for (let i = 1; i < numRows; i++) {
-			console.log('Creating column row = ' + i)
+		for (let i = 0; i < numRows; i++) {
 			if (i === 0) {
 				let cell = getDefaultCell(tableId, columnId, i, 'Border')
 				tableCells.push(cell)
@@ -358,7 +357,41 @@ export default function Edit(props) {
 		console.log(newColumn)
 		console.log(tableCells)
 
-		addColumn(columnId, newColumn, tableCells)
+		addColumn(tableId, columnId, newColumn, tableCells)
+
+		console.log('Update coreStore');
+		setTableStale(false)
+		return (updateTableEntity(tableId));
+	}
+
+	/**
+	 * Called upon event to add a row
+	 * 
+	 * @param {*} tableId 
+	 * @param {*} rowId 
+	 * @returns 
+	 */
+	function insertRow(tableId, rowId) {
+		const newRow = getDefaultRow(tableId, rowId)
+		var tableCells = []
+
+		for (let i = 0; i < numColumns; i++) {
+			if (i === 0) {
+				let cell = getDefaultCell(tableId, i, rowId, 'Border')
+				// cell.content = 
+				tableCells.push(cell)
+			} else {
+				let cell = getDefaultCell(tableId, i, rowId)
+				tableCells.push(cell)
+			}
+		}
+
+		console.log('ADDING ROW')
+		console.log('RowId = ' + rowId)
+		console.log(newRow)
+		console.log(tableCells)
+
+		addRow(tableId, rowId, newRow, tableCells)
 
 		console.log('Update coreStore');
 		setTableStale(false)
@@ -374,12 +407,29 @@ export default function Edit(props) {
 	 */
 	function deleteColumn(tableId, columnId) {
 		console.log('Deleting Column - ' + columnId)
-		removeColumn(columnId)
+		removeColumn(tableId, columnId)
 
 		console.log('Update coreStore');
 		setTableStale(false)
 		return (updateTableEntity(tableId));
 	}
+
+	/**
+	 * Called upon event to delete a row
+	 * 
+	 * @param {*} tableId 
+	 * @param {*} rowId 
+	 * @returns 
+	 */
+	function deleteRow(tableId, rowId) {
+		console.log('Deleting Row - ' + rowId)
+		removeRow(rowId)
+
+		console.log('Update coreStore');
+		setTableStale(false)
+		return (updateTableEntity(tableId));
+	}
+
 
 	/**
 	 * Update table store to reflect changes made to EXISTING table attributes
@@ -568,6 +618,7 @@ export default function Edit(props) {
 				columnCells.push(cell);
 			}
 
+			console.log(table)
 			var updatedRows = [...table.rows, ...rowBorder]
 			updatedRows.sort((a, b) => {
 				if ([a.row_id] < [b.row_id]) {
@@ -818,29 +869,53 @@ export default function Edit(props) {
 				}
 			case 'insert':
 				{
-					onToggleBorders(false)
 					setOpenColumnRow(0);
 					setColumnMenuVisible(false);
 					insertColumn(tableId, columnId);
-					// onToggleBorders(true)
 					break;
-
 				}
 			case 'delete':
 				{
-					onToggleBorders(false)
 					setOpenColumnRow(0);
 					setColumnMenuVisible(false);
 					deleteColumn(tableId, columnId);
-					// onToggleBorders(true)
 					break;
 				}
 			default:
 				console.log('Unrecognized Column Update Type')
 		}
-		setShowBorders(false);
 		console.log('Show Borders = ' + showBorders)
+	}
 
+	function onUpdateRow(event, updateType, tableId, rowId, updatedRowAttributes) {
+		console.log('    ...onUpdateRow');
+		console.log(event);
+		console.log(updatedRowAttributes);
+
+		switch (updateType) {
+			case 'attributes':
+				{
+					setTableAttributes(tableId, 'column', rowId, 'ATTRIBUTES', updatedRowAttributes);
+					break;
+				}
+			case 'insert':
+				{
+					setOpenColumnRow(0);
+					setRowMenuVisible(false);
+					insertRow(tableId, rowId);
+					break;
+				}
+			case 'delete':
+				{
+					setOpenColumnRow(0);
+					setRowMenuVisible(false);
+					deleteRow(tableId, rowId);
+					break;
+				}
+			default:
+				console.log('Unrecognized Row Update Type')
+		}
+		console.log('Show Borders = ' + showBorders)
 	}
 
 	function onMouseColumnClick(column_id, row_id, table, event) {
@@ -864,7 +939,8 @@ export default function Edit(props) {
 		if (row_id !== '0' && column_id === '0') {
 			console.log('Opening Row ' + row_id)
 			let compareRowId = row_id
-			const clickedRow = table.columns.find(({ row_id }) => row_id === compareRowId)
+			const clickedRow = table.rows.find(({ row_id }) => row_id === compareRowId)
+			console.log(clickedRow)
 			setRowAttributes(clickedRow.attributes)
 			setRowMenuVisible(true)
 			setOpenColumnRow(row_id)
@@ -1061,8 +1137,16 @@ export default function Edit(props) {
 									return false
 								}
 
+								function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
+									if (rowMenuVisible && openColumnRow === row_id) {
+										return true
+									}
+									return false
+								}
+
 								const borderContent = setBorderContent(row_id, column_id, content)
 								const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id)
+								const isOpenCurrentRowMenu = openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id)
 								const isFirstColumn = column_id === '1' ? true : false;
 
 								let calculatedClasses = ''
@@ -1082,7 +1166,7 @@ export default function Edit(props) {
 
 								return (
 									<>
-										{isFirstColumn && isBorder && (
+										{(isFirstColumn) && isBorder && (
 											<div className={"grid-control__cells--border"} />
 										)}
 
@@ -1100,6 +1184,15 @@ export default function Edit(props) {
 														columnAttributes={columnAttributes}
 														updatedColumn={onUpdateColumn}>
 													</ColumnMenu>
+												)}
+												{isOpenCurrentRowMenu && (
+													<RowMenu
+														tableId={table_id}
+														rowId={row_id}
+														rowLabel={borderContent}
+														rowAttributes={columnAttributes}
+														updatedRow={onUpdateRow}>
+													</RowMenu>
 												)}
 											</div>
 										)}

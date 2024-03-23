@@ -57,7 +57,7 @@ $gridColumnStyle = process_columns($tableColumns);
         if ($cell[ 'row_id' ] === $row[ 'row_id' ]) {?>
 				<!-- <p><?php echo json_encode($cell); ?></p> -->
 				<div id="<?php echo $cellId; ?>" class="<?php echo 'grid-control__cells ' . $cell[ 'classes' ]; ?>">
-				<?php echo $cell[ 'content' ]; ?>
+					<?php echo $cell[ 'content' ]; ?>
 				</div> <?php }}}?>
 	</div>
 </div>

@@ -687,6 +687,423 @@ function ConfigureColumnWidth(props) {
 
 /***/ }),
 
+/***/ "./src/components/configure-row-height/index.js":
+/*!******************************************************!*\
+  !*** ./src/components/configure-row-height/index.js ***!
+  \******************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ConfigureRowHeight: function() { return /* binding */ ConfigureRowHeight; }
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../data */ "./src/data/index.js");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-row-height/style.scss");
+
+
+/**
+ * WordPress dependencies
+ */
+
+
+
+
+
+/**
+ * Internal dependencies
+ */
+
+
+function ConfigureRowHeight(props) {
+  const {
+    openColumnWidth,
+    columnId,
+    columnLabel,
+    columnAttributes
+  } = props;
+  //    const [closePage, setClosePage] = useState(false)
+
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    switch (columnAttributes.columnWidthType) {
+      case 'Proportional':
+        {
+          setHideProportional(false);
+          setHideCustom(true);
+          setHideFixed(true);
+          break;
+        }
+      case 'Auto':
+        {
+          setHideProportional(true);
+          setHideCustom(true);
+          setHideFixed(true);
+          break;
+        }
+      case 'Fixed':
+        {
+          setHideProportional(true);
+          setHideCustom(true);
+          setHideFixed(false);
+          break;
+        }
+      case 'Custom':
+        {
+          setHideProportional(true);
+          setHideCustom(false);
+          setHideFixed(true);
+          break;
+        }
+    }
+    setColumnWidthType(columnAttributes.columnWidthType);
+    setMinWidth(columnAttributes.minWidth);
+    setMinWidthUnits(columnAttributes.minWidthUnits);
+    setMaxWidth(columnAttributes.maxWidth);
+    setMaxWidthUnits(columnAttributes.maxWidthUnits);
+    setFixedWidth(columnAttributes.fixedWidth);
+    setFixedWidthUnits(columnAttributes.fixedWidth);
+    setDisableForPhone(columnAttributes.disableForPhone);
+    setDisableForTablet(columnAttributes.disableForTablet);
+  }, [columnAttributes]);
+  function stopProp(event) {
+    event.stopPropagation();
+  }
+  function handleCancel(event) {
+    openColumnWidth(false);
+  }
+  const [columnWidthType, setColumnWidthType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)();
+  const [hideProportional, setHideProportional] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
+  const [hideCustom, setHideCustom] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
+  const [hideFixed, setHideFixed] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
+  const [minWidth, setMinWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(0);
+  const [minWidthUnits, setMinWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)();
+  const [maxWidth, setMaxWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(1);
+  const [maxWidthUnits, setMaxWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)();
+  const [fixedWidth, setFixedWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(0);
+  const [fixedWidthUnits, setFixedWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)();
+  const [disableForTablet, setDisableForTablet] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const [disableForPhone, setDisableForPhone] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  console.log('In Component ConfigureColumnWidth');
+  console.log(props);
+  function onHeightType(event) {
+    console.log('...In Height Type Update');
+    console.log(event);
+    switch (event) {
+      case 'Proportional':
+        {
+          setMaxWidth(1);
+          setMaxWidthUnits('fr');
+          setMinWidth(20);
+          setMinWidthUnits('ch');
+          setFixedWidth(0);
+          setFixedWidthUnits('px');
+          setHideProportional(false);
+          setHideCustom(true);
+          setHideFixed(true);
+          break;
+        }
+      case 'Auto':
+        {
+          setMaxWidth(0);
+          setMaxWidthUnits('fr');
+          setMinWidth(0);
+          setMinWidthUnits('ch');
+          setFixedWidth(0);
+          setFixedWidthUnits('px');
+          setHideProportional(true);
+          setHideCustom(true);
+          setHideFixed(true);
+          break;
+        }
+      case 'Fixed':
+        {
+          setMaxWidth(0);
+          setMaxWidthUnits('fr');
+          setMinWidth(0);
+          setMinWidthUnits('ch');
+          setFixedWidth(40);
+          setFixedWidthUnits('px');
+          setHideProportional(true);
+          setHideCustom(true);
+          setHideFixed(false);
+          break;
+        }
+      case 'Custom':
+        {
+          setMaxWidth(40);
+          setMaxWidthUnits('ch');
+          setMinWidth(20);
+          setMinWidthUnits('ch');
+          setFixedWidth(0);
+          setFixedWidthUnits('px');
+          setHideProportional(true);
+          setHideCustom(false);
+          setHideFixed(true);
+          break;
+        }
+    }
+    setRowHeightType(event);
+  }
+  function onMinimumWidth(event) {
+    console.log('...In MixWidth Update');
+    console.log(event);
+    setMinWidth(event.target.value);
+  }
+  function onMinimumWidthUnits(event) {
+    console.log('...In MixWidth Units Update');
+    console.log(event);
+    setMinWidthUnits(event);
+  }
+  function onMaximumWidth(event) {
+    console.log('...In Max Width Update');
+    console.log(event);
+    setMaxWidth(event.target.value);
+  }
+  function onMaximumWidthUnits(event) {
+    console.log('...In Max Width  Update');
+    console.log(event);
+    setMaxWidthUnits(event);
+  }
+  function onFixedWidth(event) {
+    console.log('...In Max Width Update');
+    console.log(event);
+    setFixedWidth(Number(event.target.value));
+  }
+  function onFixedWidthUnits(event) {
+    console.log('...In Max Width Units Update');
+    console.log(event);
+    setFixedWidthUnits(event);
+  }
+  function onTablet(checked) {
+    console.log('...In Tablet Update');
+    console.log(checked);
+    setDisableForTablet(checked);
+  }
+  function onPhone(checked) {
+    console.log('...In Phone Update');
+    console.log(checked);
+    setDisableForPhone(checked);
+  }
+  function onUpdate(event) {
+    // event.preventDefault()
+    console.log('ROW HEIGHT  UPDATED...');
+    console.log(event);
+    console.log('...Max Height = ' + maxWidth);
+    var updatedColumnAttributes = {
+      columnWidthType: columnWidthType,
+      minWidth: minWidth,
+      minWidthUnits: minWidthUnits,
+      maxWidth: Number(maxWidth),
+      maxWidthUnits: maxWidthUnits,
+      fixedWidth: fixedWidth,
+      fixedWidthUnits: fixedWidthUnits,
+      disableForTablet: disableForTablet,
+      disableForPhone: disableForPhone,
+      isFixedLeftColumnGroup: false,
+      horizontalAlignment: "none"
+    };
+    console.log(updatedColumnAttributes);
+    openRowHeight(false, updatedColumnAttributes);
+  }
+  console.log('RENDER PROPS');
+  console.log('...Disable Proportional Input = ' + hideProportional);
+  console.log('...Disable Fixed Input = ' + hideFixed);
+  console.log('...Disable Custom Input = ' + hideCustom);
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, openRowHeight && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Modal, {
+    title: "Configure Column Width",
+    onRequestClose: handleCancel,
+    focusOnMount: "firstContentElement",
+    isDismissible: "false",
+    shouldCloseOnClickOutside: "false",
+    size: "large"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "column-label"
+  }, "For column ", columnLabel), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
+    // className="blocks-table__placeholder-form"
+    onSubmit: onUpdate,
+    onMouseDown: stopProp
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+    label: "Height Type",
+    value: rowHeightType,
+    onChange: e => onHeightType(e),
+    options: [{
+      value: "Proportional",
+      label: "Proportional"
+    }, {
+      value: "Auto",
+      label: "Automatic"
+    }, {
+      value: "Fixed",
+      label: "Fixed width"
+    }, {
+      value: "Custom",
+      label: "Custom"
+    }],
+    __nextHasNoMarginBottom: true
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", {
+    className: hideProportional === true ? " column-width--not-visible" : ""
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, "Set Proportional Width"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalNumberControl, {
+    className: "column-width-value-input",
+    label: "Number of portions",
+    labelPosition: "side",
+    onBlur: e => onMaximumWidth(e),
+    value: maxWidth
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "column-width-span-input"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalNumberControl, {
+    className: "column-width-value-input",
+    label: "Minimum width",
+    labelPosition: "left",
+    value: minWidth,
+    onBlur: e => onMinimumWidth(e)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+    className: "column-width-unit-input",
+    labelPosition: "left",
+    label: "Units",
+    value: minWidthUnits,
+    onChange: e => onMinimumWidthUnits(e),
+    options: [{
+      value: "px",
+      label: "pixels"
+    }, {
+      value: "ch",
+      label: "characters"
+    }, {
+      value: "pt",
+      label: "points"
+    }, {
+      value: "in",
+      label: "inches"
+    }, {
+      value: "fr",
+      label: "proportional"
+    }],
+    __nextHasNoMarginBottom: true
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", {
+    className: hideFixed === true ? "column-width--not-visible" : ""
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, "Set Fixed Width"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "column-width-span-input"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalNumberControl, {
+    className: "column-width-input",
+    label: "Fixed width",
+    labelPosition: "left",
+    value: fixedWidth,
+    onBlur: e => onFixedWidth(e)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+    className: "column-width-unit-input",
+    label: "Units",
+    labelPosition: "left",
+    value: fixedWidthUnits,
+    onChange: e => onFixedWidthUnits(e),
+    options: [{
+      value: "px",
+      label: "pixels"
+    }, {
+      value: "ch",
+      label: "font"
+    }, {
+      value: "pt",
+      label: "points"
+    }, {
+      value: "in",
+      label: "inches"
+    }, {
+      value: "fr",
+      label: "proportional"
+    }],
+    __nextHasNoMarginBottom: true
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", {
+    className: hideCustom === true ? "column-width--not-visible" : ""
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, "Set Custom Width"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "column-width-span-input"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalNumberControl, {
+    className: "column-width-input",
+    label: "Minimum width",
+    labelPosition: "left",
+    value: minWidth,
+    onBlur: e => onMinimumWidth(e)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+    className: "column-width-unit-input",
+    labelPosition: "left",
+    label: "Units",
+    value: minWidthUnits,
+    onChange: e => onMinimumWidthUnits(e),
+    options: [{
+      value: "px",
+      label: "pixels"
+    }, {
+      value: "ch",
+      label: "characters"
+    }, {
+      value: "pt",
+      label: "points"
+    }, {
+      value: "in",
+      label: "inches"
+    }, {
+      value: "fr",
+      label: "proportional"
+    }],
+    __nextHasNoMarginBottom: true
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "column-width-span-input"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalNumberControl, {
+    className: "column-width-input",
+    label: "Maximum width",
+    labelPosition: "left",
+    value: maxWidth,
+    onBlur: e => onMaximumWidth(e)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+    className: "column-width-unit-input",
+    labelPosition: "left",
+    label: "Units",
+    value: maxWidthUnits,
+    onChange: e => onMaximumWidthUnits(e),
+    options: [{
+      value: "px",
+      label: "pixels"
+    }, {
+      value: "ch",
+      label: "characters"
+    }, {
+      value: "pt",
+      label: "points"
+    }, {
+      value: "in",
+      label: "inches"
+    }, {
+      value: "fr",
+      label: "proportional"
+    }],
+    __nextHasNoMarginBottom: true
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
+    label: "Hide for tablet",
+    checked: disableForTablet,
+    onChange: onTablet
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
+    label: "Hide for phone",
+    checked: disableForPhone,
+    onChange: onPhone
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    variant: "secondary",
+    onClick: handleCancel
+  }, "Cancel"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    variant: "primary",
+    type: "submit"
+  }, "Update")))));
+}
+;
+
+
+/***/ }),
+
 /***/ "./src/components/index.js":
 /*!*********************************!*\
   !*** ./src/components/index.js ***!
@@ -696,11 +1113,121 @@ function ConfigureColumnWidth(props) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   ColumnMenu: function() { return /* reexport safe */ _column_dropdown_menu__WEBPACK_IMPORTED_MODULE_0__.ColumnMenu; },
-/* harmony export */   ConfigureColumnWidth: function() { return /* reexport safe */ _configure_column_width__WEBPACK_IMPORTED_MODULE_1__.ConfigureColumnWidth; }
+/* harmony export */   ConfigureColumnWidth: function() { return /* reexport safe */ _configure_column_width__WEBPACK_IMPORTED_MODULE_1__.ConfigureColumnWidth; },
+/* harmony export */   ConfigureRowHeight: function() { return /* reexport safe */ _configure_row_height__WEBPACK_IMPORTED_MODULE_3__.ConfigureRowHeight; },
+/* harmony export */   RowMenu: function() { return /* reexport safe */ _row_dropdown_menu__WEBPACK_IMPORTED_MODULE_2__.RowMenu; }
 /* harmony export */ });
 /* harmony import */ var _column_dropdown_menu__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./column-dropdown-menu */ "./src/components/column-dropdown-menu/index.js");
 /* harmony import */ var _configure_column_width__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./configure-column-width */ "./src/components/configure-column-width/index.js");
+/* harmony import */ var _row_dropdown_menu__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./row-dropdown-menu */ "./src/components/row-dropdown-menu/index.js");
+/* harmony import */ var _configure_row_height__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./configure-row-height */ "./src/components/configure-row-height/index.js");
 
+
+
+
+
+/***/ }),
+
+/***/ "./src/components/row-dropdown-menu/index.js":
+/*!***************************************************!*\
+  !*** ./src/components/row-dropdown-menu/index.js ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   RowMenu: function() { return /* binding */ RowMenu; }
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/more-vertical.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/arrow-up.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/arrow-down.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/trash.js");
+/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../data */ "./src/data/index.js");
+/* harmony import */ var _configure_row_height__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../configure-row-height */ "./src/components/configure-row-height/index.js");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
+
+
+
+
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+function RowMenu(props) {
+  const [openModalRowHeight, setOpenModalRowHeight] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const [rowAttributes, setRowAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({});
+  const {
+    tableId,
+    rowId,
+    rowLabel,
+    updatedRow
+  } = props;
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    setRowAttributes(props.rowAttributes);
+  }, [props.rowAttributes]);
+  console.log('In Component RowMenu');
+  console.log(props);
+  function onInsertRow(event, rowId) {
+    console.log('    ...onInsertRow');
+    console.log(event);
+    console.log('rowId = ' + rowId);
+    updatedRow(event, 'insert', tableId, rowId, '');
+  }
+  function onDeleteRow(event, rowId) {
+    console.log('    ...onDeleteRow');
+    console.log(event);
+    console.log('rowId = ' + rowId);
+    updatedRow(event, 'delete', tableId, rowId, '');
+  }
+  function onUpdateRowHeight(event, updatedRowAttributes) {
+    console.log('    ...onUpdateRowHeight');
+    console.log(event);
+    console.log(updatedRowAttributes);
+    if (openModalRowHeight) {
+      setOpenModalRowHeight(false);
+      updatedRow(event, 'attributes', tableId, rowId, updatedRowAttributes);
+    } else {
+      event.preventDefault();
+      setOpenModalRowHeight(true);
+    }
+  }
+  console.log('Open row height page = ' + openModalRowHeight);
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.DropdownMenu
+  // style={{ display: "none" }}
+  , {
+    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
+    defaultOpen: "true",
+    label: rowLabel
+  }, ({
+    onClose
+  }) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.MenuGroup, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.MenuItem, {
+    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"],
+    onClick: onUpdateRowHeight
+  }, "Update Row Height")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.MenuGroup, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.MenuItem, {
+    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__["default"],
+    onClick: e => onInsertRow(e, rowId)
+  }, "Insert Row"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.MenuItem, {
+    icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__["default"],
+    onClick: e => onDeleteRow(e, rowId)
+  }, "Delete Row")))), openModalRowHeight && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_configure_row_height__WEBPACK_IMPORTED_MODULE_5__.ConfigureRowHeight, {
+    rowId: rowId,
+    rowLabel: rowLabel,
+    rowAttributes: rowAttributes,
+    openRowHeight: onUpdateRowHeight
+  }));
+}
 
 
 /***/ }),
@@ -985,33 +1512,36 @@ const processUnmountedTables = unmountedTables => ({
     }
   });
 };
-const addColumn = (columnId, newColumn, columnCells) => async ({
-  dispatch
-}) => {
-  await dispatch({
+const addColumn = (tableId, columnId, newColumn, columnCells) => {
+  return {
     type: INSERT_COLUMN,
+    tableId,
     columnId,
     newColumn,
     columnCells
-  });
-};
-const addRow = () => {
-  return {
-    type: INSERT_ROW
   };
 };
-const removeColumn = columnId => async ({
-  dispatch
-}) => {
-  console.log('In Action removeColumn');
-  await dispatch({
-    type: DELETE_COLUMN,
-    columnId
-  });
-};
-const removeRow = () => {
+const addRow = (tableId, rowId, newRow, rowCells) => {
   return {
-    type: DELETE_ROW
+    type: INSERT_ROW,
+    tableId,
+    rowId,
+    newRow,
+    rowCells
+  };
+};
+const removeColumn = (tableId, columnId) => {
+  return {
+    type: DELETE_COLUMN,
+    tableId,
+    columnId
+  };
+};
+const removeRow = (tableId, rowId) => {
+  return {
+    type: DELETE_ROW,
+    tableId,
+    rowId
   };
 };
 const assignTableId = tableId => {
@@ -1039,7 +1569,7 @@ const removeTableProp = (tableId, attribute) => {
     attribute
   };
 };
-const updateRow = ($tableId, rowId, attribute, value) => {
+const updateRow = (tableId, rowId, attribute, value) => {
   console.log('In Action updateRow');
   return {
     type: UPDATE_ROW,
@@ -1272,7 +1802,7 @@ const table = (state = {
     case INSERT_COLUMN:
       console.log('In Reducer INSERT_COLUMN');
       let insertColumnState = {
-        ...state.table
+        ...state
       };
 
       /**
@@ -1306,6 +1836,7 @@ const table = (state = {
         } else {
           let newColumnId = String(Number(cell.column_id) + 1);
           let columnLetter = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(newColumnId);
+          let cellContent = Number(cell.row_id) == 0 ? columnLetter : cell.content;
           let newCell = {
             table_id: cell.table_id,
             column_id: newColumnId,
@@ -1313,7 +1844,7 @@ const table = (state = {
             cell_id: columnLetter + cell.row_id,
             attributes: cell.attributes,
             classes: cell.classes,
-            content: cell.content
+            content: cellContent
           };
           cellsWithNewId.push(newCell);
         }
@@ -1327,12 +1858,77 @@ const table = (state = {
         cells: [...sortedCells]
       };
       console.log(returnedTableNewColumn);
-      return returnedTableNewColumn;
+      return {
+        table: returnedTableNewColumn
+      };
     case INSERT_ROW:
+      console.log('In Reducer INSERT_ROW');
+      let insertRowState = {
+        ...state
+      };
+
+      /**
+       * Insert new row and update existing row_id's
+       */
+      var rowsWithNewId = [];
+      insertRowState.rows.forEach(row => {
+        if (row.row_id < action.rowId) {
+          rowsWithNewId.push(row);
+        } else {
+          let newRow = {
+            table_id: row.table_id,
+            row_id: String(Number(row.row_id) + 1),
+            attributes: row.attributes,
+            classes: row.classes
+          };
+          rowsWithNewId.push(newRow);
+        }
+      });
+      rowsWithNewId.push(action.newRow);
+      console.log(rowsWithNewId);
+      var sortedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('rows', rowsWithNewId);
+      console.log(sortedRows);
+
+      /**
+       * Insert new cells and update existing column_id's
+       */
+      var cellsWithNewId = [];
+      insertRowState.cells.forEach(cell => {
+        console.log(cell);
+        if (cell.row_id < action.rowId) {
+          cellsWithNewId.push(cell);
+        } else {
+          let newRowId = String(Number(cell.row_id) + 1);
+          let columnLetter = cell.column_id == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(cell.column_id);
+          let cellContent = Number(cell.column_id) == 0 ? newRowId : cell.content;
+          let newCell = {
+            table_id: cell.table_id,
+            column_id: cell.column_id,
+            row_id: newRowId,
+            cell_id: columnLetter + newRowId,
+            attributes: cell.attributes,
+            classes: cell.classes,
+            content: cellContent
+          };
+          cellsWithNewId.push(newCell);
+        }
+      });
+      var allNewRowCells = [...cellsWithNewId, ...action.rowCells];
+      var sortedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('cells', allNewRowCells);
+      var returnedTableNewRow = {
+        ...insertRowState,
+        rows: [...sortedRows],
+        columns: [...insertRowState.columns],
+        cells: [...sortedCells]
+      };
+      alert(returnedTableNewRow);
+      return {
+        table: returnedTableNewRow
+      };
     case DELETE_COLUMN:
       console.log('In Reducer DELETE_COLUMN');
       let deleteColumnState = {
-        ...state.table
+        ...state
       };
 
       /**
@@ -1366,6 +1962,7 @@ const table = (state = {
         } else if (cell.column_id > action.columnId) {
           let newColumnId = String(Number(cell.column_id) - 1);
           let columnLetter = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(newColumnId);
+          let cellContent = Number(cell.row_id) == 0 ? columnLetter : cell.content;
           let newCell = {
             table_id: cell.table_id,
             column_id: newColumnId,
@@ -1373,7 +1970,7 @@ const table = (state = {
             cell_id: columnLetter + cell.row_id,
             attributes: cell.attributes,
             classes: cell.classes,
-            content: cell.content
+            content: cellContent
           };
           cellsWithNewId.push(newCell);
         }
@@ -1389,13 +1986,15 @@ const table = (state = {
         cells: [...cellsWithNewId]
       };
       console.log(returnedTableNewColumn);
-      return returnedTableNewColumn;
+      return {
+        table: returnedTableNewColumn
+      };
     case DELETE_ROW:
       return state;
     case UPDATE_ROW:
       console.log('In Reducer UPDATE_COLUMN');
       let newRowsState = {
-        ...state.table
+        ...state
       };
       let updatedRowData = JSON.parse('{ "' + action.attribute + '" : "' + action.value + '"}');
       let updatedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newRowsState.rows, 'row_id', action.rowId, updatedRowData);
@@ -2130,8 +2729,7 @@ function Edit(props) {
   function insertColumn(tableId, columnId) {
     const newColumn = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultColumn)(tableId, columnId);
     var tableCells = [];
-    for (let i = 1; i < numRows; i++) {
-      console.log('Creating column row = ' + i);
+    for (let i = 0; i < numRows; i++) {
       if (i === 0) {
         let cell = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultCell)(tableId, columnId, i, 'Border');
         tableCells.push(cell);
@@ -2144,7 +2742,37 @@ function Edit(props) {
     console.log('ColumnId = ' + columnId);
     console.log(newColumn);
     console.log(tableCells);
-    addColumn(columnId, newColumn, tableCells);
+    addColumn(tableId, columnId, newColumn, tableCells);
+    console.log('Update coreStore');
+    setTableStale(false);
+    return updateTableEntity(tableId);
+  }
+
+  /**
+   * Called upon event to add a row
+   * 
+   * @param {*} tableId 
+   * @param {*} rowId 
+   * @returns 
+   */
+  function insertRow(tableId, rowId) {
+    const newRow = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultRow)(tableId, rowId);
+    var tableCells = [];
+    for (let i = 0; i < numColumns; i++) {
+      if (i === 0) {
+        let cell = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultCell)(tableId, i, rowId, 'Border');
+        // cell.content = 
+        tableCells.push(cell);
+      } else {
+        let cell = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultCell)(tableId, i, rowId);
+        tableCells.push(cell);
+      }
+    }
+    console.log('ADDING ROW');
+    console.log('RowId = ' + rowId);
+    console.log(newRow);
+    console.log(tableCells);
+    addRow(tableId, rowId, newRow, tableCells);
     console.log('Update coreStore');
     setTableStale(false);
     return updateTableEntity(tableId);
@@ -2159,7 +2787,22 @@ function Edit(props) {
    */
   function deleteColumn(tableId, columnId) {
     console.log('Deleting Column - ' + columnId);
-    removeColumn(columnId);
+    removeColumn(tableId, columnId);
+    console.log('Update coreStore');
+    setTableStale(false);
+    return updateTableEntity(tableId);
+  }
+
+  /**
+   * Called upon event to delete a row
+   * 
+   * @param {*} tableId 
+   * @param {*} rowId 
+   * @returns 
+   */
+  function deleteRow(tableId, rowId) {
+    console.log('Deleting Row - ' + rowId);
+    removeRow(rowId);
     console.log('Update coreStore');
     setTableStale(false);
     return updateTableEntity(tableId);
@@ -2321,6 +2964,7 @@ function Edit(props) {
         };
         columnCells.push(cell);
       }
+      console.log(table);
       var updatedRows = [...table.rows, ...rowBorder];
       updatedRows.sort((a, b) => {
         if ([a.row_id] < [b.row_id]) {
@@ -2566,26 +3210,50 @@ function Edit(props) {
         }
       case 'insert':
         {
-          onToggleBorders(false);
           setOpenColumnRow(0);
           setColumnMenuVisible(false);
           insertColumn(tableId, columnId);
-          // onToggleBorders(true)
           break;
         }
       case 'delete':
         {
-          onToggleBorders(false);
           setOpenColumnRow(0);
           setColumnMenuVisible(false);
           deleteColumn(tableId, columnId);
-          // onToggleBorders(true)
           break;
         }
       default:
         console.log('Unrecognized Column Update Type');
     }
-    setShowBorders(false);
+    console.log('Show Borders = ' + showBorders);
+  }
+  function onUpdateRow(event, updateType, tableId, rowId, updatedRowAttributes) {
+    console.log('    ...onUpdateRow');
+    console.log(event);
+    console.log(updatedRowAttributes);
+    switch (updateType) {
+      case 'attributes':
+        {
+          setTableAttributes(tableId, 'column', rowId, 'ATTRIBUTES', updatedRowAttributes);
+          break;
+        }
+      case 'insert':
+        {
+          setOpenColumnRow(0);
+          setRowMenuVisible(false);
+          insertRow(tableId, rowId);
+          break;
+        }
+      case 'delete':
+        {
+          setOpenColumnRow(0);
+          setRowMenuVisible(false);
+          deleteRow(tableId, rowId);
+          break;
+        }
+      default:
+        console.log('Unrecognized Row Update Type');
+    }
     console.log('Show Borders = ' + showBorders);
   }
   function onMouseColumnClick(column_id, row_id, table, event) {
@@ -2608,9 +3276,10 @@ function Edit(props) {
     if (row_id !== '0' && column_id === '0') {
       console.log('Opening Row ' + row_id);
       let compareRowId = row_id;
-      const clickedRow = table.columns.find(({
+      const clickedRow = table.rows.find(({
         row_id
       }) => row_id === compareRowId);
+      console.log(clickedRow);
       setRowAttributes(clickedRow.attributes);
       setRowMenuVisible(true);
       setOpenColumnRow(row_id);
@@ -2787,8 +3456,15 @@ function Edit(props) {
       }
       return false;
     }
+    function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
+      if (rowMenuVisible && openColumnRow === row_id) {
+        return true;
+      }
+      return false;
+    }
     const borderContent = setBorderContent(row_id, column_id, content);
     const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id);
+    const isOpenCurrentRowMenu = openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id);
     const isFirstColumn = column_id === '1' ? true : false;
     let calculatedClasses = '';
     if (bandedRows) {
@@ -2815,6 +3491,12 @@ function Edit(props) {
       columnLabel: borderContent,
       columnAttributes: columnAttributes,
       updatedColumn: onUpdateColumn
+    }), isOpenCurrentRowMenu && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components__WEBPACK_IMPORTED_MODULE_10__.RowMenu, {
+      tableId: table_id,
+      rowId: row_id,
+      rowLabel: borderContent,
+      rowAttributes: columnAttributes,
+      updatedRow: onUpdateRow
     })), isFirstColumn && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "grid-control__cells grid-control__cells--zoom " + calculatedClasses,
       style: {
@@ -3078,6 +3760,7 @@ function tableSort(tablePart, tableArray) {
   console.log('Table Part = ' + tablePart);
   console.log(tableArray);
   if (tablePart === 'rows') {
+    console.log('...in Rows sort');
     var sortedRows = [...tableArray];
     sortedRows.sort((a, b) => {
       if ([a.row_id] < [b.row_id]) {
@@ -3229,15 +3912,16 @@ function getDefaultColumn(tableId, columnId, columnLocation = 'Body') {
 function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') {
   let cell;
   let columnLetter = numberToLetter(columnId);
+  let borderContent = rowId == 0 ? columnLetter : String(rowId);
   if (cellLocation === 'Border') {
     cell = {
       table_id: String(tableId),
       column_id: String(columnId),
       row_id: String(rowId),
-      cell_id: columnLetter + rowId,
+      cell_id: rowId === 0 ? columnLetter + '0' : '0' + String(columnId),
       attributes: getDefaultTableAttributes('cells', cellLocation),
-      classes: 'border hover',
-      content: columnLetter
+      classes: 'grid-control__cells--border hover',
+      content: borderContent
     };
   } else {
     cell = {
@@ -3342,10 +4026,10 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
   }
 }
 function getDefaultTableClasses(tableComponent) {
-  const tableBaseClasses = [];
-  const columnClasses = [];
-  const rowClasses = [];
-  const cellClasses = ['cell-body'];
+  const tableBaseClasses = '';
+  const columnClasses = '';
+  const rowClasses = '';
+  const cellClasses = '';
   switch (tableComponent) {
     case 'table':
       return tableBaseClasses;
@@ -3370,6 +4054,18 @@ function getDefaultTableClasses(tableComponent) {
 /*!**********************************************************!*\
   !*** ./src/components/configure-column-width/style.scss ***!
   \**********************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./src/components/configure-row-height/style.scss":
+/*!********************************************************!*\
+  !*** ./src/components/configure-row-height/style.scss ***!
+  \********************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);

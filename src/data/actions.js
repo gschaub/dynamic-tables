@@ -244,44 +244,40 @@ export const processUnmountedTables =
             })
         }
 
-export const addColumn =
-    (
+export const addColumn = (tableId, columnId, newColumn, columnCells) => {
+    return {
+        type: INSERT_COLUMN,
+        tableId,
         columnId,
         newColumn,
         columnCells
-    ) =>
-
-        async ({ dispatch }) => {
-            await dispatch({
-                type: INSERT_COLUMN,
-                columnId,
-                newColumn,
-                columnCells
-            })
-        }
-
-export const addRow = () => {
-    return {
-        type: INSERT_ROW
     }
 }
 
-export const removeColumn =
-    (
-        columnId
-    ) =>
-        async ({ dispatch }) => {
-            console.log('In Action removeColumn')
-            await dispatch({
-                type: DELETE_COLUMN,
-                columnId
-            })
-
-        }
-
-export const removeRow = () => {
+export const addRow = (tableId, rowId, newRow, rowCells) => {
     return {
-        type: DELETE_ROW
+        type: INSERT_ROW,
+        tableId,
+        rowId,
+        newRow,
+        rowCells
+    }
+}
+
+export const removeColumn = (tableId, columnId) => {
+    return {
+        type: DELETE_COLUMN,
+        tableId,
+        columnId
+    }
+
+}
+
+export const removeRow = (tableId, rowId) => {
+    return {
+        type: DELETE_ROW,
+        tableId,
+        rowId
     }
 }
 
@@ -313,7 +309,7 @@ export const removeTableProp = (tableId, attribute) => {
     }
 }
 
-export const updateRow = ($tableId, rowId, attribute, value) => {
+export const updateRow = (tableId, rowId, attribute, value) => {
 
     console.log('In Action updateRow')
     return {
