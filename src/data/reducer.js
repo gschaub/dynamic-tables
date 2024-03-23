@@ -209,8 +209,6 @@ const table = (
                 cells: [...sortedCells]
             }
 
-            alert(returnedTableNewRow)
-
             return {
                 table: returnedTableNewRow
             }

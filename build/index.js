@@ -1921,7 +1921,6 @@ const table = (state = {
         columns: [...insertRowState.columns],
         cells: [...sortedCells]
       };
-      alert(returnedTableNewRow);
       return {
         table: returnedTableNewRow
       };
