@@ -33,3 +33,9 @@
 	border-style: var(--showGridLines);
 	border-width: var(--gridLineWidth);
 }
+
+.grid-control__cells--banded-row {
+	--bandedRowColor: #d8dbda;
+
+	background-color: var(--bandedRowColor);
+}

@@ -18,12 +18,6 @@
 	justify-self: start;
 }
 
-.grid-control__cells--banded-row {
-	--bandedRowColor: #d8dbda;
-
-	background-color: var(--bandedRowColor);
-}
-
 .grid-control__cells--border {
 	font-size: small;
 	font-weight: bold;

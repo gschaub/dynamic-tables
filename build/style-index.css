@@ -28,6 +28,11 @@
   border-style: var(--showGridLines);
   border-width: var(--gridLineWidth);
 }
+
+.grid-control__cells--banded-row {
+  --bandedRowColor: #d8dbda;
+  background-color: var(--bandedRowColor);
+}
 /*!*************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/components/configure-column-width/style.scss ***!
   \*************************************************************************************************************************************************************************************************************************************************************************/

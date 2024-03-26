@@ -61,7 +61,7 @@ function process_columns($columns)
             'maxWidthUnits' => $maxWidthUnits,
             'fixedWidth' => $fixedWidth,
             'fixedWidthUnits' => $fixedWidthUnits,
-            '$disableForTablet' => $disableForTablet,
+            'disableForTablet' => $disableForTablet,
             'disableForPhone' => $disableForPhone,
             'isFixedLeftColumnGroup' => $isFixedLeftColumnGroup,
             'horizontalAlignment' => $horizontalAlignment
@@ -93,4 +93,16 @@ function process_columns($columns)
     }
 
     return $newGridColumnStyle;
+}
+
+function getCalculatedClasses($cellRowId, $cellColumnId, $bandedRows)
+{
+    $calculatedClasses = '';
+
+    if ($bandedRows) {
+        if ($cellRowId % 2 === 0) {
+            $calculatedClasses .= 'grid-control__cells--banded-row ';
+        }
+    }
+    return $calculatedClasses;
 }

@@ -17,17 +17,26 @@ $tableId = $attributes[ 'table_id' ];
 $blockTableRef = $attributes[ 'block_table_ref' ];
 
 /**
- * Get Table
+ * Get Table - Load variables
  */
 
 $table = get_table($tableId);
-$tableName = $table[ 'header' ][ 'table_name' ];
+$tableHeader = $table[ 'header' ];
+$tableName = $tableHeader[ 'table_name' ];
 $tableColumns = $table[ 'columns' ];
 $tableRows = $table[ 'rows' ];
 $tableCells = $table[ 'cells' ];
 
 $numColumns = count($tableColumns);
 $numRows = count($tableRows);
+
+list('bandedRows' => $bandedRows,
+    'bandedRowColor' => $gridBandedColor,
+    'showGridLines' => $gridShowInnerLines,
+    'gridLineWidth' => $gridInnerLineWidth,
+    'horizontalAlignment' => $tableHorizontalAlignment,
+    'verticalAlignment' => $tableVerticalAlignment
+) = $tableHeader[ 'attributes' ];
 
 $gridColumnStyle = process_columns($tableColumns);
 
@@ -49,16 +58,21 @@ $gridColumnStyle = process_columns($tableColumns);
 	<div class="grid-control" style="--gridTemplateColumns: <?php echo $gridColumnStyle; ?>;">
 
 	<?php foreach ($tableRows as $index => $row) {
+
     ?>
 	<!-- <p><?php echo json_encode($row); ?></p> -->
 
 		<?php foreach ($tableCells as $cellIndex => $cell) {
-        $cellId = numberToLetter($cell[ 'column_id' ]) . $cell[ 'row_id' ];
+        $cellRowId = $cell[ 'row_id' ];
+        $cellColumnId = $cell[ 'column_id' ];
+        $cellId = numberToLetter($cellColumnId) . $cellRowId;
+
+        $calculatedClasses = getCalculatedClasses($cellRowId, $cellColumnId, $bandedRows);
+
         if ($cell[ 'row_id' ] === $row[ 'row_id' ]) {?>
-				<!-- <p><?php echo json_encode($cell); ?></p> -->
-				<div id="<?php echo $cellId; ?>" class="<?php echo 'grid-control__cells ' . $cell[ 'classes' ]; ?>">
-					<?php echo $cell[ 'content' ]; ?>
-				</div> <?php }}}?>
+				<div id="<?php echo $cellId; ?>" class="grid-control__cells <?php echo $cell[ 'classes' ] . $calculatedClasses; ?>" style="--bandedRowColor: <?php echo $gridBandedColor; ?>; --showGridLines: <?php echo $gridShowInnerLines; ?>; --gridLineWidth: <?php echo $gridInnerLineWidth; ?>;"><?php echo $cell[ 'content' ]; ?></div> <?php }
+    }
+}?>
 	</div>
 </div>
 

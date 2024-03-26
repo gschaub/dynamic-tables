@@ -1772,9 +1772,39 @@ const table = (state = {
       };
     case CHANGE_TABLE_ID:
       console.log('In Reducer UPDATE_TABLE_PROP');
+      const newTableIdState = {
+        ...state
+      };
+      var rowsWithNewId = [];
+      var columnsWithNewId = [];
+      var cellsWithNewId = [];
+      newTableIdState.rows.foreach(row => {
+        let newRow = {
+          ...row,
+          table_id: action.newTableId
+        };
+        rowsWithNewId.push(newRow);
+      });
+      newTableIdState.columns.foreach(column => {
+        let newColumn = {
+          ...column,
+          table_id: action.newTableId
+        };
+        columnsWithNewId.push(newColumn);
+      });
+      newTableIdState.cells.foreach(cell => {
+        let newCell = {
+          ...cell,
+          table_id: action.newTableId
+        };
+        cellsWithNewId.push(newCellRow);
+      });
       const updatedTableId = {
         ...state,
-        table_id: action.newTableId
+        table_id: action.newTableId,
+        rows: [...rowsWithNewId],
+        columns: [...columnsWithNewId],
+        cells: [...cellsWithNewId]
       };
       console.log(updatedTableId);
       return {
@@ -1810,7 +1840,7 @@ const table = (state = {
        */
       var columnsWithNewId = [];
       insertColumnState.columns.forEach(column => {
-        if (column.column_id < action.columnId) {
+        if (Number(column.column_id) < Number(action.columnId)) {
           columnsWithNewId.push(column);
         } else {
           let newColumn = {
@@ -1872,7 +1902,7 @@ const table = (state = {
        */
       var rowsWithNewId = [];
       insertRowState.rows.forEach(row => {
-        if (row.row_id < action.rowId) {
+        if (Number(row.row_id) < Number(action.rowId)) {
           rowsWithNewId.push(row);
         } else {
           let newRow = {
@@ -1895,7 +1925,7 @@ const table = (state = {
       var cellsWithNewId = [];
       insertRowState.cells.forEach(cell => {
         console.log(cell);
-        if (cell.row_id < action.rowId) {
+        if (Number(cell.row_id) < Number(action.rowId)) {
           cellsWithNewId.push(cell);
         } else {
           let newRowId = String(Number(cell.row_id) + 1);
@@ -1989,7 +2019,70 @@ const table = (state = {
         table: returnedTableNewColumn
       };
     case DELETE_ROW:
-      return state;
+      console.log('In Reducer DELETE_COLUMN');
+      let deleteRowState = {
+        ...state
+      };
+
+      /**
+       * Delete new column and update existing column_id's
+       */
+      var rowsWithNewId = [];
+      console.log(deleteRowState);
+      deleteRowState.rows.forEach(row => {
+        if (row.row_id < action.rowId) {
+          rowsWithNewId.push(row);
+        } else if (row.row_id > action.rowId) {
+          let newRow = {
+            table_id: row.table_id,
+            row_id: String(Number(row.row_id) - 1),
+            attributes: row.attributes,
+            classes: row.classes
+          };
+          rowsWithNewId.push(newRow);
+        }
+      });
+      // rowsWithNewId.push(action.newColumn)
+      // var sortedRows= tableSort('rows', rowsWithNewId)
+
+      /**
+       * Delete new cells and update existing row_id's
+       */
+      var cellsWithNewId = [];
+      console.log(deleteRowState.cells);
+      deleteRowState.cells.forEach(cell => {
+        if (cell.row_id < action.rowId) {
+          cellsWithNewId.push(cell);
+        } else if (cell.row_id > action.rowId) {
+          let newRowId = String(Number(cell.row_id) - 1);
+          let columnLetter = cell.column_id == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(cell.column_id);
+          let cellContent = Number(cell.column_id) == 0 ? newRowId : cell.content;
+          let newCell = {
+            table_id: cell.table_id,
+            column_id: cell.column_id,
+            row_id: newRowId,
+            cell_id: columnLetter + cell.row_id,
+            attributes: cell.attributes,
+            classes: cell.classes,
+            content: cellContent
+          };
+          cellsWithNewId.push(newCell);
+        }
+      });
+
+      // var allNewColumnCells = [...cellsWithNewId, ...action.columnCells]
+      // var sortedCells = tableSort('cells', allNewColumnCells)
+
+      var returnedTableNewRow = {
+        ...deleteRowState,
+        rows: [...rowsWithNewId],
+        columns: [...deleteRowState.columns],
+        cells: [...cellsWithNewId]
+      };
+      console.log(returnedTableNewRow);
+      return {
+        table: returnedTableNewRow
+      };
     case UPDATE_ROW:
       console.log('In Reducer UPDATE_COLUMN');
       let newRowsState = {
@@ -2427,7 +2520,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./components */ "./src/components/index.js");
 /* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
 
-/**
+/**select re
  * Retrieves the translation of text.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
@@ -2801,7 +2894,7 @@ function Edit(props) {
    */
   function deleteRow(tableId, rowId) {
     console.log('Deleting Row - ' + rowId);
-    removeRow(rowId);
+    removeRow(tableId, rowId);
     console.log('Update coreStore');
     setTableStale(false);
     return updateTableEntity(tableId);
@@ -3762,7 +3855,9 @@ function tableSort(tablePart, tableArray) {
     console.log('...in Rows sort');
     var sortedRows = [...tableArray];
     sortedRows.sort((a, b) => {
-      if ([a.row_id] < [b.row_id]) {
+      // console.log(number(a.row_id))
+      // console.log(number([a.row_id]))
+      if (Number([a.row_id]) < Number([b.row_id])) {
         return -1;
       } else {
         return 1;
@@ -3774,7 +3869,8 @@ function tableSort(tablePart, tableArray) {
     console.log('...in Columns sort');
     var sortedColumns = [...tableArray];
     sortedColumns.sort((a, b) => {
-      if ([a.column_id] < [b.column_id]) {
+      console.log(Number(a.column_id));
+      if (Number([a.column_id]) < Number([b.column_id])) {
         return -1;
       } else {
         return 1;
@@ -3787,12 +3883,28 @@ function tableSort(tablePart, tableArray) {
     console.log('...in Cells sort');
     var sortedCells = [...tableArray];
     sortedCells.sort((a, b) => {
-      if ([[a.row_id], [a.column_id]] < [[b.row_id], [b.column_id]]) {
+      console.log([Number([a.row_id]), Number([a.column_id])]);
+      console.log([Number([b.row_id]), Number([b.column_id])]);
+      if (Number([a.row_id]) === Number([b.row_id])) {
+        if (Number([a.column_id]) < Number([b.column_id])) {
+          return -1;
+        } else {
+          return 1;
+        }
+      }
+      if (Number([a.row_id]) < Number([b.row_id])) {
         return -1;
       } else {
         return 1;
       }
+
+      // if ([Number([a.row_id]), Number([a.column_id])] < [Number([b.row_id]), Number([b.column_id])]) {
+      //     return -1
+      // } else {
+      //     return 1
+      // }
     });
+
     console.log(sortedCells);
     return sortedCells;
   }
@@ -3930,7 +4042,7 @@ function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') {
       cell_id: columnLetter + rowId,
       attributes: getDefaultTableAttributes('cells', cellLocation),
       classes: getDefaultTableClasses('cells'),
-      content: 'Cell' + numberToLetter(columnId) + rowId
+      content: ''
     };
   }
   return cell;

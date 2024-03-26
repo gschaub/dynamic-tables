@@ -67,7 +67,9 @@ export function tableSort(tablePart, tableArray) {
         console.log('...in Rows sort')
         var sortedRows = [...tableArray];
         sortedRows.sort((a, b) => {
-            if ([a.row_id] < [b.row_id]) {
+            // console.log(number(a.row_id))
+            // console.log(number([a.row_id]))
+            if (Number([a.row_id]) < Number([b.row_id])) {
                 return -1;
             } else {
                 return 1;
@@ -80,7 +82,8 @@ export function tableSort(tablePart, tableArray) {
         console.log('...in Columns sort')
         var sortedColumns = [...tableArray];
         sortedColumns.sort((a, b) => {
-            if ([a.column_id] < [b.column_id]) {
+            console.log(Number(a.column_id))
+            if (Number([a.column_id]) < Number([b.column_id])) {
                 return -1
             } else {
                 return 1
@@ -94,11 +97,27 @@ export function tableSort(tablePart, tableArray) {
         console.log('...in Cells sort')
         var sortedCells = [...tableArray];
         sortedCells.sort((a, b) => {
-            if ([[a.row_id], [a.column_id]] < [[b.row_id], [b.column_id]]) {
+            console.log([Number([a.row_id]), Number([a.column_id])])
+            console.log([Number([b.row_id]), Number([b.column_id])])
+            if (Number([a.row_id]) === Number([b.row_id])) {
+                if (Number([a.column_id]) < Number([b.column_id])) {
+                    return -1
+                } else {
+                    return 1
+                }
+            }
+
+            if (Number([a.row_id]) < Number([b.row_id])) {
                 return -1
             } else {
                 return 1
             }
+
+            // if ([Number([a.row_id]), Number([a.column_id])] < [Number([b.row_id]), Number([b.column_id])]) {
+            //     return -1
+            // } else {
+            //     return 1
+            // }
         })
         console.log(sortedCells)
         return sortedCells;
@@ -258,7 +277,7 @@ export function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') 
             cell_id: columnLetter + rowId,
             attributes: getDefaultTableAttributes('cells', cellLocation),
             classes: getDefaultTableClasses('cells'),
-            content: 'Cell' + numberToLetter(columnId) + rowId
+            content: ''
         }
     }
     return cell;

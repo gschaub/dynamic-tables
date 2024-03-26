@@ -1,4 +1,4 @@
-/**
+/**select re
  * Retrieves the translation of text.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
@@ -423,7 +423,7 @@ export default function Edit(props) {
 	 */
 	function deleteRow(tableId, rowId) {
 		console.log('Deleting Row - ' + rowId)
-		removeRow(rowId)
+		removeRow(tableId, rowId)
 
 		console.log('Update coreStore');
 		setTableStale(false)
