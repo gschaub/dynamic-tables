@@ -453,9 +453,9 @@ const table = (
             let returnedBorderState =
             {
                 ...newBaseTableState,
-                rows: [...action.rows],
-                columns: [...action.columns],
-                cells: [...action.cells]
+                rows: tableSort('rows', [...action.rows]),
+                columns: tableSort('columns', [...action.columns]),
+                cells: tableSort('cells', [...action.cells])
             }
 
             console.log(newBaseTableState)

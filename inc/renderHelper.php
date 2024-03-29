@@ -95,14 +95,19 @@ function process_columns($columns)
     return $newGridColumnStyle;
 }
 
-function getCalculatedClasses($cellRowId, $cellColumnId, $bandedRows)
+function getCalculatedClasses($cellRowId, $cellColumnId, $blockWrapper, $bandedRows, $enableHeaderRow, $headerClasses)
 {
     $calculatedClasses = '';
 
-    if ($bandedRows) {
-        if ($cellRowId % 2 === 0) {
-            $calculatedClasses .= 'grid-control__cells--banded-row ';
-        }
+    if ($bandedRows && $cellRowId % 2 === 0) {
+        $calculatedClasses .= 'grid-control__cells--banded-row ';
     }
+
+    if ($enableHeaderRow && $cellRowId == 1) {
+        $calculatedClasses .= 'grid-control__header-cells  ' . $headerClasses;
+    } else {
+        $calculatedClasses .= 'grid-control__body-cells ';
+    }
+
     return $calculatedClasses;
 }

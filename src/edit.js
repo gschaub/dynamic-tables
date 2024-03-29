@@ -292,12 +292,25 @@ export default function Edit(props) {
 		return attributeValue
 	}
 
+	/**
+	 * Extract and unpack table attributes
+	 */
 	const showGridLines = getTablePropAttribute(table.table_attributes, 'showGridLines')
+	const enableHeaderRow = getTablePropAttribute(table.table_attributes, 'enableHeaderRow')
+	const gridHeaderBackgroundColor = getTablePropAttribute(table.table_attributes, 'tableHeaderBackgroundColor')
+	const headerRowSticky = getTablePropAttribute(table.table_attributes, 'headerRowSticky')
 	const bandedRows = getTablePropAttribute(table.table_attributes, 'bandedRows')
 	const bandedRowColor = getTablePropAttribute(table.table_attributes, 'bandedRowColor')
 	const gridLineWidth = getTablePropAttribute(table.table_attributes, 'gridLineWidth')
 	const horizontalAlignment = getTablePropAttribute(table.table_attributes, 'horizontalAlignment')
 	const verticalAlignment = getTablePropAttribute(table.table_attributes, 'verticalAlignment')
+
+
+	/**
+	 * Extract and unpack table classes
+	 */
+
+
 
 	/**
 	 * Perform clean-up for deleted table block at time of deletion
@@ -783,6 +796,26 @@ export default function Edit(props) {
 		return color;
 	}
 
+	/**
+ * Create Styling Variable for showing inner grid borders/lines
+  * 
+  * @param {*} isNewBlock 
+  * @param {*} tableIsResolving 
+  * @param {*} showGridLines 
+  * @returns 
+  */
+	function getGridHeaderBackgroundColorStyle(isNewBlock, tableIsResolving, tableColor, blockColor) {
+		if (isNewBlock || tableIsResolving) {
+			return undefined;
+		};
+
+		if (tableColor) {
+			return tableColor;
+		};
+
+		return blockColor;
+	}
+
 
 	/**
 	 * Create Styling Variable for showing inner grid borders/lines
@@ -981,6 +1014,36 @@ export default function Edit(props) {
 	}
 
 	/**
+ * Make first table row the Header
+ * 
+ * @param {*} table 
+ * @param {*} isChecked 
+ */
+	function onEnableHeaderRow(table, isChecked) {
+		const updatedTableAttributes = {
+			...table.table_attributes,
+			enableHeaderRow: isChecked,
+			headerRowSticky: false
+		}
+		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+	}
+
+	/**
+* Make first table row the Header
+* 
+* @param {*} table 
+* @param {*} isChecked 
+*/
+	function onHeaderRowSticky(table, isChecked) {
+		const updatedTableAttributes = {
+			...table.table_attributes,
+			headerRowSticky: isChecked
+		}
+		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+	}
+
+
+	/**
 	  * Show inner grid lines
 	* 
 	* @param {*} table 
@@ -1010,9 +1073,11 @@ export default function Edit(props) {
 
 	const gridColumnStyle = processColumns(isNewBlock, tableIsResolving, table.columns)
 	const gridRowStyle = processRows(isNewBlock, tableIsResolving, table.rows)
+	const gridHeaderBackgroundColorStyle = getGridHeaderBackgroundColorStyle(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor)
 	const gridBandedColor = gridBandedColorStyle(isNewBlock, tableIsResolving, bandedRowColor)
 	const gridShowInnerLines = gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines)
 	const gridInnerLineWidth = gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, gridLineWidth)
+	const gridHeaderStickyClass = headerRowSticky ? 'grid-scroller' : '';
 
 	console.log('Grid Column Style = ' + gridColumnStyle)
 	// const gridStyle = setGridStyle(isNewBlock, tableIsResolving, table)
@@ -1027,6 +1092,8 @@ export default function Edit(props) {
 	console.log('Is Table Resolving - ' + tableIsResolving);
 	console.log('gridColumnStyle = ' + gridColumnStyle);
 	console.log('gridRowStyle = ' + gridRowStyle);
+	console.log(blockProps);
+	console.log(blockProps.style.backgroundColor);
 
 	if (!tableIsResolving) {
 		// console.log(table.table_attributes?.bandedRows)
@@ -1034,11 +1101,10 @@ export default function Edit(props) {
 
 	return (
 		<div {...blockProps} >
-
 			{!isNewBlock && !tableIsResolving && (
 				<>
 					<InspectorControls>
-						<Panel header="Table Definition head">
+						<Panel>
 							<PanelBody title="Table Definition" initialOpen={true}>
 								<PanelRow>
 									<TextControl label="Table Name"
@@ -1063,45 +1129,69 @@ export default function Edit(props) {
 
 							</PanelBody>
 
-							<PanelBody title="Banded Table Rows" initialOpen={false}>
+							<PanelBody title="Table Header" initialOpen={true}>
 								<PanelRow>
-									<CheckboxControl label="Display Banded Rows"
-										checked={bandedRows}
+									<CheckboxControl label="First Row as Header?"
+										checked={enableHeaderRow}
 										// checked={true}
-										onChange={(e) => onShowBandedRows(table, e)}
+										onChange={(e) => onEnableHeaderRow(table, e)}
 									/>
 								</PanelRow>
 
 								<PanelRow>
-									<ColorPicker
-										color={bandedRowColor}
-										enableAlpha={false}
-										defaultValue={"#d8dbda"}
-										onChange={(e) => onBandedRowColor(table, e)}
+									<CheckboxControl label="Freeze Header Row?"
+										checked={headerRowSticky}
+										// checked={true}
+										onChange={(e) => onHeaderRowSticky(table, e)}
 									/>
 								</PanelRow>
 							</PanelBody>
 
-							<PanelBody title="Grid Lines" initialOpen={false}>
-								<PanelRow>
-									<CheckboxControl label="Display Inner Grid Lines"
-										checked={showGridLines}
-										// checked={true}
-										onChange={(e) => onShowGridLines(table, e)}
-									/>
-								</PanelRow>
-
-								<PanelRow>
-									<NumberControl label="Inner Grid Line Width"
-										value={gridLineWidth}
-										labelPosition="side"
-										onChange={(e) => onGridLineWidth(table, e)}
-									/>
-								</PanelRow>
-							</PanelBody>
 
 						</Panel>
 					</InspectorControls>
+
+					<InspectorControls group="styles">
+						<PanelBody title="Banded Table Rows" initialOpen={false}>
+							<PanelRow>
+								<CheckboxControl label="Display Banded Rows"
+									checked={bandedRows}
+									// checked={true}
+									onChange={(e) => onShowBandedRows(table, e)}
+								/>
+							</PanelRow>
+
+							<PanelRow>
+								<ColorPicker
+									color={bandedRowColor}
+									enableAlpha={false}
+									defaultValue={"#d8dbda"}
+									onChange={(e) => onBandedRowColor(table, e)}
+								/>
+							</PanelRow>
+						</PanelBody>
+
+						<PanelBody title="Grid Lines" initialOpen={false}>
+							<PanelRow>
+								<CheckboxControl label="Display Inner Grid Lines"
+									checked={showGridLines}
+									// checked={true}
+									onChange={(e) => onShowGridLines(table, e)}
+								/>
+							</PanelRow>
+
+							<PanelRow>
+								<NumberControl label="Inner Grid Line Width"
+									value={gridLineWidth}
+									labelPosition="side"
+									onChange={(e) => onGridLineWidth(table, e)}
+								/>
+							</PanelRow>
+						</PanelBody>
+					</InspectorControls>
+					<InspectorControls group="typography">
+					</InspectorControls>
+
 
 					{/* <div>{table.table_name}</div> */}
 
@@ -1115,171 +1205,192 @@ export default function Edit(props) {
 						value={table.table_name}>
 					</RichText>
 
-
 					<TabbableContainer>
-						<div className="grid-control" style={{ "--gridTemplateColumns": gridColumnStyle, "--gridTemplateRows": gridRowStyle }}>
+						< div className={gridHeaderStickyClass}
+							style={{
+								"--gridHeaderColor": gridHeaderBackgroundColorStyle
+							}}>
 
-							{table.cells.map(({ table_id, row_id, column_id, cell_id, content, attributes, classes }) => {
-								const isBorder = attributes.border;
+							<div className="grid-control" style={{ "--gridTemplateColumns": gridColumnStyle, "--gridTemplateRows": gridRowStyle }}>
 
-								function setBorderContent(row, column, content) {
-									if (row === '0' && column === '0') {
-										return ''
-									} else {
-										return content
+								{/* TODO: Add overflow-x option if the overflow option is selected */}
+
+
+								{table.cells.map(({ table_id, row_id, column_id, cell_id, content, attributes, classes }) => {
+									const isBorder = attributes.border;
+
+									function setBorderContent(row, column, content) {
+										if (row === '0' && column === '0') {
+											return ''
+										} else {
+											return content
+										}
 									}
-								}
 
-								function openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id) {
-									if (columnMenuVisible && openColumnRow === column_id) {
-										return true
+									function openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id) {
+										if (columnMenuVisible && openColumnRow === column_id) {
+											return true
+										}
+										return false
 									}
-									return false
-								}
 
-								function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
-									if (rowMenuVisible && openColumnRow === row_id) {
-										return true
+									function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
+										if (rowMenuVisible && openColumnRow === row_id) {
+											return true
+										}
+										return false
 									}
-									return false
-								}
 
-								const borderContent = setBorderContent(row_id, column_id, content)
-								const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id)
-								const isOpenCurrentRowMenu = openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id)
-								const isFirstColumn = column_id === '1' ? true : false;
+									const borderContent = setBorderContent(row_id, column_id, content)
+									const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id)
+									const isOpenCurrentRowMenu = openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id)
+									const isFirstColumn = column_id === '1' ? true : false;
+									let showGridLinesCSS = gridShowInnerLines
+									let gridLineWidthCSS = gridInnerLineWidth
 
-								let calculatedClasses = ''
-								if (bandedRows) {
-									if (Number(row_id) % 2 === 0) {
+									let calculatedClasses = ''
+									if (bandedRows && Number(row_id) % 2 === 0) {
 										calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row '
 									}
-								}
 
-								console.log('...Rendering - ' + cell_id)
-								console.log('Calculated Classes = ' + calculatedClasses)
-								// console.log('Column Menu Visible = ' + columnMenuVisible)
-								// console.log('Show Inner Grid Lines = ' + gridShowInnerLines)
-								// console.log('Inner Grid Line Width = ' + gridInnerLineWidth)
-								console.log('Open Column = ' + openColumnRow)
-								console.log('Open Current Column Menu = ' + isOpenCurrentColumnMenu)
+									if (enableHeaderRow && Number(row_id) == 1) {
+										calculatedClasses = calculatedClasses + 'grid-control__header-cells '
+										showGridLinesCSS = 'solid'
+										gridLineWidthCSS = '1px'
+									} else {
+										calculatedClasses = calculatedClasses + 'grid-control__body-cells '
+									}
 
-								return (
-									<>
-										{(isFirstColumn) && isBorder && (
-											<div className={"grid-control__cells--border"} />
-										)}
+									console.log('...Rendering - ' + cell_id)
+									console.log('Calculated Classes = ' + calculatedClasses)
+									// console.log('Column Menu Visible = ' + columnMenuVisible)
+									// console.log('Show Inner Grid Lines = ' + gridShowInnerLines)
+									// console.log('Inner Grid Line Width = ' + gridInnerLineWidth)
+									console.log('Open Column = ' + openColumnRow)
+									console.log('Open Current Column Menu = ' + isOpenCurrentColumnMenu)
 
-										{isBorder && (
-											<div
-												id={cell_id}
-												onMouseDown={e => onMouseColumnClick(column_id, row_id, table, e)}
-												className={classes}>
-												{borderContent}
-												{isOpenCurrentColumnMenu && (
-													<ColumnMenu
-														tableId={table_id}
-														columnId={column_id}
-														columnLabel={borderContent}
-														columnAttributes={columnAttributes}
-														updatedColumn={onUpdateColumn}>
-													</ColumnMenu>
-												)}
-												{isOpenCurrentRowMenu && (
-													<RowMenu
-														tableId={table_id}
-														rowId={row_id}
-														rowLabel={borderContent}
-														rowAttributes={columnAttributes}
-														updatedRow={onUpdateRow}>
-													</RowMenu>
-												)}
-											</div>
-										)}
+									return (
+										<>
+											{(isFirstColumn) && isBorder && (
+												<div className={"grid-control__cells--border"} />
+											)}
 
-										{isFirstColumn && !isBorder && (
-											<div
-												className={"grid-control__cells grid-control__cells--zoom " + calculatedClasses}
-												style={{
-													"--bandedRowColor": gridBandedColor,
-													"--showGridLines": gridShowInnerLines,
-													"--gridLineWidth": gridInnerLineWidth
-												}}
-											>
-												<Button
-													href="#"
-													icon={search}
-												/>
-											</div>
-										)}
+											{isBorder && (
+												<div
+													id={cell_id}
+													onMouseDown={e => onMouseColumnClick(column_id, row_id, table, e)}
+													className={classes}>
+													{borderContent}
+													{isOpenCurrentColumnMenu && (
+														<ColumnMenu
+															tableId={table_id}
+															columnId={column_id}
+															columnLabel={borderContent}
+															columnAttributes={columnAttributes}
+															updatedColumn={onUpdateColumn}>
+														</ColumnMenu>
+													)}
+													{isOpenCurrentRowMenu && (
+														<RowMenu
+															tableId={table_id}
+															rowId={row_id}
+															rowLabel={borderContent}
+															rowAttributes={columnAttributes}
+															updatedRow={onUpdateRow}>
+														</RowMenu>
+													)}
+												</div>
+											)}
 
-										{!isBorder && (
-											<RichText
-												id={cell_id}
-												className={"grid-control__cells " + calculatedClasses + classes}
-												style={{
-													"--bandedRowColor": gridBandedColor,
-													"--showGridLines": gridShowInnerLines,
-													"--gridLineWidth": gridInnerLineWidth
-												}}
-												tabIndex="0"
-												tagName="div"
-												//allowedFormats={['core/bold', 'core/italic']}
-												//onChange={cellContent => setGridCells([col, row, cellId, componentClass, cellContent])}
-												onChange={e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e)}
-												value={content}>
-											</RichText>
-										)}
-									</>
-								)
-							})}
+											{isFirstColumn && !isBorder && (
+												<div
+													className={"grid-control__cells--zoom " + calculatedClasses}
+													style={{
+														"--bandedRowColor": gridBandedColor,
+														"--showGridLines": showGridLinesCSS,
+														"--gridLineWidth": gridLineWidthCSS
+													}}
+												>
+													<Button
+														href="#"
+														icon={search}
+													/>
+												</div>
+											)}
+
+											{!isBorder && (
+												<RichText
+													id={cell_id}
+													className={calculatedClasses + classes}
+													style={{
+														"--bandedRowColor": gridBandedColor,
+														"--showGridLines": showGridLinesCSS,
+														"--gridLineWidth": gridLineWidthCSS
+													}}
+													tabIndex="0"
+													tagName="div"
+													//allowedFormats={['core/bold', 'core/italic']}
+													//onChange={cellContent => setGridCells([col, row, cellId, componentClass, cellContent])}
+													onChange={e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e)}
+													value={content}>
+												</RichText>
+											)}
+										</>
+									)
+								})}
+							</div>
 						</div>
 					</TabbableContainer>
 				</>
-			)}
+			)
+			}
 
-			{!isNewBlock && tableIsResolving && (
-				<Spinner>Retrieving Table Data</Spinner>
-			)}
+			{
+				!isNewBlock && tableIsResolving && (
+					<Spinner>Retrieving Table Data</Spinner>
+				)
+			}
 
 
-			{isNewBlock && (
-				<Placeholder
-					label={__('Dynamic Table')}
-					icon={<BlockIcon icon={icon} showColors />}
-					instructions={__('Create a new dynamic table.')}
-				>
-					<form
-						className="blocks-table__placeholder-form"
-						onSubmit={onCreateTable}
+			{
+				isNewBlock && (
+					<Placeholder
+						label={__('Dynamic Table')}
+						icon={<BlockIcon icon={icon} showColors />}
+						instructions={__('Create a new dynamic table.')}
 					>
-
-						<NumberControl
-							__nextHasNoMarginBottom
-							label={__('Table Columns')}
-							onChange={e => onChangeInitialColumnCount(e)}
-							value={numColumns}
-							className="blocks-table__placeholder-input"
-						/>
-
-						<NumberControl
-							__nextHasNoMarginBottom
-							label={__('Table Rows')}
-							onChange={e => onChangeInitialRowCount(e)}
-							value={numRows}
-							className="blocks-table__placeholder-input"
-						/>
-						<Button
-							className="blocks-table__placeholder-button"
-							variant="primary"
-							type="submit"
+						<form
+							className="blocks-table__placeholder-form"
+							onSubmit={onCreateTable}
 						>
-							{__('Create Table')}
-						</Button>
-					</form>
-				</Placeholder>
-			)}
 
-		</div>
+							<NumberControl
+								__nextHasNoMarginBottom
+								label={__('Table Columns')}
+								onChange={e => onChangeInitialColumnCount(e)}
+								value={numColumns}
+								className="blocks-table__placeholder-input"
+							/>
+
+							<NumberControl
+								__nextHasNoMarginBottom
+								label={__('Table Rows')}
+								onChange={e => onChangeInitialRowCount(e)}
+								value={numRows}
+								className="blocks-table__placeholder-input"
+							/>
+							<Button
+								className="blocks-table__placeholder-button"
+								variant="primary"
+								type="submit"
+							>
+								{__('Create Table')}
+							</Button>
+						</form>
+					</Placeholder>
+				)
+			}
+
+		</div >
 	)
 }

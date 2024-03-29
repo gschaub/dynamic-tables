@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 
 $tableId = $attributes[ 'table_id' ];
 $blockTableRef = $attributes[ 'block_table_ref' ];
+$blockBackgroundColor = $attributes[ 'backgroundColor' ];
 
 /**
  * Get Table - Load variables
@@ -30,52 +31,68 @@ $tableCells = $table[ 'cells' ];
 $numColumns = count($tableColumns);
 $numRows = count($tableRows);
 
-list('bandedRows' => $bandedRows,
+list('showGridLines' => $showGridLines,
+    'enableHeaderRow' => $enableHeaderRow,
+    'tableHeaderBackgroundColor' => $tableHeaderBackgroundColor,
+    'headerRowSticky' => $headerRowSticky,
+    'bandedRows' => $bandedRows,
     'bandedRowColor' => $gridBandedColor,
-    'showGridLines' => $gridShowInnerLines,
-    'gridLineWidth' => $gridInnerLineWidth,
+    'gridLineWidth' => $gridineWidth,
     'horizontalAlignment' => $tableHorizontalAlignment,
     'verticalAlignment' => $tableVerticalAlignment
 ) = $tableHeader[ 'attributes' ];
 
 $gridColumnStyle = process_columns($tableColumns);
+$gridShowInnerLines = $showGridLines ? 'solid' : 'hidden';
+$gridInnerLineWidth = $showGridLines ? strval($gridineWidth) . 'px' : '0px';
+$gridHeaderBackgroundColorStyle = $tableHeaderBackgroundColor ? $tableHeaderBackgroundColor : $blockBackgroundColor;
+
+$blockWrapper = get_block_wrapper_attributes();
+$blockWrapperStickyHeader = str_replace('"', '', str_replace('class=', '', $blockWrapper)) . ' ';
+
+// echo '>' . $blockWrapper . '< </br>';
+// echo '>' . $blockWrapperStickyHeader . '< </br>';
+// echo 'Header Row Sticky = ' . $headerRowSticky;
 
 ?>
 
-<p <?php echo get_block_wrapper_attributes(); ?>>
+<div <?php echo $blockWrapper; ?>>
 
-<!-- <ul>Block Attributes
-		<li>Columns Style = <?php echo $gridColumnStyle; ?></li>
-		<li>Table ID = <?php echo $tableId; ?></li>
-		<li>Block Table Reference = <?php echo $blockTableRef; ?></li>
-</ul> -->
+    <p><?php echo $tableName; ?></p>
 
-<div>
-	<!-- <p><?php echo json_encode($table); ?></p> -->
-	<p><?php echo $tableName; ?></p>
-	<!-- <p><?php echo json_encode($tableRows); ?></p> -->
+    <?php if ($headerRowSticky) {?>
+        <div class="grid-scroller"
+            style="--gridHeaderColor: <?php echo $gridHeaderBackgroundColorStyle; ?>";>
+    <?php }?>
 
 	<div class="grid-control" style="--gridTemplateColumns: <?php echo $gridColumnStyle; ?>;">
 
-	<?php foreach ($tableRows as $index => $row) {
+    	<?php foreach ($tableRows as $index => $row) {
 
     ?>
-	<!-- <p><?php echo json_encode($row); ?></p> -->
 
-		<?php foreach ($tableCells as $cellIndex => $cell) {
+        <?php foreach ($tableCells as $cellIndex => $cell) {
         $cellRowId = $cell[ 'row_id' ];
         $cellColumnId = $cell[ 'column_id' ];
         $cellId = numberToLetter($cellColumnId) . $cellRowId;
 
-        $calculatedClasses = getCalculatedClasses($cellRowId, $cellColumnId, $bandedRows);
+        $calculatedClasses = getCalculatedClasses($cellRowId, $cellColumnId, $blockWrapper, $bandedRows, $enableHeaderRow, $blockWrapperStickyHeader);
 
         if ($cell[ 'row_id' ] === $row[ 'row_id' ]) {?>
-				<div id="<?php echo $cellId; ?>" class="grid-control__cells <?php echo $cell[ 'classes' ] . $calculatedClasses; ?>" style="--bandedRowColor: <?php echo $gridBandedColor; ?>; --showGridLines: <?php echo $gridShowInnerLines; ?>; --gridLineWidth: <?php echo $gridInnerLineWidth; ?>;"><?php echo $cell[ 'content' ]; ?></div> <?php }
+				    <div id="<?php echo $cellId; ?>"
+                        class="<?php echo $cell[ 'classes' ] . $calculatedClasses; ?>"
+                        style="--bandedRowColor: <?php echo $gridBandedColor; ?>;
+                            --showGridLines: <?php echo $gridShowInnerLines; ?>;
+                            --gridLineWidth: <?php echo $gridInnerLineWidth; ?>;">
+                        <?php echo $cell[ 'content' ]; ?>
+                    </div> <?php }
     }
 }?>
-	</div>
+        </div>
+   <?php if ($headerRowSticky) {
+    echo '</div>';
+}?>
 </div>
-
 </p>
 
 

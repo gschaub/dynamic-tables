@@ -11,19 +11,32 @@
   padding: 2px;
 }
 
+.grid-scroller {
+  overflow: auto;
+  max-height: 80vh;
+}
+
 .grid-control {
   --gridTemplateColumns: auto;
   --gridTemplateRows: auto;
   display: grid;
   grid-template-columns: var(--gridTemplateColumns);
   grid-template-rows: var(--gridTemplateRows);
-  gap: 0px 0px;
-  overflow-x: auto;
 }
 
-.grid-control__cells {
-  --showGridLines: hidden;
-  --gridLineWidth: 0px;
+.grid-control__header-cells {
+  display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  align-items: center;
+  justify-content: center;
+  border-bottom-style: solid;
+  border-bottom-width: 3px;
+  background-color: var(--gridHeaderColor);
+}
+
+.grid-control__body-cells {
   padding: 5px;
   border-style: var(--showGridLines);
   border-width: var(--gridLineWidth);

@@ -6,9 +6,15 @@
  */
 
 .wp-block-dynamic-tables-dynamic-tables {
-	// background-color: #21759b;
+	// background-color: white;
 	// color: #fff;
 	padding: 2px;
+}
+
+.grid-scroller {
+	overflow: auto;
+	max-height: 80vh;
+	// background-color: inherit;
 }
 
 .grid-control {
@@ -16,19 +22,29 @@
 	--gridTemplateColumns: auto;
 	--gridTemplateRows: auto;
 
-	// background-color: #21759b;
 	display: grid;
 	grid-template-columns: var(--gridTemplateColumns);
 	grid-template-rows: var(--gridTemplateRows);
-	gap: 0px 0px;
-	overflow-x: auto;
 }
 
-.grid-control__cells {
-	//css variables
-	--showGridLines: hidden;
-	--gridLineWidth: 0px;
+.grid-control__header-cells {
+	display: flex;
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	align-items: center;
+	justify-content: center;
+	border-bottom-style: solid;
+	border-bottom-width: 3px;
+	background-color: var(--gridHeaderColor);
+}
 
+.grid-control__body-cells {
+	//css variables
+	// --showGridLines: hidden;
+	// --gridLineWidth: 0px;
+
+	// display: flex;
 	padding: 5px;
 	border-style: var(--showGridLines);
 	border-width: var(--gridLineWidth);

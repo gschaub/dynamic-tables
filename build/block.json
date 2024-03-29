@@ -8,9 +8,6 @@
   "icon": "editor-table",
   "description": "Create custom table blocks with highly customizable and responsive formats",
   "example": {},
-  "supports": {
-    "html": false
-  },
   "textdomain": "dynamic-tables",
   "attributes": {
     "table_id": {
@@ -26,6 +23,33 @@
     "postId",
     "postType"
   ],
+  "supports": {
+    "html": false,
+    "className": false,
+    "color": {
+      "gradients": true,
+      "link": true,
+      "__experimentalDefaultControls": {
+        "background": true,
+        "text": true
+      }
+    },
+    "typography": {
+      "fontSize": true,
+      "__experimentalFontFamily": true,
+      "__experimentalTextDecoration": true,
+      "__experimentalFontStyle": true,
+      "__experimentalFontWeight": true,
+      "__experimentalLetterSpacing": true,
+      "__experimentalWritingMode": true,
+      "__experimentalDefaultControls": {
+        "fontSize": true
+      }
+    },
+    "interactivity": {
+      "clientNavigation": true
+    }
+  },
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",
   "style": "file:./style-index.css",
