@@ -2997,6 +2997,10 @@ function Edit(props) {
     console.log('TOGGLING BORDER');
     console.log(table);
     console.log('Number Columns before update = ' + numColumns);
+
+    /**
+     * Remove borders if unchecked
+     */
     if (isChecked === false) {
       setNumColumns(numColumns - 1);
       setNumRows(numRows - 1);
@@ -3006,96 +3010,42 @@ function Edit(props) {
       console.log(updatedCells);
       updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
     } else {
+      /**
+      * Create borders if checked
+      */
       setNumColumns(numColumns + 1);
       setNumRows(numRows + 1);
-      var rowBorder = [{
-        table_id: String(table_id),
-        row_id: '0',
-        row_name: 'Border',
-        attributes: '',
-        classes: ''
-      }];
+
+      // Create header row border at top of table
+      var rowBorder = [];
+      rowBorder.push((0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultRow)(table_id, 0, 'Border'));
       var rowCells = [];
-      let cellAttributes = {
-        border: "true"
-      };
-      console.log('Number Columns = ' + numColumns);
       for (let i = 0; i <= numColumns; i++) {
-        let columnLetter = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.numberToLetter)(i);
-        console.log('Creating Border Column - ' + columnLetter);
-        let cell = {
-          table_id: String(table_id),
-          column_id: String(i),
-          row_id: '0',
-          cell_id: columnLetter + '0',
-          attributes: cellAttributes,
-          classes: 'grid-control__cells--border hover',
-          content: columnLetter
-        };
+        let cell = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultCell)(table_id, i, 0, 'Border');
+        console.log(cell);
         rowCells.push(cell);
       }
-      const borderColumnAttributes = {
-        columnWidthType: 'Fixed',
-        minWidth: 0,
-        minWidthUnits: '',
-        maxWidth: 0,
-        maxWidthUnits: '',
-        fixedWidth: 20,
-        fixedWidthUnits: 'px',
-        disableForTablet: false,
-        disableForPhone: false,
-        isFixedLeftColumnGroup: false,
-        horizontalAlignment: 'center'
-      };
-      var columnBorder = [{
-        table_id: String(table_id),
-        column_id: '0',
-        column_name: 'Border',
-        attributes: borderColumnAttributes,
-        classes: ''
-      }];
+
+      // Create column border down left side of table
+      var columnBorder = [];
+      columnBorder.push((0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultColumn)(table_id, 0, 'Border'));
       var columnCells = [];
       for (let i = 1; i <= numRows; i++) {
-        let cell = {
-          table_id: String(table_id),
-          column_id: '0',
-          row_id: String(i),
-          cell_id: '0' + String(i),
-          attributes: cellAttributes,
-          classes: 'grid-control__cells--border hover',
-          content: String(i)
-        };
+        let cell = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultCell)(table_id, 0, i, 'Border');
         columnCells.push(cell);
       }
-      console.log(table);
-      var updatedRows = [...table.rows, ...rowBorder];
-      updatedRows.sort((a, b) => {
-        if ([a.row_id] < [b.row_id]) {
-          return -1;
-        } else {
-          return 1;
-        }
-      });
-      var updatedColumns = [...table.columns, ...columnBorder];
-      updatedColumns.sort((a, b) => {
-        if ([a.column_id] < [b.column_id]) {
-          return -1;
-        } else {
-          return 1;
-        }
-      });
-      var updatedCells = [...table.cells, ...rowCells, ...columnCells];
-      updatedCells.sort((a, b) => {
-        if ([[a.row_id], [a.column_id]] < [[b.row_id], [b.column_id]]) {
-          return -1;
-        } else {
-          return 1;
-        }
-      });
-      console.log('Row border - ' + JSON.stringify(rowBorder, null, 4));
-      console.log('Column border - ' + JSON.stringify(columnBorder, null, 4));
-      console.log('Updated columns - ' + JSON.stringify(updatedColumns, null, 4));
-      console.log('Updated cells - ' + JSON.stringify(updatedCells, null, 4));
+
+      // Sort table parts
+      updatedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.tableSort)('rows', [...table.rows, ...rowBorder]);
+      updatedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.tableSort)('columns', [...table.columns, ...columnBorder]);
+      updatedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.tableSort)('cells', [...table.cells, ...rowCells, ...columnCells]);
+
+      // console.log(table)
+      // console.log('Row border - ' + JSON.stringify(rowBorder, null, 4));
+      // console.log('Column border - ' + JSON.stringify(columnBorder, null, 4));
+      // console.log('Updated columns - ' + JSON.stringify(updatedColumns, null, 4));
+      // console.log('Updated cells - ' + JSON.stringify(updatedCells, null, 4));
+
       updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
     }
     setShowBorders(isChecked);
@@ -3235,12 +3185,12 @@ function Edit(props) {
 
   /**
   * Create Styling Variable for showing inner grid borders/lines
-   * 
-   * @param {*} isNewBlock 
-   * @param {*} tableIsResolving 
-   * @param {*} showGridLines 
-   * @returns 
-   */
+  * 
+  * @param {*} isNewBlock 
+  * @param {*} tableIsResolving 
+  * @param {*} showGridLines 
+  * @returns 
+  */
   function getGridHeaderBackgroundColorStyle(isNewBlock, tableIsResolving, tableColor, blockColor) {
     if (isNewBlock || tableIsResolving) {
       return undefined;
