@@ -1249,7 +1249,13 @@ export default function Edit(props) {
 									let gridLineWidthCSS = gridInnerLineWidth
 
 									let calculatedClasses = ''
-									if (bandedRows && Number(row_id) % 2 === 0) {
+									const bandedRowOffset = enableHeaderRow ? 1 : 0
+
+									if (bandedRows && bandedRowOffset == 0 && Number(row_id) % 2 === 0) {
+										calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row '
+									}
+
+									if (bandedRows && bandedRowOffset == 1 && Number(row_id) > 1 && (Number(row_id) + bandedRowOffset) % 2 === 0) {
 										calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row '
 									}
 
