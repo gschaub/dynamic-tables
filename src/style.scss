@@ -51,7 +51,9 @@
 }
 
 .grid-control__cells--banded-row {
-	--bandedRowColor: #d8dbda;
+	--bandedRowTextColor: black;
+	--bandedRowBackgroundColor: #d8dbda;
 
-	background-color: var(--bandedRowColor);
+	color: var(--bandedRowTextColor);
+	background-color: var(--bandedRowBackgroundColor);
 }

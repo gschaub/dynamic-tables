@@ -2622,6 +2622,8 @@ function Edit(props) {
     table_id,
     block_table_ref
   } = props.attributes;
+  const themeColors = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.useSetting)('color.palette');
+  console.log(themeColors);
   console.log('Block Table Ref - ' + block_table_ref);
 
   /**
@@ -2786,7 +2788,8 @@ function Edit(props) {
   const gridHeaderBackgroundColor = getTablePropAttribute(table.table_attributes, 'tableHeaderBackgroundColor');
   const headerRowSticky = getTablePropAttribute(table.table_attributes, 'headerRowSticky');
   const bandedRows = getTablePropAttribute(table.table_attributes, 'bandedRows');
-  const bandedRowColor = getTablePropAttribute(table.table_attributes, 'bandedRowColor');
+  const bandedRowTextColor = getTablePropAttribute(table.table_attributes, 'bandedRowTextColor');
+  const bandedRowBackgroundColor = getTablePropAttribute(table.table_attributes, 'bandedRowBackgroundColor');
   const gridLineWidth = getTablePropAttribute(table.table_attributes, 'gridLineWidth');
   const horizontalAlignment = getTablePropAttribute(table.table_attributes, 'horizontalAlignment');
   const verticalAlignment = getTablePropAttribute(table.table_attributes, 'verticalAlignment');
@@ -3175,7 +3178,14 @@ function Edit(props) {
     * @param {*} showGridLines 
     * @returns 
     */
-  function gridBandedColorStyle(isNewBlock, tableIsResolving, color) {
+  function gridBandedRowTextColorStyle(isNewBlock, tableIsResolving, color) {
+    if (isNewBlock || tableIsResolving) {
+      return undefined;
+    }
+    ;
+    return color;
+  }
+  function gridBandedRowBackgroundColorStyle(isNewBlock, tableIsResolving, color) {
     if (isNewBlock || tableIsResolving) {
       return undefined;
     }
@@ -3382,13 +3392,24 @@ function Edit(props) {
   * @param {*} table 
   * @param {*} color 
   */
-  function onBandedRowColor(table, color) {
-    const updatedTableAttributes = {
-      ...table.table_attributes,
-      bandedRowColor: color
-    };
-    console.log(updatedTableAttributes);
-    setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+  function onBandedRowColor(table, type, color) {
+    let updatedTableAttributes = '';
+    if (type == 'background') {
+      updatedTableAttributes = {
+        ...table.table_attributes,
+        bandedRowBackgroundColor: color
+      };
+      console.log(updatedTableAttributes);
+      setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+    }
+    if (type == 'text') {
+      updatedTableAttributes = {
+        ...table.table_attributes,
+        bandedRowTextColor: color
+      };
+      console.log(updatedTableAttributes);
+      setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+    }
   }
 
   /**
@@ -3450,13 +3471,15 @@ function Edit(props) {
   const gridColumnStyle = processColumns(isNewBlock, tableIsResolving, table.columns);
   const gridRowStyle = processRows(isNewBlock, tableIsResolving, table.rows);
   const gridHeaderBackgroundColorStyle = getGridHeaderBackgroundColorStyle(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor);
-  const gridBandedColor = gridBandedColorStyle(isNewBlock, tableIsResolving, bandedRowColor);
+  const gridBandedRowTextColor = gridBandedRowTextColorStyle(isNewBlock, tableIsResolving, bandedRowTextColor);
+  const gridBandedRowBackgroundColor = gridBandedRowBackgroundColorStyle(isNewBlock, tableIsResolving, bandedRowBackgroundColor);
   const gridShowInnerLines = gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines);
   const gridInnerLineWidth = gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, gridLineWidth);
   const gridHeaderStickyClass = headerRowSticky ? 'grid-scroller' : '';
   console.log('Grid Column Style = ' + gridColumnStyle);
   // const gridStyle = setGridStyle(isNewBlock, tableIsResolving, table)
-  console.log('Banded Grid Color = ' + gridBandedColor);
+  console.log('Banded Grid Text Color = ' + gridBandedRowTextColor);
+  console.log('Banded Grid Background Color = ' + gridBandedRowBackgroundColor);
   console.log('MATCH VALUE FOR TABLE:');
   console.log(table);
   // console.log(isRetrievingTable(table))
@@ -3519,12 +3542,20 @@ function Edit(props) {
     // checked={true}
     ,
     onChange: e => onShowBandedRows(table, e)
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.ColorPicker, {
-    color: bandedRowColor,
-    enableAlpha: false,
-    defaultValue: "#d8dbda",
-    onChange: e => onBandedRowColor(table, e)
-  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.PanelColorSettings, {
+    __experimentalIsRenderedInSidebar: true,
+    title: 'Banded Row Color',
+    colors: themeColors,
+    colorSettings: [{
+      value: bandedRowTextColor,
+      onChange: newColor => onBandedRowColor(table, 'text', newColor),
+      label: 'Text'
+    }, {
+      value: bandedRowBackgroundColor,
+      onChange: newColor => onBandedRowColor(table, 'background', newColor),
+      label: 'Background'
+    }]
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
     title: "Grid Lines",
     initialOpen: false
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
@@ -3639,7 +3670,8 @@ function Edit(props) {
     })), isFirstColumn && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "grid-control__cells--zoom " + calculatedClasses,
       style: {
-        "--bandedRowColor": gridBandedColor,
+        "--bandedRowTextColor": gridBandedRowTextColor,
+        "--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
         "--showGridLines": showGridLinesCSS,
         "--gridLineWidth": gridLineWidthCSS
       }
@@ -3650,7 +3682,8 @@ function Edit(props) {
       id: cell_id,
       className: calculatedClasses + classes,
       style: {
-        "--bandedRowColor": gridBandedColor,
+        "--bandedRowTextColor": gridBandedRowTextColor,
+        "--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
         "--showGridLines": showGridLinesCSS,
         "--gridLineWidth": gridLineWidthCSS
       },
@@ -4098,7 +4131,8 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
   const tableBaseAttributes = {
     showGridLines: false,
     bandedRows: false,
-    bandedRowColor: '#d8dbda',
+    bandedRowBackgroundColor: '#d8dbda',
+    bandedTextColor: '#d8dbda',
     gridLineWidth: 1,
     enableHeaderRow: false,
     headerRowSticky: false,

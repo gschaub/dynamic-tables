@@ -30,10 +30,12 @@ import {
 import {
 	RichText,
 	useBlockProps,
+	useSetting,
 	BlockIcon,
 	AlignmentToolbar,
 	InspectorControls,
-	BlockControls
+	BlockControls,
+	PanelColorSettings
 } from '@wordpress/block-editor';
 import {
 	column,
@@ -126,6 +128,8 @@ export default function Edit(props) {
 
 	const priorTableRef = useRef({});
 	const { table_id, block_table_ref } = props.attributes;
+	const themeColors = useSetting('color.palette')
+	console.log(themeColors)
 
 	console.log('Block Table Ref - ' + block_table_ref)
 
@@ -301,11 +305,11 @@ export default function Edit(props) {
 	const gridHeaderBackgroundColor = getTablePropAttribute(table.table_attributes, 'tableHeaderBackgroundColor')
 	const headerRowSticky = getTablePropAttribute(table.table_attributes, 'headerRowSticky')
 	const bandedRows = getTablePropAttribute(table.table_attributes, 'bandedRows')
-	const bandedRowColor = getTablePropAttribute(table.table_attributes, 'bandedRowColor')
+	const bandedRowTextColor = getTablePropAttribute(table.table_attributes, 'bandedRowTextColor')
+	const bandedRowBackgroundColor = getTablePropAttribute(table.table_attributes, 'bandedRowBackgroundColor')
 	const gridLineWidth = getTablePropAttribute(table.table_attributes, 'gridLineWidth')
 	const horizontalAlignment = getTablePropAttribute(table.table_attributes, 'horizontalAlignment')
 	const verticalAlignment = getTablePropAttribute(table.table_attributes, 'verticalAlignment')
-
 
 	/**
 	 * Extract and unpack table classes
@@ -722,11 +726,17 @@ export default function Edit(props) {
 	  * @param {*} showGridLines 
 	  * @returns 
 	  */
-	function gridBandedColorStyle(isNewBlock, tableIsResolving, color) {
+	function gridBandedRowTextColorStyle(isNewBlock, tableIsResolving, color) {
 		if (isNewBlock || tableIsResolving) {
 			return undefined;
 		};
+		return color;
+	}
 
+	function gridBandedRowBackgroundColorStyle(isNewBlock, tableIsResolving, color) {
+		if (isNewBlock || tableIsResolving) {
+			return undefined;
+		};
 		return color;
 	}
 
@@ -938,13 +948,25 @@ export default function Edit(props) {
 	* @param {*} table 
 	* @param {*} color 
 	*/
-	function onBandedRowColor(table, color) {
-		const updatedTableAttributes = {
-			...table.table_attributes,
-			bandedRowColor: color
+	function onBandedRowColor(table, type, color) {
+		let updatedTableAttributes = ''
+		if (type == 'background') {
+			updatedTableAttributes = {
+				...table.table_attributes,
+				bandedRowBackgroundColor: color
+			}
+			console.log(updatedTableAttributes)
+			setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 		}
-		console.log(updatedTableAttributes)
-		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+
+		if (type == 'text') {
+			updatedTableAttributes = {
+				...table.table_attributes,
+				bandedRowTextColor: color
+			}
+			console.log(updatedTableAttributes)
+			setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+		}
 	}
 
 	/**
@@ -1008,14 +1030,16 @@ export default function Edit(props) {
 	const gridColumnStyle = processColumns(isNewBlock, tableIsResolving, table.columns)
 	const gridRowStyle = processRows(isNewBlock, tableIsResolving, table.rows)
 	const gridHeaderBackgroundColorStyle = getGridHeaderBackgroundColorStyle(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor)
-	const gridBandedColor = gridBandedColorStyle(isNewBlock, tableIsResolving, bandedRowColor)
+	const gridBandedRowTextColor = gridBandedRowTextColorStyle(isNewBlock, tableIsResolving, bandedRowTextColor)
+	const gridBandedRowBackgroundColor = gridBandedRowBackgroundColorStyle(isNewBlock, tableIsResolving, bandedRowBackgroundColor)
 	const gridShowInnerLines = gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines)
 	const gridInnerLineWidth = gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, gridLineWidth)
 	const gridHeaderStickyClass = headerRowSticky ? 'grid-scroller' : '';
 
 	console.log('Grid Column Style = ' + gridColumnStyle)
 	// const gridStyle = setGridStyle(isNewBlock, tableIsResolving, table)
-	console.log('Banded Grid Color = ' + gridBandedColor)
+	console.log('Banded Grid Text Color = ' + gridBandedRowTextColor)
+	console.log('Banded Grid Background Color = ' + gridBandedRowBackgroundColor)
 
 	console.log('MATCH VALUE FOR TABLE:')
 	console.log(table)
@@ -1094,15 +1118,23 @@ export default function Edit(props) {
 									onChange={(e) => onShowBandedRows(table, e)}
 								/>
 							</PanelRow>
-
-							<PanelRow>
-								<ColorPicker
-									color={bandedRowColor}
-									enableAlpha={false}
-									defaultValue={"#d8dbda"}
-									onChange={(e) => onBandedRowColor(table, e)}
-								/>
-							</PanelRow>
+							<PanelColorSettings
+								__experimentalIsRenderedInSidebar
+								title={'Banded Row Color'}
+								colors={themeColors}
+								colorSettings={[
+									{
+										value: bandedRowTextColor,
+										onChange: (newColor) => onBandedRowColor(table, 'text', newColor),
+										label: 'Text'
+									},
+									{
+										value: bandedRowBackgroundColor,
+										onChange: (newColor) => onBandedRowColor(table, 'background', newColor),
+										label: 'Background'
+									}
+								]}
+							/>
 						</PanelBody>
 
 						<PanelBody title="Grid Lines" initialOpen={false}>
@@ -1246,7 +1278,8 @@ export default function Edit(props) {
 												<div
 													className={"grid-control__cells--zoom " + calculatedClasses}
 													style={{
-														"--bandedRowColor": gridBandedColor,
+														"--bandedRowTextColor": gridBandedRowTextColor,
+														"--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
 														"--showGridLines": showGridLinesCSS,
 														"--gridLineWidth": gridLineWidthCSS
 													}}
@@ -1263,7 +1296,8 @@ export default function Edit(props) {
 													id={cell_id}
 													className={calculatedClasses + classes}
 													style={{
-														"--bandedRowColor": gridBandedColor,
+														"--bandedRowTextColor": gridBandedRowTextColor,
+														"--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
 														"--showGridLines": showGridLinesCSS,
 														"--gridLineWidth": gridLineWidthCSS
 													}}

@@ -103,7 +103,7 @@ function getCalculatedClasses($cellRowId, $cellColumnId, $blockWrapper, $bandedR
         $calculatedClasses .= 'grid-control__cells--banded-row ';
     }
 
-    if ($bandedRows && $enableHeaderRow && ($cellRowId + 1) % 2 === 0) {
+    if ($bandedRows && $enableHeaderRow && $cellRowId > 1 && ($cellRowId + 1) % 2 === 0) {
         $calculatedClasses .= 'grid-control__cells--banded-row ';
     }
 

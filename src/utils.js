@@ -288,7 +288,8 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
     const tableBaseAttributes = {
         showGridLines: false,
         bandedRows: false,
-        bandedRowColor: '#d8dbda',
+        bandedRowBackgroundColor: '#d8dbda',
+        bandedTextColor: '#d8dbda',
         gridLineWidth: 1,
         enableHeaderRow: false,
         headerRowSticky: false,

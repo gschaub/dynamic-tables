@@ -36,7 +36,8 @@ list('showGridLines' => $showGridLines,
     'tableHeaderBackgroundColor' => $tableHeaderBackgroundColor,
     'headerRowSticky' => $headerRowSticky,
     'bandedRows' => $bandedRows,
-    'bandedRowColor' => $gridBandedColor,
+    'bandedRowTextColor' => $gridBandedTextColor,
+    'bandedRowBackgroundColor' => $gridBandedBackgroundColor,
     'gridLineWidth' => $gridineWidth,
     'horizontalAlignment' => $tableHorizontalAlignment,
     'verticalAlignment' => $tableVerticalAlignment
@@ -81,7 +82,8 @@ $blockWrapperStickyHeader = str_replace('"', '', str_replace('class=', '', $bloc
         if ($cell[ 'row_id' ] === $row[ 'row_id' ]) {?>
 				    <div id="<?php echo $cellId; ?>"
                         class="<?php echo $cell[ 'classes' ] . $calculatedClasses; ?>"
-                        style="--bandedRowColor: <?php echo $gridBandedColor; ?>;
+                        style="--bandedRowTextColor: <?php echo $gridBandedTextColor; ?>;
+                            --bandedRowBackgroundColor: <?php echo $gridBandedBackgroundColor; ?>;
                             --showGridLines: <?php echo $gridShowInnerLines; ?>;
                             --gridLineWidth: <?php echo $gridInnerLineWidth; ?>;">
                         <?php echo $cell[ 'content' ]; ?>
