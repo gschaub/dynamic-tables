@@ -2512,14 +2512,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/search.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/block-table.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/search.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/block-table.js");
 /* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./data */ "./src/data/index.js");
 /* harmony import */ var _hooks__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./hooks */ "./src/hooks.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
-/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./style */ "./src/style.js");
-/* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./components */ "./src/components/index.js");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
+/* harmony import */ var _table_defaults__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./table-defaults */ "./src/table-defaults.js");
+/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./style */ "./src/style.js");
+/* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./components */ "./src/components/index.js");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
 
 /**select re
  * Retrieves the translation of text.
@@ -2538,6 +2539,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  *  * Internal Dependencies
  */
+
 
 
 
@@ -2839,14 +2841,14 @@ function Edit(props) {
    * @returns 
    */
   function insertColumn(tableId, columnId) {
-    const newColumn = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultColumn)(tableId, columnId);
+    const newColumn = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_10__.getDefaultColumn)(tableId, columnId);
     var tableCells = [];
     for (let i = 0; i < numRows; i++) {
       if (i === 0) {
-        let cell = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultCell)(tableId, columnId, i, 'Border');
+        let cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_10__.getDefaultCell)(tableId, columnId, i, 'Border');
         tableCells.push(cell);
       } else {
-        let cell = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultCell)(tableId, columnId, i);
+        let cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_10__.getDefaultCell)(tableId, columnId, i);
         tableCells.push(cell);
       }
     }
@@ -2868,15 +2870,15 @@ function Edit(props) {
    * @returns 
    */
   function insertRow(tableId, rowId) {
-    const newRow = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultRow)(tableId, rowId);
+    const newRow = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_10__.getDefaultRow)(tableId, rowId);
     var tableCells = [];
     for (let i = 0; i < numColumns; i++) {
       if (i === 0) {
-        let cell = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultCell)(tableId, i, rowId, 'Border');
+        let cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_10__.getDefaultCell)(tableId, i, rowId, 'Border');
         // cell.content = 
         tableCells.push(cell);
       } else {
-        let cell = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultCell)(tableId, i, rowId);
+        let cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_10__.getDefaultCell)(tableId, i, rowId);
         tableCells.push(cell);
       }
     }
@@ -3027,20 +3029,20 @@ function Edit(props) {
 
       // Create header row border at top of table
       var rowBorder = [];
-      rowBorder.push((0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultRow)(table_id, 0, 'Border'));
+      rowBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_10__.getDefaultRow)(table_id, 0, 'Border'));
       var rowCells = [];
       for (let i = 0; i <= numColumns; i++) {
-        let cell = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultCell)(table_id, i, 0, 'Border');
+        let cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_10__.getDefaultCell)(table_id, i, 0, 'Border');
         console.log(cell);
         rowCells.push(cell);
       }
 
       // Create column border down left side of table
       var columnBorder = [];
-      columnBorder.push((0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultColumn)(table_id, 0, 'Border'));
+      columnBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_10__.getDefaultColumn)(table_id, 0, 'Border'));
       var columnCells = [];
       for (let i = 1; i <= numRows; i++) {
-        let cell = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDefaultCell)(table_id, 0, i, 'Border');
+        let cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_10__.getDefaultCell)(table_id, 0, i, 'Border');
         columnCells.push(cell);
       }
 
@@ -3066,7 +3068,7 @@ function Edit(props) {
     console.log('InitialRows - ' + rowCount);
     console.log('InitialColumns - ' + columnCount);
     var newBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.generateBlockTableRef)();
-    const newTable = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.initTable)(newBlockTableRef, columnCount, rowCount);
+    const newTable = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_10__.initTable)(newBlockTableRef, columnCount, rowCount);
     console.log(JSON.stringify(newTable, null, 4));
     props.setAttributes({
       block_table_ref: newBlockTableRef
@@ -3338,13 +3340,13 @@ function Edit(props) {
     };
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
   }
-  const gridColumnStyle = (0,_style__WEBPACK_IMPORTED_MODULE_10__.processColumns)(isNewBlock, tableIsResolving, table.columns);
-  const gridRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_10__.processRows)(isNewBlock, tableIsResolving, table.rows);
-  const gridHeaderBackgroundColorStyle = (0,_style__WEBPACK_IMPORTED_MODULE_10__.getGridHeaderBackgroundColorStyle)(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor);
-  const gridBandedRowTextColor = (0,_style__WEBPACK_IMPORTED_MODULE_10__.gridBandedRowTextColorStyle)(isNewBlock, tableIsResolving, bandedRowTextColor);
-  const gridBandedRowBackgroundColor = (0,_style__WEBPACK_IMPORTED_MODULE_10__.gridBandedRowBackgroundColorStyle)(isNewBlock, tableIsResolving, bandedRowBackgroundColor);
-  const gridShowInnerLines = (0,_style__WEBPACK_IMPORTED_MODULE_10__.gridInnerBorderStyle)(isNewBlock, tableIsResolving, showGridLines);
-  const gridInnerLineWidth = (0,_style__WEBPACK_IMPORTED_MODULE_10__.gridInnerBorderWidthStyle)(isNewBlock, tableIsResolving, showGridLines, gridLineWidth);
+  const gridColumnStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.processColumns)(isNewBlock, tableIsResolving, table.columns);
+  const gridRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.processRows)(isNewBlock, tableIsResolving, table.rows);
+  const gridHeaderBackgroundColorStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getGridHeaderBackgroundColorStyle)(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor);
+  const gridBandedRowTextColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.gridBandedRowTextColorStyle)(isNewBlock, tableIsResolving, bandedRowTextColor);
+  const gridBandedRowBackgroundColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.gridBandedRowBackgroundColorStyle)(isNewBlock, tableIsResolving, bandedRowBackgroundColor);
+  const gridShowInnerLines = (0,_style__WEBPACK_IMPORTED_MODULE_11__.gridInnerBorderStyle)(isNewBlock, tableIsResolving, showGridLines);
+  const gridInnerLineWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.gridInnerBorderWidthStyle)(isNewBlock, tableIsResolving, showGridLines, gridLineWidth);
   const gridHeaderStickyClass = headerRowSticky ? 'grid-scroller' : '';
   console.log('Grid Column Style = ' + gridColumnStyle);
   // const gridStyle = setGridStyle(isNewBlock, tableIsResolving, table)
@@ -3490,28 +3492,9 @@ function Edit(props) {
     classes
   }) => {
     const isBorder = attributes.border;
-    function setBorderContent(row, column, content) {
-      if (row === '0' && column === '0') {
-        return '';
-      } else {
-        return content;
-      }
-    }
-    function openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id) {
-      if (columnMenuVisible && openColumnRow === column_id) {
-        return true;
-      }
-      return false;
-    }
-    function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
-      if (rowMenuVisible && openColumnRow === row_id) {
-        return true;
-      }
-      return false;
-    }
-    const borderContent = setBorderContent(row_id, column_id, content);
-    const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id);
-    const isOpenCurrentRowMenu = openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id);
+    const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.setBorderContent)(row_id, column_id, content);
+    const isOpenCurrentColumnMenu = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.openCurrentColumnMenu)(columnMenuVisible, openColumnRow, column_id);
+    const isOpenCurrentRowMenu = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.openCurrentRowMenu)(rowMenuVisible, openColumnRow, row_id);
     const isFirstColumn = column_id === '1' ? true : false;
     const isFirstRow = row_id === '1' ? true : false;
     let showGridLinesCSS = gridShowInnerLines;
@@ -3544,13 +3527,13 @@ function Edit(props) {
       id: cell_id,
       onMouseDown: e => onMouseColumnClick(column_id, row_id, table, e),
       className: classes
-    }, borderContent, isOpenCurrentColumnMenu && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components__WEBPACK_IMPORTED_MODULE_11__.ColumnMenu, {
+    }, borderContent, isOpenCurrentColumnMenu && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components__WEBPACK_IMPORTED_MODULE_12__.ColumnMenu, {
       tableId: table_id,
       columnId: column_id,
       columnLabel: borderContent,
       columnAttributes: columnAttributes,
       updatedColumn: onUpdateColumn
-    }), isOpenCurrentRowMenu && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components__WEBPACK_IMPORTED_MODULE_11__.RowMenu, {
+    }), isOpenCurrentRowMenu && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components__WEBPACK_IMPORTED_MODULE_12__.RowMenu, {
       tableId: table_id,
       rowId: row_id,
       rowLabel: borderContent,
@@ -3574,7 +3557,7 @@ function Edit(props) {
       }
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
       href: "#",
-      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_13__["default"]
+      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__["default"]
     })), !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
       id: cell_id,
       className: calculatedClasses + classes,
@@ -3592,7 +3575,7 @@ function Edit(props) {
   }))))), !isNewBlock && tableIsResolving && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Spinner, null, "Retrieving Table Data"), isNewBlock && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Placeholder, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Dynamic Table'),
     icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockIcon, {
-      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__["default"],
+      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_15__["default"],
       showColors: true
     }),
     instructions: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Create a new dynamic table.')
@@ -3915,195 +3898,22 @@ function gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, 
 
 /***/ }),
 
-/***/ "./src/utils.js":
-/*!**********************!*\
-  !*** ./src/utils.js ***!
-  \**********************/
+/***/ "./src/table-defaults.js":
+/*!*******************************!*\
+  !*** ./src/table-defaults.js ***!
+  \*******************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   generateBlockTableRef: function() { return /* binding */ generateBlockTableRef; },
 /* harmony export */   getDefaultCell: function() { return /* binding */ getDefaultCell; },
 /* harmony export */   getDefaultColumn: function() { return /* binding */ getDefaultColumn; },
 /* harmony export */   getDefaultRow: function() { return /* binding */ getDefaultRow; },
 /* harmony export */   getDefaultTableAttributes: function() { return /* binding */ getDefaultTableAttributes; },
 /* harmony export */   getDefaultTableClasses: function() { return /* binding */ getDefaultTableClasses; },
 /* harmony export */   initTable: function() { return /* binding */ initTable; },
-/* harmony export */   initTableCells: function() { return /* binding */ initTableCells; },
-/* harmony export */   numberToLetter: function() { return /* binding */ numberToLetter; },
-/* harmony export */   tableSort: function() { return /* binding */ tableSort; },
-/* harmony export */   updateArray: function() { return /* binding */ updateArray; }
+/* harmony export */   initTableCells: function() { return /* binding */ initTableCells; }
 /* harmony export */ });
-function numberToLetter(letterNumber) {
-  const letterMap = [{
-    nbr: '1',
-    letter: 'A'
-  }, {
-    nbr: '2',
-    letter: 'B'
-  }, {
-    nbr: '3',
-    letter: 'C'
-  }, {
-    nbr: '4',
-    letter: 'D'
-  }, {
-    nbr: '5',
-    letter: 'E'
-  }, {
-    nbr: '6',
-    letter: 'F'
-  }, {
-    nbr: '7',
-    letter: 'G'
-  }, {
-    nbr: '8',
-    letter: 'H'
-  }, {
-    nbr: '9',
-    letter: 'I'
-  }, {
-    nbr: 'a',
-    letter: 'J'
-  }, {
-    nbr: 'b',
-    letter: 'k'
-  }, {
-    nbr: 'c',
-    letter: 'L'
-  }, {
-    nbr: 'd',
-    letter: 'M'
-  }, {
-    nbr: 'e',
-    letter: 'N'
-  }, {
-    nbr: 'f',
-    letter: 'O'
-  }, {
-    nbr: 'g',
-    letter: 'P'
-  }, {
-    nbr: 'h',
-    letter: 'Q'
-  }, {
-    nbr: 'i',
-    letter: 'R'
-  }, {
-    nbr: 'j',
-    letter: 'S'
-  }, {
-    nbr: 'k',
-    letter: 'T'
-  }, {
-    nbr: 'l',
-    letter: 'U'
-  }, {
-    nbr: 'm',
-    letter: 'V'
-  }, {
-    nbr: 'n',
-    letter: 'W'
-  }, {
-    nbr: 'o',
-    letter: 'X'
-  }, {
-    nbr: 'p',
-    letter: 'Y'
-  }, {
-    nbr: 'q',
-    letter: 'Z'
-  }];
-  if (letterNumber === 0) {
-    console.log('...In Letter = 0');
-    return '0';
-  }
-  var letterLookup = letterNumber.toString(26).split('');
-  let letterDigit = '';
-  letterLookup.map(value => {
-    letterDigit = letterDigit + letterMap.find(x => x.nbr === value).letter;
-  });
-  return letterDigit;
-}
-function updateArray(arrayIn, key, id, updatedData) {
-  console.log('Update Array');
-  console.log(arrayIn);
-  console.log(key);
-  console.log(id);
-  console.log(updatedData);
-  return arrayIn.map(item => item[key] === id ? {
-    ...item,
-    ...updatedData
-  } : item);
-}
-function tableSort(tablePart, tableArray) {
-  console.log('SORTING TABLE');
-  console.log('Table Part = ' + tablePart);
-  console.log(tableArray);
-  if (tablePart === 'rows') {
-    console.log('...in Rows sort');
-    var sortedRows = [...tableArray];
-    sortedRows.sort((a, b) => {
-      // console.log(number(a.row_id))
-      // console.log(number([a.row_id]))
-      if (Number([a.row_id]) < Number([b.row_id])) {
-        return -1;
-      } else {
-        return 1;
-      }
-    });
-    return sortedRows;
-  }
-  if (tablePart === 'columns') {
-    console.log('...in Columns sort');
-    var sortedColumns = [...tableArray];
-    sortedColumns.sort((a, b) => {
-      console.log(Number(a.column_id));
-      if (Number([a.column_id]) < Number([b.column_id])) {
-        return -1;
-      } else {
-        return 1;
-      }
-    });
-    console.log(sortedColumns);
-    return sortedColumns;
-  }
-  if (tablePart === 'cells') {
-    console.log('...in Cells sort');
-    var sortedCells = [...tableArray];
-    sortedCells.sort((a, b) => {
-      console.log([Number([a.row_id]), Number([a.column_id])]);
-      console.log([Number([b.row_id]), Number([b.column_id])]);
-      if (Number([a.row_id]) === Number([b.row_id])) {
-        if (Number([a.column_id]) < Number([b.column_id])) {
-          return -1;
-        } else {
-          return 1;
-        }
-      }
-      if (Number([a.row_id]) < Number([b.row_id])) {
-        return -1;
-      } else {
-        return 1;
-      }
-
-      // if ([Number([a.row_id]), Number([a.column_id])] < [Number([b.row_id]), Number([b.column_id])]) {
-      //     return -1
-      // } else {
-      //     return 1
-      // }
-    });
-
-    console.log(sortedCells);
-    return sortedCells;
-  }
-  console.log('...NO SORT RETURNED');
-}
-function generateBlockTableRef() {
-  const timestamp = Date.now();
-  return timestamp.toString(16);
-}
 function initTable(newBlockTableRef, columnCount, rowCount) {
   console.log('FUNCTION - CREATE TABLE');
   console.log('InitialRows - ' + rowCount);
@@ -4353,6 +4163,216 @@ function getDefaultTableClasses(tableComponent) {
       return;
   }
 }
+
+/***/ }),
+
+/***/ "./src/utils.js":
+/*!**********************!*\
+  !*** ./src/utils.js ***!
+  \**********************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   generateBlockTableRef: function() { return /* binding */ generateBlockTableRef; },
+/* harmony export */   numberToLetter: function() { return /* binding */ numberToLetter; },
+/* harmony export */   openCurrentColumnMenu: function() { return /* binding */ openCurrentColumnMenu; },
+/* harmony export */   openCurrentRowMenu: function() { return /* binding */ openCurrentRowMenu; },
+/* harmony export */   setBorderContent: function() { return /* binding */ setBorderContent; },
+/* harmony export */   tableSort: function() { return /* binding */ tableSort; },
+/* harmony export */   updateArray: function() { return /* binding */ updateArray; }
+/* harmony export */ });
+function numberToLetter(letterNumber) {
+  const letterMap = [{
+    nbr: '1',
+    letter: 'A'
+  }, {
+    nbr: '2',
+    letter: 'B'
+  }, {
+    nbr: '3',
+    letter: 'C'
+  }, {
+    nbr: '4',
+    letter: 'D'
+  }, {
+    nbr: '5',
+    letter: 'E'
+  }, {
+    nbr: '6',
+    letter: 'F'
+  }, {
+    nbr: '7',
+    letter: 'G'
+  }, {
+    nbr: '8',
+    letter: 'H'
+  }, {
+    nbr: '9',
+    letter: 'I'
+  }, {
+    nbr: 'a',
+    letter: 'J'
+  }, {
+    nbr: 'b',
+    letter: 'k'
+  }, {
+    nbr: 'c',
+    letter: 'L'
+  }, {
+    nbr: 'd',
+    letter: 'M'
+  }, {
+    nbr: 'e',
+    letter: 'N'
+  }, {
+    nbr: 'f',
+    letter: 'O'
+  }, {
+    nbr: 'g',
+    letter: 'P'
+  }, {
+    nbr: 'h',
+    letter: 'Q'
+  }, {
+    nbr: 'i',
+    letter: 'R'
+  }, {
+    nbr: 'j',
+    letter: 'S'
+  }, {
+    nbr: 'k',
+    letter: 'T'
+  }, {
+    nbr: 'l',
+    letter: 'U'
+  }, {
+    nbr: 'm',
+    letter: 'V'
+  }, {
+    nbr: 'n',
+    letter: 'W'
+  }, {
+    nbr: 'o',
+    letter: 'X'
+  }, {
+    nbr: 'p',
+    letter: 'Y'
+  }, {
+    nbr: 'q',
+    letter: 'Z'
+  }];
+  if (letterNumber === 0) {
+    console.log('...In Letter = 0');
+    return '0';
+  }
+  var letterLookup = letterNumber.toString(26).split('');
+  let letterDigit = '';
+  letterLookup.map(value => {
+    letterDigit = letterDigit + letterMap.find(x => x.nbr === value).letter;
+  });
+  return letterDigit;
+}
+function updateArray(arrayIn, key, id, updatedData) {
+  console.log('Update Array');
+  console.log(arrayIn);
+  console.log(key);
+  console.log(id);
+  console.log(updatedData);
+  return arrayIn.map(item => item[key] === id ? {
+    ...item,
+    ...updatedData
+  } : item);
+}
+function tableSort(tablePart, tableArray) {
+  console.log('SORTING TABLE');
+  console.log('Table Part = ' + tablePart);
+  console.log(tableArray);
+  if (tablePart === 'rows') {
+    console.log('...in Rows sort');
+    var sortedRows = [...tableArray];
+    sortedRows.sort((a, b) => {
+      // console.log(number(a.row_id))
+      // console.log(number([a.row_id]))
+      if (Number([a.row_id]) < Number([b.row_id])) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+    return sortedRows;
+  }
+  if (tablePart === 'columns') {
+    console.log('...in Columns sort');
+    var sortedColumns = [...tableArray];
+    sortedColumns.sort((a, b) => {
+      console.log(Number(a.column_id));
+      if (Number([a.column_id]) < Number([b.column_id])) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+    console.log(sortedColumns);
+    return sortedColumns;
+  }
+  if (tablePart === 'cells') {
+    console.log('...in Cells sort');
+    var sortedCells = [...tableArray];
+    sortedCells.sort((a, b) => {
+      console.log([Number([a.row_id]), Number([a.column_id])]);
+      console.log([Number([b.row_id]), Number([b.column_id])]);
+      if (Number([a.row_id]) === Number([b.row_id])) {
+        if (Number([a.column_id]) < Number([b.column_id])) {
+          return -1;
+        } else {
+          return 1;
+        }
+      }
+      if (Number([a.row_id]) < Number([b.row_id])) {
+        return -1;
+      } else {
+        return 1;
+      }
+
+      // if ([Number([a.row_id]), Number([a.column_id])] < [Number([b.row_id]), Number([b.column_id])]) {
+      //     return -1
+      // } else {
+      //     return 1
+      // }
+    });
+
+    console.log(sortedCells);
+    return sortedCells;
+  }
+  console.log('...NO SORT RETURNED');
+}
+function generateBlockTableRef() {
+  const timestamp = Date.now();
+  return timestamp.toString(16);
+}
+function setBorderContent(row, column, content) {
+  if (row === '0' && column === '0') {
+    return '';
+  } else {
+    return content;
+  }
+}
+function openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id) {
+  if (columnMenuVisible && openColumnRow === column_id) {
+    return true;
+  }
+  return false;
+}
+function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
+  if (rowMenuVisible && openColumnRow === row_id) {
+    return true;
+  }
+  return false;
+}
+setBorderContent;
+openCurrentColumnMenu;
+openCurrentRowMenu;
 
 /***/ }),
 

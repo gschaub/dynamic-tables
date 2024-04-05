@@ -74,6 +74,11 @@ import {
 	numberToLetter,
 	tableSort,
 	generateBlockTableRef,
+	setBorderContent,
+	openCurrentColumnMenu,
+	openCurrentRowMenu
+} from './utils';
+import {
 	initTable,
 	initTableCells,
 	getDefaultRow,
@@ -81,7 +86,7 @@ import {
 	getDefaultCell,
 	getDefaultTableClasses,
 	getDefaultTableAttributes
-} from './utils';
+} from './table-defaults';
 import {
 	processColumns,
 	processRows,
@@ -1111,28 +1116,6 @@ export default function Edit(props) {
 
 								{table.cells.map(({ table_id, row_id, column_id, cell_id, content, attributes, classes }) => {
 									const isBorder = attributes.border;
-
-									function setBorderContent(row, column, content) {
-										if (row === '0' && column === '0') {
-											return ''
-										} else {
-											return content
-										}
-									}
-
-									function openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id) {
-										if (columnMenuVisible && openColumnRow === column_id) {
-											return true
-										}
-										return false
-									}
-
-									function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
-										if (rowMenuVisible && openColumnRow === row_id) {
-											return true
-										}
-										return false
-									}
 
 									const borderContent = setBorderContent(row_id, column_id, content)
 									const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id)
