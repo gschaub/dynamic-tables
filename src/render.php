@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 
 $tableId = $attributes[ 'table_id' ];
 $blockTableRef = $attributes[ 'block_table_ref' ];
+$gridAlignment = $attributes[ 'block_alignment' ];
 $blockBackgroundColor = $attributes[ 'backgroundColor' ];
 
 /**
@@ -59,14 +60,19 @@ $blockWrapperStickyHeader = str_replace('"', '', str_replace('class=', '', $bloc
 
 <div <?php echo $blockWrapper; ?>>
 
-    <p><?php echo $tableName; ?></p>
+    <p id="tableTitle"
+        style="--gridAlignment: <?php echo esc_attr($gridAlignment); ?>;">
+        <?php echo wp_kses_post($tableName); ?>
+    </p>
 
     <?php if ($headerRowSticky) {?>
         <div class="grid-scroller"
-            style="--gridHeaderColor: <?php echo $gridHeaderBackgroundColorStyle; ?>";>
+            style="--gridHeaderColor: <?php echo esc_attr($gridHeaderBackgroundColorStyle); ?>;">
     <?php }?>
 
-	<div class="grid-control" style="--gridTemplateColumns: <?php echo $gridColumnStyle; ?>;">
+	<div class="grid-control"
+        style="--gridTemplateColumns: <?php echo esc_attr($gridColumnStyle); ?>;
+            --gridAlignment: <?php echo esc_attr($gridAlignment); ?>;">
 
     	<?php foreach ($tableRows as $index => $row) {
 
@@ -80,13 +86,13 @@ $blockWrapperStickyHeader = str_replace('"', '', str_replace('class=', '', $bloc
         $calculatedClasses = getCalculatedClasses($cellRowId, $cellColumnId, $blockWrapper, $bandedRows, $enableHeaderRow, $blockWrapperStickyHeader);
 
         if ($cell[ 'row_id' ] === $row[ 'row_id' ]) {?>
-				    <div id="<?php echo $cellId; ?>"
-                        class="<?php echo $cell[ 'classes' ] . $calculatedClasses; ?>"
-                        style="--bandedRowTextColor: <?php echo $gridBandedTextColor; ?>;
-                            --bandedRowBackgroundColor: <?php echo $gridBandedBackgroundColor; ?>;
-                            --showGridLines: <?php echo $gridShowInnerLines; ?>;
-                            --gridLineWidth: <?php echo $gridInnerLineWidth; ?>;">
-                        <?php echo $cell[ 'content' ]; ?>
+				    <div id="<?php echo esc_attr($cellId); ?>"
+                        class="<?php echo esc_attr($cell[ 'classes' ] . $calculatedClasses); ?>"
+                        style="--bandedRowTextColor: <?php echo esc_attr($gridBandedTextColor); ?>;
+                            --bandedRowBackgroundColor: <?php echo esc_attr($gridBandedBackgroundColor); ?>;
+                            --showGridLines: <?php echo esc_attr($gridShowInnerLines); ?>;
+                            --gridLineWidth: <?php echo esc_attr($gridInnerLineWidth); ?>;">
+                        <?php echo wp_kses_post($cell[ 'content' ]); ?>
                     </div> <?php }
     }
 }?>
@@ -95,6 +101,3 @@ $blockWrapperStickyHeader = str_replace('"', '', str_replace('class=', '', $bloc
     echo '</div>';
 }?>
 </div>
-</p>
-
-

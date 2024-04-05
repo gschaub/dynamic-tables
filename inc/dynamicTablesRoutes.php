@@ -123,7 +123,7 @@ function create_table_data($request)
     }
 
     if (isset($request[ 'header' ][ 'table_attributes' ])) {
-        $attributes = $request[ 'header' ][ 'table_attributes' ];
+        $attributes = wp_kses_post($request[ 'header' ][ 'table_attributes' ]);
     } else {
         $attributes = '{}';
     }
@@ -230,7 +230,7 @@ function update_table_data($request)
     }
 
     if (isset($request[ 'header' ][ 'table_name' ])) {
-        $tableName = sanitize_text_field($request[ 'header' ][ 'table_name' ]);
+        $tableName = wp_kses_post($request[ 'header' ][ 'table_name' ]);
     } else {
         $tableName = $existingTable[ 'header' ][ 'table_name' ];
     }
@@ -406,7 +406,7 @@ function update_table_cells($tableId, $requestCells)
         $rowId = $cell[ 'row_id' ];
         $attributes = $cell[ 'attributes' ];
         $classes = $cell[ 'classes' ];
-        $content = $cell[ 'content' ];
+        $content = wp_kses_post($cell[ 'content' ]);
 
         $serializedAttributes = maybe_serialize($attributes);
         error_log('Serialized cell attributes = ' . json_encode($serializedAttributes));

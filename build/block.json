@@ -17,6 +17,10 @@
     "block_table_ref": {
       "type": "string",
       "default": ""
+    },
+    "block_alignment": {
+      "type": "string",
+      "default": "undefined"
     }
   },
   "usesContext": [

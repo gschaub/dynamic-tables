@@ -14,6 +14,7 @@ import {
 	Panel,
 	PanelBody,
 	PanelRow,
+	Disabled,
 	TabbableContainer,
 	Button,
 	TextControl,
@@ -25,6 +26,7 @@ import {
 	DropdownMenu,
 	MenuGroup,
 	MenuItem,
+	__experimentalBorderBoxControl as BorderBoxControl,
 	__experimentalNumberControl as NumberControl
 } from '@wordpress/components';
 import {
@@ -33,8 +35,10 @@ import {
 	useSetting,
 	BlockIcon,
 	AlignmentToolbar,
+	AlignmentControl,
 	InspectorControls,
 	BlockControls,
+	BlockAlignmentToolbar,
 	PanelColorSettings
 } from '@wordpress/block-editor';
 import {
@@ -78,6 +82,16 @@ import {
 	getDefaultTableClasses,
 	getDefaultTableAttributes
 } from './utils';
+import {
+	processColumns,
+	processRows,
+	gridBandedRowTextColorStyle,
+	gridBandedRowBackgroundColorStyle,
+	getGridHeaderBackgroundColorStyle,
+	gridInnerBorderStyle,
+	gridInnerBorderWidthStyle
+} from './style';
+
 import { ColumnMenu, RowMenu } from './components';
 // import TABLE_ATTRIBUTE_TYPES from './constants'
 import './editor.scss';
@@ -127,7 +141,7 @@ export default function Edit(props) {
 	const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = useState(false);
 
 	const priorTableRef = useRef({});
-	const { table_id, block_table_ref } = props.attributes;
+	const { table_id, block_table_ref, block_alignment } = props.attributes;
 	const themeColors = useSetting('color.palette')
 	console.log(themeColors)
 
@@ -302,12 +316,15 @@ export default function Edit(props) {
 	 */
 	const showGridLines = getTablePropAttribute(table.table_attributes, 'showGridLines')
 	const enableHeaderRow = getTablePropAttribute(table.table_attributes, 'enableHeaderRow')
+	const headerAlignment = getTablePropAttribute(table.table_attributes, 'headerAlignment')
 	const gridHeaderBackgroundColor = getTablePropAttribute(table.table_attributes, 'tableHeaderBackgroundColor')
 	const headerRowSticky = getTablePropAttribute(table.table_attributes, 'headerRowSticky')
+	const headerBorder = getTablePropAttribute(table.table_attributes, 'headerBorder')
 	const bandedRows = getTablePropAttribute(table.table_attributes, 'bandedRows')
 	const bandedRowTextColor = getTablePropAttribute(table.table_attributes, 'bandedRowTextColor')
 	const bandedRowBackgroundColor = getTablePropAttribute(table.table_attributes, 'bandedRowBackgroundColor')
 	const gridLineWidth = getTablePropAttribute(table.table_attributes, 'gridLineWidth')
+	const gridAlignment = block_alignment;
 	const horizontalAlignment = getTablePropAttribute(table.table_attributes, 'horizontalAlignment')
 	const verticalAlignment = getTablePropAttribute(table.table_attributes, 'verticalAlignment')
 
@@ -610,197 +627,6 @@ export default function Edit(props) {
 		return;
 	}
 
-	/**
-	 * Establish grid css grid-template-columns based upon attributes associated with columns
-	 * 
-	 * @param {*} isNewBlock 
-	 * @param {*} tableIsResolving 
-	 * @param {*} columns 
-	 * @returns 
-	 */
-	function processColumns(isNewBlock, tableIsResolving, columns) {
-		if (isNewBlock || tableIsResolving) {
-			return undefined
-		}
-
-		let newGridColumnStyle = ''
-		{
-			columns.map(({ column_id, column_name, attributes, classes }) => {
-				console.log('Column ID - ' + newGridColumnStyle)
-				console.log(attributes)
-				const { columnWidthType,
-					minWidth,
-					minWidthUnits,
-					maxWidth,
-					maxWidthUnits,
-					fixedWidth,
-					fixedWidthUnits,
-					disableForTablet,
-					disableForPhone,
-					isFixedLeftColumnGroup,
-					horizontalAlignment
-				} = attributes;
-
-				let sizing = '';
-
-				if (column_id === '1') {
-					newGridColumnStyle = newGridColumnStyle + '40px '
-				}
-				switch (columnWidthType) {
-					case 'Proportional':
-						{
-							if (minWidth > 0) {
-								sizing = 'minmax(' + minWidth + minWidthUnits + ', ' + maxWidth + 'fr) '
-							} else (
-								// sizing = '1fr '
-								sizing = maxWidth + 'fr '
-							)
-							newGridColumnStyle = newGridColumnStyle + sizing;
-							break;
-						}
-					case 'Auto':
-						{
-							newGridColumnStyle = newGridColumnStyle + 'auto ';
-							break;
-						}
-					case 'Fixed':
-						{
-							newGridColumnStyle = newGridColumnStyle + fixedWidth + fixedWidthUnits + ' ';
-							break;
-						}
-					case 'Custom':
-						{
-							sizing = 'minmax(' + minWidth + minWidthUnits + ', ' + maxWidth + maxWidthUnits + ') '
-							newGridColumnStyle = newGridColumnStyle + sizing;
-							break;
-						}
-					default:
-						console.log('Unrecognized Attibute Type')
-				}
-
-				// if (column_id === '0') {
-				// 	newGridColumnStyle = newGridColumnStyle + '20px ';
-				// } else {
-				// 	newGridColumnStyle = newGridColumnStyle + 'auto ';
-				// }
-			})
-		}
-		console.log('grid-template-columns = ' + newGridColumnStyle)
-		// setTableStale(false)
-		return newGridColumnStyle
-	}
-
-	/**
-	 * Establish grid css grid-template-rowss based upon attributes associated with rows
-	 * 
-	 * @param {*} isNewBlock 
-	 * @param {*} tableIsResolving 
-	 * @param {*} rows 
-	 * @returns 
-	 */
-	function processRows(isNewBlock, tableIsResolving, rows) {
-		if (isNewBlock || tableIsResolving) {
-			return undefined
-		}
-
-		let newGridRowStyle = ''
-		{
-			rows.map(({ row_id, attributes, classes }) => {
-				console.log('Row ID - ' + newGridRowStyle)
-				if (row_id === '0') {
-					newGridRowStyle = newGridRowStyle + '25px ';
-				} else {
-					newGridRowStyle = newGridRowStyle + 'auto ';
-				}
-			})
-		}
-		// setTableStale(false)
-		return newGridRowStyle
-	}
-
-	/**
-	 * Create Styling Variable for showing inner grid borders/lines
-	  * 
-	  * @param {*} isNewBlock 
-	  * @param {*} tableIsResolving 
-	  * @param {*} showGridLines 
-	  * @returns 
-	  */
-	function gridBandedRowTextColorStyle(isNewBlock, tableIsResolving, color) {
-		if (isNewBlock || tableIsResolving) {
-			return undefined;
-		};
-		return color;
-	}
-
-	function gridBandedRowBackgroundColorStyle(isNewBlock, tableIsResolving, color) {
-		if (isNewBlock || tableIsResolving) {
-			return undefined;
-		};
-		return color;
-	}
-
-	/**
-	* Create Styling Variable for showing inner grid borders/lines
-	* 
-	* @param {*} isNewBlock 
-	* @param {*} tableIsResolving 
-	* @param {*} showGridLines 
-	* @returns 
-	*/
-	function getGridHeaderBackgroundColorStyle(isNewBlock, tableIsResolving, tableColor, blockColor) {
-		if (isNewBlock || tableIsResolving) {
-			return undefined;
-		};
-
-		if (tableColor) {
-			return tableColor;
-		};
-
-		return blockColor;
-	}
-
-
-	/**
-	 * Create Styling Variable for showing inner grid borders/lines
-	  * 
-	  * @param {*} isNewBlock 
-	  * @param {*} tableIsResolving 
-	  * @param {*} showGridLines 
-	  * @returns 
-	  */
-	function gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines) {
-		if (isNewBlock || tableIsResolving) {
-			return undefined;
-		};
-		console.log('show grid lines = ' + showGridLines)
-		if (showGridLines) {
-			return 'solid';
-		};
-
-		return 'hidden';
-	}
-
-	/**
-	* Create Styling Variable for inner grid borders/lines width
-	* 
-	* @param {*} isNewBlock 
-	* @param {*} tableIsResolving 
-	* @param {*} showGridLines 
-	* @returns 
-	*/
-	function gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, gridLineWidth) {
-		if (isNewBlock || tableIsResolving) {
-			return undefined;
-		};
-
-		if (!showGridLines) {
-			return '0px';
-		};
-
-		return String(gridLineWidth) + 'px';
-	}
-
 	function createTable(columnCount, rowCount) {
 
 		console.log('FUNCTION - CREATE TABLE')
@@ -990,6 +816,74 @@ export default function Edit(props) {
 	* @param {*} table 
 	* @param {*} isChecked 
 	*/
+	function onAlignHeader(table, isChecked) {
+		const updatedTableAttributes = {
+			...table.table_attributes,
+			enableHeaderRow: isChecked,
+			headerRowSticky: false
+		}
+		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+	}
+
+	/**
+	* Make first table row the Header
+	* 
+	* @param {*} table 
+	* @param {*} isChecked 
+	*/
+	function onHeaderBorder(table, border) {
+		console.log('ON HEADER BORDER')
+		console.log(border)
+
+		const updatedTableAttributes = {
+			...table.table_attributes,
+			headerBorder: border
+		}
+		console.log(updatedTableAttributes)
+		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+
+
+
+
+		// const borderType = (border) => {
+		// 	if (border === undefined) {
+		// 		return 'undefined'
+		// 	}
+		// 	if (Object.entries(border).length === 4) {
+		// 		return 'split'
+		// 	}
+		// 	return 'simple'
+		// }
+
+
+		// switch (borderType(border)) {
+		// 	case 'undefined': {
+		// 		const updatedTableAttributes = {
+		// 			...table.table_attributes,
+		// 			headerBorders: undefined
+		// 		}
+		// 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+		// 		break;
+		// 	}
+		// 	case simple: {
+		// 		const updatedTableAttributes = {
+		// 			...table.table_attributes,
+		// 			headerBorders: undefined
+		// 		}
+		// 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+		// 		break;
+		// 	}
+
+		// }
+
+	}
+
+	/**
+	* Make first table row the Header
+	* 
+	* @param {*} table 
+	* @param {*} isChecked 
+	*/
 	function onHeaderRowSticky(table, isChecked) {
 		const updatedTableAttributes = {
 			...table.table_attributes,
@@ -1061,14 +955,16 @@ export default function Edit(props) {
 		<div {...blockProps} >
 			{!isNewBlock && !tableIsResolving && (
 				<>
+					<BlockControls>
+						<BlockAlignmentToolbar
+							value={block_alignment}
+							onChange={(e) => props.setAttributes({ block_alignment: e })}
+						/>
+					</BlockControls>
+
 					<InspectorControls>
 						<Panel>
-							<PanelBody title="Table Definition" initialOpen={true}>
-								<PanelRow>
-									<TextControl label="Table Name"
-										value={table.table_name} />
-									{/* onChange={e => setTableAttributes(table_id, 'table_name', '', 'PROP', e)} /> */}
-								</PanelRow>
+							<PanelBody title="Definition" initialOpen={true}>
 
 								<PanelRow>
 									<CheckboxControl label="Show table borders"
@@ -1078,11 +974,15 @@ export default function Edit(props) {
 								</PanelRow>
 
 								<PanelRow>
-									<NumberControl label="Table Columns" value={numColumns} labelPosition="side" onChange={(e) => defineColumns(e)} />
+									<Disabled>
+										<NumberControl label="Table Columns" value={numColumns} labelPosition="side" onChange={(e) => defineColumns(e)} />
+									</Disabled>
 								</PanelRow>
 
 								<PanelRow>
-									<NumberControl label="Table Rows" value={numRows} labelPosition="side" onChange={(e) => defineRows(e)} />
+									<Disabled>
+										<NumberControl label="Table Rows" value={numRows} labelPosition="side" onChange={(e) => defineRows(e)} />
+									</Disabled>
 								</PanelRow>
 
 							</PanelBody>
@@ -1103,6 +1003,32 @@ export default function Edit(props) {
 										onChange={(e) => onHeaderRowSticky(table, e)}
 									/>
 								</PanelRow>
+
+								<PanelRow>
+									<span className="inspector-controls-menu__header-alignment--middle">
+										<AlignmentControl
+											id="header-alignment"
+											value={headerAlignment}
+											onChange={(e) => onAlignHeader((table, e))}
+										/>
+										<label className="inspector-controls-nemu__label--left-margin"
+											for="header-alignment">
+											Text Alignment
+										</label>
+									</span>
+								</PanelRow>
+
+								<PanelRow>
+									<BorderBoxControl
+										label="Borders"
+										hideLabelFromVision="false"
+										isCompact="true"
+										colors={themeColors}
+										value={headerBorder}
+										onChange={(e) => onHeaderBorder(table, e)}
+									/>
+								</PanelRow>
+
 							</PanelBody>
 
 
@@ -1158,15 +1084,11 @@ export default function Edit(props) {
 					<InspectorControls group="typography">
 					</InspectorControls>
 
-
-					{/* <div>{table.table_name}</div> */}
-
 					<RichText
-						// id={tableName}
-						// className={"grid-control__cells " + calculatedClasses + classes}
-						tagName="div"
-						//allowedFormats={['core/bold', 'core/italic']}
-						//onChange={cellContent => setGridCells([col, row, cellId, componentClass, cellContent])}
+						id="tableTitle"
+						style={{ "--gridAlignment": gridAlignment }}
+						tagName="p"
+						allowedFormats={['core/bold', 'core/italic']}
 						onChange={e => setTableAttributes(table_id, 'table_name', '', 'PROP', e)}
 						value={table.table_name}>
 					</RichText>
@@ -1177,7 +1099,12 @@ export default function Edit(props) {
 								"--gridHeaderColor": gridHeaderBackgroundColorStyle
 							}}>
 
-							<div className="grid-control" style={{ "--gridTemplateColumns": gridColumnStyle, "--gridTemplateRows": gridRowStyle }}>
+							<div className="grid-control"
+								style={{
+									"--gridTemplateColumns": gridColumnStyle,
+									"--gridTemplateRows": gridRowStyle,
+									"--gridAlignment": gridAlignment
+								}}>
 
 								{/* TODO: Add overflow-x option if the overflow option is selected */}
 
@@ -1211,6 +1138,7 @@ export default function Edit(props) {
 									const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id)
 									const isOpenCurrentRowMenu = openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id)
 									const isFirstColumn = column_id === '1' ? true : false;
+									const isFirstRow = row_id === '1' ? true : false;
 									let showGridLinesCSS = gridShowInnerLines
 									let gridLineWidthCSS = gridInnerLineWidth
 
@@ -1274,7 +1202,19 @@ export default function Edit(props) {
 												</div>
 											)}
 
-											{isFirstColumn && !isBorder && (
+											{isFirstColumn && enableHeaderRow && isFirstRow && !isBorder && (
+												<div
+													className={calculatedClasses}
+													style={{
+														"--bandedRowTextColor": gridBandedRowTextColor,
+														"--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
+														"--showGridLines": showGridLinesCSS,
+														"--gridLineWidth": gridLineWidthCSS
+													}}
+												></div>
+											)}
+
+											{isFirstColumn && (!isFirstRow || !enableHeaderRow) && !isBorder && (
 												<div
 													className={"grid-control__cells--zoom " + calculatedClasses}
 													style={{
@@ -1303,8 +1243,6 @@ export default function Edit(props) {
 													}}
 													tabIndex="0"
 													tagName="div"
-													//allowedFormats={['core/bold', 'core/italic']}
-													//onChange={cellContent => setGridCells([col, row, cellId, componentClass, cellContent])}
 													onChange={e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e)}
 													value={content}>
 												</RichText>

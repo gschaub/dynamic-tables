@@ -11,6 +11,13 @@
 	padding: 2px;
 }
 
+#tableTitle {
+	//css variables
+	--gridAlignment: center;
+
+	text-align: var(--gridAlignment);
+}
+
 .grid-scroller {
 	overflow: auto;
 	max-height: 80vh;
@@ -21,10 +28,19 @@
 	//css variables
 	--gridTemplateColumns: auto;
 	--gridTemplateRows: auto;
+	--gridAlignment: left;
 
 	display: grid;
 	grid-template-columns: var(--gridTemplateColumns);
 	grid-template-rows: var(--gridTemplateRows);
+	gap: 1px;
+	justify-content: var(--gridAlignment);
+}
+
+.grid-control__header {
+	display: grid;
+	grid-template-columns: subgrid;
+	grid-template-rows: auto;
 }
 
 .grid-control__header-cells {
@@ -33,21 +49,38 @@
 	top: 0;
 	z-index: 1;
 	align-items: center;
-	justify-content: center;
 	border-bottom-style: solid;
 	border-bottom-width: 3px;
 	background-color: var(--gridHeaderColor);
+	justify-content: var(--gridAlignment);
+}
+
+.grid-control__body {
+	display: grid;
+	grid-template-columns: subgrid;
+	grid-template-rows: auto;
 }
 
 .grid-control__body-cells {
-	//css variables
-	// --showGridLines: hidden;
-	// --gridLineWidth: 0px;
-
-	// display: flex;
+	display: flex;
+	position: relative;
 	padding: 5px;
+	margin: -1px;
 	border-style: var(--showGridLines);
 	border-width: var(--gridLineWidth);
+	border-color: black;
+	justify-content: var(--gridAlignment);
+}
+
+.grid-control__cells--zoom {
+	display: flex;
+	justify-content: center;
+	vertical-align: middle;
+	padding: 0px;
+	margin: -1px;
+	border-style: var(--showGridLines);
+	border-width: var(--gridLineWidth);
+	border-color: black;
 }
 
 .grid-control__cells--banded-row {

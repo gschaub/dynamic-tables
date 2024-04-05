@@ -20,6 +20,22 @@
   justify-self: start;
 }
 
+.inspector-controls-menu__header-alignment--top {
+  display: flex;
+  width: 100%;
+  align-items: start;
+}
+
+.inspector-controls-menu__header-alignment--middle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.inspector-controls-nemu__label--left-margin {
+  margin-left: 12px;
+}
+
 .grid-control__cells--border {
   font-size: small;
   font-weight: bold;
@@ -35,13 +51,6 @@
 }
 .grid-control__cells--border:hover {
   cursor: pointer;
-}
-
-.grid-control__cells--zoom {
-  text-align: center;
-  vertical-align: middle;
-  margin: 0px;
-  padding: 0px;
 }
 
 .column-menu {

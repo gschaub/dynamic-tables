@@ -292,7 +292,9 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
         bandedTextColor: '#d8dbda',
         gridLineWidth: 1,
         enableHeaderRow: false,
+        headerAlignment: 'center',
         headerRowSticky: false,
+        headerBorder: undefined,
         horizontalAlignment: 'none',
         verticalAlignment: 'none'
     }
