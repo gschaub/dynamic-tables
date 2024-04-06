@@ -1,3 +1,7 @@
+import {
+    numberToLetter,
+} from './utils';
+
 export function initTable(newBlockTableRef, columnCount, rowCount) {
 
     console.log('FUNCTION - CREATE TABLE')

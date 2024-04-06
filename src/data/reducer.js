@@ -379,10 +379,23 @@ const table = (
             }
 
         case UPDATE_ROW:
-            console.log('In Reducer UPDATE_COLUMN')
+            console.log('In Reducer UPDATE_ROW')
+
+            var transformedValue = ' "' + action.value + '"';
+
+            if (action.attribute === 'attributes') {
+                transformedValue = JSON.stringify(action.value)
+            }
+            console.log(transformedValue)
+
             let newRowsState = { ...state }
-            let updatedRowData = JSON.parse('{ "' + action.attribute + '" : "' + action.value + '"}')
+            let updatedRowData = JSON.parse('{ "' + action.attribute + '" :' + transformedValue + '}')
+            console.log(newRowsState);
+            console.log(newRowsState.rows);
             let updatedRows = updateArray(newRowsState.rows, 'row_id', action.rowId, updatedRowData)
+
+            console.log(updatedRowData)
+            console.log(updatedRows)
 
             var returnedUpdatedTableRow =
             {
@@ -398,7 +411,7 @@ const table = (
         case UPDATE_COLUMN:
             console.log('In Reducer UPDATE_COLUMN')
 
-            let transformedValue = ' "' + action.value + '"';
+            var transformedValue = ' "' + action.value + '"';
 
             if (action.attribute === 'attributes') {
                 transformedValue = JSON.stringify(action.value)

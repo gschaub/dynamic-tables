@@ -25,6 +25,7 @@
   --gridTemplateColumns: auto;
   --gridTemplateRows: auto;
   --gridAlignment: left;
+  --gridNumColumns: 1;
   display: grid;
   grid-template-columns: var(--gridTemplateColumns);
   grid-template-rows: var(--gridTemplateRows);
@@ -34,6 +35,7 @@
 
 .grid-control__header {
   display: grid;
+  grid-column: 1/calc(var(--gridNumColumns) + 2);
   grid-template-columns: subgrid;
   grid-template-rows: auto;
 }

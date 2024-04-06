@@ -2084,12 +2084,21 @@ const table = (state = {
         table: returnedTableNewRow
       };
     case UPDATE_ROW:
-      console.log('In Reducer UPDATE_COLUMN');
+      console.log('In Reducer UPDATE_ROW');
+      var transformedValue = ' "' + action.value + '"';
+      if (action.attribute === 'attributes') {
+        transformedValue = JSON.stringify(action.value);
+      }
+      console.log(transformedValue);
       let newRowsState = {
         ...state
       };
-      let updatedRowData = JSON.parse('{ "' + action.attribute + '" : "' + action.value + '"}');
+      let updatedRowData = JSON.parse('{ "' + action.attribute + '" :' + transformedValue + '}');
+      console.log(newRowsState);
+      console.log(newRowsState.rows);
       let updatedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newRowsState.rows, 'row_id', action.rowId, updatedRowData);
+      console.log(updatedRowData);
+      console.log(updatedRows);
       var returnedUpdatedTableRow = {
         ...newRowsState,
         rows: [...updatedRows],
@@ -2101,7 +2110,7 @@ const table = (state = {
       };
     case UPDATE_COLUMN:
       console.log('In Reducer UPDATE_COLUMN');
-      let transformedValue = ' "' + action.value + '"';
+      var transformedValue = ' "' + action.value + '"';
       if (action.attribute === 'attributes') {
         transformedValue = JSON.stringify(action.value);
       }
@@ -2957,6 +2966,11 @@ function Edit(props) {
           if (attribute === 'cell') {
             console.log('...Updating Cell');
             updateCell(tableId, id, 'attributes', value);
+          } else if (attribute === 'row') {
+            console.log('...Updating Row');
+            console.log(value);
+            setRowAttributes(value);
+            updateRow(tableId, id, 'attributes', value);
           } else if (attribute === 'column') {
             console.log('...Updating Column');
             console.log(value);
@@ -3235,6 +3249,12 @@ function Edit(props) {
       headerRowSticky: false
     };
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+    const updatedRowAttributes = {
+      ...table.rows.find(x => x.row_id === '1').attributes,
+      isHeader: isChecked ? true : false
+    };
+    console.log(updatedRowAttributes);
+    setTableAttributes(table.table_id, 'row', '1', 'ATTRIBUTES', updatedRowAttributes);
   }
 
   /**
@@ -3480,9 +3500,51 @@ function Edit(props) {
     style: {
       "--gridTemplateColumns": gridColumnStyle,
       "--gridTemplateRows": gridRowStyle,
+      "--gridNumColumns": numColumns,
+      "--gridNumRows": numRows,
       "--gridAlignment": gridAlignment
     }
-  }, table.cells.map(({
+  }, table.rows.filter(row => row.row_id === '1') //row.attributes.isHeader)
+  // table.rows.filter(row => row.row_id === '1')
+  .map(({
+    table_id,
+    row_id
+  }) => {
+    // alert("Header Row Container" + row_id)
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "grid-control__header"
+    }, table.cells.filter(cell => cell.row_id === '1').map(({
+      table_id,
+      row_id,
+      column_id,
+      cell_id,
+      content,
+      attibutes,
+      classes
+    }) => {
+      const isFirstColumn = column_id === '1' ? true : false;
+      let showGridLinesCSS = gridShowInnerLines;
+      let gridLineWidthCSS = gridInnerLineWidth;
+      return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, isFirstColumn && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        className: "grid-control__header-cells",
+        style: {
+          "--showGridLines": showGridLinesCSS,
+          "--gridLineWidth": gridLineWidthCSS
+        }
+      }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
+        id: cell_id,
+        className: "grid-control__header-cells",
+        style: {
+          "--showGridLines": showGridLinesCSS,
+          "--gridLineWidth": gridLineWidthCSS
+        },
+        tabIndex: "0",
+        tagName: "div",
+        onChange: e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e),
+        value: content
+      }));
+    }));
+  }), table.cells.map(({
     table_id,
     row_id,
     column_id,
@@ -3497,6 +3559,7 @@ function Edit(props) {
     const isOpenCurrentRowMenu = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.openCurrentRowMenu)(rowMenuVisible, openColumnRow, row_id);
     const isFirstColumn = column_id === '1' ? true : false;
     const isFirstRow = row_id === '1' ? true : false;
+    let isEnabled = true;
     let showGridLinesCSS = gridShowInnerLines;
     let gridLineWidthCSS = gridInnerLineWidth;
     let calculatedClasses = '';
@@ -3539,7 +3602,7 @@ function Edit(props) {
       rowLabel: borderContent,
       rowAttributes: columnAttributes,
       updatedRow: onUpdateRow
-    })), isFirstColumn && enableHeaderRow && isFirstRow && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    })), !isEnabled && isFirstColumn && enableHeaderRow && isFirstRow && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: calculatedClasses,
       style: {
         "--bandedRowTextColor": gridBandedRowTextColor,
@@ -3558,7 +3621,7 @@ function Edit(props) {
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
       href: "#",
       icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__["default"]
-    })), !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
+    })), (!isFirstRow || !enableHeaderRow) && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
       id: cell_id,
       className: calculatedClasses + classes,
       style: {
@@ -3914,6 +3977,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   initTable: function() { return /* binding */ initTable; },
 /* harmony export */   initTableCells: function() { return /* binding */ initTableCells; }
 /* harmony export */ });
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
+
 function initTable(newBlockTableRef, columnCount, rowCount) {
   console.log('FUNCTION - CREATE TABLE');
   console.log('InitialRows - ' + rowCount);
@@ -3960,7 +4025,7 @@ function initTableCells(init_num_columns, init_num_rows) {
   var y = 1;
   while (y <= init_num_rows) {
     while (x <= init_num_columns) {
-      let columnLetter = numberToLetter(x);
+      let columnLetter = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.numberToLetter)(x);
       if (y == 1) {
         let cell = getDefaultCell('0', String(x), String(y));
         tableCells.push(cell);
@@ -4022,7 +4087,7 @@ function getDefaultColumn(tableId, columnId, columnLocation = 'Body') {
 }
 function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') {
   let cell;
-  let columnLetter = numberToLetter(columnId);
+  let columnLetter = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.numberToLetter)(columnId);
   let borderContent = rowId == 0 ? columnLetter : String(rowId);
   if (cellLocation === 'Border') {
     cell = {

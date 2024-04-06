@@ -508,6 +508,11 @@ export default function Edit(props) {
 					if (attribute === 'cell') {
 						console.log('...Updating Cell')
 						updateCell(tableId, id, 'attributes', value)
+					} else if (attribute === 'row') {
+						console.log('...Updating Row')
+						console.log(value)
+						setRowAttributes(value)
+						updateRow(tableId, id, 'attributes', value)
 					} else if (attribute === 'column') {
 						console.log('...Updating Column')
 						console.log(value)
@@ -813,6 +818,14 @@ export default function Edit(props) {
 			headerRowSticky: false
 		}
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+
+		const updatedRowAttributes = {
+			...table.rows.find(x => x.row_id === '1').attributes,
+			isHeader: isChecked ? true : false
+		}
+
+		console.log(updatedRowAttributes)
+		setTableAttributes(table.table_id, 'row', '1', 'ATTRIBUTES', updatedRowAttributes);
 	}
 
 	/**
@@ -1108,10 +1121,69 @@ export default function Edit(props) {
 								style={{
 									"--gridTemplateColumns": gridColumnStyle,
 									"--gridTemplateRows": gridRowStyle,
+									"--gridNumColumns": numColumns,
+									"--gridNumRows": numRows,
 									"--gridAlignment": gridAlignment
 								}}>
 
 								{/* TODO: Add overflow-x option if the overflow option is selected */}
+
+								{table.rows.filter(row => row.row_id === '1') //row.attributes.isHeader)
+									// table.rows.filter(row => row.row_id === '1')
+									.map(({ table_id, row_id }) => {
+										// alert("Header Row Container" + row_id)
+										return (
+											<div className="grid-control__header">
+												{table.cells
+													.filter(cell => cell.row_id === '1')
+													.map(({ table_id, row_id, column_id, cell_id, content, attibutes, classes }) => {
+														const isFirstColumn = column_id === '1' ? true : false;
+														let showGridLinesCSS = gridShowInnerLines
+														let gridLineWidthCSS = gridInnerLineWidth
+														return (
+															<>
+																{isFirstColumn && (
+																	< div
+																		className={"grid-control__header-cells"}
+																		style={{
+																			"--showGridLines": showGridLinesCSS,
+																			"--gridLineWidth": gridLineWidthCSS
+																		}}
+																	></div >
+																)}
+																<RichText
+																	id={cell_id}
+																	className={"grid-control__header-cells"}
+																	style={{
+																		"--showGridLines": showGridLinesCSS,
+																		"--gridLineWidth": gridLineWidthCSS
+																	}}
+																	tabIndex="0"
+																	tagName="div"
+																	onChange={e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e)}
+																	value={content}>
+																</RichText>
+															</>
+														)
+
+													})}
+											</div >
+										)
+									})}
+
+
+								{/* {table.cells
+									.filter(cell => cell.row_id === '0')
+									.map(({ table_id, row_id, column_id, cell_id, content, attibutes, classes }) => {
+										return (
+											<>
+												<ul>
+													<li>Table ID: {table_id}</li>
+												</ul>
+											</>
+										)
+									})
+								} */}
 
 
 								{table.cells.map(({ table_id, row_id, column_id, cell_id, content, attributes, classes }) => {
@@ -1122,6 +1194,7 @@ export default function Edit(props) {
 									const isOpenCurrentRowMenu = openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id)
 									const isFirstColumn = column_id === '1' ? true : false;
 									const isFirstRow = row_id === '1' ? true : false;
+									let isEnabled = true;
 									let showGridLinesCSS = gridShowInnerLines
 									let gridLineWidthCSS = gridInnerLineWidth
 
@@ -1185,7 +1258,7 @@ export default function Edit(props) {
 												</div>
 											)}
 
-											{isFirstColumn && enableHeaderRow && isFirstRow && !isBorder && (
+											{!isEnabled && isFirstColumn && enableHeaderRow && isFirstRow && !isBorder && (
 												<div
 													className={calculatedClasses}
 													style={{
@@ -1214,7 +1287,7 @@ export default function Edit(props) {
 												</div>
 											)}
 
-											{!isBorder && (
+											{(!isFirstRow || !enableHeaderRow) && !isBorder && (
 												<RichText
 													id={cell_id}
 													className={calculatedClasses + classes}
