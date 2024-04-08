@@ -188,3 +188,19 @@ export function gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGrid
 
     return String(gridLineWidth) + 'px';
 }
+
+export function startGridBodyRowNbr(enableHeader, showBorders) {
+    let startGridLine = 1
+    startGridLine = enableHeader ? startGridLine + 1 : startGridLine
+    startGridLine = showBorders ? startGridLine + 1 : startGridLine
+
+    return startGridLine;
+}
+
+export function endGridBodyRowNbr(startGridLine, numRows, enableHeader, enableFooter) {
+    let endGridLine = startGridLine + numRows
+    endGridLine = enableHeader ? endGridLine - 1 : endGridLine
+    endGridLine = enableFooter ? endGridLine - 1 : endGridLine
+
+    return endGridLine;
+}

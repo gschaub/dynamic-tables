@@ -94,7 +94,9 @@ import {
 	gridBandedRowBackgroundColorStyle,
 	getGridHeaderBackgroundColorStyle,
 	gridInnerBorderStyle,
-	gridInnerBorderWidthStyle
+	gridInnerBorderWidthStyle,
+	startGridBodyRowNbr,
+	endGridBodyRowNbr
 } from './style';
 
 import { ColumnMenu, RowMenu } from './components';
@@ -941,6 +943,9 @@ export default function Edit(props) {
 
 	const gridColumnStyle = processColumns(isNewBlock, tableIsResolving, table.columns)
 	const gridRowStyle = processRows(isNewBlock, tableIsResolving, table.rows)
+	const startGridBodyRowNbrStyle = startGridBodyRowNbr(enableHeaderRow, showBorders)
+	const endGridBodyRowNbrStyle = endGridBodyRowNbr(startGridBodyRowNbrStyle, numRows, enableHeaderRow, false)
+
 	const gridHeaderBackgroundColorStyle = getGridHeaderBackgroundColorStyle(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor)
 	const gridBandedRowTextColor = gridBandedRowTextColorStyle(isNewBlock, tableIsResolving, bandedRowTextColor)
 	const gridBandedRowBackgroundColor = gridBandedRowBackgroundColorStyle(isNewBlock, tableIsResolving, bandedRowBackgroundColor)
@@ -1128,20 +1133,82 @@ export default function Edit(props) {
 
 								{/* TODO: Add overflow-x option if the overflow option is selected */}
 
-								{table.rows.filter(row => row.row_id === '1') //row.attributes.isHeader)
-									// table.rows.filter(row => row.row_id === '1')
-									.map(({ table_id, row_id }) => {
-										// alert("Header Row Container" + row_id)
+								{/* Render Table Border Row if present */}
+								{showBorders &&
+									(table.cells
+										.filter(cell => cell.attributes.border && cell.row_id === '0')
+										.map(({ table_id, row_id, column_id, cell_id, content, attributes, classes }) => {
+											console.log('Rendering Body Row Cell' + cell_id)
+
+											const borderContent = setBorderContent(row_id, column_id, content)
+											const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id)
+											const isFirstColumn = column_id === '1' ? true : false;
+											return (
+												<>
+													{isFirstColumn && (
+														<div className={"grid-control__cells--border"} />
+													)}
+
+													< div
+														id={cell_id}
+														onMouseDown={e => onMouseColumnClick(column_id, row_id, table, e)}
+														className={classes}>
+														{borderContent}
+														{isOpenCurrentColumnMenu && (
+															<ColumnMenu
+																tableId={table_id}
+																columnId={column_id}
+																columnLabel={borderContent}
+																columnAttributes={columnAttributes}
+																updatedColumn={onUpdateColumn}>
+															</ColumnMenu>
+														)}
+													</div>
+												</>
+											)
+										})
+									)
+								}
+
+								{/* Render Table Header Row if present */}
+								{table.rows.filter(row => row.attributes.isHeader === true)
+									.map(({ row_id, attributes }) => {
+										const renderedRow = row_id;
 										return (
 											<div className="grid-control__header">
 												{table.cells
-													.filter(cell => cell.row_id === '1')
-													.map(({ table_id, row_id, column_id, cell_id, content, attibutes, classes }) => {
+													.filter(cell => cell.row_id === renderedRow)
+													.map(({ table_id, row_id, column_id, cell_id, content, attributes, classes }) => {
 														const isFirstColumn = column_id === '1' ? true : false;
+														const isBorder = attributes.border;
+														const borderContent = setBorderContent(row_id, column_id, content)
+														const isOpenCurrentRowMenu = openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id)
 														let showGridLinesCSS = gridShowInnerLines
 														let gridLineWidthCSS = gridInnerLineWidth
+
 														return (
 															<>
+																{isFirstColumn && isBorder && (
+																	<div className={"grid-control__cells--border"} />
+																)}
+
+																{isBorder && (
+																	<div
+																		id={cell_id}
+																		onMouseDown={e => onMouseColumnClick(column_id, row_id, table, e)}
+																		className={classes}>
+																		{borderContent}
+																		{isOpenCurrentRowMenu && (
+																			<RowMenu
+																				tableId={table_id}
+																				rowId={row_id}
+																				rowLabel={borderContent}
+																				rowAttributes={rowAttributes}
+																				updatedRow={onUpdateRow}>
+																			</RowMenu>
+																		)}
+																	</div>
+																)}
 																{isFirstColumn && (
 																	< div
 																		className={"grid-control__header-cells"}
@@ -1151,18 +1218,20 @@ export default function Edit(props) {
 																		}}
 																	></div >
 																)}
-																<RichText
-																	id={cell_id}
-																	className={"grid-control__header-cells"}
-																	style={{
-																		"--showGridLines": showGridLinesCSS,
-																		"--gridLineWidth": gridLineWidthCSS
-																	}}
-																	tabIndex="0"
-																	tagName="div"
-																	onChange={e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e)}
-																	value={content}>
-																</RichText>
+																{!isBorder && (
+																	<RichText
+																		id={cell_id}
+																		className={"grid-control__header-cells"}
+																		style={{
+																			"--showGridLines": showGridLinesCSS,
+																			"--gridLineWidth": gridLineWidthCSS
+																		}}
+																		tabIndex="0"
+																		tagName="div"
+																		onChange={e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e)}
+																		value={content}>
+																	</RichText>
+																)}
 															</>
 														)
 
@@ -1171,19 +1240,119 @@ export default function Edit(props) {
 										)
 									})}
 
+								{/* Render Table Body */}
+								<div className={"grid-control__body"}
+									style={{
+										"--startGridBodyRowNbr": startGridBodyRowNbrStyle,
+										"--endGridBodyRowNbr": endGridBodyRowNbrStyle
+									}}
 
-								{/* {table.cells
-									.filter(cell => cell.row_id === '0')
-									.map(({ table_id, row_id, column_id, cell_id, content, attibutes, classes }) => {
-										return (
-											<>
-												<ul>
-													<li>Table ID: {table_id}</li>
-												</ul>
-											</>
-										)
-									})
-								} */}
+								>
+
+									{/* Render Table Body Row Wrapper*/}
+									{table.rows.filter(row => row.attributes.isHeader !== true && row.row_id !== '0')
+										.map(({ row_id, attributes }) => {
+											const renderedRow = row_id;
+											console.log('Rendering Body Row ' + renderedRow)
+											return (
+												<div className=" grid-control__body-row">
+
+													{/* Render Table Body Row Cells*/}
+													{table.cells
+														.filter(cell => cell.row_id === renderedRow)
+														.map(({ table_id, row_id, column_id, cell_id, content, attributes, classes }) => {
+															console.log('Rendering Body Row Cell' + cell_id)
+															/**
+															 * Set general processing variables
+															 */
+															const isFirstColumn = column_id === '1' ? true : false;
+															const isBorder = attributes.border;
+															const borderContent = setBorderContent(row_id, column_id, content)
+															const isOpenCurrentRowMenu = openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id)
+															let showGridLinesCSS = gridShowInnerLines
+															let gridLineWidthCSS = gridInnerLineWidth
+
+															/**
+															 * Set calculated class names
+															 */
+															let calculatedClasses = ''
+
+															const bandedRowOffset = enableHeaderRow ? 1 : 0
+															if (bandedRows && bandedRowOffset == 0 && Number(row_id) % 2 === 0) {
+																calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row '
+															}
+
+															if (bandedRows && bandedRowOffset == 1 && Number(row_id) > 1 && (Number(row_id) + bandedRowOffset) % 2 === 0) {
+																calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row '
+															}
+
+															return (
+																<>
+																	{(isFirstColumn) && isBorder && (
+																		<div className={"grid-control__cells--border"} />
+																	)}
+
+																	{isBorder && (
+																		<div
+																			id={cell_id}
+																			onMouseDown={e => onMouseColumnClick(column_id, row_id, table, e)}
+																			className={classes}>
+																			{borderContent}
+																			{isOpenCurrentRowMenu && (
+																				<RowMenu
+																					tableId={table_id}
+																					rowId={row_id}
+																					rowLabel={borderContent}
+																					rowAttributes={rowAttributes}
+																					updatedRow={onUpdateRow}>
+																				</RowMenu>
+																			)}
+																		</div>
+																	)}
+
+																	{isFirstColumn && !isBorder && (
+																		<div
+																			className={"grid-control__body-cells grid-control__cells--zoom " + calculatedClasses}
+																			style={{
+																				"--bandedRowTextColor": gridBandedRowTextColor,
+																				"--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
+																				"--showGridLines": showGridLinesCSS,
+																				"--gridLineWidth": gridLineWidthCSS
+																			}}
+																		>
+																			<Button
+																				href="#"
+																				icon={search}
+																			/>
+																		</div>
+																	)}
+
+																	{!isBorder && (
+																		<RichText
+																			id={cell_id}
+																			className={'grid-control__body-cells ' + calculatedClasses + classes}
+																			style={{
+																				"--bandedRowTextColor": gridBandedRowTextColor,
+																				"--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
+																				"--showGridLines": showGridLinesCSS,
+																				"--gridLineWidth": gridLineWidthCSS
+																			}}
+																			tabIndex="0"
+																			tagName="div"
+																			onChange={e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e)}
+																			value={content}>
+																		</RichText>
+																	)}
+																</>
+															)
+
+														})}
+												</div >
+											)
+										})
+									}
+
+								</div>
 
 
 								{table.cells.map(({ table_id, row_id, column_id, cell_id, content, attributes, classes }) => {
@@ -1199,8 +1368,8 @@ export default function Edit(props) {
 									let gridLineWidthCSS = gridInnerLineWidth
 
 									let calculatedClasses = ''
-									const bandedRowOffset = enableHeaderRow ? 1 : 0
 
+									const bandedRowOffset = enableHeaderRow ? 1 : 0
 									if (bandedRows && bandedRowOffset == 0 && Number(row_id) % 2 === 0) {
 										calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row '
 									}
@@ -1227,11 +1396,11 @@ export default function Edit(props) {
 
 									return (
 										<>
-											{(isFirstColumn) && isBorder && (
+											{!isEnabled && (isFirstColumn) && isBorder && (
 												<div className={"grid-control__cells--border"} />
 											)}
 
-											{isBorder && (
+											{!isEnabled && isBorder && (
 												<div
 													id={cell_id}
 													onMouseDown={e => onMouseColumnClick(column_id, row_id, table, e)}
@@ -1270,7 +1439,7 @@ export default function Edit(props) {
 												></div>
 											)}
 
-											{isFirstColumn && (!isFirstRow || !enableHeaderRow) && !isBorder && (
+											{!isEnabled && isFirstColumn && (!isFirstRow || !enableHeaderRow) && !isBorder && (
 												<div
 													className={"grid-control__cells--zoom " + calculatedClasses}
 													style={{
@@ -1287,7 +1456,7 @@ export default function Edit(props) {
 												</div>
 											)}
 
-											{(!isFirstRow || !enableHeaderRow) && !isBorder && (
+											{!isEnabled && (!isFirstRow || !enableHeaderRow) && !isBorder && (
 												<RichText
 													id={cell_id}
 													className={calculatedClasses + classes}

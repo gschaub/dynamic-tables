@@ -53,7 +53,18 @@
 }
 
 .grid-control__body {
+  --startGridBodyRowNbr: 1;
+  --endGridBodyRowNbr: 2;
   display: grid;
+  grid-column: 1/calc(var(--gridNumColumns) + 2);
+  grid-row: var(--startGridBodyRowNbr)/var(--endGridBodyRowNbr);
+  grid-template-columns: subgrid;
+  grid-template-rows: auto;
+}
+
+.grid-control__body-row {
+  display: grid;
+  grid-column: 1/calc(var(--gridNumColumns) + 2);
   grid-template-columns: subgrid;
   grid-template-rows: auto;
 }

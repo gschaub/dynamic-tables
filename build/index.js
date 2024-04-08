@@ -3362,6 +3362,8 @@ function Edit(props) {
   }
   const gridColumnStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.processColumns)(isNewBlock, tableIsResolving, table.columns);
   const gridRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.processRows)(isNewBlock, tableIsResolving, table.rows);
+  const startGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.startGridBodyRowNbr)(enableHeaderRow, showBorders);
+  const endGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.endGridBodyRowNbr)(startGridBodyRowNbrStyle, numRows, enableHeaderRow, false);
   const gridHeaderBackgroundColorStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getGridHeaderBackgroundColorStyle)(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor);
   const gridBandedRowTextColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.gridBandedRowTextColorStyle)(isNewBlock, tableIsResolving, bandedRowTextColor);
   const gridBandedRowBackgroundColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.gridBandedRowBackgroundColorStyle)(isNewBlock, tableIsResolving, bandedRowBackgroundColor);
@@ -3504,34 +3506,73 @@ function Edit(props) {
       "--gridNumRows": numRows,
       "--gridAlignment": gridAlignment
     }
-  }, table.rows.filter(row => row.row_id === '1') //row.attributes.isHeader)
-  // table.rows.filter(row => row.row_id === '1')
-  .map(({
+  }, showBorders && table.cells.filter(cell => cell.attributes.border && cell.row_id === '0').map(({
     table_id,
-    row_id
+    row_id,
+    column_id,
+    cell_id,
+    content,
+    attributes,
+    classes
   }) => {
-    // alert("Header Row Container" + row_id)
+    console.log('Rendering Body Row Cell' + cell_id);
+    const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.setBorderContent)(row_id, column_id, content);
+    const isOpenCurrentColumnMenu = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.openCurrentColumnMenu)(columnMenuVisible, openColumnRow, column_id);
+    const isFirstColumn = column_id === '1' ? true : false;
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, isFirstColumn && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "grid-control__cells--border"
+    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      id: cell_id,
+      onMouseDown: e => onMouseColumnClick(column_id, row_id, table, e),
+      className: classes
+    }, borderContent, isOpenCurrentColumnMenu && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components__WEBPACK_IMPORTED_MODULE_12__.ColumnMenu, {
+      tableId: table_id,
+      columnId: column_id,
+      columnLabel: borderContent,
+      columnAttributes: columnAttributes,
+      updatedColumn: onUpdateColumn
+    })));
+  }), table.rows.filter(row => row.attributes.isHeader === true).map(({
+    row_id,
+    attributes
+  }) => {
+    const renderedRow = row_id;
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "grid-control__header"
-    }, table.cells.filter(cell => cell.row_id === '1').map(({
+    }, table.cells.filter(cell => cell.row_id === renderedRow).map(({
       table_id,
       row_id,
       column_id,
       cell_id,
       content,
-      attibutes,
+      attributes,
       classes
     }) => {
       const isFirstColumn = column_id === '1' ? true : false;
+      const isBorder = attributes.border;
+      const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.setBorderContent)(row_id, column_id, content);
+      const isOpenCurrentRowMenu = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.openCurrentRowMenu)(rowMenuVisible, openColumnRow, row_id);
       let showGridLinesCSS = gridShowInnerLines;
       let gridLineWidthCSS = gridInnerLineWidth;
-      return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, isFirstColumn && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, isFirstColumn && isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        className: "grid-control__cells--border"
+      }), isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        id: cell_id,
+        onMouseDown: e => onMouseColumnClick(column_id, row_id, table, e),
+        className: classes
+      }, borderContent, isOpenCurrentRowMenu && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components__WEBPACK_IMPORTED_MODULE_12__.RowMenu, {
+        tableId: table_id,
+        rowId: row_id,
+        rowLabel: borderContent,
+        rowAttributes: rowAttributes,
+        updatedRow: onUpdateRow
+      })), isFirstColumn && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
         className: "grid-control__header-cells",
         style: {
           "--showGridLines": showGridLinesCSS,
           "--gridLineWidth": gridLineWidthCSS
         }
-      }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
+      }), !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
         id: cell_id,
         className: "grid-control__header-cells",
         style: {
@@ -3544,7 +3585,90 @@ function Edit(props) {
         value: content
       }));
     }));
-  }), table.cells.map(({
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "grid-control__body",
+    style: {
+      "--startGridBodyRowNbr": startGridBodyRowNbrStyle,
+      "--endGridBodyRowNbr": endGridBodyRowNbrStyle
+    }
+  }, table.rows.filter(row => row.attributes.isHeader !== true && row.row_id !== '0').map(({
+    row_id,
+    attributes
+  }) => {
+    const renderedRow = row_id;
+    console.log('Rendering Body Row ' + renderedRow);
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: " grid-control__body-row"
+    }, table.cells.filter(cell => cell.row_id === renderedRow).map(({
+      table_id,
+      row_id,
+      column_id,
+      cell_id,
+      content,
+      attributes,
+      classes
+    }) => {
+      console.log('Rendering Body Row Cell' + cell_id);
+      /**
+       * Set general processing variables
+       */
+      const isFirstColumn = column_id === '1' ? true : false;
+      const isBorder = attributes.border;
+      const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.setBorderContent)(row_id, column_id, content);
+      const isOpenCurrentRowMenu = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.openCurrentRowMenu)(rowMenuVisible, openColumnRow, row_id);
+      let showGridLinesCSS = gridShowInnerLines;
+      let gridLineWidthCSS = gridInnerLineWidth;
+
+      /**
+       * Set calculated class names
+       */
+      let calculatedClasses = '';
+      const bandedRowOffset = enableHeaderRow ? 1 : 0;
+      if (bandedRows && bandedRowOffset == 0 && Number(row_id) % 2 === 0) {
+        calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row ';
+      }
+      if (bandedRows && bandedRowOffset == 1 && Number(row_id) > 1 && (Number(row_id) + bandedRowOffset) % 2 === 0) {
+        calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row ';
+      }
+      return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, isFirstColumn && isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        className: "grid-control__cells--border"
+      }), isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        id: cell_id,
+        onMouseDown: e => onMouseColumnClick(column_id, row_id, table, e),
+        className: classes
+      }, borderContent, isOpenCurrentRowMenu && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components__WEBPACK_IMPORTED_MODULE_12__.RowMenu, {
+        tableId: table_id,
+        rowId: row_id,
+        rowLabel: borderContent,
+        rowAttributes: rowAttributes,
+        updatedRow: onUpdateRow
+      })), isFirstColumn && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        className: "grid-control__body-cells grid-control__cells--zoom " + calculatedClasses,
+        style: {
+          "--bandedRowTextColor": gridBandedRowTextColor,
+          "--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
+          "--showGridLines": showGridLinesCSS,
+          "--gridLineWidth": gridLineWidthCSS
+        }
+      }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
+        href: "#",
+        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__["default"]
+      })), !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
+        id: cell_id,
+        className: 'grid-control__body-cells ' + calculatedClasses + classes,
+        style: {
+          "--bandedRowTextColor": gridBandedRowTextColor,
+          "--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
+          "--showGridLines": showGridLinesCSS,
+          "--gridLineWidth": gridLineWidthCSS
+        },
+        tabIndex: "0",
+        tagName: "div",
+        onChange: e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e),
+        value: content
+      }));
+    }));
+  })), table.cells.map(({
     table_id,
     row_id,
     column_id,
@@ -3584,9 +3708,9 @@ function Edit(props) {
     // console.log('Inner Grid Line Width = ' + gridInnerLineWidth)
     console.log('Open Column = ' + openColumnRow);
     console.log('Open Current Column Menu = ' + isOpenCurrentColumnMenu);
-    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, isFirstColumn && isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, !isEnabled && isFirstColumn && isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "grid-control__cells--border"
-    }), isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    }), !isEnabled && isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       id: cell_id,
       onMouseDown: e => onMouseColumnClick(column_id, row_id, table, e),
       className: classes
@@ -3610,7 +3734,7 @@ function Edit(props) {
         "--showGridLines": showGridLinesCSS,
         "--gridLineWidth": gridLineWidthCSS
       }
-    }), isFirstColumn && (!isFirstRow || !enableHeaderRow) && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    }), !isEnabled && isFirstColumn && (!isFirstRow || !enableHeaderRow) && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "grid-control__cells--zoom " + calculatedClasses,
       style: {
         "--bandedRowTextColor": gridBandedRowTextColor,
@@ -3621,7 +3745,7 @@ function Edit(props) {
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
       href: "#",
       icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__["default"]
-    })), (!isFirstRow || !enableHeaderRow) && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
+    })), !isEnabled && (!isFirstRow || !enableHeaderRow) && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
       id: cell_id,
       className: calculatedClasses + classes,
       style: {
@@ -3753,13 +3877,15 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   endGridBodyRowNbr: function() { return /* binding */ endGridBodyRowNbr; },
 /* harmony export */   getGridHeaderBackgroundColorStyle: function() { return /* binding */ getGridHeaderBackgroundColorStyle; },
 /* harmony export */   gridBandedRowBackgroundColorStyle: function() { return /* binding */ gridBandedRowBackgroundColorStyle; },
 /* harmony export */   gridBandedRowTextColorStyle: function() { return /* binding */ gridBandedRowTextColorStyle; },
 /* harmony export */   gridInnerBorderStyle: function() { return /* binding */ gridInnerBorderStyle; },
 /* harmony export */   gridInnerBorderWidthStyle: function() { return /* binding */ gridInnerBorderWidthStyle; },
 /* harmony export */   processColumns: function() { return /* binding */ processColumns; },
-/* harmony export */   processRows: function() { return /* binding */ processRows; }
+/* harmony export */   processRows: function() { return /* binding */ processRows; },
+/* harmony export */   startGridBodyRowNbr: function() { return /* binding */ startGridBodyRowNbr; }
 /* harmony export */ });
 /**
  * Establish grid css grid-template-columns based upon attributes associated with columns
@@ -3957,6 +4083,18 @@ function gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, 
   }
   ;
   return String(gridLineWidth) + 'px';
+}
+function startGridBodyRowNbr(enableHeader, showBorders) {
+  let startGridLine = 1;
+  startGridLine = enableHeader ? startGridLine + 1 : startGridLine;
+  startGridLine = showBorders ? startGridLine + 1 : startGridLine;
+  return startGridLine;
+}
+function endGridBodyRowNbr(startGridLine, numRows, enableHeader, enableFooter) {
+  let endGridLine = startGridLine + numRows;
+  endGridLine = enableHeader ? endGridLine - 1 : endGridLine;
+  endGridLine = enableFooter ? endGridLine - 1 : endGridLine;
+  return endGridLine;
 }
 
 /***/ }),
@@ -4160,7 +4298,7 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
     maxHeightUnits: 'em',
     fixedHeight: 0,
     fixedHeightUnits: 'em',
-    isHeader: 'false',
+    isHeader: false,
     verticalAlignment: 'none'
   };
   const rowBorderAttributes = {
@@ -4171,7 +4309,7 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
     maxHeightUnits: 'em',
     fixedHeight: 0,
     fixedHeightUnits: 'em',
-    isHeader: 'false',
+    isHeader: false,
     verticalAlignment: 'none'
   };
   const cellAttributes = {

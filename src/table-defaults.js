@@ -207,7 +207,7 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
         maxHeightUnits: 'em',
         fixedHeight: 0,
         fixedHeightUnits: 'em',
-        isHeader: 'false',
+        isHeader: false,
         verticalAlignment: 'none'
     }
 
@@ -219,7 +219,7 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
         maxHeightUnits: 'em',
         fixedHeight: 0,
         fixedHeightUnits: 'em',
-        isHeader: 'false',
+        isHeader: false,
         verticalAlignment: 'none'
     }
 
