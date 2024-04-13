@@ -107,6 +107,31 @@ export function processRows(isNewBlock, tableIsResolving, rows) {
 }
 
 /**
+ * Establish grid css grid-template-rowss based upon attributes associated with rows
+ * 
+ * @param {*} isNewBlock 
+ * @param {*} tableIsResolving 
+ * @param {*} rows 
+ * @returns 
+ */
+export function processTableBodyRows(isNewBlock, tableIsResolving, rows) {
+    if (isNewBlock || tableIsResolving) {
+        return undefined
+    }
+
+    let newGridRowStyle = ''
+    {
+        rows.filter(row => row.attributes.isHeader !== true && row.row_id !== '0')
+            .map(({ row_id, attributes, classes }) => {
+                console.log('Row ID - ' + newGridRowStyle)
+                newGridRowStyle = newGridRowStyle + 'auto ';
+            })
+    }
+    // setTableStale(false)
+    return newGridRowStyle
+}
+
+/**
  * Create Styling Variable for showing inner grid borders/lines
   * 
   * @param {*} isNewBlock 
@@ -203,4 +228,56 @@ export function endGridBodyRowNbr(startGridLine, numRows, enableHeader, enableFo
     endGridLine = enableFooter ? endGridLine - 1 : endGridLine
 
     return endGridLine;
+}
+
+export function getHeaderTextAlignmentStyle(isNewBlock, tableIsResolving, textAlignment) {
+    if (isNewBlock || tableIsResolving) {
+        return undefined;
+    };
+
+    return textAlignment;
+}
+
+
+
+/**
+ * The BorderBoxControl stores the syle values as a flat object (simple) or as nested objects
+ * (complex).  We evaluate the object value to determine which type it is.
+ * 
+ * @param {*} headerBorder 
+ * @returns 
+ */
+export function getHeaderBorderStyleType(headerBorder) {
+    if (headerBorder) {
+        const borderWrapper = Object.entries(headerBorder);
+        for (var i = 0; i < borderWrapper.length; i++) {
+            if (borderWrapper[i].some(value => { return typeof value == "object" })) {
+                console.log(borderWrapper[i]);
+                return 'split'
+            }
+        }
+        return 'flat';
+    };
+    return 'unknown';
+}
+
+/**
+ * Get Style value for the specified border segment and attribute
+ * 
+ * @param {*} headerBorder 
+ * @param {*} borderLocation 
+ * @param {*} borderAttribute 
+ * @param {*} borderType 
+ * @returns 
+ */
+export function getHeaderBorderStyle(headerBorder, borderLocation, borderAttribute, borderType) {
+    if (borderType === 'split') {
+        return headerBorder[borderLocation][borderAttribute]
+    }
+
+    if (borderType === 'flat') {
+        return headerBorder[borderAttribute]
+    }
+
+    return 'unknown'
 }

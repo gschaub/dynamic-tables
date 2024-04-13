@@ -153,9 +153,3 @@ export function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
 }
 
 
- setBorderContent
- openCurrentColumnMenu
- openCurrentRowMenu
-
-
-

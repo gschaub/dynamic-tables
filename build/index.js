@@ -2810,6 +2810,7 @@ function Edit(props) {
   const gridAlignment = block_alignment;
   const horizontalAlignment = getTablePropAttribute(table.table_attributes, 'horizontalAlignment');
   const verticalAlignment = getTablePropAttribute(table.table_attributes, 'verticalAlignment');
+  console.log(JSON.stringify(headerBorder, null, 4));
 
   /**
    * Extract and unpack table classes
@@ -3261,14 +3262,16 @@ function Edit(props) {
   * Make first table row the Header
   * 
   * @param {*} table 
-  * @param {*} isChecked 
+  * @param {*} alignmentValue 
   */
-  function onAlignHeader(table, isChecked) {
+  function onAlignHeader(table, alignment) {
+    console.log('ON HEADER ALIGNMENT');
+    console.log(alignment);
     const updatedTableAttributes = {
       ...table.table_attributes,
-      enableHeaderRow: isChecked,
-      headerRowSticky: false
+      headerAlignment: alignment
     };
+    console.log(updatedTableAttributes);
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
   }
 
@@ -3287,36 +3290,6 @@ function Edit(props) {
     };
     console.log(updatedTableAttributes);
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
-
-    // const borderType = (border) => {
-    // 	if (border === undefined) {
-    // 		return 'undefined'
-    // 	}
-    // 	if (Object.entries(border).length === 4) {
-    // 		return 'split'
-    // 	}
-    // 	return 'simple'
-    // }
-
-    // switch (borderType(border)) {
-    // 	case 'undefined': {
-    // 		const updatedTableAttributes = {
-    // 			...table.table_attributes,
-    // 			headerBorders: undefined
-    // 		}
-    // 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
-    // 		break;
-    // 	}
-    // 	case simple: {
-    // 		const updatedTableAttributes = {
-    // 			...table.table_attributes,
-    // 			headerBorders: undefined
-    // 		}
-    // 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
-    // 		break;
-    // 	}
-
-    // }
   }
 
   /**
@@ -3362,14 +3335,37 @@ function Edit(props) {
   }
   const gridColumnStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.processColumns)(isNewBlock, tableIsResolving, table.columns);
   const gridRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.processRows)(isNewBlock, tableIsResolving, table.rows);
+  const gridBodyRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.processTableBodyRows)(isNewBlock, tableIsResolving, table.rows);
   const startGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.startGridBodyRowNbr)(enableHeaderRow, showBorders);
   const endGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.endGridBodyRowNbr)(startGridBodyRowNbrStyle, numRows, enableHeaderRow, false);
-  const gridHeaderBackgroundColorStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getGridHeaderBackgroundColorStyle)(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor);
   const gridBandedRowTextColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.gridBandedRowTextColorStyle)(isNewBlock, tableIsResolving, bandedRowTextColor);
   const gridBandedRowBackgroundColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.gridBandedRowBackgroundColorStyle)(isNewBlock, tableIsResolving, bandedRowBackgroundColor);
   const gridShowInnerLines = (0,_style__WEBPACK_IMPORTED_MODULE_11__.gridInnerBorderStyle)(isNewBlock, tableIsResolving, showGridLines);
   const gridInnerLineWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.gridInnerBorderWidthStyle)(isNewBlock, tableIsResolving, showGridLines, gridLineWidth);
-  const gridHeaderStickyClass = headerRowSticky ? 'grid-scroller' : '';
+  const headerRowStickyStyle = headerRowSticky ? 'auto' : 'hidden';
+  const headerRowStickyClass = headerRowSticky ? 'grid-control__header--sticky ' : '';
+  const gridHeaderBackgroundColorStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getGridHeaderBackgroundColorStyle)(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor);
+  const headerTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, headerAlignment);
+  const headerBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyleType)(headerBorder);
+  // Top header border
+  const headerBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'top', 'color', headerBorderStyleType);
+  const headerBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'top', 'style', headerBorderStyleType);
+  const headerBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'top', 'width', headerBorderStyleType);
+
+  // Top header border
+  const headerBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'right', 'color', headerBorderStyleType);
+  const headerBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'right', 'style', headerBorderStyleType);
+  const headerBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'right', 'width', headerBorderStyleType);
+  ``;
+  // Top header border
+  const headerBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'bottom', 'color', headerBorderStyleType);
+  const headerBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'bottom', 'style', headerBorderStyleType);
+  const headerBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'bottom', 'width', headerBorderStyleType);
+
+  // Top header border
+  const headerBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'left', 'color', headerBorderStyleType);
+  const headerBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'left', 'style', headerBorderStyleType);
+  const headerBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'left', 'width', headerBorderStyleType);
   console.log('Grid Column Style = ' + gridColumnStyle);
   // const gridStyle = setGridStyle(isNewBlock, tableIsResolving, table)
   console.log('Banded Grid Text Color = ' + gridBandedRowTextColor);
@@ -3432,7 +3428,7 @@ function Edit(props) {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
     id: "header-alignment",
     value: headerAlignment,
-    onChange: e => onAlignHeader((table, e))
+    onChange: e => onAlignHeader(table, e)
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     className: "inspector-controls-nemu__label--left-margin",
     for: "header-alignment"
@@ -3493,15 +3489,18 @@ function Edit(props) {
     onChange: e => setTableAttributes(table_id, 'table_name', '', 'PROP', e),
     value: table.table_name
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TabbableContainer, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: gridHeaderStickyClass,
+    className: "grid-scroller",
     style: {
-      "--gridHeaderColor": gridHeaderBackgroundColorStyle
+      "--headerRowSticky": headerRowStickyStyle,
+      "--startGridBodyRowNbr": startGridBodyRowNbrStyle,
+      "--endGridBodyRowNbr": endGridBodyRowNbrStyle
     }
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "grid-control",
+    className: "grid-control " + headerRowStickyClass,
     style: {
       "--gridTemplateColumns": gridColumnStyle,
       "--gridTemplateRows": gridRowStyle,
+      "--headerRowSticky": headerRowStickyStyle,
       "--gridNumColumns": numColumns,
       "--gridNumRows": numRows,
       "--gridAlignment": gridAlignment
@@ -3538,7 +3537,22 @@ function Edit(props) {
   }) => {
     const renderedRow = row_id;
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "grid-control__header"
+      className: "grid-control__header",
+      style: {
+        "--headerBorderTopColor": headerBorderTopColor,
+        "--headerBorderTopStype": headerBorderTopStyle,
+        "--headerBorderTopWidth": headerBorderTopWidth,
+        "--headerBorderRightColor": headerBorderRightColor,
+        "--headerBorderRightStype": headerBorderRightStyle,
+        "--headerBorderRightWidth": headerBorderRightWidth,
+        "--headerBorderBottomColor": headerBorderBottomColor,
+        "--headerBorderBottomStype": headerBorderBottomStyle,
+        "--headerBorderBottomWidth": headerBorderBottomWidth,
+        "--headerBorderLeftColor": headerBorderLeftColor,
+        "--headerBorderLeftStype": headerBorderLeftStyle,
+        "--headerBorderLeftWidth": headerBorderLeftWidth,
+        "--headerTextAlignment": headerTextAlignmentStyle
+      }
     }, table.cells.filter(cell => cell.row_id === renderedRow).map(({
       table_id,
       row_id,
@@ -3588,6 +3602,7 @@ function Edit(props) {
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "grid-control__body",
     style: {
+      "--gridTemplateBodyRows": gridBodyRowStyle,
       "--startGridBodyRowNbr": startGridBodyRowNbrStyle,
       "--endGridBodyRowNbr": endGridBodyRowNbrStyle
     }
@@ -3668,98 +3683,7 @@ function Edit(props) {
         value: content
       }));
     }));
-  })), table.cells.map(({
-    table_id,
-    row_id,
-    column_id,
-    cell_id,
-    content,
-    attributes,
-    classes
-  }) => {
-    const isBorder = attributes.border;
-    const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.setBorderContent)(row_id, column_id, content);
-    const isOpenCurrentColumnMenu = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.openCurrentColumnMenu)(columnMenuVisible, openColumnRow, column_id);
-    const isOpenCurrentRowMenu = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.openCurrentRowMenu)(rowMenuVisible, openColumnRow, row_id);
-    const isFirstColumn = column_id === '1' ? true : false;
-    const isFirstRow = row_id === '1' ? true : false;
-    let isEnabled = true;
-    let showGridLinesCSS = gridShowInnerLines;
-    let gridLineWidthCSS = gridInnerLineWidth;
-    let calculatedClasses = '';
-    const bandedRowOffset = enableHeaderRow ? 1 : 0;
-    if (bandedRows && bandedRowOffset == 0 && Number(row_id) % 2 === 0) {
-      calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row ';
-    }
-    if (bandedRows && bandedRowOffset == 1 && Number(row_id) > 1 && (Number(row_id) + bandedRowOffset) % 2 === 0) {
-      calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row ';
-    }
-    if (enableHeaderRow && Number(row_id) == 1) {
-      calculatedClasses = calculatedClasses + 'grid-control__header-cells ';
-      showGridLinesCSS = 'solid';
-      gridLineWidthCSS = '1px';
-    } else {
-      calculatedClasses = calculatedClasses + 'grid-control__body-cells ';
-    }
-    console.log('...Rendering - ' + cell_id);
-    console.log('Calculated Classes = ' + calculatedClasses);
-    // console.log('Column Menu Visible = ' + columnMenuVisible)
-    // console.log('Show Inner Grid Lines = ' + gridShowInnerLines)
-    // console.log('Inner Grid Line Width = ' + gridInnerLineWidth)
-    console.log('Open Column = ' + openColumnRow);
-    console.log('Open Current Column Menu = ' + isOpenCurrentColumnMenu);
-    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, !isEnabled && isFirstColumn && isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "grid-control__cells--border"
-    }), !isEnabled && isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      id: cell_id,
-      onMouseDown: e => onMouseColumnClick(column_id, row_id, table, e),
-      className: classes
-    }, borderContent, isOpenCurrentColumnMenu && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components__WEBPACK_IMPORTED_MODULE_12__.ColumnMenu, {
-      tableId: table_id,
-      columnId: column_id,
-      columnLabel: borderContent,
-      columnAttributes: columnAttributes,
-      updatedColumn: onUpdateColumn
-    }), isOpenCurrentRowMenu && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components__WEBPACK_IMPORTED_MODULE_12__.RowMenu, {
-      tableId: table_id,
-      rowId: row_id,
-      rowLabel: borderContent,
-      rowAttributes: columnAttributes,
-      updatedRow: onUpdateRow
-    })), !isEnabled && isFirstColumn && enableHeaderRow && isFirstRow && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: calculatedClasses,
-      style: {
-        "--bandedRowTextColor": gridBandedRowTextColor,
-        "--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
-        "--showGridLines": showGridLinesCSS,
-        "--gridLineWidth": gridLineWidthCSS
-      }
-    }), !isEnabled && isFirstColumn && (!isFirstRow || !enableHeaderRow) && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: "grid-control__cells--zoom " + calculatedClasses,
-      style: {
-        "--bandedRowTextColor": gridBandedRowTextColor,
-        "--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
-        "--showGridLines": showGridLinesCSS,
-        "--gridLineWidth": gridLineWidthCSS
-      }
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
-      href: "#",
-      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__["default"]
-    })), !isEnabled && (!isFirstRow || !enableHeaderRow) && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
-      id: cell_id,
-      className: calculatedClasses + classes,
-      style: {
-        "--bandedRowTextColor": gridBandedRowTextColor,
-        "--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
-        "--showGridLines": showGridLinesCSS,
-        "--gridLineWidth": gridLineWidthCSS
-      },
-      tabIndex: "0",
-      tagName: "div",
-      onChange: e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e),
-      value: content
-    }));
-  }))))), !isNewBlock && tableIsResolving && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Spinner, null, "Retrieving Table Data"), isNewBlock && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Placeholder, {
+  })))))), !isNewBlock && tableIsResolving && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Spinner, null, "Retrieving Table Data"), isNewBlock && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Placeholder, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Dynamic Table'),
     icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockIcon, {
       icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_15__["default"],
@@ -3879,12 +3803,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   endGridBodyRowNbr: function() { return /* binding */ endGridBodyRowNbr; },
 /* harmony export */   getGridHeaderBackgroundColorStyle: function() { return /* binding */ getGridHeaderBackgroundColorStyle; },
+/* harmony export */   getHeaderBorderStyle: function() { return /* binding */ getHeaderBorderStyle; },
+/* harmony export */   getHeaderBorderStyleType: function() { return /* binding */ getHeaderBorderStyleType; },
+/* harmony export */   getHeaderTextAlignmentStyle: function() { return /* binding */ getHeaderTextAlignmentStyle; },
 /* harmony export */   gridBandedRowBackgroundColorStyle: function() { return /* binding */ gridBandedRowBackgroundColorStyle; },
 /* harmony export */   gridBandedRowTextColorStyle: function() { return /* binding */ gridBandedRowTextColorStyle; },
 /* harmony export */   gridInnerBorderStyle: function() { return /* binding */ gridInnerBorderStyle; },
 /* harmony export */   gridInnerBorderWidthStyle: function() { return /* binding */ gridInnerBorderWidthStyle; },
 /* harmony export */   processColumns: function() { return /* binding */ processColumns; },
 /* harmony export */   processRows: function() { return /* binding */ processRows; },
+/* harmony export */   processTableBodyRows: function() { return /* binding */ processTableBodyRows; },
 /* harmony export */   startGridBodyRowNbr: function() { return /* binding */ startGridBodyRowNbr; }
 /* harmony export */ });
 /**
@@ -4002,6 +3930,33 @@ function processRows(isNewBlock, tableIsResolving, rows) {
 }
 
 /**
+ * Establish grid css grid-template-rowss based upon attributes associated with rows
+ * 
+ * @param {*} isNewBlock 
+ * @param {*} tableIsResolving 
+ * @param {*} rows 
+ * @returns 
+ */
+function processTableBodyRows(isNewBlock, tableIsResolving, rows) {
+  if (isNewBlock || tableIsResolving) {
+    return undefined;
+  }
+  let newGridRowStyle = '';
+  {
+    rows.filter(row => row.attributes.isHeader !== true && row.row_id !== '0').map(({
+      row_id,
+      attributes,
+      classes
+    }) => {
+      console.log('Row ID - ' + newGridRowStyle);
+      newGridRowStyle = newGridRowStyle + 'auto ';
+    });
+  }
+  // setTableStale(false)
+  return newGridRowStyle;
+}
+
+/**
  * Create Styling Variable for showing inner grid borders/lines
   * 
   * @param {*} isNewBlock 
@@ -4095,6 +4050,56 @@ function endGridBodyRowNbr(startGridLine, numRows, enableHeader, enableFooter) {
   endGridLine = enableHeader ? endGridLine - 1 : endGridLine;
   endGridLine = enableFooter ? endGridLine - 1 : endGridLine;
   return endGridLine;
+}
+function getHeaderTextAlignmentStyle(isNewBlock, tableIsResolving, textAlignment) {
+  if (isNewBlock || tableIsResolving) {
+    return undefined;
+  }
+  ;
+  return textAlignment;
+}
+
+/**
+ * The BorderBoxControl stores the syle values as a flat object (simple) or as nested objects
+ * (complex).  We evaluate the object value to determine which type it is.
+ * 
+ * @param {*} headerBorder 
+ * @returns 
+ */
+function getHeaderBorderStyleType(headerBorder) {
+  if (headerBorder) {
+    const borderWrapper = Object.entries(headerBorder);
+    for (var i = 0; i < borderWrapper.length; i++) {
+      if (borderWrapper[i].some(value => {
+        return typeof value == "object";
+      })) {
+        console.log(borderWrapper[i]);
+        return 'split';
+      }
+    }
+    return 'flat';
+  }
+  ;
+  return 'unknown';
+}
+
+/**
+ * Get Style value for the specified border segment and attribute
+ * 
+ * @param {*} headerBorder 
+ * @param {*} borderLocation 
+ * @param {*} borderAttribute 
+ * @param {*} borderType 
+ * @returns 
+ */
+function getHeaderBorderStyle(headerBorder, borderLocation, borderAttribute, borderType) {
+  if (borderType === 'split') {
+    return headerBorder[borderLocation][borderAttribute];
+  }
+  if (borderType === 'flat') {
+    return headerBorder[borderAttribute];
+  }
+  return 'unknown';
 }
 
 /***/ }),
@@ -4573,9 +4578,6 @@ function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
   }
   return false;
 }
-setBorderContent;
-openCurrentColumnMenu;
-openCurrentRowMenu;
 
 /***/ }),
 
