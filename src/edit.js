@@ -99,8 +99,8 @@ import {
 	endGridBodyRowNbr,
 	getGridHeaderBackgroundColorStyle,
 	getHeaderTextAlignmentStyle,
-	getHeaderBorderStyleType,
-	getHeaderBorderStyle
+	getBorderStyleType,
+	getBorderStyle
 } from './style';
 
 import { ColumnMenu, RowMenu } from './components';
@@ -331,6 +331,8 @@ export default function Edit(props) {
 	const gridHeaderBackgroundColor = getTablePropAttribute(table.table_attributes, 'tableHeaderBackgroundColor')
 	const headerRowSticky = getTablePropAttribute(table.table_attributes, 'headerRowSticky')
 	const headerBorder = getTablePropAttribute(table.table_attributes, 'headerBorder')
+	const bodyAlignment = getTablePropAttribute(table.table_attributes, 'bodyAlignment')
+	const bodyBorder = getTablePropAttribute(table.table_attributes, 'bodyBorder')
 	const bandedRows = getTablePropAttribute(table.table_attributes, 'bandedRows')
 	const bandedRowTextColor = getTablePropAttribute(table.table_attributes, 'bandedRowTextColor')
 	const bandedRowBackgroundColor = getTablePropAttribute(table.table_attributes, 'bandedRowBackgroundColor')
@@ -885,6 +887,42 @@ export default function Edit(props) {
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
+	/**
+	* Make first table row the Header
+	* 
+	* @param {*} table 
+	* @param {*} alignmentValue 
+	*/
+	function onAlignBody(table, alignment) {
+		console.log('ON BODY  ALIGNMENT')
+		console.log(alignment)
+		const updatedTableAttributes = {
+			...table.table_attributes,
+			bodyAlignment: alignment
+		}
+		console.log(updatedTableAttributes)
+		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+	}
+
+	/**
+	* Make first table row the Header
+	* 
+	* @param {*} table 
+	* @param {*} isChecked 
+	*/
+	function onBodyBorder(table, border) {
+		console.log('ON BODY BORDER')
+		console.log(border)
+
+		const updatedTableAttributes = {
+			...table.table_attributes,
+			bodyBorder: border
+		}
+		console.log(updatedTableAttributes)
+		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+	}
+
+
 
 	/**
 	  * Show inner grid lines
@@ -928,27 +966,57 @@ export default function Edit(props) {
 	const headerRowStickyStyle = headerRowSticky ? 'auto' : 'hidden';
 	const headerRowStickyClass = headerRowSticky ? 'grid-control__header--sticky ' : '';
 	const gridHeaderBackgroundColorStyle = getGridHeaderBackgroundColorStyle(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor)
+
+	/** 
+	 * Header Styling
+	 */
 	const headerTextAlignmentStyle = getHeaderTextAlignmentStyle(isNewBlock, tableIsResolving, headerAlignment)
-	const headerBorderStyleType = getHeaderBorderStyleType(headerBorder)
+	const headerBorderStyleType = getBorderStyleType(headerBorder)
 	// Top header border
-	const headerBorderTopColor = getHeaderBorderStyle(headerBorder, 'top', 'color', headerBorderStyleType);
-	const headerBorderTopStyle = getHeaderBorderStyle(headerBorder, 'top', 'style', headerBorderStyleType);
-	const headerBorderTopWidth = getHeaderBorderStyle(headerBorder, 'top', 'width', headerBorderStyleType);
+	const headerBorderTopColor = getBorderStyle(headerBorder, 'top', 'color', headerBorderStyleType);
+	const headerBorderTopStyle = getBorderStyle(headerBorder, 'top', 'style', headerBorderStyleType);
+	const headerBorderTopWidth = getBorderStyle(headerBorder, 'top', 'width', headerBorderStyleType);
 
-	// Top header border
-	const headerBorderRightColor = getHeaderBorderStyle(headerBorder, 'right', 'color', headerBorderStyleType);
-	const headerBorderRightStyle = getHeaderBorderStyle(headerBorder, 'right', 'style', headerBorderStyleType);
-	const headerBorderRightWidth = getHeaderBorderStyle(headerBorder, 'right', 'width', headerBorderStyleType);
+	// Right header border
+	const headerBorderRightColor = getBorderStyle(headerBorder, 'right', 'color', headerBorderStyleType);
+	const headerBorderRightStyle = getBorderStyle(headerBorder, 'right', 'style', headerBorderStyleType);
+	const headerBorderRightWidth = getBorderStyle(headerBorder, 'right', 'width', headerBorderStyleType);
 	``
-	// Top header border
-	const headerBorderBottomColor = getHeaderBorderStyle(headerBorder, 'bottom', 'color', headerBorderStyleType);
-	const headerBorderBottomStyle = getHeaderBorderStyle(headerBorder, 'bottom', 'style', headerBorderStyleType);
-	const headerBorderBottomWidth = getHeaderBorderStyle(headerBorder, 'bottom', 'width', headerBorderStyleType);
+	// Bottom header border
+	const headerBorderBottomColor = getBorderStyle(headerBorder, 'bottom', 'color', headerBorderStyleType);
+	const headerBorderBottomStyle = getBorderStyle(headerBorder, 'bottom', 'style', headerBorderStyleType);
+	const headerBorderBottomWidth = getBorderStyle(headerBorder, 'bottom', 'width', headerBorderStyleType);
 
-	// Top header border
-	const headerBorderLeftColor = getHeaderBorderStyle(headerBorder, 'left', 'color', headerBorderStyleType);
-	const headerBorderLeftStyle = getHeaderBorderStyle(headerBorder, 'left', 'style', headerBorderStyleType);
-	const headerBorderLeftWidth = getHeaderBorderStyle(headerBorder, 'left', 'width', headerBorderStyleType);
+	// Left header border
+	const headerBorderLeftColor = getBorderStyle(headerBorder, 'left', 'color', headerBorderStyleType);
+	const headerBorderLeftStyle = getBorderStyle(headerBorder, 'left', 'style', headerBorderStyleType);
+	const headerBorderLeftWidth = getBorderStyle(headerBorder, 'left', 'width', headerBorderStyleType);
+
+	/**
+	 * Body Styling
+	 */
+	const bodyTextAlignmentStyle = getHeaderTextAlignmentStyle(isNewBlock, tableIsResolving, bodyAlignment)
+	const bodyBorderStyleType = getBorderStyleType(bodyBorder)
+	// Top body border
+	const bodyBorderTopColor = getBorderStyle(bodyBorder, 'top', 'color', bodyBorderStyleType);
+	const bodyBorderTopStyle = getBorderStyle(bodyBorder, 'top', 'style', bodyBorderStyleType);
+	const bodyBorderTopWidth = getBorderStyle(bodyBorder, 'top', 'width', bodyBorderStyleType);
+
+	// Right body border
+	const bodyBorderRightColor = getBorderStyle(bodyBorder, 'right', 'color', bodyBorderStyleType);
+	const bodyBorderRightStyle = getBorderStyle(headerBorder, 'right', 'style', bodyBorderStyleType);
+	const bodyBorderRightWidth = getBorderStyle(headerBorder, 'right', 'width', bodyBorderStyleType);
+	``
+	// Bottom body border
+	const bodyBorderBottomColor = getBorderStyle(bodyBorder, 'bottom', 'color', bodyBorderStyleType);
+	const bodyBorderBottomStyle = getBorderStyle(bodyBorder, 'bottom', 'style', bodyBorderStyleType);
+	const bodyBorderBottomWidth = getBorderStyle(headerBorder, 'bottom', 'width', bodyBorderStyleType);
+
+	// Left body border
+	const bodyBorderLeftColor = getBorderStyle(bodyBorder, 'left', 'color', bodyBorderStyleType);
+	const bodyBorderLeftStyle = getBorderStyle(bodyBorder, 'left', 'style', bodyBorderStyleType);
+	const bodyBorderLeftWidth = getBorderStyle(bodyBorder, 'left', 'width', bodyBorderStyleType);
+
 
 	console.log('Grid Column Style = ' + gridColumnStyle)
 	// const gridStyle = setGridStyle(isNewBlock, tableIsResolving, table)
@@ -1007,7 +1075,7 @@ export default function Edit(props) {
 
 							</PanelBody>
 
-							<PanelBody title="Table Header" initialOpen={true}>
+							<PanelBody title="Table Header" initialOpen={false}>
 								<PanelRow>
 									<CheckboxControl label="First Row as Header?"
 										checked={enableHeaderRow}
@@ -1051,6 +1119,33 @@ export default function Edit(props) {
 
 							</PanelBody>
 
+							<PanelBody title="Table Body" initialOpen={false}>
+								<PanelRow>
+									<span className="inspector-controls-menu__header-alignment--middle">
+										<AlignmentControl
+											id="body-alignment"
+											value={bodyAlignment}
+											onChange={(e) => onAlignBody(table, e)}
+										/>
+										<label className="inspector-controls-nemu__label--left-margin"
+											for="body-alignment">
+											Text Alignment
+										</label>
+									</span>
+								</PanelRow>
+
+								<PanelRow>
+									<BorderBoxControl
+										label="Borders"
+										hideLabelFromVision="false"
+										isCompact="true"
+										colors={themeColors}
+										value={bodyBorder}
+										onChange={(e) => onBodyBorder(table, e)}
+									/>
+								</PanelRow>
+
+							</PanelBody>
 
 						</Panel>
 					</InspectorControls>
@@ -1261,9 +1356,21 @@ export default function Edit(props) {
 									style={{
 										"--gridTemplateBodyRows": gridBodyRowStyle,
 										"--startGridBodyRowNbr": startGridBodyRowNbrStyle,
-										"--endGridBodyRowNbr": endGridBodyRowNbrStyle
+										"--endGridBodyRowNbr": endGridBodyRowNbrStyle,
+										"--bodyBorderTopColor": bodyBorderTopColor,
+										"--bodyBorderTopStype": bodyBorderTopStyle,
+										"--bodyBorderTopWidth": bodyBorderTopWidth,
+										"--bodyBorderRightColor": bodyBorderRightColor,
+										"--bodyBorderRightStype": bodyBorderRightStyle,
+										"--bodyBorderRightWidth": bodyBorderRightWidth,
+										"--bodyBorderBottomColor": bodyBorderBottomColor,
+										"--bodyBorderBottomStype": bodyBorderBottomStyle,
+										"--bodyBorderBottomWidth": bodyBorderBottomWidth,
+										"--bodyBorderLeftColor": bodyBorderLeftColor,
+										"--bodyBorderLeftStype": bodyBorderLeftStyle,
+										"--bodyBorderLeftWidth": bodyBorderLeftWidth,
+										"--bodyTextAlignment": bodyTextAlignmentStyle
 									}}
-
 								>
 
 									{/* Render Table Body Row Wrapper*/}

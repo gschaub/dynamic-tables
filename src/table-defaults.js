@@ -168,6 +168,8 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
         headerRowSticky: false,
         headerBorder: undefined,
         horizontalAlignment: 'none',
+        bodyAlignment: undefined,
+        bodyBorder: undefined,
         verticalAlignment: 'none'
     }
 

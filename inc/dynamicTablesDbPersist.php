@@ -143,7 +143,7 @@ class PersistTableData
         return $this->replacementResult;
     }
 
-    public function create_table_data($blockTableRef, $postId, $tableName, $attributes, $classes)
+    public function create_table_data($blockTableRef, $status, $postId, $tableName, $attributes, $classes)
     {
 
         $success = 'Processing';
@@ -156,6 +156,7 @@ class PersistTableData
         $data = array(
             'block_table_ref' => $blockTableRef,
             'post_id' => $postId,
+            'status' => $status,
             'table_name' => $tableName,
             'attributes' => $attributes,
             'classes' => $classes);
@@ -182,7 +183,7 @@ class PersistTableData
         return $this->result;
     }
 
-    public function update_table($tableId, $blockTableRef, $postId, $tableName, $attributes, $classes)
+    public function update_table($tableId, $blockTableRef, $status, $postId, $tableName, $attributes, $classes)
     {
 
         error_log('Updating table, attributes = ' . json_encode($attributes));
@@ -207,7 +208,7 @@ class PersistTableData
             'field' => 'id',
             'value' => $tableId));
 
-        error_log('Update Table Params: table id - ' . $tableId . ', block ref - ' . $blockTableRef . ', post id - ' . $postId . ', table name - ' . $tableName . ', attributes - ' . $attributes . ', classes - ' . $classes);
+        error_log('Update Table Params: table id - ' . $tableId . ', block ref - ' . $blockTableRef . ', status - ' . $status . ', post id - ' . $postId . ', table name - ' . $tableName . ', attributes - ' . $attributes . ', classes - ' . $classes);
 
         $queryResults = $this->get_table_data($argsBuild);
         error_log('   Selected Data - ' . json_encode($queryResults));
@@ -219,6 +220,11 @@ class PersistTableData
         if ($blockTableRef === null) {
             $blockTableRef = $queryResults[ 0 ]->block_table_ref;
         }
+
+        if ($status === null) {
+            $status = $queryResults[ 0 ]->status;
+        }
+
         if ($postId === null) {
             $postId = $queryResults[ 0 ]->post_id;
         }
@@ -244,6 +250,11 @@ class PersistTableData
             'type' => 'set',
             'field' => 'block_table_ref',
             'value' => $blockTableRef));
+
+        array_push($argsBuild, array(
+            'type' => 'set',
+            'field' => 'status',
+            'value' => $status));
 
         array_push($argsBuild, array(
             'type' => 'set',

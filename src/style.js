@@ -244,12 +244,12 @@ export function getHeaderTextAlignmentStyle(isNewBlock, tableIsResolving, textAl
  * The BorderBoxControl stores the syle values as a flat object (simple) or as nested objects
  * (complex).  We evaluate the object value to determine which type it is.
  * 
- * @param {*} headerBorder 
+ * @param {*} border 
  * @returns 
  */
-export function getHeaderBorderStyleType(headerBorder) {
-    if (headerBorder) {
-        const borderWrapper = Object.entries(headerBorder);
+export function getBorderStyleType(border) {
+    if (border) {
+        const borderWrapper = Object.entries(border);
         for (var i = 0; i < borderWrapper.length; i++) {
             if (borderWrapper[i].some(value => { return typeof value == "object" })) {
                 console.log(borderWrapper[i]);
@@ -264,19 +264,19 @@ export function getHeaderBorderStyleType(headerBorder) {
 /**
  * Get Style value for the specified border segment and attribute
  * 
- * @param {*} headerBorder 
+ * @param {*} border 
  * @param {*} borderLocation 
  * @param {*} borderAttribute 
  * @param {*} borderType 
  * @returns 
  */
-export function getHeaderBorderStyle(headerBorder, borderLocation, borderAttribute, borderType) {
+export function getBorderStyle(border, borderLocation, borderAttribute, borderType) {
     if (borderType === 'split') {
-        return headerBorder[borderLocation][borderAttribute]
+        return border[borderLocation][borderAttribute]
     }
 
     if (borderType === 'flat') {
-        return headerBorder[borderAttribute]
+        return border[borderAttribute]
     }
 
     return 'unknown'

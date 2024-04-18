@@ -2803,6 +2803,8 @@ function Edit(props) {
   const gridHeaderBackgroundColor = getTablePropAttribute(table.table_attributes, 'tableHeaderBackgroundColor');
   const headerRowSticky = getTablePropAttribute(table.table_attributes, 'headerRowSticky');
   const headerBorder = getTablePropAttribute(table.table_attributes, 'headerBorder');
+  const bodyAlignment = getTablePropAttribute(table.table_attributes, 'bodyAlignment');
+  const bodyBorder = getTablePropAttribute(table.table_attributes, 'bodyBorder');
   const bandedRows = getTablePropAttribute(table.table_attributes, 'bandedRows');
   const bandedRowTextColor = getTablePropAttribute(table.table_attributes, 'bandedRowTextColor');
   const bandedRowBackgroundColor = getTablePropAttribute(table.table_attributes, 'bandedRowBackgroundColor');
@@ -3307,6 +3309,40 @@ function Edit(props) {
   }
 
   /**
+  * Make first table row the Header
+  * 
+  * @param {*} table 
+  * @param {*} alignmentValue 
+  */
+  function onAlignBody(table, alignment) {
+    console.log('ON BODY  ALIGNMENT');
+    console.log(alignment);
+    const updatedTableAttributes = {
+      ...table.table_attributes,
+      bodyAlignment: alignment
+    };
+    console.log(updatedTableAttributes);
+    setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+  }
+
+  /**
+  * Make first table row the Header
+  * 
+  * @param {*} table 
+  * @param {*} isChecked 
+  */
+  function onBodyBorder(table, border) {
+    console.log('ON BODY BORDER');
+    console.log(border);
+    const updatedTableAttributes = {
+      ...table.table_attributes,
+      bodyBorder: border
+    };
+    console.log(updatedTableAttributes);
+    setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+  }
+
+  /**
     * Show inner grid lines
   * 
   * @param {*} table 
@@ -3345,27 +3381,56 @@ function Edit(props) {
   const headerRowStickyStyle = headerRowSticky ? 'auto' : 'hidden';
   const headerRowStickyClass = headerRowSticky ? 'grid-control__header--sticky ' : '';
   const gridHeaderBackgroundColorStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getGridHeaderBackgroundColorStyle)(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor);
+
+  /** 
+   * Header Styling
+   */
   const headerTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, headerAlignment);
-  const headerBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyleType)(headerBorder);
+  const headerBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyleType)(headerBorder);
   // Top header border
-  const headerBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'top', 'color', headerBorderStyleType);
-  const headerBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'top', 'style', headerBorderStyleType);
-  const headerBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'top', 'width', headerBorderStyleType);
+  const headerBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(headerBorder, 'top', 'color', headerBorderStyleType);
+  const headerBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(headerBorder, 'top', 'style', headerBorderStyleType);
+  const headerBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(headerBorder, 'top', 'width', headerBorderStyleType);
 
-  // Top header border
-  const headerBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'right', 'color', headerBorderStyleType);
-  const headerBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'right', 'style', headerBorderStyleType);
-  const headerBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'right', 'width', headerBorderStyleType);
+  // Right header border
+  const headerBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(headerBorder, 'right', 'color', headerBorderStyleType);
+  const headerBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(headerBorder, 'right', 'style', headerBorderStyleType);
+  const headerBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(headerBorder, 'right', 'width', headerBorderStyleType);
   ``;
-  // Top header border
-  const headerBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'bottom', 'color', headerBorderStyleType);
-  const headerBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'bottom', 'style', headerBorderStyleType);
-  const headerBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'bottom', 'width', headerBorderStyleType);
+  // Bottom header border
+  const headerBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(headerBorder, 'bottom', 'color', headerBorderStyleType);
+  const headerBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(headerBorder, 'bottom', 'style', headerBorderStyleType);
+  const headerBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(headerBorder, 'bottom', 'width', headerBorderStyleType);
 
-  // Top header border
-  const headerBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'left', 'color', headerBorderStyleType);
-  const headerBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'left', 'style', headerBorderStyleType);
-  const headerBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderBorderStyle)(headerBorder, 'left', 'width', headerBorderStyleType);
+  // Left header border
+  const headerBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(headerBorder, 'left', 'color', headerBorderStyleType);
+  const headerBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(headerBorder, 'left', 'style', headerBorderStyleType);
+  const headerBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(headerBorder, 'left', 'width', headerBorderStyleType);
+
+  /**
+   * Body Styling
+   */
+  const bodyTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, bodyAlignment);
+  const bodyBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyleType)(bodyBorder);
+  // Top body border
+  const bodyBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(bodyBorder, 'top', 'color', bodyBorderStyleType);
+  const bodyBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(bodyBorder, 'top', 'style', bodyBorderStyleType);
+  const bodyBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(bodyBorder, 'top', 'width', bodyBorderStyleType);
+
+  // Right body border
+  const bodyBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(bodyBorder, 'right', 'color', bodyBorderStyleType);
+  const bodyBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(headerBorder, 'right', 'style', bodyBorderStyleType);
+  const bodyBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(headerBorder, 'right', 'width', bodyBorderStyleType);
+  ``;
+  // Bottom body border
+  const bodyBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(bodyBorder, 'bottom', 'color', bodyBorderStyleType);
+  const bodyBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(bodyBorder, 'bottom', 'style', bodyBorderStyleType);
+  const bodyBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(headerBorder, 'bottom', 'width', bodyBorderStyleType);
+
+  // Left body border
+  const bodyBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(bodyBorder, 'left', 'color', bodyBorderStyleType);
+  const bodyBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(bodyBorder, 'left', 'style', bodyBorderStyleType);
+  const bodyBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(bodyBorder, 'left', 'width', bodyBorderStyleType);
   console.log('Grid Column Style = ' + gridColumnStyle);
   // const gridStyle = setGridStyle(isNewBlock, tableIsResolving, table)
   console.log('Banded Grid Text Color = ' + gridBandedRowTextColor);
@@ -3410,7 +3475,7 @@ function Edit(props) {
     onChange: e => defineRows(e)
   })))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
     title: "Table Header",
-    initialOpen: true
+    initialOpen: false
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
     label: "First Row as Header?",
     checked: enableHeaderRow
@@ -3439,6 +3504,25 @@ function Edit(props) {
     colors: themeColors,
     value: headerBorder,
     onChange: e => onHeaderBorder(table, e)
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+    title: "Table Body",
+    initialOpen: false
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "inspector-controls-menu__header-alignment--middle"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
+    id: "body-alignment",
+    value: bodyAlignment,
+    onChange: e => onAlignBody(table, e)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "inspector-controls-nemu__label--left-margin",
+    for: "body-alignment"
+  }, "Text Alignment"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalBorderBoxControl, {
+    label: "Borders",
+    hideLabelFromVision: "false",
+    isCompact: "true",
+    colors: themeColors,
+    value: bodyBorder,
+    onChange: e => onBodyBorder(table, e)
   }))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
     group: "styles"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
@@ -3604,7 +3688,20 @@ function Edit(props) {
     style: {
       "--gridTemplateBodyRows": gridBodyRowStyle,
       "--startGridBodyRowNbr": startGridBodyRowNbrStyle,
-      "--endGridBodyRowNbr": endGridBodyRowNbrStyle
+      "--endGridBodyRowNbr": endGridBodyRowNbrStyle,
+      "--bodyBorderTopColor": bodyBorderTopColor,
+      "--bodyBorderTopStype": bodyBorderTopStyle,
+      "--bodyBorderTopWidth": bodyBorderTopWidth,
+      "--bodyBorderRightColor": bodyBorderRightColor,
+      "--bodyBorderRightStype": bodyBorderRightStyle,
+      "--bodyBorderRightWidth": bodyBorderRightWidth,
+      "--bodyBorderBottomColor": bodyBorderBottomColor,
+      "--bodyBorderBottomStype": bodyBorderBottomStyle,
+      "--bodyBorderBottomWidth": bodyBorderBottomWidth,
+      "--bodyBorderLeftColor": bodyBorderLeftColor,
+      "--bodyBorderLeftStype": bodyBorderLeftStyle,
+      "--bodyBorderLeftWidth": bodyBorderLeftWidth,
+      "--bodyTextAlignment": bodyTextAlignmentStyle
     }
   }, table.rows.filter(row => row.attributes.isHeader !== true && row.row_id !== '0').map(({
     row_id,
@@ -3802,9 +3899,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   endGridBodyRowNbr: function() { return /* binding */ endGridBodyRowNbr; },
+/* harmony export */   getBorderStyle: function() { return /* binding */ getBorderStyle; },
+/* harmony export */   getBorderStyleType: function() { return /* binding */ getBorderStyleType; },
 /* harmony export */   getGridHeaderBackgroundColorStyle: function() { return /* binding */ getGridHeaderBackgroundColorStyle; },
-/* harmony export */   getHeaderBorderStyle: function() { return /* binding */ getHeaderBorderStyle; },
-/* harmony export */   getHeaderBorderStyleType: function() { return /* binding */ getHeaderBorderStyleType; },
 /* harmony export */   getHeaderTextAlignmentStyle: function() { return /* binding */ getHeaderTextAlignmentStyle; },
 /* harmony export */   gridBandedRowBackgroundColorStyle: function() { return /* binding */ gridBandedRowBackgroundColorStyle; },
 /* harmony export */   gridBandedRowTextColorStyle: function() { return /* binding */ gridBandedRowTextColorStyle; },
@@ -4063,12 +4160,12 @@ function getHeaderTextAlignmentStyle(isNewBlock, tableIsResolving, textAlignment
  * The BorderBoxControl stores the syle values as a flat object (simple) or as nested objects
  * (complex).  We evaluate the object value to determine which type it is.
  * 
- * @param {*} headerBorder 
+ * @param {*} border 
  * @returns 
  */
-function getHeaderBorderStyleType(headerBorder) {
-  if (headerBorder) {
-    const borderWrapper = Object.entries(headerBorder);
+function getBorderStyleType(border) {
+  if (border) {
+    const borderWrapper = Object.entries(border);
     for (var i = 0; i < borderWrapper.length; i++) {
       if (borderWrapper[i].some(value => {
         return typeof value == "object";
@@ -4086,18 +4183,18 @@ function getHeaderBorderStyleType(headerBorder) {
 /**
  * Get Style value for the specified border segment and attribute
  * 
- * @param {*} headerBorder 
+ * @param {*} border 
  * @param {*} borderLocation 
  * @param {*} borderAttribute 
  * @param {*} borderType 
  * @returns 
  */
-function getHeaderBorderStyle(headerBorder, borderLocation, borderAttribute, borderType) {
+function getBorderStyle(border, borderLocation, borderAttribute, borderType) {
   if (borderType === 'split') {
-    return headerBorder[borderLocation][borderAttribute];
+    return border[borderLocation][borderAttribute];
   }
   if (borderType === 'flat') {
-    return headerBorder[borderAttribute];
+    return border[borderAttribute];
   }
   return 'unknown';
 }
@@ -4267,6 +4364,8 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
     headerRowSticky: false,
     headerBorder: undefined,
     horizontalAlignment: 'none',
+    bodyAlignment: undefined,
+    bodyBorder: undefined,
     verticalAlignment: 'none'
   };
   const columnAttributes = {

@@ -87,6 +87,19 @@
   --startGridBodyRowNbr: 1;
   --endGridBodyRowNbr: 2;
   --gridTemplateBodyRows: auto;
+  --bodyTextAlignment: left;
+  --bodyBorderTopColor: white;
+  --bodyBorderTopStyle: solid;
+  --bodyBorderTopWidth: 0px;
+  --bodyBorderRightColor: white;
+  --bodyBorderRightStyle: solid;
+  --bodyBorderRightWidth: 0px;
+  --bodyBorderBottomColor: white;
+  --bodyBorderBottomStyle: solid;
+  --bodyBorderBottomWidth: 0px;
+  --bodyBorderLeftColor: white;
+  --bodyBorderLeftStyle: solid;
+  --bodyBorderLeftWidth: 0px;
   display: grid;
   overflow-y: var(--headerRowSticky);
   overflow-x: hidden;
@@ -94,6 +107,18 @@
   grid-row: var(--startGridBodyRowNbr)/var(--endGridBodyRowNbr);
   grid-template-columns: subgrid;
   grid-template-rows: var(--gridTemplateBodyRows);
+  border-top-color: var(--bodyBorderTopColor);
+  border-top-style: var(--bodyBorderTopStyle);
+  border-top-width: var(--bodyBorderTopWidth);
+  border-right-color: var(--bodyBorderRightColor);
+  border-right-style: var(--bodyBorderRightStyle);
+  border-right-width: var(--bodyRightWidth);
+  border-bottom-color: var(--bodyBorderBottomColor);
+  border-bottom-style: var(--bodyBorderBottomStyle);
+  border-bottom-width: var(--bodyBorderBottomWidth);
+  border-left-color: var(--bodyBorderLeftColor);
+  border-left-style: var(--bodyBorderLeftStyle);
+  border-left-width: var(--bodyBorderLeftWidth);
   gap: 1px;
 }
 
@@ -112,7 +137,7 @@
   border-style: var(--showGridLines);
   border-width: var(--gridLineWidth);
   border-color: black;
-  justify-content: var(--gridAlignment);
+  justify-content: var(--bodyTextAlignment);
 }
 
 .grid-control__cells--zoom {

@@ -110,6 +110,12 @@ function create_table_data($request)
         $blockTableRef = '';
     }
 
+    if (isset($request[ 'header' ][ 'status' ])) {
+        $status = sanitize_text_field($request[ 'header' ][ 'status' ]);
+    } else {
+        $status = 'unknown';
+    }
+
     if (isset($request[ 'header' ][ 'post_id' ])) {
         $postId = sanitize_text_field($request[ 'header' ][ 'post_id' ]);
     } else {
@@ -138,13 +144,15 @@ function create_table_data($request)
 
     if (TEST_MODE) {
         $blockTableRef = "13947hs45";
+        $status = 'new';
         $postId = "45";
         $tableName = "Greg's Awesome Table";
         $classes = '';
     }
 
+    error_log('Create Table Params: block ref - ' . $blockTableRef . ', status - ' . $status . ', post id - ' . $postId . ', table name - ' . $tableName . ', attributes - ' . $serializedAttributes . ', classes - ' . $classes);
     $newTable = new PersistTableData();
-    $results = $newTable->create_table_data($blockTableRef, $postId, $tableName, $serializedAttributes, $classes);
+    $results = $newTable->create_table_data($blockTableRef, $status, $postId, $tableName, $serializedAttributes, $classes);
 
     if ($results[ 'success' ] === 'False') {
         return new WP_REST_Response(null, 500);
@@ -223,6 +231,12 @@ function update_table_data($request)
         $blockTableRef = $existingTable[ 'header' ][ 'block_table_ref' ];
     }
 
+    if (isset($request[ 'header' ][ 'status' ])) {
+        $status = sanitize_text_field($request[ 'header' ][ 'status' ]);
+    } else {
+        $status = $existingTable[ 'header' ][ 'status' ];
+    }
+
     if (isset($request[ 'header' ][ 'post_id' ])) {
         $postId = sanitize_text_field($request[ 'header' ][ 'post_id' ]);
     } else {
@@ -254,15 +268,16 @@ function update_table_data($request)
     if (TEST_MODE) {
         $tableId = '7';
         $blockTableRef = "13947hs45";
+        $status = 'saved';
         $postId = '26';
         $tableName = "Another Awesome Table";
         $classes = 'My class';
     }
 
-    error_log('Update Table Params: table id - ' . $tableId . ', block ref - ' . $blockTableRef . ', post id - ' . $postId . ', table name - ' . $tableName . ', attributes - ' . $serializedAttributes . ', classes - ' . $classes);
+    error_log('Update Table Params: table id - ' . $tableId . ', block ref - ' . $blockTableRef . ', status - ' . $status . ', post id - ' . $postId . ', table name - ' . $tableName . ', attributes - ' . $serializedAttributes . ', classes - ' . $classes);
 
     $updateTable = new PersistTableData();
-    $results = $updateTable->update_table($tableId, $blockTableRef, $postId, $tableName, $serializedAttributes, $classes);
+    $results = $updateTable->update_table($tableId, $blockTableRef, $status, $postId, $tableName, $serializedAttributes, $classes);
 
     if ($results[ 'success' ] === 'False') {
         return new WP_REST_Response(null, 500);
