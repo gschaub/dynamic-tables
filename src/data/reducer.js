@@ -46,34 +46,36 @@ const table = (
             }
 
         case CHANGE_TABLE_ID:
-            console.log('In Reducer UPDATE_TABLE_PROP')
+            console.log('In Reducer CHANGE_TABLE_ID')
             const newTableIdState = { ...state }
             var rowsWithNewId = []
             var columnsWithNewId = []
             var cellsWithNewId = []
 
-            newTableIdState.rows.foreach((row) => {
+            console.log(newTableIdState.rows)
+            newTableIdState.rows.forEach((row) => {
+                console.log(row)
                 let newRow = {
                     ...row,
-                    table_id: action.newTableId,
+                    table_id: action.newTableId
                 }
                 rowsWithNewId.push(newRow)
             })
 
-            newTableIdState.columns.foreach((column) => {
+            newTableIdState.columns.forEach((column) => {
                 let newColumn = {
                     ...column,
-                    table_id: action.newTableId,
+                    table_id: action.newTableId
                 }
                 columnsWithNewId.push(newColumn)
             })
 
-            newTableIdState.cells.foreach((cell) => {
+            newTableIdState.cells.forEach((cell) => {
                 let newCell = {
                     ...cell,
-                    table_id: action.newTableId,
+                    table_id: action.newTableId
                 }
-                cellsWithNewId.push(newCellRow)
+                cellsWithNewId.push(newCell)
             })
 
             const updatedTableId = {

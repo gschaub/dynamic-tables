@@ -71,9 +71,34 @@ class PersistTableData
         error_log('   Prepare - ' . $prepare);
 
         if ($returnCollection) {
-            $this->queryResult = $wpdb->get_results($prepare, ARRAY_A);
+
+            try {
+                // $this->queryResult = $wpdb->get_results($prepare, ARRAY_A);
+                $dbReturn = $wpdb->get_results($prepare, ARRAY_A);
+                if ($dbReturn) {
+                    $this->queryResult = $dbReturn;
+                } else {
+                    echo 'Table data not found';
+                    $this->queryResult = [  ];
+                }
+            } catch (Exception $e) {
+                echo 'Error fetching table data: ' . $e;
+                $this->queryResult = [  ];
+            }
+
         } else {
-            $this->queryResult = $wpdb->get_row($prepare, ARRAY_A);
+            try {
+                $dbReturn = $wpdb->get_row($prepare, ARRAY_A);
+                if ($dbReturn) {
+                    $this->queryResult = $dbReturn;
+                } else {
+                    echo 'Table data not found';
+                    $this->queryResult = [  ];
+                }
+            } catch (Exception $e) {
+                echo 'Error fetching table data: ' . $e;
+                $this->queryResult = [  ];
+            }
         }
 
         error_log('   Executed SQL - ' . json_encode($wpdb->last_query));

@@ -56,12 +56,14 @@ export function receiveNewTable(table) {
     }
 }
 
-export function receiveTable(table_id, block_table_ref, post_id, table_name, table_attributes, table_classes, rows, columns, cells) {
+export function receiveTable(table_id, block_table_ref, table_status, post_id, table_name, table_attributes, table_classes, rows, columns, cells) {
     console.log('            ...Action - In receiveTable')
     //console.log(table);
     console.log('                - id: ' + table_id)
     //console.log('                - table: ' + JSON.stringify(table));
     //console.log('                - tableId ' + tableId);
+    console.log('Block Ref = ' + block_table_ref)
+    console.log('Status = ' + table_status)
 
     return {
         type: RECEIVE_HYDRATE,
@@ -69,8 +71,8 @@ export function receiveTable(table_id, block_table_ref, post_id, table_name, tab
         table: {
             table_id,
             block_table_ref,
+            table_status,
             post_id,
-            table_status: 'saved',
             table_name,
             table_attributes,
             table_classes,
@@ -92,6 +94,7 @@ export const createTableEntity =
                 header: {
                     id: table_id,
                     block_table_ref: block_table_ref,
+                    status: 'new',
                     post_id: post_id,
                     table_name: table_name,
                     table_attributes: table_attributes,
@@ -119,14 +122,29 @@ export const createTableEntity =
                 return tableEntity.id
 
             } catch (error) {
-                console.log('            ...Resolver - async error - ' + error);
+                console.log('            ...Create Table Entity - async error - ' + error);
             }
-            console.log('            Resolver - async completed');
         };
 
+export const saveTableEntity =
+    (tableId) =>
+        ({ registry }) => {
+
+            try {
+                registry
+                    .dispatch(coreStore)
+                    .saveEditedEntityRecord(
+                        'dynamic-tables/v1',
+                        'table',
+                        tableId
+                    );
+            } catch (error) {
+                console.log('            ...Save Table Entity - async error - ' + error);
+            }
+        };
 
 export const updateTableEntity =
-    (tableId) =>
+    (tableId, overrideTableStatus = '') =>
         ({ select, registry }) => {
 
             const testTable = select.getTable(tableId, false)
@@ -134,6 +152,7 @@ export const updateTableEntity =
             const {
                 table_id,
                 block_table_ref,
+                table_status,
                 post_id,
                 table_name,
                 table_attributes,
@@ -161,11 +180,19 @@ export const updateTableEntity =
                     cell.row_id !== '0' && cell.column_id !== '0'
                 )
 
+            const tableStatus = (overrideTableStatus, table_status) => {
+                if (overrideTableStatus) {
+                    return overrideTableStatus
+                }
+                return table_status
+            }
+
             const updatedTable = {
                 id: tableId,
                 header: {
                     id: table_id,
                     block_table_ref: block_table_ref,
+                    status: tableStatus(overrideTableStatus, table_status),
                     post_id: post_id,
                     table_name: table_name,
                     table_attributes: table_attributes,
@@ -184,14 +211,18 @@ export const updateTableEntity =
              * Options: isCached: Bool
              *          undoIgnore: Bool
              */
-            registry
-                .dispatch(coreStore)
-                .editEntityRecord(
-                    'dynamic-tables/v1',
-                    'table',
-                    table_id,
-                    updatedTable
-                );
+            try {
+                registry
+                    .dispatch(coreStore)
+                    .editEntityRecord(
+                        'dynamic-tables/v1',
+                        'table',
+                        table_id,
+                        updatedTable
+                    );
+            } catch (error) {
+                console.log('            ...Update Table Entity - async error - ' + error);
+            }
         };
 
 export const deleteTableEntity =
@@ -237,6 +268,7 @@ export const processUnmountedTables =
                 console.log(tableBlock)
                 if (tableBlock) {
                     dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_blockid')
+                    dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status');
                 } else {
                     dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_blockid')
                     dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', 'deleted');
@@ -301,13 +333,15 @@ export const updateTableProp = (tableId, attribute, value) => {
 }
 
 export const removeTableProp = (tableId, attribute) => {
-    console.log('In Action updateTableProp')
+    console.log('In Action removeTableProp')
     return {
         type: REMOVE_TABLE_PROP,
         tableId: tableId,
         attribute
     }
 }
+
+// updateTableEntity
 
 export const updateRow = (tableId, rowId, attribute, value) => {
 
@@ -343,17 +377,6 @@ export const updateCell = (tableId, cellId, attribute, value) => {
         value
     }
 }
-
-// async ({ dispatch }) => {
-//     console.log('In Action updateCell')
-
-//     await dispatch({
-//         type: UPDATE_CELL,
-//         cellId,
-//         attribute,
-//         value
-//     })
-// }
 
 export const updateTableBorder =
     (

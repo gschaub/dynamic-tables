@@ -43,6 +43,7 @@ export const getTable =
                 const table = tableEntity
                 const table_id = table.id;
                 const block_table_ref = table.header.block_table_ref;
+                const table_status = table.header.status;
                 const post_id = table.header.post_id;
                 const table_name = table.header.table_name;
                 const table_attributes = table.header.attributes;
@@ -52,7 +53,7 @@ export const getTable =
                 computeCellId(table.cells);
                 const cells = table.cells;
 
-                dispatch.receiveTable(table_id, block_table_ref, post_id, table_name, table_attributes, table_classes, rows, columns, cells);
+                dispatch.receiveTable(table_id, block_table_ref, table_status, post_id, table_name, table_attributes, table_classes, rows, columns, cells);
             } catch (error) {
                 console.log('            ...Resolver - async error - ' + JSON.stringify(error, null, 4));
             }

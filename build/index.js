@@ -1283,6 +1283,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   removeColumn: function() { return /* binding */ removeColumn; },
 /* harmony export */   removeRow: function() { return /* binding */ removeRow; },
 /* harmony export */   removeTableProp: function() { return /* binding */ removeTableProp; },
+/* harmony export */   saveTableEntity: function() { return /* binding */ saveTableEntity; },
 /* harmony export */   updateCell: function() { return /* binding */ updateCell; },
 /* harmony export */   updateColumn: function() { return /* binding */ updateColumn; },
 /* harmony export */   updateRow: function() { return /* binding */ updateRow; },
@@ -1354,21 +1355,22 @@ function receiveNewTable(table) {
     ...table
   };
 }
-function receiveTable(table_id, block_table_ref, post_id, table_name, table_attributes, table_classes, rows, columns, cells) {
+function receiveTable(table_id, block_table_ref, table_status, post_id, table_name, table_attributes, table_classes, rows, columns, cells) {
   console.log('            ...Action - In receiveTable');
   //console.log(table);
   console.log('                - id: ' + table_id);
   //console.log('                - table: ' + JSON.stringify(table));
   //console.log('                - tableId ' + tableId);
-
+  console.log('Block Ref = ' + block_table_ref);
+  console.log('Status = ' + table_status);
   return {
     type: RECEIVE_HYDRATE,
     tableId: table_id,
     table: {
       table_id,
       block_table_ref,
+      table_status,
       post_id,
-      table_status: 'saved',
       table_name,
       table_attributes,
       table_classes,
@@ -1400,6 +1402,7 @@ const createTableEntity = () => async ({
     header: {
       id: table_id,
       block_table_ref: block_table_ref,
+      status: 'new',
       post_id: post_id,
       table_name: table_name,
       table_attributes: table_attributes,
@@ -1416,11 +1419,19 @@ const createTableEntity = () => async ({
     dispatch.assignTableId(tableEntity.id);
     return tableEntity.id;
   } catch (error) {
-    console.log('            ...Resolver - async error - ' + error);
+    console.log('            ...Create Table Entity - async error - ' + error);
   }
-  console.log('            Resolver - async completed');
 };
-const updateTableEntity = tableId => ({
+const saveTableEntity = tableId => ({
+  registry
+}) => {
+  try {
+    registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).saveEditedEntityRecord('dynamic-tables/v1', 'table', tableId);
+  } catch (error) {
+    console.log('            ...Save Table Entity - async error - ' + error);
+  }
+};
+const updateTableEntity = (tableId, overrideTableStatus = '') => ({
   select,
   registry
 }) => {
@@ -1429,6 +1440,7 @@ const updateTableEntity = tableId => ({
   const {
     table_id,
     block_table_ref,
+    table_status,
     post_id,
     table_name,
     table_attributes,
@@ -1446,11 +1458,18 @@ const updateTableEntity = tableId => ({
 
   // Remove border cells if they exists
   var filteredCells = cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
+  const tableStatus = (overrideTableStatus, table_status) => {
+    if (overrideTableStatus) {
+      return overrideTableStatus;
+    }
+    return table_status;
+  };
   const updatedTable = {
     id: tableId,
     header: {
       id: table_id,
       block_table_ref: block_table_ref,
+      status: tableStatus(overrideTableStatus, table_status),
       post_id: post_id,
       table_name: table_name,
       table_attributes: table_attributes,
@@ -1467,7 +1486,11 @@ const updateTableEntity = tableId => ({
    * Options: isCached: Bool
    *          undoIgnore: Bool
    */
-  registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).editEntityRecord('dynamic-tables/v1', 'table', table_id, updatedTable);
+  try {
+    registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).editEntityRecord('dynamic-tables/v1', 'table', table_id, updatedTable);
+  } catch (error) {
+    console.log('            ...Update Table Entity - async error - ' + error);
+  }
 };
 const deleteTableEntity = tableId => async ({
   select,
@@ -1506,6 +1529,7 @@ const processUnmountedTables = unmountedTables => ({
     console.log(tableBlock);
     if (tableBlock) {
       dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_blockid');
+      dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status');
     } else {
       dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_blockid');
       dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', 'deleted');
@@ -1562,13 +1586,16 @@ const updateTableProp = (tableId, attribute, value) => {
   };
 };
 const removeTableProp = (tableId, attribute) => {
-  console.log('In Action updateTableProp');
+  console.log('In Action removeTableProp');
   return {
     type: REMOVE_TABLE_PROP,
     tableId: tableId,
     attribute
   };
 };
+
+// updateTableEntity
+
 const updateRow = (tableId, rowId, attribute, value) => {
   console.log('In Action updateRow');
   return {
@@ -1599,18 +1626,6 @@ const updateCell = (tableId, cellId, attribute, value) => {
     value
   };
 };
-
-// async ({ dispatch }) => {
-//     console.log('In Action updateCell')
-
-//     await dispatch({
-//         type: UPDATE_CELL,
-//         cellId,
-//         attribute,
-//         value
-//     })
-// }
-
 const updateTableBorder = (tableId, tableRows, tableColumns, tableCells) => async ({
   dispatch
 }) => {
@@ -1771,33 +1786,35 @@ const table = (state = {
         }
       };
     case CHANGE_TABLE_ID:
-      console.log('In Reducer UPDATE_TABLE_PROP');
+      console.log('In Reducer CHANGE_TABLE_ID');
       const newTableIdState = {
         ...state
       };
       var rowsWithNewId = [];
       var columnsWithNewId = [];
       var cellsWithNewId = [];
-      newTableIdState.rows.foreach(row => {
+      console.log(newTableIdState.rows);
+      newTableIdState.rows.forEach(row => {
+        console.log(row);
         let newRow = {
           ...row,
           table_id: action.newTableId
         };
         rowsWithNewId.push(newRow);
       });
-      newTableIdState.columns.foreach(column => {
+      newTableIdState.columns.forEach(column => {
         let newColumn = {
           ...column,
           table_id: action.newTableId
         };
         columnsWithNewId.push(newColumn);
       });
-      newTableIdState.cells.foreach(cell => {
+      newTableIdState.cells.forEach(cell => {
         let newCell = {
           ...cell,
           table_id: action.newTableId
         };
-        cellsWithNewId.push(newCellRow);
+        cellsWithNewId.push(newCell);
       });
       const updatedTableId = {
         ...state,
@@ -2364,6 +2381,7 @@ const getTable = (tableId, isTableStale) => async ({
     const table = tableEntity;
     const table_id = table.id;
     const block_table_ref = table.header.block_table_ref;
+    const table_status = table.header.status;
     const post_id = table.header.post_id;
     const table_name = table.header.table_name;
     const table_attributes = table.header.attributes;
@@ -2372,7 +2390,7 @@ const getTable = (tableId, isTableStale) => async ({
     const columns = table.columns;
     computeCellId(table.cells);
     const cells = table.cells;
-    dispatch.receiveTable(table_id, block_table_ref, post_id, table_name, table_attributes, table_classes, rows, columns, cells);
+    dispatch.receiveTable(table_id, block_table_ref, table_status, post_id, table_name, table_attributes, table_classes, rows, columns, cells);
   } catch (error) {
     console.log('            ...Resolver - async error - ' + JSON.stringify(error, null, 4));
   }
@@ -2509,18 +2527,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/search.js");
 /* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/block-table.js");
 /* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./data */ "./src/data/index.js");
@@ -2531,11 +2549,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./components */ "./src/components/index.js");
 /* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
 
-/**select re
- * Retrieves the translation of text.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
- */
+_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useSetting; /**select re
+            * Retrieves the translation of text.
+            *
+            * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
+            */
 
 
 
@@ -2557,94 +2575,97 @@ __webpack_require__.r(__webpack_exports__);
 // import TABLE_ATTRIBUTE_TYPES from './constants'
 
 function Edit(props) {
-  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.useBlockProps)({
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)({
     className: "dynamic-table-edit-block"
   });
-
+  console.log(props);
   /**
    * Table Store Action useDispatch declarations
    */
   const {
     receiveNewTable
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
     createTableEntity
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
-    deleteTable
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+    saveTableEntity
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  const {
+    deleteTableEntity
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
     addColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
     addRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
     removeColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
     removeRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
     updateTableProp
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
     removeTableProp
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
     updateRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
     updateColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
     updateCell
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
     updateTableEntity
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
     updateTableBorder
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
     processUnmountedTables
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
   const {
     processDeletedTables
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_7__.store);
 
   /**
    * Local State declarations
    */
-  const [isTableStale, setTableStale] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(true);
-  const [openColumnRow, setOpenColumnRow] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(0);
-  const [tablePropAttributes, setTablePropAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({});
-  const [columnAttributes, setColumnAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({});
-  const [columnMenuVisible, setColumnMenuVisible] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
-  const [rowMenuVisible, setRowMenuVisible] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
-  const [openRowColumn, setOpenRowColumn] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(0);
-  const [rowAttributes, setRowAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({});
-  const [render, setRender] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(0);
-  const [showBorders, setShowBorders] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
-  const [numColumns, setNumColumns] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(2);
-  const [numRows, setNumRows] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(2);
-  const [gridCells, setGridCells] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)([]);
-  const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
-  const priorTableRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)({});
+  const [isTableStale, setTableStale] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(true);
+  const [openColumnRow, setOpenColumnRow] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(0);
+  const [tablePropAttributes, setTablePropAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)({});
+  const [columnAttributes, setColumnAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)({});
+  const [columnMenuVisible, setColumnMenuVisible] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(false);
+  const [rowMenuVisible, setRowMenuVisible] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(false);
+  const [openRowColumn, setOpenRowColumn] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(0);
+  const [rowAttributes, setRowAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)({});
+  const [render, setRender] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(0);
+  const [showBorders, setShowBorders] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(false);
+  const [numColumns, setNumColumns] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(2);
+  const [numRows, setNumRows] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(2);
+  const [gridCells, setGridCells] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)([]);
+  const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useState)(false);
+  const priorTableRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useRef)({});
   const {
     table_id,
     block_table_ref,
     block_alignment
   } = props.attributes;
-  const themeColors = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.useSetting)('color.palette');
+  const themeColors = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useSetting)('color.palette');
   console.log(themeColors);
   console.log('Block Table Ref - ' + block_table_ref);
 
   /**
    * Load entity framework for table entity type
    */
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
-    (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.dispatch)('core').addEntities([{
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => {
+    (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.dispatch)('core').addEntities([{
       name: 'table',
       kind: 'dynamic-tables/v1',
       baseURL: '/dynamic-tables/v1/table'
@@ -2661,7 +2682,7 @@ function Edit(props) {
    */
   const {
     unmountedTables
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useSelect)(select => {
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => {
     const {
       getUnmountedTables
     } = select(_data__WEBPACK_IMPORTED_MODULE_7__.store);
@@ -2674,7 +2695,7 @@ function Edit(props) {
   }
   const {
     deletedTables
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useSelect)(select => {
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => {
     const {
       getDeletedTables
     } = select(_data__WEBPACK_IMPORTED_MODULE_7__.store);
@@ -2685,7 +2706,7 @@ function Edit(props) {
   const postChangesAreSaved = (0,_hooks__WEBPACK_IMPORTED_MODULE_8__.usePostChangesSaved)();
   console.log(postChangesAreSaved);
   console.log(unmountedTables);
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => {
     if (postChangesAreSaved) {
       alert('Sync REST Now');
       /**
@@ -2702,6 +2723,7 @@ function Edit(props) {
       if (table.table_status == 'new') {
         console.log('Saving new table - ' + table.table_id);
         setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
+        saveTableEntity(table.table_id);
         console.log(table);
       }
     }
@@ -2736,7 +2758,7 @@ function Edit(props) {
     tableHasStartedResolving,
     tableHasFinishedResolving,
     tableIsResolving
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.useSelect)(select => {
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => {
     console.log('Table ID = ' + table_id + ', Stale = ' + isTableStale + ', Block Table Ref = ' + block_table_ref);
     const {
       getTable,
@@ -2819,11 +2841,26 @@ function Edit(props) {
    */
 
   /**
+   * Synchronize PostId
+   */
+
+  console.log('Is Resolving? = ' + tableIsResolving);
+  console.log('Started Resolving? = ' + tableHasStartedResolving);
+  console.log('Finished Resolving? = ' + tableHasFinishedResolving);
+  console.log('Old Post ID = ' + table.post_id);
+  console.log('New Post ID = ' + props.context.postId);
+  if (tableHasStartedResolving && tableHasFinishedResolving && String(props.context.postId) !== table.post_id) {
+    setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId));
+    saveTableEntity(table.table_id);
+  }
+
+  /**
    * Perform clean-up for deleted table block at time of deletion
    */
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => {
     return () => {
       setTableAttributes(table.table_id, 'unmounted_blockid', '', 'PROP', blockProps["data-block"], false);
+      // saveTableEntity(table.table_id)
     };
   }, []);
   const tableColumnLength = JSON.stringify(table.table) === '{}' || blockTableStatus == 'None' ? 0 : table.columns.length;
@@ -2834,7 +2871,7 @@ function Edit(props) {
    * 
    * TODO: Verify this is still needed following update to table store to track all tables in editor
    */
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => {
     if (tableColumnLength != numColumns) {
       setNumColumns(tableColumnLength);
     }
@@ -2998,17 +3035,19 @@ function Edit(props) {
       case 'PROP':
         {
           updateTableProp(tableId, attribute, value);
-          // if (attribute === 'table_name') {
-          // 	updateTableProp(tableId, 'table_name', value)
-          // }
-          break;
+
+          // Update Table Status only table change is for status and the
+          // call must bypass the regular persist (persist === false)
+          if (attribute === 'unmounted_blockid') {
+            updateTableEntity(tableId, 'unknown');
+          }
         }
+        break;
       default:
         console.log('Unrecognized Attibute Type');
     }
     console.log('Update coreStore');
     setTableStale(false);
-    // console.log(updatedTable);
     if (persist) {
       return updateTableEntity(tableId);
     }
@@ -3451,90 +3490,90 @@ function Edit(props) {
   }
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
-  }, !isNewBlock && !tableIsResolving && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockAlignmentToolbar, {
+  }, !isNewBlock && !tableIsResolving && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockAlignmentToolbar, {
     value: block_alignment,
     onChange: e => props.setAttributes({
       block_alignment: e
     })
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Panel, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.Panel, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelBody, {
     title: "Definition",
     initialOpen: true
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.CheckboxControl, {
     label: "Show table borders",
     checked: showBorders,
     onChange: e => onToggleBorders(table, e)
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Disabled, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.Disabled, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.__experimentalNumberControl, {
     label: "Table Columns",
     value: numColumns,
     labelPosition: "side",
     onChange: e => defineColumns(e)
-  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Disabled, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.Disabled, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.__experimentalNumberControl, {
     label: "Table Rows",
     value: numRows,
     labelPosition: "side",
     onChange: e => defineRows(e)
-  })))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+  })))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelBody, {
     title: "Table Header",
     initialOpen: false
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.CheckboxControl, {
     label: "First Row as Header?",
     checked: enableHeaderRow
     // checked={true}
     ,
     onChange: e => onEnableHeaderRow(table, e)
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.CheckboxControl, {
     label: "Freeze Header Row?",
     checked: headerRowSticky
     // checked={true}
     ,
     onChange: e => onHeaderRowSticky(table, e)
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "inspector-controls-menu__header-alignment--middle"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.AlignmentControl, {
     id: "header-alignment",
     value: headerAlignment,
     onChange: e => onAlignHeader(table, e)
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     className: "inspector-controls-nemu__label--left-margin",
     for: "header-alignment"
-  }, "Text Alignment"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalBorderBoxControl, {
+  }, "Text Alignment"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.__experimentalBorderBoxControl, {
     label: "Borders",
     hideLabelFromVision: "false",
     isCompact: "true",
     colors: themeColors,
     value: headerBorder,
     onChange: e => onHeaderBorder(table, e)
-  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelBody, {
     title: "Table Body",
     initialOpen: false
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "inspector-controls-menu__header-alignment--middle"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.AlignmentControl, {
     id: "body-alignment",
     value: bodyAlignment,
     onChange: e => onAlignBody(table, e)
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     className: "inspector-controls-nemu__label--left-margin",
     for: "body-alignment"
-  }, "Text Alignment"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalBorderBoxControl, {
+  }, "Text Alignment"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.__experimentalBorderBoxControl, {
     label: "Borders",
     hideLabelFromVision: "false",
     isCompact: "true",
     colors: themeColors,
     value: bodyBorder,
     onChange: e => onBodyBorder(table, e)
-  }))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
+  }))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
     group: "styles"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelBody, {
     title: "Banded Table Rows",
     initialOpen: false
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.CheckboxControl, {
     label: "Display Banded Rows",
     checked: bandedRows
     // checked={true}
     ,
     onChange: e => onShowBandedRows(table, e)
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.PanelColorSettings, {
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.PanelColorSettings, {
     __experimentalIsRenderedInSidebar: true,
     title: 'Banded Row Color',
     colors: themeColors,
@@ -3547,23 +3586,23 @@ function Edit(props) {
       onChange: newColor => onBandedRowColor(table, 'background', newColor),
       label: 'Background'
     }]
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelBody, {
     title: "Grid Lines",
     initialOpen: false
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.CheckboxControl, {
     label: "Display Inner Grid Lines",
     checked: showGridLines
     // checked={true}
     ,
     onChange: e => onShowGridLines(table, e)
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.__experimentalNumberControl, {
     label: "Inner Grid Line Width",
     value: gridLineWidth,
     labelPosition: "side",
     onChange: e => onGridLineWidth(table, e)
-  })))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
+  })))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InspectorControls, {
     group: "typography"
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText, {
     id: "tableTitle",
     style: {
       "--gridAlignment": gridAlignment
@@ -3572,7 +3611,7 @@ function Edit(props) {
     allowedFormats: ['core/bold', 'core/italic'],
     onChange: e => setTableAttributes(table_id, 'table_name', '', 'PROP', e),
     value: table.table_name
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TabbableContainer, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.TabbableContainer, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "grid-scroller",
     style: {
       "--headerRowSticky": headerRowStickyStyle,
@@ -3670,7 +3709,7 @@ function Edit(props) {
           "--showGridLines": showGridLinesCSS,
           "--gridLineWidth": gridLineWidthCSS
         }
-      }), !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
+      }), !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText, {
         id: cell_id,
         className: "grid-control__header-cells",
         style: {
@@ -3762,10 +3801,10 @@ function Edit(props) {
           "--showGridLines": showGridLinesCSS,
           "--gridLineWidth": gridLineWidthCSS
         }
-      }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
+      }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.Button, {
         href: "#",
         icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__["default"]
-      })), !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
+      })), !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText, {
         id: cell_id,
         className: 'grid-control__body-cells ' + calculatedClasses + classes,
         style: {
@@ -3780,33 +3819,33 @@ function Edit(props) {
         value: content
       }));
     }));
-  })))))), !isNewBlock && tableIsResolving && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Spinner, null, "Retrieving Table Data"), isNewBlock && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Placeholder, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Dynamic Table'),
-    icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockIcon, {
+  })))))), !isNewBlock && tableIsResolving && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.Spinner, null, "Retrieving Table Data"), isNewBlock && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.Placeholder, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Dynamic Table'),
+    icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.BlockIcon, {
       icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_15__["default"],
       showColors: true
     }),
-    instructions: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Create a new dynamic table.')
+    instructions: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Create a new dynamic table.')
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
     className: "blocks-table__placeholder-form",
     onSubmit: onCreateTable
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.__experimentalNumberControl, {
     __nextHasNoMarginBottom: true,
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Table Columns'),
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Table Columns'),
     onChange: e => onChangeInitialColumnCount(e),
     value: numColumns,
     className: "blocks-table__placeholder-input"
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.__experimentalNumberControl, {
     __nextHasNoMarginBottom: true,
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Table Rows'),
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Table Rows'),
     onChange: e => onChangeInitialRowCount(e),
     value: numRows,
     className: "blocks-table__placeholder-input"
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.Button, {
     className: "blocks-table__placeholder-button",
     variant: "primary",
     type: "submit"
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Create Table')))));
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Create Table')))));
 }
 
 /***/ }),

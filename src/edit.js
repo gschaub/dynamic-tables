@@ -1,4 +1,4 @@
-/**select re
+useSetting/**select re
  * Retrieves the translation of text.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
@@ -17,15 +17,11 @@ import {
 	Disabled,
 	TabbableContainer,
 	Button,
-	TextControl,
 	Spinner,
 	Placeholder,
 	ColorPicker,
 	ToggleControl,
 	CheckboxControl,
-	DropdownMenu,
-	MenuGroup,
-	MenuItem,
 	__experimentalBorderBoxControl as BorderBoxControl,
 	__experimentalNumberControl as NumberControl
 } from '@wordpress/components';
@@ -113,12 +109,14 @@ export default function Edit(props) {
 		className: "dynamic-table-edit-block"
 	})
 
+	console.log(props)
 	/**
 	 * Table Store Action useDispatch declarations
 	 */
 	const { receiveNewTable } = useDispatch(tableStore);
 	const { createTableEntity } = useDispatch(tableStore);
-	const { deleteTable } = useDispatch(tableStore);
+	const { saveTableEntity } = useDispatch(tableStore);
+	const { deleteTableEntity } = useDispatch(tableStore);
 	const { addColumn } = useDispatch(tableStore);
 	const { addRow } = useDispatch(tableStore);
 	const { removeColumn } = useDispatch(tableStore);
@@ -219,6 +217,7 @@ export default function Edit(props) {
 			if (table.table_status == 'new') {
 				console.log('Saving new table - ' + table.table_id)
 				setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved')
+				saveTableEntity(table.table_id)
 				console.log(table)
 			}
 
@@ -348,6 +347,20 @@ export default function Edit(props) {
 	 */
 
 
+	/**
+	 * Synchronize PostId
+	 */
+
+	console.log('Is Resolving? = ' + tableIsResolving);
+	console.log('Started Resolving? = ' + tableHasStartedResolving);
+	console.log('Finished Resolving? = ' + tableHasFinishedResolving);
+	console.log('Old Post ID = ' + table.post_id);
+	console.log('New Post ID = ' + props.context.postId);
+
+	if (tableHasStartedResolving && tableHasFinishedResolving && String(props.context.postId) !== table.post_id) {
+		setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId))
+		saveTableEntity(table.table_id)
+	}
 
 	/**
 	 * Perform clean-up for deleted table block at time of deletion
@@ -356,6 +369,7 @@ export default function Edit(props) {
 
 		return () => {
 			setTableAttributes(table.table_id, 'unmounted_blockid', '', 'PROP', blockProps["data-block"], false)
+			// saveTableEntity(table.table_id)
 		};
 	}, [])
 
@@ -532,7 +546,6 @@ export default function Edit(props) {
 						console.log('...Updating Table Attributes')
 						console.log(value)
 						updateTableProp(tableId, 'table_attributes', value)
-
 					}
 					break;
 				}
@@ -548,17 +561,20 @@ export default function Edit(props) {
 			case 'PROP':
 				{
 					updateTableProp(tableId, attribute, value)
-					// if (attribute === 'table_name') {
-					// 	updateTableProp(tableId, 'table_name', value)
-					// }
-					break;
+
+					// Update Table Status only table change is for status and the
+					// call must bypass the regular persist (persist === false)
+					if (attribute === 'unmounted_blockid') {
+						updateTableEntity(tableId, 'unknown')
+					}
 				}
+				break;
+
 			default:
 				console.log('Unrecognized Attibute Type')
 		}
 		console.log('Update coreStore');
 		setTableStale(false)
-		// console.log(updatedTable);
 		if (persist) {
 			return (updateTableEntity(tableId));
 		}

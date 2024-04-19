@@ -71,6 +71,8 @@ function test_permissions()
  */
 function get_table_request($request)
 {
+    error_log('GET Table request - ' . json_encode($request));
+
     $results = [  ];
 
     if (!is_string($request)) {
@@ -129,11 +131,12 @@ function create_table_data($request)
     }
 
     if (isset($request[ 'header' ][ 'table_attributes' ])) {
-        $attributes = wp_kses_post($request[ 'header' ][ 'table_attributes' ]);
+        $prepAttributes = maybe_serialize($request[ 'header' ][ 'table_attributes' ]);
+        $serializedAttributes = wp_kses_post($prepAttributes);
     } else {
-        $attributes = '{}';
+        $serializedAttributes = '{}';
     }
-    $serializedAttributes = maybe_serialize($attributes);
+    // $serializedAttributes = maybe_serialize($attributes);
     error_log('Serialized table attributes = ' . json_encode($serializedAttributes));
 
     if (isset($request[ 'header' ][ 'classes' ])) {
