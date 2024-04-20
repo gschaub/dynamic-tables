@@ -71,7 +71,14 @@ function test_permissions()
  */
 function get_table_request($request)
 {
-    error_log('GET Table request - ' . json_encode($request));
+
+    error_log(' ');
+    error_log('GET Table request headers - ' . json_encode($request->get_headers()));
+    error_log(' ');
+    error_log('GET Table request params - ' . json_encode($request->get_query_params()));
+    error_log(' ');
+    error_log('GET Table request body - ' . json_encode($request->get_body()));
+    error_log(' ');
 
     $results = [  ];
 

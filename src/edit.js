@@ -1394,8 +1394,28 @@ export default function Edit(props) {
 										.map(({ row_id, attributes }) => {
 											const renderedRow = row_id;
 											console.log('Rendering Body Row ' + renderedRow)
+
+											/**
+											 * Set calculated class names
+											 */
+											let calculatedClasses = ''
+
+											const bandedRowOffset = enableHeaderRow ? 1 : 0
+											if (bandedRows && bandedRowOffset == 0 && Number(row_id) % 2 === 0) {
+												calculatedClasses = calculatedClasses + 'grid-control__body-rows--banded-row '
+											}
+
+											if (bandedRows && bandedRowOffset == 1 && Number(row_id) > 1 && (Number(row_id) + bandedRowOffset) % 2 === 0) {
+												calculatedClasses = calculatedClasses + 'grid-control__body-rows--banded-row '
+											}
+
 											return (
-												<div className=" grid-control__body-row">
+												<div className={"grid-control__body-row " + calculatedClasses}
+													style={{
+														"--bandedRowTextColor": gridBandedRowTextColor,
+														"--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
+													}}
+												>
 
 													{/* Render Table Body Row Cells*/}
 													{table.cells
@@ -1411,20 +1431,6 @@ export default function Edit(props) {
 															const isOpenCurrentRowMenu = openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id)
 															let showGridLinesCSS = gridShowInnerLines
 															let gridLineWidthCSS = gridInnerLineWidth
-
-															/**
-															 * Set calculated class names
-															 */
-															let calculatedClasses = ''
-
-															const bandedRowOffset = enableHeaderRow ? 1 : 0
-															if (bandedRows && bandedRowOffset == 0 && Number(row_id) % 2 === 0) {
-																calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row '
-															}
-
-															if (bandedRows && bandedRowOffset == 1 && Number(row_id) > 1 && (Number(row_id) + bandedRowOffset) % 2 === 0) {
-																calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row '
-															}
 
 															return (
 																<>
@@ -1452,10 +1458,8 @@ export default function Edit(props) {
 
 																	{isFirstColumn && !isBorder && (
 																		<div
-																			className={"grid-control__body-cells grid-control__cells--zoom " + calculatedClasses}
+																			className={"grid-control__body-cells grid-control__body-cells--zoom"}
 																			style={{
-																				"--bandedRowTextColor": gridBandedRowTextColor,
-																				"--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
 																				"--showGridLines": showGridLinesCSS,
 																				"--gridLineWidth": gridLineWidthCSS
 																			}}
@@ -1470,10 +1474,8 @@ export default function Edit(props) {
 																	{!isBorder && (
 																		<RichText
 																			id={cell_id}
-																			className={'grid-control__body-cells ' + calculatedClasses + classes}
+																			className={'grid-control__body-cells ' + classes}
 																			style={{
-																				"--bandedRowTextColor": gridBandedRowTextColor,
-																				"--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
 																				"--showGridLines": showGridLinesCSS,
 																				"--gridLineWidth": gridLineWidthCSS
 																			}}

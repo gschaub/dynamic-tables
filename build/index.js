@@ -3748,8 +3748,24 @@ function Edit(props) {
   }) => {
     const renderedRow = row_id;
     console.log('Rendering Body Row ' + renderedRow);
+
+    /**
+     * Set calculated class names
+     */
+    let calculatedClasses = '';
+    const bandedRowOffset = enableHeaderRow ? 1 : 0;
+    if (bandedRows && bandedRowOffset == 0 && Number(row_id) % 2 === 0) {
+      calculatedClasses = calculatedClasses + 'grid-control__body-rows--banded-row ';
+    }
+    if (bandedRows && bandedRowOffset == 1 && Number(row_id) > 1 && (Number(row_id) + bandedRowOffset) % 2 === 0) {
+      calculatedClasses = calculatedClasses + 'grid-control__body-rows--banded-row ';
+    }
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: " grid-control__body-row"
+      className: "grid-control__body-row " + calculatedClasses,
+      style: {
+        "--bandedRowTextColor": gridBandedRowTextColor,
+        "--bandedRowBackgroundColor": gridBandedRowBackgroundColor
+      }
     }, table.cells.filter(cell => cell.row_id === renderedRow).map(({
       table_id,
       row_id,
@@ -3769,18 +3785,6 @@ function Edit(props) {
       const isOpenCurrentRowMenu = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.openCurrentRowMenu)(rowMenuVisible, openColumnRow, row_id);
       let showGridLinesCSS = gridShowInnerLines;
       let gridLineWidthCSS = gridInnerLineWidth;
-
-      /**
-       * Set calculated class names
-       */
-      let calculatedClasses = '';
-      const bandedRowOffset = enableHeaderRow ? 1 : 0;
-      if (bandedRows && bandedRowOffset == 0 && Number(row_id) % 2 === 0) {
-        calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row ';
-      }
-      if (bandedRows && bandedRowOffset == 1 && Number(row_id) > 1 && (Number(row_id) + bandedRowOffset) % 2 === 0) {
-        calculatedClasses = calculatedClasses + 'grid-control__cells--banded-row ';
-      }
       return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, isFirstColumn && isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
         className: "grid-control__cells--border"
       }), isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -3794,10 +3798,8 @@ function Edit(props) {
         rowAttributes: rowAttributes,
         updatedRow: onUpdateRow
       })), isFirstColumn && !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-        className: "grid-control__body-cells grid-control__cells--zoom " + calculatedClasses,
+        className: "grid-control__body-cells grid-control__body-cells--zoom",
         style: {
-          "--bandedRowTextColor": gridBandedRowTextColor,
-          "--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
           "--showGridLines": showGridLinesCSS,
           "--gridLineWidth": gridLineWidthCSS
         }
@@ -3806,10 +3808,8 @@ function Edit(props) {
         icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_14__["default"]
       })), !isBorder && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.RichText, {
         id: cell_id,
-        className: 'grid-control__body-cells ' + calculatedClasses + classes,
+        className: 'grid-control__body-cells ' + classes,
         style: {
-          "--bandedRowTextColor": gridBandedRowTextColor,
-          "--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
           "--showGridLines": showGridLinesCSS,
           "--gridLineWidth": gridLineWidthCSS
         },

@@ -139,6 +139,14 @@
 	grid-template-rows: subgrid;
 }
 
+.grid-control__body-rows--banded-row {
+	--bandedRowTextColor: black;
+	--bandedRowBackgroundColor: #d8dbda;
+
+	color: var(--bandedRowTextColor);
+	background-color: var(--bandedRowBackgroundColor);
+}
+
 .grid-control__body-cells {
 	display: flex;
 	position: relative;
@@ -151,7 +159,7 @@
 	// justify-content: var(--gridAlignment);
 }
 
-.grid-control__cells--zoom {
+.grid-control__body-cells--zoom {
 	display: flex;
 	justify-content: center;
 	vertical-align: middle;
@@ -160,12 +168,4 @@
 	border-style: var(--showGridLines);
 	border-width: var(--gridLineWidth);
 	border-color: black;
-}
-
-.grid-control__cells--banded-row {
-	--bandedRowTextColor: black;
-	--bandedRowBackgroundColor: #d8dbda;
-
-	color: var(--bandedRowTextColor);
-	background-color: var(--bandedRowBackgroundColor);
 }
