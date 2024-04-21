@@ -1095,15 +1095,14 @@ export default function Edit(props) {
 								<PanelRow>
 									<CheckboxControl label="First Row as Header?"
 										checked={enableHeaderRow}
-										// checked={true}
 										onChange={(e) => onEnableHeaderRow(table, e)}
 									/>
 								</PanelRow>
 
 								<PanelRow>
 									<CheckboxControl label="Freeze Header Row?"
+										disabled={!enableHeaderRow}
 										checked={headerRowSticky}
-										// checked={true}
 										onChange={(e) => onHeaderRowSticky(table, e)}
 									/>
 								</PanelRow>

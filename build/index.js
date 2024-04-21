@@ -3517,15 +3517,12 @@ function Edit(props) {
     initialOpen: false
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.CheckboxControl, {
     label: "First Row as Header?",
-    checked: enableHeaderRow
-    // checked={true}
-    ,
+    checked: enableHeaderRow,
     onChange: e => onEnableHeaderRow(table, e)
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.CheckboxControl, {
     label: "Freeze Header Row?",
-    checked: headerRowSticky
-    // checked={true}
-    ,
+    disabled: !enableHeaderRow,
+    checked: headerRowSticky,
     onChange: e => onHeaderRowSticky(table, e)
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "inspector-controls-menu__header-alignment--middle"
