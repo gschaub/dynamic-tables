@@ -36,7 +36,7 @@
   margin-left: 12px;
 }
 
-.grid-control__cells--border {
+.grid-control__border-cells {
   font-size: small;
   font-weight: bold;
   text-align: center;
@@ -49,7 +49,7 @@
   border-style: solid;
   border-width: 1px;
 }
-.grid-control__cells--border:hover {
+.grid-control__border-cells:hover {
   cursor: pointer;
 }
 

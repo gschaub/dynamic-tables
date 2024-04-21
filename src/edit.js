@@ -43,7 +43,7 @@ import {
 	// alignRight,
 	// alignCenter,
 	search,
-	blockTable as icon
+	blockTable as icon,
 	// tableColumnAfter,
 	// tableColumnBefore,
 	// tableColumnDelete,
@@ -148,6 +148,9 @@ export default function Edit(props) {
 	const [numRows, setNumRows] = useState(2);
 	const [gridCells, setGridCells] = useState([]);
 	const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = useState(false);
+	// Current future features: Zoom to details
+	const enableFutureFeatures = false;
+	const enableProFeatures = false;
 
 	const priorTableRef = useRef({});
 	const { table_id, block_table_ref, block_alignment } = props.attributes;
@@ -968,7 +971,7 @@ export default function Edit(props) {
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
-	const gridColumnStyle = processColumns(isNewBlock, tableIsResolving, table.columns)
+	const gridColumnStyle = processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, table.columns)
 	const gridRowStyle = processRows(isNewBlock, tableIsResolving, table.rows)
 	const gridBodyRowStyle = processTableBodyRows(isNewBlock, tableIsResolving, table.rows)
 	const startGridBodyRowNbrStyle = startGridBodyRowNbr(enableHeaderRow, showBorders)
@@ -1197,7 +1200,6 @@ export default function Edit(props) {
 							<PanelRow>
 								<CheckboxControl label="Display Inner Grid Lines"
 									checked={showGridLines}
-									// checked={true}
 									onChange={(e) => onShowGridLines(table, e)}
 								/>
 							</PanelRow>
@@ -1255,8 +1257,9 @@ export default function Edit(props) {
 											const isFirstColumn = column_id === '1' ? true : false;
 											return (
 												<>
-													{isFirstColumn && (
-														<div className={"grid-control__cells--border"} />
+													{/* Show zoom to details column */}
+													{isFirstColumn && enableFutureFeatures && (
+														<div className={"grid-control__border-cells"} />
 													)}
 
 													< div
@@ -1270,6 +1273,7 @@ export default function Edit(props) {
 																columnId={column_id}
 																columnLabel={borderContent}
 																columnAttributes={columnAttributes}
+																enableProFeatures={enableProFeatures}
 																updatedColumn={onUpdateColumn}>
 															</ColumnMenu>
 														)}
@@ -1314,8 +1318,9 @@ export default function Edit(props) {
 
 														return (
 															<>
-																{isFirstColumn && isBorder && (
-																	<div className={"grid-control__cells--border"} />
+																{/* Show zoom to details column */}
+																{isFirstColumn && isBorder && enableFutureFeatures && (
+																	<div className={"grid-control__border-cells"} />
 																)}
 
 																{isBorder && (
@@ -1335,7 +1340,8 @@ export default function Edit(props) {
 																		)}
 																	</div>
 																)}
-																{isFirstColumn && (
+																{/* Show zoom to details column */}
+																{isFirstColumn && enableFutureFeatures && (
 																	< div
 																		className={"grid-control__header-cells"}
 																		style={{
@@ -1433,8 +1439,9 @@ export default function Edit(props) {
 
 															return (
 																<>
-																	{(isFirstColumn) && isBorder && (
-																		<div className={"grid-control__cells--border"} />
+																	{/* Show zoom to details column */}
+																	{isFirstColumn && isBorder && enableFutureFeatures && (
+																		<div className={"grid-control__border-cells"} />
 																	)}
 
 																	{isBorder && (
@@ -1455,7 +1462,8 @@ export default function Edit(props) {
 																		</div>
 																	)}
 
-																	{isFirstColumn && !isBorder && (
+																	{/* Show zoom to details column */}
+																	{isFirstColumn && !isBorder && enableFutureFeatures && (
 																		<div
 																			className={"grid-control__body-cells grid-control__body-cells--zoom"}
 																			style={{

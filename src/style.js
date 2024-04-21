@@ -6,7 +6,7 @@
  * @param {*} columns 
  * @returns 
  */
-export function processColumns(isNewBlock, tableIsResolving, columns) {
+export function processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, columns) {
     if (isNewBlock || tableIsResolving) {
         return undefined
     }
@@ -31,7 +31,7 @@ export function processColumns(isNewBlock, tableIsResolving, columns) {
 
             let sizing = '';
 
-            if (column_id === '1') {
+            if (column_id === '1' && enableFutureFeatures) {
                 newGridColumnStyle = newGridColumnStyle + '40px '
             }
             switch (columnWidthType) {

@@ -12,10 +12,14 @@ import {
     blockTable as icon,
     moreVertical,
     more,
+    settings,
     arrowLeft,
     arrowRight,
     arrowUp,
     arrowDown,
+    tableColumnBefore,
+    tableColumnAfter,
+    tableColumnDelete,
     trash
 } from '@wordpress/icons';
 
@@ -36,6 +40,7 @@ function ColumnMenu(props) {
         tableId,
         columnId,
         columnLabel,
+        enableProFeatures,
         updatedColumn
     } = props
 
@@ -85,15 +90,15 @@ function ColumnMenu(props) {
                 {({ onClose }) => (
                     <>
                         <MenuGroup>
-                            <MenuItem icon={arrowUp} onClick={onUpdateColumnWidth}>
+                            <MenuItem icon={settings} onClick={onUpdateColumnWidth}>
                                 Update Column Width
                             </MenuItem>
                         </MenuGroup>
                         <MenuGroup>
-                            <MenuItem icon={arrowDown} onClick={e => onInsertColumn(e, columnId)}>
+                            <MenuItem icon={tableColumnBefore} onClick={e => onInsertColumn(e, columnId)}>
                                 Insert Column
                             </MenuItem>
-                            <MenuItem icon={trash} onClick={e => onDeleteColumn(e, columnId)}>
+                            <MenuItem icon={tableColumnDelete} onClick={e => onDeleteColumn(e, columnId)}>
                                 Delete Column
                             </MenuItem>
                         </MenuGroup>
@@ -106,6 +111,7 @@ function ColumnMenu(props) {
                     columnId={columnId}
                     columnLabel={columnLabel}
                     columnAttributes={columnAttributes}
+                    enableProFeatures={enableProFeatures}
                     openColumnWidth={onUpdateColumnWidth}>
                 </ConfigureColumnWidth>
             )}

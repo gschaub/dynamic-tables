@@ -138,7 +138,7 @@ export function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') 
             row_id: String(rowId),
             cell_id: rowId === 0 ? columnLetter + '0' : '0' + String(columnId),
             attributes: getDefaultTableAttributes('cells', cellLocation),
-            classes: 'grid-control__cells--border hover',
+            classes: 'grid-control__border-cells hover',
             content: borderContent
         }
     } else {

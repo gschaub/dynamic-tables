@@ -40,7 +40,8 @@ function ConfigureColumnWidth(props) {
     const { openColumnWidth,
         columnId,
         columnLabel,
-        columnAttributes
+        columnAttributes,
+        enableProFeatures
     } = props;
     //    const [closePage, setClosePage] = useState(false)
 
@@ -427,17 +428,20 @@ function ConfigureColumnWidth(props) {
                             </span>
                         </fieldset>
 
-                        <CheckboxControl
-                            label="Hide for tablet"
-                            checked={disableForTablet}
-                            onChange={onTablet}
-                        />
-                        <CheckboxControl
-                            label="Hide for phone"
-                            checked={disableForPhone}
-                            onChange={onPhone}
-                        />
-
+                        {enableProFeatures && (
+                            <>
+                                <CheckboxControl
+                                    label="Hide for tablet"
+                                    checked={disableForTablet}
+                                    onChange={onTablet}
+                                />
+                                <CheckboxControl
+                                    label="Hide for phone"
+                                    checked={disableForPhone}
+                                    onChange={onPhone}
+                                />
+                            </>
+                        )}
                         <span>
                             <Button variant="secondary" onClick={handleCancel}>
                                 Cancel

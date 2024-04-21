@@ -12,10 +12,14 @@ import {
     blockTable as icon,
     moreVertical,
     more,
+    settings,
     arrowLeft,
     arrowRight,
     arrowUp,
     arrowDown,
+    tableRowBefore,
+    tableRowAfter,
+    tableRowDelete,
     trash
 } from '@wordpress/icons';
 
@@ -85,15 +89,15 @@ function RowMenu(props) {
                 {({ onClose }) => (
                     <>
                         <MenuGroup>
-                            <MenuItem icon={arrowUp} onClick={onUpdateRowHeight}>
+                            <MenuItem icon={settings} onClick={onUpdateRowHeight}>
                                 Update Row Height
                             </MenuItem>
                         </MenuGroup>
                         <MenuGroup>
-                            <MenuItem icon={arrowDown} onClick={e => onInsertRow(e, rowId)}>
+                            <MenuItem icon={tableRowBefore} onClick={e => onInsertRow(e, rowId)}>
                                 Insert Row
                             </MenuItem>
-                            <MenuItem icon={trash} onClick={e => onDeleteRow(e, rowId)}>
+                            <MenuItem icon={tableRowDelete} onClick={e => onDeleteRow(e, rowId)}>
                                 Delete Row
                             </MenuItem>
                         </MenuGroup>
