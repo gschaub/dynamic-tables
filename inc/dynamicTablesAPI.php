@@ -2,70 +2,6 @@
 
 require_once plugin_dir_path(__FILE__) . 'dynamicTablesDbPersist.php';
 
-function dynamic_tables_rest()
-{
-
-    register_rest_route('dynamic-tables/v1', 'table',
-        array(
-            'methods' => WP_REST_Server::CREATABLE,
-            'callback' => 'create_table_data',
-            'permission_callback' => 'test_permissions',
-        )
-    );
-
-    register_rest_route('dynamic-tables/v1', 'table/(?P<id>[\d]+)',
-        array(
-            'args' => array(
-                'id' => array(
-                    'description' => __('Unique identifier for this table'),
-                    'type' => 'integer',
-                ),
-            ),
-            array(
-                'methods' => WP_REST_SERVER::READABLE,
-                'callback' => 'get_table_request',
-                'permission_callback' => 'test_permissions',
-            ),
-            array(
-                'methods' => WP_REST_SERVER::EDITABLE,
-                'callback' => 'update_table_data',
-                'permission_callback' => 'test_permissions',
-
-            ),
-            array(
-                'methods' => WP_REST_Server::DELETABLE,
-                'callback' => 'delete_table',
-                'permission_callback' => 'test_permissions',
-                'args' => array(
-                    'force' => array(
-                        'type' => 'boolean',
-                        'default' => false,
-                        'description' => __('Whether to bypass Trash and force deletion.'),
-                    ),
-
-                ),
-            ),
-        )
-    );
-
-    // register_rest_route('dynamic-tables/v1', 'tableData', array(
-    //     'methods' => WP_REST_SERVER::EDITABLE,
-    //     'callback' => 'update_table_data',
-    //     'permission_callback' => 'test_permissions',
-    // ));
-}
-
-function test_permissions()
-{
-    // Restrict endpoint to only users who have the edit_posts capability.
-    //if ( !is_user_logged_in() ) {
-    //    die("Only logged in users can create a like.");
-    // }
-
-    // This is a black-listing approach. You could alternatively do this via white-listing, by returning false here and changing the permissions check.
-    return true;
-}
-
 /**
  * GET table callback to return table object
  */
@@ -98,7 +34,7 @@ function get_table_request($request)
         $classes = 'My class';
     }
 
-    error_log('    Web Service Input' . json_encode($tableId));
+    error_log('    Web Service Input = ' . json_encode($tableId));
 
     $results = get_table($tableId);
     error_log('    Result, Formatted - ' . json_encode($results, true));

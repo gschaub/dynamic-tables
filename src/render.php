@@ -1,7 +1,9 @@
 <?php
 
 require_once plugin_dir_path(__DIR__) . 'inc/dynamicTablesDbPersist.php';
-require_once plugin_dir_path(__DIR__) . 'inc/dynamicTablesRoutes.php';
+// require_once plugin_dir_path(__DIR__) . 'inc/dynamicTablesRoutes.php';
+require_once plugin_dir_path(__DIR__) . 'inc/dynamicTablesAPI.php';
+require_once plugin_dir_path(__DIR__) . 'inc/dynamicTablesRestAPI.php';
 require_once plugin_dir_path(__DIR__) . 'inc/renderHelper.php';
 
 /**

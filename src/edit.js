@@ -110,6 +110,7 @@ export default function Edit(props) {
 	})
 
 	console.log(props)
+	console.log(gls_test_data)
 	/**
 	 * Table Store Action useDispatch declarations
 	 */
@@ -167,7 +168,10 @@ export default function Edit(props) {
 			{
 				name: 'table',
 				kind: 'dynamic-tables/v1',
-				baseURL: '/dynamic-tables/v1/table'
+				baseURL: '/dynamic-tables/v1/tables',
+				baseURLParams: { context: 'edit' },
+				plural: 'tables',
+				label: __('Table')
 			}
 		]);
 	}, []);

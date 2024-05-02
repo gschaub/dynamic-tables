@@ -2636,6 +2636,7 @@ function Edit(props) {
     className: "dynamic-table-edit-block"
   });
   console.log(props);
+  console.log(gls_test_data);
   /**
    * Table Store Action useDispatch declarations
    */
@@ -2728,7 +2729,12 @@ function Edit(props) {
     (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.dispatch)('core').addEntities([{
       name: 'table',
       kind: 'dynamic-tables/v1',
-      baseURL: '/dynamic-tables/v1/table'
+      baseURL: '/dynamic-tables/v1/tables',
+      baseURLParams: {
+        context: 'edit'
+      },
+      plural: 'tables',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Table')
     }]);
   }, []);
 
@@ -3974,9 +3980,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+// dynamic-tables/dynamic-tables
+console.log(_block_json__WEBPACK_IMPORTED_MODULE_3__.name);
 (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_3__.name, {
+  // registerBlockType('dynamic-tables/dynamic-tables', {
   // From  edit.js
-  //apiVersion: 3,
+  apiVersion: 3,
   edit: _edit__WEBPACK_IMPORTED_MODULE_2__["default"],
   save: function (props) {
     return null;

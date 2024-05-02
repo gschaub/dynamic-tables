@@ -56,7 +56,7 @@ class PersistTableData
 
     public function get_table_data($requestArgs, $returnCollection = false)
     {
-        error_log('Select Request Args - ' . json_encode($requestArgs));
+        // error_log('Select Request Args - ' . json_encode($requestArgs));
         global $wpdb;
 
         $args = $this->process_args($requestArgs);
@@ -66,9 +66,9 @@ class PersistTableData
 
         $prepare = $wpdb->prepare($query, $args);
 
-        error_log('   Query Args - ' . json_encode($args));
-        error_log('   Query String - ' . $query);
-        error_log('   Prepare - ' . $prepare);
+        // error_log('   Query Args - ' . json_encode($args));
+        // error_log('   Query String - ' . $query);
+        // error_log('   Prepare - ' . $prepare);
 
         if ($returnCollection) {
 
@@ -101,8 +101,8 @@ class PersistTableData
             }
         }
 
-        error_log('   Executed SQL - ' . json_encode($wpdb->last_query));
-        error_log(' ');
+        // error_log('   Executed SQL - ' . json_encode($wpdb->last_query));
+        // error_log(' ');
 
         return $this->queryResult;
     }
@@ -147,8 +147,8 @@ class PersistTableData
 
         $this->deleteResult = $wpdb->delete($dbTable, $where, $format);
 
-        error_log('  Where Format: ' . json_encode($format));
-        error_log('  Update SQL Query: ' . $wpdb->last_query);
+        // error_log('  Where Format: ' . json_encode($format));
+        // error_log('  Update SQL Query: ' . $wpdb->last_query);
 
         return $this->deleteResult;
     }
@@ -163,7 +163,7 @@ class PersistTableData
 
         $this->replacementResult = $wpdb->replace($db_table, $data, $format);
 
-        error_log('    Replace Table Function Results ' . $this->replacementResult);
+        // error_log('    Replace Table Function Results ' . $this->replacementResult);
         // error_log('    Replace Query ' . json_encode($prepare));
         return $this->replacementResult;
     }
@@ -211,7 +211,7 @@ class PersistTableData
     public function update_table($tableId, $blockTableRef, $status, $postId, $tableName, $attributes, $classes)
     {
 
-        error_log('Updating table, attributes = ' . json_encode($attributes));
+        // error_log('Updating table, attributes = ' . json_encode($attributes));
         $success = 'Processing';
         $updatedRows = 0;
         global $wpdb;
@@ -233,10 +233,10 @@ class PersistTableData
             'field' => 'id',
             'value' => $tableId));
 
-        error_log('Update Table Params: table id - ' . $tableId . ', block ref - ' . $blockTableRef . ', status - ' . $status . ', post id - ' . $postId . ', table name - ' . $tableName . ', attributes - ' . $attributes . ', classes - ' . $classes);
+        // error_log('Update Table Params: table id - ' . $tableId . ', block ref - ' . $blockTableRef . ', status - ' . $status . ', post id - ' . $postId . ', table name - ' . $tableName . ', attributes - ' . $attributes . ', classes - ' . $classes);
 
         $queryResults = $this->get_table_data($argsBuild);
-        error_log('   Selected Data - ' . json_encode($queryResults));
+        // error_log('   Selected Data - ' . json_encode($queryResults));
 
         /**
          * Replace any null values from the function call with current
@@ -326,9 +326,9 @@ class PersistTableData
             $setFormat,
             $whereFormat);
 
-        error_log('  Set Format: ' . json_encode($setFormat));
-        error_log('  Where Format: ' . json_encode($whereFormat));
-        error_log('  Update SQL Query: ' . $wpdb->last_query);
+        // error_log('  Set Format: ' . json_encode($setFormat));
+        // error_log('  Where Format: ' . json_encode($whereFormat));
+        // error_log('  Update SQL Query: ' . $wpdb->last_query);
 
         if ($updateResult === false) {
             $wpdb->query('ROLLBACK'); // rollback everything
@@ -371,8 +371,8 @@ class PersistTableData
             'value' => $tableId));
 
         $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
-        error_log('    Request Args' . json_encode($rows));
-        error_log('Begin Row Insert');
+        // error_log('    Request Args' . json_encode($rows));
+        // error_log('Begin Row Insert');
 
         if ($queryReturnedResult === false) {
             $wpdb->query('ROLLBACK'); // rollback everything
@@ -419,7 +419,7 @@ class PersistTableData
 
             $queryReturnedResult = $this->replaceTable('dt_table_rows', $argsBuild);
 
-            error_log('    Insert Results: ' . $queryReturnedResult);
+            // error_log('    Insert Results: ' . $queryReturnedResult);
 
             if (!$queryReturnedResult) {
                 $wpdb->query('ROLLBACK'); // rollback everything
@@ -463,8 +463,8 @@ class PersistTableData
             'value' => $tableId));
 
         $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
-        error_log('    Request Args' . json_encode($columns));
-        error_log('Begin Column Insert');
+        // error_log('    Request Args' . json_encode($columns));
+        // error_log('Begin Column Insert');
 
         if ($queryReturnedResult === false) {
             $wpdb->query('ROLLBACK'); // rollback everything
@@ -517,7 +517,7 @@ class PersistTableData
 
             $queryReturnedResult = $this->replaceTable('dt_table_columns', $argsBuild);
 
-            error_log('    Insert Results: ' . $queryReturnedResult);
+            // error_log('    Insert Results: ' . $queryReturnedResult);
 
             if (!$queryReturnedResult) {
                 $wpdb->query('ROLLBACK'); // rollback everything
@@ -561,7 +561,7 @@ class PersistTableData
             'value' => $tableId));
 
         $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
-        error_log('    Request Cells ' . json_encode($cells));
+        // error_log('    Request Cells ' . json_encode($cells));
         //error_log('Begin Cell Insert');
 
         if ($queryReturnedResult === false) {
@@ -623,7 +623,7 @@ class PersistTableData
 
             $queryReturnedResult = $this->replaceTable('dt_table_cells', $argsBuild);
 
-            error_log('    Insert Results: ' . $queryReturnedResult);
+            // error_log('    Insert Results: ' . $queryReturnedResult);
 
             if (!$queryReturnedResult) {
                 $wpdb->query('ROLLBACK'); // rollback everything
@@ -652,14 +652,14 @@ class PersistTableData
     public function get_table($tableId, $dbTableName)
     {
 
-        error_log('    In get_tables...');
+        // error_log('    In get_tables...');
 //        error_log('');
         global $wpdb;
 
         $success = 'Processing';
         global $wpdb;
 
-        error_log('DB Table Name for Where - ' . $dbTableName);
+        // error_log('DB Table Name for Where - ' . $dbTableName);
 
         switch ($dbTableName) {
             case 'dt_tables':
@@ -682,7 +682,7 @@ class PersistTableData
                 $dtWhereField = 'ERROR - ' . $dbTableName . ' is not a valid database table.';
         }
 
-        error_log('DB Table Field for Where - ' . $dtWhereField);
+        // error_log('DB Table Field for Where - ' . $dtWhereField);
         $argsBuild = [  ];
 
         array_push($argsBuild, array(
@@ -696,7 +696,7 @@ class PersistTableData
             'value' => $tableId));
 
         if ($dbTableName == 'dt_table_cells') {
-            error_log('...in Order By - row_id');
+            // error_log('...in Order By - row_id');
 
             array_push($argsBuild, array(
                 'type' => 'order_by',
@@ -705,7 +705,7 @@ class PersistTableData
         }
 
         if ($dbTableName == 'dt_table_columns' || $dbTableName == 'dt_table_cells') {
-            error_log('...in Order By - column_id');
+            // error_log('...in Order By - column_id');
 
             array_push($argsBuild, array(
                 'type' => 'order_by',
@@ -715,7 +715,7 @@ class PersistTableData
         }
 
         $queryResults = $this->get_table_data($argsBuild, $returnCollection);
-        error_log('   Selected Data - ' . json_encode($queryResults));
+        // error_log('   Selected Data - ' . json_encode($queryResults));
 
         switch ($dbTableName) {
             case 'dt_tables':
@@ -730,11 +730,11 @@ class PersistTableData
                 $tableRowReturn = [  ];
 
                 foreach ($queryResults as $key => $row) {
-                    error_log('    ... Row - ' . json_encode($row));
+                    // error_log('    ... Row - ' . json_encode($row));
                     $serializedRowAttributes = $row[ 'attributes' ];
                     $rowAttributes = maybe_unserialize($serializedRowAttributes);
 
-                    error_log('    ...  attributes - ' . json_encode($rowAttributes));
+                    // error_log('    ...  attributes - ' . json_encode($rowAttributes));
                     $row[ 'attributes' ] = $rowAttributes;
 
                     array_push($tableRowReturn, $row);
@@ -746,12 +746,12 @@ class PersistTableData
                 $tableColumnReturn = [  ];
 
                 foreach ($queryResults as $key => $row) {
-                    error_log('    ... Column Row - ' . json_encode($row));
+                    // error_log('    ... Column Row - ' . json_encode($row));
 
                     $serializedColumnAttributes = $row[ 'attributes' ];
                     $columnAttributes = maybe_unserialize($serializedColumnAttributes);
 
-                    error_log('    ...  attributes - ' . json_encode($columnAttributes));
+                    // error_log('    ...  attributes - ' . json_encode($columnAttributes));
                     $row[ 'attributes' ] = $columnAttributes;
 
                     array_push($tableColumnReturn, $row);
@@ -763,11 +763,11 @@ class PersistTableData
                 $tableCellReturn = [  ];
 
                 foreach ($queryResults as $key => $row) {
-                    error_log('    ...  Cell Row - ' . json_encode($row));
+                    // error_log('    ...  Cell Row - ' . json_encode($row));
                     $serializedCellAttributes = $row[ 'attributes' ];
                     $cellAttributes = maybe_unserialize($serializedCellAttributes);
 
-                    error_log('    ...  attributes - ' . json_encode($cellAttributes));
+                    // error_log('    ...  attributes - ' . json_encode($cellAttributes));
                     $row[ 'attributes' ] = $cellAttributes;
 
                     array_push($tableCellReturn, $row);
@@ -788,7 +788,7 @@ class PersistTableData
         $success = 'Processing';
         global $wpdb;
 
-        error_log('    Deleting Table - ' . $tableId);
+        // error_log('    Deleting Table - ' . $tableId);
 
         $wpdb->query('START TRANSACTION');
 
@@ -818,7 +818,7 @@ class PersistTableData
             return $this->result;
         }
 
-        error_log('    Table rows deleted - ' . $queryReturnedResult);
+        // error_log('    Table rows deleted - ' . $queryReturnedResult);
         $deletedTableRows = $queryReturnedResult;
 
         /**
@@ -846,7 +846,7 @@ class PersistTableData
             return $this->result;
         }
 
-        error_log('    Table Row rows deleted - ' . $queryReturnedResult);
+        // error_log('    Table Row rows deleted - ' . $queryReturnedResult);
         $deletedRowRows = $queryReturnedResult;
 
         /**
@@ -874,7 +874,7 @@ class PersistTableData
             return $this->result;
         }
 
-        error_log('    Table Column rows deleted - ' . $queryReturnedResult);
+        // error_log('    Table Column rows deleted - ' . $queryReturnedResult);
         $deletedColumnRows = $queryReturnedResult;
 
         /**
@@ -902,7 +902,7 @@ class PersistTableData
             return $this->result;
         }
 
-        error_log('    Table Cell rows deleted - ' . $queryReturnedResult);
+        // error_log('    Table Cell rows deleted - ' . $queryReturnedResult);
         $deletedCellRows = $queryReturnedResult;
 
         $wpdb->query('COMMIT'); // commit all queries
@@ -939,10 +939,10 @@ class PersistTableData
                     case 'value':$argValue = $arg;
                 }
             }
-            error_log('   Item: Type = ' . $argType . ', Field = ' . $argField . ', Value = ' . $argValue . ', Prior Type = ' . $priorArgType);
+            // error_log('   Item: Type = ' . $argType . ', Field = ' . $argField . ', Value = ' . $argValue . ', Prior Type = ' . $priorArgType);
 
             if ($argType == 'from' and $priorArgType == 'where') {
-                error_log('Error: Processing request - All FROM arguments must come before be listed before WHERE arguments');
+                // error_log('Error: Processing request - All FROM arguments must come before be listed before WHERE arguments');
                 die;
             }
 
@@ -951,7 +951,7 @@ class PersistTableData
 
         }
 
-        error_log('    SQL Args Complete' . json_encode($sqlArgs));
+        // error_log('    SQL Args Complete' . json_encode($sqlArgs));
         return $sqlArgs;
     }
 
@@ -977,7 +977,7 @@ class PersistTableData
     public function process_query_string($requestArgs)
     {
         global $wpdb;
-        //error_log('...Query Request Args ' . json_encode($requestArgs));
+        // error_log('...Query Request Args ' . json_encode($requestArgs));
 
         $transactionType = "";
         $fromClause = "FROM ";
@@ -997,7 +997,7 @@ class PersistTableData
         $valueTypeCount = $this->count_request_args_by_type($requestArgs, 'value');
         $whereTypeCount = $this->count_request_args_by_type($requestArgs, 'where');
 
-        error_log('Order By Count = ' . $orderByTypeCount);
+        // error_log('Order By Count = ' . $orderByTypeCount);
         if ($orderByTypeCount == 0) {
             $orderByClause = "";
         } else {
@@ -1073,7 +1073,7 @@ class PersistTableData
             }
 
             if ($argType == 'where') {
-                error_log('        Process Where Trasaction Type - ' . $transactionType);
+                // error_log('        Process Where Trasaction Type - ' . $transactionType);
                 if ($transactionType == "") {
                     $transactionType = 'where';
                     $whereClause = "";
@@ -1081,7 +1081,7 @@ class PersistTableData
 
                 if ($transactionType == 'from') {
                     $whereClause .= $argField . ' = ' . $this->specificQuery($transactionType, $argField);
-                    error_log('...    In Where ' . $whereClause);
+                    // error_log('...    In Where ' . $whereClause);
 
                     if (($currentWherePosition != $whereTypeCount - 1) and
                         ($this->specificQuery($transactionType, $argField) != null)) {
@@ -1089,7 +1089,7 @@ class PersistTableData
                     }
                 } else {
                     $whereClause .= $this->specificQuery($transactionType, $argField);
-                    error_log('...    In Where ' . $whereClause);
+                    // error_log('...    In Where ' . $whereClause);
 
                     if (($currentWherePosition != $whereTypeCount - 1) and
                         ($this->specificQuery($transactionType, $argField) != null)) {

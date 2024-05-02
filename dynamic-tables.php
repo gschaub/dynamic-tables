@@ -25,27 +25,48 @@ class DynamicTables
 
     public function __construct()
     {
+        error_log('BLOCK CONSTRUCT');
         // Establish custom tables for tables
         global $wpdb;
-        //$this->charset = $wpdb->get_charset_collate();
-        //$this->tablename = $wpdb->prefix . "dt_tables";
 
+        // Initialize Web Services
         add_action('rest_api_init', array($this, 'establish_services'));
 
         // Init block
         add_action('init', array($this, 'dynamic_tables_block_init'));
+
     }
 
     public function establish_services()
     {
-        require_once plugin_dir_path(__FILE__) . 'inc/dynamicTablesRoutes.php';
+        error_log('INIT BLOCK WEB SERVICES');
+
+        require_once plugin_dir_path(__FILE__) . 'inc/dynamicTablesRestAPI.php';
         dynamic_tables_rest();
     }
 
     public function dynamic_tables_block_init()
     {
-        register_block_type(__DIR__ . '/build');
+        add_action('admin_enqueue_scripts', array($this, 'dynamic_tables_scripts'));
+        register_block_type_from_metadata(__DIR__ . '/build');
+    }
+
+    public function dynamic_tables_scripts()
+    {
+        try {
+            wp_add_inline_script('dynamic-tables-dynamic-tables-editor-script', 'gls_test_data = ' . json_encode(
+                array(
+                    'root_url' => get_site_url() . '/wp-json/dynamic-tables/v1/table',
+                    'dt_nonce' => wp_create_nonce('dt_nonce'),
+                )
+            ),
+                'after'
+            );
+
+        } catch (Exception $e) {
+            error_log('Error adding inline script: ' . $e);
+        }
     }
 }
 
-$dynamicTablesPlubin = new DynamicTables();
+$dynamicTablesPlugin = new DynamicTables();
