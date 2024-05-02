@@ -42,7 +42,8 @@ class DynamicTables
         error_log('INIT BLOCK WEB SERVICES');
 
         require_once plugin_dir_path(__FILE__) . 'inc/dynamicTablesRestAPI.php';
-        dynamic_tables_rest();
+        $rest = new Dynamic_Tables_REST_Controller();
+        error_log('Rest Registration = ' . json_encode($rest));
     }
 
     public function dynamic_tables_block_init()
