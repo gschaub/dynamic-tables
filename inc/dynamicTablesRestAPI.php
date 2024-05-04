@@ -60,8 +60,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 ),
                 array(
                     'methods' => WP_REST_SERVER::READABLE,
-                    'callback' => 'get_table_request',
-                    // 'callback' => array($this, 'get_item'),
+                    // 'callback' => 'get_table_request',
+                    'callback' => array($this, 'get_item'),
                     'permission_callback' => array($this, 'test_permissions'),
                 ),
                 array(
@@ -107,11 +107,11 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         // include in php to send nonce to pluggin
         // wp_nonce_field('wp_rest', '_wpnonce', true, true);
 
-        error_log(' ');
-        error_log('TABLE RESULTS');
-        error_log('Request = ' . json_encode($request));
-        error_log('Table ID = ' . $request[ 'id' ]);
-        error_log($request[ 'context' ]);
+        // error_log(' ');
+        // error_log('TABLE RESULTS');
+        // error_log('Request = ' . json_encode($request));
+        // error_log('Table ID = ' . $request[ 'id' ]);
+        // error_log($request[ 'context' ]);
 
         $table = $this->get_table($request[ 'id' ]);
 
@@ -265,6 +265,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         // error_log('   Header fields are: ' . json_encode($headerFields));
 
         if (rest_is_field_included('id', $fields)) {
+            // $data[ 'id' ] = (string) $table[ 'id' ];
             $data[ 'id' ] = $table[ 'id' ];
         }
 
@@ -299,7 +300,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         // if (rest_is_field_included('rows', $fields)) {
         //     $data[ 'rows' ] = $table[ 'rows' ];
         // }
-        error_log('table rows: ' . json_encode($table->rows));
+        // error_log('table rows: ' . json_encode($table->rows));
 
         /**
          * Row Block
@@ -360,7 +361,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             }
 
             if (rest_is_field_included('cells.cell.row_id', $fields)) {
-                $data[ 'cells' ][ $key ][ 'row_id' ] = $row[ 'row_id' ];
+                $data[ 'cells' ][ $key ][ 'row_id' ] = $cell[ 'row_id' ];
             }
             if (rest_is_field_included('cells.cell.attributes', $fields)) {
                 $data[ 'cells' ][ $key ][ 'attributes' ] = $cell[ 'attributes' ];
