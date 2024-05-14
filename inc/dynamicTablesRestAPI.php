@@ -37,8 +37,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 ),
                 array(
                     'methods' => WP_REST_Server::CREATABLE,
-                    'callback' => 'create_table_data',
-                    'permission_callback' => array($this, 'test_permissions'),
+                    'callback' => array($this, 'create_item'),
+                    'permission_callback' => array($this, 'create_item_permissions_check'),
                 ),
                 'schema' => array($this, 'get_public_item_schema'),
             )
@@ -206,6 +206,149 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     }
 
     /**
+     * Checks if a given request has access to create items.
+     *
+     * @param WP_REST_Request $request Full details about the request.
+     * @return true|WP_Error True if the request has access to create items, WP_Error object otherwise.
+     */
+    public function create_item_permissions_check($request)
+    {
+        return true;
+
+    }
+
+    /**
+     * Creates a single table.
+     *
+     * @param WP_REST_Request $request Full details about the request.
+     * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+     */
+    public function create_item($request)
+    {
+        if ((int) $request[ 'id' ] !== (int) 0) {
+            return new WP_Error(
+                'rest_table_exists',
+                __('Cannot create existing post.'),
+                array('status' => 400)
+            );
+        }
+
+        $prepared_table = $this->prepare_item_for_database($request);
+
+        if (is_wp_error($prepared_table)) {
+            return $prepared_table;
+        }
+
+        $table_id = create_table_data($prepared_table);
+
+        if (is_wp_error($post_id)) {
+
+            if ('db_insert_error' === $post_id->get_error_code()) {
+                $post_id->add_data(array('status' => 500));
+            } else {
+                $post_id->add_data(array('status' => 400));
+            }
+
+            return $post_id;
+        }
+
+        $post = get_post($post_id);
+
+        /**
+         * Fires after a single post is created or updated via the REST API.
+         *
+         * The dynamic portion of the hook name, `$this->post_type`, refers to the post type slug.
+         *
+         * Possible hook names include:
+         *
+         *  - `rest_insert_post`
+         *  - `rest_insert_page`
+         *  - `rest_insert_attachment`
+         *
+         * @since 4.7.0
+         *
+         * @param WP_Post         $post     Inserted or updated post object.
+         * @param WP_REST_Request $request  Request object.
+         * @param bool            $creating True when creating a post, false when updating.
+         */
+        do_action("rest_insert_{$this->post_type}", $post, $request, true);
+
+        $schema = $this->get_item_schema();
+
+        if (!empty($schema[ 'properties' ][ 'sticky' ])) {
+            if (!empty($request[ 'sticky' ])) {
+                stick_post($post_id);
+            } else {
+                unstick_post($post_id);
+            }
+        }
+
+        if (!empty($schema[ 'properties' ][ 'featured_media' ]) && isset($request[ 'featured_media' ])) {
+            $this->handle_featured_media($request[ 'featured_media' ], $post_id);
+        }
+
+        if (!empty($schema[ 'properties' ][ 'format' ]) && !empty($request[ 'format' ])) {
+            set_post_format($post, $request[ 'format' ]);
+        }
+
+        if (!empty($schema[ 'properties' ][ 'template' ]) && isset($request[ 'template' ])) {
+            $this->handle_template($request[ 'template' ], $post_id, true);
+        }
+
+        $terms_update = $this->handle_terms($post_id, $request);
+
+        if (is_wp_error($terms_update)) {
+            return $terms_update;
+        }
+
+        if (!empty($schema[ 'properties' ][ 'meta' ]) && isset($request[ 'meta' ])) {
+            $meta_update = $this->meta->update_value($request[ 'meta' ], $post_id);
+
+            if (is_wp_error($meta_update)) {
+                return $meta_update;
+            }
+        }
+
+        $post = get_post($post_id);
+        $fields_update = $this->update_additional_fields_for_object($post, $request);
+
+        if (is_wp_error($fields_update)) {
+            return $fields_update;
+        }
+
+        $request->set_param('context', 'edit');
+
+        /**
+         * Fires after a single post is completely created or updated via the REST API.
+         *
+         * The dynamic portion of the hook name, `$this->post_type`, refers to the post type slug.
+         *
+         * Possible hook names include:
+         *
+         *  - `rest_after_insert_post`
+         *  - `rest_after_insert_page`
+         *  - `rest_after_insert_attachment`
+         *
+         * @since 5.0.0
+         *
+         * @param WP_Post         $post     Inserted or updated post object.
+         * @param WP_REST_Request $request  Request object.
+         * @param bool            $creating True when creating a post, false when updating.
+         */
+        do_action("rest_after_insert_{$this->post_type}", $post, $request, true);
+
+        wp_after_insert_post($post, false, null);
+
+        $response = $this->prepare_item_for_response($post, $request);
+        $response = rest_ensure_response($response);
+
+        $response->set_status(201);
+        $response->header('Location', rest_url(rest_get_route_for_post($post)));
+
+        return $response;
+    }
+
+    /**
      * Checks if a post can be edited.
      *
      * @param WP_Post $post Post object.
@@ -240,6 +383,240 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         }
 
         return false;
+    }
+
+    /**
+     * Prepares a single table for create or update.
+     *
+     * @param WP_REST_Request $request Request object.
+     * @return stdClass|WP_Error Post object or WP_Error.
+     */
+    protected function prepare_item_for_database($request)
+    {
+        $prepared_table = new stdClass();
+        $current_status = '';
+
+        // Table ID.
+        if (isset($request[ 'id' ]) && (int) $request[ 'id' ] !== 0) {
+            $existing_table = $this->get_table($request[ 'id' ]);
+            if (is_wp_error($existing_table)) {
+                return $existing_table;
+            }
+
+            $prepared_table->ID = $existing_table->ID;
+            $current_status = $existing_table->header[ 'status' ];
+        }
+
+        $schema = $this->get_item_schema();
+
+        /**
+         * Process Table Header Block
+         */
+
+        if (!empty($schema[ 'properties' ][ 'header' ])) {
+            $schema_header = $schema[ 'properties' ][ 'header' ];
+
+            // Table Header ID.
+            if (!empty($schema_header[ 'properties' ][ 'id' ])) {
+                if (isset($request[ 'header' ][ 'id' ])) {
+                    if ((int) $request[ 'header' ][ 'id' ] !== (int) $request[ 'id' ]) {
+                        return new WP_Error(
+                            'rest_header_id_integrity',
+                            __('Header ID does not match Request ID.'),
+                            array('status' => 400)
+                        );
+                    }
+                    $prepared_table->header[ 'id' ] = $request[ 'header' ][ 'id' ];
+                }
+            }
+
+            // Table post block cross reference.
+            if (!empty($schema_header[ 'properties' ][ 'block_table_ref' ]) &&
+                isset($request[ 'header' ][ 'block_table_ref' ])) {
+                $prepared_table->header[ 'block_table_ref' ] = $request[ 'header' ][ 'block_table_ref' ];
+            }
+
+            // Table status.
+            if (!empty($schema_header[ 'properties' ][ 'status' ]) &&
+                isset($request[ 'header' ][ 'status' ]) &&
+                (!$current_status || $current_status !== $request[ 'status' ])) {
+                $prepared_table->header[ 'status' ] = $request[ 'header' ][ 'status' ];
+            }
+
+            // Table Post ID cross reference.
+            if (!empty($schema_header[ 'properties' ][ 'post_id' ]) &&
+                isset($request[ 'header' ][ 'post_id' ])) {
+                $prepared_table->header[ 'post_id' ] = $request[ 'header' ][ 'post_id' ];
+            }
+
+            // Table name.
+            if (!empty($schema_header[ 'properties' ][ 'table_name' ]) &&
+                isset($request[ 'header' ][ 'table_name' ])) {
+                $prepared_table->header[ 'table_name' ] = $request[ 'header' ][ 'table_name' ];
+            }
+
+            // Table attributes.
+            if (!empty($schema_header[ 'properties' ][ 'attributes' ]) &&
+                isset($request[ 'header' ][ 'table_name' ])) {
+                $prepared_table->header[ 'attributes' ] = $request[ 'header' ][ 'attributes' ];
+            }
+
+            // Table css classes.
+            if (!empty($schema_header[ 'properties' ][ 'classes' ]) &&
+                isset($request[ 'header' ][ 'table_name' ])) {
+                $prepared_table->header[ 'classes' ] = $request[ 'header' ][ 'classes' ];
+            }
+        }
+
+        /**
+         * Process Table Row Block for each row in the table
+         */
+        if (!empty($schema[ 'properties' ][ 'rows' ])) {
+            $schema_rows = $schema[ 'properties' ][ 'rows' ];
+
+            foreach ($request[ 'rows' ] as $key => $row) {
+                $schema_row = $schema_rows[ 'properties' ][ 'row' ];
+
+                // Row Table ID
+                if (!empty($schema_row[ 'properties' ][ 'table_id' ])) {
+                    if (isset($request[ 'rows' ][ $key ][ 'table_id' ])) {
+                        if ((int) $request[ 'rows' ][ $key ][ 'table_id' ] !== (int) $request[ 'id' ]) {
+                            return new WP_Error(
+                                'rest_header_id_integrity',
+                                __('Row table ID does not match Request ID.'),
+                                array('status' => 400)
+                            );
+                        }
+                        $prepared_table->rows[ $key ][ 'table_id' ] = $request[ 'rows' ][ $key ][ 'table_id' ];
+                    }
+                }
+
+                // Row's Row ID
+                if (!empty($schema_row[ 'properties' ][ 'row_id' ]) &&
+                    isset($request[ 'rows' ][ $key ][ 'row_id' ])) {
+                    $prepared_table->rows[ $key ][ 'row_id' ] = $request[ 'rows' ][ $key ][ 'row_id' ];
+                }
+
+                // Row attributes
+                if (!empty($schema_row[ 'properties' ][ 'attributes' ]) &&
+                    isset($request[ 'rows' ][ $key ][ 'attributes' ])) {
+                    $prepared_table->rows[ $key ][ 'attributes' ] = $request[ 'rows' ][ $key ][ 'attributes' ];
+                }
+
+                // Row css classes
+                if (!empty($schema_row[ 'properties' ][ 'classes' ]) &&
+                    isset($request[ 'rows' ][ $key ][ 'classes' ])) {
+                    $prepared_table->rows[ $key ][ 'classes' ] = $request[ 'rows' ][ $key ][ 'classes' ];
+                }
+            }
+        }
+        /**
+         * Process Table Column Block for each column in the table
+         */
+        if (!empty($schema[ 'properties' ][ 'columns' ])) {
+            $schema_columns = $schema[ 'properties' ][ 'columns' ];
+
+            foreach ($request[ 'columns' ] as $key => $column) {
+                $schema_column = $schema_columns[ 'properties' ][ 'column' ];
+
+                // Column Table ID
+                if (!empty($schema_column[ 'properties' ][ 'table_id' ])) {
+                    if (isset($request[ 'columns' ][ $key ][ 'table_id' ])) {
+                        if ((int) $request[ 'columns' ][ $key ][ 'table_id' ] !== (int) $request[ 'id' ]) {
+                            return new WP_Error(
+                                'rest_header_id_integrity',
+                                __('Row table ID does not match Request ID.'),
+                                array('status' => 400)
+                            );
+                        }
+                        $prepared_table->columns[ $key ][ 'table_id' ] = $request[ 'columns' ][ $key ][ 'table_id' ];
+                    }
+                }
+
+                // Colunmn's Column ID
+                if (!empty($schema_column[ 'properties' ][ 'column_id' ]) &&
+                    isset($request[ 'columns' ][ $key ][ 'column_id' ])) {
+                    $prepared_table->columns[ $key ][ 'column_id' ] = $request[ 'columns' ][ $key ][ 'column_id' ];
+                }
+
+                // Column attributes
+                if (!empty($schema_column[ 'properties' ][ 'attributes' ]) &&
+                    isset($request[ 'columns' ][ $key ][ 'attributes' ])) {
+                    $prepared_table->columns[ $key ][ 'attributes' ] = $request[ 'columns' ][ $key ][ 'attributes' ];
+                }
+
+                // Column css classes
+                if (!empty($schema_column[ 'properties' ][ 'classes' ]) &&
+                    isset($request[ 'columns' ][ $key ][ 'classes' ])) {
+                    $prepared_table->columns[ $key ][ 'classes' ] = $request[ 'columns' ][ $key ][ 'classes' ];
+                }
+            }
+        }
+
+        /**
+         * Process Table Cell Block for each cell in the table
+         */
+        if (!empty($schema[ 'properties' ][ 'cells' ])) {
+            $schema_cells = $schema[ 'properties' ][ 'cells' ];
+
+            foreach ($request[ 'cells' ] as $key => $cell) {
+                $schema_cell = $schema_cells[ 'properties' ][ 'cell' ];
+
+                // Table ID
+                if (!empty($schema_cell[ 'properties' ][ 'table_id' ])) {
+                    if (isset($request[ 'cells' ][ $key ][ 'table_id' ])) {
+                        if ((int) $request[ 'cells' ][ $key ][ 'table_id' ] !== (int) $request[ 'id' ]) {
+                            return new WP_Error(
+                                'rest_header_id_integrity',
+                                __('Row table ID does not match Request ID.'),
+                                array('status' => 400)
+                            );
+                        }
+                        $prepared_table->cells[ $key ][ 'table_id' ] = $request[ 'cells' ][ $key ][ 'table_id' ];
+                    }
+                }
+
+                // Column ID
+                if (!empty($schema_cell[ 'properties' ][ 'column_id' ]) &&
+                    isset($request[ 'cells' ][ $key ][ 'column_id' ])) {
+                    $prepared_table->cells[ $key ][ 'column_id' ] = $request[ 'cells' ][ $key ][ 'column_id' ];
+                }
+
+                // Row ID
+                if (!empty($schema_cell[ 'properties' ][ 'row_id' ]) &&
+                    isset($request[ 'cells' ][ $key ][ 'row_id' ])) {
+                    $prepared_table->cells[ $key ][ 'row_id' ] = $request[ 'cells' ][ $key ][ 'row_id' ];
+                }
+                // Cell attributes
+                if (!empty($schema_cell[ 'properties' ][ 'attributes' ]) &&
+                    isset($request[ 'cells' ][ $key ][ 'attributes' ])) {
+                    $prepared_table->cells[ $key ][ 'attributes' ] = $request[ 'cells' ][ $key ][ 'attributes' ];
+                }
+
+                // Cell css classes
+                if (!empty($schema_cell[ 'properties' ][ 'classes' ]) &&
+                    isset($request[ 'cells' ][ $key ][ 'classes' ])) {
+                    $prepared_table->cells[ $key ][ 'classes' ] = $request[ 'cells' ][ $key ][ 'classes' ];
+                }
+
+                // Cell css content
+                if (!empty($schema_cell[ 'properties' ][ 'content' ]) &&
+                    isset($request[ 'cells' ][ $key ][ 'content' ])) {
+                    $prepared_table->cells[ $key ][ 'content' ] = $request[ 'cells' ][ $key ][ 'content' ];
+                }
+            }
+        }
+        /**
+         * Filters a post before it is inserted via the REST API.
+         *
+         * Possible hook names include:
+         *
+         * @param stdClass        $prepared_post An object representing a single post prepared
+         *                                       for inserting or updating the database.
+         * @param WP_REST_Request $request       Request object.
+         */
+        error_log('pre-insert-table = ' . json_encode(apply_filters("rest_pre_insert_dynamic-table", $prepared_table, $request)));
+        return apply_filters("rest_pre_insert_dynamic-table", $prepared_table, $request);
     }
 
     /**
@@ -505,85 +882,93 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                     ),
                 ),
                 'columns' => array(
-                    'description' => __('Table column'),
-                    'type' => 'object',
-                    // 'context' => array('edit'),
+                    'description' => __('Table columns collection'),
+                    'type' => 'array',
+                    'context' => array('view', 'edit'),
                     'readonly' => true,
-                    'column' => array(
-                        'description' => __('Table row'),
-                        'type' => 'object',
-                        // 'context' => array('edit'),
-                        'readonly' => true,
-                        'properties' => array(
-                            'table_id' => array(
-                                'description' => __('Table ID.'),
-                                'type' => 'integer',
-                                'context' => array('view', 'edit'),
-                                'readonly' => true,
-                            ),
-                            'column_id' => array(
-                                'description' => __('Table Column Number.'),
-                                'type' => 'integer',
-                                'context' => array('view', 'edit'),
-                                'readonly' => true,
-                            ),
-                            'attributes' => array(
-                                'description' => __('Column attributes inhereted by cells.'),
-                                'type' => 'array',
-                                'context' => array('view', 'edit'),
-                            ),
-                            'classes' => array(
-                                'description' => __('CSS column classes inhereted by cells.'),
-                                'type' => 'array',
-                                'context' => array('view', 'edit'),
+                    'properties' => array(
+                        'column' => array(
+                            'description' => __('Table column'),
+                            'type' => 'object',
+                            'context' => array('view', 'edit'),
+                            'readonly' => true,
+                            'properties' => array(
+                                'table_id' => array(
+                                    'description' => __('Table ID.'),
+                                    'type' => 'integer',
+                                    'context' => array('view', 'edit'),
+                                    'readonly' => true,
+                                ),
+                                'column_id' => array(
+                                    'description' => __('Table Column Number.'),
+                                    'type' => 'integer',
+                                    'context' => array('view', 'edit'),
+                                    'readonly' => true,
+                                ),
+                                'attributes' => array(
+                                    'description' => __('Column attributes inhereted by cells.'),
+                                    'type' => 'array',
+                                    'context' => array('view', 'edit'),
+                                ),
+                                'classes' => array(
+                                    'description' => __('CSS column classes inhereted by cells.'),
+                                    'type' => 'array',
+                                    'context' => array('view', 'edit'),
+                                ),
                             ),
                         ),
                     ),
                 ),
                 'cells' => array(
                     'description' => __('Table cells collection.'),
-                    'type' => 'object',
-                    // 'context' => array('edit'),
+                    'type' => 'array',
+                    'context' => array('view', 'edit'),
                     'readonly' => true,
-                    'cell' => array(
-                        'description' => __('Table row'),
-                        'type' => 'object',
-                        // 'context' => array('edit'),
-                        'readonly' => true,
-                        'properties' => array(
-                            'table_id' => array(
-                                'description' => __('Table ID.'),
-                                'type' => 'integer',
-                                'context' => array('view', 'edit'),
-                                'readonly' => true,
+                    'properties' => array(
+                        'cell' => array(
+                            'description' => __('Table cell'),
+                            'type' => 'object',
+                            'context' => array('view', 'edit'),
+                            'readonly' => true,
+                            'properties' => array(
+                                'table_id' => array(
+                                    'description' => __('Table ID.'),
+                                    'type' => 'integer',
+                                    'context' => array('view', 'edit'),
+                                    'readonly' => true,
+                                ),
+                                'column_id' => array(
+                                    'description' => __('Table Column Number.'),
+                                    'type' => 'integer',
+                                    'context' => array('view', 'edit'),
+                                    'readonly' => true,
+                                ),
+                                'row_id' => array(
+                                    'description' => __('Table Row Number.'),
+                                    'type' => 'integer',
+                                    'context' => array('view', 'edit'),
+                                    'readonly' => true,
+                                ),
+                                'attributes' => array(
+                                    'description' => __('Cell attributes.'),
+                                    'type' => 'array',
+                                    'context' => array('view', 'edit'),
+                                ),
+                                'classes' => array(
+                                    'description' => __('CSS cell classes.'),
+                                    'type' => 'array',
+                                    'context' => array('view', 'edit'),
+                                ),
+                                'content' => array(
+                                    'description' => __('Cell visible content which can include html style elements.'),
+                                    'type' => 'array',
+                                    'context' => array('view', 'edit'),
+                                    'arg_options' => array(
+                                        'sanitize_callback' => null, // Note: sanitization implemented in self::prepare_item_for_database().
+                                        'validate_callback' => null, // Note: validation implemented in self::prepare_item_for_database().
+                                    ),
+                                ), //: ""
                             ),
-                            'column_id' => array(
-                                'description' => __('Table Column Number.'),
-                                'type' => 'integer',
-                                'context' => array('view', 'edit'),
-                                'readonly' => true,
-                            ),
-                            'row_id' => array(
-                                'description' => __('Table Row Number.'),
-                                'type' => 'integer',
-                                'context' => array('view', 'edit'),
-                                'readonly' => true,
-                            ),
-                            'attributes' => array(
-                                'description' => __('Cell attributes.'),
-                                'type' => 'array',
-                                'context' => array('view', 'edit'),
-                            ),
-                            'classes' => array(
-                                'description' => __('CSS cell classes.'),
-                                'type' => 'array',
-                                'context' => array('view', 'edit'),
-                            ),
-                            'content' => array(
-                                'description' => __('Cell visible content which can include html style elements.'),
-                                'type' => 'array',
-                                'context' => array('view', 'edit'),
-                            ), //: ""
                         ),
                     ),
                 ),
@@ -1084,48 +1469,4 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
          */
         // return apply_filters("rest_{$this->post_type}_collection_params", $query_params, $post_type);
     }
-
-    /**
-     * Sanitizes and validates the list of post statuses, including whether the
-     * user can query private statuses.
-     *
-     * @since 4.7.0
-     *
-     * @param string|array    $statuses  One or more post statuses.
-     * @param WP_REST_Request $request   Full details about the request.
-     * @param string          $parameter Additional parameter to pass to validation.
-     * @return array|WP_Error A list of valid statuses, otherwise WP_Error object.
-     */
-    public function sanitize_post_statuses($statuses, $request, $parameter)
-    {
-        $statuses = wp_parse_slug_list($statuses);
-
-        // The default status is different in WP_REST_Attachments_Controller.
-        $attributes = $request->get_attributes();
-        $default_status = $attributes[ 'args' ][ 'status' ][ 'default' ];
-
-        foreach ($statuses as $status) {
-            if ($status === $default_status) {
-                continue;
-            }
-
-            $post_type_obj = get_post_type_object($this->post_type);
-
-            if (current_user_can($post_type_obj->cap->edit_posts) || 'private' === $status && current_user_can($post_type_obj->cap->read_private_posts)) {
-                $result = rest_validate_request_arg($status, $request, $parameter);
-                if (is_wp_error($result)) {
-                    return $result;
-                }
-            } else {
-                return new WP_Error(
-                    'rest_forbidden_status',
-                    __('Status is forbidden.'),
-                    array('status' => rest_authorization_required_code())
-                );
-            }
-        }
-
-        return $statuses;
-    }
-
 }

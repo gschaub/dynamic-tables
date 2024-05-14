@@ -5,45 +5,96 @@ require_once plugin_dir_path(__FILE__) . 'dynamicTablesDbPersist.php';
 /**
  * GET table callback to return table object
  */
-function get_table_request($request)
+// function get_table_request($request)
+// {
+
+//     error_log(' ');
+//     error_log('GET Table request headers - ' . json_encode($request->get_headers()));
+//     error_log(' ');
+//     error_log('GET Table request params - ' . json_encode($request->get_query_params()));
+//     error_log(' ');
+//     error_log('GET Table request body - ' . json_encode($request->get_body()));
+//     error_log(' ');
+
+//     $results = [  ];
+
+//     if (!is_string($request)) {
+//         error_log('Get Table Data Request String - ' . json_encode($request));
+//         if (isset($request[ 'id' ])) {
+//             $tableId = sanitize_text_field($request[ 'id' ]);
+//         } else {
+//             //  Return ERROR
+//         }
+//     } else {
+//         $tableId = $request;
+//     }
+
+//     if (TEST_MODE) {
+//         $tableId = '7';
+//         $classes = 'My class';
+//     }
+
+//     error_log('    Web Service Input = ' . json_encode($tableId));
+
+//     $results = get_table($tableId);
+//     error_log('    Result, Formatted - ' . json_encode($results, true));
+
+//     return rest_ensure_response($results);
+// }
+
+function create_table_data($tablearr)
 {
+    // Capture original pre-sanitized array for passing into filters.
+    $unsanitized_postarr = $tbltarr;
 
-    error_log(' ');
-    error_log('GET Table request headers - ' . json_encode($request->get_headers()));
-    error_log(' ');
-    error_log('GET Table request params - ' . json_encode($request->get_query_params()));
-    error_log(' ');
-    error_log('GET Table request body - ' . json_encode($request->get_body()));
-    error_log(' ');
+    $defaults = array(
+        'id' => '0',
+        'header' => array(
+            'id' => '0',
+            'block_table_ref' => '',
+            'status' => 'unknown',
+            'post_id' => '',
+            'table_name' => '',
+            'attributes' => [  ],
+            'classes' => ''
+        ),
+        'rows' => array(
+            'row' => array(
+                'table_id' => '0',
+                'row_id' => '0',
+                'attributes' => [  ],
+                'classes' => ''
+            ),
+        ),
+        'columns' => array(
+            'column' => array(
+                'table_id' => '0',
+                'column_id' => '0',
+                'attributes' => [  ],
+                'classes' => ''
+            ),
+        ),
+        'cells' => array(
+            'cell' => array(
+                'table_id' => '0',
+                'column_id' => '0',
+                'attributes' => [  ],
+                'classes' => '',
+                'content' => ''
+            ),
+        ),
+    );
 
-    $results = [  ];
+    $tablearr = wp_parse_args($tablearr, $defaults);
 
-    if (!is_string($request)) {
-        error_log('Get Table Data Request String - ' . json_encode($request));
-        if (isset($request[ 'id' ])) {
-            $tableId = sanitize_text_field($request[ 'id' ]);
-        } else {
-            //  Return ERROR
-        }
-    } else {
-        $tableId = $request;
-    }
+    unset($tablearr[ 'filter' ]);
 
-    if (TEST_MODE) {
-        $tableId = '7';
-        $classes = 'My class';
-    }
+    $tablearr = sanitize_dynamic_table($tablearr, 'db');
 
-    error_log('    Web Service Input = ' . json_encode($tableId));
-
-    $results = get_table($tableId);
-    error_log('    Result, Formatted - ' . json_encode($results, true));
-
-    return rest_ensure_response($results);
-}
-
-function create_table_data($request)
-{
+    // var_dump($tablearr);
+    error_log('Table Formatted for Insert:');
+    error_log(json_encode($tablearr));
+    die;
 
     error_log('POST Table request - ' . json_encode($request->get_json_params()));
 
@@ -495,4 +546,157 @@ function get_table($tableId)
     $results += [ "cells" => $resultsCells ];
 
     return $results;
+}
+
+/**
+ * Sanitizes every post field.
+ *
+ * @param object|WP_Post|array $table    The dynamic table  object or array
+ * @param string               $context Optional. How to sanitize table fields.
+ *                                      Accepts 'edit', 'db', 'display',
+ *                                      'attribute', or 'js'. Default 'display'.
+ * @return object|WP_Post|array The now sanitized dynamic table object or array (will be the
+ *                              same type as `$table`).
+ */
+function sanitize_dynamic_table($table, $context = 'display')
+{
+    if (is_object($table)) {
+        // Check if post already filtered for this context.
+        if (isset($table->filter) && $context == $table->filter) {
+            return $table;
+        }
+        if (!isset($table->ID)) {
+            $table->ID = 0;
+        }
+        foreach (array_keys(get_object_vars($table)) as $field) {
+            error_log('');
+            error_log('New Field - Type Object');
+            error_log('Field = ' . $field);
+            error_log('Table Field Value = ' . $table->$field);
+            error_log('Table ID = ' . $table->ID);
+            error_log('Context = ' . $context);
+
+            // $table->$field = sanitize_dynamic_table_field($field, $table->$field, $table->ID, $context);
+        }
+        $table->filter = $context;
+    } elseif (is_array($table)) {
+        // Check if post already filtered for this context.
+        if (isset($table[ 'filter' ]) && $context == $table[ 'filter' ]) {
+            return $table;
+        }
+        if (!isset($table[ 'ID' ])) {
+            $table[ 'ID' ] = 0;
+        }
+
+        // Loop all fields in Table object for sanitization
+        foreach (array_keys($table) as $field) {
+            switch ($field) {
+                case 'id':
+                    $table[ $field ] = sanitize_dynamic_table_field($field, $table[ $field ], $table[ 'ID' ], $context);
+                    break;
+                case 'header':
+                    foreach (array_keys($table[ 'header' ]) as $header_field) {
+                        $table[ 'header' ][ $header_field ] = sanitize_dynamic_table_field($header_field, $table[ 'header' ][ $header_field ], $table[ 'ID' ], $context);
+                    }
+                    break;
+                case 'rows':
+                    foreach (array_keys($table[ 'rows' ]) as $row_container_field) {
+                        foreach (array_keys($table[ 'rows' ][ $row_container_field ]) as $row_field) {
+                            $table[ 'rows' ][ $row_container_field ][ $row_field ] = sanitize_dynamic_table_field($row_field, $table[ 'rows' ][ $row_container_field ][ $row_field ], $table[ 'ID' ], $context);
+                            error_log('Value for Row ' . $row_container_field . ', ' . $row_field . ' = ' . json_encode($table[ 'rows' ][ $row_container_field ][ $row_field ]));
+                        }
+                    }
+                    break;
+                case 'columns':
+                    foreach (array_keys($table[ 'columns' ]) as $column_container_field) {
+                        foreach (array_keys($table[ 'columns' ][ $column_container_field ]) as $column_field) {
+                            $table[ 'columns' ][ $column_container_field ][ $column_field ] = sanitize_dynamic_table_field($column_field, $table[ 'columns' ][ $column_container_field ][ $column_field ], $table[ 'ID' ], $context);
+                            error_log('Value for Column ' . $column_container_field . ', ' . $column_field . ' = ' . json_encode($table[ 'columns' ][ $column_container_field ][ $column_field ]));
+                        }
+                    }
+                    break;
+                case 'cells':
+                    foreach (array_keys($table[ 'cells' ]) as $cell_container_field) {
+                        foreach (array_keys($table[ 'cells' ][ $cell_container_field ]) as $cell_field) {
+                            $table[ 'cells' ][ $cell_container_field ][ $cell_field ] = sanitize_dynamic_table_field($cell_field, $table[ 'cells' ][ $cell_container_field ][ $cell_field ], $table[ 'ID' ], $context);
+                            error_log('Value for Cell ' . $cell_container_field . ', ' . $cell_field . ' = ' . json_encode($table[ 'cells' ][ $cell_container_field ][ $cell_field ]));
+                        }
+                    }
+                    break;
+            }
+        }
+        $table[ 'filter' ] = $context;
+    }
+    return $table;
+}
+
+/**
+ * Sanitizes a table based on context.
+ *
+ * Possible context values are:  'edit', 'db', 'display', 'attribute' and
+ * 'js'. The 'display' context is used by default. 'attribute' and 'js' contexts
+ * are treated like 'display' when calling filters.
+ *
+ * @param string $field   The dynamic table Object field name.
+ * @param mixed  $value   The dynamic table Object value.
+ * @param int    $table_id Table ID.
+ * @param string $context Optional. How to sanitize the field. Possible values are 'edit',
+ *                        'db', 'display', 'attribute' and 'js'. Default 'display'.
+ * @return mixed Sanitized value.
+ */
+function sanitize_dynamic_table_field($field, $value, $table_id, $context = 'display')
+{
+
+    if ('edit' === $context) {
+
+        $format_to_edit = array('content', 'table_name');
+        $value = apply_filters("edit_table_{$field}", $value, $table_id);
+
+        if (in_array($field, $format_to_edit, true)) {
+            if ('content' === $field) {
+                $value = format_to_edit($value, user_can_richedit());
+            }
+
+            if ('table_name' === $field) {
+                $value = format_to_edit($value);
+            }
+        } else {
+            $value = esc_attr($value);
+        }
+
+    } elseif ('db' === $context) {
+        $value = apply_filters("pre_table_{$field}", $value);
+
+        // error_log('DB pre_table for ' . $field . ' = ' . json_encode($value));
+        /**
+         * Filters the value of a specific table field before saving.
+         *
+         * The dynamic portion of the hook name, `$field`, refers to the post
+         * field name.
+         *
+         * @param mixed $value Value of the table field.
+         */
+        $value = apply_filters("{$field}_pre", $value);
+
+        // error_log('DB ' . $field . '_pre = ' . json_encode($value));
+
+    } else {
+
+        // Use display filters by default.
+        $value = apply_filters("table_{$field}", $value, $post_id, $context);
+
+        if ('attribute' === $context) {
+            $value = esc_attr($value);
+        } elseif ('js' === $context) {
+            $value = esc_js($value);
+        }
+    }
+
+// Restore the type for integer fields after esc_attr().
+    // if (in_array($field, $int_fields, true)) {
+    //     $value = (int) $value;
+    // }
+
+    return $value;
+
 }
