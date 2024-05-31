@@ -60,9 +60,16 @@ class PersistTableData
         global $wpdb;
 
         $args = $this->process_args($requestArgs);
+        if (!$args) {
+            return false;
+        }
 
         $query = "SELECT * ";
-        $query .= $this->process_query_string($requestArgs);
+        $query_string = $this->process_query_string($requestArgs);
+        if (!$query_string) {
+            return false;
+        }
+        $query .= $query_string;
 
         $prepare = $wpdb->prepare($query, $args);
 
@@ -73,17 +80,16 @@ class PersistTableData
         if ($returnCollection) {
 
             try {
-                // $this->queryResult = $wpdb->get_results($prepare, ARRAY_A);
                 $dbReturn = $wpdb->get_results($prepare, ARRAY_A);
                 if ($dbReturn) {
                     $this->queryResult = $dbReturn;
                 } else {
-                    echo 'Table data not found';
-                    $this->queryResult = [  ];
+                    error_log('Table data not found');
+                    $this->queryResult = false;
                 }
             } catch (Exception $e) {
-                echo 'Error fetching table data: ' . $e;
-                $this->queryResult = [  ];
+                error_log('Error fetching table data: ' . $e);
+                $this->queryResult = false;
             }
 
         } else {
@@ -92,12 +98,12 @@ class PersistTableData
                 if ($dbReturn) {
                     $this->queryResult = $dbReturn;
                 } else {
-                    echo 'Table data not found';
-                    $this->queryResult = [  ];
+                    error_log('Table data not found');
+                    $this->queryResult = false;
                 }
             } catch (Exception $e) {
-                echo 'Error fetching table data: ' . $e;
-                $this->queryResult = [  ];
+                error_log('Error fetching table data: ' . $e);
+                $this->queryResult = false;
             }
         }
 
@@ -143,7 +149,14 @@ class PersistTableData
 
         $dbTable = $wpdb->prefix . $dbTableName;
         $where = $this->process_args($requestArgs);
-        $format = explode(',', $this->process_query_string($requestArgs));
+        if (!$where) {
+            return false;
+        }
+        $query_string = $this->process_query_string($requestArgs);
+        if (!$query_string) {
+            return false;
+        }
+        $format = explode(',', $query_string);
 
         $this->deleteResult = $wpdb->delete($dbTable, $where, $format);
 
@@ -159,7 +172,15 @@ class PersistTableData
 
         $db_table = $wpdb->prefix . $tableName;
         $data = $this->process_args($requestArgs);
-        $format = explode(',', $this->process_query_string($requestArgs));
+        if (!$data) {
+            return false;
+        }
+
+        $query_string = $this->process_query_string($requestArgs);
+        if (!$query_string) {
+            return false;
+        }
+        $format = explode(',', $query_string);
 
         $this->replacementResult = $wpdb->replace($db_table, $data, $format);
 
@@ -171,7 +192,7 @@ class PersistTableData
     public function create_table_data($blockTableRef, $status, $postId, $tableName, $attributes, $classes)
     {
 
-        $success = 'Processing';
+        $success = false;
         global $wpdb;
 
         $wpdb->query('START TRANSACTION');
@@ -195,10 +216,9 @@ class PersistTableData
 
         if ($inserted) {
             $wpdb->query('COMMIT'); // commit all queries
-            $success = 'True';
+            $success = true;
         } else {
             $wpdb->query('ROLLBACK'); // rollback everything
-            $success = 'False';
         }
 
         $this->result = array(
@@ -212,7 +232,7 @@ class PersistTableData
     {
 
         // error_log('Updating table, attributes = ' . json_encode($attributes));
-        $success = 'Processing';
+        $success = false;
         $updatedRows = 0;
         global $wpdb;
 
@@ -236,6 +256,15 @@ class PersistTableData
         // error_log('Update Table Params: table id - ' . $tableId . ', block ref - ' . $blockTableRef . ', status - ' . $status . ', post id - ' . $postId . ', table name - ' . $tableName . ', attributes - ' . $attributes . ', classes - ' . $classes);
 
         $queryResults = $this->get_table_data($argsBuild);
+        if (!$queryResult) {
+            $wpdb->query('ROLLBACK'); // rollback everything
+            $this->result = array(
+                'success' => $success,
+                'updated_rows' => '0');
+
+            return $this->result;
+        }
+
         // error_log('   Selected Data - ' . json_encode($queryResults));
 
         /**
@@ -317,8 +346,26 @@ class PersistTableData
         $dbTable = $wpdb->prefix . 'dt_tables';
         $set = $this->process_args($argsSet);
         $where = $this->process_args($argsWhere);
-        $setFormat = array_map('trim', explode(',', $this->process_query_string($argsSet)));
-        $whereFormat = array_map('trim', explode(',', $this->process_query_string($argsWhere)));
+        if (!($set && $where)) {
+            $this->result = array(
+                'success' => $success,
+                'updated_rows' => '0');
+        }
+
+        $query_string = $this->process_query_string($argsSet);
+        if (!$query_string) {
+            $this->result = array(
+                'success' => $success,
+                'updated_rows' => '0');
+        }
+        $setFormat = array_map('trim', explode(',', $query_string));
+        $query_string = $this->process_query_string($argsWhere);
+        if (!$query_string) {
+            $this->result = array(
+                'success' => $success,
+                'updated_rows' => '0');
+        }
+        $whereFormat = array_map('trim', explode(',', $query_string));
 
         $updateResult = $wpdb->update($dbTable,
             $set,
@@ -332,19 +379,16 @@ class PersistTableData
 
         if ($updateResult === false) {
             $wpdb->query('ROLLBACK'); // rollback everything
-            $success = 'False';
-
             $this->result = array(
                 'success' => $success,
                 'updated_rows' => '0');
-
             return $this->result;
-
         }
+
         $updatedRows = $updatedRows + $updateResult;
 
         $wpdb->query('COMMIT'); // commit all queries
-        $success = 'True';
+        $success = true;
 
         $this->result = array(
             'success' => $success,
@@ -355,7 +399,7 @@ class PersistTableData
 
     public function update_table_rows($tableId, $rows)
     {
-        $success = 'Processing';
+        $success = false;
         global $wpdb;
 
         $wpdb->query('START TRANSACTION');
@@ -373,15 +417,11 @@ class PersistTableData
         $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
         // error_log('    Request Args' . json_encode($rows));
         // error_log('Begin Row Insert');
-
-        if ($queryReturnedResult === false) {
+        if (!$queryReturnedResult) {
             $wpdb->query('ROLLBACK'); // rollback everything
-            $success = 'False';
-
             $this->result = array(
                 'success' => $success,
                 'deleted_rows' => '0');
-
             return $this->result;
         }
 
@@ -423,12 +463,9 @@ class PersistTableData
 
             if (!$queryReturnedResult) {
                 $wpdb->query('ROLLBACK'); // rollback everything
-                $success = 'False';
-
                 $this->result = array(
                     'success' => $success,
                     'updated_rows' => '0');
-
                 return $this->result;
 
             }
@@ -447,7 +484,7 @@ class PersistTableData
 
     public function update_table_columns($tableId, $columns)
     {
-        $success = 'Processing';
+        $success = false;
         global $wpdb;
 
         $wpdb->query('START TRANSACTION');
@@ -463,17 +500,20 @@ class PersistTableData
             'value' => $tableId));
 
         $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
+        if (!$queryReturnedResult) {
+            $this->result = array(
+                'success' => $success,
+                'updated_rows' => '0');
+            return $this->result;
+        }
         // error_log('    Request Args' . json_encode($columns));
         // error_log('Begin Column Insert');
 
         if ($queryReturnedResult === false) {
             $wpdb->query('ROLLBACK'); // rollback everything
-            $success = 'False';
-
             $this->result = array(
                 'success' => $success,
                 'deleted_rows' => '0');
-
             return $this->result;
         }
 
@@ -521,12 +561,9 @@ class PersistTableData
 
             if (!$queryReturnedResult) {
                 $wpdb->query('ROLLBACK'); // rollback everything
-                $success = 'False';
-
                 $this->result = array(
                     'success' => $success,
                     'updated_rows' => '0');
-
                 return $this->result;
 
             }
@@ -534,7 +571,7 @@ class PersistTableData
         }
 
         $wpdb->query('COMMIT'); // commit all queries
-        $success = 'True';
+        $success = true;
 
         $this->result = array(
             'success' => $success,
@@ -545,7 +582,7 @@ class PersistTableData
 
     public function update_table_cells($tableId, $cells)
     {
-        $success = 'Processing';
+        $success = false;
         global $wpdb;
 
         $wpdb->query('START TRANSACTION');
@@ -561,17 +598,11 @@ class PersistTableData
             'value' => $tableId));
 
         $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
-        // error_log('    Request Cells ' . json_encode($cells));
-        //error_log('Begin Cell Insert');
-
-        if ($queryReturnedResult === false) {
+        if (!$queryReturnedResult) {
             $wpdb->query('ROLLBACK'); // rollback everything
-            $success = 'False';
-
             $this->result = array(
                 'success' => $success,
                 'inserted_rows' => '0');
-
             return $this->result;
         }
 
@@ -627,12 +658,9 @@ class PersistTableData
 
             if (!$queryReturnedResult) {
                 $wpdb->query('ROLLBACK'); // rollback everything
-                $success = 'False';
-
                 $this->result = array(
                     'success' => $success,
                     'updated_rows' => '0');
-
                 return $this->result;
 
             }
@@ -640,7 +668,7 @@ class PersistTableData
         }
 
         $wpdb->query('COMMIT'); // commit all queries
-        $success = 'True';
+        $success = true;
 
         $this->result = array(
             'success' => $success,
@@ -653,10 +681,10 @@ class PersistTableData
     {
 
         // error_log('    In get_tables...');
-//        error_log('');
+        //        error_log('');
         global $wpdb;
 
-        $success = 'Processing';
+        $success = false;
         global $wpdb;
 
         // error_log('DB Table Name for Where - ' . $dbTableName);
@@ -679,7 +707,10 @@ class PersistTableData
                 $returnCollection = true;
                 break;
             default:
-                $dtWhereField = 'ERROR - ' . $dbTableName . ' is not a valid database table.';
+                $this->result = array(
+                    'success' => $success,
+                    'result' => 'ERROR - ' . $dbTableName . ' is not a valid database table.');
+                return $this->result;
         }
 
         // error_log('DB Table Field for Where - ' . $dtWhereField);
@@ -715,6 +746,12 @@ class PersistTableData
         }
 
         $queryResults = $this->get_table_data($argsBuild, $returnCollection);
+        if (!$queryResults) {
+            $this->result = array(
+                'success' => $success,
+                'result' => 'DB Query Error');
+            return $this->result;
+        }
         // error_log('   Selected Data - ' . json_encode($queryResults));
 
         switch ($dbTableName) {
@@ -722,9 +759,8 @@ class PersistTableData
                 $serializedTableAttributes = $queryResults[ 'attributes' ];
                 $tableAttributes = maybe_unserialize($serializedTableAttributes);
                 $queryResults[ 'attributes' ] = $tableAttributes;
-
                 $tableReturn = $queryResults;
-                $this->result = $tableReturn;
+                // $this->result = $tableReturn;
                 break;
             case 'dt_table_rows':
                 $tableRowReturn = [  ];
@@ -740,24 +776,26 @@ class PersistTableData
                     array_push($tableRowReturn, $row);
                 }
 
-                $this->result = $tableRowReturn;
+                $tableReturn = $queryResults;
+                // $this->result = $tableRowReturn;
                 break;
             case 'dt_table_columns':
                 $tableColumnReturn = [  ];
 
-                foreach ($queryResults as $key => $row) {
-                    // error_log('    ... Column Row - ' . json_encode($row));
+                foreach ($queryResults as $key => $column) {
+                    // error_log('    ... Column Row - ' . json_encode($column));
 
-                    $serializedColumnAttributes = $row[ 'attributes' ];
+                    $serializedColumnAttributes = $column[ 'attributes' ];
                     $columnAttributes = maybe_unserialize($serializedColumnAttributes);
 
                     // error_log('    ...  attributes - ' . json_encode($columnAttributes));
-                    $row[ 'attributes' ] = $columnAttributes;
+                    $column[ 'attributes' ] = $columnAttributes;
 
-                    array_push($tableColumnReturn, $row);
+                    array_push($tableColumnReturn, $column);
                 }
 
-                $this->result = $tableColumnReturn;
+                $tableReturn = $queryResults;
+                // $this->result = $tableColumnReturn;
                 break;
             case 'dt_table_cells':
                 $tableCellReturn = [  ];
@@ -773,11 +811,21 @@ class PersistTableData
                     array_push($tableCellReturn, $row);
                 }
 
-                $this->result = $tableCellReturn;
+                $tableReturn = $queryResults;
+                // $this->result = $tableCellReturn;
                 break;
             default:
-                $dtWhereField = 'ERROR - ' . $dbTableName . ' is not a valid database table.';
+                $this->result = array(
+                    'success' => $success,
+                    'result' => 'ERROR - ' . $dbTableName . ' is not a valid database table.');
+                return $this->result;
         }
+
+        $success = true;
+
+        $this->result = array(
+            'success' => $success,
+            'result' => $tableReturn);
 
         return $this->result;
 
@@ -807,8 +855,7 @@ class PersistTableData
             'value' => $tableId));
 
         $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
-
-        if ($queryReturnedResult === false) {
+        if (!$queryReturnedResult) {
             $wpdb->query('ROLLBACK'); // rollback everything
             $success = 'False';
 
@@ -835,8 +882,7 @@ class PersistTableData
             'value' => $tableId));
 
         $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
-
-        if ($queryReturnedResult === false) {
+        if (!$queryReturnedResult) {
             $wpdb->query('ROLLBACK'); // rollback everything
             $success = 'False';
 
@@ -863,8 +909,7 @@ class PersistTableData
             'value' => $tableId));
 
         $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
-
-        if ($queryReturnedResult === false) {
+        if (!$queryReturnedResult) {
             $wpdb->query('ROLLBACK'); // rollback everything
             $success = 'False';
 
@@ -891,8 +936,7 @@ class PersistTableData
             'value' => $tableId));
 
         $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
-
-        if ($queryReturnedResult === false) {
+        if (!$queryReturnedResult) {
             $wpdb->query('ROLLBACK'); // rollback everything
             $success = 'False';
 
@@ -942,10 +986,9 @@ class PersistTableData
             // error_log('   Item: Type = ' . $argType . ', Field = ' . $argField . ', Value = ' . $argValue . ', Prior Type = ' . $priorArgType);
 
             if ($argType == 'from' and $priorArgType == 'where') {
-                // error_log('Error: Processing request - All FROM arguments must come before be listed before WHERE arguments');
-                die;
+                error_log('Error: Processing request - All FROM arguments must come before be listed before WHERE arguments');
+                return false;
             }
-
             $sqlArgs += $this->transformArg($argType, $argField, $argValue);
             $priorArgType = $argType;
 
@@ -1123,7 +1166,8 @@ class PersistTableData
                 //error_log('...Where Format String ' . $whereClause);
                 return $whereClause;
             default:
-                return 'Error';
+                error_log('Unknown SQL transaction type: "' . $transactionType . '"');
+                return false;
         }
     }
 

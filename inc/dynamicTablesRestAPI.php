@@ -62,7 +62,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                     'methods' => WP_REST_SERVER::READABLE,
                     // 'callback' => 'get_table_request',
                     'callback' => array($this, 'get_item'),
-                    'permission_callback' => array($this, 'test_permissions'),
+                    'permission_callback' => array($this, 'get_item_permissions_check'),
                 ),
                 array(
                     'methods' => WP_REST_SERVER::EDITABLE,
@@ -112,7 +112,9 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         // error_log('Request = ' . json_encode($request));
         // error_log('Table ID = ' . $request[ 'id' ]);
         // error_log($request[ 'context' ]);
-
+    }
+    public function get_item_permissions_check($request)
+    {
         $table = $this->get_table($request[ 'id' ]);
 
         if (is_wp_error($table)) {
@@ -213,8 +215,54 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
      */
     public function create_item_permissions_check($request)
     {
-        return true;
+        if ($request[ 'id' ] !== '0') {
+            return new WP_Error(
+                'rest_table_exists',
+                __('Cannot create existing table.'),
+                array('status' => 400)
+            );
+        }
 
+        // Permissions for creating a table are based upon the underlying post to which
+        // it is attached.
+        if (isset($request[ 'header' ][ 'post_id' ])) {
+            $postId = $request[ 'header' ][ 'post_id' ];
+            $post = $this->get_post($postId);
+
+            // Bypass permission check for testing
+            return true;
+
+            $post_type = get_post_type_object($post->post_type);
+
+            if (!empty($post->author) && get_current_user_id() !== $post->author && !current_user_can($post_type->cap->edit_others_posts)) {
+                return new WP_Error(
+                    'rest_cannot_edit_others',
+                    __('Sorry, you are not allowed to create tables as this user.'),
+                    array('status' => rest_authorization_required_code())
+                );
+            }
+
+            if (!current_user_can($post_type->cap->create_posts)) {
+                return new WP_Error(
+                    'rest_cannot_create',
+                    __('Sorry, you are not allowed to create tables as this user.'),
+                    array('status' => rest_authorization_required_code())
+                );
+            }
+
+        } else {
+            // If the post has not yet been poblished, detault to user's ability to user's ability to
+            // publish posts and pages generally
+            if (!(current_user_can('publish_posts') || current_user_can('publish_pages'))) {
+                return new WP_Error(
+                    'rest_cannot_create',
+                    __('Sorry, you are not allowed to create tables as this user.'),
+                    array('status' => rest_authorization_required_code())
+                );
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -239,111 +287,37 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             return $prepared_table;
         }
 
-        $table_id = create_table_data($prepared_table);
+        $table_id = create_table_data($prepared_table, true);
 
-        if (is_wp_error($post_id)) {
-
-            if ('db_insert_error' === $post_id->get_error_code()) {
-                $post_id->add_data(array('status' => 500));
+        if (is_wp_error($table_id)) {
+            if ('db_insert_error' === $table_id->get_error_code() ||
+                'db_update_error' === $table_id->get_error_code() ||
+                'db_read_error' === $table_id->get_error_code()) {
+                $table_id->add_data(array('status' => 500));
             } else {
-                $post_id->add_data(array('status' => 400));
+                $table_id->add_data(array('status' => 400));
             }
 
-            return $post_id;
+            return $table_id;
         }
 
-        $post = get_post($post_id);
+        $table = get_table($table_id);
 
         /**
-         * Fires after a single post is created or updated via the REST API.
-         *
-         * The dynamic portion of the hook name, `$this->post_type`, refers to the post type slug.
-         *
-         * Possible hook names include:
-         *
-         *  - `rest_insert_post`
-         *  - `rest_insert_page`
-         *  - `rest_insert_attachment`
-         *
-         * @since 4.7.0
-         *
-         * @param WP_Post         $post     Inserted or updated post object.
-         * @param WP_REST_Request $request  Request object.
-         * @param bool            $creating True when creating a post, false when updating.
+         * Reserve for future use
          */
-        do_action("rest_insert_{$this->post_type}", $post, $request, true);
 
-        $schema = $this->get_item_schema();
+        //  $fields_update = $this->update_additional_fields_for_object($table, $request);
 
-        if (!empty($schema[ 'properties' ][ 'sticky' ])) {
-            if (!empty($request[ 'sticky' ])) {
-                stick_post($post_id);
-            } else {
-                unstick_post($post_id);
-            }
-        }
-
-        if (!empty($schema[ 'properties' ][ 'featured_media' ]) && isset($request[ 'featured_media' ])) {
-            $this->handle_featured_media($request[ 'featured_media' ], $post_id);
-        }
-
-        if (!empty($schema[ 'properties' ][ 'format' ]) && !empty($request[ 'format' ])) {
-            set_post_format($post, $request[ 'format' ]);
-        }
-
-        if (!empty($schema[ 'properties' ][ 'template' ]) && isset($request[ 'template' ])) {
-            $this->handle_template($request[ 'template' ], $post_id, true);
-        }
-
-        $terms_update = $this->handle_terms($post_id, $request);
-
-        if (is_wp_error($terms_update)) {
-            return $terms_update;
-        }
-
-        if (!empty($schema[ 'properties' ][ 'meta' ]) && isset($request[ 'meta' ])) {
-            $meta_update = $this->meta->update_value($request[ 'meta' ], $post_id);
-
-            if (is_wp_error($meta_update)) {
-                return $meta_update;
-            }
-        }
-
-        $post = get_post($post_id);
-        $fields_update = $this->update_additional_fields_for_object($post, $request);
-
-        if (is_wp_error($fields_update)) {
-            return $fields_update;
-        }
+        // if (is_wp_error($fields_update)) {
+        //     return $fields_update;
+        // }
 
         $request->set_param('context', 'edit');
-
-        /**
-         * Fires after a single post is completely created or updated via the REST API.
-         *
-         * The dynamic portion of the hook name, `$this->post_type`, refers to the post type slug.
-         *
-         * Possible hook names include:
-         *
-         *  - `rest_after_insert_post`
-         *  - `rest_after_insert_page`
-         *  - `rest_after_insert_attachment`
-         *
-         * @since 5.0.0
-         *
-         * @param WP_Post         $post     Inserted or updated post object.
-         * @param WP_REST_Request $request  Request object.
-         * @param bool            $creating True when creating a post, false when updating.
-         */
-        do_action("rest_after_insert_{$this->post_type}", $post, $request, true);
-
-        wp_after_insert_post($post, false, null);
-
-        $response = $this->prepare_item_for_response($post, $request);
+        $response = $this->prepare_item_for_response($table, $request);
         $response = rest_ensure_response($response);
 
         $response->set_status(201);
-        $response->header('Location', rest_url(rest_get_route_for_post($post)));
 
         return $response;
     }
@@ -539,6 +513,11 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                     $prepared_table->columns[ $key ][ 'column_id' ] = $request[ 'columns' ][ $key ][ 'column_id' ];
                 }
 
+                // Colunmn's Column Name
+                if (!empty($schema_column[ 'properties' ][ 'column_name' ]) &&
+                    isset($request[ 'columns' ][ $key ][ 'column_name' ])) {
+                    $prepared_table->columns[ $key ][ 'column_name' ] = $request[ 'columns' ][ $key ][ 'column_name' ];
+                }
                 // Column attributes
                 if (!empty($schema_column[ 'properties' ][ 'attributes' ]) &&
                     isset($request[ 'columns' ][ $key ][ 'attributes' ])) {
@@ -902,6 +881,12 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                                 'column_id' => array(
                                     'description' => __('Table Column Number.'),
                                     'type' => 'integer',
+                                    'context' => array('view', 'edit'),
+                                    'readonly' => true,
+                                ),
+                                'column_name' => array(
+                                    'description' => __('Table Column Name.'),
+                                    'type' => 'string',
                                     'context' => array('view', 'edit'),
                                     'readonly' => true,
                                 ),
