@@ -85,11 +85,11 @@ class PersistTableData
                     $this->queryResult = $dbReturn;
                 } else {
                     error_log('Table data not found');
-                    $this->queryResult = false;
+                    $this->queryResult = [  ];
                 }
             } catch (Exception $e) {
                 error_log('Error fetching table data: ' . $e);
-                $this->queryResult = false;
+                $this->queryResult = [  ];
             }
 
         } else {
@@ -99,11 +99,11 @@ class PersistTableData
                     $this->queryResult = $dbReturn;
                 } else {
                     error_log('Table data not found');
-                    $this->queryResult = false;
+                    $this->queryResult = [  ];
                 }
             } catch (Exception $e) {
                 error_log('Error fetching table data: ' . $e);
-                $this->queryResult = false;
+                $this->queryResult = [  ];
             }
         }
 
@@ -256,7 +256,7 @@ class PersistTableData
         // error_log('Update Table Params: table id - ' . $tableId . ', block ref - ' . $blockTableRef . ', status - ' . $status . ', post id - ' . $postId . ', table name - ' . $tableName . ', attributes - ' . $attributes . ', classes - ' . $classes);
 
         $queryResults = $this->get_table_data($argsBuild);
-        if (!$queryResult) {
+        if (!$queryResults) {
             $wpdb->query('ROLLBACK'); // rollback everything
             $this->result = array(
                 'success' => $success,
@@ -746,6 +746,7 @@ class PersistTableData
         }
 
         $queryResults = $this->get_table_data($argsBuild, $returnCollection);
+
         if (!$queryResults) {
             $this->result = array(
                 'success' => $success,
@@ -760,59 +761,42 @@ class PersistTableData
                 $tableAttributes = maybe_unserialize($serializedTableAttributes);
                 $queryResults[ 'attributes' ] = $tableAttributes;
                 $tableReturn = $queryResults;
-                // $this->result = $tableReturn;
                 break;
             case 'dt_table_rows':
                 $tableRowReturn = [  ];
 
                 foreach ($queryResults as $key => $row) {
-                    // error_log('    ... Row - ' . json_encode($row));
                     $serializedRowAttributes = $row[ 'attributes' ];
                     $rowAttributes = maybe_unserialize($serializedRowAttributes);
-
-                    // error_log('    ...  attributes - ' . json_encode($rowAttributes));
                     $row[ 'attributes' ] = $rowAttributes;
-
                     array_push($tableRowReturn, $row);
                 }
 
-                $tableReturn = $queryResults;
-                // $this->result = $tableRowReturn;
+                $tableReturn = $tableRowReturn;
                 break;
             case 'dt_table_columns':
                 $tableColumnReturn = [  ];
 
                 foreach ($queryResults as $key => $column) {
-                    // error_log('    ... Column Row - ' . json_encode($column));
-
                     $serializedColumnAttributes = $column[ 'attributes' ];
                     $columnAttributes = maybe_unserialize($serializedColumnAttributes);
-
-                    // error_log('    ...  attributes - ' . json_encode($columnAttributes));
                     $column[ 'attributes' ] = $columnAttributes;
-
                     array_push($tableColumnReturn, $column);
                 }
 
-                $tableReturn = $queryResults;
-                // $this->result = $tableColumnReturn;
+                $tableReturn = $tableColumnReturn;
                 break;
             case 'dt_table_cells':
                 $tableCellReturn = [  ];
 
                 foreach ($queryResults as $key => $row) {
-                    // error_log('    ...  Cell Row - ' . json_encode($row));
                     $serializedCellAttributes = $row[ 'attributes' ];
                     $cellAttributes = maybe_unserialize($serializedCellAttributes);
-
-                    // error_log('    ...  attributes - ' . json_encode($cellAttributes));
                     $row[ 'attributes' ] = $cellAttributes;
-
                     array_push($tableCellReturn, $row);
                 }
 
-                $tableReturn = $queryResults;
-                // $this->result = $tableCellReturn;
+                $tableReturn = $tableCellReturn;
                 break;
             default:
                 $this->result = array(

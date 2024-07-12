@@ -30,6 +30,7 @@ class DynamicTables
         global $wpdb;
 
         // Initialize Web Services
+        require_once plugin_dir_path(__FILE__) . 'inc/dynamicTablesRestAPI.php';
         add_action('rest_api_init', array($this, 'establish_services'));
 
         // Init block
@@ -41,9 +42,11 @@ class DynamicTables
     {
         error_log('INIT BLOCK WEB SERVICES');
 
-        require_once plugin_dir_path(__FILE__) . 'inc/dynamicTablesRestAPI.php';
-        $rest = new Dynamic_Tables_REST_Controller();
-        error_log('Rest Registration = ' . json_encode($rest));
+        $controller = new Dynamic_Tables_REST_Controller();
+        $controller->register_routes();
+        error_log('Rest Registration = ' . json_encode($controller));
+        error_log('get_public_item_schema = ' . json_encode($controller->get_item_schema()));
+        error_log('get_public_item_schema = ' . json_encode($controller->get_public_item_schema()));
     }
 
     public function dynamic_tables_block_init()

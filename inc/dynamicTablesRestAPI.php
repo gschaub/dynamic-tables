@@ -19,11 +19,11 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     {
         $this->namespace = 'dynamic-tables/v1';
         $this->rest_base = 'tables';
-        $this->register_rest_routes();
+        // $this->register_routes();
         error_log('Tables REST initiated');
     }
 
-    public function register_rest_routes()
+    public function register_routes()
     {
 
         register_rest_route($this->namespace,
@@ -39,15 +39,15 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                     'methods' => WP_REST_Server::CREATABLE,
                     'callback' => array($this, 'create_item'),
                     'permission_callback' => array($this, 'create_item_permissions_check'),
+                    'args' => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE),
                 ),
                 'schema' => array($this, 'get_public_item_schema'),
             )
         );
 
-        $schema = $this->get_item_schema();
-        // $get_item_args = array(
-        //     'context' => $this->get_context_param(array('default' => 'view')),
-        // );
+        $get_item_args = array(
+            'context' => $this->get_context_param(array('default' => 'view')),
+        );
 
         register_rest_route($this->namespace,
             '/' . $this->rest_base . '/(?P<id>[\d]+)',
@@ -60,15 +60,15 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 ),
                 array(
                     'methods' => WP_REST_SERVER::READABLE,
-                    // 'callback' => 'get_table_request',
                     'callback' => array($this, 'get_item'),
                     'permission_callback' => array($this, 'get_item_permissions_check'),
+                    'args' => $get_item_args,
                 ),
                 array(
                     'methods' => WP_REST_SERVER::EDITABLE,
-                    'callback' => 'update_table_data',
+                    'callback' => array($this, 'update_item'),
                     'permission_callback' => array($this, 'test_permissions'),
-
+                    'args' => $this->get_endpoint_args_for_item_schema(WP_REST_SERVER::EDITABLE),
                 ),
                 array(
                     'methods' => WP_REST_Server::DELETABLE,
@@ -81,8 +81,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                             'description' => __('Whether to bypass Trash and force deletion.'),
                         ),
                     ),
-                    'schema' => array($this, 'get_public_item_schema'),
                 ),
+                'schema' => array($this, 'get_public_item_schema'),
             )
         );
     }
@@ -94,6 +94,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
     public function test_permissions($request)
     {
+        error_log('Started test_permissions');
         // Restrict endpoint to only users who have the edit_posts capability.
         //if ( !is_user_logged_in() ) {
         //    die("Only logged in users can create a like.");
@@ -112,17 +113,28 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         // error_log('Request = ' . json_encode($request));
         // error_log('Table ID = ' . $request[ 'id' ]);
         // error_log($request[ 'context' ]);
+        error_log('Finished test_permissions');
+
+        return true;
     }
     public function get_item_permissions_check($request)
     {
+        error_log('Started get_item_permissions_check');
+        error_log('Request Route = ' . $request->get_route());
+        error_log('Request Method = ' . $request->get_method());
+        error_log('Request Headers = ' . json_encode($request->get_headers()));
+
         $table = $this->get_table($request[ 'id' ]);
 
         if (is_wp_error($table)) {
+            error_log('Error Getting Table in Item Permissions');
+            error_log('$error variable = ' . json_encode($table));
             return $table;
         }
 
         if (isset($table[ 'header' ][ 'post_id' ])) {
             $postId = $table[ 'header' ][ 'post_id' ];
+            error_log('Post Check 137');
             $post = $this->get_post($postId);
 
             if ('edit' === $request[ 'context' ] && $post && !$this->check_update_permission($post)) {
@@ -133,6 +145,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 );
             }
         }
+        error_log('Finished get_item_permissions_check');
+
         return true;
     }
 
@@ -144,6 +158,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
      */
     public function get_item($request)
     {
+        error_log('Request = ' . json_encode($request));
+        error_log('Request Arguments = ' . json_encode($request->get_attributes()));
         $table = $this->get_table($request[ 'id' ]);
         if (is_wp_error($table)) {
             return $table;
@@ -163,6 +179,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
      */
     protected function get_table($id)
     {
+        error_log('In rest get table');
         $error = new WP_Error(
             'rest_table_invalid_id',
             __('Invalid table ID.'),
@@ -173,11 +190,20 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             return $error;
         }
 
+        error_log('$error variable = ' . json_encode($error));
+
         $table = get_table((int) $id);
+        if (is_wp_error($table)) {
+            error_log('Error Getting Post');
+            error_log('$error variable = ' . json_encode($error));
+            return $error;
+        }
+
         if (empty($table)) {
             return $error;
         }
 
+        error_log('Finished  rest get table');
         return $table;
     }
 
@@ -215,7 +241,10 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
      */
     public function create_item_permissions_check($request)
     {
-        if ($request[ 'id' ] !== '0') {
+        error_log('Started create_item_permissions_check');
+        error_log($request[ 'id' ]);
+
+        if ((int) $request[ 'id' ] !== (int) 0) {
             return new WP_Error(
                 'rest_table_exists',
                 __('Cannot create existing table.'),
@@ -227,9 +256,11 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         // it is attached.
         if (isset($request[ 'header' ][ 'post_id' ])) {
             $postId = $request[ 'header' ][ 'post_id' ];
+            error_log('Post Check 258');
             $post = $this->get_post($postId);
 
             // Bypass permission check for testing
+            error_log('Finished create_item_permissions_check');
             return true;
 
             $post_type = get_post_type_object($post->post_type);
@@ -262,6 +293,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             }
         }
 
+        error_log('Finished create_item_permissions_check');
         return true;
     }
 
@@ -273,6 +305,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
      */
     public function create_item($request)
     {
+        error_log('Table POST - ' . $request[ 'id' ]);
+
         if ((int) $request[ 'id' ] !== (int) 0) {
             return new WP_Error(
                 'rest_table_exists',
@@ -320,6 +354,101 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         $response->set_status(201);
 
         return $response;
+    }
+
+    public function update_item_permissions_check($request)
+    {
+        error_log('Post Check 360');
+        $post = $this->get_post($request[ 'id' ]);
+        if (is_wp_error($post)) {
+            return $post;
+        }
+
+        $post_type = get_post_type_object($this->post_type);
+
+        if ($post && !$this->check_update_permission($post)) {
+            return new WP_Error(
+                'rest_cannot_edit',
+                __('Sorry, you are not allowed to edit this post.'),
+                array('status' => rest_authorization_required_code())
+            );
+        }
+
+        if (!empty($request[ 'author' ]) && get_current_user_id() !== $request[ 'author' ] && !current_user_can($post_type->cap->edit_others_posts)) {
+            return new WP_Error(
+                'rest_cannot_edit_others',
+                __('Sorry, you are not allowed to update posts as this user.'),
+                array('status' => rest_authorization_required_code())
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * Updates a single table.
+     *
+     * @param WP_REST_Request $request Full details about the request.
+     * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+     */
+    public function update_item($request)
+    {
+        error_log('Entered update_item');
+
+        $valid_check = $this->get_table($request[ 'id' ]);
+        if (is_wp_error($valid_check)) {
+            return $valid_check;
+        }
+
+        $table_before = get_table($request[ 'id' ]);
+        $table = $this->prepare_item_for_database($request);
+
+        if (is_wp_error($table)) {
+            return $table;
+        }
+
+        // Convert the post object to an array, otherwise wp_update_post() will expect non-escaped input.
+        // $table_id = wp_update_post($table, true, false);
+
+        $table_id = update_table_data($table, true);
+
+        if (is_wp_error($table_id)) {
+            if ('db_insert_error' === $table_id->get_error_code() ||
+                'db_update_error' === $table_id->get_error_code() ||
+                'db_read_error' === $table_id->get_error_code()) {
+                $table_id->add_data(array('status' => 500));
+            } else {
+                $table_id->add_data(array('status' => 400));
+            }
+            return $table_id;
+        }
+
+        error_log('Table ID for Response = ' . $table_id);
+        $table = get_table($table_id);
+        if (is_wp_error($table)) {
+            return $table;
+        }
+
+        /**
+         * Reserve for future use
+         */
+
+        // $fields_update = $this->update_additional_fields_for_object($post, $request);
+
+        // if (is_wp_error($fields_update)) {
+        //     return $fields_update;
+        // }
+
+        $request->set_param('context', 'edit');
+
+        /** This action is documented in wp-includes/rest-api/endpoints/class-wp-rest-posts-controller.php */
+        // do_action("rest_after_insert_{$this->post_type}", $post, $request, false);
+
+        // wp_after_insert_post($post, true, $post_before);
+
+        $response = $this->prepare_item_for_response($table, $request);
+
+        return rest_ensure_response($response);
     }
 
     /**
@@ -377,11 +506,13 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 return $existing_table;
             }
 
-            $prepared_table->ID = $existing_table->ID;
-            $current_status = $existing_table->header[ 'status' ];
+            // var_dump($existing_table[ 'id' ]);
+            $prepared_table->id = $existing_table[ 'id' ];
+            $current_status = $existing_table[ 'header' ][ 'status' ];
         }
 
         $schema = $this->get_item_schema();
+        error_log('Test Schema Function: ' . json_encode($schema));
 
         /**
          * Process Table Header Block
@@ -400,7 +531,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                             array('status' => 400)
                         );
                     }
-                    $prepared_table->header[ 'id' ] = $request[ 'header' ][ 'id' ];
+                    $prepared_table->header[ 'id' ] = (int) $request[ 'header' ][ 'id' ];
                 }
             }
 
@@ -420,7 +551,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             // Table Post ID cross reference.
             if (!empty($schema_header[ 'properties' ][ 'post_id' ]) &&
                 isset($request[ 'header' ][ 'post_id' ])) {
-                $prepared_table->header[ 'post_id' ] = $request[ 'header' ][ 'post_id' ];
+                $prepared_table->header[ 'post_id' ] = (int) $request[ 'header' ][ 'post_id' ];
             }
 
             // Table name.
@@ -461,14 +592,14 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                                 array('status' => 400)
                             );
                         }
-                        $prepared_table->rows[ $key ][ 'table_id' ] = $request[ 'rows' ][ $key ][ 'table_id' ];
+                        $prepared_table->rows[ $key ][ 'table_id' ] = (int) $request[ 'rows' ][ $key ][ 'table_id' ];
                     }
                 }
 
                 // Row's Row ID
                 if (!empty($schema_row[ 'properties' ][ 'row_id' ]) &&
                     isset($request[ 'rows' ][ $key ][ 'row_id' ])) {
-                    $prepared_table->rows[ $key ][ 'row_id' ] = $request[ 'rows' ][ $key ][ 'row_id' ];
+                    $prepared_table->rows[ $key ][ 'row_id' ] = (int) $request[ 'rows' ][ $key ][ 'row_id' ];
                 }
 
                 // Row attributes
@@ -503,14 +634,14 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                                 array('status' => 400)
                             );
                         }
-                        $prepared_table->columns[ $key ][ 'table_id' ] = $request[ 'columns' ][ $key ][ 'table_id' ];
+                        $prepared_table->columns[ $key ][ 'table_id' ] = (int) $request[ 'columns' ][ $key ][ 'table_id' ];
                     }
                 }
 
                 // Colunmn's Column ID
                 if (!empty($schema_column[ 'properties' ][ 'column_id' ]) &&
                     isset($request[ 'columns' ][ $key ][ 'column_id' ])) {
-                    $prepared_table->columns[ $key ][ 'column_id' ] = $request[ 'columns' ][ $key ][ 'column_id' ];
+                    $prepared_table->columns[ $key ][ 'column_id' ] = (int) $request[ 'columns' ][ $key ][ 'column_id' ];
                 }
 
                 // Colunmn's Column Name
@@ -551,20 +682,20 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                                 array('status' => 400)
                             );
                         }
-                        $prepared_table->cells[ $key ][ 'table_id' ] = $request[ 'cells' ][ $key ][ 'table_id' ];
+                        $prepared_table->cells[ $key ][ 'table_id' ] = (int) $request[ 'cells' ][ $key ][ 'table_id' ];
                     }
                 }
 
                 // Column ID
                 if (!empty($schema_cell[ 'properties' ][ 'column_id' ]) &&
                     isset($request[ 'cells' ][ $key ][ 'column_id' ])) {
-                    $prepared_table->cells[ $key ][ 'column_id' ] = $request[ 'cells' ][ $key ][ 'column_id' ];
+                    $prepared_table->cells[ $key ][ 'column_id' ] = (int) $request[ 'cells' ][ $key ][ 'column_id' ];
                 }
 
                 // Row ID
                 if (!empty($schema_cell[ 'properties' ][ 'row_id' ]) &&
                     isset($request[ 'cells' ][ $key ][ 'row_id' ])) {
-                    $prepared_table->cells[ $key ][ 'row_id' ] = $request[ 'cells' ][ $key ][ 'row_id' ];
+                    $prepared_table->cells[ $key ][ 'row_id' ] = (int) $request[ 'cells' ][ $key ][ 'row_id' ];
                 }
                 // Cell attributes
                 if (!empty($schema_cell[ 'properties' ][ 'attributes' ]) &&
@@ -584,6 +715,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                     $prepared_table->cells[ $key ][ 'content' ] = $request[ 'cells' ][ $key ][ 'content' ];
                 }
             }
+            // var_dump($prepared_table);
         }
         /**
          * Filters a post before it is inserted via the REST API.
@@ -617,7 +749,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
         error_log('Table Defined as: ' . json_encode($table));
         error_log('Request fields are: ' . json_encode($fields));
-        error_log($table[ 'id' ]);
+        // error_log($table[ 'id' ]);
         // error_log('   Header fields are: ' . json_encode($headerFields));
 
         if (rest_is_field_included('id', $fields)) {
@@ -765,7 +897,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             '$schema' => 'http://json-schema.org/draft-04/schema#',
             'title' => 'dynamic-table',
             'type' => 'object',
-
             'properties' => array(
                 'id' => array(
                     'description' => __('Unique identifier for the table.'),
@@ -1185,8 +1316,9 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         }
 
         error_log('Schema is: ' . json_encode($schema));
-
         $this->schema = $schema;
+        error_log('Returned schema is: ' . json_encode($this->add_additional_fields_schema($this->schema)));
+
         return $this->add_additional_fields_schema($this->schema);
     }
 
