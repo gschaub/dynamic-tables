@@ -67,7 +67,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 array(
                     'methods' => WP_REST_SERVER::EDITABLE,
                     'callback' => array($this, 'update_item'),
-                    'permission_callback' => array($this, 'test_permissions'),
+                    'permission_callback' => array($this, 'update_item_permissions_check'),
                     'args' => $this->get_endpoint_args_for_item_schema(WP_REST_SERVER::EDITABLE),
                 ),
                 array(
@@ -119,22 +119,21 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     }
     public function get_item_permissions_check($request)
     {
-        error_log('Started get_item_permissions_check');
-        error_log('Request Route = ' . $request->get_route());
-        error_log('Request Method = ' . $request->get_method());
-        error_log('Request Headers = ' . json_encode($request->get_headers()));
+        // error_log('Started get_item_permissions_check');
+        // error_log('Request Route = ' . $request->get_route());
+        // error_log('Request Method = ' . $request->get_method());
+        // error_log('Request Headers = ' . json_encode($request->get_headers()));
 
         $table = $this->get_table($request[ 'id' ]);
 
         if (is_wp_error($table)) {
-            error_log('Error Getting Table in Item Permissions');
-            error_log('$error variable = ' . json_encode($table));
+            // error_log('Error Getting Table in Item Permissions');
+            // error_log('$error variable = ' . json_encode($table));
             return $table;
         }
 
         if (isset($table[ 'header' ][ 'post_id' ])) {
             $postId = $table[ 'header' ][ 'post_id' ];
-            error_log('Post Check 137');
             $post = $this->get_post($postId);
 
             if ('edit' === $request[ 'context' ] && $post && !$this->check_update_permission($post)) {
@@ -144,8 +143,17 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                     array('status' => rest_authorization_required_code())
                 );
             }
+        } else {
+            if ('edit' === $request[ 'context' ] && !current_user_can('edit_post')) {
+                return new WP_Error(
+                    'rest_forbidden_context',
+                    __('Sorry, you are not allowed to edit this post.'),
+                    array('status' => rest_authorization_required_code())
+                );
+            }
         }
-        error_log('Finished get_item_permissions_check');
+
+// error_log('Finished get_item_permissions_check');
 
         return true;
     }
@@ -241,8 +249,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
      */
     public function create_item_permissions_check($request)
     {
-        error_log('Started create_item_permissions_check');
-        error_log($request[ 'id' ]);
+        // error_log('Started create_item_permissions_check');
+        // error_log($request[ 'id' ]);
 
         if ((int) $request[ 'id' ] !== (int) 0) {
             return new WP_Error(
@@ -256,11 +264,9 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         // it is attached.
         if (isset($request[ 'header' ][ 'post_id' ])) {
             $postId = $request[ 'header' ][ 'post_id' ];
-            error_log('Post Check 258');
             $post = $this->get_post($postId);
 
-            // Bypass permission check for testing
-            error_log('Finished create_item_permissions_check');
+            // REMOVE Bypass permission check for testing
             return true;
 
             $post_type = get_post_type_object($post->post_type);
@@ -268,14 +274,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             if (!empty($post->author) && get_current_user_id() !== $post->author && !current_user_can($post_type->cap->edit_others_posts)) {
                 return new WP_Error(
                     'rest_cannot_edit_others',
-                    __('Sorry, you are not allowed to create tables as this user.'),
-                    array('status' => rest_authorization_required_code())
-                );
-            }
-
-            if (!current_user_can($post_type->cap->create_posts)) {
-                return new WP_Error(
-                    'rest_cannot_create',
                     __('Sorry, you are not allowed to create tables as this user.'),
                     array('status' => rest_authorization_required_code())
                 );
@@ -358,26 +356,43 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
     public function update_item_permissions_check($request)
     {
-        error_log('Post Check 360');
-        $post = $this->get_post($request[ 'id' ]);
-        if (is_wp_error($post)) {
-            return $post;
+        // Permissions for editing a table are based upon the underlying post to which
+        // it is attached.
+        if (isset($request[ 'header' ][ 'post_id' ])) {
+            $postId = $request[ 'header' ][ 'post_id' ];
         }
 
-        $post_type = get_post_type_object($this->post_type);
+        // REMOVE - Support testing
+        return true;
 
-        if ($post && !$this->check_update_permission($post)) {
+        if ($postId !== 0) {
+            $post = $this->get_post($postId);
+            if (is_wp_error($post)) {
+                return $post;
+            }
+            $post_type = get_post_type_object($post->post_type);
+
+            if ($post && !$this->check_update_permission($post)) {
+                return new WP_Error(
+                    'rest_cannot_edit',
+                    __('Sorry, you are not allowed to update tables for this post as this user.'),
+                    array('status' => rest_authorization_required_code())
+                );
+            }
+
+            if (!empty($request[ 'author' ]) && get_current_user_id() !== $request[ 'author' ] && !current_user_can($post_type->cap->edit_others_posts)) {
+                return new WP_Error(
+                    'rest_cannot_edit_others',
+                    __('Sorry, you are not allowed to update tables for this post as this user.'),
+                    array('status' => rest_authorization_required_code())
+                );
+            }
+        }
+
+        if ($postId === 0 && (!(current_user_can('publish_posts') || current_user_can('publish_pages')))) {
             return new WP_Error(
                 'rest_cannot_edit',
-                __('Sorry, you are not allowed to edit this post.'),
-                array('status' => rest_authorization_required_code())
-            );
-        }
-
-        if (!empty($request[ 'author' ]) && get_current_user_id() !== $request[ 'author' ] && !current_user_can($post_type->cap->edit_others_posts)) {
-            return new WP_Error(
-                'rest_cannot_edit_others',
-                __('Sorry, you are not allowed to update posts as this user.'),
+                __('Sorry, you are not allowed to update tables for this post as this user.'),
                 array('status' => rest_authorization_required_code())
             );
         }
