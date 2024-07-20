@@ -82,8 +82,9 @@ function create_table_data($tablearr, $wp_error = false)
     $table_id = 0;
     $update = false;
 
+    error_log('Table Data for create/update = ' . json_encode($tablearr));
     if (!(empty($tablearr[ 'id' ]) &&
-        $tablearr[ 'id' ] !== '0')) {
+        (int) $tablearr[ 'id' ] !== '0')) {
         $update = true;
 
         // Get the post ID and GUID.
@@ -137,6 +138,7 @@ function create_table_data($tablearr, $wp_error = false)
                 return new WP_Error('db_insert_error', __('Database error creating table.'));
             }
         }
+        $table_id = $results[ 'table_id' ];
     }
 
     error_log('    Header result - ' . json_encode($results));
@@ -214,104 +216,6 @@ function update_table_data($tablearr, $wp_error = false)
     $tablearr = array_merge($table, $tablearr);
     return create_table_data($tablearr, $wp_error);
 
-    // Original Code
-    // error_log('PUT Table request - ' . json_encode($request->get_json_params()));
-    // error_log('... test field - ' . $request[ 'header' ][ 'block_table_ref' ]);
-
-    // $results = null;
-
-    // if (isset($request[ 'id' ])) {
-    //     $tableId = sanitize_text_field($request[ 'id' ]);
-    // } else {
-    //     $tableId = null;
-    // }
-
-    // $existingTable = get_table($tableId);
-    // if (!$existingTable) {
-    //     return new WP_Error('db_read_error', __('Database error retrieving table.'));
-    // }
-
-    // if (isset($request[ 'header' ][ 'block_table_ref' ])) {
-    //     $blockTableRef = sanitize_text_field($request[ 'header' ][ 'block_table_ref' ]);
-    // } else {
-    //     $blockTableRef = $existingTable[ 'header' ][ 'block_table_ref' ];
-    // }
-
-    // if (isset($request[ 'header' ][ 'status' ])) {
-    //     $status = sanitize_text_field($request[ 'header' ][ 'status' ]);
-    // } else {
-    //     $status = $existingTable[ 'header' ][ 'status' ];
-    // }
-
-    // if (isset($request[ 'header' ][ 'post_id' ])) {
-    //     $postId = sanitize_text_field($request[ 'header' ][ 'post_id' ]);
-    // } else {
-    //     $postId = $existingTable[ 'header' ][ 'post_id' ];
-    // }
-
-    // if (isset($request[ 'header' ][ 'table_name' ])) {
-    //     $tableName = wp_kses_post($request[ 'header' ][ 'table_name' ]);
-    // } else {
-    //     $tableName = $existingTable[ 'header' ][ 'table_name' ];
-    // }
-
-    // if (isset($request[ 'header' ][ 'table_attributes' ])) {
-    //     $attributes = $request[ 'header' ][ 'table_attributes' ];
-    //     error_log('Attributes found in PUT');
-    //     error_log(json_encode($attributes));
-    // } else {
-    //     $attributes = $existingTable[ 'header' ][ 'table_attributes' ];
-    // }
-    // $serializedAttributes = maybe_serialize($attributes);
-    // error_log('Serialized table attributes = ' . json_encode($serializedAttributes));
-
-    // if (isset($request[ 'header' ][ 'classes' ])) {
-    //     $classes = sanitize_text_field($request[ 'header' ][ 'classes' ]);
-    // } else {
-    //     $classes = $existingTable[ 'header' ][ 'classes' ];
-    // }
-
-    // error_log('Update Table Params: table id - ' . $tableId . ', block ref - ' . $blockTableRef . ', status - ' . $status . ', post id - ' . $postId . ', table name - ' . $tableName . ', attributes - ' . $serializedAttributes . ', classes - ' . $classes);
-
-    // $updateTable = new PersistTableData();
-    // $results = $updateTable->update_table($tableId, $blockTableRef, $status, $postId, $tableName, $serializedAttributes, $classes);
-
-    // if (!$results[ 'success' ]) {
-    //     return new WP_Error('db_read_error', __('Database error retrieving table.'));
-    // }
-
-    // error_log('    Header result - ' . json_encode($results));
-
-    // if (isset($request[ 'rows' ])) {
-    //     $requestRows = $request[ 'rows' ];
-    //     $putRows = update_table_rows($tableId, $requestRows);
-    //     if ($putRows === false) {
-    //         // Error handling for Put Rows error
-    //     }
-    // }
-
-    // if (isset($request[ 'columns' ])) {
-    //     $requestColumns = $request[ 'columns' ];
-    //     $putColumns = update_table_columns($tableId, $requestColumns);
-    //     if ($putColumns === false) {
-    //         // Error handling for Put Columns error
-    //     }
-    // }
-
-    // if (isset($request[ 'cells' ])) {
-    //     $requestCells = $request[ 'cells' ];
-    //     $putCells = update_table_cells($tableId, $requestCells);
-    //     if ($putCells === false) {
-    //         // Error handling for Put Cells error
-    //     }
-    // }
-
-    // $responseResults = null;
-    // $responseResults = get_table($tableId);
-
-    // error_log('PUT Return = ' . json_encode($responseResults));
-
-    // return new WP_REST_Response($responseResults, 200);
 }
 
 /**
@@ -415,26 +319,11 @@ function update_table_cells($tableId, $requestCells)
     return $results;
 }
 
-function delete_table($request)
+function delete_table($tableId = 0)
+// function delete_table($request)
 {
-    error_log('PUT Table request - ' . json_encode($request->get_json_params()));
-    error_log('... test field - ' . $request[ 'header' ][ 'block_table_ref' ]);
-
-    $results = null;
-
-    if (isset($request[ 'id' ])) {
-        $tableId = sanitize_text_field($request[ 'id' ]);
-    } else {
-        $tableId = null;
-    }
-
-    // if (isset($request[ 'force' ])) {
-    //     $force = sanitize_text_field($request[ 'force' ]);
-    // } else {
-    //     $force = null;
-    // }
-
-    // $existingTable = get_table($tableId);
+    error_log('DELETE Table request - ' . $tableId);
+    $existingTable = get_table($tableId);
 
     error_log('    Web Service Input - Table ID' . json_encode($tableId));
 
@@ -444,7 +333,7 @@ function delete_table($request)
     if (!$results[ 'success' ]) {
         return new WP_Error('db_read_error', __('Database error retrieving table.'));
     }
-    return new WP_REST_Response(null, 204);
+    return $existingTable;
 }
 
 /**

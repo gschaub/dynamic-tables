@@ -72,15 +72,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 ),
                 array(
                     'methods' => WP_REST_Server::DELETABLE,
-                    'callback' => 'delete_table',
-                    'permission_callback' => array($this, 'test_permissions'),
-                    'args' => array(
-                        'force' => array(
-                            'type' => 'boolean',
-                            'default' => false,
-                            'description' => __('Whether to bypass Trash and force deletion.'),
-                        ),
-                    ),
+                    'callback' => array($this, 'delete_item'),
+                    'permission_callback' => array($this, 'delete_item_permissions_check'),
                 ),
                 'schema' => array($this, 'get_public_item_schema'),
             )
@@ -92,31 +85,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
     }
 
-    public function test_permissions($request)
-    {
-        error_log('Started test_permissions');
-        // Restrict endpoint to only users who have the edit_posts capability.
-        //if ( !is_user_logged_in() ) {
-        //    die("Only logged in users can create a like.");
-        // }
-
-        // This is a black-listing approach. You could alternatively do this via white-listing, by returning false here and changing the permissions check.
-
-        //"x_wp_nonce":["47c9a3aec4"]
-        // wp_verify_nonce( $request->get_header('X-WP-Nonce'), 'wp_rest' )
-
-        // include in php to send nonce to pluggin
-        // wp_nonce_field('wp_rest', '_wpnonce', true, true);
-
-        // error_log(' ');
-        // error_log('TABLE RESULTS');
-        // error_log('Request = ' . json_encode($request));
-        // error_log('Table ID = ' . $request[ 'id' ]);
-        // error_log($request[ 'context' ]);
-        error_log('Finished test_permissions');
-
-        return true;
-    }
     public function get_item_permissions_check($request)
     {
         // error_log('Started get_item_permissions_check');
@@ -125,35 +93,54 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         // error_log('Request Headers = ' . json_encode($request->get_headers()));
 
         $table = $this->get_table($request[ 'id' ]);
+        error_log('Table = ' . json_encode($table));
 
         if (is_wp_error($table)) {
-            // error_log('Error Getting Table in Item Permissions');
-            // error_log('$error variable = ' . json_encode($table));
+            error_log('Error Getting Table in Item Permissions');
+            error_log('$error variable = ' . json_encode($table));
             return $table;
         }
 
         if (isset($table[ 'header' ][ 'post_id' ])) {
-            $postId = $table[ 'header' ][ 'post_id' ];
-            $post = $this->get_post($postId);
+            $postId = (int) $table[ 'header' ][ 'post_id' ];
+            if ($postId !== 0) {
 
-            if ('edit' === $request[ 'context' ] && $post && !$this->check_update_permission($post)) {
-                return new WP_Error(
-                    'rest_forbidden_context',
-                    __('Sorry, you are not allowed to edit this post.'),
-                    array('status' => rest_authorization_required_code())
-                );
+                $post = $this->get_post($postId);
+                if (is_wp_error($post)) {
+                    error_log('Error - Getting Post');
+                    return $post;
+                }
+
+                if ('edit' === $request[ 'context' ] && $post && !$this->check_update_permission($post)) {
+                    error_log('Error - No Permissions to Post');
+                    return new WP_Error(
+                        'rest_forbidden_context',
+                        __('Sorry, you are not allowed to edit this post.'),
+                        array('status' => rest_authorization_required_code())
+                    );
+                }
+            }
+
+            if ((int) $postId === 0) {
+                if ('edit' === $request[ 'context' ] && !current_user_can('edit_posts')) {
+                    error_log('Error - No General Permissions to Post');
+                    return new WP_Error(
+                        'rest_forbidden_context',
+                        __('Sorry, you are not allowed to edit this post.'),
+                        array('status' => rest_authorization_required_code())
+                    );
+                }
             }
         } else {
-            if ('edit' === $request[ 'context' ] && !current_user_can('edit_post')) {
-                return new WP_Error(
-                    'rest_forbidden_context',
-                    __('Sorry, you are not allowed to edit this post.'),
-                    array('status' => rest_authorization_required_code())
-                );
-            }
+            error_log('Error - No Post ID');
+            return new WP_Error(
+                'missing_post_id',
+                __('Post ID is missing from request.'),
+                array('status' => 500)
+            );
         }
 
-// error_log('Finished get_item_permissions_check');
+        error_log('Finished get_item_permissions_check');
 
         return true;
     }
@@ -202,11 +189,12 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
         $table = get_table((int) $id);
         if (is_wp_error($table)) {
-            error_log('Error Getting Post');
+            error_log('Error Getting Table');
             error_log('$error variable = ' . json_encode($error));
             return $error;
         }
 
+        // var_dump($table);
         if (empty($table)) {
             return $error;
         }
@@ -224,14 +212,21 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     protected function get_post($id)
     {
         $error = new WP_Error(
-            'rest_table_invalid_id',
+            'rest_post_invalid_id',
             __('Invalid post ID.'),
-            array('status' => 404)
+            array('status' => 500)
         );
 
-        if ((int) $id <= 0) {
+        error_log('Post id = ' . (int) $id);
+        if ((int) $id < 0) {
             return $error;
         }
+
+        $error = new WP_Error(
+            'rest_post_invalid',
+            __('Invalid post'),
+            array('status' => 404)
+        );
 
         $post = get_post((int) $id);
         if (empty($post) || empty($post->ID)) {
@@ -263,32 +258,49 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         // Permissions for creating a table are based upon the underlying post to which
         // it is attached.
         if (isset($request[ 'header' ][ 'post_id' ])) {
-            $postId = $request[ 'header' ][ 'post_id' ];
-            $post = $this->get_post($postId);
+            $postId = (int) $request[ 'header' ][ 'post_id' ];
 
             // REMOVE Bypass permission check for testing
             return true;
 
-            $post_type = get_post_type_object($post->post_type);
+            if ($postId !== 0) {
+                $post = $this->get_post($postId);
+                if (is_wp_error($post)) {
+                    return $post;
+                }
 
-            if (!empty($post->author) && get_current_user_id() !== $post->author && !current_user_can($post_type->cap->edit_others_posts)) {
+                $post_type = get_post_type_object($post->post_type);
+
+                if ($post && !$this->check_update_permission($post)) {
+                    return new WP_Error(
+                        'rest_cannot_edit',
+                        __('Sorry, you are not allowed to create tables for this post as this user.'),
+                        array('status' => rest_authorization_required_code())
+                    );
+                }
+
+                if (!empty($request[ 'author' ]) && get_current_user_id() !== $request[ 'author' ] && !current_user_can($post_type->cap->edit_others_posts)) {
+                    return new WP_Error(
+                        'rest_cannot_edit_others',
+                        __('Sorry, you are not allowed to create tables for this post as this user.'),
+                        array('status' => rest_authorization_required_code())
+                    );
+                }
+            }
+
+            if ($postId === 0 && (!(current_user_can('publish_posts') || current_user_can('publish_pages')))) {
                 return new WP_Error(
-                    'rest_cannot_edit_others',
-                    __('Sorry, you are not allowed to create tables as this user.'),
+                    'rest_cannot_edit',
+                    __('Sorry, you are not allowed to create tables for this post as this user.'),
                     array('status' => rest_authorization_required_code())
                 );
             }
-
         } else {
-            // If the post has not yet been poblished, detault to user's ability to user's ability to
-            // publish posts and pages generally
-            if (!(current_user_can('publish_posts') || current_user_can('publish_pages'))) {
-                return new WP_Error(
-                    'rest_cannot_create',
-                    __('Sorry, you are not allowed to create tables as this user.'),
-                    array('status' => rest_authorization_required_code())
-                );
-            }
+            return new WP_Error(
+                'missing_post_id',
+                __('Post ID is missing from request.'),
+                array('status' => 500)
+            );
         }
 
         error_log('Finished create_item_permissions_check');
@@ -318,8 +330,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         if (is_wp_error($prepared_table)) {
             return $prepared_table;
         }
-
         $table_id = create_table_data($prepared_table, true);
+        error_log('Prepared Table ID = ' . $table_id);
 
         if (is_wp_error($table_id)) {
             if ('db_insert_error' === $table_id->get_error_code() ||
@@ -334,6 +346,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         }
 
         $table = get_table($table_id);
+        error_log('Prepared Table retrieved- ' . json_encode($table));
 
         /**
          * Reserve for future use
@@ -359,41 +372,47 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         // Permissions for editing a table are based upon the underlying post to which
         // it is attached.
         if (isset($request[ 'header' ][ 'post_id' ])) {
-            $postId = $request[ 'header' ][ 'post_id' ];
-        }
+            $postId = (int) $request[ 'header' ][ 'post_id' ];
 
-        // REMOVE - Support testing
-        return true;
+            // REMOVE - Support testing
+            // return true;
 
-        if ($postId !== 0) {
-            $post = $this->get_post($postId);
-            if (is_wp_error($post)) {
-                return $post;
+            if ($postId !== 0) {
+                $post = $this->get_post($postId);
+                if (is_wp_error($post)) {
+                    return $post;
+                }
+                $post_type = get_post_type_object($post->post_type);
+
+                if ($post && !$this->check_update_permission($post)) {
+                    return new WP_Error(
+                        'rest_cannot_edit',
+                        __('Sorry, you are not allowed to update tables for this post as this user.'),
+                        array('status' => rest_authorization_required_code())
+                    );
+                }
+
+                if (!empty($request[ 'author' ]) && get_current_user_id() !== $request[ 'author' ] && !current_user_can($post_type->cap->edit_others_posts)) {
+                    return new WP_Error(
+                        'rest_cannot_edit_others',
+                        __('Sorry, you are not allowed to update tables for this post as this user.'),
+                        array('status' => rest_authorization_required_code())
+                    );
+                }
             }
-            $post_type = get_post_type_object($post->post_type);
 
-            if ($post && !$this->check_update_permission($post)) {
+            if ($postId === 0 && (!(current_user_can('publish_posts') || current_user_can('publish_pages')))) {
                 return new WP_Error(
                     'rest_cannot_edit',
                     __('Sorry, you are not allowed to update tables for this post as this user.'),
                     array('status' => rest_authorization_required_code())
                 );
             }
-
-            if (!empty($request[ 'author' ]) && get_current_user_id() !== $request[ 'author' ] && !current_user_can($post_type->cap->edit_others_posts)) {
-                return new WP_Error(
-                    'rest_cannot_edit_others',
-                    __('Sorry, you are not allowed to update tables for this post as this user.'),
-                    array('status' => rest_authorization_required_code())
-                );
-            }
-        }
-
-        if ($postId === 0 && (!(current_user_can('publish_posts') || current_user_can('publish_pages')))) {
+        } else {
             return new WP_Error(
-                'rest_cannot_edit',
-                __('Sorry, you are not allowed to update tables for this post as this user.'),
-                array('status' => rest_authorization_required_code())
+                'missing_post_id',
+                __('Post ID is missing from request.'),
+                array('status' => 500)
             );
         }
 
@@ -415,7 +434,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             return $valid_check;
         }
 
-        $table_before = get_table($request[ 'id' ]);
         $table = $this->prepare_item_for_database($request);
 
         if (is_wp_error($table)) {
@@ -467,6 +485,114 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     }
 
     /**
+     * Checks if a given request has access to delete a post.
+     *
+     * @since 4.7.0
+     *
+     * @param WP_REST_Request $request Full details about the request.
+     * @return true|WP_Error True if the request has access to delete the item, WP_Error object otherwise.
+     */
+    public function delete_item_permissions_check($request)
+    {
+        $table = $this->get_table($request[ 'id' ]);
+        if (is_wp_error($table)) {
+            // error_log('Error Getting Table in Item Permissions');
+            // error_log('$error variable = ' . json_encode($table));
+            return $table;
+        }
+
+        if (isset($table[ 'header' ][ 'post_id' ])) {
+            $postId = (int) $table[ 'header' ][ 'post_id' ];
+
+            if ($postId !== 0) {
+                error_log('delete table - get post in');
+                $post = $this->get_post($postId);
+                error_log('delete table - get post out');
+                if (is_wp_error($post)) {
+                    return $post;
+                }
+                $post_type = get_post_type_object($post->post_type);
+
+                if ($post && !$this->check_update_permission($post)) {
+                    return new WP_Error(
+                        'rest_cannot_edit',
+                        __('Sorry, you are not allowed to delete tables for this post as this user.'),
+                        array('status' => rest_authorization_required_code())
+                    );
+                }
+
+                if (!empty($request[ 'author' ]) && get_current_user_id() !== $request[ 'author' ] && !current_user_can($post_type->cap->edit_others_posts)) {
+                    return new WP_Error(
+                        'rest_cannot_edit_others',
+                        __('Sorry, you are not allowed to delete tables for this post as this user.'),
+                        array('status' => rest_authorization_required_code())
+                    );
+                }
+            }
+
+            if ($postId === 0 && (!(current_user_can('publish_posts') || current_user_can('publish_pages')))) {
+                return new WP_Error(
+                    'rest_cannot_edit',
+                    __('Sorry, you are not allowed to delete tables for this post as this user.'),
+                    array('status' => rest_authorization_required_code())
+                );
+            }
+
+        } else {
+            if ('edit' === $request[ 'context' ] && !current_user_can('edit_posts')) {
+                return new WP_Error(
+                    'rest_forbidden_context',
+                    __('Sorry, you are not allowed to delete this post.'),
+                    array('status' => rest_authorization_required_code())
+                );
+            }
+        }
+
+        return true;
+
+    }
+
+    /**
+     * Deletes a single post.
+     *
+     * @since 4.7.0
+     *
+     * @param WP_REST_Request $request Full details about the request.
+     * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+     */
+    public function delete_item($request)
+    {
+        error_log("Deleting Table - " . $request[ 'id' ]);
+        $table = $this->get_table($request[ 'id' ]);
+        if (is_wp_error($table)) {
+            return $table;
+        }
+
+        $id = $table[ 'id' ];
+        $request->set_param('context', 'edit');
+
+        $previous = $this->prepare_item_for_response($table, $request);
+        $result = delete_table($id);
+        $response = new WP_REST_Response();
+        $response->set_data(
+            array(
+                'deleted' => true,
+                'previous' => $previous->get_data(),
+            )
+        );
+
+        if (!$result) {
+            return new WP_Error(
+                'rest_cannot_delete',
+                __('The table cannot be deleted.'),
+                array('status' => 500)
+            );
+        }
+
+        return rest_ensure_response($response);
+    }
+
+    /**
      * Checks if a post can be edited.
      *
      * @param WP_Post $post Post object.
@@ -482,6 +608,17 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
         return current_user_can('edit_post', $post->ID);
 
+    }
+
+    protected function check_delete_permission($post)
+    {
+        $post_type = get_post_type_object($post->post_type);
+
+        if (!$this->check_is_post_type_allowed($post_type)) {
+            return false;
+        }
+
+        return current_user_can('delete_post', $post->ID);
     }
 
     /**

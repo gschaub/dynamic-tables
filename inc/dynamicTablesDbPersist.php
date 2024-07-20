@@ -414,17 +414,20 @@ class PersistTableData
             'field' => 'table_id',
             'value' => $tableId));
 
-        $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
-        // error_log('    Request Args' . json_encode($rows));
-        // error_log('Begin Row Insert');
-        if (!$queryReturnedResult) {
-            $wpdb->query('ROLLBACK'); // rollback everything
-            $this->result = array(
-                'success' => $success,
-                'deleted_rows' => '0');
-            return $this->result;
-        }
+        // $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
+        // error_log('Query Results for Delete = ' . json_encode($queryReturnedResult));
 
+        // if (!$queryReturnedResult) {
+        //     error_log('No delete Query Results');
+        //     $wpdb->query('ROLLBACK'); // rollback everything
+        //     $this->result = array(
+        //         'success' => $success,
+        //         'deleted_rows' => '0');
+        //     return $this->result;
+        // }
+
+        error_log('    Request Args' . json_encode($rows));
+        error_log('Begin Row Insert');
         foreach ($rows as $index => $row) {
             foreach ($row as $rowAttribute => $arg) {
                 switch ($rowAttribute) {
@@ -459,7 +462,7 @@ class PersistTableData
 
             $queryReturnedResult = $this->replaceTable('dt_table_rows', $argsBuild);
 
-            // error_log('    Insert Results: ' . $queryReturnedResult);
+            error_log('    Insert Results: ' . $queryReturnedResult);
 
             if (!$queryReturnedResult) {
                 $wpdb->query('ROLLBACK'); // rollback everything
@@ -471,6 +474,8 @@ class PersistTableData
             }
             $insertedRows++;
         }
+
+        error_log('End Row Insert with ' . $insertedRows . 'rows created');
 
         $wpdb->query('COMMIT'); // commit all queries
         $success = 'True';
@@ -499,13 +504,13 @@ class PersistTableData
             'field' => 'table_id',
             'value' => $tableId));
 
-        $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
-        if (!$queryReturnedResult) {
-            $this->result = array(
-                'success' => $success,
-                'updated_rows' => '0');
-            return $this->result;
-        }
+        // $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
+        // if (!$queryReturnedResult) {
+        //     $this->result = array(
+        //         'success' => $success,
+        //         'updated_rows' => '0');
+        //     return $this->result;
+        // }
         // error_log('    Request Args' . json_encode($columns));
         // error_log('Begin Column Insert');
 
@@ -597,14 +602,14 @@ class PersistTableData
             'field' => 'table_id',
             'value' => $tableId));
 
-        $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
-        if (!$queryReturnedResult) {
-            $wpdb->query('ROLLBACK'); // rollback everything
-            $this->result = array(
-                'success' => $success,
-                'inserted_rows' => '0');
-            return $this->result;
-        }
+        // $queryReturnedResult = $this->delete_table($dbTable, $argsBuild);
+        // if (!$queryReturnedResult) {
+        //     $wpdb->query('ROLLBACK'); // rollback everything
+        //     $this->result = array(
+        //         'success' => $success,
+        //         'inserted_rows' => '0');
+        //     return $this->result;
+        // }
 
         foreach ($cells as $index => $cell) {
 
