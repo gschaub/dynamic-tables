@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * REST API: Dynamic_Tables_REST_Controller class
+ * Class to access dynamic tables via the Wordpress REST API.
+ *
+ * @see WP_REST_Controller
+ */
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -9,20 +16,23 @@ require_once plugin_dir_path(__FILE__) . 'dynamicTablesAPI.php';
 class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 {
 
-    /**
-     * Temporary properties until full class is built
-     */
-    // public string $namespace = '';
-    // public string $rest_base = '';
-
+/**
+ * Constructor
+ */
     public function __construct()
     {
         $this->namespace = 'dynamic-tables/v1';
         $this->rest_base = 'tables';
-        // $this->register_routes();
-        error_log('Tables REST initiated');
     }
 
+/**
+ *  Create web service end points for Dynamic Tables rest based services.  Services are:
+ *      - GET: Get tables (pural, not currently implemented)
+ *      - CREATE: Create table (singular)
+ *      - GET: Get table (singular)
+ *      - PUT: Update table (singular)
+ *      - DELETE: Delete table (singular)
+ */
     public function register_routes()
     {
 
@@ -32,7 +42,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 array(
                     'methods' => WP_REST_Server::READABLE,
                     'callback' => array($this, 'get_items'),
-                    'permission_callback' => array($this, 'test_permissions'),
+                    'permission_callback' => array($this, 'get_items_permissions_check'),
                     // 'args' => $this->get_collection_params(),
                 ),
                 array(
@@ -80,39 +90,76 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         );
     }
 
-    public function get_items($request)
+    /**
+     * RESERVED FOR FUTURE USE
+     *
+     * Checks if a given request has access to read tables.
+     *
+     * @param WP_REST_Request $request Full details about the request.
+     * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+     */
+
+    public function get_items_permissions_check($request)
     {
+        _doing_it_wrong(
+            'get_tables',
+            sprintf(
+                /* translators: 1: The taxonomy name, 2: The property name, either 'rest_base' or 'name', 3: The conflicting value. */
+                __('Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use'),
+            ),
+            '1.0'
+        );
 
     }
 
+    /**
+     * RESERVED FOR FUTURE USE
+     *
+     * Retrieves a collection of TABLES.
+     *
+     * @since 4.7.0
+     *
+     * @param WP_REST_Request $request Full details about the request.
+     * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+     */
+    public function get_items($request)
+    {
+        _doing_it_wrong(
+            'get_tables',
+            sprintf(
+                /* translators: 1: The taxonomy name, 2: The property name, either 'rest_base' or 'name', 3: The conflicting value. */
+                __('Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use'),
+            ),
+            '1.0'
+        );
+    }
+
+    /**
+     * Checks if a given request has access to read a table based on post permissions.
+     *
+     * @param WP_REST_Request $request Full details about the request.
+     * @return bool|WP_Error True if the request has read access for the item, WP_Error object or false otherwise.
+     */
     public function get_item_permissions_check($request)
     {
-        // error_log('Started get_item_permissions_check');
-        // error_log('Request Route = ' . $request->get_route());
-        // error_log('Request Method = ' . $request->get_method());
-        // error_log('Request Headers = ' . json_encode($request->get_headers()));
-
         $table = $this->get_table($request[ 'id' ]);
-        error_log('Table = ' . json_encode($table));
 
         if (is_wp_error($table)) {
-            error_log('Error Getting Table in Item Permissions');
-            error_log('$error variable = ' . json_encode($table));
             return $table;
         }
 
+        // Permissions for reading  a table are based upon the underlying post to which
+        // it is attached.
         if (isset($table[ 'header' ][ 'post_id' ])) {
             $postId = (int) $table[ 'header' ][ 'post_id' ];
             if ($postId !== 0) {
 
                 $post = $this->get_post($postId);
                 if (is_wp_error($post)) {
-                    error_log('Error - Getting Post');
                     return $post;
                 }
 
                 if ('edit' === $request[ 'context' ] && $post && !$this->check_update_permission($post)) {
-                    error_log('Error - No Permissions to Post');
                     return new WP_Error(
                         'rest_forbidden_context',
                         __('Sorry, you are not allowed to edit this post.'),
@@ -123,7 +170,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
             if ((int) $postId === 0) {
                 if ('edit' === $request[ 'context' ] && !current_user_can('edit_posts')) {
-                    error_log('Error - No General Permissions to Post');
                     return new WP_Error(
                         'rest_forbidden_context',
                         __('Sorry, you are not allowed to edit this post.'),
@@ -132,16 +178,12 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 }
             }
         } else {
-            error_log('Error - No Post ID');
             return new WP_Error(
                 'missing_post_id',
                 __('Post ID is missing from request.'),
                 array('status' => 500)
             );
         }
-
-        error_log('Finished get_item_permissions_check');
-
         return true;
     }
 
@@ -153,8 +195,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
      */
     public function get_item($request)
     {
-        error_log('Request = ' . json_encode($request));
-        error_log('Request Arguments = ' . json_encode($request->get_attributes()));
         $table = $this->get_table($request[ 'id' ]);
         if (is_wp_error($table)) {
             return $table;
@@ -174,7 +214,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
      */
     protected function get_table($id)
     {
-        error_log('In rest get table');
         $error = new WP_Error(
             'rest_table_invalid_id',
             __('Invalid table ID.'),
@@ -185,21 +224,15 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             return $error;
         }
 
-        error_log('$error variable = ' . json_encode($error));
-
         $table = get_table((int) $id);
         if (is_wp_error($table)) {
-            error_log('Error Getting Table');
-            error_log('$error variable = ' . json_encode($error));
             return $error;
         }
 
-        // var_dump($table);
         if (empty($table)) {
             return $error;
         }
 
-        error_log('Finished  rest get table');
         return $table;
     }
 
@@ -217,7 +250,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             array('status' => 500)
         );
 
-        error_log('Post id = ' . (int) $id);
         if ((int) $id < 0) {
             return $error;
         }
@@ -232,21 +264,17 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         if (empty($post) || empty($post->ID)) {
             return $error;
         }
-
         return $post;
     }
 
     /**
-     * Checks if a given request has access to create items.
+     * Checks if a given request has access to create a table.
      *
      * @param WP_REST_Request $request Full details about the request.
      * @return true|WP_Error True if the request has access to create items, WP_Error object otherwise.
      */
     public function create_item_permissions_check($request)
     {
-        // error_log('Started create_item_permissions_check');
-        // error_log($request[ 'id' ]);
-
         if ((int) $request[ 'id' ] !== (int) 0) {
             return new WP_Error(
                 'rest_table_exists',
@@ -259,9 +287,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         // it is attached.
         if (isset($request[ 'header' ][ 'post_id' ])) {
             $postId = (int) $request[ 'header' ][ 'post_id' ];
-
-            // REMOVE Bypass permission check for testing
-            return true;
 
             if ($postId !== 0) {
                 $post = $this->get_post($postId);
@@ -302,8 +327,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 array('status' => 500)
             );
         }
-
-        error_log('Finished create_item_permissions_check');
         return true;
     }
 
@@ -315,8 +338,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
      */
     public function create_item($request)
     {
-        error_log('Table POST - ' . $request[ 'id' ]);
-
         if ((int) $request[ 'id' ] !== (int) 0) {
             return new WP_Error(
                 'rest_table_exists',
@@ -331,7 +352,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             return $prepared_table;
         }
         $table_id = create_table_data($prepared_table, true);
-        error_log('Prepared Table ID = ' . $table_id);
 
         if (is_wp_error($table_id)) {
             if ('db_insert_error' === $table_id->get_error_code() ||
@@ -346,7 +366,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         }
 
         $table = get_table($table_id);
-        error_log('Prepared Table retrieved- ' . json_encode($table));
 
         /**
          * Reserve for future use
@@ -367,15 +386,19 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         return $response;
     }
 
+    /**
+     * Checks if a given request has access to update a table.
+     *
+     * @param WP_REST_Request $request Full details about the request.
+     * @return true|WP_Error True if the request has access to update the item, WP_Error object otherwise.
+     */
     public function update_item_permissions_check($request)
     {
         // Permissions for editing a table are based upon the underlying post to which
         // it is attached.
+
         if (isset($request[ 'header' ][ 'post_id' ])) {
             $postId = (int) $request[ 'header' ][ 'post_id' ];
-
-            // REMOVE - Support testing
-            // return true;
 
             if ($postId !== 0) {
                 $post = $this->get_post($postId);
@@ -415,7 +438,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 array('status' => 500)
             );
         }
-
         return true;
     }
 
@@ -427,8 +449,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
      */
     public function update_item($request)
     {
-        error_log('Entered update_item');
-
         $valid_check = $this->get_table($request[ 'id' ]);
         if (is_wp_error($valid_check)) {
             return $valid_check;
@@ -439,9 +459,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         if (is_wp_error($table)) {
             return $table;
         }
-
-        // Convert the post object to an array, otherwise wp_update_post() will expect non-escaped input.
-        // $table_id = wp_update_post($table, true, false);
 
         $table_id = update_table_data($table, true);
 
@@ -456,7 +473,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             return $table_id;
         }
 
-        error_log('Table ID for Response = ' . $table_id);
         $table = get_table($table_id);
         if (is_wp_error($table)) {
             return $table;
@@ -466,28 +482,20 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
          * Reserve for future use
          */
 
-        // $fields_update = $this->update_additional_fields_for_object($post, $request);
+        // $fields_update = $this->update_additional_fields_for_object($table, $request);
 
         // if (is_wp_error($fields_update)) {
         //     return $fields_update;
         // }
 
         $request->set_param('context', 'edit');
-
-        /** This action is documented in wp-includes/rest-api/endpoints/class-wp-rest-posts-controller.php */
-        // do_action("rest_after_insert_{$this->post_type}", $post, $request, false);
-
-        // wp_after_insert_post($post, true, $post_before);
-
         $response = $this->prepare_item_for_response($table, $request);
 
         return rest_ensure_response($response);
     }
 
     /**
-     * Checks if a given request has access to delete a post.
-     *
-     * @since 4.7.0
+     * Checks if a given request has access to delete a table.
      *
      * @param WP_REST_Request $request Full details about the request.
      * @return true|WP_Error True if the request has access to delete the item, WP_Error object otherwise.
@@ -496,18 +504,16 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     {
         $table = $this->get_table($request[ 'id' ]);
         if (is_wp_error($table)) {
-            // error_log('Error Getting Table in Item Permissions');
-            // error_log('$error variable = ' . json_encode($table));
             return $table;
         }
 
+        // Permissions for deleting a table are based upon the underlying post to which
+        // it is attached.
         if (isset($table[ 'header' ][ 'post_id' ])) {
             $postId = (int) $table[ 'header' ][ 'post_id' ];
 
             if ($postId !== 0) {
-                error_log('delete table - get post in');
                 $post = $this->get_post($postId);
-                error_log('delete table - get post out');
                 if (is_wp_error($post)) {
                     return $post;
                 }
@@ -547,22 +553,17 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 );
             }
         }
-
         return true;
-
     }
 
     /**
-     * Deletes a single post.
-     *
-     * @since 4.7.0
+     * Deletes a single table.
      *
      * @param WP_REST_Request $request Full details about the request.
      * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
      */
     public function delete_item($request)
     {
-        error_log("Deleting Table - " . $request[ 'id' ]);
         $table = $this->get_table($request[ 'id' ]);
         if (is_wp_error($table)) {
             return $table;
@@ -588,7 +589,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 array('status' => 500)
             );
         }
-
         return rest_ensure_response($response);
     }
 
@@ -605,20 +605,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         if (!$this->check_is_post_type_allowed($post_type)) {
             return false;
         }
-
         return current_user_can('edit_post', $post->ID);
-
-    }
-
-    protected function check_delete_permission($post)
-    {
-        $post_type = get_post_type_object($post->post_type);
-
-        if (!$this->check_is_post_type_allowed($post_type)) {
-            return false;
-        }
-
-        return current_user_can('delete_post', $post->ID);
     }
 
     /**
@@ -651,25 +638,21 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         $prepared_table = new stdClass();
         $current_status = '';
 
-        // Table ID.
         if (isset($request[ 'id' ]) && (int) $request[ 'id' ] !== 0) {
             $existing_table = $this->get_table($request[ 'id' ]);
             if (is_wp_error($existing_table)) {
                 return $existing_table;
             }
 
-            // var_dump($existing_table[ 'id' ]);
             $prepared_table->id = $existing_table[ 'id' ];
             $current_status = $existing_table[ 'header' ][ 'status' ];
         }
 
         $schema = $this->get_item_schema();
-        error_log('Test Schema Function: ' . json_encode($schema));
 
         /**
          * Process Table Header Block
          */
-
         if (!empty($schema[ 'properties' ][ 'header' ])) {
             $schema_header = $schema[ 'properties' ][ 'header' ];
 
@@ -767,6 +750,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 }
             }
         }
+
         /**
          * Process Table Column Block for each column in the table
          */
@@ -867,10 +851,10 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                     $prepared_table->cells[ $key ][ 'content' ] = $request[ 'cells' ][ $key ][ 'content' ];
                 }
             }
-            // var_dump($prepared_table);
         }
+
         /**
-         * Filters a post before it is inserted via the REST API.
+         * Filters a table before it is inserted via the REST API.
          *
          * Possible hook names include:
          *
@@ -878,7 +862,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
          *                                       for inserting or updating the database.
          * @param WP_REST_Request $request       Request object.
          */
-        error_log('pre-insert-table = ' . json_encode(apply_filters("rest_pre_insert_dynamic-table", $prepared_table, $request)));
         return apply_filters("rest_pre_insert_dynamic-table", $prepared_table, $request);
     }
 
@@ -894,18 +877,11 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         // Restores the more descriptive, specific name for use within this method.
         $table = $item;
         $fields = $this->get_fields_for_response($request);
-        // $headerFields = $this->get_fields_for_response($request[ 'header' ]);
 
-        // Base fields for every post.
+        // Base fields for every table.
         $data = array();
 
-        error_log('Table Defined as: ' . json_encode($table));
-        error_log('Request fields are: ' . json_encode($fields));
-        // error_log($table[ 'id' ]);
-        // error_log('   Header fields are: ' . json_encode($headerFields));
-
         if (rest_is_field_included('id', $fields)) {
-            // $data[ 'id' ] = (string) $table[ 'id' ];
             $data[ 'id' ] = $table[ 'id' ];
         }
 
@@ -936,11 +912,6 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         if (rest_is_field_included('header.classes', $fields)) {
             $data[ 'header' ][ 'classes' ] = $table[ 'header' ][ 'classes' ];
         }
-
-        // if (rest_is_field_included('rows', $fields)) {
-        //     $data[ 'rows' ] = $table[ 'rows' ];
-        // }
-        // error_log('table rows: ' . json_encode($table->rows));
 
         /**
          * Row Block
@@ -1065,23 +1036,18 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                         'id' => array(
                             'description' => __('Table ID.'),
                             'type' => 'string',
-                            // 'format' => array(),
                             'context' => array('view', 'edit'),
                             'readonly' => true,
                         ),
                         'block_table_ref' => array(
                             'description' => __('Link to specific table block on post.'),
                             'type' => 'string',
-                            // 'format' => array(),
                             'context' => array('view', 'edit'),
-                        ), //: "18e70bc8b70",
+                        ),
                         'status' => array(
                             'description' => __('Status of table within context of its assigned post.'),
                             'type' => 'string',
-                            // 'enum' => array_keys(get_post_stati(array('internal' => false))),
                             'context' => array('view', 'edit'),
-                            // 'arg_options' => array(
-                            //     'validate_callback' => array($this, 'check_status'),
                         ),
                         'post_id' => array(
                             'description' => __('Unique identifier for the post.'),
@@ -1235,7 +1201,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                                         'sanitize_callback' => null, // Note: sanitization implemented in self::prepare_item_for_database().
                                         'validate_callback' => null, // Note: validation implemented in self::prepare_item_for_database().
                                     ),
-                                ), //: ""
+                                ),
                             ),
                         ),
                     ),
@@ -1244,214 +1210,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
         );
 
-        // $post_type_obj = get_post_type_object($this->post_type);
-
-        // $post_type_attributes = array(
-        //     'title',
-        //     'editor',
-        //     'author',
-        //     'excerpt',
-        //     'thumbnail',
-        //     'comments',
-        //     'revisions',
-        //     'page-attributes',
-        //     'post-formats',
-        //     'custom-fields',
-        // );
-        // $fixed_schemas = array(
-        //     'post' => array(
-        //         'title',
-        //         'editor',
-        //         'author',
-        //         'excerpt',
-        //         'thumbnail',
-        //         'comments',
-        //         'revisions',
-        //         'post-formats',
-        //         'custom-fields',
-        //     ),
-        //     'page' => array(
-        //         'title',
-        //         'editor',
-        //         'author',
-        //         'excerpt',
-        //         'thumbnail',
-        //         'comments',
-        //         'revisions',
-        //         'page-attributes',
-        //         'custom-fields',
-        //     ),
-        //     'attachment' => array(
-        //         'title',
-        //         'author',
-        //         'comments',
-        //         'revisions',
-        //         'custom-fields',
-        //         'thumbnail',
-        //     ),
-        // );
-
-        // foreach ($post_type_attributes as $attribute) {
-        //     // if (isset($fixed_schemas[ $this->post_type ]) && !in_array($attribute, $fixed_schemas[ $this->post_type ], true)) {
-        //     //     continue;
-        //     // } elseif (!isset($fixed_schemas[ $this->post_type ]) && !post_type_supports($this->post_type, $attribute)) {
-        //     //     continue;
-        //     // }
-
-        //     switch ($attribute) {
-
-        //         case 'editor':
-        //             $schema[ 'properties' ][ 'content' ] = array(
-        //                 'description' => __('The content for the post.'),
-        //                 'type' => 'object',
-        //                 'context' => array('view', 'edit'),
-        //                 'arg_options' => array(
-        //                     'sanitize_callback' => null, // Note: sanitization implemented in self::prepare_item_for_database().
-        //                     'validate_callback' => null, // Note: validation implemented in self::prepare_item_for_database().
-        //                 ),
-        //                 'properties' => array(
-        //                     'raw' => array(
-        //                         'description' => __('Content for the post, as it exists in the database.'),
-        //                         'type' => 'string',
-        //                         'context' => array('edit'),
-        //                     ),
-        //                     'rendered' => array(
-        //                         'description' => __('HTML content for the post, transformed for display.'),
-        //                         'type' => 'string',
-        //                         'context' => array('view', 'edit'),
-        //                         'readonly' => true,
-        //                     ),
-        //                     'block_version' => array(
-        //                         'description' => __('Version of the content block format used by the post.'),
-        //                         'type' => 'integer',
-        //                         'context' => array('edit'),
-        //                         'readonly' => true,
-        //                     ),
-        //                     'protected' => array(
-        //                         'description' => __('Whether the content is protected with a password.'),
-        //                         'type' => 'boolean',
-        //                         'context' => array('view', 'edit', 'embed'),
-        //                         'readonly' => true,
-        //                     ),
-        //                 ),
-        //             );
-        //             break;
-
-        //         case 'author':
-        //             $schema[ 'properties' ][ 'author' ] = array(
-        //                 'description' => __('The ID for the author of the post.'),
-        //                 'type' => 'integer',
-        //                 'context' => array('view', 'edit', 'embed'),
-        //             );
-        //             break;
-
-        //         case 'excerpt':
-        //             $schema[ 'properties' ][ 'excerpt' ] = array(
-        //                 'description' => __('The excerpt for the post.'),
-        //                 'type' => 'object',
-        //                 'context' => array('view', 'edit', 'embed'),
-        //                 'arg_options' => array(
-        //                     'sanitize_callback' => null, // Note: sanitization implemented in self::prepare_item_for_database().
-        //                     'validate_callback' => null, // Note: validation implemented in self::prepare_item_for_database().
-        //                 ),
-        //                 'properties' => array(
-        //                     'raw' => array(
-        //                         'description' => __('Excerpt for the post, as it exists in the database.'),
-        //                         'type' => 'string',
-        //                         'context' => array('edit'),
-        //                     ),
-        //                     'rendered' => array(
-        //                         'description' => __('HTML excerpt for the post, transformed for display.'),
-        //                         'type' => 'string',
-        //                         'context' => array('view', 'edit', 'embed'),
-        //                         'readonly' => true,
-        //                     ),
-        //                     'protected' => array(
-        //                         'description' => __('Whether the excerpt is protected with a password.'),
-        //                         'type' => 'boolean',
-        //                         'context' => array('view', 'edit', 'embed'),
-        //                         'readonly' => true,
-        //                     ),
-        //                 ),
-        //             );
-        //             break;
-
-        //         case 'thumbnail':
-        //             $schema[ 'properties' ][ 'featured_media' ] = array(
-        //                 'description' => __('The ID of the featured media for the post.'),
-        //                 'type' => 'integer',
-        //                 'context' => array('view', 'edit', 'embed'),
-        //             );
-        //             break;
-
-        //         case 'comments':
-        //             $schema[ 'properties' ][ 'comment_status' ] = array(
-        //                 'description' => __('Whether or not comments are open on the post.'),
-        //                 'type' => 'string',
-        //                 'enum' => array('open', 'closed'),
-        //                 'context' => array('view', 'edit'),
-        //             );
-        //             $schema[ 'properties' ][ 'ping_status' ] = array(
-        //                 'description' => __('Whether or not the post can be pinged.'),
-        //                 'type' => 'string',
-        //                 'enum' => array('open', 'closed'),
-        //                 'context' => array('view', 'edit'),
-        //             );
-        //             break;
-
-        //         case 'page-attributes':
-        //             $schema[ 'properties' ][ 'menu_order' ] = array(
-        //                 'description' => __('The order of the post in relation to other posts.'),
-        //                 'type' => 'integer',
-        //                 'context' => array('view', 'edit'),
-        //             );
-        //             break;
-
-        //         case 'post-formats':
-        //             // Get the native post formats and remove the array keys.
-        //             $formats = array_values(get_post_format_slugs());
-
-        //             $schema[ 'properties' ][ 'format' ] = array(
-        //                 'description' => __('The format for the post.'),
-        //                 'type' => 'string',
-        //                 'enum' => $formats,
-        //                 'context' => array('view', 'edit'),
-        //             );
-        //             break;
-
-        //         case 'custom-fields':
-        //             $schema[ 'properties' ][ 'meta' ] = $this->meta->get_field_schema();
-        //             break;
-
-        //     }
-        // }
-
-        // $schema_links = $this->get_schema_links();
-
-        // if ($schema_links) {
-        //     $schema[ 'links' ] = $schema_links;
-        // }
-
         // Take a snapshot of which fields are in the schema pre-filtering.
         $schema_fields = array_keys($schema[ 'properties' ]);
-
-        /**
-         * Filters the post's schema.
-         *
-         * The dynamic portion of the filter, `$this->post_type`, refers to the
-         * post type slug for the controller.
-         *
-         * Possible hook names include:
-         *
-         *  - `rest_post_item_schema`
-         *  - `rest_page_item_schema`
-         *  - `rest_attachment_item_schema`
-         *
-         * @since 5.4.0
-         *
-         * @param array $schema Item schema data.
-         */
-        // $schema = apply_filters("rest_{$this->post_type}_item_schema", $schema);
 
         // Emit a _doing_it_wrong warning if user tries to add new properties using this filter.
         $new_fields = array_diff(array_keys($schema[ 'properties' ]), $schema_fields);
@@ -1466,276 +1226,25 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 '5.4.0'
             );
         }
-
-        error_log('Schema is: ' . json_encode($schema));
         $this->schema = $schema;
-        error_log('Returned schema is: ' . json_encode($this->add_additional_fields_schema($this->schema)));
-
         return $this->add_additional_fields_schema($this->schema);
     }
 
     /**
-     * Retrieves Link Description Objects that should be added to the Schema for the posts collection.
+     * RESERVED FOR FUTURE USE
      *
-     * @since 4.9.8
-     *
-     * @return array
-     */
-    protected function get_schema_links()
-    {
-
-        $href = rest_url("{$this->namespace}/{$this->rest_base}/{id}");
-
-        $links = array();
-
-        $links[  ] = array(
-            'rel' => 'https://api.w.org/action-publish',
-            'title' => __('The current user can publish this post.'),
-            'href' => $href,
-            'targetSchema' => array(
-                'type' => 'object',
-                'properties' => array(
-                    'status' => array(
-                        'type' => 'string',
-                        'enum' => array('publish', 'future'),
-                    ),
-                ),
-            ),
-        );
-
-        $links[  ] = array(
-            'rel' => 'https://api.w.org/action-unfiltered-html',
-            'title' => __('The current user can post unfiltered HTML markup and JavaScript.'),
-            'href' => $href,
-            'targetSchema' => array(
-                'type' => 'object',
-                'properties' => array(
-                    'content' => array(
-                        'raw' => array(
-                            'type' => 'string',
-                        ),
-                    ),
-                ),
-            ),
-        );
-
-        // if ('post' === $this->post_type) {
-        //     $links[  ] = array(
-        //         'rel' => 'https://api.w.org/action-sticky',
-        //         'title' => __('The current user can sticky this post.'),
-        //         'href' => $href,
-        //         'targetSchema' => array(
-        //             'type' => 'object',
-        //             'properties' => array(
-        //                 'sticky' => array(
-        //                     'type' => 'boolean',
-        //                 ),
-        //             ),
-        //         ),
-        //     );
-        // }
-
-        // if (post_type_supports($this->post_type, 'author')) {
-        //     $links[  ] = array(
-        //         'rel' => 'https://api.w.org/action-assign-author',
-        //         'title' => __('The current user can change the author on this post.'),
-        //         'href' => $href,
-        //         'targetSchema' => array(
-        //             'type' => 'object',
-        //             'properties' => array(
-        //                 'author' => array(
-        //                     'type' => 'integer',
-        //                 ),
-        //             ),
-        //         ),
-        //     );
-        // }
-
-        return $links;
-    }
-
-    /**
-     * Retrieves the query params for the posts collection.
-     *
-     * @since 4.7.0
-     * @since 5.4.0 The `tax_relation` query parameter was added.
-     * @since 5.7.0 The `modified_after` and `modified_before` query parameters were added.
+     * Retrieves the query params for the tables collection.
      *
      * @return array Collection parameters.
      */
     public function get_collection_params()
     {
-        $query_params = parent::get_collection_params();
-
-        // $query_params[ 'context' ][ 'default' ] = 'view';
-
-        // $query_params[ 'after' ] = array(
-        //     'description' => __('Limit response to posts published after a given ISO8601 compliant date.'),
-        //     'type' => 'string',
-        //     'format' => 'date-time',
-        // );
-
-        // $query_params[ 'modified_after' ] = array(
-        //     'description' => __('Limit response to posts modified after a given ISO8601 compliant date.'),
-        //     'type' => 'string',
-        //     'format' => 'date-time',
-        // );
-
-        // if (post_type_supports($this->post_type, 'author')) {
-        //     $query_params[ 'author' ] = array(
-        //         'description' => __('Limit result set to posts assigned to specific authors.'),
-        //         'type' => 'array',
-        //         'items' => array(
-        //             'type' => 'integer',
-        //         ),
-        //         'default' => array(),
-        //     );
-        //     $query_params[ 'author_exclude' ] = array(
-        //         'description' => __('Ensure result set excludes posts assigned to specific authors.'),
-        //         'type' => 'array',
-        //         'items' => array(
-        //             'type' => 'integer',
-        //         ),
-        //         'default' => array(),
-        //     );
-        // }
-
-        // $query_params[ 'before' ] = array(
-        //     'description' => __('Limit response to posts published before a given ISO8601 compliant date.'),
-        //     'type' => 'string',
-        //     'format' => 'date-time',
-        // );
-
-        // $query_params[ 'modified_before' ] = array(
-        //     'description' => __('Limit response to posts modified before a given ISO8601 compliant date.'),
-        //     'type' => 'string',
-        //     'format' => 'date-time',
-        // );
-
-        // $query_params[ 'exclude' ] = array(
-        //     'description' => __('Ensure result set excludes specific IDs.'),
-        //     'type' => 'array',
-        //     'items' => array(
-        //         'type' => 'integer',
-        //     ),
-        //     'default' => array(),
-        // );
-
-        // $query_params[ 'include' ] = array(
-        //     'description' => __('Limit result set to specific IDs.'),
-        //     'type' => 'array',
-        //     'items' => array(
-        //         'type' => 'integer',
-        //     ),
-        //     'default' => array(),
-        // );
-
-        // if ('page' === $this->post_type || post_type_supports($this->post_type, 'page-attributes')) {
-        //     $query_params[ 'menu_order' ] = array(
-        //         'description' => __('Limit result set to posts with a specific menu_order value.'),
-        //         'type' => 'integer',
-        //     );
-        // }
-
-        // $query_params[ 'offset' ] = array(
-        //     'description' => __('Offset the result set by a specific number of items.'),
-        //     'type' => 'integer',
-        // );
-
-        // $query_params[ 'order' ] = array(
-        //     'description' => __('Order sort attribute ascending or descending.'),
-        //     'type' => 'string',
-        //     'default' => 'desc',
-        //     'enum' => array('asc', 'desc'),
-        // );
-
-        // $query_params[ 'orderby' ] = array(
-        //     'description' => __('Sort collection by post attribute.'),
-        //     'type' => 'string',
-        //     'default' => 'date',
-        //     'enum' => array(
-        //         'author',
-        //         'date',
-        //         'id',
-        //         'include',
-        //         'modified',
-        //         'parent',
-        //         'relevance',
-        //         'slug',
-        //         'include_slugs',
-        //         'title',
-        //     ),
-        // );
-
-        // if ('page' === $this->post_type || post_type_supports($this->post_type, 'page-attributes')) {
-        //     $query_params[ 'orderby' ][ 'enum' ][  ] = 'menu_order';
-        // }
-
-        // $post_type = get_post_type_object($this->post_type);
-
-        // if ($post_type->hierarchical || 'attachment' === $this->post_type) {
-        //     $query_params[ 'parent' ] = array(
-        //         'description' => __('Limit result set to items with particular parent IDs.'),
-        //         'type' => 'array',
-        //         'items' => array(
-        //             'type' => 'integer',
-        //         ),
-        //         'default' => array(),
-        //     );
-        //     $query_params[ 'parent_exclude' ] = array(
-        //         'description' => __('Limit result set to all items except those of a particular parent ID.'),
-        //         'type' => 'array',
-        //         'items' => array(
-        //             'type' => 'integer',
-        //         ),
-        //         'default' => array(),
-        //     );
-        // }
-
-        // $query_params[ 'search_columns' ] = array(
-        //     'default' => array(),
-        //     'description' => __('Array of column names to be searched.'),
-        //     'type' => 'array',
-        //     'items' => array(
-        //         'enum' => array('post_title', 'post_content', 'post_excerpt'),
-        //         'type' => 'string',
-        //     ),
-        // );
-
-        // $query_params[ 'slug' ] = array(
-        //     'description' => __('Limit result set to posts with one or more specific slugs.'),
-        //     'type' => 'array',
-        //     'items' => array(
-        //         'type' => 'string',
-        //     ),
-        // );
-
-        // $query_params[ 'status' ] = array(
-        //     'default' => 'publish',
-        //     'description' => __('Limit result set to posts assigned one or more statuses.'),
-        //     'type' => 'array',
-        //     'items' => array(
-        //         'enum' => array_merge(array_keys(get_post_stati()), array('any')),
-        //         'type' => 'string',
-        //     ),
-        //     'sanitize_callback' => array($this, 'sanitize_post_statuses'),
-        // );
-
-        /**
-         * Filters collection parameters for the posts controller.
-         *
-         * The dynamic part of the filter `$this->post_type` refers to the post
-         * type slug for the controller.
-         *
-         * This filter registers the collection parameter, but does not map the
-         * collection parameter to an internal WP_Query parameter. Use the
-         * `rest_{$this->post_type}_query` filter to set WP_Query parameters.
-         *
-         * @since 4.7.0
-         *
-         * @param array        $query_params JSON Schema-formatted collection parameters.
-         * @param WP_Post_Type $post_type    Post type object.
-         */
-        // return apply_filters("rest_{$this->post_type}_collection_params", $query_params, $post_type);
+        _doing_it_wrong(
+            'get_table collection',
+            sprintf(
+                __('Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use'),
+            ),
+            '1.0'
+        );
     }
 }
