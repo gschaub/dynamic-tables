@@ -1,5 +1,4 @@
 <?php
-
 require_once plugin_dir_path(__FILE__) . 'dynamicTablesDbPersist.php';
 
 /**
@@ -28,11 +27,15 @@ foreach (array('dt_table_name_save_pre') as $filter) {
 
 add_filter('dt_content_filtered_save_pre', 'wp_filter_global_styles_post', 9);
 
+/**
+ * Create or update table
+ *
+ * @param $tablearr - Table data for update.
+ * @param $wp_error - Do we return WP_Error objects for REST API processing.
+ * @return int|WP_Error Table id for new or updated table, WP_Error object on failure.
+ */
 function create_table_data($tablearr, $wp_error = false)
 {
-    // Capture original pre-sanitized array for passing into filters.
-    $unsanitized_tablearr = $tablearr;
-
     $defaults = array(
         'id' => '0',
         'header' => array(
@@ -73,21 +76,18 @@ function create_table_data($tablearr, $wp_error = false)
     );
 
     $tablearr = wp_parse_args($tablearr, $defaults);
-
     unset($tablearr[ 'filter' ]);
-
     $tablearr = sanitize_dynamic_table($tablearr, 'db');
 
     // Are we updating or creating?
     $table_id = 0;
     $update = false;
 
-    error_log('Table Data for create/update = ' . json_encode($tablearr));
     if (!(empty($tablearr[ 'id' ]) &&
         (int) $tablearr[ 'id' ] !== '0')) {
         $update = true;
 
-        // Get the post ID and GUID.
+        // Get the table ID.
         $table_id = $tablearr[ 'id' ];
         $table_before = get_table($table_id);
 
@@ -102,10 +102,6 @@ function create_table_data($tablearr, $wp_error = false)
         $post_before = null;
     }
 
-    error_log('Table Formatted for Insert:');
-    error_log(json_encode($tablearr));
-    // error_log('POST Table request - ' . json_encode($request->get_json_params()));
-
     $results = null;
 
     $blockTableRef = $tablearr[ 'header' ][ 'block_table_ref' ];
@@ -115,11 +111,7 @@ function create_table_data($tablearr, $wp_error = false)
     $serializedAttributes = maybe_serialize($tablearr[ 'header' ][ 'attributes' ]);
     $classes = $tablearr[ 'header' ][ 'classes' ];
 
-    error_log('Create Table Params: block ref - ' . $blockTableRef . ', status - ' . $status . ', post id - ' . $postId . ', table name - ' . $tableName . ', attributes - ' . $serializedAttributes . ', classes - ' . $classes);
-    // die;
-
     if ($update) {
-        error_log('Update Table Params: table id - ' . $table_id . ', block ref - ' . $blockTableRef . ', status - ' . $status . ', post id - ' . $postId . ', table name - ' . $tableName . ', attributes - ' . $serializedAttributes . ', classes - ' . $classes);
         $updateTable = new PersistTableData();
         $results = $updateTable->update_table($table_id, $blockTableRef, $status, $postId, $tableName, $serializedAttributes, $classes);
 
@@ -141,11 +133,8 @@ function create_table_data($tablearr, $wp_error = false)
         $table_id = $results[ 'table_id' ];
     }
 
-    error_log('    Header result - ' . json_encode($results));
-
     // Create table rows
     $tableId = $table_id;
-    error_log('Pre-Created Table ID = ' . $tableId);
     if (isset($tablearr[ 'rows' ])) {
         $requestRows = $tablearr[ 'rows' ];
         $putRows = update_table_rows($tableId, $requestRows);
@@ -177,32 +166,26 @@ function create_table_data($tablearr, $wp_error = false)
             }
         }
     }
-    error_log('Created Table ID = ' . $tableId);
+
     return $tableId;
-
-    // $responseResults = null;
-    // $responseResults = get_table($tableId);
-
-    // error_log('POST Return = ' . json_encode($responseResults));
-
-    // return new WP_REST_Response($responseResults, 200);
-
-    // return $results;
 }
 
 /**
  * PUT table callback to update the database for table changes
+ *
+ * @param $tablearr - Table data for update.
+ * @param $wp_error - Do we return WP_Error objects for REST API processing.
+ * @return int|WP_Error Table id for new or updated table, WP_Error object on failure.
+ *
  */
 function update_table_data($tablearr, $wp_error = false)
 {
-    error_log('PUT Table request - ' . json_encode($tablearr));
-
     if (is_object($tablearr)) {
         // Non-escaped post was passed.
         $tablearr = get_object_vars($tablearr);
     }
 
-// First, get all of the original fields.
+    // First, get all of the original fields.
     $table = get_table($tablearr[ 'id' ], ARRAY_A);
 
     if (is_null($table)) {
@@ -220,25 +203,23 @@ function update_table_data($tablearr, $wp_error = false)
 
 /**
  *  Updates the database for row changes to the table object
+ *
+ * @param int $tableId - Table id.
+ * @param array $requestRows - Rows to load in database.
+ * @return array|WP_Error Updated row values for new or updated table, WP_Error object on failure.
  */
 function update_table_rows($tableId, $requestRows)
 {
-    error_log('    Web Service Input - ' . json_encode($requestRows));
-
     $results = null;
     $rows = [  ];
 
     foreach ($requestRows as $index => $row) {
         $rowId = $row[ 'row_id' ];
-        // $attributes = $row[ 'attributes' ];
         $serializedAttributes = maybe_serialize($row[ 'attributes' ]);
         $classes = $row[ 'classes' ];
-        error_log('Serialized row attributes = ' . json_encode($serializedAttributes));
 
         $rows[  ] = array($tableId, $rowId, $serializedAttributes, $classes);
     }
-
-    error_log('    Web Service Updated Request' . json_encode($rows));
 
     $updateTableRows = new PersistTableData();
     $results = $updateTableRows->update_table_rows($tableId, $rows);
@@ -252,6 +233,10 @@ function update_table_rows($tableId, $requestRows)
 
 /**
  *  Updates the database for column changes to the table object
+ *
+ * @param int $tableId - Table id.
+ * @param array $requestColumns - Columns to load in database.
+ * @return array|WP_Error Updated columns values for new or updated table, WP_Error object on failure.
  */
 function update_table_columns($tableId, $requestColumns)
 {
@@ -263,15 +248,11 @@ function update_table_columns($tableId, $requestColumns)
     foreach ($requestColumns as $index => $column) {
         $columnId = $column[ 'column_id' ];
         $columnName = $column[ 'column_name' ];
-        // $attributes = $column[ 'attributes' ];
         $serializedAttributes = maybe_serialize($column[ 'attributes' ]);
         $classes = $column[ 'classes' ];
-        error_log('Serialized column attributes = ' . json_encode($serializedAttributes));
 
         $columns[  ] = array($tableId, $columnId, $columnName, $serializedAttributes, $classes);
     }
-
-    error_log('    Web Service Updated Request' . json_encode($columns));
 
     $updateTableColumns = new PersistTableData();
     $results = $updateTableColumns->update_table_columns($tableId, $columns);
@@ -285,19 +266,19 @@ function update_table_columns($tableId, $requestColumns)
 
 /**
  *  Updates the database for cell changes to the table object
+ *
+ * @param int $tableId - Table id.
+ * @param array $requestCells - Cells to load in database.
+ * @return array|WP_Error Updated cells values for new or updated table, WP_Error object on failure.
  */
 function update_table_cells($tableId, $requestCells)
 {
-
-    error_log('    Web Service Input - ' . json_encode($requestCells));
-
     $results = null;
     $cells = [  ];
 
     foreach ($requestCells as $index => $cell) {
         $columnId = $cell[ 'column_id' ];
         $rowId = $cell[ 'row_id' ];
-        // $attributes = $cell[ 'attributes' ];
         $serializedAttributes = maybe_serialize($cell[ 'attributes' ]);
         $classes = $cell[ 'classes' ];
         $content = wp_kses_post($cell[ 'content' ]);
@@ -306,8 +287,6 @@ function update_table_cells($tableId, $requestCells)
 
         $cells[  ] = array($tableId, $columnId, $rowId, $serializedAttributes, $classes, $content);
     }
-
-    error_log('    Updated Web Service Input' . json_encode($cells));
 
     $updateTableCells = new PersistTableData();
     $results = $updateTableCells->update_table_cells($tableId, $cells);
@@ -319,14 +298,15 @@ function update_table_cells($tableId, $requestCells)
     return $results;
 }
 
+/**
+ *  Delete table from the database
+ *
+ * @param int $tableId - Table id.
+ * @return array|WP_Error Deleted table.
+ */
 function delete_table($tableId = 0)
-// function delete_table($request)
 {
-    error_log('DELETE Table request - ' . $tableId);
     $existingTable = get_table($tableId);
-
-    error_log('    Web Service Input - Table ID' . json_encode($tableId));
-
     $deleteTable = new PersistTableData();
     $results = $deleteTable->delete_table_data($tableId);
 
@@ -337,7 +317,10 @@ function delete_table($tableId = 0)
 }
 
 /**
- *  get_table Etracts and returns the table object from the database
+ *  Extract and returns the table object from the database
+ *
+ * @param int $tableId - Table id.
+ * @return array|WP_Error Table data retrieved.
  */
 function get_table($tableId)
 {
@@ -357,16 +340,11 @@ function get_table($tableId)
         'horizontalAlignment' => 'none',
      ];
 
-    $testObjectSerialized = maybe_serialize($testObject);
-    error_log('Serialized test object = ' . json_encode($testObjectSerialized));
-
     $results += [ "id" => $tableId ];
-
     $table = 'dt_tables';
     $getTable = new PersistTableData();
     $resultsHeader = $getTable->get_table($tableId, $table);
     if (!$resultsHeader[ 'success' ]) {
-        // error_log('Get Table - Header');
         return new WP_Error('db_read_error', __('Database error retrieving table.'));
     }
     $results += [ "header" => $resultsHeader[ 'result' ] ];
@@ -375,7 +353,6 @@ function get_table($tableId)
     $getTable = new PersistTableData();
     $resultsRows = $getTable->get_table($tableId, $table);
     if (!$resultsRows[ 'success' ]) {
-        // error_log('Get Table - Rows');
         return new WP_Error('db_read_error', __('Database error retrieving table.'));
     }
     $results += [ "rows" => $resultsRows[ 'result' ] ];
@@ -385,7 +362,6 @@ function get_table($tableId)
     $resultsColumns = $getTable->get_table($tableId, $table);
 
     if (!$resultsColumns[ 'success' ]) {
-        // error_log('Get Table - Columns');
         return new WP_Error('db_read_error', __('Database error retrieving table.'));
     }
     $results += [ "columns" => $resultsColumns[ 'result' ] ];
@@ -394,7 +370,6 @@ function get_table($tableId)
     $getTable = new PersistTableData();
     $resultsCells = $getTable->get_table($tableId, $table);
     if (!$resultsCells[ 'success' ]) {
-        // error_log('Get Table - Cells');
         return new WP_Error('db_read_error', __('Database error retrieving table.'));
     }
     $results += [ "cells" => $resultsCells[ 'result' ] ];
@@ -403,13 +378,13 @@ function get_table($tableId)
 }
 
 /**
- * Sanitizes every post field.
+ * Sanitizes every table field.
  *
  * @param object|WP_Post|array $table    The dynamic table  object or array
  * @param string               $context Optional. How to sanitize table fields.
  *                                      Accepts 'edit', 'db', 'display',
  *                                      'attribute', or 'js'. Default 'display'.
- * @return object|WP_Post|array The now sanitized dynamic table object or array (will be the
+ * @return object|array The now sanitized dynamic table object or array (will be the
  *                              same type as `$table`).
  */
 function sanitize_dynamic_table($table, $context = 'display')
@@ -421,16 +396,6 @@ function sanitize_dynamic_table($table, $context = 'display')
         }
         if (!isset($table->id)) {
             $table->id = 0;
-        }
-        foreach (array_keys(get_object_vars($table)) as $field) {
-            error_log('');
-            error_log('New Field - Type Object');
-            error_log('Field = ' . $field);
-            error_log('Table Field Value = ' . $table->$field);
-            error_log('Table ID = ' . $table->id);
-            error_log('Context = ' . $context);
-
-            // $table->$field = sanitize_dynamic_table_field($field, $table->$field, $table->id, $context);
         }
         $table->filter = $context;
     } elseif (is_array($table)) {
@@ -500,7 +465,6 @@ function sanitize_dynamic_table($table, $context = 'display')
  */
 function sanitize_dynamic_table_field($field, $value, $table_id, $context = 'display')
 {
-
     if ('edit' === $context) {
 
         $format_to_edit = array('content', 'table_name');
@@ -521,7 +485,6 @@ function sanitize_dynamic_table_field($field, $value, $table_id, $context = 'dis
     } elseif ('db' === $context) {
         $value = apply_filters("pre_table_{$field}", $value);
 
-        // error_log('DB pre_table for ' . $field . ' = ' . json_encode($value));
         /**
          * Filters the value of a specific table field before saving.
          *
@@ -531,9 +494,6 @@ function sanitize_dynamic_table_field($field, $value, $table_id, $context = 'dis
          * @param mixed $value Value of the table field.
          */
         $value = apply_filters("{$field}_pre", $value);
-
-        // error_log('DB ' . $field . '_pre = ' . json_encode($value));
-
     } else {
 
         // Use display filters by default.
@@ -545,12 +505,5 @@ function sanitize_dynamic_table_field($field, $value, $table_id, $context = 'dis
             $value = esc_js($value);
         }
     }
-
-// Restore the type for integer fields after esc_attr().
-    // if (in_array($field, $int_fields, true)) {
-    //     $value = (int) $value;
-    // }
-
     return $value;
-
 }
