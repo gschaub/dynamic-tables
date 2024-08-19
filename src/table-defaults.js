@@ -36,8 +36,8 @@ export function initTable(newBlockTableRef, columnCount, rowCount) {
             post_id: '0',
             table_status: 'new',
             table_name: 'Test Table',
-            table_attributes: getDefaultTableAttributes('table'),
-            table_classes: getDefaultTableClasses('table'),
+            attributes: getDefaultTableAttributes('table'),
+            classes: getDefaultTableClasses('table'),
             rows: rowArray,
             columns: columnArray,
             cells: tableCells

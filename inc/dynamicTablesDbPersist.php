@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Database interface for dynamic tables
+ */
+
 class PersistTableData
 {
     /**
@@ -35,20 +39,58 @@ class PersistTableData
      *
      * @var array
      */
+
+    /**
+     * Query results and status of the public method
+     *
+     * @since 1.0.0
+     *
+     * @var array
+     */
     public array $result = array();
-    public array $requestArgs = array();
-    public array $queryResult = array();
-    public string $updateResult = '';
+
+    /**
+     * Query result from a specific database SELECT query
+     *
+     * @since 1.0.0
+     *
+     * @var array
+     */
+    protected array $queryResult = array();
+
+    /**
+     * Query result from a specific database SELECT query
+     *
+     * @since 1.0.0
+     *
+     * @var string
+     */
     public string $deleteResult = '';
-    public array $tableId = array();
-    public string $replacementResult = '';
+
+    /**
+     * Query result from a specific database SELECT query
+     *
+     * @since 1.0.0
+     *
+     * @var string
+     */
+    protected string $replacementResult = '';
 
     public function __construct()
     {
         // Silence is golden
     }
 
-    public function get_table_data($requestArgs, $returnCollection = false)
+    /**
+     *  Performs a SQL SELECT via the Wordpress wpdb class and connection
+     *
+     * @since 1.0.0
+     *
+     * @param array $requestArgs        Array of SQL arguments for inclusion in SQL Statement
+     * @param bool  $returnCollection   Return multiple result rows (True) vs. a single row (false)
+     * @return array SqueryResult.      wpdb return array indexed from 0, or null on failure
+     */
+    protected function get_table_data($requestArgs, $returnCollection = false)
     {
         global $wpdb;
 
@@ -96,7 +138,16 @@ class PersistTableData
         return $this->queryResult;
     }
 
-    public function delete_table($dbTableName, $requestArgs)
+    /**
+     *  Performs a SQL DELETE via the Wordpress wpdb class and connection
+     *
+     * @since 1.0.0
+     *
+     * @param string $dbTableName       Non-prefixed name of the table from which to delete rows
+     * @param array $requestArgs        Array of SQL arguments for inclusion in SQL Statement
+     * @return int:false SdeleteResult  wpdb rows deleted or FALSE on error
+     */
+    protected function delete_table($dbTableName, $requestArgs)
     {
         global $wpdb;
 
@@ -115,7 +166,17 @@ class PersistTableData
         return $this->deleteResult;
     }
 
-    public function replaceTable($tableName, $requestArgs)
+    /**
+     *  Performs a SQL Insert/Update (update if the inserted row matches an existing primary key) via
+     *  the Wordpress wpdb class and connection
+     *
+     * @since 1.0.0
+     *
+     * @param string $tableName         Non-prefixed name of the table from which to update rows
+     * @param array $requestArgs        Array of SQL arguments for inclusion in SQL Statement
+     * @return int|false SreplacementResult.    wpdb number of records inserted/updated or FALSE on error
+     */
+    protected function replaceTable($tableName, $requestArgs)
     {
         global $wpdb;
 
@@ -136,6 +197,19 @@ class PersistTableData
         return $this->replacementResult;
     }
 
+    /**
+     *  Performs a SQL Insert via the Wordpress wpdb class and connection
+     *
+     * @since 1.0.0
+     *
+     * @param string $blockTableRef     block_table_ref value that links the table to a specific post block
+     * @param string $status            Status value of the table being created
+     * @param int $postId               Post id value to post to which the table is attached
+     * @param string $tableName         Descriptive name of the table being created
+     * @param string $attributes        Serialized array of table attributes
+     * @param string $classes           HTML classes associated with the table
+     * @return array Sresult            Success status and new table id
+     */
     public function create_table_data($blockTableRef, $status, $postId, $tableName, $attributes, $classes)
     {
         $success = false;
@@ -172,6 +246,20 @@ class PersistTableData
         return $this->result;
     }
 
+    /**
+     *  Update the dynamic table database header table dt_tables based on criteria received
+     *
+     * @since 1.0.0
+     *
+     * @param int $tableId              ID value of the table being updated
+     * @param string $blockTableRef     block_table_ref value that links the table to a specific post block
+     * @param string $status            Status value of the table being created
+     * @param int $postId               Post id value to post to which the table is attached
+     * @param string $tableName         Descriptive name of the table being updated
+     * @param string $attributes        Serialized array table attributes
+     * @param string $classes           HTML classes associated with the table
+     * @return array Sresult            Success status and updated header values
+     */
     public function update_table($tableId, $blockTableRef, $status, $postId, $tableName, $attributes, $classes)
     {
         $success = false;
@@ -331,6 +419,15 @@ class PersistTableData
         return $this->result;
     }
 
+    /**
+     *  Update the dynamic table database row table dt_table_rows based on criteria received
+     *
+     * @since 1.0.0
+     *
+     * @param int $tableId              ID value of the table being updated
+     * @param array $rows               Revised dynamic table row data for update
+     * @return array Sresult            Success status and updated row values
+     */
     public function update_table_rows($tableId, $rows)
     {
         $success = false;
@@ -405,6 +502,15 @@ class PersistTableData
         return $this->result;
     }
 
+    /**
+     *  Update the dynamic table database column table dt_table_columnss based on criteria received
+     *
+     * @since 1.0.0
+     *
+     * @param int $tableId              ID value of the table being updated
+     * @param array $columns               Revised dynamic table column data for update
+     * @return array Sresult            Success status and updated column values
+     */
     public function update_table_columns($tableId, $columns)
     {
         $success = false;
@@ -421,14 +527,6 @@ class PersistTableData
             'type' => 'where',
             'field' => 'table_id',
             'value' => $tableId));
-
-        if ($queryReturnedResult === false) {
-            $wpdb->query('ROLLBACK'); // rollback everything
-            $this->result = array(
-                'success' => $success,
-                'deleted_rows' => '0');
-            return $this->result;
-        }
 
         foreach ($columns as $index => $column) {
             foreach ($column as $columnAttribute => $arg) {
@@ -491,6 +589,15 @@ class PersistTableData
         return $this->result;
     }
 
+    /**
+     *  Update the dynamic table database cell table dt_table_cells based on criteria received
+     *
+     * @since 1.0.0
+     *
+     * @param int $tableId              ID value of the table being updated
+     * @param array $cells               Revised dynamic table cell data for update
+     * @return array Sresult            Success status and updated cell values
+     */
     public function update_table_cells($tableId, $cells)
     {
         $success = false;
@@ -562,7 +669,6 @@ class PersistTableData
                     'success' => $success,
                     'updated_rows' => '0');
                 return $this->result;
-
             }
             $insertedRows++;
         }
@@ -577,6 +683,15 @@ class PersistTableData
         return $this->result;
     }
 
+    /**
+     *  Retrieve the dynamic table data for a specific one dynamic table from one database table
+     *
+     * @since 1.0.0
+     *
+     * @param int $tableId              ID value of the table being updated
+     * @param string $dbTableName       database table name
+     * @return array Sresult            Success status and data retrieved
+     */
     public function get_table($tableId, $dbTableName)
     {
         global $wpdb;
@@ -704,6 +819,15 @@ class PersistTableData
 
     }
 
+    /**
+     *  Delete the dynamic table data for a specific one dynamic table from all database table
+     *
+     * @since 1.0.0
+     *
+     * @param int $tableId              ID value of the table being updated
+     * @param string $dbTableName       database table name
+     * @return array Sresult            Success status and data retrieved
+     */
     public function delete_table_data($tableId)
     {
         $success = 'Processing';
@@ -713,7 +837,6 @@ class PersistTableData
 
         /**
          * Delete table from dt_tables
-         *
          */
 
         $argsBuild = [  ];
@@ -739,7 +862,6 @@ class PersistTableData
 
         /**
          * Delete table from dt_table_columns
-         *
          */
 
         $argsBuild = [  ];
@@ -765,7 +887,6 @@ class PersistTableData
 
         /**
          * Delete table from dt_table_columns
-         *
          */
 
         $argsBuild = [  ];
@@ -791,7 +912,6 @@ class PersistTableData
 
         /**
          * Delete table from dt_table_cells
-         *
          */
 
         $argsBuild = [  ];
@@ -828,14 +948,12 @@ class PersistTableData
     /**
      * Transform SQL arguments to support the $wpdb->prepare format.
      *
-     * Examples:
-     *
      * @since 1.0.0
      *
      * @param array     $requestArgs  Inbound arguments from the calling system to match request format.
      * @return array    Transformed arguments.
      */
-    public function process_args($requestArgs)
+    protected function process_args($requestArgs)
     {
         $sqlArgs = [  ];
         $priorArgType = 'none';
@@ -857,11 +975,20 @@ class PersistTableData
             $priorArgType = $argType;
 
         }
-
         return $sqlArgs;
     }
 
-    public function transformArg($argType, $argField, $argValue)
+    /**
+     * Transform SQL one argument to support the $wpdb->prepare format.
+     *
+     * @since 1.0.0
+     *
+     * @param array     $argType   SQL Statement argument
+     * @param array     $argField  Table field name associated with the argument.
+     * @param array     $argValue  Value associated with the table field for WHERE and SET arguments
+     * @return array    Transformed argument.
+     */
+    protected function transformArg($argType, $argField, $argValue)
     {
         global $wpdb;
 
@@ -880,7 +1007,15 @@ class PersistTableData
         }
     }
 
-    public function process_query_string($requestArgs)
+    /**
+     * Build SQL query string.
+     *
+     * @since 1.0.0
+     *
+     * @param array     $requestArgs      Inbound arguments from the calling system to match request format.
+     * @return string    Valid SQL query string.
+     */
+    protected function process_query_string($requestArgs)
     {
         global $wpdb;
 
@@ -1015,7 +1150,17 @@ class PersistTableData
         }
     }
 
-    public function specificQuery($transType, $argField)
+    /**
+     * Lookup Parameter data type for a specific query field.
+     *
+     * @since 1.0.0
+     *
+     * @param array     $transType      SQL transaction type and position of the statement in query
+     *                                  or specific field names of INSERT transactions
+     * @param array     $argField       Field name of the parameter for lookup
+     * @return string    Valid SQL query string.
+     */
+    protected function specificQuery($transType, $argField)
     {
         if ($transType = 'value') {
             switch ($argField) {
@@ -1054,7 +1199,17 @@ class PersistTableData
         }
     }
 
-    public function count_request_args_by_type($args, $argType)
+    /**
+     * Count the number of arguments for a specific portion of the query statements to support
+     * ability to properly terminate the statement.
+     *
+     * @since 1.0.0
+     *
+     * @param array     $args         Array of arguments
+     * @param array     $argType      Argument type being counted
+     * @return int      NUmber of arguments associated with the statement secment.
+     */
+    protected function count_request_args_by_type($args, $argType)
     {
         $counter = 0;
         array_walk_recursive($args, function ($value, $key) use (&$counter, $argType) {

@@ -93,6 +93,7 @@ const table = (
 
         case UPDATE_TABLE_PROP:
             console.log('In Reducer UPDATE_TABLE_PROP')
+
             const updatedTable = {
                 ...state,
                 [action.attribute]: action.value

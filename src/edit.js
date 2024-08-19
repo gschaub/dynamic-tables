@@ -331,21 +331,21 @@ export default function Edit(props) {
 	/**
 	 * Extract and unpack table attributes
 	 */
-	const showGridLines = getTablePropAttribute(table.table_attributes, 'showGridLines')
-	const enableHeaderRow = getTablePropAttribute(table.table_attributes, 'enableHeaderRow')
-	const headerAlignment = getTablePropAttribute(table.table_attributes, 'headerAlignment')
-	const gridHeaderBackgroundColor = getTablePropAttribute(table.table_attributes, 'tableHeaderBackgroundColor')
-	const headerRowSticky = getTablePropAttribute(table.table_attributes, 'headerRowSticky')
-	const headerBorder = getTablePropAttribute(table.table_attributes, 'headerBorder')
-	const bodyAlignment = getTablePropAttribute(table.table_attributes, 'bodyAlignment')
-	const bodyBorder = getTablePropAttribute(table.table_attributes, 'bodyBorder')
-	const bandedRows = getTablePropAttribute(table.table_attributes, 'bandedRows')
-	const bandedRowTextColor = getTablePropAttribute(table.table_attributes, 'bandedRowTextColor')
-	const bandedRowBackgroundColor = getTablePropAttribute(table.table_attributes, 'bandedRowBackgroundColor')
-	const gridLineWidth = getTablePropAttribute(table.table_attributes, 'gridLineWidth')
+	const showGridLines = getTablePropAttribute(table.attributes, 'showGridLines')
+	const enableHeaderRow = getTablePropAttribute(table.attributes, 'enableHeaderRow')
+	const headerAlignment = getTablePropAttribute(table.attributes, 'headerAlignment')
+	const gridHeaderBackgroundColor = getTablePropAttribute(table.attributes, 'tableHeaderBackgroundColor')
+	const headerRowSticky = getTablePropAttribute(table.attributes, 'headerRowSticky')
+	const headerBorder = getTablePropAttribute(table.attributes, 'headerBorder')
+	const bodyAlignment = getTablePropAttribute(table.attributes, 'bodyAlignment')
+	const bodyBorder = getTablePropAttribute(table.attributes, 'bodyBorder')
+	const bandedRows = getTablePropAttribute(table.attributes, 'bandedRows')
+	const bandedRowTextColor = getTablePropAttribute(table.attributes, 'bandedRowTextColor')
+	const bandedRowBackgroundColor = getTablePropAttribute(table.attributes, 'bandedRowBackgroundColor')
+	const gridLineWidth = getTablePropAttribute(table.attributes, 'gridLineWidth')
 	const gridAlignment = block_alignment;
-	const horizontalAlignment = getTablePropAttribute(table.table_attributes, 'horizontalAlignment')
-	const verticalAlignment = getTablePropAttribute(table.table_attributes, 'verticalAlignment')
+	const horizontalAlignment = getTablePropAttribute(table.attributes, 'horizontalAlignment')
+	const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment')
 
 	console.log(JSON.stringify(headerBorder, null, 4));
 
@@ -552,7 +552,7 @@ export default function Edit(props) {
 					} else if (attribute === 'table') {
 						console.log('...Updating Table Attributes')
 						console.log(value)
-						updateTableProp(tableId, 'table_attributes', value)
+						updateTableProp(tableId, 'attributes', value)
 					}
 					break;
 				}
@@ -805,7 +805,7 @@ export default function Edit(props) {
 	 */
 	function onShowBandedRows(table, isChecked) {
 		const updatedTableAttributes = {
-			...table.table_attributes,
+			...table.attributes,
 			bandedRows: isChecked
 		}
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
@@ -821,7 +821,7 @@ export default function Edit(props) {
 		let updatedTableAttributes = ''
 		if (type == 'background') {
 			updatedTableAttributes = {
-				...table.table_attributes,
+				...table.attributes,
 				bandedRowBackgroundColor: color
 			}
 			console.log(updatedTableAttributes)
@@ -830,7 +830,7 @@ export default function Edit(props) {
 
 		if (type == 'text') {
 			updatedTableAttributes = {
-				...table.table_attributes,
+				...table.attributes,
 				bandedRowTextColor: color
 			}
 			console.log(updatedTableAttributes)
@@ -846,10 +846,11 @@ export default function Edit(props) {
 	*/
 	function onEnableHeaderRow(table, isChecked) {
 		const updatedTableAttributes = {
-			...table.table_attributes,
+			...table.attributes,
 			enableHeaderRow: isChecked,
 			headerRowSticky: false
 		}
+		console.log(updatedTableAttributes);
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 
 		const updatedRowAttributes = {
@@ -857,7 +858,7 @@ export default function Edit(props) {
 			isHeader: isChecked ? true : false
 		}
 
-		console.log(updatedRowAttributes)
+		console.log(updatedRowAttributes);
 		setTableAttributes(table.table_id, 'row', '1', 'ATTRIBUTES', updatedRowAttributes);
 	}
 
@@ -871,7 +872,7 @@ export default function Edit(props) {
 		console.log('ON HEADER ALIGNMENT')
 		console.log(alignment)
 		const updatedTableAttributes = {
-			...table.table_attributes,
+			...table.attributes,
 			headerAlignment: alignment
 		}
 		console.log(updatedTableAttributes)
@@ -889,7 +890,7 @@ export default function Edit(props) {
 		console.log(border)
 
 		const updatedTableAttributes = {
-			...table.table_attributes,
+			...table.attributes,
 			headerBorder: border
 		}
 		console.log(updatedTableAttributes)
@@ -904,7 +905,7 @@ export default function Edit(props) {
 	*/
 	function onHeaderRowSticky(table, isChecked) {
 		const updatedTableAttributes = {
-			...table.table_attributes,
+			...table.attributes,
 			headerRowSticky: isChecked
 		}
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
@@ -920,7 +921,7 @@ export default function Edit(props) {
 		console.log('ON BODY  ALIGNMENT')
 		console.log(alignment)
 		const updatedTableAttributes = {
-			...table.table_attributes,
+			...table.attributes,
 			bodyAlignment: alignment
 		}
 		console.log(updatedTableAttributes)
@@ -938,7 +939,7 @@ export default function Edit(props) {
 		console.log(border)
 
 		const updatedTableAttributes = {
-			...table.table_attributes,
+			...table.attributes,
 			bodyBorder: border
 		}
 		console.log(updatedTableAttributes)
@@ -955,7 +956,7 @@ export default function Edit(props) {
 	 */
 	function onShowGridLines(table, isChecked) {
 		const updatedTableAttributes = {
-			...table.table_attributes,
+			...table.attributes,
 			showGridLines: isChecked
 		}
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
@@ -969,7 +970,7 @@ export default function Edit(props) {
 	 */
 	function onGridLineWidth(table, gridLineWidth) {
 		const updatedTableAttributes = {
-			...table.table_attributes,
+			...table.attributes,
 			gridLineWidth: Number(gridLineWidth)
 		}
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
@@ -1059,7 +1060,7 @@ export default function Edit(props) {
 	console.log(blockProps.style.backgroundColor);
 
 	if (!tableIsResolving) {
-		// console.log(table.table_attributes?.bandedRows)
+		// console.log(table.attributes?.bandedRows)
 	}
 
 	return (
@@ -1402,7 +1403,7 @@ export default function Edit(props) {
 									{table.rows.filter(row => row.attributes.isHeader !== true && row.row_id !== '0')
 										.map(({ row_id, attributes }) => {
 											const renderedRow = row_id;
-											console.log('Rendering Body Row ' + renderedRow)
+											// console.log('Rendering Body Row ' + renderedRow)
 
 											/**
 											 * Set calculated class names
@@ -1430,7 +1431,7 @@ export default function Edit(props) {
 													{table.cells
 														.filter(cell => cell.row_id === renderedRow)
 														.map(({ table_id, row_id, column_id, cell_id, content, attributes, classes }) => {
-															console.log('Rendering Body Row Cell' + cell_id)
+															// console.log('Rendering Body Row Cell' + cell_id)
 															/**
 															 * Set general processing variables
 															 */

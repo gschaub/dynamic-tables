@@ -56,7 +56,7 @@ export function receiveNewTable(table) {
     }
 }
 
-export function receiveTable(table_id, block_table_ref, table_status, post_id, table_name, table_attributes, table_classes, rows, columns, cells) {
+export function receiveTable(table_id, block_table_ref, table_status, post_id, table_name, attributes, classes, rows, columns, cells) {
     console.log('            ...Action - In receiveTable')
     //console.log(table);
     console.log('                - id: ' + table_id)
@@ -74,8 +74,8 @@ export function receiveTable(table_id, block_table_ref, table_status, post_id, t
             table_status,
             post_id,
             table_name,
-            table_attributes,
-            table_classes,
+            attributes,
+            classes,
             rows,
             columns,
             cells
@@ -87,7 +87,7 @@ export const createTableEntity =
     () =>
         async ({ select, dispatch, registry }) => {
 
-            const { table_id, block_table_ref, post_id, table_name, table_attributes, table_classes, rows, columns, cells } = select.getTable('0', 'Saved');
+            const { table_id, block_table_ref, post_id, table_name, attributes, classes, rows, columns, cells } = select.getTable('0', 'Saved');
             const testTable = select.getTable('0', false);
             console.log(testTable);
             const newTable = {
@@ -97,8 +97,8 @@ export const createTableEntity =
                     status: 'new',
                     post_id: post_id,
                     table_name: table_name,
-                    table_attributes: table_attributes,
-                    table_classes: table_classes
+                    attributes: attributes,
+                    classes: classes
                 },
                 rows: [...rows],
                 columns: [...columns],
@@ -122,13 +122,16 @@ export const createTableEntity =
                 return tableEntity.id
 
             } catch (error) {
-                console.log('            ...Create Table Entity - async error - ' + error);
+                console.log('Error in createTableEntity -  Table ID - ' + table_id + ', block table ref = ' + block_table_ref + ', Post Id = ' + post_id);
+                alert('            ...Create Table Entity - async error - ' + error);
             }
         };
 
 export const saveTableEntity =
     (tableId) =>
         ({ registry }) => {
+
+            console.log('SAVING TABLE ENTITY')
 
             try {
                 registry
@@ -139,7 +142,8 @@ export const saveTableEntity =
                         tableId
                     );
             } catch (error) {
-                console.log('            ...Save Table Entity - async error - ' + error);
+                console.log('Error in saveTableEntity - Table ID - ' + tableId);
+                alert('            ...Save Table Entity - async error - ' + error);
             }
         };
 
@@ -155,8 +159,8 @@ export const updateTableEntity =
                 table_status,
                 post_id,
                 table_name,
-                table_attributes,
-                table_classes,
+                attributes,
+                classes,
                 rows,
                 columns,
                 cells
@@ -195,8 +199,8 @@ export const updateTableEntity =
                     status: tableStatus(overrideTableStatus, table_status),
                     post_id: post_id,
                     table_name: table_name,
-                    table_attributes: table_attributes,
-                    table_classes: table_classes
+                    attributes: attributes,
+                    classes: classes
                 },
                 rows: [...filteredRows],
                 columns: [...filteredColumns],
@@ -221,7 +225,8 @@ export const updateTableEntity =
                         updatedTable
                     );
             } catch (error) {
-                console.log('            ...Update Table Entity - async error - ' + error);
+                console.log('Error in updateTableEntity - Table ID - ' + tableId);
+                alert('            ...Update Table Entity - async error - ' + error);
             }
         };
 
@@ -244,7 +249,8 @@ export const deleteTableEntity =
                     tableId
                 })
             } catch (error) {
-                console.log('            ...Resolver - async error - ' + error);
+                console.log('Error in deleteTableEntity - Table ID - ' + tableId);
+                alert('            ...Resolver - async error - ' + error);
             }
             console.log('            Resolver - async completed');
         };
@@ -340,8 +346,6 @@ export const removeTableProp = (tableId, attribute) => {
         attribute
     }
 }
-
-// updateTableEntity
 
 export const updateRow = (tableId, rowId, attribute, value) => {
 

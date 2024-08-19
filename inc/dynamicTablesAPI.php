@@ -30,12 +30,22 @@ add_filter('dt_content_filtered_save_pre', 'wp_filter_global_styles_post', 9);
 /**
  * Create or update table
  *
+ * @since 1.0.0
+ *
  * @param $tablearr - Table data for update.
  * @param $wp_error - Do we return WP_Error objects for REST API processing.
  * @return int|WP_Error Table id for new or updated table, WP_Error object on failure.
  */
 function create_table_data($tablearr, $wp_error = false)
 {
+    error_log(print_r($tablearr, true));
+
+    $tablearrdefault = $tablearr;
+
+    if (is_object($tablearr)) {
+        $tablearrdefault = get_object_vars($tablearr);
+    }
+
     $defaults = array(
         'id' => '0',
         'header' => array(
@@ -45,39 +55,52 @@ function create_table_data($tablearr, $wp_error = false)
             'post_id' => '',
             'table_name' => '',
             'attributes' => [  ],
-            'classes' => ''
-        ),
-        'rows' => array(
-            'row' => array(
-                'table_id' => '0',
-                'row_id' => '0',
-                'attributes' => [  ],
-                'classes' => ''
-            ),
-        ),
-        'columns' => array(
-            'column' => array(
-                'table_id' => '0',
-                'column_id' => '0',
-                'column_name' => '',
-                'attributes' => [  ],
-                'classes' => ''
-            ),
-        ),
-        'cells' => array(
-            'cell' => array(
-                'table_id' => '0',
-                'column_id' => '0',
-                'attributes' => [  ],
-                'classes' => '',
-                'content' => ''
-            ),
+            'classes' => '',
         ),
     );
+
+    $defaultRows = [  ];
+    $defaultColumns = [  ];
+    $defaultCells = [  ];
+
+    foreach ($tablearrdefault[ 'rows' ] as $index => $row) {
+        $defaultRow = array(
+            'table_id' => '0',
+            'row_id' => $row[ 'row_id' ],
+            'attributes' => [  ],
+            'classes' => '');
+        array_push($defaultRows, $defaultRow);
+    }
+
+    foreach ($tablearrdefault[ 'columns' ] as $index => $column) {
+        $defaultColumn = array(
+            'table_id' => '0',
+            'column_id' => $column[ 'column_id' ],
+            'column_name' => '',
+            'attributes' => [  ],
+            'classes' => '');
+        array_push($defaultColumns, $defaultColumn);
+    }
+
+    foreach ($tablearrdefault[ 'cells' ] as $index => $cell) {
+        $defaultCell = array(
+            'table_id' => '0',
+            'column_id' => $cell[ 'column_id' ],
+            'row_id' => $cell[ 'row_id' ],
+            'attributes' => [  ],
+            'classes' => '',
+            'content' => '');
+        array_push($defaultCells, $defaultCell);
+    }
+
+    $defaults[ 'rows' ] = $defaultRows;
+    $defaults[ 'columns' ] = $defaultColumns;
+    $defaults[ 'cells' ] = $defaultCells;
 
     $tablearr = wp_parse_args($tablearr, $defaults);
     unset($tablearr[ 'filter' ]);
     $tablearr = sanitize_dynamic_table($tablearr, 'db');
+    // error_log(print_r($tablearr, true));
 
     // Are we updating or creating?
     $table_id = 0;
@@ -103,6 +126,7 @@ function create_table_data($tablearr, $wp_error = false)
     }
 
     $results = null;
+    // error_log(print_r($tablearr, true));
 
     $blockTableRef = $tablearr[ 'header' ][ 'block_table_ref' ];
     $status = $tablearr[ 'header' ][ 'status' ];
@@ -173,13 +197,17 @@ function create_table_data($tablearr, $wp_error = false)
 /**
  * PUT table callback to update the database for table changes
  *
- * @param $tablearr - Table data for update.
- * @param $wp_error - Do we return WP_Error objects for REST API processing.
+ * @since 1.0.0
+ *
+ * @param array $tablearr - Table data for update.
+ * @param bool  $wp_error - Do we return WP_Error objects for REST API processing.
  * @return int|WP_Error Table id for new or updated table, WP_Error object on failure.
  *
  */
 function update_table_data($tablearr, $wp_error = false)
 {
+    // error_log(print_r($tablearr, true));
+
     if (is_object($tablearr)) {
         // Non-escaped post was passed.
         $tablearr = get_object_vars($tablearr);
@@ -197,12 +225,15 @@ function update_table_data($tablearr, $wp_error = false)
 
     // Merge old and new fields with new fields overwriting old ones.
     $tablearr = array_merge($table, $tablearr);
+    // error_log(print_r($tablearr, true));
     return create_table_data($tablearr, $wp_error);
 
 }
 
 /**
  *  Updates the database for row changes to the table object
+ *
+ * @since 1.0.0
  *
  * @param int $tableId - Table id.
  * @param array $requestRows - Rows to load in database.
@@ -234,14 +265,14 @@ function update_table_rows($tableId, $requestRows)
 /**
  *  Updates the database for column changes to the table object
  *
+ * @since 1.0.0
+ *
  * @param int $tableId - Table id.
  * @param array $requestColumns - Columns to load in database.
  * @return array|WP_Error Updated columns values for new or updated table, WP_Error object on failure.
  */
 function update_table_columns($tableId, $requestColumns)
 {
-    error_log('    Web Service Input - ' . json_encode($requestColumns));
-
     $results = null;
     $columns = [  ];
 
@@ -267,6 +298,8 @@ function update_table_columns($tableId, $requestColumns)
 /**
  *  Updates the database for cell changes to the table object
  *
+ * @since 1.0.0
+ *
  * @param int $tableId - Table id.
  * @param array $requestCells - Cells to load in database.
  * @return array|WP_Error Updated cells values for new or updated table, WP_Error object on failure.
@@ -282,9 +315,6 @@ function update_table_cells($tableId, $requestCells)
         $serializedAttributes = maybe_serialize($cell[ 'attributes' ]);
         $classes = $cell[ 'classes' ];
         $content = wp_kses_post($cell[ 'content' ]);
-
-        error_log('Serialized cell attributes = ' . json_encode($serializedAttributes));
-
         $cells[  ] = array($tableId, $columnId, $rowId, $serializedAttributes, $classes, $content);
     }
 
@@ -300,6 +330,8 @@ function update_table_cells($tableId, $requestCells)
 
 /**
  *  Delete table from the database
+ *
+ * @since 1.0.0
  *
  * @param int $tableId - Table id.
  * @return array|WP_Error Deleted table.
@@ -318,6 +350,8 @@ function delete_table($tableId = 0)
 
 /**
  *  Extract and returns the table object from the database
+ *
+ * @since 1.0.0
  *
  * @param int $tableId - Table id.
  * @return array|WP_Error Table data retrieved.
@@ -349,6 +383,8 @@ function get_table($tableId)
     }
     $results += [ "header" => $resultsHeader[ 'result' ] ];
 
+    // error_log(print_r($results, true));
+
     $table = 'dt_table_rows';
     $getTable = new PersistTableData();
     $resultsRows = $getTable->get_table($tableId, $table);
@@ -379,6 +415,8 @@ function get_table($tableId)
 
 /**
  * Sanitizes every table field.
+ *
+ * @since 1.0.0
  *
  * @param object|WP_Post|array $table    The dynamic table  object or array
  * @param string               $context Optional. How to sanitize table fields.
@@ -422,7 +460,6 @@ function sanitize_dynamic_table($table, $context = 'display')
                     foreach (array_keys($table[ 'rows' ]) as $row_container_field) {
                         foreach (array_keys($table[ 'rows' ][ $row_container_field ]) as $row_field) {
                             $table[ 'rows' ][ $row_container_field ][ $row_field ] = sanitize_dynamic_table_field($row_field, $table[ 'rows' ][ $row_container_field ][ $row_field ], $table[ 'id' ], $context);
-                            error_log('Value for Row ' . $row_container_field . ', ' . $row_field . ' = ' . json_encode($table[ 'rows' ][ $row_container_field ][ $row_field ]));
                         }
                     }
                     break;
@@ -430,7 +467,6 @@ function sanitize_dynamic_table($table, $context = 'display')
                     foreach (array_keys($table[ 'columns' ]) as $column_container_field) {
                         foreach (array_keys($table[ 'columns' ][ $column_container_field ]) as $column_field) {
                             $table[ 'columns' ][ $column_container_field ][ $column_field ] = sanitize_dynamic_table_field($column_field, $table[ 'columns' ][ $column_container_field ][ $column_field ], $table[ 'id' ], $context);
-                            error_log('Value for Column ' . $column_container_field . ', ' . $column_field . ' = ' . json_encode($table[ 'columns' ][ $column_container_field ][ $column_field ]));
                         }
                     }
                     break;
@@ -438,7 +474,6 @@ function sanitize_dynamic_table($table, $context = 'display')
                     foreach (array_keys($table[ 'cells' ]) as $cell_container_field) {
                         foreach (array_keys($table[ 'cells' ][ $cell_container_field ]) as $cell_field) {
                             $table[ 'cells' ][ $cell_container_field ][ $cell_field ] = sanitize_dynamic_table_field($cell_field, $table[ 'cells' ][ $cell_container_field ][ $cell_field ], $table[ 'id' ], $context);
-                            error_log('Value for Cell ' . $cell_container_field . ', ' . $cell_field . ' = ' . json_encode($table[ 'cells' ][ $cell_container_field ][ $cell_field ]));
                         }
                     }
                     break;
@@ -451,6 +486,8 @@ function sanitize_dynamic_table($table, $context = 'display')
 
 /**
  * Sanitizes a table based on context.
+ *
+ * @since 1.0.0
  *
  * Possible context values are:  'edit', 'db', 'display', 'attribute' and
  * 'js'. The 'display' context is used by default. 'attribute' and 'js' contexts

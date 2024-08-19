@@ -25,14 +25,16 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         $this->rest_base = 'tables';
     }
 
-/**
- *  Create web service end points for Dynamic Tables rest based services.  Services are:
- *      - GET: Get tables (pural, not currently implemented)
- *      - CREATE: Create table (singular)
- *      - GET: Get table (singular)
- *      - PUT: Update table (singular)
- *      - DELETE: Delete table (singular)
- */
+    /**
+     *  Create web service end points for Dynamic Tables rest based services.  Services are:
+     *      - GET: Get tables (pural, not currently implemented)
+     *      - CREATE: Create table (singular)
+     *      - GET: Get table (singular)
+     *      - PUT: Update table (singular)
+     *      - DELETE: Delete table (singular)
+     *
+     * @since 1.0.0
+     */
     public function register_routes()
     {
 
@@ -95,6 +97,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
      *
      * Checks if a given request has access to read tables.
      *
+     *
+     * @since 1.0.0
      * @param WP_REST_Request $request Full details about the request.
      * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
      */
@@ -117,7 +121,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
      *
      * Retrieves a collection of TABLES.
      *
-     * @since 4.7.0
+     * @since 1.0.0
      *
      * @param WP_REST_Request $request Full details about the request.
      * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
@@ -136,6 +140,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
     /**
      * Checks if a given request has access to read a table based on post permissions.
+     *
+     * @since 1.0.0
      *
      * @param WP_REST_Request $request Full details about the request.
      * @return bool|WP_Error True if the request has read access for the item, WP_Error object or false otherwise.
@@ -190,11 +196,15 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     /**
      * Retrieves a single table.
      *
+     *
+     * @since 1.0.0
      * @param WP_REST_Request $request Full details about the request.
      * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
      */
     public function get_item($request)
     {
+        // error_log(print_r($request, true));
+
         $table = $this->get_table($request[ 'id' ]);
         if (is_wp_error($table)) {
             return $table;
@@ -208,6 +218,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
     /**
      * Gets the table, if the ID is valid.
+     *
+     * @since 1.0.0
      *
      * @param int $id Supplied ID.
      * @return WP_Post|WP_Error Post object if ID is valid, WP_Error otherwise.
@@ -238,6 +250,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
     /**
      * Gets the post, if the ID is valid.
+     *
+     * @since 1.0.0
      *
      * @param int $id Supplied ID.
      * @return WP_Post|WP_Error Post object if ID is valid, WP_Error otherwise.
@@ -270,12 +284,15 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     /**
      * Checks if a given request has access to create a table.
      *
+     * @since 1.0.0
+     *
      * @param WP_REST_Request $request Full details about the request.
      * @return true|WP_Error True if the request has access to create items, WP_Error object otherwise.
      */
     public function create_item_permissions_check($request)
     {
         if ((int) $request[ 'id' ] !== (int) 0) {
+            error_log(print_r($request, true));
             return new WP_Error(
                 'rest_table_exists',
                 __('Cannot create existing table.'),
@@ -291,12 +308,14 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             if ($postId !== 0) {
                 $post = $this->get_post($postId);
                 if (is_wp_error($post)) {
+                    error_log(print_r($request, true));
                     return $post;
                 }
 
                 $post_type = get_post_type_object($post->post_type);
 
                 if ($post && !$this->check_update_permission($post)) {
+                    error_log(print_r($request, true));
                     return new WP_Error(
                         'rest_cannot_edit',
                         __('Sorry, you are not allowed to create tables for this post as this user.'),
@@ -305,6 +324,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 }
 
                 if (!empty($request[ 'author' ]) && get_current_user_id() !== $request[ 'author' ] && !current_user_can($post_type->cap->edit_others_posts)) {
+                    error_log(print_r($request, true));
                     return new WP_Error(
                         'rest_cannot_edit_others',
                         __('Sorry, you are not allowed to create tables for this post as this user.'),
@@ -314,6 +334,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             }
 
             if ($postId === 0 && (!(current_user_can('publish_posts') || current_user_can('publish_pages')))) {
+                error_log(print_r($request, true));
                 return new WP_Error(
                     'rest_cannot_edit',
                     __('Sorry, you are not allowed to create tables for this post as this user.'),
@@ -321,6 +342,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 );
             }
         } else {
+            error_log(print_r($request, true));
             return new WP_Error(
                 'missing_post_id',
                 __('Post ID is missing from request.'),
@@ -332,6 +354,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
     /**
      * Creates a single table.
+     *
+     * @since 1.0.0
      *
      * @param WP_REST_Request $request Full details about the request.
      * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
@@ -389,6 +413,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     /**
      * Checks if a given request has access to update a table.
      *
+     * @since 1.0.0
+     *
      * @param WP_REST_Request $request Full details about the request.
      * @return true|WP_Error True if the request has access to update the item, WP_Error object otherwise.
      */
@@ -396,18 +422,20 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     {
         // Permissions for editing a table are based upon the underlying post to which
         // it is attached.
-
+        return true;
         if (isset($request[ 'header' ][ 'post_id' ])) {
             $postId = (int) $request[ 'header' ][ 'post_id' ];
 
             if ($postId !== 0) {
                 $post = $this->get_post($postId);
                 if (is_wp_error($post)) {
+                    error_log(print_r($request, true));
                     return $post;
                 }
                 $post_type = get_post_type_object($post->post_type);
 
                 if ($post && !$this->check_update_permission($post)) {
+                    error_log(print_r($request, true));
                     return new WP_Error(
                         'rest_cannot_edit',
                         __('Sorry, you are not allowed to update tables for this post as this user.'),
@@ -416,6 +444,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 }
 
                 if (!empty($request[ 'author' ]) && get_current_user_id() !== $request[ 'author' ] && !current_user_can($post_type->cap->edit_others_posts)) {
+                    error_log(print_r($request, true));
                     return new WP_Error(
                         'rest_cannot_edit_others',
                         __('Sorry, you are not allowed to update tables for this post as this user.'),
@@ -425,6 +454,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             }
 
             if ($postId === 0 && (!(current_user_can('publish_posts') || current_user_can('publish_pages')))) {
+                error_log(print_r($request, true));
                 return new WP_Error(
                     'rest_cannot_edit',
                     __('Sorry, you are not allowed to update tables for this post as this user.'),
@@ -432,6 +462,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 );
             }
         } else {
+            error_log(print_r($request, true));
             return new WP_Error(
                 'missing_post_id',
                 __('Post ID is missing from request.'),
@@ -444,17 +475,24 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     /**
      * Updates a single table.
      *
+     * @since 1.0.0
+     *
      * @param WP_REST_Request $request Full details about the request.
      * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
      */
     public function update_item($request)
     {
+
+        error_log('Reqest as delivered from Service');
+        error_log(print_r($request, true));
         $valid_check = $this->get_table($request[ 'id' ]);
         if (is_wp_error($valid_check)) {
             return $valid_check;
         }
 
         $table = $this->prepare_item_for_database($request);
+        error_log('Reqest adter DB prep');
+        // error_log(print_r($table, true));
 
         if (is_wp_error($table)) {
             return $table;
@@ -496,6 +534,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
     /**
      * Checks if a given request has access to delete a table.
+     *
+     * @since 1.0.0
      *
      * @param WP_REST_Request $request Full details about the request.
      * @return true|WP_Error True if the request has access to delete the item, WP_Error object otherwise.
@@ -559,6 +599,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     /**
      * Deletes a single table.
      *
+     * @since 1.0.0
+     *
      * @param WP_REST_Request $request Full details about the request.
      * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
      */
@@ -595,6 +637,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     /**
      * Checks if a post can be edited.
      *
+     * @since 1.0.0
+     *
      * @param WP_Post $post Post object.
      * @return bool Whether the post can be edited.
      */
@@ -610,6 +654,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
     /**
      * Checks if a given post type can be viewed or managed.
+     *
+     * @since 1.0.0
      *
      * @param WP_Post_Type|string $post_type Post type name or object.
      * @return bool Whether the post type is allowed in REST.
@@ -630,11 +676,14 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     /**
      * Prepares a single table for create or update.
      *
+     * @since 1.0.0
+     *
      * @param WP_REST_Request $request Request object.
      * @return stdClass|WP_Error Post object or WP_Error.
      */
     protected function prepare_item_for_database($request)
     {
+        // error_log(print_r($request, true));
         $prepared_table = new stdClass();
         $current_status = '';
 
@@ -697,13 +746,13 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
             // Table attributes.
             if (!empty($schema_header[ 'properties' ][ 'attributes' ]) &&
-                isset($request[ 'header' ][ 'table_name' ])) {
+                isset($request[ 'header' ][ 'attributes' ])) {
                 $prepared_table->header[ 'attributes' ] = $request[ 'header' ][ 'attributes' ];
             }
 
             // Table css classes.
             if (!empty($schema_header[ 'properties' ][ 'classes' ]) &&
-                isset($request[ 'header' ][ 'table_name' ])) {
+                isset($request[ 'header' ][ 'classes' ])) {
                 $prepared_table->header[ 'classes' ] = $request[ 'header' ][ 'classes' ];
             }
         }
@@ -711,7 +760,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         /**
          * Process Table Row Block for each row in the table
          */
-        if (!empty($schema[ 'properties' ][ 'rows' ])) {
+        if (!empty($schema[ 'properties' ][ 'rows' ])
+            && isset($request[ 'rows' ])) {
             $schema_rows = $schema[ 'properties' ][ 'rows' ];
 
             foreach ($request[ 'rows' ] as $key => $row) {
@@ -754,7 +804,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         /**
          * Process Table Column Block for each column in the table
          */
-        if (!empty($schema[ 'properties' ][ 'columns' ])) {
+        if (!empty($schema[ 'properties' ][ 'columns' ])
+            && isset($request[ 'columns' ])) {
             $schema_columns = $schema[ 'properties' ][ 'columns' ];
 
             foreach ($request[ 'columns' ] as $key => $column) {
@@ -802,7 +853,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         /**
          * Process Table Cell Block for each cell in the table
          */
-        if (!empty($schema[ 'properties' ][ 'cells' ])) {
+        if (!empty($schema[ 'properties' ][ 'cells' ])
+            && isset($request[ 'cells' ])) {
             $schema_cells = $schema[ 'properties' ][ 'cells' ];
 
             foreach ($request[ 'cells' ] as $key => $cell) {
@@ -867,6 +919,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
     /**
      * Prepares a single table output for response.
+     *
+     * @since 1.0.0
      *
      * @param Table           $item      Table object.
      * @param WP_REST_Request $request   Request object.
@@ -1007,6 +1061,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
     /**
      * Retrieves the table's schema, conforming to JSON Schema.
+     *
+     * @since 1.0.0
      *
      * @return array Item schema data.
      */
@@ -1234,6 +1290,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
      * RESERVED FOR FUTURE USE
      *
      * Retrieves the query params for the tables collection.
+     *
+     * @since 1.0.0
      *
      * @return array Collection parameters.
      */

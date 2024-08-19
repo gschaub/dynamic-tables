@@ -1412,7 +1412,7 @@ function receiveNewTable(table) {
     ...table
   };
 }
-function receiveTable(table_id, block_table_ref, table_status, post_id, table_name, table_attributes, table_classes, rows, columns, cells) {
+function receiveTable(table_id, block_table_ref, table_status, post_id, table_name, attributes, classes, rows, columns, cells) {
   console.log('            ...Action - In receiveTable');
   //console.log(table);
   console.log('                - id: ' + table_id);
@@ -1429,8 +1429,8 @@ function receiveTable(table_id, block_table_ref, table_status, post_id, table_na
       table_status,
       post_id,
       table_name,
-      table_attributes,
-      table_classes,
+      attributes,
+      classes,
       rows,
       columns,
       cells
@@ -1447,8 +1447,8 @@ const createTableEntity = () => async ({
     block_table_ref,
     post_id,
     table_name,
-    table_attributes,
-    table_classes,
+    attributes,
+    classes,
     rows,
     columns,
     cells
@@ -1462,8 +1462,8 @@ const createTableEntity = () => async ({
       status: 'new',
       post_id: post_id,
       table_name: table_name,
-      table_attributes: table_attributes,
-      table_classes: table_classes
+      attributes: attributes,
+      classes: classes
     },
     rows: [...rows],
     columns: [...columns],
@@ -1476,16 +1476,19 @@ const createTableEntity = () => async ({
     dispatch.assignTableId(tableEntity.id);
     return tableEntity.id;
   } catch (error) {
-    console.log('            ...Create Table Entity - async error - ' + error);
+    console.log('Error in createTableEntity -  Table ID - ' + table_id + ', block table ref = ' + block_table_ref + ', Post Id = ' + post_id);
+    alert('            ...Create Table Entity - async error - ' + error);
   }
 };
 const saveTableEntity = tableId => ({
   registry
 }) => {
+  console.log('SAVING TABLE ENTITY');
   try {
     registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).saveEditedEntityRecord('dynamic-tables/v1', 'table', tableId);
   } catch (error) {
-    console.log('            ...Save Table Entity - async error - ' + error);
+    console.log('Error in saveTableEntity - Table ID - ' + tableId);
+    alert('            ...Save Table Entity - async error - ' + error);
   }
 };
 const updateTableEntity = (tableId, overrideTableStatus = '') => ({
@@ -1500,8 +1503,8 @@ const updateTableEntity = (tableId, overrideTableStatus = '') => ({
     table_status,
     post_id,
     table_name,
-    table_attributes,
-    table_classes,
+    attributes,
+    classes,
     rows,
     columns,
     cells
@@ -1529,8 +1532,8 @@ const updateTableEntity = (tableId, overrideTableStatus = '') => ({
       status: tableStatus(overrideTableStatus, table_status),
       post_id: post_id,
       table_name: table_name,
-      table_attributes: table_attributes,
-      table_classes: table_classes
+      attributes: attributes,
+      classes: classes
     },
     rows: [...filteredRows],
     columns: [...filteredColumns],
@@ -1546,7 +1549,8 @@ const updateTableEntity = (tableId, overrideTableStatus = '') => ({
   try {
     registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).editEntityRecord('dynamic-tables/v1', 'table', table_id, updatedTable);
   } catch (error) {
-    console.log('            ...Update Table Entity - async error - ' + error);
+    console.log('Error in updateTableEntity - Table ID - ' + tableId);
+    alert('            ...Update Table Entity - async error - ' + error);
   }
 };
 const deleteTableEntity = tableId => async ({
@@ -1562,7 +1566,8 @@ const deleteTableEntity = tableId => async ({
       tableId
     });
   } catch (error) {
-    console.log('            ...Resolver - async error - ' + error);
+    console.log('Error in deleteTableEntity - Table ID - ' + tableId);
+    alert('            ...Resolver - async error - ' + error);
   }
   console.log('            Resolver - async completed');
 };
@@ -1650,9 +1655,6 @@ const removeTableProp = (tableId, attribute) => {
     attribute
   };
 };
-
-// updateTableEntity
-
 const updateRow = (tableId, rowId, attribute, value) => {
   console.log('In Action updateRow');
   return {
@@ -2441,15 +2443,16 @@ const getTable = (tableId, isTableStale) => async ({
     const table_status = table.header.status;
     const post_id = table.header.post_id;
     const table_name = table.header.table_name;
-    const table_attributes = table.header.attributes;
-    const table_classes = table.header.classes;
+    const attributes = table.header.attributes;
+    const classes = table.header.classes;
     const rows = table.rows;
     const columns = table.columns;
     computeCellId(table.cells);
     const cells = table.cells;
-    dispatch.receiveTable(table_id, block_table_ref, table_status, post_id, table_name, table_attributes, table_classes, rows, columns, cells);
+    dispatch.receiveTable(table_id, block_table_ref, table_status, post_id, table_name, attributes, classes, rows, columns, cells);
   } catch (error) {
-    console.log('            ...Resolver - async error - ' + JSON.stringify(error, null, 4));
+    console.log('Error in deleteTableEntity - Table ID = ' + tableId);
+    alert('            ...Resolver - async error - ' + JSON.stringify(error, null, 4));
   }
   console.log('            Resolver - async completed');
 };
@@ -2491,8 +2494,8 @@ function getTable(state, tableId, isTableStale) {
       post_id: '',
       table_status: '',
       table_name: '',
-      table_attributes: [],
-      table_classes: '',
+      attributes: [],
+      classes: '',
       rows: [],
       columns: [],
       cells: []
@@ -2885,21 +2888,21 @@ function Edit(props) {
   /**
    * Extract and unpack table attributes
    */
-  const showGridLines = getTablePropAttribute(table.table_attributes, 'showGridLines');
-  const enableHeaderRow = getTablePropAttribute(table.table_attributes, 'enableHeaderRow');
-  const headerAlignment = getTablePropAttribute(table.table_attributes, 'headerAlignment');
-  const gridHeaderBackgroundColor = getTablePropAttribute(table.table_attributes, 'tableHeaderBackgroundColor');
-  const headerRowSticky = getTablePropAttribute(table.table_attributes, 'headerRowSticky');
-  const headerBorder = getTablePropAttribute(table.table_attributes, 'headerBorder');
-  const bodyAlignment = getTablePropAttribute(table.table_attributes, 'bodyAlignment');
-  const bodyBorder = getTablePropAttribute(table.table_attributes, 'bodyBorder');
-  const bandedRows = getTablePropAttribute(table.table_attributes, 'bandedRows');
-  const bandedRowTextColor = getTablePropAttribute(table.table_attributes, 'bandedRowTextColor');
-  const bandedRowBackgroundColor = getTablePropAttribute(table.table_attributes, 'bandedRowBackgroundColor');
-  const gridLineWidth = getTablePropAttribute(table.table_attributes, 'gridLineWidth');
+  const showGridLines = getTablePropAttribute(table.attributes, 'showGridLines');
+  const enableHeaderRow = getTablePropAttribute(table.attributes, 'enableHeaderRow');
+  const headerAlignment = getTablePropAttribute(table.attributes, 'headerAlignment');
+  const gridHeaderBackgroundColor = getTablePropAttribute(table.attributes, 'tableHeaderBackgroundColor');
+  const headerRowSticky = getTablePropAttribute(table.attributes, 'headerRowSticky');
+  const headerBorder = getTablePropAttribute(table.attributes, 'headerBorder');
+  const bodyAlignment = getTablePropAttribute(table.attributes, 'bodyAlignment');
+  const bodyBorder = getTablePropAttribute(table.attributes, 'bodyBorder');
+  const bandedRows = getTablePropAttribute(table.attributes, 'bandedRows');
+  const bandedRowTextColor = getTablePropAttribute(table.attributes, 'bandedRowTextColor');
+  const bandedRowBackgroundColor = getTablePropAttribute(table.attributes, 'bandedRowBackgroundColor');
+  const gridLineWidth = getTablePropAttribute(table.attributes, 'gridLineWidth');
   const gridAlignment = block_alignment;
-  const horizontalAlignment = getTablePropAttribute(table.table_attributes, 'horizontalAlignment');
-  const verticalAlignment = getTablePropAttribute(table.table_attributes, 'verticalAlignment');
+  const horizontalAlignment = getTablePropAttribute(table.attributes, 'horizontalAlignment');
+  const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment');
   console.log(JSON.stringify(headerBorder, null, 4));
 
   /**
@@ -3085,7 +3088,7 @@ function Edit(props) {
           } else if (attribute === 'table') {
             console.log('...Updating Table Attributes');
             console.log(value);
-            updateTableProp(tableId, 'table_attributes', value);
+            updateTableProp(tableId, 'attributes', value);
           }
           break;
         }
@@ -3312,7 +3315,7 @@ function Edit(props) {
    */
   function onShowBandedRows(table, isChecked) {
     const updatedTableAttributes = {
-      ...table.table_attributes,
+      ...table.attributes,
       bandedRows: isChecked
     };
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
@@ -3328,7 +3331,7 @@ function Edit(props) {
     let updatedTableAttributes = '';
     if (type == 'background') {
       updatedTableAttributes = {
-        ...table.table_attributes,
+        ...table.attributes,
         bandedRowBackgroundColor: color
       };
       console.log(updatedTableAttributes);
@@ -3336,7 +3339,7 @@ function Edit(props) {
     }
     if (type == 'text') {
       updatedTableAttributes = {
-        ...table.table_attributes,
+        ...table.attributes,
         bandedRowTextColor: color
       };
       console.log(updatedTableAttributes);
@@ -3352,10 +3355,11 @@ function Edit(props) {
   */
   function onEnableHeaderRow(table, isChecked) {
     const updatedTableAttributes = {
-      ...table.table_attributes,
+      ...table.attributes,
       enableHeaderRow: isChecked,
       headerRowSticky: false
     };
+    console.log(updatedTableAttributes);
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
     const updatedRowAttributes = {
       ...table.rows.find(x => x.row_id === '1').attributes,
@@ -3375,7 +3379,7 @@ function Edit(props) {
     console.log('ON HEADER ALIGNMENT');
     console.log(alignment);
     const updatedTableAttributes = {
-      ...table.table_attributes,
+      ...table.attributes,
       headerAlignment: alignment
     };
     console.log(updatedTableAttributes);
@@ -3392,7 +3396,7 @@ function Edit(props) {
     console.log('ON HEADER BORDER');
     console.log(border);
     const updatedTableAttributes = {
-      ...table.table_attributes,
+      ...table.attributes,
       headerBorder: border
     };
     console.log(updatedTableAttributes);
@@ -3407,7 +3411,7 @@ function Edit(props) {
   */
   function onHeaderRowSticky(table, isChecked) {
     const updatedTableAttributes = {
-      ...table.table_attributes,
+      ...table.attributes,
       headerRowSticky: isChecked
     };
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
@@ -3423,7 +3427,7 @@ function Edit(props) {
     console.log('ON BODY  ALIGNMENT');
     console.log(alignment);
     const updatedTableAttributes = {
-      ...table.table_attributes,
+      ...table.attributes,
       bodyAlignment: alignment
     };
     console.log(updatedTableAttributes);
@@ -3440,7 +3444,7 @@ function Edit(props) {
     console.log('ON BODY BORDER');
     console.log(border);
     const updatedTableAttributes = {
-      ...table.table_attributes,
+      ...table.attributes,
       bodyBorder: border
     };
     console.log(updatedTableAttributes);
@@ -3455,7 +3459,7 @@ function Edit(props) {
    */
   function onShowGridLines(table, isChecked) {
     const updatedTableAttributes = {
-      ...table.table_attributes,
+      ...table.attributes,
       showGridLines: isChecked
     };
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
@@ -3469,7 +3473,7 @@ function Edit(props) {
    */
   function onGridLineWidth(table, gridLineWidth) {
     const updatedTableAttributes = {
-      ...table.table_attributes,
+      ...table.attributes,
       gridLineWidth: Number(gridLineWidth)
     };
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
@@ -3552,7 +3556,7 @@ function Edit(props) {
   console.log(blockProps);
   console.log(blockProps.style.backgroundColor);
   if (!tableIsResolving) {
-    // console.log(table.table_attributes?.bandedRows)
+    // console.log(table.attributes?.bandedRows)
   }
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
@@ -3809,7 +3813,7 @@ function Edit(props) {
     attributes
   }) => {
     const renderedRow = row_id;
-    console.log('Rendering Body Row ' + renderedRow);
+    // console.log('Rendering Body Row ' + renderedRow)
 
     /**
      * Set calculated class names
@@ -3837,7 +3841,7 @@ function Edit(props) {
       attributes,
       classes
     }) => {
-      console.log('Rendering Body Row Cell' + cell_id);
+      // console.log('Rendering Body Row Cell' + cell_id)
       /**
        * Set general processing variables
        */
@@ -4354,8 +4358,8 @@ function initTable(newBlockTableRef, columnCount, rowCount) {
       post_id: '0',
       table_status: 'new',
       table_name: 'Test Table',
-      table_attributes: getDefaultTableAttributes('table'),
-      table_classes: getDefaultTableClasses('table'),
+      attributes: getDefaultTableAttributes('table'),
+      classes: getDefaultTableClasses('table'),
       rows: rowArray,
       columns: columnArray,
       cells: tableCells

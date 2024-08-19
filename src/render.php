@@ -14,7 +14,7 @@ require_once plugin_dir_path(__DIR__) . 'inc/renderHelper.php';
 if (!defined('ABSPATH')) {
     exit;
 }
-
+error_log('Render Attribs = ' . print_r($attributes, true));
 $tableId = $attributes[ 'table_id' ];
 $blockTableRef = $attributes[ 'block_table_ref' ];
 $gridAlignment = $attributes[ 'block_alignment' ];
@@ -25,6 +25,7 @@ $blockBackgroundColor = $attributes[ 'backgroundColor' ];
  */
 
 $table = get_table($tableId);
+error_log('Table = ' . print_r($table, true));
 $tableHeader = $table[ 'header' ];
 $tableName = $tableHeader[ 'table_name' ];
 $tableColumns = $table[ 'columns' ];

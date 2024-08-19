@@ -25,7 +25,6 @@ class DynamicTables
 
     public function __construct()
     {
-        error_log('BLOCK CONSTRUCT');
         // Establish custom tables for tables
         global $wpdb;
 
@@ -40,13 +39,8 @@ class DynamicTables
 
     public function establish_services()
     {
-        error_log('INIT BLOCK WEB SERVICES');
-
         $controller = new Dynamic_Tables_REST_Controller();
         $controller->register_routes();
-        error_log('Rest Registration = ' . json_encode($controller));
-        error_log('get_public_item_schema = ' . json_encode($controller->get_item_schema()));
-        error_log('get_public_item_schema = ' . json_encode($controller->get_public_item_schema()));
     }
 
     public function dynamic_tables_block_init()
