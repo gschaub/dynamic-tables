@@ -175,7 +175,7 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
 
     const columnAttributes = {
         columnWidthType: 'Proportional',
-        minWidth: 20,
+        minWidth: 2,
         minWidthUnits: 'ch',
         maxWidth: 1,
         maxWidthUnits: 'fr',

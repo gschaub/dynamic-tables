@@ -25,7 +25,11 @@ $blockBackgroundColor = $attributes[ 'backgroundColor' ];
  */
 
 $table = get_table($tableId);
-error_log('Table = ' . print_r($table, true));
+if (is_wp_error($table)) {
+    error_log('Table = ' . print_r($table, true));
+    die;
+}
+
 $tableHeader = $table[ 'header' ];
 $tableName = $tableHeader[ 'table_name' ];
 $tableColumns = $table[ 'columns' ];

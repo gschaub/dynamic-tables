@@ -258,6 +258,7 @@ export const deleteTableEntity =
 export const processDeletedTables =
     (deletedTables) =>
         ({ dispatch, registry }) => {
+            console.log('In Action processDeletedTables')
             Object.keys(deletedTables).forEach(key => {
                 const deletedTableId = deletedTables[key].table_id
                 console.log(deletedTableId)
@@ -268,6 +269,7 @@ export const processDeletedTables =
 export const processUnmountedTables =
     (unmountedTables) =>
         ({ dispatch, registry }) => {
+            console.log('In Action processDeletedTables')
             Object.keys(unmountedTables).forEach(key => {
                 const unmountedTableBlockId = unmountedTables[key].unmounted_blockid
                 const tableBlock = registry.select(blockEditorStore).getBlock(unmountedTableBlockId)

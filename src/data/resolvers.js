@@ -19,6 +19,10 @@ function computeCellId(fetchedCells) {
     }
 }
 
+// export function getTableIdByBlock(block_table_ref) {
+//     return
+// }
+
 export const getTable =
     (tableId, isTableStale) =>
         async ({ dispatch, registry }) => {
@@ -55,7 +59,7 @@ export const getTable =
 
                 dispatch.receiveTable(table_id, block_table_ref, table_status, post_id, table_name, attributes, classes, rows, columns, cells);
             } catch (error) {
-                console.log('Error in deleteTableEntity - Table ID = ' + tableId);
+                console.log('Error in getTable - Table ID = ' + tableId);
                 alert('            ...Resolver - async error - ' + JSON.stringify(error, null, 4));
             }
             console.log('            Resolver - async completed');

@@ -31,7 +31,7 @@ export function getTables(state) {
 
 }
 
-export function getNewTableIdByBlock(state, block_table_ref) {
+export function getTableIdByBlock(state, block_table_ref) {
     const newTable = Object.keys(state.tables)
         .reduce((acc, key) => {
             if (state.tables[key]?.block_table_ref === block_table_ref) {

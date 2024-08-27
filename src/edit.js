@@ -1,4 +1,4 @@
-useSetting/**select re
+/**
  * Retrieves the translation of text.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
@@ -177,7 +177,40 @@ export default function Edit(props) {
 	}, []);
 
 	/**
-	 * Table blocks unmounted when entering the text editor AND when deleted.  However, 
+	 * Determine if the State table id has changed
+	 */
+
+	const { currentTableId } = useSelect(
+		(select) => {
+			const { getTableIdByBlock } = select(tableStore);
+			let currentTableId = getTableIdByBlock(block_table_ref);
+			console.log('Current table id = ' + currentTableId);
+
+			return {
+				currentTableId: currentTableId
+			}
+		}
+	)
+
+	console.log('NEW TABLE INFO');
+	console.log('Awaiting entity creation = ' + awaitingTableEntityCreation + ', Props table id = ' + table_id + ', Current table id = ' + currentTableId);
+
+	const setTableIdChanged = () => {
+		if (awaitingTableEntityCreation && Number(currentTableId) !== Number(table_id)) {
+			console.log('  ... In table changed - TRUE');
+			return true;
+		}
+		console.log('  ... In table changed - FALSE');
+		return false;
+	}
+
+	const isTableIdChanged = setTableIdChanged();
+
+	console.log('Table id after select = ' + currentTableId);
+	console.log('Table id update: ' + isTableIdChanged)
+
+	/**
+	 * Table blocks is unmounted when entering the text editor AND when deleted.  However, 
 	 * don't know whether the table was deleted when an unmount is detected.  Therefore, 
 	 * we mark them as unmounted at that time, and can identify whether the block was 
 	 * truly deleted on the subsequent render.
@@ -205,8 +238,8 @@ export default function Edit(props) {
 		})
 
 	const postChangesAreSaved = usePostChangesSaved()
-	console.log(postChangesAreSaved)
-	console.log(unmountedTables)
+	// console.log(postChangesAreSaved)
+	// console.log(unmountedTables)
 	useEffect(() => {
 		if (postChangesAreSaved) {
 			alert('Sync REST Now')
@@ -219,7 +252,9 @@ export default function Edit(props) {
 			}
 
 			/**
-			 * Update status of new tables to saved
+			 * Tables are persisted when they are created, but should only remain
+			 * if the underlying post is saved.  Here we update the status of new
+			 * tables from "new" to "saved" once the post is saved.
 			 */
 			if (table.table_status == 'new') {
 				console.log('Saving new table - ' + table.table_id)
@@ -227,7 +262,6 @@ export default function Edit(props) {
 				saveTableEntity(table.table_id)
 				console.log(table)
 			}
-
 		}
 
 	}, [postChangesAreSaved, unmountedTables]);
@@ -270,7 +304,7 @@ export default function Edit(props) {
 	} = useSelect(
 		(select) => {
 			console.log('Table ID = ' + table_id + ', Stale = ' + isTableStale + ', Block Table Ref = ' + block_table_ref);
-			const { getTable, getNewTableIdByBlock, hasStartedResolution, hasFinishedResolution, isResolving } = select(tableStore);
+			const { getTable, getTableIdByBlock, hasStartedResolution, hasFinishedResolution, isResolving } = select(tableStore);
 			const selectorArgs = [table_id, isTableStale]
 
 			if (block_table_ref === '') {
@@ -285,9 +319,16 @@ export default function Edit(props) {
 			const getBlockTable = (table_id, isTableStale, block_table_ref) => {
 				let selectedTable = getTable(table_id, isTableStale);
 				console.log(selectedTable)
-				if (table_id === '0' && selectedTable.block_table_ref.length === 0 && awaitingTableEntityCreation) {
-					const newTableId = getNewTableIdByBlock(block_table_ref);
+				// if (table_id === '0' && selectedTable.block_table_ref.length === 0 && awaitingTableEntityCreation) {
+				if (table_id === '0' && selectedTable.block_table_ref === '' && awaitingTableEntityCreation) {
+					const newTableId = getTableIdByBlock(block_table_ref);
 					selectedTable = getTable(newTableId, isTableStale);
+
+					// Must sync post_id here for new table because "resolving" attributes are not available
+					if (String(props.context.postId) !== selectedTable.post_id && String(props.context.postId) !== '0') {
+						setTableAttributes(selectedTable.table_id, 'post_id', '', 'PROP', String(props.context.postId))
+					}
+
 					setAwaitingTableEntityCreation(false)
 					props.setAttributes({ table_id: Number(selectedTable.table_id) })
 				}
@@ -318,6 +359,7 @@ export default function Edit(props) {
 		},
 		[
 			table_id,
+			isTableIdChanged,
 			isTableStale,
 			block_table_ref
 		]
@@ -356,6 +398,9 @@ export default function Edit(props) {
 
 	/**
 	 * Synchronize PostId
+	 * 
+	 * Post ID is assigned a value of '0' upon table creation and can change over the life of a post.
+	 * props.context is authoritative for Post ID so we ensure the table is sync'd to that.
 	 */
 
 	console.log('Is Resolving? = ' + tableIsResolving);
@@ -364,7 +409,7 @@ export default function Edit(props) {
 	console.log('Old Post ID = ' + table.post_id);
 	console.log('New Post ID = ' + props.context.postId);
 
-	if (tableHasStartedResolving && tableHasFinishedResolving && String(props.context.postId) !== table.post_id) {
+	if (tableHasStartedResolving && tableHasFinishedResolving && !awaitingTableEntityCreation && String(props.context.postId) !== table.post_id) {
 		setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId))
 		saveTableEntity(table.table_id)
 	}
@@ -676,6 +721,7 @@ export default function Edit(props) {
 		console.log('InitialRows - ' + rowCount)
 		console.log('InitialColumns - ' + columnCount)
 
+		setTableStale(false)
 		var newBlockTableRef = generateBlockTableRef()
 		const newTable = initTable(newBlockTableRef, columnCount, rowCount)
 
@@ -1005,7 +1051,7 @@ export default function Edit(props) {
 	const headerBorderRightColor = getBorderStyle(headerBorder, 'right', 'color', headerBorderStyleType);
 	const headerBorderRightStyle = getBorderStyle(headerBorder, 'right', 'style', headerBorderStyleType);
 	const headerBorderRightWidth = getBorderStyle(headerBorder, 'right', 'width', headerBorderStyleType);
-	``
+
 	// Bottom header border
 	const headerBorderBottomColor = getBorderStyle(headerBorder, 'bottom', 'color', headerBorderStyleType);
 	const headerBorderBottomStyle = getBorderStyle(headerBorder, 'bottom', 'style', headerBorderStyleType);
@@ -1030,7 +1076,7 @@ export default function Edit(props) {
 	const bodyBorderRightColor = getBorderStyle(bodyBorder, 'right', 'color', bodyBorderStyleType);
 	const bodyBorderRightStyle = getBorderStyle(headerBorder, 'right', 'style', bodyBorderStyleType);
 	const bodyBorderRightWidth = getBorderStyle(headerBorder, 'right', 'width', bodyBorderStyleType);
-	``
+
 	// Bottom body border
 	const bodyBorderBottomColor = getBorderStyle(bodyBorder, 'bottom', 'color', bodyBorderStyleType);
 	const bodyBorderBottomStyle = getBorderStyle(bodyBorder, 'bottom', 'style', bodyBorderStyleType);
