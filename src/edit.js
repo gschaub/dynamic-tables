@@ -5,6 +5,7 @@
  */
 import { useSelect, useDispatch, dispatch } from "@wordpress/data";
 import { useState, useEffect, useRef } from "@wordpress/element"
+import { store as editorStore } from "@wordpress/editor";
 import { usePrevious } from "@wordpress/compose";
 import { __ } from '@wordpress/i18n';
 import {
@@ -111,6 +112,13 @@ export default function Edit(props) {
 
 	console.log(props)
 	console.log(gls_test_data)
+
+	/**
+	 * Esternal Store Action useDispatch declarations
+	 */
+	const { lockPostSaving } = useDispatch(editorStore);
+	const { lockPostAutosaving } = useDispatch(editorStore);
+
 	/**
 	 * Table Store Action useDispatch declarations
 	 */
@@ -145,8 +153,8 @@ export default function Edit(props) {
 	const [rowAttributes, setRowAttributes] = useState({});
 	const [render, setRender] = useState(0);
 	const [showBorders, setShowBorders] = useState(false);
-	const [numColumns, setNumColumns] = useState(2);
-	const [numRows, setNumRows] = useState(2);
+	const [numColumns, setNumColumns] = useState(1);
+	const [numRows, setNumRows] = useState(1);
 	const [gridCells, setGridCells] = useState([]);
 	const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = useState(false);
 	// Current future features: Zoom to details
@@ -289,8 +297,27 @@ export default function Edit(props) {
 		return false
 	}
 
+	const setSaveLock = () => {
+		lockPostSaving('lockPostSaving');
+		lockPostAutosaving('lockPostAutosaving');
+	};
+
+	const setClearSaveLock = () => {
+		lockPostSaving('unlockPostSaving');
+		lockPostAutosaving('unlockPostAutosaving');
+	};
+
 	const isNewBlock = setNewBlock()
 	const blockTableStatus = setBlockTableStatus();
+
+	/**
+	 * Prepare for New Block
+	 */
+	if (isNewBlock) {
+		setSaveLock()
+		// setNumColumns(1);
+		// setNumRows(1);
+	}
 
 	/**
 	 * Retrieve table entity from table webservice and load table store
@@ -330,6 +357,7 @@ export default function Edit(props) {
 					}
 
 					setAwaitingTableEntityCreation(false)
+					setClearSaveLock();
 					props.setAttributes({ table_id: Number(selectedTable.table_id) })
 				}
 				return selectedTable;
@@ -434,11 +462,13 @@ export default function Edit(props) {
 	 * TODO: Verify this is still needed following update to table store to track all tables in editor
 	 */
 	useEffect(() => {
-		if (tableColumnLength != numColumns) {
-			setNumColumns(tableColumnLength);
-		}
-		if (tableRowLength != numRows) {
-			setNumRows(tableRowLength);
+		if (!isNewBlock) {
+			if (tableColumnLength != numColumns) {
+				setNumColumns(tableColumnLength);
+			}
+			if (tableRowLength != numRows) {
+				setNumRows(tableRowLength);
+			}
 		}
 	},
 		[tableColumnLength, tableRowLength]
@@ -739,13 +769,23 @@ export default function Edit(props) {
 	}
 
 	function onChangeInitialColumnCount(num_columns) {
-		console.log(num_columns)
-		setNumColumns(num_columns)
+		console.log('Initial Column Count = ' + num_columns)
+		let newNumColumns = num_columns
+		if (num_columns < 1) {
+			newNumColumns = 1
+		}
+
+		setNumColumns(newNumColumns)
 	}
 
 	function onChangeInitialRowCount(num_rows) {
-		console.log(num_rows)
-		setNumRows(num_rows)
+		console.log('Initial Row Count = ' + num_rows)
+		let newNumRows = num_rows
+		if (num_rows < 1) {
+			newNumRows = 1
+		}
+
+		setNumRows(newNumRows)
 	}
 
 	function onUpdateColumn(event, updateType, tableId, columnId, updatedColumnAttributes) {
@@ -1581,6 +1621,7 @@ export default function Edit(props) {
 							<NumberControl
 								__nextHasNoMarginBottom
 								label={__('Table Columns')}
+								min={1}
 								onChange={e => onChangeInitialColumnCount(e)}
 								value={numColumns}
 								className="blocks-table__placeholder-input"
@@ -1589,6 +1630,7 @@ export default function Edit(props) {
 							<NumberControl
 								__nextHasNoMarginBottom
 								label={__('Table Rows')}
+								min={1}
 								onChange={e => onChangeInitialRowCount(e)}
 								value={numRows}
 								className="blocks-table__placeholder-input"
@@ -1604,7 +1646,6 @@ export default function Edit(props) {
 					</Placeholder>
 				)
 			}
-
 		</div >
 	)
 }
