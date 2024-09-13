@@ -23,13 +23,14 @@ import {
 	ColorPicker,
 	ToggleControl,
 	CheckboxControl,
+	__experimentalInputControl as InputControl,
 	__experimentalBorderBoxControl as BorderBoxControl,
 	__experimentalNumberControl as NumberControl
 } from '@wordpress/components';
 import {
 	RichText,
 	useBlockProps,
-	useSetting,
+	useSettings,
 	BlockIcon,
 	AlignmentToolbar,
 	AlignmentControl,
@@ -153,6 +154,7 @@ export default function Edit(props) {
 	const [rowAttributes, setRowAttributes] = useState({});
 	const [render, setRender] = useState(0);
 	const [showBorders, setShowBorders] = useState(false);
+	const [tableName, setTableName] = useState('');
 	const [numColumns, setNumColumns] = useState(1);
 	const [numRows, setNumRows] = useState(1);
 	const [gridCells, setGridCells] = useState([]);
@@ -163,7 +165,7 @@ export default function Edit(props) {
 
 	const priorTableRef = useRef({});
 	const { table_id, block_table_ref, block_alignment } = props.attributes;
-	const themeColors = useSetting('color.palette')
+	const themeColors = useSettings('color.palette')
 	console.log(themeColors)
 
 	console.log('Block Table Ref - ' + block_table_ref)
@@ -416,6 +418,7 @@ export default function Edit(props) {
 	const gridAlignment = block_alignment;
 	const horizontalAlignment = getTablePropAttribute(table.attributes, 'horizontalAlignment')
 	const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment')
+	const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle')
 
 	console.log(JSON.stringify(headerBorder, null, 4));
 
@@ -745,7 +748,7 @@ export default function Edit(props) {
 		return;
 	}
 
-	function createTable(columnCount, rowCount) {
+	function createTable(columnCount, rowCount, tableName) {
 
 		console.log('FUNCTION - CREATE TABLE')
 		console.log('InitialRows - ' + rowCount)
@@ -753,7 +756,7 @@ export default function Edit(props) {
 
 		setTableStale(false)
 		var newBlockTableRef = generateBlockTableRef()
-		const newTable = initTable(newBlockTableRef, columnCount, rowCount)
+		const newTable = initTable(newBlockTableRef, columnCount, rowCount, tableName)
 
 		console.log(JSON.stringify(newTable, null, 4));
 		props.setAttributes({ block_table_ref: newBlockTableRef })
@@ -765,7 +768,7 @@ export default function Edit(props) {
 
 	function onCreateTable(event) {
 		event.preventDefault();
-		createTable(numColumns, numRows)
+		createTable(numColumns, numRows, tableName)
 	}
 
 	function onChangeInitialColumnCount(num_columns) {
@@ -881,6 +884,20 @@ export default function Edit(props) {
 		// return <ColumnMenu>Column Menu</ColumnMenu>
 		setTableStale(false)
 
+	}
+
+	/**
+	* Hide the table title from displaying
+	* 
+	* @param {*} table 
+	* @param {*} isChecked 
+	*/
+	function onHideTitle(table, isChecked) {
+		const updatedTableAttributes = {
+			...table.attributes,
+			hideTitle: isChecked
+		}
+		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
 	/**
@@ -1166,6 +1183,7 @@ export default function Edit(props) {
 
 								<PanelRow>
 									<CheckboxControl label="Show table borders"
+										__nextHasNoMarginBottom
 										checked={showBorders}
 										onChange={(e) => onToggleBorders(table, e)}
 									/>
@@ -1183,11 +1201,19 @@ export default function Edit(props) {
 									</Disabled>
 								</PanelRow>
 
+								<PanelRow>
+									<CheckboxControl label="Hide Table Title"
+										__nextHasNoMarginBottom
+										checked={hideTitle}
+										onChange={(e) => onHideTitle(table, e)}
+									/>
+								</PanelRow>
 							</PanelBody>
 
 							<PanelBody title="Table Header" initialOpen={false}>
 								<PanelRow>
 									<CheckboxControl label="First Row as Header?"
+										__nextHasNoMarginBottom
 										checked={enableHeaderRow}
 										onChange={(e) => onEnableHeaderRow(table, e)}
 									/>
@@ -1195,6 +1221,7 @@ export default function Edit(props) {
 
 								<PanelRow>
 									<CheckboxControl label="Freeze Header Row?"
+										__nextHasNoMarginBottom
 										disabled={!enableHeaderRow}
 										checked={headerRowSticky}
 										onChange={(e) => onHeaderRowSticky(table, e)}
@@ -1263,6 +1290,7 @@ export default function Edit(props) {
 						<PanelBody title="Banded Table Rows" initialOpen={false}>
 							<PanelRow>
 								<CheckboxControl label="Display Banded Rows"
+									__nextHasNoMarginBottom
 									checked={bandedRows}
 									// checked={true}
 									onChange={(e) => onShowBandedRows(table, e)}
@@ -1290,6 +1318,7 @@ export default function Edit(props) {
 						<PanelBody title="Grid Lines" initialOpen={false}>
 							<PanelRow>
 								<CheckboxControl label="Display Inner Grid Lines"
+									__nextHasNoMarginBottom
 									checked={showGridLines}
 									onChange={(e) => onShowGridLines(table, e)}
 								/>
@@ -1307,14 +1336,16 @@ export default function Edit(props) {
 					<InspectorControls group="typography">
 					</InspectorControls>
 
-					<RichText
-						id="tableTitle"
-						style={{ "--gridAlignment": gridAlignment }}
-						tagName="p"
-						allowedFormats={['core/bold', 'core/italic']}
-						onChange={e => setTableAttributes(table_id, 'table_name', '', 'PROP', e)}
-						value={table.table_name}>
-					</RichText>
+					{!hideTitle &&
+						<RichText
+							id="tableTitle"
+							style={{ "--gridAlignment": gridAlignment }}
+							tagName="p"
+							allowedFormats={['core/bold', 'core/italic']}
+							onChange={e => setTableAttributes(table_id, 'table_name', '', 'PROP', e)}
+							value={table.table_name}>
+						</RichText>
+					}
 
 					<TabbableContainer>
 						< div className="grid-scroller"
@@ -1618,10 +1649,20 @@ export default function Edit(props) {
 							onSubmit={onCreateTable}
 						>
 
+							<InputControl
+								label={__('Table Name')}
+								placeholder="New Table"
+								required="true"
+								onChange={e => setTableName(e)}
+								value={tableName}
+								className="blocks-table__placeholder-input"
+							/>
+
 							<NumberControl
 								__nextHasNoMarginBottom
 								label={__('Table Columns')}
 								min={1}
+								required="true"
 								onChange={e => onChangeInitialColumnCount(e)}
 								value={numColumns}
 								className="blocks-table__placeholder-input"
@@ -1630,6 +1671,7 @@ export default function Edit(props) {
 							<NumberControl
 								__nextHasNoMarginBottom
 								label={__('Table Rows')}
+								required="true"
 								min={1}
 								onChange={e => onChangeInitialRowCount(e)}
 								value={numRows}

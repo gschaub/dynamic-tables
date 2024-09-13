@@ -1,10 +1,10 @@
 <?php
 
-require_once plugin_dir_path(__DIR__) . 'inc/dynamicTablesDbPersist.php';
-// require_once plugin_dir_path(__DIR__) . 'inc/dynamicTablesRoutes.php';
-require_once plugin_dir_path(__DIR__) . 'inc/dynamicTablesAPI.php';
-require_once plugin_dir_path(__DIR__) . 'inc/dynamicTablesRestAPI.php';
-require_once plugin_dir_path(__DIR__) . 'inc/renderHelper.php';
+require_once plugin_dir_path(__DIR__) . 'includes/dynamicTablesDbPersist.php';
+// require_once plugin_dir_path(__DIR__) . 'includes/dynamicTablesRoutes.php';
+require_once plugin_dir_path(__DIR__) . 'includes/dynamicTablesAPI.php';
+require_once plugin_dir_path(__DIR__) . 'includes/dynamicTablesRestAPI.php';
+require_once plugin_dir_path(__DIR__) . 'includes/renderHelper.php';
 
 /**
  * @see https://github.com/WordPress/gutenberg/blob/trunk/docs/reference-guides/block-api/block-metadata.md#render

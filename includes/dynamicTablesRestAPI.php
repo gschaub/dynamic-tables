@@ -6,6 +6,7 @@
  *
  * @see WP_REST_Controller
  */
+namespace DynamicTables;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -13,7 +14,8 @@ if (!defined('ABSPATH')) {
 
 require_once plugin_dir_path(__FILE__) . 'dynamicTablesAPI.php';
 
-class Dynamic_Tables_REST_Controller extends WP_REST_Controller
+class Dynamic_Tables_REST_Controller extends \WP_REST_Controller
+
 {
 
 /**
@@ -42,16 +44,16 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             '/' . $this->rest_base,
             array(
                 array(
-                    'methods' => WP_REST_Server::READABLE,
+                    'methods' => \WP_REST_Server::READABLE,
                     'callback' => array($this, 'get_items'),
                     'permission_callback' => array($this, 'get_items_permissions_check'),
                     // 'args' => $this->get_collection_params(),
                 ),
                 array(
-                    'methods' => WP_REST_Server::CREATABLE,
+                    'methods' => \WP_REST_Server::CREATABLE,
                     'callback' => array($this, 'create_item'),
                     'permission_callback' => array($this, 'create_item_permissions_check'),
-                    'args' => $this->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE),
+                    'args' => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
                 ),
                 'schema' => array($this, 'get_public_item_schema'),
             )
@@ -71,19 +73,19 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                     ),
                 ),
                 array(
-                    'methods' => WP_REST_SERVER::READABLE,
+                    'methods' => \WP_REST_SERVER::READABLE,
                     'callback' => array($this, 'get_item'),
                     'permission_callback' => array($this, 'get_item_permissions_check'),
                     'args' => $get_item_args,
                 ),
                 array(
-                    'methods' => WP_REST_SERVER::EDITABLE,
+                    'methods' => \WP_REST_SERVER::EDITABLE,
                     'callback' => array($this, 'update_item'),
                     'permission_callback' => array($this, 'update_item_permissions_check'),
-                    'args' => $this->get_endpoint_args_for_item_schema(WP_REST_SERVER::EDITABLE),
+                    'args' => $this->get_endpoint_args_for_item_schema(\WP_REST_SERVER::EDITABLE),
                 ),
                 array(
-                    'methods' => WP_REST_Server::DELETABLE,
+                    'methods' => \WP_REST_Server::DELETABLE,
                     'callback' => array($this, 'delete_item'),
                     'permission_callback' => array($this, 'delete_item_permissions_check'),
                 ),
@@ -166,7 +168,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 }
 
                 if ('edit' === $request[ 'context' ] && $post && !$this->check_update_permission($post)) {
-                    return new WP_Error(
+                    return new \WP_Error(
                         'rest_forbidden_context',
                         __('Sorry, you are not allowed to edit this post.'),
                         array('status' => rest_authorization_required_code())
@@ -176,7 +178,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
             if ((int) $postId === 0) {
                 if ('edit' === $request[ 'context' ] && !current_user_can('edit_posts')) {
-                    return new WP_Error(
+                    return new \WP_Error(
                         'rest_forbidden_context',
                         __('Sorry, you are not allowed to edit this post.'),
                         array('status' => rest_authorization_required_code())
@@ -184,7 +186,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 }
             }
         } else {
-            return new WP_Error(
+            return new \WP_Error(
                 'missing_post_id',
                 __('Post ID is missing from request.'),
                 array('status' => 500)
@@ -226,7 +228,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
      */
     protected function get_table($id)
     {
-        $error = new WP_Error(
+        $error = new \WP_Error(
             'rest_table_invalid_id',
             __('Invalid table ID.'),
             array('status' => 404)
@@ -258,7 +260,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
      */
     protected function get_post($id)
     {
-        $error = new WP_Error(
+        $error = new \WP_Error(
             'rest_post_invalid_id',
             __('Invalid post ID.'),
             array('status' => 500)
@@ -268,7 +270,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             return $error;
         }
 
-        $error = new WP_Error(
+        $error = new \WP_Error(
             'rest_post_invalid',
             __('Invalid post'),
             array('status' => 404)
@@ -292,8 +294,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     public function create_item_permissions_check($request)
     {
         if ((int) $request[ 'id' ] !== (int) 0) {
-            error_log(print_r($request, true));
-            return new WP_Error(
+            // error_log(print_r($request, true));
+            return new \WP_Error(
                 'rest_table_exists',
                 __('Cannot create existing table.'),
                 array('status' => 400)
@@ -308,15 +310,15 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             if ($postId !== 0) {
                 $post = $this->get_post($postId);
                 if (is_wp_error($post)) {
-                    error_log(print_r($request, true));
+                    // error_log(print_r($request, true));
                     return $post;
                 }
 
                 $post_type = get_post_type_object($post->post_type);
 
                 if ($post && !$this->check_update_permission($post)) {
-                    error_log(print_r($request, true));
-                    return new WP_Error(
+                    // error_log(print_r($request, true));
+                    return new \WP_Error(
                         'rest_cannot_edit',
                         __('Sorry, you are not allowed to create tables for this post as this user.'),
                         array('status' => rest_authorization_required_code())
@@ -324,8 +326,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 }
 
                 if (!empty($request[ 'author' ]) && get_current_user_id() !== $request[ 'author' ] && !current_user_can($post_type->cap->edit_others_posts)) {
-                    error_log(print_r($request, true));
-                    return new WP_Error(
+                    // error_log(print_r($request, true));
+                    return new \WP_Error(
                         'rest_cannot_edit_others',
                         __('Sorry, you are not allowed to create tables for this post as this user.'),
                         array('status' => rest_authorization_required_code())
@@ -334,16 +336,16 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             }
 
             if ($postId === 0 && (!(current_user_can('publish_posts') || current_user_can('publish_pages')))) {
-                error_log(print_r($request, true));
-                return new WP_Error(
+                // error_log(print_r($request, true));
+                return new \WP_Error(
                     'rest_cannot_edit',
                     __('Sorry, you are not allowed to create tables for this post as this user.'),
                     array('status' => rest_authorization_required_code())
                 );
             }
         } else {
-            error_log(print_r($request, true));
-            return new WP_Error(
+            // error_log(print_r($request, true));
+            return new \WP_Error(
                 'missing_post_id',
                 __('Post ID is missing from request.'),
                 array('status' => 500)
@@ -363,7 +365,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     public function create_item($request)
     {
         if ((int) $request[ 'id' ] !== (int) 0) {
-            return new WP_Error(
+            return new \WP_Error(
                 'rest_table_exists',
                 __('Cannot create existing post.'),
                 array('status' => 400)
@@ -429,14 +431,14 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             if ($postId !== 0) {
                 $post = $this->get_post($postId);
                 if (is_wp_error($post)) {
-                    error_log(print_r($request, true));
+                    // error_log(print_r($request, true));
                     return $post;
                 }
                 $post_type = get_post_type_object($post->post_type);
 
                 if ($post && !$this->check_update_permission($post)) {
-                    error_log(print_r($request, true));
-                    return new WP_Error(
+                    // error_log(print_r($request, true));
+                    return new \WP_Error(
                         'rest_cannot_edit',
                         __('Sorry, you are not allowed to update tables for this post as this user.'),
                         array('status' => rest_authorization_required_code())
@@ -444,8 +446,8 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 }
 
                 if (!empty($request[ 'author' ]) && get_current_user_id() !== $request[ 'author' ] && !current_user_can($post_type->cap->edit_others_posts)) {
-                    error_log(print_r($request, true));
-                    return new WP_Error(
+                    // error_log(print_r($request, true));
+                    return new \WP_Error(
                         'rest_cannot_edit_others',
                         __('Sorry, you are not allowed to update tables for this post as this user.'),
                         array('status' => rest_authorization_required_code())
@@ -454,16 +456,16 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             }
 
             if ($postId === 0 && (!(current_user_can('publish_posts') || current_user_can('publish_pages')))) {
-                error_log(print_r($request, true));
-                return new WP_Error(
+                // error_log(print_r($request, true));
+                return new \WP_Error(
                     'rest_cannot_edit',
                     __('Sorry, you are not allowed to update tables for this post as this user.'),
                     array('status' => rest_authorization_required_code())
                 );
             }
         } else {
-            error_log(print_r($request, true));
-            return new WP_Error(
+            // error_log(print_r($request, true));
+            return new \WP_Error(
                 'missing_post_id',
                 __('Post ID is missing from request.'),
                 array('status' => 500)
@@ -483,15 +485,15 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     public function update_item($request)
     {
 
-        error_log('Reqest as delivered from Service');
-        error_log(print_r($request, true));
+        // error_log('Reqest as delivered from Service');
+        // error_log(print_r($request, true));
         $valid_check = $this->get_table($request[ 'id' ]);
         if (is_wp_error($valid_check)) {
             return $valid_check;
         }
 
         $table = $this->prepare_item_for_database($request);
-        error_log('Reqest adter DB prep');
+        // error_log('Reqest adter DB prep');
         // error_log(print_r($table, true));
 
         if (is_wp_error($table)) {
@@ -560,7 +562,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 $post_type = get_post_type_object($post->post_type);
 
                 if ($post && !$this->check_update_permission($post)) {
-                    return new WP_Error(
+                    return new \WP_Error(
                         'rest_cannot_edit',
                         __('Sorry, you are not allowed to delete tables for this post as this user.'),
                         array('status' => rest_authorization_required_code())
@@ -568,7 +570,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 }
 
                 if (!empty($request[ 'author' ]) && get_current_user_id() !== $request[ 'author' ] && !current_user_can($post_type->cap->edit_others_posts)) {
-                    return new WP_Error(
+                    return new \WP_Error(
                         'rest_cannot_edit_others',
                         __('Sorry, you are not allowed to delete tables for this post as this user.'),
                         array('status' => rest_authorization_required_code())
@@ -577,7 +579,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             }
 
             if ($postId === 0 && (!(current_user_can('publish_posts') || current_user_can('publish_pages')))) {
-                return new WP_Error(
+                return new \WP_Error(
                     'rest_cannot_edit',
                     __('Sorry, you are not allowed to delete tables for this post as this user.'),
                     array('status' => rest_authorization_required_code())
@@ -586,7 +588,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
         } else {
             if ('edit' === $request[ 'context' ] && !current_user_can('edit_posts')) {
-                return new WP_Error(
+                return new \WP_Error(
                     'rest_forbidden_context',
                     __('Sorry, you are not allowed to delete this post.'),
                     array('status' => rest_authorization_required_code())
@@ -616,7 +618,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
 
         $previous = $this->prepare_item_for_response($table, $request);
         $result = delete_table($id);
-        $response = new WP_REST_Response();
+        $response = new \WP_REST_Response();
         $response->set_data(
             array(
                 'deleted' => true,
@@ -625,7 +627,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
         );
 
         if (!$result) {
-            return new WP_Error(
+            return new \WP_Error(
                 'rest_cannot_delete',
                 __('The table cannot be deleted.'),
                 array('status' => 500)
@@ -684,7 +686,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
     protected function prepare_item_for_database($request)
     {
         // error_log(print_r($request, true));
-        $prepared_table = new stdClass();
+        $prepared_table = new \stdClass();
         $current_status = '';
 
         if (isset($request[ 'id' ]) && (int) $request[ 'id' ] !== 0) {
@@ -709,7 +711,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
             if (!empty($schema_header[ 'properties' ][ 'id' ])) {
                 if (isset($request[ 'header' ][ 'id' ])) {
                     if ((int) $request[ 'header' ][ 'id' ] !== (int) $request[ 'id' ]) {
-                        return new WP_Error(
+                        return new \WP_Error(
                             'rest_header_id_integrity',
                             __('Header ID does not match Request ID.'),
                             array('status' => 400)
@@ -771,7 +773,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 if (!empty($schema_row[ 'properties' ][ 'table_id' ])) {
                     if (isset($request[ 'rows' ][ $key ][ 'table_id' ])) {
                         if ((int) $request[ 'rows' ][ $key ][ 'table_id' ] !== (int) $request[ 'id' ]) {
-                            return new WP_Error(
+                            return new \WP_Error(
                                 'rest_header_id_integrity',
                                 __('Row table ID does not match Request ID.'),
                                 array('status' => 400)
@@ -815,7 +817,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 if (!empty($schema_column[ 'properties' ][ 'table_id' ])) {
                     if (isset($request[ 'columns' ][ $key ][ 'table_id' ])) {
                         if ((int) $request[ 'columns' ][ $key ][ 'table_id' ] !== (int) $request[ 'id' ]) {
-                            return new WP_Error(
+                            return new \WP_Error(
                                 'rest_header_id_integrity',
                                 __('Row table ID does not match Request ID.'),
                                 array('status' => 400)
@@ -864,7 +866,7 @@ class Dynamic_Tables_REST_Controller extends WP_REST_Controller
                 if (!empty($schema_cell[ 'properties' ][ 'table_id' ])) {
                     if (isset($request[ 'cells' ][ $key ][ 'table_id' ])) {
                         if ((int) $request[ 'cells' ][ $key ][ 'table_id' ] !== (int) $request[ 'id' ]) {
-                            return new WP_Error(
+                            return new \WP_Error(
                                 'rest_header_id_integrity',
                                 __('Row table ID does not match Request ID.'),
                                 array('status' => 400)

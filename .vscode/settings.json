@@ -1,5 +1,5 @@
 {
-    "phpfmt.php_bin": "\"C:\\Program Files (x86)\\Local\\resources\\extraResources\\lightning-services\\php-8.1.23+0\\bin\\win64\\php\"",
+    "phpfmt.php_bin": "\"C:\\Users\\greg\\AppData\\Roaming\\Local\\lightning-services\\php-8.3.0+1\\bin\\win64\\php\"",
     "phpfmt.wp": true,
     "phpfmt.smart_linebreak_after_curly": true
 }

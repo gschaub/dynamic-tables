@@ -38,7 +38,7 @@ add_filter('dt_content_filtered_save_pre', 'wp_filter_global_styles_post', 9);
  */
 function create_table_data($tablearr, $wp_error = false)
 {
-    error_log(print_r($tablearr, true));
+    // error_log(print_r($tablearr, true));
 
     $tablearrdefault = $tablearr;
 

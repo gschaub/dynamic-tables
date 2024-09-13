@@ -2,7 +2,7 @@ import {
     numberToLetter,
 } from './utils';
 
-export function initTable(newBlockTableRef, columnCount, rowCount) {
+export function initTable(newBlockTableRef, columnCount, rowCount, tableName) {
 
     console.log('FUNCTION - CREATE TABLE')
     console.log('InitialRows - ' + rowCount)
@@ -35,7 +35,7 @@ export function initTable(newBlockTableRef, columnCount, rowCount) {
             block_table_ref: newBlockTableRef,
             post_id: '0',
             table_status: 'new',
-            table_name: 'Test Table',
+            table_name: tableName,
             attributes: getDefaultTableAttributes('table'),
             classes: getDefaultTableClasses('table'),
             rows: rowArray,
@@ -170,7 +170,8 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
         horizontalAlignment: 'none',
         bodyAlignment: undefined,
         bodyBorder: undefined,
-        verticalAlignment: 'none'
+        verticalAlignment: 'none',
+        hideTitle: true
     }
 
     const columnAttributes = {

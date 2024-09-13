@@ -1,4 +1,4 @@
-/******/ (function() { // webpackBootstrap
+/******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
@@ -6,9 +6,12 @@
 /*!***************************************************************************!*\
   !*** ./node_modules/@wordpress/icons/build-module/library/block-table.js ***!
   \***************************************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
@@ -24,7 +27,7 @@ const blockTable = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpre
 }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
   d: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM5 4.5h14c.3 0 .5.2.5.5v3.5h-15V5c0-.3.2-.5.5-.5zm8 5.5h6.5v3.5H13V10zm-1.5 3.5h-7V10h7v3.5zm-7 5.5v-4h7v4.5H5c-.3 0-.5-.2-.5-.5zm14.5.5h-6V15h6.5v4c0 .3-.2.5-.5.5z"
 }));
-/* harmony default export */ __webpack_exports__["default"] = (blockTable);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (blockTable);
 //# sourceMappingURL=block-table.js.map
 
 /***/ }),
@@ -33,9 +36,12 @@ const blockTable = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpre
 /*!*****************************************************************************!*\
   !*** ./node_modules/@wordpress/icons/build-module/library/more-vertical.js ***!
   \*****************************************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
@@ -51,7 +57,7 @@ const moreVertical = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordp
 }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
   d: "M13 19h-2v-2h2v2zm0-6h-2v-2h2v2zm0-6h-2V5h2v2z"
 }));
-/* harmony default export */ __webpack_exports__["default"] = (moreVertical);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (moreVertical);
 //# sourceMappingURL=more-vertical.js.map
 
 /***/ }),
@@ -60,9 +66,12 @@ const moreVertical = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordp
 /*!**********************************************************************!*\
   !*** ./node_modules/@wordpress/icons/build-module/library/search.js ***!
   \**********************************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
@@ -78,7 +87,7 @@ const search = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_p
 }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
   d: "M13 5c-3.3 0-6 2.7-6 6 0 1.4.5 2.7 1.3 3.7l-3.8 3.8 1.1 1.1 3.8-3.8c1 .8 2.3 1.3 3.7 1.3 3.3 0 6-2.7 6-6S16.3 5 13 5zm0 10.5c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5 4.5 2 4.5 4.5-2 4.5-4.5 4.5z"
 }));
-/* harmony default export */ __webpack_exports__["default"] = (search);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (search);
 //# sourceMappingURL=search.js.map
 
 /***/ }),
@@ -87,9 +96,12 @@ const search = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_p
 /*!************************************************************************!*\
   !*** ./node_modules/@wordpress/icons/build-module/library/settings.js ***!
   \************************************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
@@ -107,7 +119,7 @@ const settings = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress
 }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
   d: "m19 15h-2.128c-.3089-.8739-1.1423-1.5-2.122-1.5s-1.8131.6261-2.122 1.5h-7.628v1.5h7.628c.3089.8739 1.1423 1.5 2.122 1.5s1.8131-.6261 2.122-1.5h2.128z"
 }));
-/* harmony default export */ __webpack_exports__["default"] = (settings);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (settings);
 //# sourceMappingURL=settings.js.map
 
 /***/ }),
@@ -116,9 +128,12 @@ const settings = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress
 /*!***********************************************************************************!*\
   !*** ./node_modules/@wordpress/icons/build-module/library/table-column-before.js ***!
   \***********************************************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
@@ -134,7 +149,7 @@ const tableColumnBefore = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_
 }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
   d: "M6.4 3.776v3.648H2.752v1.792H6.4v3.648h1.728V9.216h3.712V7.424H8.128V3.776zM0 17.92V0h20.48v17.92H0zM12.8 1.28H1.28v14.08H12.8V1.28zm6.4 0h-5.12v3.84h5.12V1.28zm0 5.12h-5.12v3.84h5.12V6.4zm0 5.12h-5.12v3.84h5.12v-3.84z"
 }));
-/* harmony default export */ __webpack_exports__["default"] = (tableColumnBefore);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tableColumnBefore);
 //# sourceMappingURL=table-column-before.js.map
 
 /***/ }),
@@ -143,9 +158,12 @@ const tableColumnBefore = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_
 /*!***********************************************************************************!*\
   !*** ./node_modules/@wordpress/icons/build-module/library/table-column-delete.js ***!
   \***********************************************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
@@ -161,7 +179,7 @@ const tableColumnDelete = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_
 }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
   d: "M6.4 9.98L7.68 8.7v-.256L6.4 7.164V9.98zm6.4-1.532l1.28-1.28V9.92L12.8 8.64v-.192zm7.68 9.472V0H0v17.92h20.48zm-1.28-2.56h-5.12v-1.024l-.256.256-1.024-1.024v1.792H7.68v-1.792l-1.024 1.024-.256-.256v1.024H1.28V1.28H6.4v2.368l.704-.704.576.576V1.216h5.12V3.52l.96-.96.32.32V1.216h5.12V15.36zm-5.76-2.112l-3.136-3.136-3.264 3.264-1.536-1.536 3.264-3.264L5.632 5.44l1.536-1.536 3.136 3.136 3.2-3.2 1.536 1.536-3.2 3.2 3.136 3.136-1.536 1.536z"
 }));
-/* harmony default export */ __webpack_exports__["default"] = (tableColumnDelete);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tableColumnDelete);
 //# sourceMappingURL=table-column-delete.js.map
 
 /***/ }),
@@ -170,9 +188,12 @@ const tableColumnDelete = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_
 /*!********************************************************************************!*\
   !*** ./node_modules/@wordpress/icons/build-module/library/table-row-before.js ***!
   \********************************************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
@@ -188,7 +209,7 @@ const tableRowBefore = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wor
 }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
   d: "M6.656 6.464h2.88v2.88h1.408v-2.88h2.88V5.12h-2.88V2.24H9.536v2.88h-2.88zM0 17.92V0h20.48v17.92H0zm7.68-2.56h5.12v-3.84H7.68v3.84zm-6.4 0H6.4v-3.84H1.28v3.84zM19.2 1.28H1.28v9.024H19.2V1.28zm0 10.24h-5.12v3.84h5.12v-3.84zM6.656 6.464h2.88v2.88h1.408v-2.88h2.88V5.12h-2.88V2.24H9.536v2.88h-2.88zM0 17.92V0h20.48v17.92H0zm7.68-2.56h5.12v-3.84H7.68v3.84zm-6.4 0H6.4v-3.84H1.28v3.84zM19.2 1.28H1.28v9.024H19.2V1.28zm0 10.24h-5.12v3.84h5.12v-3.84z"
 }));
-/* harmony default export */ __webpack_exports__["default"] = (tableRowBefore);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tableRowBefore);
 //# sourceMappingURL=table-row-before.js.map
 
 /***/ }),
@@ -197,9 +218,12 @@ const tableRowBefore = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wor
 /*!********************************************************************************!*\
   !*** ./node_modules/@wordpress/icons/build-module/library/table-row-delete.js ***!
   \********************************************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
@@ -215,7 +239,7 @@ const tableRowDelete = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wor
 }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.Path, {
   d: "M17.728 11.456L14.592 8.32l3.2-3.2-1.536-1.536-3.2 3.2L9.92 3.648 8.384 5.12l3.2 3.2-3.264 3.264 1.536 1.536 3.264-3.264 3.136 3.136 1.472-1.536zM0 17.92V0h20.48v17.92H0zm19.2-6.4h-.448l-1.28-1.28H19.2V6.4h-1.792l1.28-1.28h.512V1.28H1.28v3.84h6.208l1.28 1.28H1.28v3.84h7.424l-1.28 1.28H1.28v3.84H19.2v-3.84z"
 }));
-/* harmony default export */ __webpack_exports__["default"] = (tableRowDelete);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tableRowDelete);
 //# sourceMappingURL=table-row-delete.js.map
 
 /***/ }),
@@ -224,11 +248,11 @@ const tableRowDelete = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wor
 /*!******************************************************!*\
   !*** ./src/components/column-dropdown-menu/index.js ***!
   \******************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ColumnMenu: function() { return /* binding */ ColumnMenu; }
+/* harmony export */   ColumnMenu: () => (/* binding */ ColumnMenu)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
@@ -330,11 +354,11 @@ function ColumnMenu(props) {
 /*!********************************************************!*\
   !*** ./src/components/configure-column-width/index.js ***!
   \********************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ConfigureColumnWidth: function() { return /* binding */ ConfigureColumnWidth; }
+/* harmony export */   ConfigureColumnWidth: () => (/* binding */ ConfigureColumnWidth)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
@@ -748,11 +772,11 @@ function ConfigureColumnWidth(props) {
 /*!******************************************************!*\
   !*** ./src/components/configure-row-height/index.js ***!
   \******************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ConfigureRowHeight: function() { return /* binding */ ConfigureRowHeight; }
+/* harmony export */   ConfigureRowHeight: () => (/* binding */ ConfigureRowHeight)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
@@ -1165,14 +1189,14 @@ function ConfigureRowHeight(props) {
 /*!*********************************!*\
   !*** ./src/components/index.js ***!
   \*********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ColumnMenu: function() { return /* reexport safe */ _column_dropdown_menu__WEBPACK_IMPORTED_MODULE_0__.ColumnMenu; },
-/* harmony export */   ConfigureColumnWidth: function() { return /* reexport safe */ _configure_column_width__WEBPACK_IMPORTED_MODULE_1__.ConfigureColumnWidth; },
-/* harmony export */   ConfigureRowHeight: function() { return /* reexport safe */ _configure_row_height__WEBPACK_IMPORTED_MODULE_3__.ConfigureRowHeight; },
-/* harmony export */   RowMenu: function() { return /* reexport safe */ _row_dropdown_menu__WEBPACK_IMPORTED_MODULE_2__.RowMenu; }
+/* harmony export */   ColumnMenu: () => (/* reexport safe */ _column_dropdown_menu__WEBPACK_IMPORTED_MODULE_0__.ColumnMenu),
+/* harmony export */   ConfigureColumnWidth: () => (/* reexport safe */ _configure_column_width__WEBPACK_IMPORTED_MODULE_1__.ConfigureColumnWidth),
+/* harmony export */   ConfigureRowHeight: () => (/* reexport safe */ _configure_row_height__WEBPACK_IMPORTED_MODULE_3__.ConfigureRowHeight),
+/* harmony export */   RowMenu: () => (/* reexport safe */ _row_dropdown_menu__WEBPACK_IMPORTED_MODULE_2__.RowMenu)
 /* harmony export */ });
 /* harmony import */ var _column_dropdown_menu__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./column-dropdown-menu */ "./src/components/column-dropdown-menu/index.js");
 /* harmony import */ var _configure_column_width__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./configure-column-width */ "./src/components/configure-column-width/index.js");
@@ -1189,11 +1213,11 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************************!*\
   !*** ./src/components/row-dropdown-menu/index.js ***!
   \***************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   RowMenu: function() { return /* binding */ RowMenu; }
+/* harmony export */   RowMenu: () => (/* binding */ RowMenu)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
@@ -1293,9 +1317,12 @@ function RowMenu(props) {
 /*!**********************************!*\
   !*** ./src/data/action-types.js ***!
   \**********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 const TYPES = {
   CREATE_TABLE: "CREATE_TABLE",
   INSERT_COLUMN: "INSERT_COLUMN",
@@ -1314,7 +1341,7 @@ const TYPES = {
   PERSIST: "PERSIST",
   PROCESS_BORDERS: "PROCESS_BORDERS"
 };
-/* harmony default export */ __webpack_exports__["default"] = (TYPES);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TYPES);
 
 /***/ }),
 
@@ -1322,31 +1349,31 @@ const TYPES = {
 /*!*****************************!*\
   !*** ./src/data/actions.js ***!
   \*****************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   addColumn: function() { return /* binding */ addColumn; },
-/* harmony export */   addRow: function() { return /* binding */ addRow; },
-/* harmony export */   addTableEntity: function() { return /* binding */ addTableEntity; },
-/* harmony export */   assignTableId: function() { return /* binding */ assignTableId; },
-/* harmony export */   createTableEntity: function() { return /* binding */ createTableEntity; },
-/* harmony export */   deleteTableEntity: function() { return /* binding */ deleteTableEntity; },
-/* harmony export */   processDeletedTables: function() { return /* binding */ processDeletedTables; },
-/* harmony export */   processUnmountedTables: function() { return /* binding */ processUnmountedTables; },
-/* harmony export */   receiveNewTable: function() { return /* binding */ receiveNewTable; },
-/* harmony export */   receiveTable: function() { return /* binding */ receiveTable; },
-/* harmony export */   receiveTableTest: function() { return /* binding */ receiveTableTest; },
-/* harmony export */   removeColumn: function() { return /* binding */ removeColumn; },
-/* harmony export */   removeRow: function() { return /* binding */ removeRow; },
-/* harmony export */   removeTableProp: function() { return /* binding */ removeTableProp; },
-/* harmony export */   saveTableEntity: function() { return /* binding */ saveTableEntity; },
-/* harmony export */   updateCell: function() { return /* binding */ updateCell; },
-/* harmony export */   updateColumn: function() { return /* binding */ updateColumn; },
-/* harmony export */   updateRow: function() { return /* binding */ updateRow; },
-/* harmony export */   updateTableBorder: function() { return /* binding */ updateTableBorder; },
-/* harmony export */   updateTableEntity: function() { return /* binding */ updateTableEntity; },
-/* harmony export */   updateTableProp: function() { return /* binding */ updateTableProp; }
+/* harmony export */   addColumn: () => (/* binding */ addColumn),
+/* harmony export */   addRow: () => (/* binding */ addRow),
+/* harmony export */   addTableEntity: () => (/* binding */ addTableEntity),
+/* harmony export */   assignTableId: () => (/* binding */ assignTableId),
+/* harmony export */   createTableEntity: () => (/* binding */ createTableEntity),
+/* harmony export */   deleteTableEntity: () => (/* binding */ deleteTableEntity),
+/* harmony export */   processDeletedTables: () => (/* binding */ processDeletedTables),
+/* harmony export */   processUnmountedTables: () => (/* binding */ processUnmountedTables),
+/* harmony export */   receiveNewTable: () => (/* binding */ receiveNewTable),
+/* harmony export */   receiveTable: () => (/* binding */ receiveTable),
+/* harmony export */   receiveTableTest: () => (/* binding */ receiveTableTest),
+/* harmony export */   removeColumn: () => (/* binding */ removeColumn),
+/* harmony export */   removeRow: () => (/* binding */ removeRow),
+/* harmony export */   removeTableProp: () => (/* binding */ removeTableProp),
+/* harmony export */   saveTableEntity: () => (/* binding */ saveTableEntity),
+/* harmony export */   updateCell: () => (/* binding */ updateCell),
+/* harmony export */   updateColumn: () => (/* binding */ updateColumn),
+/* harmony export */   updateRow: () => (/* binding */ updateRow),
+/* harmony export */   updateTableBorder: () => (/* binding */ updateTableBorder),
+/* harmony export */   updateTableEntity: () => (/* binding */ updateTableEntity),
+/* harmony export */   updateTableProp: () => (/* binding */ updateTableProp)
 /* harmony export */ });
 /* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
 /* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__);
@@ -1751,11 +1778,14 @@ const tableEntityConfig = [{
 /*!*******************************!*\
   !*** ./src/data/constants.js ***!
   \*******************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 const STORE_NAME = "dynamic-tables/table";
-/* harmony default export */ __webpack_exports__["default"] = (STORE_NAME);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (STORE_NAME);
 
 /***/ }),
 
@@ -1763,11 +1793,11 @@ const STORE_NAME = "dynamic-tables/table";
 /*!***************************!*\
   !*** ./src/data/index.js ***!
   \***************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   store: function() { return /* binding */ store; }
+/* harmony export */   store: () => (/* binding */ store)
 /* harmony export */ });
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
@@ -1807,9 +1837,12 @@ const store = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.createReduxStore)(
 /*!*****************************!*\
   !*** ./src/data/reducer.js ***!
   \*****************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var _action_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./action-types */ "./src/data/action-types.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
 
@@ -2385,7 +2418,7 @@ const reducer = (state = {
   // }
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (reducer);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (reducer);
 
 /***/ }),
 
@@ -2393,11 +2426,11 @@ const reducer = (state = {
 /*!*******************************!*\
   !*** ./src/data/resolvers.js ***!
   \*******************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getTable: function() { return /* binding */ getTable; }
+/* harmony export */   getTable: () => (/* binding */ getTable)
 /* harmony export */ });
 /* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/url */ "@wordpress/url");
 /* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_url__WEBPACK_IMPORTED_MODULE_0__);
@@ -2470,18 +2503,18 @@ const getTable = (tableId, isTableStale) => async ({
 /*!*******************************!*\
   !*** ./src/data/selectors.js ***!
   \*******************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getDeletedTables: function() { return /* binding */ getDeletedTables; },
-/* harmony export */   getTable: function() { return /* binding */ getTable; },
-/* harmony export */   getTableBlockId: function() { return /* binding */ getTableBlockId; },
-/* harmony export */   getTableIdByBlock: function() { return /* binding */ getTableIdByBlock; },
-/* harmony export */   getTableTest: function() { return /* binding */ getTableTest; },
-/* harmony export */   getTables: function() { return /* binding */ getTables; },
-/* harmony export */   getUnmountedTables: function() { return /* binding */ getUnmountedTables; },
-/* harmony export */   getUnsavedTables: function() { return /* binding */ getUnsavedTables; }
+/* harmony export */   getDeletedTables: () => (/* binding */ getDeletedTables),
+/* harmony export */   getTable: () => (/* binding */ getTable),
+/* harmony export */   getTableBlockId: () => (/* binding */ getTableBlockId),
+/* harmony export */   getTableIdByBlock: () => (/* binding */ getTableIdByBlock),
+/* harmony export */   getTableTest: () => (/* binding */ getTableTest),
+/* harmony export */   getTables: () => (/* binding */ getTables),
+/* harmony export */   getUnmountedTables: () => (/* binding */ getUnmountedTables),
+/* harmony export */   getUnsavedTables: () => (/* binding */ getUnsavedTables)
 /* harmony export */ });
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
@@ -2586,11 +2619,11 @@ select => () => {
 /*!*********************!*\
   !*** ./src/edit.js ***!
   \*********************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ Edit; }
+/* harmony export */   "default": () => (/* binding */ Edit)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
@@ -2729,6 +2762,7 @@ function Edit(props) {
   const [rowAttributes, setRowAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({});
   const [render, setRender] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(0);
   const [showBorders, setShowBorders] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
+  const [tableName, setTableName] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)('');
   const [numColumns, setNumColumns] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(1);
   const [numRows, setNumRows] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(1);
   const [gridCells, setGridCells] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)([]);
@@ -2742,7 +2776,7 @@ function Edit(props) {
     block_table_ref,
     block_alignment
   } = props.attributes;
-  const themeColors = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.useSetting)('color.palette');
+  const themeColors = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.useSettings)('color.palette');
   console.log(themeColors);
   console.log('Block Table Ref - ' + block_table_ref);
 
@@ -2980,6 +3014,7 @@ function Edit(props) {
   const gridAlignment = block_alignment;
   const horizontalAlignment = getTablePropAttribute(table.attributes, 'horizontalAlignment');
   const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment');
+  const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle');
   console.log(JSON.stringify(headerBorder, null, 4));
 
   /**
@@ -3270,13 +3305,13 @@ function Edit(props) {
     setTableStale(false);
     return;
   }
-  function createTable(columnCount, rowCount) {
+  function createTable(columnCount, rowCount, tableName) {
     console.log('FUNCTION - CREATE TABLE');
     console.log('InitialRows - ' + rowCount);
     console.log('InitialColumns - ' + columnCount);
     setTableStale(false);
     var newBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_10__.generateBlockTableRef)();
-    const newTable = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_11__.initTable)(newBlockTableRef, columnCount, rowCount);
+    const newTable = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_11__.initTable)(newBlockTableRef, columnCount, rowCount, tableName);
     console.log(JSON.stringify(newTable, null, 4));
     props.setAttributes({
       block_table_ref: newBlockTableRef
@@ -3289,7 +3324,7 @@ function Edit(props) {
 
   function onCreateTable(event) {
     event.preventDefault();
-    createTable(numColumns, numRows);
+    createTable(numColumns, numRows, tableName);
   }
   function onChangeInitialColumnCount(num_columns) {
     console.log('Initial Column Count = ' + num_columns);
@@ -3396,6 +3431,20 @@ function Edit(props) {
     // alert('Mouse clicked on column')
     // return <ColumnMenu>Column Menu</ColumnMenu>
     setTableStale(false);
+  }
+
+  /**
+  * Hide the table title from displaying
+  * 
+  * @param {*} table 
+  * @param {*} isChecked 
+  */
+  function onHideTitle(table, isChecked) {
+    const updatedTableAttributes = {
+      ...table.attributes,
+      hideTitle: isChecked
+    };
+    setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
   }
 
   /**
@@ -3661,6 +3710,7 @@ function Edit(props) {
     initialOpen: true
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.CheckboxControl, {
     label: "Show table borders",
+    __nextHasNoMarginBottom: true,
     checked: showBorders,
     onChange: e => onToggleBorders(table, e)
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.Disabled, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.__experimentalNumberControl, {
@@ -3673,15 +3723,22 @@ function Edit(props) {
     value: numRows,
     labelPosition: "side",
     onChange: e => defineRows(e)
-  })))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelBody, {
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.CheckboxControl, {
+    label: "Hide Table Title",
+    __nextHasNoMarginBottom: true,
+    checked: hideTitle,
+    onChange: e => onHideTitle(table, e)
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelBody, {
     title: "Table Header",
     initialOpen: false
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.CheckboxControl, {
     label: "First Row as Header?",
+    __nextHasNoMarginBottom: true,
     checked: enableHeaderRow,
     onChange: e => onEnableHeaderRow(table, e)
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.CheckboxControl, {
     label: "Freeze Header Row?",
+    __nextHasNoMarginBottom: true,
     disabled: !enableHeaderRow,
     checked: headerRowSticky,
     onChange: e => onHeaderRowSticky(table, e)
@@ -3727,6 +3784,7 @@ function Edit(props) {
     initialOpen: false
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.CheckboxControl, {
     label: "Display Banded Rows",
+    __nextHasNoMarginBottom: true,
     checked: bandedRows
     // checked={true}
     ,
@@ -3749,6 +3807,7 @@ function Edit(props) {
     initialOpen: false
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.CheckboxControl, {
     label: "Display Inner Grid Lines",
+    __nextHasNoMarginBottom: true,
     checked: showGridLines,
     onChange: e => onShowGridLines(table, e)
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.__experimentalNumberControl, {
@@ -3758,7 +3817,7 @@ function Edit(props) {
     onChange: e => onGridLineWidth(table, e)
   })))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.InspectorControls, {
     group: "typography"
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.RichText, {
+  }), !hideTitle && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.RichText, {
     id: "tableTitle",
     style: {
       "--gridAlignment": gridAlignment
@@ -3986,16 +4045,25 @@ function Edit(props) {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
     className: "blocks-table__placeholder-form",
     onSubmit: onCreateTable
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.__experimentalNumberControl, {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.__experimentalInputControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Table Name'),
+    placeholder: "New Table",
+    required: "true",
+    onChange: e => setTableName(e),
+    value: tableName,
+    className: "blocks-table__placeholder-input"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.__experimentalNumberControl, {
     __nextHasNoMarginBottom: true,
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Table Columns'),
     min: 1,
+    required: "true",
     onChange: e => onChangeInitialColumnCount(e),
     value: numColumns,
     className: "blocks-table__placeholder-input"
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.__experimentalNumberControl, {
     __nextHasNoMarginBottom: true,
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Table Rows'),
+    required: "true",
     min: 1,
     onChange: e => onChangeInitialRowCount(e),
     value: numRows,
@@ -4013,11 +4081,11 @@ function Edit(props) {
 /*!**********************!*\
   !*** ./src/hooks.js ***!
   \**********************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   usePostChangesSaved: function() { return /* binding */ usePostChangesSaved; }
+/* harmony export */   usePostChangesSaved: () => (/* binding */ usePostChangesSaved)
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
@@ -4065,7 +4133,7 @@ const usePostChangesSaved = () => {
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
@@ -4096,23 +4164,23 @@ console.log(_block_json__WEBPACK_IMPORTED_MODULE_3__.name);
 /*!**********************!*\
   !*** ./src/style.js ***!
   \**********************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   endGridBodyRowNbr: function() { return /* binding */ endGridBodyRowNbr; },
-/* harmony export */   getBorderStyle: function() { return /* binding */ getBorderStyle; },
-/* harmony export */   getBorderStyleType: function() { return /* binding */ getBorderStyleType; },
-/* harmony export */   getGridHeaderBackgroundColorStyle: function() { return /* binding */ getGridHeaderBackgroundColorStyle; },
-/* harmony export */   getHeaderTextAlignmentStyle: function() { return /* binding */ getHeaderTextAlignmentStyle; },
-/* harmony export */   gridBandedRowBackgroundColorStyle: function() { return /* binding */ gridBandedRowBackgroundColorStyle; },
-/* harmony export */   gridBandedRowTextColorStyle: function() { return /* binding */ gridBandedRowTextColorStyle; },
-/* harmony export */   gridInnerBorderStyle: function() { return /* binding */ gridInnerBorderStyle; },
-/* harmony export */   gridInnerBorderWidthStyle: function() { return /* binding */ gridInnerBorderWidthStyle; },
-/* harmony export */   processColumns: function() { return /* binding */ processColumns; },
-/* harmony export */   processRows: function() { return /* binding */ processRows; },
-/* harmony export */   processTableBodyRows: function() { return /* binding */ processTableBodyRows; },
-/* harmony export */   startGridBodyRowNbr: function() { return /* binding */ startGridBodyRowNbr; }
+/* harmony export */   endGridBodyRowNbr: () => (/* binding */ endGridBodyRowNbr),
+/* harmony export */   getBorderStyle: () => (/* binding */ getBorderStyle),
+/* harmony export */   getBorderStyleType: () => (/* binding */ getBorderStyleType),
+/* harmony export */   getGridHeaderBackgroundColorStyle: () => (/* binding */ getGridHeaderBackgroundColorStyle),
+/* harmony export */   getHeaderTextAlignmentStyle: () => (/* binding */ getHeaderTextAlignmentStyle),
+/* harmony export */   gridBandedRowBackgroundColorStyle: () => (/* binding */ gridBandedRowBackgroundColorStyle),
+/* harmony export */   gridBandedRowTextColorStyle: () => (/* binding */ gridBandedRowTextColorStyle),
+/* harmony export */   gridInnerBorderStyle: () => (/* binding */ gridInnerBorderStyle),
+/* harmony export */   gridInnerBorderWidthStyle: () => (/* binding */ gridInnerBorderWidthStyle),
+/* harmony export */   processColumns: () => (/* binding */ processColumns),
+/* harmony export */   processRows: () => (/* binding */ processRows),
+/* harmony export */   processTableBodyRows: () => (/* binding */ processTableBodyRows),
+/* harmony export */   startGridBodyRowNbr: () => (/* binding */ startGridBodyRowNbr)
 /* harmony export */ });
 /**
  * Establish grid css grid-template-columns based upon attributes associated with columns
@@ -4407,21 +4475,21 @@ function getBorderStyle(border, borderLocation, borderAttribute, borderType) {
 /*!*******************************!*\
   !*** ./src/table-defaults.js ***!
   \*******************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getDefaultCell: function() { return /* binding */ getDefaultCell; },
-/* harmony export */   getDefaultColumn: function() { return /* binding */ getDefaultColumn; },
-/* harmony export */   getDefaultRow: function() { return /* binding */ getDefaultRow; },
-/* harmony export */   getDefaultTableAttributes: function() { return /* binding */ getDefaultTableAttributes; },
-/* harmony export */   getDefaultTableClasses: function() { return /* binding */ getDefaultTableClasses; },
-/* harmony export */   initTable: function() { return /* binding */ initTable; },
-/* harmony export */   initTableCells: function() { return /* binding */ initTableCells; }
+/* harmony export */   getDefaultCell: () => (/* binding */ getDefaultCell),
+/* harmony export */   getDefaultColumn: () => (/* binding */ getDefaultColumn),
+/* harmony export */   getDefaultRow: () => (/* binding */ getDefaultRow),
+/* harmony export */   getDefaultTableAttributes: () => (/* binding */ getDefaultTableAttributes),
+/* harmony export */   getDefaultTableClasses: () => (/* binding */ getDefaultTableClasses),
+/* harmony export */   initTable: () => (/* binding */ initTable),
+/* harmony export */   initTableCells: () => (/* binding */ initTableCells)
 /* harmony export */ });
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
 
-function initTable(newBlockTableRef, columnCount, rowCount) {
+function initTable(newBlockTableRef, columnCount, rowCount, tableName) {
   console.log('FUNCTION - CREATE TABLE');
   console.log('InitialRows - ' + rowCount);
   console.log('InitialColumns - ' + columnCount);
@@ -4450,7 +4518,7 @@ function initTable(newBlockTableRef, columnCount, rowCount) {
       block_table_ref: newBlockTableRef,
       post_id: '0',
       table_status: 'new',
-      table_name: 'Test Table',
+      table_name: tableName,
       attributes: getDefaultTableAttributes('table'),
       classes: getDefaultTableClasses('table'),
       rows: rowArray,
@@ -4568,7 +4636,8 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
     horizontalAlignment: 'none',
     bodyAlignment: undefined,
     bodyBorder: undefined,
-    verticalAlignment: 'none'
+    verticalAlignment: 'none',
+    hideTitle: true
   };
   const columnAttributes = {
     columnWidthType: 'Proportional',
@@ -4679,17 +4748,17 @@ function getDefaultTableClasses(tableComponent) {
 /*!**********************!*\
   !*** ./src/utils.js ***!
   \**********************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   generateBlockTableRef: function() { return /* binding */ generateBlockTableRef; },
-/* harmony export */   numberToLetter: function() { return /* binding */ numberToLetter; },
-/* harmony export */   openCurrentColumnMenu: function() { return /* binding */ openCurrentColumnMenu; },
-/* harmony export */   openCurrentRowMenu: function() { return /* binding */ openCurrentRowMenu; },
-/* harmony export */   setBorderContent: function() { return /* binding */ setBorderContent; },
-/* harmony export */   tableSort: function() { return /* binding */ tableSort; },
-/* harmony export */   updateArray: function() { return /* binding */ updateArray; }
+/* harmony export */   generateBlockTableRef: () => (/* binding */ generateBlockTableRef),
+/* harmony export */   numberToLetter: () => (/* binding */ numberToLetter),
+/* harmony export */   openCurrentColumnMenu: () => (/* binding */ openCurrentColumnMenu),
+/* harmony export */   openCurrentRowMenu: () => (/* binding */ openCurrentRowMenu),
+/* harmony export */   setBorderContent: () => (/* binding */ setBorderContent),
+/* harmony export */   tableSort: () => (/* binding */ tableSort),
+/* harmony export */   updateArray: () => (/* binding */ updateArray)
 /* harmony export */ });
 function numberToLetter(letterNumber) {
   const letterMap = [{
@@ -4886,7 +4955,7 @@ function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
 /*!**********************************************************!*\
   !*** ./src/components/configure-column-width/style.scss ***!
   \**********************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
@@ -4898,7 +4967,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!********************************************************!*\
   !*** ./src/components/configure-row-height/style.scss ***!
   \********************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
@@ -4910,7 +4979,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!*************************!*\
   !*** ./src/editor.scss ***!
   \*************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
@@ -4922,7 +4991,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!************************!*\
   !*** ./src/style.scss ***!
   \************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
@@ -4934,7 +5003,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!************************!*\
   !*** external "React" ***!
   \************************/
-/***/ (function(module) {
+/***/ ((module) => {
 
 module.exports = window["React"];
 
@@ -4944,7 +5013,7 @@ module.exports = window["React"];
 /*!**********************************!*\
   !*** external ["wp","apiFetch"] ***!
   \**********************************/
-/***/ (function(module) {
+/***/ ((module) => {
 
 module.exports = window["wp"]["apiFetch"];
 
@@ -4954,7 +5023,7 @@ module.exports = window["wp"]["apiFetch"];
 /*!*************************************!*\
   !*** external ["wp","blockEditor"] ***!
   \*************************************/
-/***/ (function(module) {
+/***/ ((module) => {
 
 module.exports = window["wp"]["blockEditor"];
 
@@ -4964,7 +5033,7 @@ module.exports = window["wp"]["blockEditor"];
 /*!********************************!*\
   !*** external ["wp","blocks"] ***!
   \********************************/
-/***/ (function(module) {
+/***/ ((module) => {
 
 module.exports = window["wp"]["blocks"];
 
@@ -4974,7 +5043,7 @@ module.exports = window["wp"]["blocks"];
 /*!************************************!*\
   !*** external ["wp","components"] ***!
   \************************************/
-/***/ (function(module) {
+/***/ ((module) => {
 
 module.exports = window["wp"]["components"];
 
@@ -4984,7 +5053,7 @@ module.exports = window["wp"]["components"];
 /*!*********************************!*\
   !*** external ["wp","compose"] ***!
   \*********************************/
-/***/ (function(module) {
+/***/ ((module) => {
 
 module.exports = window["wp"]["compose"];
 
@@ -4994,7 +5063,7 @@ module.exports = window["wp"]["compose"];
 /*!**********************************!*\
   !*** external ["wp","coreData"] ***!
   \**********************************/
-/***/ (function(module) {
+/***/ ((module) => {
 
 module.exports = window["wp"]["coreData"];
 
@@ -5004,7 +5073,7 @@ module.exports = window["wp"]["coreData"];
 /*!******************************!*\
   !*** external ["wp","data"] ***!
   \******************************/
-/***/ (function(module) {
+/***/ ((module) => {
 
 module.exports = window["wp"]["data"];
 
@@ -5014,7 +5083,7 @@ module.exports = window["wp"]["data"];
 /*!**************************************!*\
   !*** external ["wp","dataControls"] ***!
   \**************************************/
-/***/ (function(module) {
+/***/ ((module) => {
 
 module.exports = window["wp"]["dataControls"];
 
@@ -5024,7 +5093,7 @@ module.exports = window["wp"]["dataControls"];
 /*!********************************!*\
   !*** external ["wp","editor"] ***!
   \********************************/
-/***/ (function(module) {
+/***/ ((module) => {
 
 module.exports = window["wp"]["editor"];
 
@@ -5034,7 +5103,7 @@ module.exports = window["wp"]["editor"];
 /*!*********************************!*\
   !*** external ["wp","element"] ***!
   \*********************************/
-/***/ (function(module) {
+/***/ ((module) => {
 
 module.exports = window["wp"]["element"];
 
@@ -5044,7 +5113,7 @@ module.exports = window["wp"]["element"];
 /*!******************************!*\
   !*** external ["wp","i18n"] ***!
   \******************************/
-/***/ (function(module) {
+/***/ ((module) => {
 
 module.exports = window["wp"]["i18n"];
 
@@ -5054,7 +5123,7 @@ module.exports = window["wp"]["i18n"];
 /*!************************************!*\
   !*** external ["wp","primitives"] ***!
   \************************************/
-/***/ (function(module) {
+/***/ ((module) => {
 
 module.exports = window["wp"]["primitives"];
 
@@ -5064,7 +5133,7 @@ module.exports = window["wp"]["primitives"];
 /*!*****************************!*\
   !*** external ["wp","url"] ***!
   \*****************************/
-/***/ (function(module) {
+/***/ ((module) => {
 
 module.exports = window["wp"]["url"];
 
@@ -5074,7 +5143,7 @@ module.exports = window["wp"]["url"];
 /*!************************!*\
   !*** ./src/block.json ***!
   \************************/
-/***/ (function(module) {
+/***/ ((module) => {
 
 module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"dynamic-tables/dynamic-tables","version":"0.1.0","title":"Dynamic Tables","category":"widgets","icon":"editor-table","description":"Create custom table blocks with highly customizable and responsive formats","example":{},"textdomain":"dynamic-tables","attributes":{"table_id":{"type":"integer","default":"0"},"block_table_ref":{"type":"string","default":""},"block_alignment":{"type":"string","default":"undefined"}},"usesContext":["postId","postType"],"supports":{"html":false,"className":false,"color":{"gradients":true,"link":true,"__experimentalDefaultControls":{"background":true,"text":true}},"typography":{"fontSize":true,"__experimentalFontFamily":true,"__experimentalTextDecoration":true,"__experimentalFontStyle":true,"__experimentalFontWeight":true,"__experimentalLetterSpacing":true,"__experimentalWritingMode":true,"__experimentalDefaultControls":{"fontSize":true}},"interactivity":{"clientNavigation":true}},"editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
@@ -5111,9 +5180,9 @@ module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json
 /******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/chunk loaded */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		var deferred = [];
-/******/ 		__webpack_require__.O = function(result, chunkIds, fn, priority) {
+/******/ 		__webpack_require__.O = (result, chunkIds, fn, priority) => {
 /******/ 			if(chunkIds) {
 /******/ 				priority = priority || 0;
 /******/ 				for(var i = deferred.length; i > 0 && deferred[i - 1][2] > priority; i--) deferred[i] = deferred[i - 1];
@@ -5127,7 +5196,7 @@ module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json
 /******/ 				var priority = deferred[i][2];
 /******/ 				var fulfilled = true;
 /******/ 				for (var j = 0; j < chunkIds.length; j++) {
-/******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every(function(key) { return __webpack_require__.O[key](chunkIds[j]); })) {
+/******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
 /******/ 						chunkIds.splice(j--, 1);
 /******/ 					} else {
 /******/ 						fulfilled = false;
@@ -5142,50 +5211,50 @@ module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json
 /******/ 			}
 /******/ 			return result;
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/compat get default export */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = function(module) {
+/******/ 		__webpack_require__.n = (module) => {
 /******/ 			var getter = module && module.__esModule ?
-/******/ 				function() { return module['default']; } :
-/******/ 				function() { return module; };
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
 /******/ 			__webpack_require__.d(getter, { a: getter });
 /******/ 			return getter;
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/define property getters */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = function(exports, definition) {
+/******/ 		__webpack_require__.d = (exports, definition) => {
 /******/ 			for(var key in definition) {
 /******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
 /******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
 /******/ 				}
 /******/ 			}
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	!function() {
-/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
-/******/ 	}();
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = function(exports) {
+/******/ 		__webpack_require__.r = (exports) => {
 /******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
 /******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 /******/ 			}
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/jsonp chunk loading */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		// no baseURI
 /******/ 		
 /******/ 		// object to store loaded and loading chunks
@@ -5206,17 +5275,17 @@ module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json
 /******/ 		
 /******/ 		// no HMR manifest
 /******/ 		
-/******/ 		__webpack_require__.O.j = function(chunkId) { return installedChunks[chunkId] === 0; };
+/******/ 		__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
 /******/ 		
 /******/ 		// install a JSONP callback for chunk loading
-/******/ 		var webpackJsonpCallback = function(parentChunkLoadingFunction, data) {
+/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
 /******/ 			var chunkIds = data[0];
 /******/ 			var moreModules = data[1];
 /******/ 			var runtime = data[2];
 /******/ 			// add "moreModules" to the modules object,
 /******/ 			// then flag all "chunkIds" as loaded and fire callback
 /******/ 			var moduleId, chunkId, i = 0;
-/******/ 			if(chunkIds.some(function(id) { return installedChunks[id] !== 0; })) {
+/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
 /******/ 				for(moduleId in moreModules) {
 /******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
 /******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
@@ -5238,14 +5307,14 @@ module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json
 /******/ 		var chunkLoadingGlobal = self["webpackChunkdynamic_tables"] = self["webpackChunkdynamic_tables"] || [];
 /******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
 /******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /************************************************************************/
 /******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["./style-index"], function() { return __webpack_require__("./src/index.js"); })
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["./style-index"], () => (__webpack_require__("./src/index.js")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()
