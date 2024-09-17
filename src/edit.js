@@ -6,6 +6,7 @@
 import { useSelect, useDispatch, dispatch } from "@wordpress/data";
 import { useState, useEffect, useRef } from "@wordpress/element"
 import { store as editorStore } from "@wordpress/editor";
+import { store as noticeStore } from '@wordpress/notices';
 import { usePrevious } from "@wordpress/compose";
 import { __ } from '@wordpress/i18n';
 import {
@@ -140,6 +141,8 @@ export default function Edit(props) {
 	const { updateTableBorder } = useDispatch(tableStore);
 	const { processUnmountedTables } = useDispatch(tableStore);
 	const { processDeletedTables } = useDispatch(tableStore);
+	const { createNotice, removeNotice } = useDispatch(noticeStore)
+
 
 	/**
 	 * Local State declarations
@@ -772,22 +775,42 @@ export default function Edit(props) {
 	}
 
 	function onChangeInitialColumnCount(num_columns) {
-		console.log('Initial Column Count = ' + num_columns)
 		let newNumColumns = num_columns
-		if (num_columns < 1) {
-			newNumColumns = 1
-		}
+		if (num_columns < 1 || num_columns > 50) {
+			const errorText = 'Cannot have ' + num_columns + ' columns.  You must have at least 1 and no more than 50 columns.'
+			createNotice(
+				'error',
+				errorText,
+				{
+					id: 'invalidNumColumns',
+					isDismissible: true,
+					politeness: 'assertive'
+				});
 
+			newNumColumns = Number(numColumns)
+		} else {
+			removeNotice('invalidNumColumns')
+		}
 		setNumColumns(newNumColumns)
 	}
 
 	function onChangeInitialRowCount(num_rows) {
-		console.log('Initial Row Count = ' + num_rows)
 		let newNumRows = num_rows
-		if (num_rows < 1) {
-			newNumRows = 1
-		}
+		if (num_rows < 1 || num_rows > 1000) {
+			const errorText = 'Cannot have ' + num_rows + ' rows.  You must have at least 1 and no more than 1,000 rows.'
+			createNotice(
+				'error',
+				errorText,
+				{
+					id: 'invalidNumRows',
+					isDismissible: true,
+					politeness: 'assertive'
+				});
 
+			newNumRows = Number(numRows)
+		} else {
+			removeNotice('invalidNumRows')
+		}
 		setNumRows(newNumRows)
 	}
 
@@ -1663,8 +1686,8 @@ export default function Edit(props) {
 								label={__('Table Columns')}
 								min={1}
 								required="true"
-								onChange={e => onChangeInitialColumnCount(e)}
 								value={numColumns}
+								onChange={e => onChangeInitialColumnCount(e)}
 								className="blocks-table__placeholder-input"
 							/>
 
@@ -1673,8 +1696,8 @@ export default function Edit(props) {
 								label={__('Table Rows')}
 								required="true"
 								min={1}
-								onChange={e => onChangeInitialRowCount(e)}
 								value={numRows}
+								onChange={e => onChangeInitialRowCount(e)}
 								className="blocks-table__placeholder-input"
 							/>
 							<Button
