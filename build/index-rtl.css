@@ -41,7 +41,7 @@
 }
 
 .inspector-controls-nemu__label--left-margin {
-  margin-left: 12px;
+  margin-right: 12px;
 }
 
 .grid-control__border-cells {
@@ -108,5 +108,3 @@
 .blocks-table__placeholder-input {
   margin-bottom: 0;
 }
-
-/*# sourceMappingURL=index.css.map*/

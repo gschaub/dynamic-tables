@@ -15,10 +15,10 @@
 		"start": "wp-scripts start --webpack-copy-php"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^26.14.0"
+		"@wordpress/scripts": "^30.8.1"
 	},
 	"dependencies": {
 		"@formatjs/icu-messageformat-parser": "^2.6.2",
-		"@wordpress/icons": "^9.38.0"
+		"@wordpress/icons": "^10.15.1"
 	}
 }

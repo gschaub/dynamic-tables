@@ -69,6 +69,7 @@ function RowMenu(props) {
         console.log(event);
         console.log(updatedRowAttributes);
         if (openModalRowHeight) {
+            event.preventDefault()
             setOpenModalRowHeight(false)
             updatedRow(event, 'attributes', tableId, rowId, updatedRowAttributes)
         } else {

@@ -4,6 +4,7 @@
 import { addQueryArgs } from "@wordpress/url";
 import apiFetch from "@wordpress/api-fetch";
 import { store as coreStore } from "@wordpress/core-data"
+import { loadTableEntityConfig } from './table-entity';
 import { numberToLetter } from '../utils';
 
 
@@ -34,12 +35,15 @@ export const getTable =
                 console.log('Bypassing API Call')
                 return
             }
+
+            // const entityConfig = await dispatch(loadTableEntityConfig());
+
             try {
                 const tableEntity =
                     await registry
                         .resolveSelect(coreStore)
                         .getEntityRecord(
-                            'dynamic-tables/v1',
+                            'dynamic-tables',
                             'table',
                             tableId
                         )

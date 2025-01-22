@@ -4,7 +4,7 @@
   "name": "dynamic-tables/dynamic-tables",
   "version": "0.1.0",
   "title": "Dynamic Tables",
-  "category": "widgets",
+  "category": "design",
   "icon": "editor-table",
   "description": "Create custom table blocks with highly customizable and responsive formats",
   "example": {},
@@ -31,12 +31,10 @@
     "html": false,
     "className": false,
     "color": {
+      "button": true,
       "gradients": true,
-      "link": true,
-      "__experimentalDefaultControls": {
-        "background": true,
-        "text": true
-      }
+      "heading": true,
+      "link": true
     },
     "typography": {
       "fontSize": true,

@@ -30,8 +30,10 @@
 	--gridTemplateRows: auto;
 	--gridAlignment: left;
 	--gridNumColumns: 1;
+	--horizontalScroll: auto;
 
 	display: grid;
+	overflow-x: var(--horizontalScroll);
 	grid-template-columns: var(--gridTemplateColumns);
 	grid-template-rows: repeat(2, auto);
 	gap: 0px;
@@ -122,7 +124,7 @@
 	border-top-width: var(--bodyBorderTopWidth);
 	border-right-color: var(--bodyBorderRightColor);
 	border-right-style: var(--bodyBorderRightStyle);
-	border-right-width: var(--bodyRightWidth);
+	border-right-width: var(--bodyBorderRightWidth);
 	border-bottom-color: var(--bodyBorderBottomColor);
 	border-bottom-style: var(--bodyBorderBottomStyle);
 	border-bottom-width: var(--bodyBorderBottomWidth);

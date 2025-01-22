@@ -215,6 +215,9 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller
         $data = $this->prepare_item_for_response($table, $request);
         $response = rest_ensure_response($data);
 
+        error_log('GET RESPONSE');
+        error_log(json_encode($response));
+
         return $response;
     }
 
@@ -246,6 +249,12 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller
         if (empty($table)) {
             return $error;
         }
+
+        $tableTitle = $table[ 'header' ][ 'table_name' ];
+        $table = $table += [ 'title' => $tableTitle ];
+
+        error_log('Table name = ' . $table[ 'header' ][ 'table_name' ]);
+        error_log('Revised table = ' . json_encode($table));
 
         return $table;
     }
@@ -392,7 +401,11 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller
         }
 
         $table = get_table($table_id);
+        $tableTitle = $table[ 'header' ][ 'table_name' ];
+        $tableTest = $table += [ 'title' => $tableTitle ];
 
+        error_log('Table name = ' . $table[ 'header' ][ 'table_name' ]);
+        error_log('Revised table = ' . json_encode($tableTest));
         /**
          * Reserve for future use
          */
@@ -941,6 +954,10 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller
             $data[ 'id' ] = $table[ 'id' ];
         }
 
+        if (rest_is_field_included('id', $fields)) {
+            $data[ 'title' ] = $table[ 'title' ];
+        }
+
         /**
          * Header Block
          */
@@ -1084,6 +1101,10 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller
                     'type' => 'string',
                     'context' => array('view', 'edit'),
                     'readonly' => true,
+                ),
+                'title' => array(
+                    'description' => __('Table name which can include html style elements.'),
+                    'type' => 'string',
                 ),
                 'header' => array(
                     'description' => __('Tablewide properties.'),

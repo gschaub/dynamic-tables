@@ -7,7 +7,7 @@ import metadata from './block.json';
 console.log(metadata.name)
 
 registerBlockType(metadata.name, {
-// registerBlockType('dynamic-tables/dynamic-tables', {
+	// registerBlockType('dynamic-tables/dynamic-tables', {
 	// From  edit.js
 	apiVersion: 3,
 	edit: Edit,

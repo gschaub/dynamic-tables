@@ -3,6 +3,7 @@ import { addQueryArgs } from "@wordpress/url";
 import { apiFetch } from "@wordpress/data-controls";
 import { store as coreStore } from "@wordpress/core-data"
 import { store as blockEditorStore } from "@wordpress/block-editor"
+import { loadTableEntityConfig } from './table-entity';
 import TYPES from "./action-types.js";
 
 const {
@@ -24,17 +25,7 @@ const {
     PROCESS_BORDERS
 } = TYPES;
 
-export function addTableEntity() {
-    ({ registry }) => {
-        // let configs = select.getEntitiesConfig(kind);
-        // if (configs && configs.length !== 0) {
-        //     return configs;
-        // }
-        registry.dispatch(coreStore).addEntities(tableEntityConfig);
-
-        return configs;
-    };
-}
+// loadTableEntityConfig()
 
 /**
  * @example wp.data.dispatch( 'mfw/table').refreshPost
@@ -91,6 +82,7 @@ export const createTableEntity =
             const testTable = select.getTable('0', false);
             console.log(testTable);
             const newTable = {
+                title: table_name,
                 header: {
                     id: table_id,
                     block_table_ref: block_table_ref,
@@ -112,7 +104,7 @@ export const createTableEntity =
                 const tableEntity = await registry
                     .dispatch(coreStore)
                     .saveEntityRecord(
-                        'dynamic-tables/v1',
+                        'dynamic-tables',
                         'table',
                         newTable
                     );
@@ -137,7 +129,7 @@ export const saveTableEntity =
                 registry
                     .dispatch(coreStore)
                     .saveEditedEntityRecord(
-                        'dynamic-tables/v1',
+                        'dynamic-tables',
                         'table',
                         tableId
                     );
@@ -193,6 +185,7 @@ export const updateTableEntity =
 
             const updatedTable = {
                 id: tableId,
+                title: table_name,
                 header: {
                     id: table_id,
                     block_table_ref: block_table_ref,
@@ -219,7 +212,7 @@ export const updateTableEntity =
                 registry
                     .dispatch(coreStore)
                     .editEntityRecord(
-                        'dynamic-tables/v1',
+                        'dynamic-tables',
                         'table',
                         table_id,
                         updatedTable
@@ -239,7 +232,7 @@ export const deleteTableEntity =
                 const deletedTableEntity = await registry
                     .dispatch(coreStore)
                     .deleteEntityRecord(
-                        'dynamic-tables/v1',
+                        'dynamic-tables',
                         'table',
                         tableId
                     );
@@ -421,34 +414,3 @@ export function receiveTableTest(tableEntity) {
         // }
     }
 }
-
-const tableEntityConfig = [
-    {
-        name: 'dynamicTable',
-        kind: 'dynamic-tables/v1',
-        baseURL: '/dynamic-tables/v1/table',
-        // baseURLParams: { tableId: '18' },
-
-        // plural: 'taxonomies',
-        // label: __('Taxonomy'),
-        // syncConfig: {
-        //     fetch: async () => {
-        //         return apiFetch({ path: '/' });
-        //     },
-        //     applyChangesToDoc: (doc, changes) => {
-        //         const document = doc.getMap('document');
-        //         Object.entries(changes).forEach(([key, value]) => {
-        //             if (document.get(key) !== value) {
-        //                 document.set(key, value);
-        //             }
-        //         });
-        //     },
-        //     fromCRDTDoc: (doc) => {
-        //         return doc.getMap('document').toJSON();
-        //     },
-        // },
-        // syncObjectType: 'root/base',
-        // getSyncObjectId: () => 'index',
-    },
-
-];
