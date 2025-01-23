@@ -114,7 +114,8 @@ dispatch('core').addEntities([
 		baseURL: '/dynamic-tables/v1/tables',
 		baseURLParams: { context: 'edit' },
 		plural: 'tables',
-		label: __('Table')
+		label: __('Table'),
+		getTitle: (record) => record?.title || __('Unnamed Table'),
 	}
 ]);
 

@@ -2685,7 +2685,8 @@ const loadTableEntityConfig = () => {
       context: 'edit'
     },
     plural: 'tables',
-    label: __('Table')
+    label: __('Table'),
+    getTitle: record => record?.title || __('Unnamed Table')
   };
   dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).addEntities(tableConfig);
   console.log(tableConfig);
@@ -2773,7 +2774,8 @@ __webpack_require__.r(__webpack_exports__);
     context: 'edit'
   },
   plural: 'tables',
-  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table')
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table'),
+  getTitle: record => record?.title || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Unnamed Table')
 }]);
 function Edit(props) {
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.useBlockProps)({
