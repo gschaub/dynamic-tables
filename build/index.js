@@ -3755,7 +3755,7 @@ function Edit(props) {
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
                   className: "grid-control__inspector-controls--read-only-label",
                   children: "Table Name:"
-                }), table.table_name]
+                }), (0,_utils__WEBPACK_IMPORTED_MODULE_12__.removeTags)(table.table_name)]
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelRow, {
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
@@ -5013,6 +5013,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   numberToLetter: () => (/* binding */ numberToLetter),
 /* harmony export */   openCurrentColumnMenu: () => (/* binding */ openCurrentColumnMenu),
 /* harmony export */   openCurrentRowMenu: () => (/* binding */ openCurrentRowMenu),
+/* harmony export */   removeTags: () => (/* binding */ removeTags),
 /* harmony export */   setBorderContent: () => (/* binding */ setBorderContent),
 /* harmony export */   tableSort: () => (/* binding */ tableSort),
 /* harmony export */   updateArray: () => (/* binding */ updateArray)
@@ -5203,6 +5204,14 @@ function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
     return true;
   }
   return false;
+}
+function removeTags(str) {
+  if (str === null || str === '') return false;else str = str.toString();
+
+  // Regular expression to identify HTML tags in
+  // the input string. Replacing the identified
+  // HTML tag with a null string.
+  return str.replace(/(<([^>]+)>)/ig, '');
 }
 
 /***/ }),

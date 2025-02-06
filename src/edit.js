@@ -76,7 +76,8 @@ import {
 	generateBlockTableRef,
 	setBorderContent,
 	openCurrentColumnMenu,
-	openCurrentRowMenu
+	openCurrentRowMenu,
+	removeTags
 } from './utils';
 import {
 	initTable,
@@ -1243,7 +1244,7 @@ export default function Edit(props) {
 								<PanelRow>
 									<div className="grid-control__inspector-controls--read-only">
 										<span className="grid-control__inspector-controls--read-only-label">Table Name:</span>
-										{table.table_name}
+										{removeTags(table.table_name)}
 									</div>
 								</PanelRow>
 
