@@ -384,12 +384,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../data */ "./src/data/index.js");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-column-width/style.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-column-width/style.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
 
 /**
  * WordPress dependencies
@@ -397,12 +394,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
 /**
  * Internal dependencies
  */
-
 
 
 function ConfigureColumnWidth(props) {
@@ -600,22 +594,22 @@ function ConfigureColumnWidth(props) {
   console.log('...Disable Proportional Input = ' + hideProportional);
   console.log('...Disable Fixed Input = ' + hideFixed);
   console.log('...Disable Custom Input = ' + hideCustom);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
-    children: openColumnWidth && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+    children: openColumnWidth && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {
       title: "Configure Column Width",
       onRequestClose: handleCancel,
       focusOnMount: "firstContentElement",
       isDismissible: "false",
       shouldCloseOnClickOutside: "false",
       size: "large",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("p", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
         className: "column-label",
         children: ["For column ", columnLabel]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("form", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
         // className="blocks-table__placeholder-form"
         onSubmit: onUpdate,
         onMouseDown: stopProp,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
           label: "Width Type",
           value: columnWidthType,
           onChange: e => onWidthType(e),
@@ -633,25 +627,25 @@ function ConfigureColumnWidth(props) {
             label: "Custom"
           }],
           __nextHasNoMarginBottom: true
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("fieldset", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("fieldset", {
           className: hideProportional === true ? " column-width--not-visible" : "",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("legend", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("legend", {
             children: "Set Proportional Width"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
             className: "column-width-value-input",
             label: "Number of portions",
             labelPosition: "side",
             onBlur: e => onMaximumWidth(e),
             value: maxWidth
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
             className: "column-width-span-input",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
               className: "column-width-value-input",
               label: "Minimum width",
               labelPosition: "left",
               value: minWidth,
               onBlur: e => onMinimumWidth(e)
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
               className: "column-width-unit-input",
               labelPosition: "left",
               label: "Units",
@@ -676,19 +670,19 @@ function ConfigureColumnWidth(props) {
               __nextHasNoMarginBottom: true
             })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("fieldset", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("fieldset", {
           className: hideFixed === true ? "column-width--not-visible" : "",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("legend", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("legend", {
             children: "Set Fixed Width"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
             className: "column-width-span-input",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
               className: "column-width-input",
               label: "Fixed width",
               labelPosition: "left",
               value: fixedWidth,
               onBlur: e => onFixedWidth(e)
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
               className: "column-width-unit-input",
               label: "Units",
               labelPosition: "left",
@@ -713,19 +707,19 @@ function ConfigureColumnWidth(props) {
               __nextHasNoMarginBottom: true
             })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("fieldset", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("fieldset", {
           className: hideCustom === true ? "column-width--not-visible" : "",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("legend", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("legend", {
             children: "Set Custom Width"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
             className: "column-width-span-input",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
               className: "column-width-input",
               label: "Minimum width",
               labelPosition: "left",
               value: minWidth,
               onBlur: e => onMinimumWidth(e)
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
               className: "column-width-unit-input",
               labelPosition: "left",
               label: "Units",
@@ -749,15 +743,15 @@ function ConfigureColumnWidth(props) {
               }],
               __nextHasNoMarginBottom: true
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
             className: "column-width-span-input",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
               className: "column-width-input",
               label: "Maximum width",
               labelPosition: "left",
               value: maxWidth,
               onBlur: e => onMaximumWidth(e)
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
               className: "column-width-unit-input",
               labelPosition: "left",
               label: "Units",
@@ -782,22 +776,22 @@ function ConfigureColumnWidth(props) {
               __nextHasNoMarginBottom: true
             })]
           })]
-        }), enableProFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
+        }), enableProFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
             label: "Hide for tablet",
             checked: disableForTablet,
             onChange: onTablet
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
             label: "Hide for phone",
             checked: disableForPhone,
             onChange: onPhone
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("span", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
             variant: "secondary",
             onClick: handleCancel,
             children: "Cancel"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
             variant: "primary",
             type: "submit",
             children: "Update"
@@ -826,18 +820,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../data */ "./src/data/index.js");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-row-height/style.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-row-height/style.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
 
 /**
  * WordPress dependencies
  */
-
-
 
 
 
@@ -846,129 +835,97 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-
 function ConfigureRowHeight(props) {
   const {
-    openColumnWidth,
-    columnId,
-    columnLabel,
-    columnAttributes
+    openRowHeight,
+    rowId,
+    rowLabel,
+    rowAttributes
   } = props;
   //    const [closePage, setClosePage] = useState(false)
 
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    switch (columnAttributes.columnWidthType) {
-      case 'Proportional':
-        {
-          setHideProportional(false);
-          setHideCustom(true);
-          setHideFixed(true);
-          break;
-        }
+    switch (rowAttributes.rowHeightType) {
       case 'Auto':
         {
-          setHideProportional(true);
           setHideCustom(true);
           setHideFixed(true);
           break;
         }
       case 'Fixed':
         {
-          setHideProportional(true);
           setHideCustom(true);
           setHideFixed(false);
           break;
         }
       case 'Custom':
         {
-          setHideProportional(true);
           setHideCustom(false);
           setHideFixed(true);
           break;
         }
     }
-    setColumnWidthType(columnAttributes.columnWidthType);
-    setMinWidth(columnAttributes.minWidth);
-    setMinWidthUnits(columnAttributes.minWidthUnits);
-    setMaxWidth(columnAttributes.maxWidth);
-    setMaxWidthUnits(columnAttributes.maxWidthUnits);
-    setFixedWidth(columnAttributes.fixedWidth);
-    setFixedWidthUnits(columnAttributes.fixedWidth);
-    setDisableForPhone(columnAttributes.disableForPhone);
-    setDisableForTablet(columnAttributes.disableForTablet);
-  }, [columnAttributes]);
+    setRowHeightType(rowAttributes.rowHeightType);
+    setMinHeight(rowAttributes.minHeight);
+    setMinHeightUnits(rowAttributes.minHeightUnits);
+    setMaxHeight(rowAttributes.maxHeight);
+    setMaxHeightUnits(rowAttributes.maxHeightUnits);
+    setFixedHeight(rowAttributes.fixedHeight);
+    setFixedHeightUnits(rowAttributes.fixedHeightUnits);
+  }, [rowAttributes]);
   function stopProp(event) {
     event.stopPropagation();
   }
   function handleCancel(event) {
-    openColumnWidth(false);
+    openRowHeight(false);
   }
-  const [columnWidthType, setColumnWidthType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)();
-  const [hideProportional, setHideProportional] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  const [rowHeightType, setRowHeightType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)();
   const [hideCustom, setHideCustom] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [hideFixed, setHideFixed] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
-  const [minWidth, setMinWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
-  const [minWidthUnits, setMinWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)();
-  const [maxWidth, setMaxWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(1);
-  const [maxWidthUnits, setMaxWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)();
-  const [fixedWidth, setFixedWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
-  const [fixedWidthUnits, setFixedWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)();
-  const [disableForTablet, setDisableForTablet] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-  const [disableForPhone, setDisableForPhone] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-  console.log('In Component ConfigureColumnWidth');
+  const [minHeight, setMinHeight] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [minHeightUnits, setMinHeightUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)();
+  const [maxHeight, setMaxHeight] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(1);
+  const [maxHeightUnits, setMaxHeightUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)();
+  const [fixedHeight, setFixedHeight] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [fixedHeightUnits, setFixedHeightUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)();
+  console.log('In Component ConfigureRowHeight');
   console.log(props);
   function onHeightType(event) {
     console.log('...In Height Type Update');
     console.log(event);
     switch (event) {
-      case 'Proportional':
-        {
-          setMaxWidth(1);
-          setMaxWidthUnits('fr');
-          setMinWidth(20);
-          setMinWidthUnits('ch');
-          setFixedWidth(0);
-          setFixedWidthUnits('px');
-          setHideProportional(false);
-          setHideCustom(true);
-          setHideFixed(true);
-          break;
-        }
       case 'Auto':
         {
-          setMaxWidth(0);
-          setMaxWidthUnits('fr');
-          setMinWidth(0);
-          setMinWidthUnits('ch');
-          setFixedWidth(0);
-          setFixedWidthUnits('px');
-          setHideProportional(true);
+          setMaxHeight(0);
+          setMaxHeightUnits('fr');
+          setMinHeight(0);
+          setMinHeightUnits('ch');
+          setFixedHeight(0);
+          setFixedHeightUnits('px');
           setHideCustom(true);
           setHideFixed(true);
           break;
         }
       case 'Fixed':
         {
-          setMaxWidth(0);
-          setMaxWidthUnits('fr');
-          setMinWidth(0);
-          setMinWidthUnits('ch');
-          setFixedWidth(40);
-          setFixedWidthUnits('px');
-          setHideProportional(true);
+          setMaxHeight(0);
+          setMaxHeightUnits('fr');
+          setMinHeight(0);
+          setMinHeightUnits('ch');
+          setFixedHeight(40);
+          setFixedHeightUnits('px');
           setHideCustom(true);
           setHideFixed(false);
           break;
         }
       case 'Custom':
         {
-          setMaxWidth(40);
-          setMaxWidthUnits('ch');
-          setMinWidth(20);
-          setMinWidthUnits('ch');
-          setFixedWidth(0);
-          setFixedWidthUnits('px');
-          setHideProportional(true);
+          setMaxHeight(40);
+          setMaxHeightUnits('ch');
+          setMinHeight(20);
+          setMinHeightUnits('ch');
+          setFixedHeight(0);
+          setFixedHeightUnits('px');
           setHideCustom(false);
           setHideFixed(true);
           break;
@@ -976,165 +933,106 @@ function ConfigureRowHeight(props) {
     }
     setRowHeightType(event);
   }
-  function onMinimumWidth(event) {
-    console.log('...In MixWidth Update');
+  function onMinimumHeight(event) {
+    console.log('...In MixHeight Update');
     console.log(event);
-    setMinWidth(event.target.value);
+    setMinHeight(event.target.value);
   }
-  function onMinimumWidthUnits(event) {
-    console.log('...In MixWidth Units Update');
+  function onMinimumHeightUnits(event) {
+    console.log('...In MixHeight Units Update');
     console.log(event);
-    setMinWidthUnits(event);
+    setMinHeightUnits(event);
   }
-  function onMaximumWidth(event) {
-    console.log('...In Max Width Update');
+  function onMaximumHeight(event) {
+    console.log('...In Max Height Update');
     console.log(event);
-    setMaxWidth(event.target.value);
+    setMaxHeight(event.target.value);
   }
-  function onMaximumWidthUnits(event) {
-    console.log('...In Max Width  Update');
+  function onMaximumHeightUnits(event) {
+    console.log('...In Max Height Update');
     console.log(event);
-    setMaxWidthUnits(event);
+    setMaxHeightUnits(event);
   }
-  function onFixedWidth(event) {
-    console.log('...In Max Width Update');
+  function onFixedHeight(event) {
+    console.log('...In Max Height Update');
     console.log(event);
-    setFixedWidth(Number(event.target.value));
+    setFixedHeight(Number(event.target.value));
   }
-  function onFixedWidthUnits(event) {
-    console.log('...In Max Width Units Update');
+  function onFixedHeightUnits(event) {
+    console.log('...In Max Height Units Update');
     console.log(event);
-    setFixedWidthUnits(event);
-  }
-  function onTablet(checked) {
-    console.log('...In Tablet Update');
-    console.log(checked);
-    setDisableForTablet(checked);
-  }
-  function onPhone(checked) {
-    console.log('...In Phone Update');
-    console.log(checked);
-    setDisableForPhone(checked);
+    setFixedHeightUnits(event);
   }
   function onUpdate(event) {
     // event.preventDefault()
     console.log('ROW HEIGHT  UPDATED...');
     console.log(event);
-    console.log('...Max Height = ' + maxWidth);
-    var updatedColumnAttributes = {
-      columnWidthType: columnWidthType,
-      minWidth: minWidth,
-      minWidthUnits: minWidthUnits,
-      maxWidth: Number(maxWidth),
-      maxWidthUnits: maxWidthUnits,
-      fixedWidth: fixedWidth,
-      fixedWidthUnits: fixedWidthUnits,
-      disableForTablet: disableForTablet,
-      disableForPhone: disableForPhone,
-      isFixedLeftColumnGroup: false,
+    console.log('...Max Height = ' + maxHeight);
+    var updatedRowAttributes = {
+      rowHeightType: rowHeightType,
+      minHeight: minHeight,
+      minHeightUnits: minHeightUnits,
+      maxHeight: Number(maxHeight),
+      maxHeightUnits: maxHeightUnits,
+      fixedHeight: fixedHeight,
+      fixedHeightUnits: fixedHeightUnits,
+      isFixedLeftRowGroup: false,
       horizontalAlignment: "none"
     };
-    console.log(updatedColumnAttributes);
-    openRowHeight(false, updatedColumnAttributes);
+    console.log(updatedRowAttributes);
+    openRowHeight(false, updatedRowAttributes);
   }
   console.log('RENDER PROPS');
-  console.log('...Disable Proportional Input = ' + hideProportional);
   console.log('...Disable Fixed Input = ' + hideFixed);
   console.log('...Disable Custom Input = ' + hideCustom);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
-    children: openRowHeight && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {
-      title: "Configure Column Width",
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+    children: openRowHeight && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {
+      title: "Configure Row Height",
       onRequestClose: handleCancel,
       focusOnMount: "firstContentElement",
       isDismissible: "false",
       shouldCloseOnClickOutside: "false",
       size: "large",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("p", {
-        className: "column-label",
-        children: ["For column ", columnLabel]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("form", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
+        className: "row-label",
+        children: ["For row ", rowLabel]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
         // className="blocks-table__placeholder-form"
         onSubmit: onUpdate,
         onMouseDown: stopProp,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
           label: "Height Type",
           value: rowHeightType,
           onChange: e => onHeightType(e),
           options: [{
-            value: "Proportional",
-            label: "Proportional"
-          }, {
             value: "Auto",
             label: "Automatic"
           }, {
             value: "Fixed",
-            label: "Fixed width"
+            label: "Fixed height"
           }, {
             value: "Custom",
             label: "Custom"
           }],
           __nextHasNoMarginBottom: true
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("fieldset", {
-          className: hideProportional === true ? " column-width--not-visible" : "",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("legend", {
-            children: "Set Proportional Width"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
-            className: "column-width-value-input",
-            label: "Number of portions",
-            labelPosition: "side",
-            onBlur: e => onMaximumWidth(e),
-            value: maxWidth
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("span", {
-            className: "column-width-span-input",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
-              className: "column-width-value-input",
-              label: "Minimum width",
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("fieldset", {
+          className: hideFixed === true ? "row-height--not-visible" : "",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("legend", {
+            children: "Set Fixed Height"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+            className: "row-height-span-input",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
+              className: "row-height-input",
+              label: "Fixed height",
               labelPosition: "left",
-              value: minWidth,
-              onBlur: e => onMinimumWidth(e)
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-              className: "column-width-unit-input",
-              labelPosition: "left",
-              label: "Units",
-              value: minWidthUnits,
-              onChange: e => onMinimumWidthUnits(e),
-              options: [{
-                value: "px",
-                label: "pixels"
-              }, {
-                value: "ch",
-                label: "characters"
-              }, {
-                value: "pt",
-                label: "points"
-              }, {
-                value: "in",
-                label: "inches"
-              }, {
-                value: "fr",
-                label: "proportional"
-              }],
-              __nextHasNoMarginBottom: true
-            })]
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("fieldset", {
-          className: hideFixed === true ? "column-width--not-visible" : "",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("legend", {
-            children: "Set Fixed Width"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("span", {
-            className: "column-width-span-input",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
-              className: "column-width-input",
-              label: "Fixed width",
-              labelPosition: "left",
-              value: fixedWidth,
-              onBlur: e => onFixedWidth(e)
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-              className: "column-width-unit-input",
+              value: fixedHeight,
+              onBlur: e => onFixedHeight(e)
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+              className: "row-height-unit-input",
               label: "Units",
               labelPosition: "left",
-              value: fixedWidthUnits,
-              onChange: e => onFixedWidthUnits(e),
+              value: fixedHeightUnits,
+              onChange: e => onFixedHeightUnits(e),
               options: [{
                 value: "px",
                 label: "pixels"
@@ -1154,24 +1052,24 @@ function ConfigureRowHeight(props) {
               __nextHasNoMarginBottom: true
             })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("fieldset", {
-          className: hideCustom === true ? "column-width--not-visible" : "",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("legend", {
-            children: "Set Custom Width"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("span", {
-            className: "column-width-span-input",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
-              className: "column-width-input",
-              label: "Minimum width",
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("fieldset", {
+          className: hideCustom === true ? "row-height--not-visible" : "",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("legend", {
+            children: "Set Custom Height"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+            className: "row-height-span-input",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
+              className: "row-height-input",
+              label: "Minimum height",
               labelPosition: "left",
-              value: minWidth,
-              onBlur: e => onMinimumWidth(e)
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-              className: "column-width-unit-input",
+              value: minHeight,
+              onBlur: e => onMinimumHeight(e)
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+              className: "row-height-unit-input",
               labelPosition: "left",
               label: "Units",
-              value: minWidthUnits,
-              onChange: e => onMinimumWidthUnits(e),
+              value: minHeightUnits,
+              onChange: e => onMinimumHeightUnits(e),
               options: [{
                 value: "px",
                 label: "pixels"
@@ -1190,20 +1088,20 @@ function ConfigureRowHeight(props) {
               }],
               __nextHasNoMarginBottom: true
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("span", {
-            className: "column-width-span-input",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
-              className: "column-width-input",
-              label: "Maximum width",
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+            className: "row-height-span-input",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
+              className: "row-height-input",
+              label: "Maximum height",
               labelPosition: "left",
-              value: maxWidth,
-              onBlur: e => onMaximumWidth(e)
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-              className: "column-width-unit-input",
+              value: maxHeight,
+              onBlur: e => onMaximumHeight(e)
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+              className: "row-height-unit-input",
               labelPosition: "left",
               label: "Units",
-              value: maxWidthUnits,
-              onChange: e => onMaximumWidthUnits(e),
+              value: maxHeightUnits,
+              onChange: e => onMaximumHeightUnits(e),
               options: [{
                 value: "px",
                 label: "pixels"
@@ -1223,20 +1121,12 @@ function ConfigureRowHeight(props) {
               __nextHasNoMarginBottom: true
             })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
-          label: "Hide for tablet",
-          checked: disableForTablet,
-          onChange: onTablet
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
-          label: "Hide for phone",
-          checked: disableForPhone,
-          onChange: onPhone
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("span", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
             variant: "secondary",
             onClick: handleCancel,
             children: "Cancel"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
             variant: "primary",
             type: "submit",
             children: "Update"
@@ -1343,7 +1233,7 @@ function RowMenu(props) {
     console.log(event);
     console.log(updatedRowAttributes);
     if (openModalRowHeight) {
-      event.preventDefault();
+      // event.preventDefault()
       setOpenModalRowHeight(false);
       updatedRow(event, 'attributes', tableId, rowId, updatedRowAttributes);
     } else {
@@ -2244,7 +2134,7 @@ const table = (state = {
       if (action.attribute === 'attributes') {
         transformedValue = JSON.stringify(action.value);
       }
-      console.log(transformedValue);
+      console.log();
       let newRowsState = {
         ...state
       };
@@ -3505,7 +3395,7 @@ function Edit(props) {
     switch (updateType) {
       case 'attributes':
         {
-          setTableAttributes(tableId, 'column', rowId, 'ATTRIBUTES', updatedRowAttributes);
+          setTableAttributes(tableId, 'row', rowId, 'ATTRIBUTES', updatedRowAttributes);
           break;
         }
       case 'insert':
@@ -3527,7 +3417,7 @@ function Edit(props) {
     }
     console.log('Show Borders = ' + showBorders);
   }
-  function onMouseColumnClick(column_id, row_id, table, event) {
+  function onMouseBorderClick(column_id, row_id, table, event) {
     console.log('MOUSE CLICKED IN BORDER');
     console.log('Column = ' + column_id);
     console.log('Row = ' + row_id);
@@ -3761,11 +3651,13 @@ function Edit(props) {
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
   }
   const gridColumnStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.processColumns)(isNewBlock, tableIsResolving, enableFutureFeatures, table.columns);
-  const gridRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.processRows)(isNewBlock, tableIsResolving, table.rows);
-  const gridBodyRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.processTableBodyRows)(isNewBlock, tableIsResolving, table.rows);
-  const startGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.startGridBodyRowNbr)(enableHeaderRow, showBorders);
-  const endGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.endGridBodyRowNbr)(startGridBodyRowNbrStyle, numRows, enableHeaderRow, false);
-  const horizontalScrollStyle = allowHorizontalScroll ? 'auto' : 'clip';
+  const gridHeaderRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.processHeaderRow)(isNewBlock, tableIsResolving, table.rows);
+  const gridBodyRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.processBodyRows)(isNewBlock, tableIsResolving, table.rows);
+  const startGridHeaderRowNbrStyle = showBorders ? 2 : 1;
+  const endGridHeaderRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.endGridRowNbr)(1, 'Header', numRows, enableHeaderRow, showBorders, false);
+  const startGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.startGridRowNbr)(enableHeaderRow, showBorders);
+  const endGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.endGridRowNbr)(startGridBodyRowNbrStyle, 'Body', numRows, enableHeaderRow, showBorders, false);
+  const horizontalScrollStyle = allowHorizontalScroll ? 'auto' : 'hidden';
   const gridBandedRowTextColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.gridBandedRowTextColorStyle)(isNewBlock, tableIsResolving, bandedRowTextColor);
   const gridBandedRowBackgroundColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.gridBandedRowBackgroundColorStyle)(isNewBlock, tableIsResolving, bandedRowBackgroundColor);
   const gridShowInnerLines = (0,_style__WEBPACK_IMPORTED_MODULE_14__.gridInnerBorderStyle)(isNewBlock, tableIsResolving, showGridLines);
@@ -3835,7 +3727,8 @@ function Edit(props) {
   console.log('Block Table Status - ' + blockTableStatus);
   console.log('Is Table Resolving - ' + tableIsResolving);
   console.log('gridColumnStyle = ' + gridColumnStyle);
-  console.log('gridRowStyle = ' + gridRowStyle);
+  console.log('gridRowHeaderStyle = ' + gridHeaderRowStyle);
+  console.log('gridRowBodyStyle = ' + gridBodyRowStyle);
   console.log(blockProps);
   console.log(blockProps.style.backgroundColor);
   if (!tableIsResolving) {
@@ -4019,7 +3912,7 @@ function Edit(props) {
         group: "typography"
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
         style: {
-          "display": "inline-block"
+          "display": "block"
         },
         children: [!hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.RichText, {
           id: "tableTitle",
@@ -4034,51 +3927,53 @@ function Edit(props) {
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
             className: "grid-scroller",
             style: {
-              "--headerRowSticky": headerRowStickyStyle,
-              "--startGridBodyRowNbr": startGridBodyRowNbrStyle,
-              "--endGridBodyRowNbr": endGridBodyRowNbrStyle
+              "--headerRowSticky": headerRowStickyStyle
+              // "--startGridBodyRowNbr": startGridBodyRowNbrStyle,
+              // "--endGridBodyRowNbr": endGridBodyRowNbrStyle
             },
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
               className: "grid-control " + headerRowStickyClass,
               style: {
                 "--gridTemplateColumns": gridColumnStyle,
-                "--gridTemplateRows": gridRowStyle,
                 "--horizontalScroll": horizontalScrollStyle,
                 "--headerRowSticky": headerRowStickyStyle,
                 "--gridNumColumns": numColumns,
                 "--gridNumRows": numRows,
                 "--gridAlignment": gridAlignment
               },
-              children: [showBorders && table.cells.filter(cell => cell.attributes.border && cell.row_id === '0').map(({
-                table_id,
-                row_id,
-                column_id,
-                cell_id,
-                content,
-                attributes,
-                classes
-              }) => {
-                console.log('Rendering Body Row Cell' + cell_id);
-                const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.setBorderContent)(row_id, column_id, content);
-                const isOpenCurrentColumnMenu = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.openCurrentColumnMenu)(columnMenuVisible, openColumnRow, column_id);
-                const isFirstColumn = column_id === '1' ? true : false;
-                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-                  children: [isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                    className: "grid-control__border-cells"
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                    id: cell_id,
-                    onMouseDown: e => onMouseColumnClick(column_id, row_id, table, e),
-                    className: classes,
-                    children: [borderContent, isOpenCurrentColumnMenu && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.ColumnMenu, {
-                      tableId: table_id,
-                      columnId: column_id,
-                      columnLabel: borderContent,
-                      columnAttributes: columnAttributes,
-                      enableProFeatures: enableProFeatures,
-                      updatedColumn: onUpdateColumn
+              children: [showBorders && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                className: "grid-control__border",
+                children: table.cells.filter(cell => cell.attributes.border && cell.row_id === '0').map(({
+                  table_id,
+                  row_id,
+                  column_id,
+                  cell_id,
+                  content,
+                  attributes,
+                  classes
+                }) => {
+                  console.log('Rendering Body Row Cell' + cell_id);
+                  const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.setBorderContent)(row_id, column_id, content);
+                  const isOpenCurrentColumnMenu = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.openCurrentColumnMenu)(columnMenuVisible, openColumnRow, column_id);
+                  const isFirstColumn = column_id === '1' ? true : false;
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
+                    children: [isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                      className: "grid-control__border-cells"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+                      id: cell_id,
+                      onMouseDown: e => onMouseBorderClick(column_id, row_id, table, e),
+                      className: classes,
+                      children: [borderContent, isOpenCurrentColumnMenu && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.ColumnMenu, {
+                        tableId: table_id,
+                        columnId: column_id,
+                        columnLabel: borderContent,
+                        columnAttributes: columnAttributes,
+                        enableProFeatures: enableProFeatures,
+                        updatedColumn: onUpdateColumn
+                      })]
                     })]
-                  })]
-                });
+                  });
+                })
               }), table.rows.filter(row => row.attributes.isHeader === true).map(({
                 row_id,
                 attributes
@@ -4087,6 +3982,9 @@ function Edit(props) {
                 return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
                   className: "grid-control__header",
                   style: {
+                    "--gridTemplateHeaderRows": gridHeaderRowStyle,
+                    "--startGridHeaderRowNbr": startGridHeaderRowNbrStyle,
+                    "--endGridHeaderRowNbr": endGridHeaderRowNbrStyle,
                     "--headerBorderTopColor": headerBorderTopColor,
                     "--headerBorderTopStype": headerBorderTopStyle,
                     "--headerBorderTopWidth": headerBorderTopWidth,
@@ -4121,7 +4019,7 @@ function Edit(props) {
                         className: "grid-control__border-cells"
                       }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
                         id: cell_id,
-                        onMouseDown: e => onMouseColumnClick(column_id, row_id, table, e),
+                        onMouseDown: e => onMouseBorderClick(column_id, row_id, table, e),
                         className: classes,
                         children: [borderContent, isOpenCurrentRowMenu && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.RowMenu, {
                           tableId: table_id,
@@ -4219,7 +4117,7 @@ function Edit(props) {
                           className: "grid-control__border-cells"
                         }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
                           id: cell_id,
-                          onMouseDown: e => onMouseColumnClick(column_id, row_id, table, e),
+                          onMouseDown: e => onMouseBorderClick(column_id, row_id, table, e),
                           className: classes,
                           children: [borderContent, isOpenCurrentRowMenu && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.RowMenu, {
                             tableId: table_id,
@@ -4398,7 +4296,7 @@ console.log(_block_json__WEBPACK_IMPORTED_MODULE_3__.name);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   endGridBodyRowNbr: () => (/* binding */ endGridBodyRowNbr),
+/* harmony export */   endGridRowNbr: () => (/* binding */ endGridRowNbr),
 /* harmony export */   getBorderStyle: () => (/* binding */ getBorderStyle),
 /* harmony export */   getBorderStyleType: () => (/* binding */ getBorderStyleType),
 /* harmony export */   getGridHeaderBackgroundColorStyle: () => (/* binding */ getGridHeaderBackgroundColorStyle),
@@ -4407,10 +4305,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   gridBandedRowTextColorStyle: () => (/* binding */ gridBandedRowTextColorStyle),
 /* harmony export */   gridInnerBorderStyle: () => (/* binding */ gridInnerBorderStyle),
 /* harmony export */   gridInnerBorderWidthStyle: () => (/* binding */ gridInnerBorderWidthStyle),
+/* harmony export */   processBodyRows: () => (/* binding */ processBodyRows),
 /* harmony export */   processColumns: () => (/* binding */ processColumns),
-/* harmony export */   processRows: () => (/* binding */ processRows),
-/* harmony export */   processTableBodyRows: () => (/* binding */ processTableBodyRows),
-/* harmony export */   startGridBodyRowNbr: () => (/* binding */ startGridBodyRowNbr)
+/* harmony export */   processHeaderRow: () => (/* binding */ processHeaderRow),
+/* harmony export */   startGridRowNbr: () => (/* binding */ startGridRowNbr)
 /* harmony export */ });
 /**
  * Establish grid css grid-template-columns based upon attributes associated with columns
@@ -4443,9 +4341,7 @@ function processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, colu
         fixedWidth,
         fixedWidthUnits,
         disableForTablet,
-        disableForPhone,
-        isFixedLeftColumnGroup,
-        horizontalAlignment
+        disableForPhone
       } = attributes;
       let sizing = '';
       if (column_id === '1' && enableFutureFeatures) {
@@ -4502,7 +4398,7 @@ function processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, colu
  * @param {*} rows 
  * @returns 
  */
-function processRows(isNewBlock, tableIsResolving, rows) {
+function processHeaderRow(isNewBlock, tableIsResolving, rows) {
   if (isNewBlock || tableIsResolving) {
     return undefined;
   }
@@ -4514,11 +4410,46 @@ function processRows(isNewBlock, tableIsResolving, rows) {
       classes
     }) => {
       console.log('Row ID - ' + newGridRowStyle);
-      if (row_id === '0') {
-        newGridRowStyle = newGridRowStyle + '25px ';
-      } else {
-        newGridRowStyle = newGridRowStyle + 'auto ';
+      console.log(attributes);
+      const {
+        rowHeightType,
+        minHeight,
+        minHeightUnits,
+        maxHeight,
+        maxHeightUnits,
+        fixedHeight,
+        fixedHeightUnits,
+        isHeader
+      } = attributes;
+      let sizing = '';
+      if (isHeader) {
+        switch (rowHeightType) {
+          case 'Auto':
+            {
+              newGridRowStyle = newGridRowStyle + 'auto ';
+              break;
+            }
+          case 'Fixed':
+            {
+              newGridRowStyle = newGridRowStyle + fixedHeight + fixedHeightUnits + ' ';
+              break;
+            }
+          case 'Custom':
+            {
+              sizing = 'minmax(' + minHeight + minHeightUnits + ', ' + maxHeight + maxHeightUnits + ') ';
+              newGridRowStyle = newGridRowStyle + sizing;
+              break;
+            }
+          default:
+            console.log('Unrecognized Attibute Type');
+        }
       }
+
+      // if (row_id === '0') {
+      //     newGridRowStyle = newGridRowStyle + '25px ';
+      // }  else {
+      //     newGridRowStyle = newGridRowStyle + 'auto ';
+      // }
     });
   }
   // setTableStale(false)
@@ -4533,21 +4464,61 @@ function processRows(isNewBlock, tableIsResolving, rows) {
  * @param {*} rows 
  * @returns 
  */
-function processTableBodyRows(isNewBlock, tableIsResolving, rows) {
+function processBodyRows(isNewBlock, tableIsResolving, rows) {
   if (isNewBlock || tableIsResolving) {
     return undefined;
   }
   let newGridRowStyle = '';
   {
-    rows.filter(row => row.attributes.isHeader !== true && row.row_id !== '0').map(({
+    rows.map(({
       row_id,
       attributes,
       classes
     }) => {
       console.log('Row ID - ' + newGridRowStyle);
-      newGridRowStyle = newGridRowStyle + 'auto ';
+      console.log(attributes);
+      const {
+        rowHeightType,
+        minHeight,
+        minHeightUnits,
+        maxHeight,
+        maxHeightUnits,
+        fixedHeight,
+        fixedHeightUnits,
+        isHeader
+      } = attributes;
+      let sizing = '';
+      if (!isHeader) {
+        switch (rowHeightType) {
+          case 'Auto':
+            {
+              newGridRowStyle = newGridRowStyle + 'auto ';
+              break;
+            }
+          case 'Fixed':
+            {
+              newGridRowStyle = newGridRowStyle + fixedHeight + fixedHeightUnits + ' ';
+              break;
+            }
+          case 'Custom':
+            {
+              sizing = 'minmax(' + minHeight + minHeightUnits + ', ' + maxHeight + maxHeightUnits + ') ';
+              newGridRowStyle = newGridRowStyle + sizing;
+              break;
+            }
+          default:
+            console.log('Unrecognized Attibute Type');
+        }
+      }
     });
   }
+  // {
+  //     rows.filter(row => !row.attributes.isHeader && row.row_id !== '0')
+  //         .map(({ row_id, attributes, classes }) => {
+  //             console.log('Row ID - ' + newGridRowStyle)
+  //             newGridRowStyle = newGridRowStyle + 'auto ';
+  //         })
+  // }
   // setTableStale(false)
   return newGridRowStyle;
 }
@@ -4635,16 +4606,34 @@ function gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, 
   ;
   return String(gridLineWidth) + 'px';
 }
-function startGridBodyRowNbr(enableHeader, showBorders) {
+function startGridRowNbr(enableHeader, showBorders) {
   let startGridLine = 1;
   startGridLine = enableHeader ? startGridLine + 1 : startGridLine;
   startGridLine = showBorders ? startGridLine + 1 : startGridLine;
   return startGridLine;
 }
-function endGridBodyRowNbr(startGridLine, numRows, enableHeader, enableFooter) {
-  let endGridLine = startGridLine + numRows;
-  endGridLine = enableHeader ? endGridLine - 1 : endGridLine;
-  endGridLine = enableFooter ? endGridLine - 1 : endGridLine;
+// endGridRowNbr(1, 'Header', numRows, enableHeaderRow, false)
+
+function endGridRowNbr(startGridLine, rowGroup, numRows, enableHeader, showBorders, enableFooter) {
+  let endGridLine;
+  switch (rowGroup) {
+    case 'Header':
+      {
+        endGridLine = 2;
+        endGridLine = showBorders ? endGridLine++ : endGridLine;
+        break;
+      }
+    case 'Body':
+      {
+        endGridLine = startGridLine + numRows;
+        endGridLine = showBorders ? endGridLine++ : endGridLine;
+        endGridLine = enableHeader ? endGridLine - 1 : endGridLine;
+        endGridLine = enableFooter ? endGridLine - 1 : endGridLine;
+        break;
+      }
+    default:
+      console.log('Unknown row type');
+  }
   return endGridLine;
 }
 function getHeaderTextAlignmentStyle(isNewBlock, tableIsResolving, textAlignment) {
@@ -4689,13 +4678,42 @@ function getBorderStyleType(border) {
  * @returns 
  */
 function getBorderStyle(border, borderLocation, borderAttribute, borderType) {
-  if (borderType === 'split') {
-    return border[borderLocation][borderAttribute];
+  switch (borderType) {
+    case 'split':
+      {
+        return border[borderLocation][borderAttribute];
+      }
+    case 'flat':
+      {
+        return border[borderAttribute];
+      }
+    default:
+      {
+        switch (borderAttribute) {
+          case 'color':
+            {
+              return 'black';
+            }
+          case 'style':
+            {
+              return 'solid';
+            }
+          case 'width':
+            {
+              return '1px';
+            }
+        }
+      }
   }
-  if (borderType === 'flat') {
-    return border[borderAttribute];
-  }
-  return 'unknown';
+  // if (borderType === 'split') {
+  //     return border[borderLocation][borderAttribute]
+  // }
+
+  // if (borderType === 'flat') {
+  //     return border[borderAttribute]
+  // }
+
+  // return 'unknown'
 }
 
 /***/ }),
@@ -4860,13 +4878,24 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
     enableHeaderRow: false,
     headerAlignment: 'center',
     headerRowSticky: false,
-    headerBorder: undefined,
+    headerBorder: {
+      color: 'black',
+      style: 'solid',
+      width: '1px'
+    },
     horizontalAlignment: 'none',
     bodyAlignment: undefined,
-    bodyBorder: undefined,
+    bodyBorder: {
+      color: 'black',
+      style: 'solid',
+      width: '1px'
+    },
     verticalAlignment: 'none',
     hideTitle: true
   };
+
+  //{color: white, style: hidden, width 0px}
+
   const columnAttributes = {
     columnWidthType: 'Proportional',
     minWidth: 2,

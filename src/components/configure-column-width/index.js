@@ -7,32 +7,15 @@ import {
     Modal,
     SelectControl,
     CheckboxControl,
-    TabbableContainer,
     Button,
     __experimentalInputControl as InputControl,
     __experimentalNumberControl as NumberControl
 } from '@wordpress/components';
 
-import {
-    AlignmentToolbar
-
-} from '@wordpress/block-editor';
-
-import {
-    blockTable as icon,
-    moreVertical,
-    more,
-    arrowLeft,
-    arrowRight,
-    arrowUp,
-    arrowDown,
-    trash
-} from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
-import { store as tableStore } from "../../data"
 import './style.scss';
 
 function ConfigureColumnWidth(props) {

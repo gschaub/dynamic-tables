@@ -167,13 +167,15 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
         enableHeaderRow: false,
         headerAlignment: 'center',
         headerRowSticky: false,
-        headerBorder: undefined,
+        headerBorder: { color: 'black', style: 'solid', width: '1px' },
         horizontalAlignment: 'none',
         bodyAlignment: undefined,
-        bodyBorder: undefined,
+        bodyBorder: { color: 'black', style: 'solid', width: '1px' },
         verticalAlignment: 'none',
         hideTitle: true
     }
+
+    //{color: white, style: hidden, width 0px}
 
     const columnAttributes = {
         columnWidthType: 'Proportional',

@@ -24,9 +24,7 @@ export function processColumns(isNewBlock, tableIsResolving, enableFutureFeature
                 fixedWidth,
                 fixedWidthUnits,
                 disableForTablet,
-                disableForPhone,
-                isFixedLeftColumnGroup,
-                horizontalAlignment
+                disableForPhone
             } = attributes;
 
             let sizing = '';
@@ -86,7 +84,7 @@ export function processColumns(isNewBlock, tableIsResolving, enableFutureFeature
  * @param {*} rows 
  * @returns 
  */
-export function processRows(isNewBlock, tableIsResolving, rows) {
+export function processHeaderRow(isNewBlock, tableIsResolving, rows) {
     if (isNewBlock || tableIsResolving) {
         return undefined
     }
@@ -95,11 +93,47 @@ export function processRows(isNewBlock, tableIsResolving, rows) {
     {
         rows.map(({ row_id, attributes, classes }) => {
             console.log('Row ID - ' + newGridRowStyle)
-            if (row_id === '0') {
-                newGridRowStyle = newGridRowStyle + '25px ';
-            } else {
-                newGridRowStyle = newGridRowStyle + 'auto ';
+            console.log(attributes)
+            const { rowHeightType,
+                minHeight,
+                minHeightUnits,
+                maxHeight,
+                maxHeightUnits,
+                fixedHeight,
+                fixedHeightUnits,
+                isHeader
+            } = attributes;
+
+            let sizing = '';
+
+            if (isHeader) {
+                switch (rowHeightType) {
+                    case 'Auto':
+                        {
+                            newGridRowStyle = newGridRowStyle + 'auto ';
+                            break;
+                        }
+                    case 'Fixed':
+                        {
+                            newGridRowStyle = newGridRowStyle + fixedHeight + fixedHeightUnits + ' ';
+                            break;
+                        }
+                    case 'Custom':
+                        {
+                            sizing = 'minmax(' + minHeight + minHeightUnits + ', ' + maxHeight + maxHeightUnits + ') '
+                            newGridRowStyle = newGridRowStyle + sizing;
+                            break;
+                        }
+                    default:
+                        console.log('Unrecognized Attibute Type')
+                }
             }
+
+            // if (row_id === '0') {
+            //     newGridRowStyle = newGridRowStyle + '25px ';
+            // }  else {
+            //     newGridRowStyle = newGridRowStyle + 'auto ';
+            // }
         })
     }
     // setTableStale(false)
@@ -114,19 +148,59 @@ export function processRows(isNewBlock, tableIsResolving, rows) {
  * @param {*} rows 
  * @returns 
  */
-export function processTableBodyRows(isNewBlock, tableIsResolving, rows) {
+export function processBodyRows(isNewBlock, tableIsResolving, rows) {
     if (isNewBlock || tableIsResolving) {
         return undefined
     }
 
     let newGridRowStyle = ''
     {
-        rows.filter(row => row.attributes.isHeader !== true && row.row_id !== '0')
-            .map(({ row_id, attributes, classes }) => {
-                console.log('Row ID - ' + newGridRowStyle)
-                newGridRowStyle = newGridRowStyle + 'auto ';
-            })
+        rows.map(({ row_id, attributes, classes }) => {
+            console.log('Row ID - ' + newGridRowStyle)
+            console.log(attributes)
+            const { rowHeightType,
+                minHeight,
+                minHeightUnits,
+                maxHeight,
+                maxHeightUnits,
+                fixedHeight,
+                fixedHeightUnits,
+                isHeader
+            } = attributes;
+
+            let sizing = '';
+
+            if (!isHeader) {
+                switch (rowHeightType) {
+                    case 'Auto':
+                        {
+                            newGridRowStyle = newGridRowStyle + 'auto ';
+                            break;
+                        }
+                    case 'Fixed':
+                        {
+                            newGridRowStyle = newGridRowStyle + fixedHeight + fixedHeightUnits + ' ';
+                            break;
+                        }
+                    case 'Custom':
+                        {
+                            sizing = 'minmax(' + minHeight + minHeightUnits + ', ' + maxHeight + maxHeightUnits + ') '
+                            newGridRowStyle = newGridRowStyle + sizing;
+                            break;
+                        }
+                    default:
+                        console.log('Unrecognized Attibute Type')
+                }
+            }
+        })
     }
+    // {
+    //     rows.filter(row => !row.attributes.isHeader && row.row_id !== '0')
+    //         .map(({ row_id, attributes, classes }) => {
+    //             console.log('Row ID - ' + newGridRowStyle)
+    //             newGridRowStyle = newGridRowStyle + 'auto ';
+    //         })
+    // }
     // setTableStale(false)
     return newGridRowStyle
 }
@@ -214,18 +288,36 @@ export function gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGrid
     return String(gridLineWidth) + 'px';
 }
 
-export function startGridBodyRowNbr(enableHeader, showBorders) {
+export function startGridRowNbr(enableHeader, showBorders) {
     let startGridLine = 1
     startGridLine = enableHeader ? startGridLine + 1 : startGridLine
     startGridLine = showBorders ? startGridLine + 1 : startGridLine
 
     return startGridLine;
 }
+// endGridRowNbr(1, 'Header', numRows, enableHeaderRow, false)
 
-export function endGridBodyRowNbr(startGridLine, numRows, enableHeader, enableFooter) {
-    let endGridLine = startGridLine + numRows
-    endGridLine = enableHeader ? endGridLine - 1 : endGridLine
-    endGridLine = enableFooter ? endGridLine - 1 : endGridLine
+export function endGridRowNbr(startGridLine, rowGroup, numRows, enableHeader, showBorders, enableFooter) {
+    let endGridLine
+
+    switch (rowGroup) {
+        case 'Header':
+            {
+                endGridLine = 2
+                endGridLine = showBorders ? endGridLine++ : endGridLine
+                break;
+            }
+        case 'Body':
+            {
+                endGridLine = startGridLine + numRows
+                endGridLine = showBorders ? endGridLine++ : endGridLine
+                endGridLine = enableHeader ? endGridLine - 1 : endGridLine
+                endGridLine = enableFooter ? endGridLine - 1 : endGridLine
+                break;
+            }
+        default:
+            console.log('Unknown row type')
+    }
 
     return endGridLine;
 }
@@ -271,13 +363,45 @@ export function getBorderStyleType(border) {
  * @returns 
  */
 export function getBorderStyle(border, borderLocation, borderAttribute, borderType) {
-    if (borderType === 'split') {
-        return border[borderLocation][borderAttribute]
-    }
+    switch (borderType) {
+        case 'split':
+            {
+                return border[borderLocation][borderAttribute];
+            }
 
-    if (borderType === 'flat') {
-        return border[borderAttribute]
-    }
+        case 'flat':
+            {
+                return border[borderAttribute];
+            }
 
-    return 'unknown'
+        default:
+            {
+                switch (borderAttribute) {
+                    case 'color':
+                        {
+                            return 'black';
+                        }
+
+                    case 'style':
+                        {
+                            return 'solid';
+                        }
+
+                    case 'width':
+                        {
+                            return '1px';
+                        }
+
+                }
+            }
+    }
+    // if (borderType === 'split') {
+    //     return border[borderLocation][borderAttribute]
+    // }
+
+    // if (borderType === 'flat') {
+    //     return border[borderAttribute]
+    // }
+
+    // return 'unknown'
 }

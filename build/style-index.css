@@ -24,19 +24,30 @@
 
 .grid-control {
   --gridTemplateColumns: auto;
-  --gridTemplateRows: auto;
   --gridAlignment: left;
   --gridNumColumns: 1;
   --horizontalScroll: auto;
   display: grid;
   overflow-x: var(--horizontalScroll);
   grid-template-columns: var(--gridTemplateColumns);
-  grid-template-rows: repeat(2, auto);
   gap: 0px;
   justify-content: var(--gridAlignment);
 }
 
+.grid-control__border {
+  display: grid;
+  overflow-x: inherit;
+  grid-column: 1/calc(var(--gridNumColumns) + 2);
+  grid-row: 1/2;
+  grid-template-columns: subgrid;
+  grid-template-rows: auto;
+  position: sticky;
+}
+
 .grid-control__header {
+  --startGridHeaderRowNbr: 1;
+  --endGridHeaderRowNbr: 2;
+  --gridTemplateHeaderRows: auto;
   --headerTextAlignment: left;
   --headerBorderTopColor: white;
   --headerBorderTopStyle: solid;
@@ -51,10 +62,11 @@
   --headerBorderLeftStyle: solid;
   --headerBorderLeftWidth: 0px;
   display: grid;
-  overflow-x: hidden;
+  overflow-x: inherit;
   grid-column: 1/calc(var(--gridNumColumns) + 2);
+  grid-row: var(--startGridHeaderRowNbr)/var(--endGridHeaderRowNbr);
   grid-template-columns: subgrid;
-  grid-template-rows: auto;
+  grid-template-rows: var(--gridTemplateHeaderRows);
   position: sticky;
   border-top-color: var(--headerBorderTopColor);
   border-top-style: var(--headerBorderTopStyle);
@@ -128,7 +140,6 @@
   display: grid;
   grid-column: 1/calc(var(--gridNumColumns) + 2);
   grid-template-columns: subgrid;
-  grid-template-rows: subgrid;
 }
 
 .grid-control__body-rows--banded-row {
@@ -143,6 +154,8 @@
   position: relative;
   padding: 5px;
   margin: -1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   border-style: var(--showGridLines);
   border-width: var(--gridLineWidth);
   border-color: black;
@@ -206,26 +219,26 @@ fieldset {
   margin: 10px;
 }
 
-.column-width--not-visible {
+.row-height--not-visible {
   display: none;
 }
 
-.column-width-span-input {
+.row-height-span-input {
   display: flex;
   width: 100%;
 }
 
-.column-width-value-input {
+.row-height-value-input {
   width: 65%;
   margin: 5px;
 }
 
-.column-width-unit-input {
+.row-height-unit-input {
   width: 30%;
   margin: 5px;
 }
 
-.column-label {
+.row-label {
   text-align: center;
   font-size: large;
   font-style: italic;

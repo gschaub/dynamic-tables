@@ -13,51 +13,25 @@ import {
     __experimentalNumberControl as NumberControl
 } from '@wordpress/components';
 
-import {
-    AlignmentToolbar
-
-} from '@wordpress/block-editor';
-
-import {
-    blockTable as icon,
-    moreVertical,
-    more,
-    arrowLeft,
-    arrowRight,
-    arrowUp,
-    arrowDown,
-    trash
-} from '@wordpress/icons';
-
 /**
  * Internal dependencies
  */
-import { store as tableStore } from "../../data"
 import './style.scss';
 
 function ConfigureRowHeight(props) {
 
-    const { openColumnWidth,
-        columnId,
-        columnLabel,
-        columnAttributes
+    const { openRowHeight,
+        rowId,
+        rowLabel,
+        rowAttributes
     } = props;
     //    const [closePage, setClosePage] = useState(false)
 
     useEffect(() => {
 
-        switch (columnAttributes.columnWidthType) {
-            case 'Proportional':
-                {
-                    setHideProportional(false)
-                    setHideCustom(true)
-                    setHideFixed(true)
-                    break;
-                }
-
+        switch (rowAttributes.rowHeightType) {
             case 'Auto':
                 {
-                    setHideProportional(true)
                     setHideCustom(true)
                     setHideFixed(true)
                     break;
@@ -65,7 +39,6 @@ function ConfigureRowHeight(props) {
 
             case 'Fixed':
                 {
-                    setHideProportional(true)
                     setHideCustom(true)
                     setHideFixed(false)
                     break;
@@ -73,46 +46,40 @@ function ConfigureRowHeight(props) {
 
             case 'Custom':
                 {
-                    setHideProportional(true)
                     setHideCustom(false)
                     setHideFixed(true)
                     break;
                 }
         }
 
-        setColumnWidthType(columnAttributes.columnWidthType)
-        setMinWidth(columnAttributes.minWidth)
-        setMinWidthUnits(columnAttributes.minWidthUnits)
-        setMaxWidth(columnAttributes.maxWidth)
-        setMaxWidthUnits(columnAttributes.maxWidthUnits)
-        setFixedWidth(columnAttributes.fixedWidth)
-        setFixedWidthUnits(columnAttributes.fixedWidth)
-        setDisableForPhone(columnAttributes.disableForPhone)
-        setDisableForTablet(columnAttributes.disableForTablet)
-    }, [columnAttributes])
+        setRowHeightType(rowAttributes.rowHeightType)
+        setMinHeight(rowAttributes.minHeight)
+        setMinHeightUnits(rowAttributes.minHeightUnits)
+        setMaxHeight(rowAttributes.maxHeight)
+        setMaxHeightUnits(rowAttributes.maxHeightUnits)
+        setFixedHeight(rowAttributes.fixedHeight)
+        setFixedHeightUnits(rowAttributes.fixedHeightUnits)
+    }, [rowAttributes])
 
     function stopProp(event) {
         event.stopPropagation()
     }
 
     function handleCancel(event) {
-        openColumnWidth(false)
+        openRowHeight(false)
     }
 
-    const [columnWidthType, setColumnWidthType] = useState();
-    const [hideProportional, setHideProportional] = useState(true);
+    const [rowHeightType, setRowHeightType] = useState();
     const [hideCustom, setHideCustom] = useState(true);
     const [hideFixed, setHideFixed] = useState(true);
-    const [minWidth, setMinWidth] = useState(0);
-    const [minWidthUnits, setMinWidthUnits] = useState();
-    const [maxWidth, setMaxWidth] = useState(1);
-    const [maxWidthUnits, setMaxWidthUnits] = useState();
-    const [fixedWidth, setFixedWidth] = useState(0);
-    const [fixedWidthUnits, setFixedWidthUnits] = useState();
-    const [disableForTablet, setDisableForTablet] = useState(false);
-    const [disableForPhone, setDisableForPhone] = useState(false);
+    const [minHeight, setMinHeight] = useState(0);
+    const [minHeightUnits, setMinHeightUnits] = useState();
+    const [maxHeight, setMaxHeight] = useState(1);
+    const [maxHeightUnits, setMaxHeightUnits] = useState();
+    const [fixedHeight, setFixedHeight] = useState(0);
+    const [fixedHeightUnits, setFixedHeightUnits] = useState();
 
-    console.log('In Component ConfigureColumnWidth')
+    console.log('In Component ConfigureRowHeight')
     console.log(props)
 
     function onHeightType(event) {
@@ -120,29 +87,14 @@ function ConfigureRowHeight(props) {
         console.log(event);
 
         switch (event) {
-            case 'Proportional':
-                {
-                    setMaxWidth(1)
-                    setMaxWidthUnits('fr')
-                    setMinWidth(20)
-                    setMinWidthUnits('ch')
-                    setFixedWidth(0)
-                    setFixedWidthUnits('px')
-                    setHideProportional(false)
-                    setHideCustom(true)
-                    setHideFixed(true)
-                    break;
-                }
-
             case 'Auto':
                 {
-                    setMaxWidth(0)
-                    setMaxWidthUnits('fr')
-                    setMinWidth(0)
-                    setMinWidthUnits('ch')
-                    setFixedWidth(0)
-                    setFixedWidthUnits('px')
-                    setHideProportional(true)
+                    setMaxHeight(0)
+                    setMaxHeightUnits('fr')
+                    setMinHeight(0)
+                    setMinHeightUnits('ch')
+                    setFixedHeight(0)
+                    setFixedHeightUnits('px')
                     setHideCustom(true)
                     setHideFixed(true)
                     break;
@@ -150,13 +102,12 @@ function ConfigureRowHeight(props) {
 
             case 'Fixed':
                 {
-                    setMaxWidth(0)
-                    setMaxWidthUnits('fr')
-                    setMinWidth(0)
-                    setMinWidthUnits('ch')
-                    setFixedWidth(40)
-                    setFixedWidthUnits('px')
-                    setHideProportional(true)
+                    setMaxHeight(0)
+                    setMaxHeightUnits('fr')
+                    setMinHeight(0)
+                    setMinHeightUnits('ch')
+                    setFixedHeight(40)
+                    setFixedHeightUnits('px')
                     setHideCustom(true)
                     setHideFixed(false)
                     break;
@@ -164,13 +115,12 @@ function ConfigureRowHeight(props) {
 
             case 'Custom':
                 {
-                    setMaxWidth(40)
-                    setMaxWidthUnits('ch')
-                    setMinWidth(20)
-                    setMinWidthUnits('ch')
-                    setFixedWidth(0)
-                    setFixedWidthUnits('px')
-                    setHideProportional(true)
+                    setMaxHeight(40)
+                    setMaxHeightUnits('ch')
+                    setMinHeight(20)
+                    setMinHeightUnits('ch')
+                    setFixedHeight(0)
+                    setFixedHeightUnits('px')
                     setHideCustom(false)
                     setHideFixed(true)
                     break;
@@ -180,84 +130,67 @@ function ConfigureRowHeight(props) {
         setRowHeightType(event)
     }
 
-    function onMinimumWidth(event) {
-        console.log('...In MixWidth Update');
+    function onMinimumHeight(event) {
+        console.log('...In MixHeight Update');
         console.log(event);
-        setMinWidth(event.target.value)
+        setMinHeight(event.target.value)
     }
 
-    function onMinimumWidthUnits(event) {
-        console.log('...In MixWidth Units Update');
+    function onMinimumHeightUnits(event) {
+        console.log('...In MixHeight Units Update');
         console.log(event);
-        setMinWidthUnits(event)
+        setMinHeightUnits(event)
     }
 
-    function onMaximumWidth(event) {
-        console.log('...In Max Width Update');
+    function onMaximumHeight(event) {
+        console.log('...In Max Height Update');
         console.log(event);
-        setMaxWidth(event.target.value)
+        setMaxHeight(event.target.value)
     }
 
-    function onMaximumWidthUnits(event) {
-        console.log('...In Max Width  Update');
+    function onMaximumHeightUnits(event) {
+        console.log('...In Max Height Update');
         console.log(event);
-        setMaxWidthUnits(event)
+        setMaxHeightUnits(event)
     }
 
-    function onFixedWidth(event) {
-        console.log('...In Max Width Update');
+    function onFixedHeight(event) {
+        console.log('...In Max Height Update');
         console.log(event);
-        setFixedWidth(Number(event.target.value))
+        setFixedHeight(Number(event.target.value))
     }
 
-    function onFixedWidthUnits(event) {
-        console.log('...In Max Width Units Update');
+    function onFixedHeightUnits(event) {
+        console.log('...In Max Height Units Update');
         console.log(event);
-        setFixedWidthUnits(event)
-    }
-
-    function onTablet(checked) {
-        console.log('...In Tablet Update');
-        console.log(checked);
-
-        setDisableForTablet(checked)
-    }
-
-    function onPhone(checked) {
-        console.log('...In Phone Update');
-        console.log(checked);
-
-        setDisableForPhone(checked)
+        setFixedHeightUnits(event)
     }
 
     function onUpdate(event) {
         // event.preventDefault()
         console.log('ROW HEIGHT  UPDATED...')
         console.log(event)
-        console.log('...Max Height = ' + maxWidth)
+        console.log('...Max Height = ' + maxHeight)
 
-        var updatedColumnAttributes =
+        var updatedRowAttributes =
         {
-            columnWidthType: columnWidthType,
-            minWidth: minWidth,
-            minWidthUnits: minWidthUnits,
-            maxWidth: Number(maxWidth),
-            maxWidthUnits: maxWidthUnits,
-            fixedWidth: fixedWidth,
-            fixedWidthUnits: fixedWidthUnits,
-            disableForTablet: disableForTablet,
-            disableForPhone: disableForPhone,
-            isFixedLeftColumnGroup: false,
+            rowHeightType: rowHeightType,
+            minHeight: minHeight,
+            minHeightUnits: minHeightUnits,
+            maxHeight: Number(maxHeight),
+            maxHeightUnits: maxHeightUnits,
+            fixedHeight: fixedHeight,
+            fixedHeightUnits: fixedHeightUnits,
+            isFixedLeftRowGroup: false,
             horizontalAlignment: "none"
         }
 
-        console.log(updatedColumnAttributes)
+        console.log(updatedRowAttributes)
 
-        openRowHeight(false, updatedColumnAttributes)
+        openRowHeight(false, updatedRowAttributes)
     }
 
     console.log('RENDER PROPS');
-    console.log('...Disable Proportional Input = ' + hideProportional);
     console.log('...Disable Fixed Input = ' + hideFixed);
     console.log('...Disable Custom Input = ' + hideCustom);
 
@@ -265,14 +198,14 @@ function ConfigureRowHeight(props) {
         <>
             {(openRowHeight) && (
                 <Modal
-                    title="Configure Column Width"
+                    title="Configure Row Height"
                     onRequestClose={handleCancel}
                     focusOnMount="firstContentElement"
                     isDismissible="false"
                     shouldCloseOnClickOutside="false"
                     size="large">
-                    <p className="column-label">
-                        For column {columnLabel}
+                    <p className="row-label">
+                        For row {rowLabel}
                     </p>
 
                     <form
@@ -286,75 +219,34 @@ function ConfigureRowHeight(props) {
                             value={rowHeightType}
                             onChange={e => onHeightType(e)}
                             options={[
-                                { value: "Proportional", label: "Proportional" },
                                 { value: "Auto", label: "Automatic" },
-                                { value: "Fixed", label: "Fixed width" },
+                                { value: "Fixed", label: "Fixed height" },
                                 { value: "Custom", label: "Custom" }
                             ]}
                             __nextHasNoMarginBottom
                         />
 
                         <fieldset
-                            className={(hideProportional === true ? " column-width--not-visible" : "")}>
-                            <legend>Set Proportional Width</legend>
-                            <NumberControl
-                                className="column-width-value-input"
-                                label="Number of portions"
-                                labelPosition="side"
-                                onBlur={e => onMaximumWidth(e)}
-                                value={maxWidth}
-                            />
+                            className={(hideFixed === true ? "row-height--not-visible" : "")}>
+                            <legend>Set Fixed Height</legend>
 
                             <span
-                                className="column-width-span-input"
+                                className="row-height-span-input"
                             >
                                 <NumberControl
-                                    className="column-width-value-input"
-                                    label="Minimum width"
+                                    className="row-height-input"
+                                    label="Fixed height"
                                     labelPosition="left"
-                                    value={minWidth}
-                                    onBlur={e => onMinimumWidth(e)}
+                                    value={fixedHeight}
+                                    onBlur={e => onFixedHeight(e)}
                                 />
 
                                 <SelectControl
-                                    className="column-width-unit-input"
-                                    labelPosition="left"
-                                    label="Units"
-                                    value={minWidthUnits}
-                                    onChange={e => onMinimumWidthUnits(e)}
-                                    options={[
-                                        { value: "px", label: "pixels" },
-                                        { value: "ch", label: "characters" },
-                                        { value: "pt", label: "points" },
-                                        { value: "in", label: "inches" },
-                                        { value: "fr", label: "proportional" },
-                                    ]}
-                                    __nextHasNoMarginBottom
-                                />
-                            </span>
-                        </fieldset>
-
-                        <fieldset
-                            className={(hideFixed === true ? "column-width--not-visible" : "")}>
-                            <legend>Set Fixed Width</legend>
-
-                            <span
-                                className="column-width-span-input"
-                            >
-                                <NumberControl
-                                    className="column-width-input"
-                                    label="Fixed width"
-                                    labelPosition="left"
-                                    value={fixedWidth}
-                                    onBlur={e => onFixedWidth(e)}
-                                />
-
-                                <SelectControl
-                                    className="column-width-unit-input"
+                                    className="row-height-unit-input"
                                     label="Units"
                                     labelPosition="left"
-                                    value={fixedWidthUnits}
-                                    onChange={e => onFixedWidthUnits(e)}
+                                    value={fixedHeightUnits}
+                                    onChange={e => onFixedHeightUnits(e)}
                                     options={[
                                         { value: "px", label: "pixels" },
                                         { value: "ch", label: "font" },
@@ -368,25 +260,25 @@ function ConfigureRowHeight(props) {
                         </fieldset>
 
                         <fieldset
-                            className={(hideCustom === true ? "column-width--not-visible" : "")}>
-                            <legend>Set Custom Width</legend>
+                            className={(hideCustom === true ? "row-height--not-visible" : "")}>
+                            <legend>Set Custom Height</legend>
                             <span
-                                className="column-width-span-input"
+                                className="row-height-span-input"
                             >
                                 <NumberControl
-                                    className="column-width-input"
-                                    label="Minimum width"
+                                    className="row-height-input"
+                                    label="Minimum height"
                                     labelPosition="left"
-                                    value={minWidth}
-                                    onBlur={e => onMinimumWidth(e)}
+                                    value={minHeight}
+                                    onBlur={e => onMinimumHeight(e)}
                                 />
 
                                 <SelectControl
-                                    className="column-width-unit-input"
+                                    className="row-height-unit-input"
                                     labelPosition="left"
                                     label="Units"
-                                    value={minWidthUnits}
-                                    onChange={e => onMinimumWidthUnits(e)}
+                                    value={minHeightUnits}
+                                    onChange={e => onMinimumHeightUnits(e)}
                                     options={[
                                         { value: "px", label: "pixels" },
                                         { value: "ch", label: "characters" },
@@ -399,22 +291,22 @@ function ConfigureRowHeight(props) {
                             </span>
 
                             <span
-                                className="column-width-span-input"
+                                className="row-height-span-input"
                             >
                                 <NumberControl
-                                    className="column-width-input"
-                                    label="Maximum width"
+                                    className="row-height-input"
+                                    label="Maximum height"
                                     labelPosition="left"
-                                    value={maxWidth}
-                                    onBlur={e => onMaximumWidth(e)}
+                                    value={maxHeight}
+                                    onBlur={e => onMaximumHeight(e)}
                                 />
 
                                 <SelectControl
-                                    className="column-width-unit-input"
+                                    className="row-height-unit-input"
                                     labelPosition="left"
                                     label="Units"
-                                    value={maxWidthUnits}
-                                    onChange={e => onMaximumWidthUnits(e)}
+                                    value={maxHeightUnits}
+                                    onChange={e => onMaximumHeightUnits(e)}
                                     options={[
                                         { value: "px", label: "pixels" },
                                         { value: "ch", label: "characters" },
@@ -426,17 +318,6 @@ function ConfigureRowHeight(props) {
                                 />
                             </span>
                         </fieldset>
-
-                        <CheckboxControl
-                            label="Hide for tablet"
-                            checked={disableForTablet}
-                            onChange={onTablet}
-                        />
-                        <CheckboxControl
-                            label="Hide for phone"
-                            checked={disableForPhone}
-                            onChange={onPhone}
-                        />
 
                         <span>
                             <Button variant="secondary" onClick={handleCancel}>

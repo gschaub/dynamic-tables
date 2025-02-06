@@ -89,14 +89,14 @@ import {
 } from './table-defaults';
 import {
 	processColumns,
-	processRows,
-	processTableBodyRows,
+	processHeaderRow,
+	processBodyRows,
 	gridBandedRowTextColorStyle,
 	gridBandedRowBackgroundColorStyle,
 	gridInnerBorderStyle,
 	gridInnerBorderWidthStyle,
-	startGridBodyRowNbr,
-	endGridBodyRowNbr,
+	startGridRowNbr,
+	endGridRowNbr,
 	getGridHeaderBackgroundColorStyle,
 	getHeaderTextAlignmentStyle,
 	getBorderStyleType,
@@ -870,7 +870,7 @@ export default function Edit(props) {
 		switch (updateType) {
 			case 'attributes':
 				{
-					setTableAttributes(tableId, 'column', rowId, 'ATTRIBUTES', updatedRowAttributes);
+					setTableAttributes(tableId, 'row', rowId, 'ATTRIBUTES', updatedRowAttributes);
 					break;
 				}
 			case 'insert':
@@ -893,7 +893,7 @@ export default function Edit(props) {
 		console.log('Show Borders = ' + showBorders)
 	}
 
-	function onMouseColumnClick(column_id, row_id, table, event) {
+	function onMouseBorderClick(column_id, row_id, table, event) {
 
 		console.log('MOUSE CLICKED IN BORDER')
 		console.log('Column = ' + column_id)
@@ -1135,11 +1135,13 @@ export default function Edit(props) {
 	}
 
 	const gridColumnStyle = processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, table.columns)
-	const gridRowStyle = processRows(isNewBlock, tableIsResolving, table.rows)
-	const gridBodyRowStyle = processTableBodyRows(isNewBlock, tableIsResolving, table.rows)
-	const startGridBodyRowNbrStyle = startGridBodyRowNbr(enableHeaderRow, showBorders)
-	const endGridBodyRowNbrStyle = endGridBodyRowNbr(startGridBodyRowNbrStyle, numRows, enableHeaderRow, false)
-	const horizontalScrollStyle = allowHorizontalScroll ? 'auto' : 'clip';
+	const gridHeaderRowStyle = processHeaderRow(isNewBlock, tableIsResolving, table.rows)
+	const gridBodyRowStyle = processBodyRows(isNewBlock, tableIsResolving, table.rows)
+	const startGridHeaderRowNbrStyle = showBorders ? 2 : 1
+	const endGridHeaderRowNbrStyle = endGridRowNbr(1, 'Header', numRows, enableHeaderRow, showBorders, false)
+	const startGridBodyRowNbrStyle = startGridRowNbr(enableHeaderRow, showBorders)
+	const endGridBodyRowNbrStyle = endGridRowNbr(startGridBodyRowNbrStyle, 'Body', numRows, enableHeaderRow, showBorders, false)
+	const horizontalScrollStyle = allowHorizontalScroll ? 'auto' : 'hidden';
 
 	const gridBandedRowTextColor = gridBandedRowTextColorStyle(isNewBlock, tableIsResolving, bandedRowTextColor)
 	const gridBandedRowBackgroundColor = gridBandedRowBackgroundColorStyle(isNewBlock, tableIsResolving, bandedRowBackgroundColor)
@@ -1214,7 +1216,8 @@ export default function Edit(props) {
 	console.log('Block Table Status - ' + blockTableStatus);
 	console.log('Is Table Resolving - ' + tableIsResolving);
 	console.log('gridColumnStyle = ' + gridColumnStyle);
-	console.log('gridRowStyle = ' + gridRowStyle);
+	console.log('gridRowHeaderStyle = ' + gridHeaderRowStyle);
+	console.log('gridRowBodyStyle = ' + gridBodyRowStyle);
 	console.log(blockProps);
 	console.log(blockProps.style.backgroundColor);
 
@@ -1406,7 +1409,7 @@ export default function Edit(props) {
 					<InspectorControls group="typography">
 					</InspectorControls>
 
-					<div style={{ "display": "inline-block" }}>
+					<div style={{ "display": "block" }}>
 						{!hideTitle &&
 							<RichText
 								id="tableTitle"
@@ -1422,14 +1425,13 @@ export default function Edit(props) {
 							< div className="grid-scroller"
 								style={{
 									"--headerRowSticky": headerRowStickyStyle,
-									"--startGridBodyRowNbr": startGridBodyRowNbrStyle,
-									"--endGridBodyRowNbr": endGridBodyRowNbrStyle
+									// "--startGridBodyRowNbr": startGridBodyRowNbrStyle,
+									// "--endGridBodyRowNbr": endGridBodyRowNbrStyle
 								}}>
 
 								<div className={"grid-control " + headerRowStickyClass}
 									style={{
 										"--gridTemplateColumns": gridColumnStyle,
-										"--gridTemplateRows": gridRowStyle,
 										"--horizontalScroll": horizontalScrollStyle,
 										"--headerRowSticky": headerRowStickyStyle,
 										"--gridNumColumns": numColumns,
@@ -1437,45 +1439,44 @@ export default function Edit(props) {
 										"--gridAlignment": gridAlignment
 									}}>
 
-									{/* TODO: Add overflow-x option if the overflow option is selected */}
-
 									{/* Render Table Border Row if present */}
 									{showBorders &&
-										(table.cells
-											.filter(cell => cell.attributes.border && cell.row_id === '0')
-											.map(({ table_id, row_id, column_id, cell_id, content, attributes, classes }) => {
-												console.log('Rendering Body Row Cell' + cell_id)
+										(<div className={"grid-control__border"}>
+											{table.cells
+												.filter(cell => cell.attributes.border && cell.row_id === '0')
+												.map(({ table_id, row_id, column_id, cell_id, content, attributes, classes }) => {
+													console.log('Rendering Body Row Cell' + cell_id)
 
-												const borderContent = setBorderContent(row_id, column_id, content)
-												const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id)
-												const isFirstColumn = column_id === '1' ? true : false;
-												return (
-													<>
-														{/* Show zoom to details column */}
-														{isFirstColumn && enableFutureFeatures && (
-															<div className={"grid-control__border-cells"} />
-														)}
-
-														< div
-															id={cell_id}
-															onMouseDown={e => onMouseColumnClick(column_id, row_id, table, e)}
-															className={classes}>
-															{borderContent}
-															{isOpenCurrentColumnMenu && (
-																<ColumnMenu
-																	tableId={table_id}
-																	columnId={column_id}
-																	columnLabel={borderContent}
-																	columnAttributes={columnAttributes}
-																	enableProFeatures={enableProFeatures}
-																	updatedColumn={onUpdateColumn}>
-																</ColumnMenu>
+													const borderContent = setBorderContent(row_id, column_id, content)
+													const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id)
+													const isFirstColumn = column_id === '1' ? true : false;
+													return (
+														<>
+															{/* Show zoom to details column */}
+															{isFirstColumn && enableFutureFeatures && (
+																<div className={"grid-control__border-cells"} />
 															)}
-														</div>
-													</>
-												)
-											})
-										)
+
+															< div
+																id={cell_id}
+																onMouseDown={e => onMouseBorderClick(column_id, row_id, table, e)}
+																className={classes}>
+																{borderContent}
+																{isOpenCurrentColumnMenu && (
+																	<ColumnMenu
+																		tableId={table_id}
+																		columnId={column_id}
+																		columnLabel={borderContent}
+																		columnAttributes={columnAttributes}
+																		enableProFeatures={enableProFeatures}
+																		updatedColumn={onUpdateColumn}>
+																	</ColumnMenu>
+																)}
+															</div>
+														</>
+													)
+												})}
+										</div>)
 									}
 
 									{/* Render Table Header Row if present */}
@@ -1485,6 +1486,9 @@ export default function Edit(props) {
 											return (
 												<div className="grid-control__header"
 													style={{
+														"--gridTemplateHeaderRows": gridHeaderRowStyle,
+														"--startGridHeaderRowNbr": startGridHeaderRowNbrStyle,
+														"--endGridHeaderRowNbr": endGridHeaderRowNbrStyle,
 														"--headerBorderTopColor": headerBorderTopColor,
 														"--headerBorderTopStype": headerBorderTopStyle,
 														"--headerBorderTopWidth": headerBorderTopWidth,
@@ -1520,7 +1524,7 @@ export default function Edit(props) {
 																	{isBorder && (
 																		<div
 																			id={cell_id}
-																			onMouseDown={e => onMouseColumnClick(column_id, row_id, table, e)}
+																			onMouseDown={e => onMouseBorderClick(column_id, row_id, table, e)}
 																			className={classes}>
 																			{borderContent}
 																			{isOpenCurrentRowMenu && (
@@ -1641,7 +1645,7 @@ export default function Edit(props) {
 																		{isBorder && (
 																			<div
 																				id={cell_id}
-																				onMouseDown={e => onMouseColumnClick(column_id, row_id, table, e)}
+																				onMouseDown={e => onMouseBorderClick(column_id, row_id, table, e)}
 																				className={classes}>
 																				{borderContent}
 																				{isOpenCurrentRowMenu && (

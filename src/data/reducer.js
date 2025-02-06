@@ -389,7 +389,7 @@ const table = (
             if (action.attribute === 'attributes') {
                 transformedValue = JSON.stringify(action.value)
             }
-            console.log(transformedValue)
+            console.log(    )
 
             let newRowsState = { ...state }
             let updatedRowData = JSON.parse('{ "' + action.attribute + '" :' + transformedValue + '}')
