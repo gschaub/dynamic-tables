@@ -3,7 +3,7 @@
 require_once plugin_dir_path(__DIR__) . 'includes/dynamicTablesDbPersist.php';
 // require_once plugin_dir_path(__DIR__) . 'includes/dynamicTablesRoutes.php';
 require_once plugin_dir_path(__DIR__) . 'includes/dynamicTablesAPI.php';
-require_once plugin_dir_path(__DIR__) . 'includes/dynamicTablesRestAPI.php';
+// require_once plugin_dir_path(__DIR__) . 'includes/dynamic-tables-rest-api.php';
 require_once plugin_dir_path(__DIR__) . 'includes/renderHelper.php';
 
 /**
@@ -11,45 +11,45 @@ require_once plugin_dir_path(__DIR__) . 'includes/renderHelper.php';
  */
 
 // Exit if accessed directly
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined('ABSPATH') ) {
+	exit;
 }
 error_log('Render Attribs = ' . print_r($attributes, true));
-$tableId = $attributes[ 'table_id' ];
-$blockTableRef = $attributes[ 'block_table_ref' ];
-$gridAlignment = $attributes[ 'block_alignment' ];
-$blockBackgroundColor = $attributes[ 'backgroundColor' ];
+$tableId = $attributes['table_id'];
+$blockTableRef = $attributes['block_table_ref'];
+$gridAlignment = $attributes['block_alignment'];
+$blockBackgroundColor = $attributes['backgroundColor'];
 
 /**
  * Get Table - Load variables
  */
 
 $table = get_table($tableId);
-if (is_wp_error($table)) {
-    error_log('Table = ' . print_r($table, true));
-    die;
+if ( is_wp_error($table) ) {
+	error_log('Table = ' . print_r($table, true));
+	die;
 }
 
-$tableHeader = $table[ 'header' ];
-$tableName = $tableHeader[ 'table_name' ];
-$tableColumns = $table[ 'columns' ];
-$tableRows = $table[ 'rows' ];
-$tableCells = $table[ 'cells' ];
+$tableHeader = $table['header'];
+$tableName = $tableHeader['table_name'];
+$tableColumns = $table['columns'];
+$tableRows = $table['rows'];
+$tableCells = $table['cells'];
 
 $numColumns = count($tableColumns);
 $numRows = count($tableRows);
 
 list('showGridLines' => $showGridLines,
-    'enableHeaderRow' => $enableHeaderRow,
-    'tableHeaderBackgroundColor' => $tableHeaderBackgroundColor,
-    'headerRowSticky' => $headerRowSticky,
-    'bandedRows' => $bandedRows,
-    'bandedRowTextColor' => $gridBandedTextColor,
-    'bandedRowBackgroundColor' => $gridBandedBackgroundColor,
-    'gridLineWidth' => $gridineWidth,
-    'horizontalAlignment' => $tableHorizontalAlignment,
-    'verticalAlignment' => $tableVerticalAlignment
-) = $tableHeader[ 'attributes' ];
+	'enableHeaderRow' => $enableHeaderRow,
+	'tableHeaderBackgroundColor' => $tableHeaderBackgroundColor,
+	'headerRowSticky' => $headerRowSticky,
+	'bandedRows' => $bandedRows,
+	'bandedRowTextColor' => $gridBandedTextColor,
+	'bandedRowBackgroundColor' => $gridBandedBackgroundColor,
+	'gridLineWidth' => $gridineWidth,
+	'horizontalAlignment' => $tableHorizontalAlignment,
+	'verticalAlignment' => $tableVerticalAlignment
+) = $tableHeader['attributes'];
 
 $gridColumnStyle = process_columns($tableColumns);
 $gridShowInnerLines = $showGridLines ? 'solid' : 'hidden';
@@ -67,44 +67,44 @@ $blockWrapperStickyHeader = str_replace('"', '', str_replace('class=', '', $bloc
 
 <div <?php echo $blockWrapper; ?>>
 
-    <p id="tableTitle"
-        style="--gridAlignment: <?php echo esc_attr($gridAlignment); ?>;">
-        <?php echo wp_kses_post($tableName); ?>
-    </p>
+	<p id="tableTitle"
+		style="--gridAlignment: <?php echo esc_attr($gridAlignment); ?>;">
+		<?php echo wp_kses_post($tableName); ?>
+	</p>
 
-    <?php if ($headerRowSticky) {?>
-        <div class="grid-scroller"
-            style="--gridHeaderColor: <?php echo esc_attr($gridHeaderBackgroundColorStyle); ?>;">
-    <?php }?>
+	<?php if ( $headerRowSticky ) {?>
+		<div class="grid-scroller"
+			style="--gridHeaderColor: <?php echo esc_attr($gridHeaderBackgroundColorStyle); ?>;">
+	<?php }?>
 
 	<div class="grid-control"
-        style="--gridTemplateColumns: <?php echo esc_attr($gridColumnStyle); ?>;
-            --gridAlignment: <?php echo esc_attr($gridAlignment); ?>;">
+		style="--gridTemplateColumns: <?php echo esc_attr($gridColumnStyle); ?>;
+			--gridAlignment: <?php echo esc_attr($gridAlignment); ?>;">
 
-    	<?php foreach ($tableRows as $index => $row) {
+		<?php foreach ( $tableRows as $index => $row ) {
 
-    ?>
+	?>
 
-        <?php foreach ($tableCells as $cellIndex => $cell) {
-        $cellRowId = $cell[ 'row_id' ];
-        $cellColumnId = $cell[ 'column_id' ];
-        $cellId = numberToLetter($cellColumnId) . $cellRowId;
+		<?php foreach ( $tableCells as $cellIndex => $cell ) {
+		$cellRowId = $cell['row_id'];
+		$cellColumnId = $cell['column_id'];
+		$cellId = numberToLetter($cellColumnId) . $cellRowId;
 
-        $calculatedClasses = getCalculatedClasses($cellRowId, $cellColumnId, $blockWrapper, $bandedRows, $enableHeaderRow, $blockWrapperStickyHeader);
+		$calculatedClasses = getCalculatedClasses($cellRowId, $cellColumnId, $blockWrapper, $bandedRows, $enableHeaderRow, $blockWrapperStickyHeader);
 
-        if ($cell[ 'row_id' ] === $row[ 'row_id' ]) {?>
-				    <div id="<?php echo esc_attr($cellId); ?>"
-                        class="<?php echo esc_attr($cell[ 'classes' ] . $calculatedClasses); ?>"
-                        style="--bandedRowTextColor: <?php echo esc_attr($gridBandedTextColor); ?>;
-                            --bandedRowBackgroundColor: <?php echo esc_attr($gridBandedBackgroundColor); ?>;
-                            --showGridLines: <?php echo esc_attr($gridShowInnerLines); ?>;
-                            --gridLineWidth: <?php echo esc_attr($gridInnerLineWidth); ?>;">
-                        <?php echo wp_kses_post($cell[ 'content' ]); ?>
-                    </div> <?php }
-    }
+		if ( $cell['row_id'] === $row['row_id'] ) {?>
+					<div id="<?php echo esc_attr($cellId); ?>"
+						class="<?php echo esc_attr($cell['classes'] . $calculatedClasses); ?>"
+						style="--bandedRowTextColor: <?php echo esc_attr($gridBandedTextColor); ?>;
+							--bandedRowBackgroundColor: <?php echo esc_attr($gridBandedBackgroundColor); ?>;
+							--showGridLines: <?php echo esc_attr($gridShowInnerLines); ?>;
+							--gridLineWidth: <?php echo esc_attr($gridInnerLineWidth); ?>;">
+						<?php echo wp_kses_post($cell['content']); ?>
+					</div> <?php }
+	}
 }?>
-        </div>
-   <?php if ($headerRowSticky) {
-    echo '</div>';
+		</div>
+	<?php if ( $headerRowSticky ) {
+	echo '</div>';
 }?>
 </div>

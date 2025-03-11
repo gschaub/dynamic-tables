@@ -13,6 +13,7 @@ build/Release
 
 # Dependency directories
 node_modules/
+vendor/
 
 # Optional npm cache directory
 .npm
@@ -28,6 +29,9 @@ node_modules/
 
 # dotenv environment variables file
 .env
+
+# other environment files
+composer*
 
 # temporary files
 ~*

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset name="WordPressOverrides">
+	<rule ref="WordPress">
+		<exclude name="Squiz"/>
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax.Found"/>
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+		<exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
+		<exclude name="WordPress.DB.PreparedSQL.NotPrepared"/>
+	</rule>
+</ruleset>
