@@ -8,4 +8,10 @@
 		<exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
 		<exclude name="WordPress.DB.PreparedSQL.NotPrepared"/>
 	</rule>
+
+	<rule ref="Generic.WhiteSpace.ScopeIndent">
+		<properties>
+            <property name="indent" value="2" />
+        </properties>
+	</rule>
 </ruleset>

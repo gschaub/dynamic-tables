@@ -103,6 +103,10 @@ if ( ! class_exists( DynamicTables::class ) ) {
 			$this->define_constant( 'DT_VERSION', $this->version );
 			$this->define_constant( 'DT_MAJOR_VERSION', 1 );
 			$this->define_constant( 'DT_UPGRADE_VERSION', '0.0.9' ); // Highest version with an upgrade routine. See upgrades.php.
+			$this->define_constant( 'DT_IS_MULTISITE', is_multisite() ? true : false );
+			if ( DT_IS_MULTISITE ) {
+				$this->define_constant( 'DT_ALLOW_MULTISITE_ACTIVATION', true );
+			}
 			$this->define_constant( 'TEST_MODE', false );
 
 			/**
@@ -151,13 +155,17 @@ if ( ! class_exists( DynamicTables::class ) ) {
 
 			// Register included files
 			require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-tables-rest-api.php';
-			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+			require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-tables-db-persist.php';
+			require_once plugin_dir_path( __FILE__ ) . 'includes/admin/upgrades.php';
+			require_once plugin_dir_path( __FILE__ ) . 'includes/render-helper.php';
+
 
 			// Include utility functions.
 			require_once plugin_dir_path( __FILE__ ) . 'includes/utility-functions.php';
 
 			// Include previous API functions.
-			require_once  plugin_dir_path( __FILE__ ) . 'includes/api/api-helpers.php';
+			require_once plugin_dir_path( __FILE__ ) . 'includes/api/dynamic-tables-api.php';
+			require_once plugin_dir_path( __FILE__ ) . 'includes/api/api-helpers.php';
 
 			// Include functions.
 			// acf_include('includes/acf-helper-functions.php');
@@ -205,18 +213,6 @@ if ( ! class_exists( DynamicTables::class ) ) {
 			// acf_include('includes/ajax/class-acf-ajax-query-users.php');
 			// acf_include('includes/ajax/class-acf-ajax-local-json-diff.php');
 
-			// Include forms.
-			// acf_include('includes/forms/form-attachment.php');
-			// acf_include('includes/forms/form-comment.php');
-			// acf_include('includes/forms/form-customizer.php');
-			// acf_include('includes/forms/form-front.php');
-			// acf_include('includes/forms/form-nav-menu.php');
-			// acf_include('includes/forms/form-post.php');
-			// acf_include('includes/forms/form-gutenberg.php');
-			// acf_include('includes/forms/form-taxonomy.php');
-			// acf_include('includes/forms/form-user.php');
-			// acf_include('includes/forms/form-widget.php');
-
 			// Include admin.
 
 			$admin_screen = 'false';
@@ -224,7 +220,6 @@ if ( ! class_exists( DynamicTables::class ) ) {
 				$admin_screen = 'true';
 				require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin.php';
 				require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin-notices.php';
-				require_once plugin_dir_path( __FILE__ ) . 'includes/admin/upgrades.php';
 				// acf_include('includes/admin/admin-internal-post-type-list.php');
 				// acf_include('includes/admin/admin-internal-post-type.php');
 				// acf_include('includes/admin/admin-tools.php');
@@ -236,9 +231,9 @@ if ( ! class_exists( DynamicTables::class ) ) {
 				$version_management = new DynamicTablesVersionManagement();
 			}
 
-			error_log( 'Switch UNINSTALL method to the uninstall hook before publishing' );
 			register_activation_hook( __FILE__, array( $version_management, 'activate_dynamic_tables' ) );
-			register_deactivation_hook( __FILE__, array( $version_management, 'deactivate_dynamic_tables' ) );
+			add_action('wp_initialize_site', array( $version_management, 'new_site_setup' ));
+			// register_deactivation_hook( __FILE__, array( $version_management, 'deactivate_dynamic_tables' ) );
 			register_deactivation_hook( __FILE__, array( $version_management, 'uninstall_dynamic_tables' ) );
 			// register_uninstall_hook(__FILE__, [$version_management, 'uninstall_dynamic_tables']);
 			$version_management->dynamic_tables_has_upgrade( DT_UPGRADE_VERSION );
@@ -358,7 +353,7 @@ if ( ! class_exists( DynamicTables::class ) ) {
 		// Display the confirmation message
 		public function dt_plugin_delete_confirmation() {
 			error_log( '... Processing Delete Page Logic' );
-			if ( isset( $_POST['dt_retaining_data'] ) ) {
+			if ( isset($_POST['dt_retaining_data'] ) ) {
 				update_option( 'dt_data_retained', true ); // Retain data
 				$this->dt_redirect_to_plugins_page();
 			} elseif ( isset( $_POST['dt_removing_data'] ) ) {
@@ -413,17 +408,17 @@ if ( ! class_exists( DynamicTables::class ) ) {
 		}
 	}
 
-			/**
-			 * The main function responsible for returning the one true dynamic tables Instance to functions everywhere.
-			 * Use this function like you would a global variable, except without needing to declare the global.
-			 *
-			 * Example: <?php $dynamic_tables = dynamicTables(); ?>
-			 *
-			 * @date    4/09/13
-			 * @since   4.3.0
-			 *
-			 * @return  DynamicTables
-			 */
+	/**
+	* The main function responsible for returning the one true dynamic tables Instance to functions everywhere.
+	* Use this function like you would a global variable, except without needing to declare the global.
+	*
+	* Example: <?php $dynamic_tables = dynamicTables(); ?>
+	*
+	* @date    4/09/13
+	* @since   4.3.0
+	*
+	* @return  DynamicTables
+	*/
 	function dynamic_tables() {
 		global $dynamic_tables;
 

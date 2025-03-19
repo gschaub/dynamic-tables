@@ -1,6 +1,4 @@
 <?php
-require_once plugin_dir_path( __FILE__ ) . 'dynamicTablesDbPersist.php';
-
 /**
  * Define filters for the dynamic tables object
  */
@@ -349,10 +347,10 @@ function delete_table( $tableId = 0 ) {
  * @param int $tableId - Table id.
  * @return array|WP_Error Table data retrieved.
  */
-function get_table( $tableId ) {
+function get_table( $table_id ) {
 	$results = array();
 
-	$testObject = array(
+	$test_object = array(
 		'columnWidthType'        => 'Proportional',
 		'minWidth'               => 0,
 		'minWidthUnits'          => 'em',
@@ -366,41 +364,41 @@ function get_table( $tableId ) {
 		'horizontalAlignment'    => 'none',
 	);
 
-	$results      += array( 'id' => $tableId );
+	$results      += array( 'id' => $table_id );
 	$table         = 'dt_tables';
-	$getTable      = new PersistTableData();
-	$resultsHeader = $getTable->get_table( $tableId, $table );
-	if ( ! $resultsHeader['success'] ) {
+	$get_table      = new PersistTableData();
+	$results_header = $get_table->get_table( $table_id, $table );
+	if ( ! $results_header['success'] ) {
 		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
 	}
-	$results += array( 'header' => $resultsHeader['result'] );
+	$results += array( 'header' => $results_header['result'] );
 
 	// error_log(print_r($results, true));
 
 	$table       = 'dt_table_rows';
-	$getTable    = new PersistTableData();
-	$resultsRows = $getTable->get_table( $tableId, $table );
-	if ( ! $resultsRows['success'] ) {
+	$get_table    = new PersistTableData();
+	$results_rows = $get_table->get_table( $table_id, $table );
+	if ( ! $results_rows['success'] ) {
 		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
 	}
-	$results += array( 'rows' => $resultsRows['result'] );
+	$results += array( 'rows' => $results_rows['result'] );
 
 	$table          = 'dt_table_columns';
-	$getTable       = new PersistTableData();
-	$resultsColumns = $getTable->get_table( $tableId, $table );
+	$get_table       = new PersistTableData();
+	$results_columns = $get_table->get_table( $table_id, $table );
 
-	if ( ! $resultsColumns['success'] ) {
+	if ( ! $results_columns['success'] ) {
 		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
 	}
-	$results += array( 'columns' => $resultsColumns['result'] );
+	$results += array( 'columns' => $results_columns['result'] );
 
 	$table        = 'dt_table_cells';
-	$getTable     = new PersistTableData();
-	$resultsCells = $getTable->get_table( $tableId, $table );
-	if ( ! $resultsCells['success'] ) {
+	$get_table      = new PersistTableData();
+	$results_cells = $get_table->get_table( $table_id, $table );
+	if ( ! $results_cells['success'] ) {
 		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
 	}
-	$results += array( 'cells' => $resultsCells['result'] );
+	$results += array( 'cells' => $results_cells['result'] );
 
 	return $results;
 }

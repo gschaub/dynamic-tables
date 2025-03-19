@@ -34,6 +34,7 @@ if ( ! class_exists( DT_Admin_Notices::class ) ) {
 			$notices['save-success']            = $this->save_success();
 			$notices['save-fail-permissions']   = $this->save_fail_permissions();
 			$notices['uninstall-table-warning'] = $this->uninstall_table_warning();
+			$notices['network-activation-error'] = $this->network_activation_error();
 
 			return $notices[ $notice_id ];
 		}
@@ -93,6 +94,18 @@ if ( ! class_exists( DT_Admin_Notices::class ) ) {
 					'paragraph_wrap'     => true,
 				)
 			);
+		}
+
+		public function network_activation_error() {
+			$message_body = 'Dynamic tables may not be network activated.  Activate the plugin from the individual site(s).';
+			$message_style = '"margin:5px 0 15px;padding:1px 12px;border:1px solid #c3c4c7;border-left-width:4px;';
+			$message_style .= 'border-left-color:red;box-shadow:0 1px 1px rgba(0,0,0,.04)"';
+			$message_body_style = '"margin:.5em 0;padding:2px;font-size:13px;line-height:1.5;"';
+			$message = '<div style=' . $message_style . '>';
+			$message .= '<p style=' . $message_body_style . '><strong>Error: </strong>' . $message_body . '</p>';
+			$message .= '</div>';
+
+			return $message;
 		}
 	}
 

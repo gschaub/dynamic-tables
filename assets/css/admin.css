@@ -1,35 +1,35 @@
 h1 h2 {
-    font-weight: 600;
+	font-weight: 600;
 }
 
 h2 {
-    margin: 1em 0 .5em 0;
+	margin: 1em 0 .5em 0;
 }
 
 p {
-    font-size: 14px;
-    line-height: 1.4em;
-    margin: 1em 0 1em 0;
+	font-size: 14px;
+	line-height: 1.4em;
+	margin: 1em 0 1em 0;
 }
 
 ul {
-    list-style-position: outside;
-    margin-left: 20px;
+	list-style-position: outside;
+	margin-left: 20px;
 }
 
 li {
-    list-style-type: initial;
-    margin: 0 0 3px 0px;
+	list-style-type: initial;
+	margin: 0 0 3px 0px;
 }
 
-#keep-tables-on-uninstall {
-    margin-left: 20px;
+#dt_keep_tables_on_uninstall {
+	margin-left: 20px;
 }
 
 .dt-setting-default {
-    font-size: 14px;
+	font-size: 14px;
 }
 
 .admin-checkbox {
-    margin-bottom: 6px;
+	margin-bottom: 6px;
 }

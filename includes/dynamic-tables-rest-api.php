@@ -12,8 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once plugin_dir_path( __FILE__ ) . 'dynamicTablesAPI.php';
-
 class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 

@@ -15,10 +15,16 @@
 		"start": "wp-scripts start --webpack-copy-php"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^30.8.1"
+		"@wordpress/scripts": "^30.7.0",
+		"babel-eslint": "^10.1.0",
+		"eslint": "^9.22.0",
+		"eslint-config-prettier": "^10.1.1",
+		"eslint-config-wordpress": "^2.0.0",
+		"eslint-plugin-prettier": "^5.2.3",
+		"prettier": "^3.5.3"
 	},
 	"dependencies": {
 		"@formatjs/icu-messageformat-parser": "^2.6.2",
-		"@wordpress/icons": "^10.15.1"
+		"@wordpress/icons": "^10.9.0"
 	}
 }

@@ -240,12 +240,12 @@ export default function Edit(props) {
 	console.log('Table id update: ' + isTableIdChanged)
 
 	/**
-	 * Table blocks is unmounted when entering the text editor AND when deleted.  However, 
-	 * don't know whether the table was deleted when an unmount is detected.  Therefore, 
-	 * we mark them as unmounted at that time, and can identify whether the block was 
+	 * Table blocks is unmounted when entering the text editor AND when deleted.  However,
+	 * don't know whether the table was deleted when an unmount is detected.  Therefore,
+	 * we mark them as unmounted at that time, and can identify whether the block was
 	 * truly deleted on the subsequent render.
-	 * 
-	 * We mark tables as deleted if they do not identify that the block has been remounted 
+	 *
+	 * We mark tables as deleted if they do not identify that the block has been remounted
 	 */
 	const { unmountedTables } = useSelect(
 		(select) => {
@@ -450,7 +450,7 @@ export default function Edit(props) {
 
 	/**
 	 * Synchronize PostId
-	 * 
+	 *
 	 * Post ID is assigned a value of '0' upon table creation and can change over the life of a post.
 	 * props.context is authoritative for Post ID so we ensure the table is sync'd to that.
 	 */
@@ -482,7 +482,7 @@ export default function Edit(props) {
 
 	/**
 	 * Set state for number of columns and rows when the number of table rows has changes
-	 * 
+	 *
 	 * TODO: Verify this is still needed following update to table store to track all tables in editor
 	 */
 	useEffect(() => {
@@ -503,10 +503,10 @@ export default function Edit(props) {
 
 	/**
 	 * Called upon event to add a column
-	 * 
-	 * @param {*} tableId 
-	 * @param {*} columnId 
-	 * @returns 
+	 *
+	 * @param {*} tableId
+	 * @param {*} columnId
+	 * @returns
 	 */
 	function insertColumn(tableId, columnId) {
 		const newColumn = getDefaultColumn(tableId, columnId)
@@ -536,10 +536,10 @@ export default function Edit(props) {
 
 	/**
 	 * Called upon event to add a row
-	 * 
-	 * @param {*} tableId 
-	 * @param {*} rowId 
-	 * @returns 
+	 *
+	 * @param {*} tableId
+	 * @param {*} rowId
+	 * @returns
 	 */
 	function insertRow(tableId, rowId) {
 		const newRow = getDefaultRow(tableId, rowId)
@@ -548,7 +548,7 @@ export default function Edit(props) {
 		for (let i = 0; i < numColumns; i++) {
 			if (i === 0) {
 				let cell = getDefaultCell(tableId, i, rowId, 'Border')
-				// cell.content = 
+				// cell.content =
 				tableCells.push(cell)
 			} else {
 				let cell = getDefaultCell(tableId, i, rowId)
@@ -570,10 +570,10 @@ export default function Edit(props) {
 
 	/**
 	 * Called upon event to delete a column
-	 * 
-	 * @param {*} tableId 
-	 * @param {*} columnId 
-	 * @returns 
+	 *
+	 * @param {*} tableId
+	 * @param {*} columnId
+	 * @returns
 	 */
 	function deleteColumn(tableId, columnId) {
 		console.log('Deleting Column - ' + columnId)
@@ -586,10 +586,10 @@ export default function Edit(props) {
 
 	/**
 	 * Called upon event to delete a row
-	 * 
-	 * @param {*} tableId 
-	 * @param {*} rowId 
-	 * @returns 
+	 *
+	 * @param {*} tableId
+	 * @param {*} rowId
+	 * @returns
 	 */
 	function deleteRow(tableId, rowId) {
 		console.log('Deleting Row - ' + rowId)
@@ -603,16 +603,16 @@ export default function Edit(props) {
 
 	/**
 	 * Update table store to reflect changes made to EXISTING table attributes
-	 * 
-	 * 
+	 *
+	 *
 	 * @param {*} tableId - Id of table to update
 	 * @param {*} attribute - Table Object Attribute
 	 * @param {*} id - Array Index Id
 	 * @param {*} type - See Below
 	 * @param {*} value - New attribute value
 	 * @param {*} persist - Write update to entity record
-	 * @returns 
-	 * 
+	 * @returns
+	 *
 	 * Valid Types:
 	 * - CONTENT - Cell Content
 	 * - ATTRIBUTES - Array of attributes
@@ -688,10 +688,10 @@ export default function Edit(props) {
 
 	/**
 	 * Add/remove grid control column and row when table attribute of "Show Grid" is checked
-	 * 
-	 * @param {*} table 
-	 * @param {*} isChecked 
-	 * @returns 
+	 *
+	 * @param {*} table
+	 * @param {*} isChecked
+	 * @returns
 	 */
 	function onToggleBorders(table, isChecked) {
 
@@ -929,9 +929,9 @@ export default function Edit(props) {
 
 	/**
 	* Hide the table title from displaying
-	* 
-	* @param {*} table 
-	* @param {*} isChecked 
+	*
+	* @param {*} table
+	* @param {*} isChecked
 	*/
 	function onHideTitle(table, isChecked) {
 		const updatedTableAttributes = {
@@ -943,9 +943,9 @@ export default function Edit(props) {
 
 	/**
 	* Allow the table to scroll horizontally
-	* 
-	* @param {*} table 
-	* @param {*} isChecked 
+	*
+	* @param {*} table
+	* @param {*} isChecked
 	*/
 	function onAllowHorizontalScroll(table, isChecked) {
 		const updatedTableAttributes = {
@@ -957,9 +957,9 @@ export default function Edit(props) {
 
 	/**
 	 * Show colored bands on even numbered table rows
-	 * 
-	 * @param {*} table 
-	 * @param {*} isChecked 
+	 *
+	 * @param {*} table
+	 * @param {*} isChecked
 	 */
 	function onShowBandedRows(table, isChecked) {
 		const updatedTableAttributes = {
@@ -971,9 +971,9 @@ export default function Edit(props) {
 
 	/**
 	* Show colored bands on even numbered table rows
-	* 
-	* @param {*} table 
-	* @param {*} color 
+	*
+	* @param {*} table
+	* @param {*} color
 	*/
 	function onBandedRowColor(table, type, color) {
 		let updatedTableAttributes = ''
@@ -998,9 +998,9 @@ export default function Edit(props) {
 
 	/**
 	* Make first table row the Header
-	* 
-	* @param {*} table 
-	* @param {*} isChecked 
+	*
+	* @param {*} table
+	* @param {*} isChecked
 	*/
 	function onEnableHeaderRow(table, isChecked) {
 		const updatedTableAttributes = {
@@ -1022,9 +1022,9 @@ export default function Edit(props) {
 
 	/**
 	* Make first table row the Header
-	* 
-	* @param {*} table 
-	* @param {*} alignmentValue 
+	*
+	* @param {*} table
+	* @param {*} alignmentValue
 	*/
 	function onAlignHeader(table, alignment) {
 		console.log('ON HEADER ALIGNMENT')
@@ -1039,9 +1039,9 @@ export default function Edit(props) {
 
 	/**
 	* Make first table row the Header
-	* 
-	* @param {*} table 
-	* @param {*} isChecked 
+	*
+	* @param {*} table
+	* @param {*} isChecked
 	*/
 	function onHeaderBorder(table, border) {
 		console.log('ON HEADER BORDER')
@@ -1058,9 +1058,9 @@ export default function Edit(props) {
 	/**
 	* Make first table row the Header
 	allowHorizontalScroll
-	* 
-	* @param {*} table 
-	* @param {*} isChecked 
+	*
+	* @param {*} table
+	* @param {*} isChecked
 	*/
 	function onHeaderRowSticky(table, isChecked) {
 		const updatedTableAttributes = {
@@ -1072,9 +1072,9 @@ export default function Edit(props) {
 
 	/**
 	* Make first table row the Header
-	* 
-	* @param {*} table 
-	* @param {*} alignmentValue 
+	*
+	* @param {*} table
+	* @param {*} alignmentValue
 	*/
 	function onAlignBody(table, alignment) {
 		console.log('ON BODY  ALIGNMENT')
@@ -1089,9 +1089,9 @@ export default function Edit(props) {
 
 	/**
 	* Make first table row the Header
-	* 
-	* @param {*} table 
-	* @param {*} isChecked 
+	*
+	* @param {*} table
+	* @param {*} isChecked
 	*/
 	function onBodyBorder(table, border) {
 		console.log('ON BODY BORDER')
@@ -1109,9 +1109,9 @@ export default function Edit(props) {
 
 	/**
 	  * Show inner grid lines
-	* 
-	* @param {*} table 
-	* @param {*} isChecked 
+	*
+	* @param {*} table
+	* @param {*} isChecked
 	 */
 	function onShowGridLines(table, isChecked) {
 		const updatedTableAttributes = {
@@ -1123,8 +1123,8 @@ export default function Edit(props) {
 
 	/**
 	  * Inner grid line width
-	* 
-	* @param {*} table 
+	*
+	* @param {*} table
 	* @param {*} gridLineWidth
 	 */
 	function onGridLineWidth(table, gridLineWidth) {
@@ -1153,7 +1153,7 @@ export default function Edit(props) {
 	const headerRowStickyClass = headerRowSticky ? 'grid-control__header--sticky ' : '';
 	const gridHeaderBackgroundColorStyle = getGridHeaderBackgroundColorStyle(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor)
 
-	/** 
+	/**
 	 * Header Styling
 	 */
 	const headerTextAlignmentStyle = getHeaderTextAlignmentStyle(isNewBlock, tableIsResolving, headerAlignment)

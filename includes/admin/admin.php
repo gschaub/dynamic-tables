@@ -85,9 +85,9 @@ if ( ! class_exists( DT_Admin::class ) ) {
 		public function handle_form() {
 			$notices = new DT_Admin_Notices();
 
-			if ( wp_verify_nonce( $_POST['dtAdminNonce'], 'saveSettings' ) and current_user_can( 'manage_options' ) ) {
-				$keep_tables_value = isset( $_POST['keep-tables-on-uninstall'] ) ? '1' : '0';
-				update_option( 'keep-tables-on-uninstall', $keep_tables_value );
+			if ( isset($_POST['dtAdminNonce']) and wp_verify_nonce( $_POST['dtAdminNonce'], 'saveSettings' ) and current_user_can( 'manage_options' ) ) {
+				$keep_tables_value = isset( $_POST['dt_keep_tables_on_uninstall'] ) ? '1' : '0';
+				update_option( 'dt_keep_tables_on_uninstall', $keep_tables_value );
 				echo $notices->admin_notice_library( 'save-success' );
 
 				if ( $keep_tables_value === '0' ) {
@@ -137,9 +137,9 @@ if ( ! class_exists( DT_Admin::class ) ) {
 
 						<div class="admin-checkbox">
 							<span>
-								<label for="keep-tables-on-uninstall">Do you want to keep table data when plugin is removed?</label>
-								<input name="keep-tables-on-uninstall" id="keep-tables-on-uninstall" type="checkbox" value="1"
-									<?php checked( '1', get_option( 'keep-tables-on-uninstall' ) ); ?>></input>
+								<label for="dt_keep_tables_on_uninstall">Do you want to keep table data when plugin is removed?</label>
+								<input name="dt_keep_tables_on_uninstall" id="dt_keep_tables_on_uninstall" type="checkbox" value="1"
+									<?php checked( '1', get_option( 'dt_keep_tables_on_uninstall' ) ); ?>></input>
 							</span>
 						</div>
 
