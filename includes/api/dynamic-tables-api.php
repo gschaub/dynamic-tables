@@ -56,33 +56,33 @@ function create_table_data( $tablearr, $wp_error = false ) {
 		),
 	);
 
-	$defaultRows    = array();
-	$defaultColumns = array();
-	$defaultCells   = array();
+	$default_rows    = array();
+	$default_columns = array();
+	$default_cells   = array();
 
 	foreach ( $tablearrdefault['rows'] as $index => $row ) {
-		$defaultRow = array(
+		$default_row = array(
 			'table_id'   => '0',
 			'row_id'     => $row['row_id'],
 			'attributes' => array(),
 			'classes'    => '',
 		);
-		array_push( $defaultRows, $defaultRow );
+		array_push( $default_rows, $default_row );
 	}
 
 	foreach ( $tablearrdefault['columns'] as $index => $column ) {
-		$defaultColumn = array(
+		$default_column = array(
 			'table_id'    => '0',
 			'column_id'   => $column['column_id'],
 			'column_name' => '',
 			'attributes'  => array(),
 			'classes'     => '',
 		);
-		array_push( $defaultColumns, $defaultColumn );
+		array_push( $default_columns, $default_column );
 	}
 
 	foreach ( $tablearrdefault['cells'] as $index => $cell ) {
-		$defaultCell = array(
+		$default_cell = array(
 			'table_id'   => '0',
 			'column_id'  => $cell['column_id'],
 			'row_id'     => $cell['row_id'],
@@ -90,12 +90,12 @@ function create_table_data( $tablearr, $wp_error = false ) {
 			'classes'    => '',
 			'content'    => '',
 		);
-		array_push( $defaultCells, $defaultCell );
+		array_push( $default_cells, $default_cell );
 	}
 
-	$defaults['rows']    = $defaultRows;
-	$defaults['columns'] = $defaultColumns;
-	$defaults['cells']   = $defaultCells;
+	$defaults['rows']    = $default_row;
+	$defaults['columns'] = $default_columns;
+	$defaults['cells']   = $default_cells;
 
 	$tablearr = wp_parse_args( $tablearr, $defaults );
 	unset( $tablearr['filter'] );
@@ -127,16 +127,16 @@ function create_table_data( $tablearr, $wp_error = false ) {
 	$results = null;
 	// error_log(print_r($tablearr, true));
 
-	$blockTableRef        = $tablearr['header']['block_table_ref'];
-	$status               = $tablearr['header']['status'];
-	$postId               = $tablearr['header']['post_id'];
-	$tableName            = $tablearr['header']['table_name'];
-	$serializedAttributes = maybe_serialize( $tablearr['header']['attributes'] );
-	$classes              = $tablearr['header']['classes'];
+	$block_table_ref       = $tablearr['header']['block_table_ref'];
+	$status                = $tablearr['header']['status'];
+	$post_id               = $tablearr['header']['post_id'];
+	$table_name            = $tablearr['header']['table_name'];
+	$serialized_attributes = maybe_serialize( $tablearr['header']['attributes'] );
+	$classes               = $tablearr['header']['classes'];
 
 	if ( $update ) {
-		$updateTable = new PersistTableData();
-		$results     = $updateTable->update_table( $table_id, $blockTableRef, $status, $postId, $tableName, $serializedAttributes, $classes );
+		$update_table = new PersistTableData();
+		$results     = $update_table->update_table( $table_id, $block_table_ref, $status, $post_id, $table_name, $serialized_attributes, $classes );
 
 		if ( ! $results['success'] ) {
 			if ( $wp_error ) {
@@ -144,8 +144,8 @@ function create_table_data( $tablearr, $wp_error = false ) {
 			}
 		}
 	} else {
-		$newTable = new PersistTableData();
-		$results  = $newTable->create_table_data( $blockTableRef, $status, $postId, $tableName, $serializedAttributes, $classes );
+		$new_table = new PersistTableData();
+		$results  = $new_table->create_table_data( $block_table_ref, $status, $post_id, $table_name, $serialized_attributes, $classes );
 
 		if ( ! $results['success'] ) {
 			if ( $wp_error ) {
@@ -156,11 +156,11 @@ function create_table_data( $tablearr, $wp_error = false ) {
 	}
 
 	// Create table rows
-	$tableId = $table_id;
+	$table_id = $table_id;
 	if ( isset( $tablearr['rows'] ) ) {
-		$requestRows = $tablearr['rows'];
-		$putRows     = update_table_rows( $tableId, $requestRows );
-		if ( $putRows === false ) {
+		$request_rows = $tablearr['rows'];
+		$put_rows     = update_table_rows( $table_id, $request_rows );
+		if ( $put_rows === false ) {
 			if ( $wp_error ) {
 				return new WP_Error( 'db_update_error', __( 'Database error creating table rows.' ) );
 			}
@@ -169,9 +169,9 @@ function create_table_data( $tablearr, $wp_error = false ) {
 
 	// Create table columns
 	if ( isset( $tablearr['columns'] ) ) {
-		$requestColumns = $tablearr['columns'];
-		$putColumns     = update_table_columns( $tableId, $requestColumns );
-		if ( $putColumns === false ) {
+		$request_columns = $tablearr['columns'];
+		$put_columns     = update_table_columns( $table_id, $request_columns );
+		if ( $put_columns === false ) {
 			if ( $wp_error ) {
 				return new WP_Error( 'db_update_error', __( 'Database error creating table columns.' ) );
 			}
@@ -180,16 +180,16 @@ function create_table_data( $tablearr, $wp_error = false ) {
 
 	// Create table cells
 	if ( isset( $tablearr['cells'] ) ) {
-		$requestCells = $tablearr['cells'];
-		$putCells     = update_table_cells( $tableId, $requestCells );
-		if ( $putCells === false ) {
+		$request_cells = $tablearr['cells'];
+		$put_cells     = update_table_cells( $table_id, $request_cells );
+		if ( $put_cells === false ) {
 			if ( $wp_error ) {
 				return new WP_Error( 'db_update_error', __( 'Database error creating table cells.' ) );
 			}
 		}
 	}
 
-	return $tableId;
+	return $table_id;
 }
 
 /**
@@ -230,24 +230,24 @@ function update_table_data( $tablearr, $wp_error = false ) {
  *
  * @since 1.0.0
  *
- * @param int   $tableId - Table id.
- * @param array $requestRows - Rows to load in database.
+ * @param int   $table_id - Table id.
+ * @param array $request_rows - Rows to load in database.
  * @return array|WP_Error Updated row values for new or updated table, WP_Error object on failure.
  */
-function update_table_rows( $tableId, $requestRows ) {
+function update_table_rows( $table_id, $request_rows ) {
 	$results = null;
 	$rows    = array();
 
-	foreach ( $requestRows as $index => $row ) {
-		$rowId                = $row['row_id'];
-		$serializedAttributes = maybe_serialize( $row['attributes'] );
-		$classes              = $row['classes'];
+	foreach ( $request_rows as $index => $row ) {
+		$row_id                 = $row['row_id'];
+		$serialized_attributes = maybe_serialize( $row['attributes'] );
+		$classes               = $row['classes'];
 
-		$rows[] = array( $tableId, $rowId, $serializedAttributes, $classes );
+		$rows[] = array( $table_id, $row_id, $serialized_attributes, $classes );
 	}
 
-	$updateTableRows = new PersistTableData();
-	$results         = $updateTableRows->update_table_rows( $tableId, $rows );
+	$update_table_rows = new PersistTableData();
+	$results         = $update_table_rows->update_table_rows( $table_id, $rows );
 
 	if ( ! $results['success'] ) {
 		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
@@ -261,25 +261,25 @@ function update_table_rows( $tableId, $requestRows ) {
  *
  * @since 1.0.0
  *
- * @param int   $tableId - Table id.
- * @param array $requestColumns - Columns to load in database.
+ * @param int   $table_id - Table id.
+ * @param array $request_columns - Columns to load in database.
  * @return array|WP_Error Updated columns values for new or updated table, WP_Error object on failure.
  */
-function update_table_columns( $tableId, $requestColumns ) {
+function update_table_columns( $table_id, $request_columns ) {
 	$results = null;
 	$columns = array();
 
-	foreach ( $requestColumns as $index => $column ) {
-		$columnId             = $column['column_id'];
-		$columnName           = $column['column_name'];
-		$serializedAttributes = maybe_serialize( $column['attributes'] );
-		$classes              = $column['classes'];
+	foreach ( $request_columns as $index => $column ) {
+		$column_id              = $column['column_id'];
+		$column_name            = $column['column_name'];
+		$serialized_attributes = maybe_serialize( $column['attributes'] );
+		$classes               = $column['classes'];
 
-		$columns[] = array( $tableId, $columnId, $columnName, $serializedAttributes, $classes );
+		$columns[] = array( $table_id, $column_id, $column_name, $serialized_attributes, $classes );
 	}
 
-	$updateTableColumns = new PersistTableData();
-	$results            = $updateTableColumns->update_table_columns( $tableId, $columns );
+	$update_table_columns = new PersistTableData();
+	$results            = $update_table_columns->update_table_columns( $table_id, $columns );
 
 	if ( ! $results['success'] ) {
 		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
@@ -293,25 +293,25 @@ function update_table_columns( $tableId, $requestColumns ) {
  *
  * @since 1.0.0
  *
- * @param int   $tableId - Table id.
- * @param array $requestCells - Cells to load in database.
+ * @param int   $table_id - Table id.
+ * @param array $request_cells - Cells to load in database.
  * @return array|WP_Error Updated cells values for new or updated table, WP_Error object on failure.
  */
-function update_table_cells( $tableId, $requestCells ) {
+function update_table_cells( $table_id, $request_cells ) {
 	$results = null;
 	$cells   = array();
 
-	foreach ( $requestCells as $index => $cell ) {
-		$columnId             = $cell['column_id'];
-		$rowId                = $cell['row_id'];
-		$serializedAttributes = maybe_serialize( $cell['attributes'] );
-		$classes              = $cell['classes'];
-		$content              = wp_kses_post( $cell['content'] );
-		$cells[]              = array( $tableId, $columnId, $rowId, $serializedAttributes, $classes, $content );
+	foreach ( $request_cells as $index => $cell ) {
+		$column_id              = $cell['column_id'];
+		$row_id                 = $cell['row_id'];
+		$serialized_attributes = maybe_serialize( $cell['attributes'] );
+		$classes               = $cell['classes'];
+		$content               = wp_kses_post( $cell['content'] );
+		$cells[]               = array( $table_id, $column_id, $row_id, $serialized_attributes, $classes, $content );
 	}
 
-	$updateTableCells = new PersistTableData();
-	$results          = $updateTableCells->update_table_cells( $tableId, $cells );
+	$update_table_cells = new PersistTableData();
+	$results          = $update_table_cells->update_table_cells( $table_id, $cells );
 
 	if ( ! $results['success'] ) {
 		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
@@ -325,18 +325,18 @@ function update_table_cells( $tableId, $requestCells ) {
  *
  * @since 1.0.0
  *
- * @param int $tableId - Table id.
+ * @param int $table_id - Table id.
  * @return array|WP_Error Deleted table.
  */
-function delete_table( $tableId = 0 ) {
-	$existingTable = get_table( $tableId );
-	$deleteTable   = new PersistTableData();
-	$results       = $deleteTable->delete_table_data( $tableId );
+function delete_table( $table_id = 0 ) {
+	$existing_table = get_table( $table_id );
+	$delete_table   = new PersistTableData();
+	$results       = $delete_table->delete_table_data( $table_id );
 
 	if ( ! $results['success'] ) {
 		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
 	}
-	return $existingTable;
+	return $existing_table;
 }
 
 /**
@@ -344,7 +344,7 @@ function delete_table( $tableId = 0 ) {
  *
  * @since 1.0.0
  *
- * @param int $tableId - Table id.
+ * @param int $table_id - Table id.
  * @return array|WP_Error Table data retrieved.
  */
 function get_table( $table_id ) {
@@ -418,7 +418,7 @@ function get_table( $table_id ) {
 function sanitize_dynamic_table( $table, $context = 'display' ) {
 	if ( is_object( $table ) ) {
 		// Check if post already filtered for this context.
-		if ( isset( $table->filter ) && $context == $table->filter ) {
+		if ( isset( $table->filter ) && $context === $table->filter ) {
 			return $table;
 		}
 		if ( ! isset( $table->id ) ) {
@@ -427,7 +427,7 @@ function sanitize_dynamic_table( $table, $context = 'display' ) {
 		$table->filter = $context;
 	} elseif ( is_array( $table ) ) {
 		// Check if post already filtered for this context.
-		if ( isset( $table['filter'] ) && $context == $table['filter'] ) {
+		if ( isset( $table['filter'] ) && $context === $table['filter'] ) {
 			return $table;
 		}
 		if ( ! isset( $table['id'] ) ) {

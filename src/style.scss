@@ -169,6 +169,7 @@
 	padding: 5px;
 	margin: -1px;
 	overflow: hidden;
+	// white-space: pre-wrap;
 	text-overflow: ellipsis;
 	border-style: var(--showGridLines);
 	border-width: var(--gridLineWidth);

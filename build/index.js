@@ -2996,7 +2996,11 @@ function Edit(props) {
     };
   }, [table_id, isTableIdChanged, isTableStale, block_table_ref]);
   function getTablePropAttribute(tableAttributes, attributeName) {
-    const attributeValue = tableAttributes?.[attributeName];
+    let attributeValue = tableAttributes?.[attributeName];
+    // if (!attributeValue) {
+    // 	const defaultTableAttributes = getDefaultTableAttributes('table')
+    // 	attributeValue = defaultTableAttributes?.[attributeName]
+    // }
     return attributeValue;
   }
 

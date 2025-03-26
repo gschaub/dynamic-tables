@@ -416,7 +416,11 @@ export default function Edit(props) {
 	);
 
 	function getTablePropAttribute(tableAttributes, attributeName) {
-		const attributeValue = tableAttributes?.[attributeName]
+		let attributeValue = tableAttributes?.[attributeName]
+		// if (!attributeValue) {
+		// 	const defaultTableAttributes = getDefaultTableAttributes('table')
+		// 	attributeValue = defaultTableAttributes?.[attributeName]
+		// }
 		return attributeValue
 	}
 
@@ -440,7 +444,6 @@ export default function Edit(props) {
 	const horizontalAlignment = getTablePropAttribute(table.attributes, 'horizontalAlignment')
 	const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment')
 	const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle')
-
 	console.log(JSON.stringify(headerBorder, null, 4));
 
 	/**
@@ -1152,6 +1155,7 @@ export default function Edit(props) {
 	const headerRowStickyStyle = headerRowSticky ? 'auto' : 'hidden';
 	const headerRowStickyClass = headerRowSticky ? 'grid-control__header--sticky ' : '';
 	const gridHeaderBackgroundColorStyle = getGridHeaderBackgroundColorStyle(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor)
+
 
 	/**
 	 * Header Styling
