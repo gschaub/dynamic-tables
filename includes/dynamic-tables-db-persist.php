@@ -72,7 +72,7 @@ class PersistTableData {
 	 *
 	 * @var string
 	 */
-	protected string $replacementResult = '';
+	protected string $replacement_result = '';
 
 	public function __construct() {
 		// Silence is golden
@@ -169,26 +169,28 @@ class PersistTableData {
 	 *
 	 * @param string $tableName         Non-prefixed name of the table from which to update rows
 	 * @param array  $requestArgs        Array of SQL arguments for inclusion in SQL Statement
-	 * @return int|false SreplacementResult.    wpdb number of records inserted/updated or FALSE on error
+	 * @return int|false Sreplacement_result.    wpdb number of records inserted/updated or FALSE on error
 	 */
-	protected function replaceTable( $tableName, $requestArgs ) {
+	protected function replace_table( $table_name, $table_id, $request_args ) {
 		global $wpdb;
 
-		$db_table = $wpdb->prefix . $tableName;
-		$data     = $this->process_args( $requestArgs );
+		error_log(json_encode($request_args));
+		$db_table = $wpdb->prefix . $table_name;
+		$data     = $this->process_args( $request_args );
 		if ( ! $data ) {
 			return false;
 		}
 
-		$query_string = $this->process_query_string( $requestArgs );
+		$query_string = $this->process_query_string( $request_args );
 		if ( ! $query_string ) {
 			return false;
 		}
 		$format = explode( ',', $query_string );
 
-		$this->replacementResult = $wpdb->replace( $db_table, $data, $format );
+		// Perform Replace/Insert
+		$this->replacement_result = $wpdb->replace( $db_table, $data, $format );
 
-		return $this->replacementResult;
+		return $this->replacement_result;
 	}
 
 	/**
@@ -467,6 +469,8 @@ class PersistTableData {
 	 * @return array Sresult            Success status and updated row values
 	 */
 	public function update_table_rows( $tableId, $rows ) {
+		error_log('Updating Table Rows');
+
 		$success = false;
 		global $wpdb;
 
@@ -477,6 +481,31 @@ class PersistTableData {
 
 		$dbTable = 'dt_table_rows';
 
+		// Delete table records that are targeted for replacement
+		$args_delete_build = array();
+		array_push(
+			$args_delete_build,
+			array(
+				'type'  => 'where',
+				'field' => 'table_id',
+				'value' => $tableId,
+			)
+		);
+		$queryReturnedResult = $this->delete_table( $dbTable, $args_delete_build );
+		if ( ! $queryReturnedResult ) {
+			$wpdb->query( 'ROLLBACK' ); // rollback everything
+			$success = 'False';
+
+			$this->result = array(
+				'deleted_rows' => '0',
+			);
+
+			return $this->result;
+		}
+
+		$deleted_table_rows = $queryReturnedResult;
+
+		// Insert new table rows
 		array_push(
 			$argsBuild,
 			array(
@@ -538,7 +567,7 @@ class PersistTableData {
 				)
 			);
 
-			$queryReturnedResult = $this->replaceTable( 'dt_table_rows', $argsBuild );
+			$queryReturnedResult = $this->replace_table( 'dt_table_rows', $tableId, $argsBuild );
 
 			if ( ! $queryReturnedResult ) {
 				$wpdb->query( 'ROLLBACK' ); // rollback everything
@@ -575,6 +604,8 @@ class PersistTableData {
 	 * @return array Sresult            Success status and updated column values
 	 */
 	public function update_table_columns( $tableId, $columns ) {
+		error_log('Updating Table Columns');
+
 		$success = false;
 		global $wpdb;
 
@@ -585,6 +616,31 @@ class PersistTableData {
 
 		$dbTable = 'dt_table_columns';
 
+		// Delete table records that are targeted for replacement
+		$args_delete_build = array();
+		array_push(
+			$args_delete_build,
+			array(
+				'type'  => 'where',
+				'field' => 'table_id',
+				'value' => $tableId,
+			)
+		);
+		$queryReturnedResult = $this->delete_table( $dbTable, $args_delete_build );
+		if ( ! $queryReturnedResult ) {
+			$wpdb->query( 'ROLLBACK' ); // rollback everything
+			$success = 'False';
+
+			$this->result = array(
+				'deleted_rows' => '0',
+			);
+
+			return $this->result;
+		}
+
+		$deleted_table_rows = $queryReturnedResult;
+
+		// Insert new table rows
 		array_push(
 			$argsBuild,
 			array(
@@ -657,7 +713,7 @@ class PersistTableData {
 				)
 			);
 
-			$queryReturnedResult = $this->replaceTable( 'dt_table_columns', $argsBuild );
+			$queryReturnedResult = $this->replace_table( 'dt_table_columns', $tableId, $argsBuild );
 
 			if ( ! $queryReturnedResult ) {
 				$wpdb->query( 'ROLLBACK' ); // rollback everything
@@ -692,6 +748,8 @@ class PersistTableData {
 	 * @return array Sresult            Success status and updated cell values
 	 */
 	public function update_table_cells( $tableId, $cells ) {
+		error_log('Updating Table Cells');
+
 		$success = false;
 		global $wpdb;
 
@@ -702,6 +760,32 @@ class PersistTableData {
 
 		$dbTable = 'dt_table_cells';
 
+
+		// Delete table records that are targeted for replacement
+		$args_delete_build = array();
+		array_push(
+			$args_delete_build,
+			array(
+				'type'  => 'where',
+				'field' => 'table_id',
+				'value' => $tableId,
+			)
+		);
+		$queryReturnedResult = $this->delete_table( $dbTable, $args_delete_build );
+		if ( ! $queryReturnedResult ) {
+			$wpdb->query( 'ROLLBACK' ); // rollback everything
+			$success = 'False';
+
+			$this->result = array(
+				'deleted_rows' => '0',
+			);
+
+			return $this->result;
+		}
+
+		$deleted_table_rows = $queryReturnedResult;
+
+		// Insert new table rows
 		array_push(
 			$argsBuild,
 			array(
@@ -787,7 +871,7 @@ class PersistTableData {
 				)
 			);
 
-			$queryReturnedResult = $this->replaceTable( 'dt_table_cells', $argsBuild );
+			$queryReturnedResult = $this->replace_table( 'dt_table_cells', $tableId, $argsBuild );
 
 			if ( ! $queryReturnedResult ) {
 				$wpdb->query( 'ROLLBACK' ); // rollback everything

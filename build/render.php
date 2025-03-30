@@ -13,6 +13,7 @@ namespace DynamicTables;
  */
 
 // Exit if accessed directly
+
 if ( ! defined('ABSPATH') ) {
 	exit;
 }
@@ -21,10 +22,10 @@ $table_id = $attributes['table_id'];
 $block_table_ref = $attributes['block_table_ref'];
 $grid_alignment = $attributes['block_alignment'];
 // $block_background_color = isset($attributes['backgroundColor']) ? $attributes['backgroundColor'] : '';
+
 /**
  * Get Table - Load variables
  */
-
 $table = get_table($table_id);
 if ( is_wp_error($table) ) {
 	error_log('Table = ' . print_r($table, true));

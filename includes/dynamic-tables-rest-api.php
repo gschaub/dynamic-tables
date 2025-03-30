@@ -151,7 +151,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		// it is attached.
 		if ( isset( $table['header']['post_id'] ) ) {
 			$post_id = (int) $table['header']['post_id'];
-			if ( $_id === 0 ) {
+			if ( $post_id === 0 ) {
 
 				$post = $this->get_post( $post_id);
 				if ( is_wp_error( $post ) ) {
@@ -167,7 +167,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				}
 			}
 
-			if ( (int) $_id === 0 ) {
+			if ( (int) $post_id === 0 ) {
 				if ( 'edit' === $request['context'] && ! current_user_can( 'edit_posts' ) ) {
 					return new \WP_Error(
 						'rest_forbidden_context',
@@ -242,7 +242,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		$table = $table += array( 'title' => $_ );
 
 		error_log( 'Table name = ' . $table['header']['table_name'] );
-		error_log( 'Revised table = ' . json_encode( $table ) );
+		// error_log( 'Revised table = ' . json_encode( $table ) );
 
 		return $table;
 	}
@@ -289,6 +289,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 */
 	public function create_item_permissions_check( $request ) {
 		if ( (int) 0 !== (int) $request['id'] ) {
+			// error_log('From Create Item');
 			// error_log(print_r($request, true));
 			return new \WP_Error(
 				'rest_table_exists',
@@ -421,6 +422,9 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	public function update_item_permissions_check( $request ) {
 		// Permissions for editing a table are based upon the underlying post to which
 		// it is attached.
+		// error_log('From Update Item');
+		// error_log(print_r($request, true));
+
 		return true;
 		if ( isset( $request['header']['post_id'] ) ) {
 			$post_id = (int) $request['header']['post_id'];
@@ -549,7 +553,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		if ( isset( $table['header']['post_id'] ) ) {
 			$post_id = (int) $table['header']['post_id'];
 
-			if ( 0 === $_id ) {
+			if ( 0 === $post_id ) {
 				$post = $this->get_post( $post_id);
 				if ( is_wp_error( $post ) ) {
 					return $post;
@@ -573,7 +577,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				}
 			}
 
-			if ( 0 === $_id && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
+			if ( 0 === $post_id && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
 				return new \WP_Error(
 					'rest_cannot_edit',
 					__( 'Sorry, you are not allowed to delete tables for this post as this user.' ),

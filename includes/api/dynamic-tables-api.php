@@ -2,8 +2,8 @@
 /**
  * Define filters for the dynamic tables object
  */
-// Places to balance tags on input.
 
+// Places to balance tags on input.
 // wp_pre_kses_less_than
 // wp_pre_kses_block_attributes
 
@@ -26,7 +26,7 @@ foreach ( array( 'dt_table_name_save_pre' ) as $filter ) {
 add_filter( 'dt_content_filtered_save_pre', 'wp_filter_global_styles_post', 9 );
 
 /**
- * Create or update table
+ * Create or update a dynamic table.
  *
  * @since 1.0.0
  *
@@ -218,10 +218,14 @@ function update_table_data( $tablearr, $wp_error = false ) {
 		}
 		return 0;
 	}
+	// error_log(print_r('</br></br> Revised Table </br>'));
+	// error_log(print_r($tablearr));
 
 	// Merge old and new fields with new fields overwriting old ones.
 	$tablearr = array_merge( $table, $tablearr );
+	// error_log(print_r('</br></br> Merged Table </br> Revised Table </br>'));
 	// error_log(print_r($tablearr, true));
+
 	return create_table_data( $tablearr, $wp_error );
 }
 
