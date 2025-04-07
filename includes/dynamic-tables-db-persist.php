@@ -492,18 +492,6 @@ class PersistTableData {
 			)
 		);
 		$query_returned_result = $this->delete_table( $db_table, $args_delete_build );
-		if ( ! $query_returned_result ) {
-			$wpdb->query( 'ROLLBACK' ); // rollback everything
-			$success = 'False';
-
-			$this->result = array(
-				'deleted_rows' => '0',
-			);
-
-			return $this->result;
-		}
-
-		$deleted_table_rows = $query_returned_result;
 
 		// Insert new table rows
 		array_push(
@@ -627,18 +615,6 @@ class PersistTableData {
 			)
 		);
 		$query_returned_result = $this->delete_table( $db_table, $args_delete_build );
-		if ( ! $query_returned_result ) {
-			$wpdb->query( 'ROLLBACK' ); // rollback everything
-			$success = 'False';
-
-			$this->result = array(
-				'deleted_rows' => '0',
-			);
-
-			return $this->result;
-		}
-
-		$deleted_table_rows = $query_returned_result;
 
 		// Insert new table rows
 		array_push(
@@ -772,18 +748,6 @@ class PersistTableData {
 			)
 		);
 		$query_returned_result = $this->delete_table( $db_table, $args_delete_build );
-		if ( ! $query_returned_result ) {
-			$wpdb->query( 'ROLLBACK' ); // rollback everything
-			$success = 'False';
-
-			$this->result = array(
-				'deleted_rows' => '0',
-			);
-
-			return $this->result;
-		}
-
-		$deleted_table_rows = $query_returned_result;
 
 		// Insert new table rows
 		array_push(

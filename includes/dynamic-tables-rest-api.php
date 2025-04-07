@@ -238,8 +238,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			return $error;
 		}
 
-		$_     = $table['header']['table_name'];
-		$table = $table += array( 'title' => $_ );
+		$table_title     = $table['header']['table_name'];
+		$table = $table += array( 'title' => $table_title );
 
 		error_log( 'Table name = ' . $table['header']['table_name'] );
 		// error_log( 'Revised table = ' . json_encode( $table ) );
@@ -288,9 +288,9 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return true|WP_Error True if the request has access to create items, WP_Error object otherwise.
 	 */
 	public function create_item_permissions_check( $request ) {
+		error_log('From Create Item Permission Check');
+		// error_log(print_r($request, true));
 		if ( (int) 0 !== (int) $request['id'] ) {
-			// error_log('From Create Item');
-			// error_log(print_r($request, true));
 			return new \WP_Error(
 				'rest_table_exists',
 				__( 'Cannot create existing table.' ),
@@ -303,10 +303,11 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		if ( isset( $request['header']['post_id'] ) ) {
 			$post_id = (int) $request['header']['post_id'];
 
-			if ( 0 === $_id ) {
+			if ( $post_id !== 0 ) {
 				$post = $this->get_post( $post_id);
 				if ( is_wp_error( $post ) ) {
 					// error_log(print_r($request, true));
+					error_log('Error getting post (id = 0)');
 					return $post;
 				}
 
@@ -314,6 +315,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 				if ( $post && ! $this->check_update_permission( $post ) ) {
 					// error_log(print_r($request, true));
+					error_log('No post permissions 1');
 					return new \WP_Error(
 						'rest_cannot_edit',
 						__( 'Sorry, you are not allowed to create tables for this post as this user.' ),
@@ -323,6 +325,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 				if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
 					// error_log(print_r($request, true));
+					error_log('No post permissions 2');
 					return new \WP_Error(
 						'rest_cannot_edit_others',
 						__( 'Sorry, you are not allowed to create tables for this post as this user.' ),
@@ -331,8 +334,9 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				}
 			}
 
-			if ( 0 === $_id && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
+			if ( $post_id === 0 && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
 				// error_log(print_r($request, true));
+				error_log('No post permissions 3');
 				return new \WP_Error(
 					'rest_cannot_edit',
 					__( 'Sorry, you are not allowed to create tables for this post as this user.' ),
@@ -341,6 +345,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			}
 		} else {
 			// error_log(print_r($request, true));
+			error_log('Post ID missing');
 			return new \WP_Error(
 				'missing_post_id',
 				__( 'Post ID is missing from request.' ),
@@ -359,6 +364,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function create_item( $request ) {
+		error_log('From Create Item');
+
 		if ( (int) 0 !== (int) $request['id'] ) {
 			return new \WP_Error(
 				'rest_table_exists',
@@ -388,7 +395,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		$table       = get_table( $table_id );
 		$table_title = $table['header']['table_name'];
-		$table_test  = $table += array( 'title' => $_ );
+		$table_test  = $table += array( 'title' => $table_title );
 
 		error_log( 'Table name = ' . $table['header']['table_name'] );
 		error_log( 'Revised table = ' . json_encode( $table_test ) );
@@ -429,7 +436,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		if ( isset( $request['header']['post_id'] ) ) {
 			$post_id = (int) $request['header']['post_id'];
 
-			if ( 0 === $_id ) {
+			if ( $post_id !== 0 ) {
 				$post = $this->get_post( $post_id);
 				if ( is_wp_error( $post ) ) {
 					// error_log(print_r($request, true));
@@ -456,7 +463,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				}
 			}
 
-			if ( $_id === 0 && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
+			if ( $post_id === 0 && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
 				// error_log(print_r($request, true));
 				return new \WP_Error(
 					'rest_cannot_edit',
