@@ -1,12 +1,14 @@
 <?php
 
 /**
- * Database interface for dynamic tables
- */
+* Database interface for dynamic tables
+*
+* @since 1.00.00
+*/
 class PersistTableData {
 
 	/**
-	 * SQL specific arguments from calling calling method get_table_data()
+	 * Array of structured arguments from which to build and format SQL
 	 *
 	 *  Each array arguments contains 3 fields:
 	 *      - type
@@ -33,15 +35,14 @@ class PersistTableData {
 	 *        types may be present in any single argument array
 	 *      - At present, there must be one and only one delete, update or from argument
 	 *
-	 * @since 1.0.0
-	 *
+	 * @since x.xx.xx
 	 * @var array
 	 */
+	private array $request_args = array();
 
 	/**
-	 * Query results and status of the public method
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
 	 * @var array
 	 */
@@ -50,30 +51,37 @@ class PersistTableData {
 	/**
 	 * Query result from a specific database SELECT query
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
 	 * @var array
 	 */
-	protected array $query_result = array();
+	private array $query_result = array();
 
 	/**
 	 * Query result from a specific database SELECT query
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
 	 * @var string
 	 */
-	public string $delete_result = '';
+	private string $delete_result = '';
 
 	/**
 	 * Query result from a specific database SELECT query
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
 	 * @var string
 	 */
-	protected string $replacement_result = '';
+	private string $replacement_result = '';
 
+	/**
+	 * Empty consstructor
+	 *
+	 * @since 1.00.00
+	 *
+	 * @return void
+	 */
 	public function __construct() {
 		// Silence is golden
 	}
@@ -81,22 +89,21 @@ class PersistTableData {
 	/**
 	 *  Performs a SQL SELECT via the WordPress wpdb class and connection
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
-	 * @param array $request_args       Array of SQL arguments for inclusion in SQL Statement
 	 * @param bool  $return_collection   Return multiple result rows (True) vs. a single row (false)
 	 * @return array Squery_result.      wpdb return array indexed from 0, or null on failure
 	 */
-	protected function get_table_data( $request_args, $return_collection = false ) {
+	protected function get_table_data( $return_collection = false ) {
 		global $wpdb;
 
-		$args = $this->process_args( $request_args );
+		$args = $this->process_args( $this->request_args );
 		if ( ! $args ) {
 			return false;
 		}
 
 		$query        = 'SELECT * ';
-		$query_string = $this->process_query_string( $request_args );
+		$query_string = $this->process_query_string( $this->request_args );
 		if ( ! $query_string ) {
 			return false;
 		}
@@ -109,11 +116,9 @@ class PersistTableData {
 				if ( $db_return ) {
 					$this->query_result = $db_return;
 				} else {
-					error_log( 'Table data not found' );
 					$this->query_result = array();
 				}
 			} catch ( Exception $e ) {
-				error_log( 'Error fetching table data: ' . $e );
 				$this->query_result = array();
 			}
 		} else {
@@ -122,11 +127,9 @@ class PersistTableData {
 				if ( $db_return ) {
 					$this->query_result = $db_return;
 				} else {
-					error_log( 'Table data not found' );
 					$this->query_result = array();
 				}
 			} catch ( Exception $e ) {
-				error_log( 'Error fetching table data: ' . $e );
 				$this->query_result = array();
 			}
 		}
@@ -137,21 +140,20 @@ class PersistTableData {
 	/**
 	 *  Performs a SQL DELETE via the WordPress wpdb class and connection
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
 	 * @param string $db_table_name       Non-prefixed name of the table from which to delete rows
-	 * @param array  $request_args        Array of SQL arguments for inclusion in SQL Statement
 	 * @return int:false Sdelete_result  wpdb rows deleted or FALSE on error
 	 */
-	protected function delete_table( $db_table_name, $request_args ) {
+	protected function delete_table( $db_table_name ) {
 		global $wpdb;
 
 		$db_table = $wpdb->prefix . $db_table_name;
-		$where   = $this->process_args( $request_args );
+		$where   = $this->process_args( $this->request_args );
 		if ( ! $where ) {
 			return false;
 		}
-		$query_string = $this->process_query_string( $request_args );
+		$query_string = $this->process_query_string( $this->request_args );
 		if ( ! $query_string ) {
 			return false;
 		}
@@ -162,26 +164,26 @@ class PersistTableData {
 	}
 
 	/**
-	 *  Performs a SQL Insert/Update (update if the inserted row matches an existing primary key) via
-	 *  the WordPress wpdb class and connection
+	 * Update table for changes and insert new rows as needed
 	 *
-	 * @since 1.0.0
+	 * Performs a SQL Insert/Update (update if the inserted row matches an existing primary key) via
+	 * the WordPress wpdb class and connection
+	 *
+	 * @since 1.00.00
 	 *
 	 * @param string $table_name         Non-prefixed name of the table from which to update rows
-	 * @param array  $request_args        Array of SQL arguments for inclusion in SQL Statement
 	 * @return int|false Sreplacement_result.    wpdb number of records inserted/updated or FALSE on error
 	 */
-	protected function replace_table( $table_name, $table_id, $request_args ) {
+	protected function replace_table( $table_name ) {
 		global $wpdb;
 
-		error_log(json_encode($request_args));
 		$db_table = $wpdb->prefix . $table_name;
-		$data     = $this->process_args( $request_args );
+		$data     = $this->process_args( $this->request_args );
 		if ( ! $data ) {
 			return false;
 		}
 
-		$query_string = $this->process_query_string( $request_args );
+		$query_string = $this->process_query_string( $this->request_args );
 		if ( ! $query_string ) {
 			return false;
 		}
@@ -196,7 +198,7 @@ class PersistTableData {
 	/**
 	 *  Performs a SQL Insert via the WordPress wpdb class and connection
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
 	 * @param string $block_table_ref     block_table_ref value that links the table to a specific post block
 	 * @param string $status            Status value of the table being created
@@ -246,7 +248,7 @@ class PersistTableData {
 	/**
 	 *  Update the dynamic table database header table dt_tables based on criteria received
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
 	 * @param int    $table_id              ID value of the table being updated.
 	 * @param string $block_table_ref     block_table_ref value that links the table to a specific post block.
@@ -264,13 +266,13 @@ class PersistTableData {
 
 		$wpdb->query( 'START TRANSACTION' );
 
-		$args_build = array();
+		$this->request_args = array();
 
 		/**
 		 * Query the dt_tables table to get the current table values
 		 */
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'from',
 				'field' => 'dt_tables',
@@ -279,7 +281,7 @@ class PersistTableData {
 		);
 
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'where',
 				'field' => 'id',
@@ -287,7 +289,7 @@ class PersistTableData {
 			)
 		);
 
-		$query_results = $this->get_table_data( $args_build );
+		$query_results = $this->get_table_data( );
 		if ( ! $query_results ) {
 			$wpdb->query( 'ROLLBACK' ); // rollback everything
 			$this->result = array(
@@ -327,12 +329,13 @@ class PersistTableData {
 		}
 
 		/**
-		 * Create arrays with required args for the update process
+		 * Create arrays with required args for the update and
+		 * format sql set clause
 		 */
-		$args_build = array();
+		$this->request_args = array();
 
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'set',
 				'field' => 'block_table_ref',
@@ -341,7 +344,7 @@ class PersistTableData {
 		);
 
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'set',
 				'field' => 'status',
@@ -350,7 +353,7 @@ class PersistTableData {
 		);
 
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'set',
 				'field' => 'post_id',
@@ -359,7 +362,7 @@ class PersistTableData {
 		);
 
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'set',
 				'field' => 'table_name',
@@ -368,7 +371,7 @@ class PersistTableData {
 		);
 
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'set',
 				'field' => 'attributes',
@@ -377,7 +380,7 @@ class PersistTableData {
 		);
 
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'set',
 				'field' => 'classes',
@@ -385,34 +388,9 @@ class PersistTableData {
 			)
 		);
 
-		$args_set   = $args_build;
-		$args_build = array();
+		$set = $this->process_args( );
 
-		array_push(
-			$args_build,
-			array(
-				'type'  => 'where',
-				'field' => 'id',
-				'value' => $table_id,
-			)
-		);
-
-		$args_where = $args_build;
-
-		/**
-		 * Run update query for dt_tables
-		 */
-		$db_table = $wpdb->prefix . 'dt_tables';
-		$set     = $this->process_args( $args_set );
-		$where   = $this->process_args( $args_where );
-		if ( ! ( $set && $where ) ) {
-			$this->result = array(
-				'success'      => $success,
-				'updated_rows' => '0',
-			);
-		}
-
-		$query_string = $this->process_query_string( $args_set );
+		$query_string = $this->process_query_string( );
 		if ( ! $query_string ) {
 			$this->result = array(
 				'success'      => $success,
@@ -420,7 +398,24 @@ class PersistTableData {
 			);
 		}
 		$set_format    = array_map( 'trim', explode( ',', $query_string ) );
-		$query_string = $this->process_query_string( $args_where );
+
+		/**
+		 * Create arrays with required args for the update and
+		 * format sql where clause
+		 */
+		$this->request_args = array();
+
+		array_push(
+			$this->request_args,
+			array(
+				'type'  => 'where',
+				'field' => 'id',
+				'value' => $table_id,
+			)
+		);
+		$where = $this->process_args( );
+
+		$query_string = $this->process_query_string( );
 		if ( ! $query_string ) {
 			$this->result = array(
 				'success'      => $success,
@@ -428,6 +423,18 @@ class PersistTableData {
 			);
 		}
 		$where_format = array_map( 'trim', explode( ',', $query_string ) );
+
+		/**
+		 * Run update query for dt_tables
+		 */
+		$db_table = $wpdb->prefix . 'dt_tables';
+
+		if ( ! ( $set && $where ) ) {
+			$this->result = array(
+				'success'      => $success,
+				'updated_rows' => '0',
+			);
+		}
 
 		$update_result = $wpdb->update(
 			$db_table,
@@ -462,21 +469,20 @@ class PersistTableData {
 	/**
 	 *  Update the dynamic table database row table dt_table_rows based on criteria received
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
 	 * @param int   $table_id              ID value of the table being updated
 	 * @param array $rows               Revised dynamic table row data for update
 	 * @return array Sresult            Success status and updated row values
 	 */
 	public function update_table_rows( $table_id, $rows ) {
-		error_log('Updating Table Rows');
 
 		$success = false;
 		global $wpdb;
 
 		$wpdb->query( 'START TRANSACTION' );
 
-		$args_build    = array();
+		$this->request_args    = array();
 		$inserted_rows = 0;
 
 		$db_table = 'dt_table_rows';
@@ -495,7 +501,7 @@ class PersistTableData {
 
 		// Insert new table rows
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'where',
 				'field' => 'table_id',
@@ -517,10 +523,10 @@ class PersistTableData {
 				}
 			}
 
-			$args_build = array();
+			$this->request_args = array();
 
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'value',
 					'field' => 'table_id',
@@ -529,7 +535,7 @@ class PersistTableData {
 			);
 
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'value',
 					'field' => 'row_id',
@@ -538,7 +544,7 @@ class PersistTableData {
 			);
 
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'value',
 					'field' => 'attributes',
@@ -547,7 +553,7 @@ class PersistTableData {
 			);
 
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'value',
 					'field' => 'classes',
@@ -555,7 +561,7 @@ class PersistTableData {
 				)
 			);
 
-			$query_returned_result = $this->replace_table( 'dt_table_rows', $table_id, $args_build );
+			$query_returned_result = $this->replace_table( 'dt_table_rows', $table_id );
 
 			if ( ! $query_returned_result ) {
 				$wpdb->query( 'ROLLBACK' ); // rollback everything
@@ -568,8 +574,6 @@ class PersistTableData {
 			}
 			++$inserted_rows;
 		}
-
-		error_log( 'End Row Insert with ' . $inserted_rows . 'rows created' );
 
 		$wpdb->query( 'COMMIT' ); // commit all queries
 		$success = 'True';
@@ -585,21 +589,19 @@ class PersistTableData {
 	/**
 	 *  Update the dynamic table database column table dt_table_columnss based on criteria received
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
 	 * @param int   $table_id              ID value of the table being updated
 	 * @param array $columns               Revised dynamic table column data for update
 	 * @return array Sresult            Success status and updated column values
 	 */
 	public function update_table_columns( $table_id, $columns ) {
-		error_log('Updating Table Columns');
-
 		$success = false;
 		global $wpdb;
 
 		$wpdb->query( 'START TRANSACTION' );
 
-		$args_build    = array();
+		$this->request_args    = array();
 		$inserted_rows = 0;
 
 		$db_table = 'dt_table_columns';
@@ -618,7 +620,7 @@ class PersistTableData {
 
 		// Insert new table rows
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'where',
 				'field' => 'table_id',
@@ -631,21 +633,25 @@ class PersistTableData {
 				switch ( $column_attribute ) {
 					case '0':
 						$arg_table_id = $arg;
+						break;
 					case '1':
 						$arg_column_id = $arg;
+						break;
 					case '2':
 						$arg_column_name = $arg;
+						break;
 					case '3':
 						$arg_attributes = $arg;
+						break;
 					case '4':
 						$arg_classes = $arg;
 				}
 			}
 
-			$args_build = array();
+			$this->request_args = array();
 
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'value',
 					'field' => 'table_id',
@@ -654,7 +660,7 @@ class PersistTableData {
 			);
 
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'value',
 					'field' => 'column_id',
@@ -663,7 +669,7 @@ class PersistTableData {
 			);
 
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'value',
 					'field' => 'column_name',
@@ -672,7 +678,7 @@ class PersistTableData {
 			);
 
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'value',
 					'field' => 'attributes',
@@ -681,7 +687,7 @@ class PersistTableData {
 			);
 
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'value',
 					'field' => 'classes',
@@ -689,7 +695,7 @@ class PersistTableData {
 				)
 			);
 
-			$query_returned_result = $this->replace_table( 'dt_table_columns', $table_id, $args_build );
+			$query_returned_result = $this->replace_table( 'dt_table_columns', $table_id );
 
 			if ( ! $query_returned_result ) {
 				$wpdb->query( 'ROLLBACK' ); // rollback everything
@@ -717,21 +723,19 @@ class PersistTableData {
 	/**
 	 *  Update the dynamic table database cell table dt_table_cells based on criteria received
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
 	 * @param int   $table_id              ID value of the table being updated
 	 * @param array $cells               Revised dynamic table cell data for update
 	 * @return array Sresult            Success status and updated cell values
 	 */
 	public function update_table_cells( $table_id, $cells ) {
-		error_log('Updating Table Cells');
-
 		$success = false;
 		global $wpdb;
 
 		$wpdb->query( 'START TRANSACTION' );
 
-		$args_build    = array();
+		$this->request_args    = array();
 		$inserted_rows = 0;
 
 		$db_table = 'dt_table_cells';
@@ -751,7 +755,7 @@ class PersistTableData {
 
 		// Insert new table rows
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'where',
 				'field' => 'table_id',
@@ -766,23 +770,28 @@ class PersistTableData {
 				switch ( $cell_attribute ) {
 					case '0':
 						$arg_table_id = $table_id;
+						break;
 					case '1':
 						$arg_column_id = $arg;
+						break;
 					case '2':
 						$arg_row_id = $arg;
+						break;
 					case '3':
 						$arg_attributes = $arg;
+						break;
 					case '4':
 						$arg_classes = $arg;
+						break;
 					case '5':
 						$arg_content = $arg;
 				}
 			}
 
-			$args_build = array();
+			$this->request_args = array();
 
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'value',
 					'field' => 'table_id',
@@ -791,7 +800,7 @@ class PersistTableData {
 			);
 
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'value',
 					'field' => 'column_id',
@@ -800,7 +809,7 @@ class PersistTableData {
 			);
 
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'value',
 					'field' => 'row_id',
@@ -809,7 +818,7 @@ class PersistTableData {
 			);
 
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'value',
 					'field' => 'attributes',
@@ -818,7 +827,7 @@ class PersistTableData {
 			);
 
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'value',
 					'field' => 'classes',
@@ -827,7 +836,7 @@ class PersistTableData {
 			);
 
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'value',
 					'field' => 'content',
@@ -835,7 +844,7 @@ class PersistTableData {
 				)
 			);
 
-			$query_returned_result = $this->replace_table( 'dt_table_cells', $table_id, $args_build );
+			$query_returned_result = $this->replace_table( 'dt_table_cells', $table_id );
 
 			if ( ! $query_returned_result ) {
 				$wpdb->query( 'ROLLBACK' ); // rollback everything
@@ -862,7 +871,7 @@ class PersistTableData {
 	/**
 	 *  Retrieve the dynamic table data for a specific one dynamic table from one database table
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
 	 * @param int    $table_id              ID value of the table being updated
 	 * @param string $db_table_name       database table name
@@ -899,10 +908,10 @@ class PersistTableData {
 				return $this->result;
 		}
 
-		$args_build = array();
+		$this->request_args = array();
 
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'from',
 				'field' => $db_table_name,
@@ -911,7 +920,7 @@ class PersistTableData {
 		);
 
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'where',
 				'field' => $dt_where_field,
@@ -921,7 +930,7 @@ class PersistTableData {
 
 		if ( $db_table_name === 'dt_table_cells' ) {
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'order_by',
 					'field' => 'row_id',
@@ -932,7 +941,7 @@ class PersistTableData {
 
 		if ( $db_table_name === 'dt_table_columns' || $db_table_name === 'dt_table_cells' ) {
 			array_push(
-				$args_build,
+				$this->request_args,
 				array(
 					'type'  => 'order_by',
 					'field' => 'column_id',
@@ -942,7 +951,7 @@ class PersistTableData {
 
 		}
 
-		$query_results = $this->get_table_data( $args_build, $return_collection );
+		$query_results = $this->get_table_data( $return_collection );
 
 		if ( ! $query_results ) {
 			$this->result = array(
@@ -1016,7 +1025,7 @@ class PersistTableData {
 	/**
 	 *  Delete the dynamic table data for a specific one dynamic table from all database table
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
 	 * @param int    $table_id              ID value of the table being updated
 	 * @param string $db_table_name       database table name
@@ -1032,12 +1041,12 @@ class PersistTableData {
 		 * Delete table from dt_tables
 		 */
 
-		$args_build = array();
+		$this->request_args = array();
 
 		$db_table = 'dt_tables';
 
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'where',
 				'field' => 'id',
@@ -1045,7 +1054,7 @@ class PersistTableData {
 			)
 		);
 
-		$query_returned_result = $this->delete_table( $db_table, $args_build );
+		$query_returned_result = $this->delete_table( $db_table );
 		if ( ! $query_returned_result ) {
 			$wpdb->query( 'ROLLBACK' ); // rollback everything
 			$success = 'False';
@@ -1062,11 +1071,11 @@ class PersistTableData {
 		 * Delete table from dt_table_columns
 		 */
 
-		$args_build = array();
+		$this->request_args = array();
 		$db_table   = 'dt_table_rows';
 
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'where',
 				'field' => 'table_id',
@@ -1074,7 +1083,7 @@ class PersistTableData {
 			)
 		);
 
-		$query_returned_result = $this->delete_table( $db_table, $args_build );
+		$query_returned_result = $this->delete_table( $db_table );
 		if ( ! $query_returned_result ) {
 			$wpdb->query( 'ROLLBACK' ); // rollback everything
 			$success = 'False';
@@ -1092,11 +1101,11 @@ class PersistTableData {
 		 * Delete table from dt_table_columns
 		 */
 
-		$args_build = array();
+		$this->request_args = array();
 		$db_table   = 'dt_table_columns';
 
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'where',
 				'field' => 'table_id',
@@ -1104,7 +1113,7 @@ class PersistTableData {
 			)
 		);
 
-		$query_returned_result = $this->delete_table( $db_table, $args_build );
+		$query_returned_result = $this->delete_table( $db_table );
 		if ( ! $query_returned_result ) {
 			$wpdb->query( 'ROLLBACK' ); // rollback everything
 			$success = 'False';
@@ -1122,11 +1131,11 @@ class PersistTableData {
 		 * Delete table from dt_table_cells
 		 */
 
-		$args_build = array();
+		$this->request_args = array();
 		$db_table   = 'dt_table_cells';
 
 		array_push(
-			$args_build,
+			$this->request_args,
 			array(
 				'type'  => 'where',
 				'field' => 'table_id',
@@ -1134,7 +1143,7 @@ class PersistTableData {
 			)
 		);
 
-		$query_returned_result = $this->delete_table( $db_table, $args_build );
+		$query_returned_result = $this->delete_table( $db_table );
 		if ( ! $query_returned_result ) {
 			$wpdb->query( 'ROLLBACK' ); // rollback everything
 			$success = 'False';
@@ -1162,16 +1171,15 @@ class PersistTableData {
 	/**
 	 * Transform SQL arguments to support the $wpdb->prepare format.
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
-	 * @param array $request_args  Inbound arguments from the calling system to match request format.
 	 * @return array    Transformed arguments.
 	 */
-	protected function process_args( $request_args ) {
+	protected function process_args( ) {
 		$sql_args      = array();
 		$prior_arg_type = 'none';
 
-		foreach ( $request_args as $index => $items ) {
+		foreach ( $this->request_args as $index => $items ) {
 			foreach ( $items as $item => $arg ) {
 				switch ( $item ) {
 					case 'type':
@@ -1184,7 +1192,6 @@ class PersistTableData {
 			}
 
 			if ( $arg_type === 'from' and $prior_arg_type === 'where' ) {
-				error_log( 'Error: Processing request - All FROM arguments must come before be listed before WHERE arguments' );
 				return false;
 			}
 			$sql_args     += $this->transform_arg( $arg_type, $arg_field, $arg_value );
@@ -1197,7 +1204,7 @@ class PersistTableData {
 	/**
 	 * Transform SQL one argument to support the $wpdb->prepare format.
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
 	 * @param array $arg_type   SQL Statement argument
 	 * @param array $arg_field  Table field name associated with the argument.
@@ -1225,12 +1232,11 @@ class PersistTableData {
 	/**
 	 * Build SQL query string.
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
-	 * @param array $request_args      Inbound arguments from the calling system to match request format.
 	 * @return string    Valid SQL query string.
 	 */
-	protected function process_query_string( $request_args ) {
+	protected function process_query_string( ) {
 		global $wpdb;
 
 		$transaction_type        = '';
@@ -1246,10 +1252,10 @@ class PersistTableData {
 		$current_value_position   = 0;
 		$current_where_position   = 0;
 
-		$set_type_count     = $this->count_request_args_by_type( $request_args, 'set' );
-		$order_by_type_count = $this->count_request_args_by_type( $request_args, 'order_by' );
-		$value_type_count   = $this->count_request_args_by_type( $request_args, 'value' );
-		$where_type_count   = $this->count_request_args_by_type( $request_args, 'where' );
+		$set_type_count     = $this->count_request_args_by_type( $this->request_args, 'set' );
+		$order_by_type_count = $this->count_request_args_by_type( $this->request_args, 'order_by' );
+		$value_type_count   = $this->count_request_args_by_type( $this->request_args, 'value' );
+		$where_type_count   = $this->count_request_args_by_type( $this->request_args, 'where' );
 
 		if ( $order_by_type_count === 0 ) {
 			$order_by_clause = '';
@@ -1257,7 +1263,7 @@ class PersistTableData {
 			$order_by_clause = 'ORDER BY ';
 		}
 
-		foreach ( $request_args as $index => $items ) {
+		foreach ( $this->request_args as $index => $items ) {
 			foreach ( $items as $item => $arg ) {
 				switch ( $item ) {
 					case 'type':
@@ -1370,7 +1376,7 @@ class PersistTableData {
 	/**
 	 * Lookup Parameter data type for a specific query field.
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
 	 * @param array $transType      SQL transaction type and position of the statement in query
 	 *                              or specific field names of INSERT transactions
@@ -1419,11 +1425,11 @@ class PersistTableData {
 	 * Count the number of arguments for a specific portion of the query statements to support
 	 * ability to properly terminate the statement.
 	 *
-	 * @since 1.0.0
+	 * @since 1.00.00
 	 *
 	 * @param array $args         Array of arguments
 	 * @param array $arg_type      Argument type being counted
-	 * @return int      NUmber of arguments associated with the statement secment.
+	 * @return int  NUmber of arguments associated with the statement secment.
 	 */
 	protected function count_request_args_by_type( $args, $arg_type ) {
 		$counter = 0;
