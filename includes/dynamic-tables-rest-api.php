@@ -32,6 +32,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 *      - DELETE: Delete table (singular)
 	 *
 	 * @since 1.0.0
+	 *
+	 * @return void
 	 */
 	public function register_routes() {
 
@@ -190,6 +192,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * Retrieves a single table.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
@@ -399,15 +402,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		error_log( 'Table name = ' . $table['header']['table_name'] );
 		error_log( 'Revised table = ' . json_encode( $table_test ) );
-		/**
-		 * Reserve for future use
-		 */
-
-		// $fields_update = $this->update_additional_fields_for_object($table, $request);
-
-		// if (is_wp_error($fields_update)) {
-		// return $fields_update;
-		// }
 
 		$request->set_param( 'context', 'edit' );
 		$response = $this->prepare_item_for_response( $table, $request );
@@ -424,7 +418,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @since 1.0.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to update the item, WP_Error object otherwise.
+	 * @return true|WP_Error True if the request has access to update the item, WP_Error
+	 *  object otherwise.
 	 */
 	public function update_item_permissions_check( $request ) {
 		// Permissions for editing a table are based upon the underlying post to which
@@ -524,16 +519,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		if ( is_wp_error( $table ) ) {
 			return $table;
 		}
-
-		/**
-		 * Reserve for future use
-		 */
-
-		// $fields_update = $this->update_additional_fields_for_object($table, $request);
-
-		// if (is_wp_error($fields_update)) {
-		// return $fields_update;
-		// }
 
 		$request->set_param( 'context', 'edit' );
 		$response = $this->prepare_item_for_response( $table, $request );
@@ -1290,24 +1275,5 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		}
 		$this->schema = $schema;
 		return $this->add_additional_fields_schema( $this->schema );
-	}
-
-	/**
-	 * RESERVED FOR FUTURE USE
-	 *
-	 * Retrieves the query params for the tables collection.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return array Collection parameters.
-	 */
-	public function get_collection_params() {
-		_doing_it_wrong(
-			'get_table collection',
-			sprintf(
-				__( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use' ),
-			),
-			'1.0'
-		);
 	}
 }

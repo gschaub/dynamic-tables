@@ -2690,7 +2690,6 @@ function Edit(props) {
     className: "dynamic-table-edit-block"
   });
   console.log(props);
-  console.log(gls_test_data);
 
   /**
    * Esternal Store Action useDispatch declarations

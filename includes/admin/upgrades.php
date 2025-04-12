@@ -2,12 +2,16 @@
 
 namespace DynamicTables;
 
+/**
+ * Support Dynamic Tables Plugin Activation, Deactivation, and Upgrades
+ *
+ * @since 1.00.00
+ */
 class DynamicTablesVersionManagement {
 
 	/**
 	 * The plugin version number.
 	 *
-	 * @date    9/30/2024
 	 * @since   1.0.0
 	 *
 	 * @var string
@@ -15,20 +19,15 @@ class DynamicTablesVersionManagement {
 	protected $current_db_version;
 
 	/**
-	 * Nothing to initialize
+	 * Class Instanciation
+	 *
+	 * Includes the WD upgrade library and gets the installed database version.
+	 *
+	 * @since 1.00.00
+	 *
+	 * @return void
 	 */
 	public function __construct() {
-		/**
-		 *  dt_get_db_version
-		 *
-		 *  Returns the Dynamic Tables DB version.
-		 *
-		 *  @date    9/2/2024
-		 *  @since   1.0.0
-		 *
-		 *  @param   void
-		 *  @return  string
-		 */
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		if ( get_option( 'dt-version' ) ) {
@@ -36,6 +35,17 @@ class DynamicTablesVersionManagement {
 			}
 		}
 
+	/**
+	 * Workflow for activation
+	 *
+	 * Ensures that activation rules are met, fails the activation if not, and prepares
+	 * for activation database activities
+	 *
+	 * @since 1.00.00
+	 *
+	 * @param  bool $network_wide True if the activation attempt is for the full network.
+	 * @return void
+	 */
 	public function activate_dynamic_tables($network_wide) {
 		$notices = new DT_Admin_Notices();
 
@@ -110,6 +120,20 @@ class DynamicTablesVersionManagement {
 		}
 	}
 
+	/**
+	 * Initialize Dynamic Tables core database environment
+	 *
+	 * Create Dynamic Tables database entries if they do not already exist
+	 *
+	 * @since x.xx.xx
+	 * @deprecated x.x.x Use new_function_name()
+	 * @see Function/method/class relied on
+	 *
+	 * @link URL
+	 * @global [type]  Description
+	 *
+	 * @return void
+	 */
 	public function create_environment_on_activation() {
 		// $current_activation_status = ;
 		// error_log('Current Activation Status = '. $current_activation_status);

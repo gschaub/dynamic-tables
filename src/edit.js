@@ -43,9 +43,6 @@ import {
 } from '@wordpress/block-editor';
 import {
 	column,
-	// alignLeft,
-	// alignRight,
-	// alignCenter,
 	search,
 	blockTable as icon,
 	// tableColumnAfter,
@@ -127,7 +124,6 @@ export default function Edit(props) {
 	})
 
 	console.log(props)
-	console.log(gls_test_data)
 
 	/**
 	 * Esternal Store Action useDispatch declarations
