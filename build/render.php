@@ -162,16 +162,16 @@ $body_border_left_width = get_border_style($body_border, 'left', 'width', $body_
 								--startGridHeaderRowNbr: 1;
 								--endGridHeaderRowNbr: 2;
 								--headerBorderTopColor: <?php echo esc_attr($header_border_top_color); ?>;
-								--headerBorderTopStype: <?php echo esc_attr($header_border_top_style); ?>;
+								--headerBorderTopStyle: <?php echo esc_attr($header_border_top_style); ?>;
 								--headerBorderTopWidth: <?php echo esc_attr($header_border_top_width); ?>;
 								--headerBorderRightColor: <?php echo esc_attr($header_border_right_color); ?>;
-								--headerBorderRightStype: <?php echo esc_attr($header_border_right_style); ?>;
+								--headerBorderRightStyle: <?php echo esc_attr($header_border_right_style); ?>;
 								--headerBorderRightWidth: <?php echo esc_attr($header_border_right_width); ?>;
 								--headerBorderBottomColor: <?php echo esc_attr($header_border_bottom_color); ?>;
-								--headerBorderBottomStype: <?php echo esc_attr($header_border_bottom_style); ?>;
+								--headerBorderBottomStyle: <?php echo esc_attr($header_border_bottom_style); ?>;
 								--headerBorderBottomWidth: <?php echo esc_attr($header_border_bottom_width); ?>;
 								--headerBorderLeftColor: <?php echo esc_attr($header_border_left_color); ?>;
-								--headerBorderLeftStype: <?php echo esc_attr($header_border_left_style); ?>;
+								--headerBorderLeftStyle: <?php echo esc_attr($header_border_left_style); ?>;
 								--headerBorderLeftWidth: <?php echo esc_attr($header_border_left_width); ?>;
 								--headerTextAlignment: <?php echo esc_attr($header_alignment); ?>">
 						<?php
@@ -198,16 +198,16 @@ $body_border_left_width = get_border_style($body_border, 'left', 'width', $body_
 						--startGridBodyRowNbr: <?php echo esc_attr($body_start_grid_line); ?>;
 						--endGridBodyRowNbr: <?php echo esc_attr($body_end_grid_line); ?>;
 						--bodyBorderTopColor: <?php echo esc_attr($body_border_top_color); ?>;
-						--bodyBorderTopStype: <?php echo esc_attr($body_border_top_style); ?>;
+						--bodyBorderTopStyle: <?php echo esc_attr($body_border_top_style); ?>;
 						--bodyBorderTopWidth: <?php echo esc_attr($body_border_top_width); ?>;
 						--bodyBorderRightColor: <?php echo esc_attr($body_border_right_color); ?>;
-						--bodyBorderRightStype: <?php echo esc_attr($body_border_right_style); ?>;
+						--bodyBorderRightStyle: <?php echo esc_attr($body_border_right_style); ?>;
 						--bodyBorderRightWidth: <?php echo esc_attr($body_border_right_width); ?>;
 						--bodyBorderBottomColor: <?php echo esc_attr($body_border_bottom_color); ?>;
-						--bodyBorderBottomStype: <?php echo esc_attr($body_border_bottom_style); ?>;
+						--bodyBorderBottomStyle: <?php echo esc_attr($body_border_bottom_style); ?>;
 						--bodyBorderBottomWidth: <?php echo esc_attr($body_border_bottom_width); ?>;
 						--bodyBorderLeftColor: <?php echo esc_attr($body_border_left_color); ?>;
-						--bodyBorderLeftStype: <?php echo esc_attr($body_border_left_style); ?>;
+						--bodyBorderLeftStyle: <?php echo esc_attr($body_border_left_style); ?>;
 						--bodyBorderLeftWidth: <?php echo esc_attr($body_border_left_width); ?>;">
 
 								<!-- To be reviewed -->
