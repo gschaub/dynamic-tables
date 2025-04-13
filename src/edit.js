@@ -433,7 +433,7 @@ export default function Edit(props) {
 	const bodyAlignment = getTablePropAttribute(table.attributes, 'bodyAlignment')
 	const bodyBorder = getTablePropAttribute(table.attributes, 'bodyBorder')
 	const bandedRows = getTablePropAttribute(table.attributes, 'bandedRows')
-	const bandedRowTextColor = getTablePropAttribute(table.attributes, 'bandedRowTextColor')
+	const bandedTextColor = getTablePropAttribute(table.attributes, 'bandedTextColor')
 	const bandedRowBackgroundColor = getTablePropAttribute(table.attributes, 'bandedRowBackgroundColor')
 	const gridLineWidth = getTablePropAttribute(table.attributes, 'gridLineWidth')
 	const gridAlignment = block_alignment;
@@ -988,7 +988,7 @@ export default function Edit(props) {
 		if (type == 'text') {
 			updatedTableAttributes = {
 				...table.attributes,
-				bandedRowTextColor: color
+				bandedTextColor: color
 			}
 			console.log(updatedTableAttributes)
 			setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
@@ -1143,7 +1143,7 @@ export default function Edit(props) {
 	const endGridBodyRowNbrStyle = endGridRowNbr(startGridBodyRowNbrStyle, 'Body', numRows, enableHeaderRow, showBorders, false)
 	const horizontalScrollStyle = allowHorizontalScroll ? 'auto' : 'hidden';
 
-	const gridBandedRowTextColor = gridBandedRowTextColorStyle(isNewBlock, tableIsResolving, bandedRowTextColor)
+	const gridBandedRowTextColor = gridBandedRowTextColorStyle(isNewBlock, tableIsResolving, bandedTextColor)
 	const gridBandedRowBackgroundColor = gridBandedRowBackgroundColorStyle(isNewBlock, tableIsResolving, bandedRowBackgroundColor)
 	const gridShowInnerLines = gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines)
 	const gridInnerLineWidth = gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, gridLineWidth)
@@ -1376,7 +1376,7 @@ export default function Edit(props) {
 								colors={themeColors}
 								colorSettings={[
 									{
-										value: bandedRowTextColor,
+										value: bandedTextColor,
 										onChange: (newColor) => onBandedRowColor(table, 'text', newColor),
 										label: 'Text'
 									},

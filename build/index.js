@@ -3033,7 +3033,7 @@ function Edit(props) {
   const bodyAlignment = getTablePropAttribute(table.attributes, 'bodyAlignment');
   const bodyBorder = getTablePropAttribute(table.attributes, 'bodyBorder');
   const bandedRows = getTablePropAttribute(table.attributes, 'bandedRows');
-  const bandedRowTextColor = getTablePropAttribute(table.attributes, 'bandedRowTextColor');
+  const bandedTextColor = getTablePropAttribute(table.attributes, 'bandedTextColor');
   const bandedRowBackgroundColor = getTablePropAttribute(table.attributes, 'bandedRowBackgroundColor');
   const gridLineWidth = getTablePropAttribute(table.attributes, 'gridLineWidth');
   const gridAlignment = block_alignment;
@@ -3532,7 +3532,7 @@ function Edit(props) {
     if (type == 'text') {
       updatedTableAttributes = {
         ...table.attributes,
-        bandedRowTextColor: color
+        bandedTextColor: color
       };
       console.log(updatedTableAttributes);
       setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
@@ -3679,7 +3679,7 @@ function Edit(props) {
   const startGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.startGridRowNbr)(enableHeaderRow, showBorders);
   const endGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.endGridRowNbr)(startGridBodyRowNbrStyle, 'Body', numRows, enableHeaderRow, showBorders, false);
   const horizontalScrollStyle = allowHorizontalScroll ? 'auto' : 'hidden';
-  const gridBandedRowTextColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.gridBandedRowTextColorStyle)(isNewBlock, tableIsResolving, bandedRowTextColor);
+  const gridBandedRowTextColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.gridBandedRowTextColorStyle)(isNewBlock, tableIsResolving, bandedTextColor);
   const gridBandedRowBackgroundColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.gridBandedRowBackgroundColorStyle)(isNewBlock, tableIsResolving, bandedRowBackgroundColor);
   const gridShowInnerLines = (0,_style__WEBPACK_IMPORTED_MODULE_14__.gridInnerBorderStyle)(isNewBlock, tableIsResolving, showGridLines);
   const gridInnerLineWidth = (0,_style__WEBPACK_IMPORTED_MODULE_14__.gridInnerBorderWidthStyle)(isNewBlock, tableIsResolving, showGridLines, gridLineWidth);
@@ -3901,7 +3901,7 @@ function Edit(props) {
             title: 'Banded Row Color',
             colors: themeColors,
             colorSettings: [{
-              value: bandedRowTextColor,
+              value: bandedTextColor,
               onChange: newColor => onBandedRowColor(table, 'text', newColor),
               label: 'Text'
             }, {
