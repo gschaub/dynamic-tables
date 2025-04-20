@@ -1,16 +1,16 @@
-import { useEffect, useState } from "@wordpress/element"
+import { useEffect, useState } from '@wordpress/element';
 /**
  * WordPress dependencies
  */
 
 import {
-    Modal,
-    SelectControl,
-    CheckboxControl,
-    TabbableContainer,
-    Button,
-    __experimentalInputControl as InputControl,
-    __experimentalNumberControl as NumberControl
+	Modal,
+	SelectControl,
+	CheckboxControl,
+	TabbableContainer,
+	Button,
+	__experimentalInputControl as InputControl,
+	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
 
 /**
@@ -19,324 +19,297 @@ import {
 import './style.scss';
 
 function ConfigureRowHeight(props) {
+	const { openRowHeight, rowId, rowLabel, rowAttributes } = props;
+	//    const [closePage, setClosePage] = useState(false)
 
-    const { openRowHeight,
-        rowId,
-        rowLabel,
-        rowAttributes
-    } = props;
-    //    const [closePage, setClosePage] = useState(false)
+	useEffect(() => {
+		switch (rowAttributes.rowHeightType) {
+			case 'Auto': {
+				setHideCustom(true);
+				setHideFixed(true);
+				break;
+			}
 
-    useEffect(() => {
+			case 'Fixed': {
+				setHideCustom(true);
+				setHideFixed(false);
+				break;
+			}
 
-        switch (rowAttributes.rowHeightType) {
-            case 'Auto':
-                {
-                    setHideCustom(true)
-                    setHideFixed(true)
-                    break;
-                }
+			case 'Custom': {
+				setHideCustom(false);
+				setHideFixed(true);
+				break;
+			}
+		}
 
-            case 'Fixed':
-                {
-                    setHideCustom(true)
-                    setHideFixed(false)
-                    break;
-                }
+		setRowHeightType(rowAttributes.rowHeightType);
+		setMinHeight(rowAttributes.minHeight);
+		setMinHeightUnits(rowAttributes.minHeightUnits);
+		setMaxHeight(rowAttributes.maxHeight);
+		setMaxHeightUnits(rowAttributes.maxHeightUnits);
+		setFixedHeight(rowAttributes.fixedHeight);
+		setFixedHeightUnits(rowAttributes.fixedHeightUnits);
+	}, [rowAttributes]);
 
-            case 'Custom':
-                {
-                    setHideCustom(false)
-                    setHideFixed(true)
-                    break;
-                }
-        }
+	function stopProp(event) {
+		event.stopPropagation();
+	}
 
-        setRowHeightType(rowAttributes.rowHeightType)
-        setMinHeight(rowAttributes.minHeight)
-        setMinHeightUnits(rowAttributes.minHeightUnits)
-        setMaxHeight(rowAttributes.maxHeight)
-        setMaxHeightUnits(rowAttributes.maxHeightUnits)
-        setFixedHeight(rowAttributes.fixedHeight)
-        setFixedHeightUnits(rowAttributes.fixedHeightUnits)
-    }, [rowAttributes])
+	function handleCancel(event) {
+		openRowHeight(false);
+	}
 
-    function stopProp(event) {
-        event.stopPropagation()
-    }
+	const [rowHeightType, setRowHeightType] = useState();
+	const [hideCustom, setHideCustom] = useState(true);
+	const [hideFixed, setHideFixed] = useState(true);
+	const [minHeight, setMinHeight] = useState(0);
+	const [minHeightUnits, setMinHeightUnits] = useState();
+	const [maxHeight, setMaxHeight] = useState(1);
+	const [maxHeightUnits, setMaxHeightUnits] = useState();
+	const [fixedHeight, setFixedHeight] = useState(0);
+	const [fixedHeightUnits, setFixedHeightUnits] = useState();
 
-    function handleCancel(event) {
-        openRowHeight(false)
-    }
+	console.log('In Component ConfigureRowHeight');
+	console.log(props);
 
-    const [rowHeightType, setRowHeightType] = useState();
-    const [hideCustom, setHideCustom] = useState(true);
-    const [hideFixed, setHideFixed] = useState(true);
-    const [minHeight, setMinHeight] = useState(0);
-    const [minHeightUnits, setMinHeightUnits] = useState();
-    const [maxHeight, setMaxHeight] = useState(1);
-    const [maxHeightUnits, setMaxHeightUnits] = useState();
-    const [fixedHeight, setFixedHeight] = useState(0);
-    const [fixedHeightUnits, setFixedHeightUnits] = useState();
+	function onHeightType(event) {
+		console.log('...In Height Type Update');
+		console.log(event);
 
-    console.log('In Component ConfigureRowHeight')
-    console.log(props)
+		switch (event) {
+			case 'Auto': {
+				setMaxHeight(0);
+				setMaxHeightUnits('fr');
+				setMinHeight(0);
+				setMinHeightUnits('ch');
+				setFixedHeight(0);
+				setFixedHeightUnits('px');
+				setHideCustom(true);
+				setHideFixed(true);
+				break;
+			}
 
-    function onHeightType(event) {
-        console.log('...In Height Type Update');
-        console.log(event);
+			case 'Fixed': {
+				setMaxHeight(0);
+				setMaxHeightUnits('fr');
+				setMinHeight(0);
+				setMinHeightUnits('ch');
+				setFixedHeight(40);
+				setFixedHeightUnits('px');
+				setHideCustom(true);
+				setHideFixed(false);
+				break;
+			}
 
-        switch (event) {
-            case 'Auto':
-                {
-                    setMaxHeight(0)
-                    setMaxHeightUnits('fr')
-                    setMinHeight(0)
-                    setMinHeightUnits('ch')
-                    setFixedHeight(0)
-                    setFixedHeightUnits('px')
-                    setHideCustom(true)
-                    setHideFixed(true)
-                    break;
-                }
+			case 'Custom': {
+				setMaxHeight(40);
+				setMaxHeightUnits('ch');
+				setMinHeight(20);
+				setMinHeightUnits('ch');
+				setFixedHeight(0);
+				setFixedHeightUnits('px');
+				setHideCustom(false);
+				setHideFixed(true);
+				break;
+			}
+		}
 
-            case 'Fixed':
-                {
-                    setMaxHeight(0)
-                    setMaxHeightUnits('fr')
-                    setMinHeight(0)
-                    setMinHeightUnits('ch')
-                    setFixedHeight(40)
-                    setFixedHeightUnits('px')
-                    setHideCustom(true)
-                    setHideFixed(false)
-                    break;
-                }
+		setRowHeightType(event);
+	}
 
-            case 'Custom':
-                {
-                    setMaxHeight(40)
-                    setMaxHeightUnits('ch')
-                    setMinHeight(20)
-                    setMinHeightUnits('ch')
-                    setFixedHeight(0)
-                    setFixedHeightUnits('px')
-                    setHideCustom(false)
-                    setHideFixed(true)
-                    break;
-                }
-        }
+	function onMinimumHeight(event) {
+		console.log('...In MixHeight Update');
+		console.log(event);
+		setMinHeight(event.target.value);
+	}
 
-        setRowHeightType(event)
-    }
+	function onMinimumHeightUnits(event) {
+		console.log('...In MixHeight Units Update');
+		console.log(event);
+		setMinHeightUnits(event);
+	}
 
-    function onMinimumHeight(event) {
-        console.log('...In MixHeight Update');
-        console.log(event);
-        setMinHeight(event.target.value)
-    }
+	function onMaximumHeight(event) {
+		console.log('...In Max Height Update');
+		console.log(event);
+		setMaxHeight(event.target.value);
+	}
 
-    function onMinimumHeightUnits(event) {
-        console.log('...In MixHeight Units Update');
-        console.log(event);
-        setMinHeightUnits(event)
-    }
+	function onMaximumHeightUnits(event) {
+		console.log('...In Max Height Update');
+		console.log(event);
+		setMaxHeightUnits(event);
+	}
 
-    function onMaximumHeight(event) {
-        console.log('...In Max Height Update');
-        console.log(event);
-        setMaxHeight(event.target.value)
-    }
+	function onFixedHeight(event) {
+		console.log('...In Max Height Update');
+		console.log(event);
+		setFixedHeight(Number(event.target.value));
+	}
 
-    function onMaximumHeightUnits(event) {
-        console.log('...In Max Height Update');
-        console.log(event);
-        setMaxHeightUnits(event)
-    }
+	function onFixedHeightUnits(event) {
+		console.log('...In Max Height Units Update');
+		console.log(event);
+		setFixedHeightUnits(event);
+	}
 
-    function onFixedHeight(event) {
-        console.log('...In Max Height Update');
-        console.log(event);
-        setFixedHeight(Number(event.target.value))
-    }
+	function onUpdate(event) {
+		// event.preventDefault()
+		console.log('ROW HEIGHT  UPDATED...');
+		console.log(event);
+		console.log('...Max Height = ' + maxHeight);
 
-    function onFixedHeightUnits(event) {
-        console.log('...In Max Height Units Update');
-        console.log(event);
-        setFixedHeightUnits(event)
-    }
+		const updatedRowAttributes = {
+			rowHeightType: rowHeightType,
+			minHeight: minHeight,
+			minHeightUnits: minHeightUnits,
+			maxHeight: Number(maxHeight),
+			maxHeightUnits: maxHeightUnits,
+			fixedHeight: fixedHeight,
+			fixedHeightUnits: fixedHeightUnits,
+			isFixedLeftRowGroup: false,
+			horizontalAlignment: 'none',
+		};
 
-    function onUpdate(event) {
-        // event.preventDefault()
-        console.log('ROW HEIGHT  UPDATED...')
-        console.log(event)
-        console.log('...Max Height = ' + maxHeight)
+		console.log(updatedRowAttributes);
 
-        var updatedRowAttributes =
-        {
-            rowHeightType: rowHeightType,
-            minHeight: minHeight,
-            minHeightUnits: minHeightUnits,
-            maxHeight: Number(maxHeight),
-            maxHeightUnits: maxHeightUnits,
-            fixedHeight: fixedHeight,
-            fixedHeightUnits: fixedHeightUnits,
-            isFixedLeftRowGroup: false,
-            horizontalAlignment: "none"
-        }
+		openRowHeight(false, updatedRowAttributes);
+	}
 
-        console.log(updatedRowAttributes)
+	console.log('RENDER PROPS');
+	console.log('...Disable Fixed Input = ' + hideFixed);
+	console.log('...Disable Custom Input = ' + hideCustom);
 
-        openRowHeight(false, updatedRowAttributes)
-    }
+	return (
+		<>
+			{openRowHeight && (
+				<Modal
+					title="Configure Row Height"
+					onRequestClose={handleCancel}
+					focusOnMount="firstContentElement"
+					isDismissible="false"
+					shouldCloseOnClickOutside="false"
+					size="large"
+				>
+					<p className="row-label">For row {rowLabel}</p>
 
-    console.log('RENDER PROPS');
-    console.log('...Disable Fixed Input = ' + hideFixed);
-    console.log('...Disable Custom Input = ' + hideCustom);
+					<form
+						// className="blocks-table__placeholder-form"
+						onSubmit={onUpdate}
+						onMouseDown={stopProp}
+					>
+						<SelectControl
+							label="Height Type"
+							value={rowHeightType}
+							onChange={e => onHeightType(e)}
+							options={[
+								{ value: 'Auto', label: 'Automatic' },
+								{ value: 'Fixed', label: 'Fixed height' },
+								{ value: 'Custom', label: 'Custom' },
+							]}
+							__nextHasNoMarginBottom
+						/>
 
-    return (
-        <>
-            {(openRowHeight) && (
-                <Modal
-                    title="Configure Row Height"
-                    onRequestClose={handleCancel}
-                    focusOnMount="firstContentElement"
-                    isDismissible="false"
-                    shouldCloseOnClickOutside="false"
-                    size="large">
-                    <p className="row-label">
-                        For row {rowLabel}
-                    </p>
+						<fieldset className={hideFixed === true ? 'row-height--not-visible' : ''}>
+							<legend>Set Fixed Height</legend>
 
-                    <form
-                        // className="blocks-table__placeholder-form"
-                        onSubmit={onUpdate}
-                        onMouseDown={stopProp}
+							<span className="row-height-span-input">
+								<NumberControl
+									className="row-height-input"
+									label="Fixed height"
+									labelPosition="left"
+									value={fixedHeight}
+									onBlur={e => onFixedHeight(e)}
+								/>
 
-                    >
-                        <SelectControl
-                            label="Height Type"
-                            value={rowHeightType}
-                            onChange={e => onHeightType(e)}
-                            options={[
-                                { value: "Auto", label: "Automatic" },
-                                { value: "Fixed", label: "Fixed height" },
-                                { value: "Custom", label: "Custom" }
-                            ]}
-                            __nextHasNoMarginBottom
-                        />
+								<SelectControl
+									className="row-height-unit-input"
+									label="Units"
+									labelPosition="left"
+									value={fixedHeightUnits}
+									onChange={e => onFixedHeightUnits(e)}
+									options={[
+										{ value: 'px', label: 'pixels' },
+										{ value: 'ch', label: 'font' },
+										{ value: 'pt', label: 'points' },
+										{ value: 'in', label: 'inches' },
+										{ value: 'fr', label: 'proportional' },
+									]}
+									__nextHasNoMarginBottom
+								/>
+							</span>
+						</fieldset>
 
-                        <fieldset
-                            className={(hideFixed === true ? "row-height--not-visible" : "")}>
-                            <legend>Set Fixed Height</legend>
+						<fieldset className={hideCustom === true ? 'row-height--not-visible' : ''}>
+							<legend>Set Custom Height</legend>
+							<span className="row-height-span-input">
+								<NumberControl
+									className="row-height-input"
+									label="Minimum height"
+									labelPosition="left"
+									value={minHeight}
+									onBlur={e => onMinimumHeight(e)}
+								/>
 
-                            <span
-                                className="row-height-span-input"
-                            >
-                                <NumberControl
-                                    className="row-height-input"
-                                    label="Fixed height"
-                                    labelPosition="left"
-                                    value={fixedHeight}
-                                    onBlur={e => onFixedHeight(e)}
-                                />
+								<SelectControl
+									className="row-height-unit-input"
+									labelPosition="left"
+									label="Units"
+									value={minHeightUnits}
+									onChange={e => onMinimumHeightUnits(e)}
+									options={[
+										{ value: 'px', label: 'pixels' },
+										{ value: 'ch', label: 'characters' },
+										{ value: 'pt', label: 'points' },
+										{ value: 'in', label: 'inches' },
+										{ value: 'fr', label: 'proportional' },
+									]}
+									__nextHasNoMarginBottom
+								/>
+							</span>
 
-                                <SelectControl
-                                    className="row-height-unit-input"
-                                    label="Units"
-                                    labelPosition="left"
-                                    value={fixedHeightUnits}
-                                    onChange={e => onFixedHeightUnits(e)}
-                                    options={[
-                                        { value: "px", label: "pixels" },
-                                        { value: "ch", label: "font" },
-                                        { value: "pt", label: "points" },
-                                        { value: "in", label: "inches" },
-                                        { value: "fr", label: "proportional" },
-                                    ]}
-                                    __nextHasNoMarginBottom
-                                />
-                            </span>
-                        </fieldset>
+							<span className="row-height-span-input">
+								<NumberControl
+									className="row-height-input"
+									label="Maximum height"
+									labelPosition="left"
+									value={maxHeight}
+									onBlur={e => onMaximumHeight(e)}
+								/>
 
-                        <fieldset
-                            className={(hideCustom === true ? "row-height--not-visible" : "")}>
-                            <legend>Set Custom Height</legend>
-                            <span
-                                className="row-height-span-input"
-                            >
-                                <NumberControl
-                                    className="row-height-input"
-                                    label="Minimum height"
-                                    labelPosition="left"
-                                    value={minHeight}
-                                    onBlur={e => onMinimumHeight(e)}
-                                />
+								<SelectControl
+									className="row-height-unit-input"
+									labelPosition="left"
+									label="Units"
+									value={maxHeightUnits}
+									onChange={e => onMaximumHeightUnits(e)}
+									options={[
+										{ value: 'px', label: 'pixels' },
+										{ value: 'ch', label: 'characters' },
+										{ value: 'pt', label: 'points' },
+										{ value: 'in', label: 'inches' },
+										{ value: 'fr', label: 'proportional' },
+									]}
+									__nextHasNoMarginBottom
+								/>
+							</span>
+						</fieldset>
 
-                                <SelectControl
-                                    className="row-height-unit-input"
-                                    labelPosition="left"
-                                    label="Units"
-                                    value={minHeightUnits}
-                                    onChange={e => onMinimumHeightUnits(e)}
-                                    options={[
-                                        { value: "px", label: "pixels" },
-                                        { value: "ch", label: "characters" },
-                                        { value: "pt", label: "points" },
-                                        { value: "in", label: "inches" },
-                                        { value: "fr", label: "proportional" },
-                                    ]}
-                                    __nextHasNoMarginBottom
-                                />
-                            </span>
+						<span>
+							<Button variant="secondary" onClick={handleCancel}>
+								Cancel
+							</Button>
 
-                            <span
-                                className="row-height-span-input"
-                            >
-                                <NumberControl
-                                    className="row-height-input"
-                                    label="Maximum height"
-                                    labelPosition="left"
-                                    value={maxHeight}
-                                    onBlur={e => onMaximumHeight(e)}
-                                />
-
-                                <SelectControl
-                                    className="row-height-unit-input"
-                                    labelPosition="left"
-                                    label="Units"
-                                    value={maxHeightUnits}
-                                    onChange={e => onMaximumHeightUnits(e)}
-                                    options={[
-                                        { value: "px", label: "pixels" },
-                                        { value: "ch", label: "characters" },
-                                        { value: "pt", label: "points" },
-                                        { value: "in", label: "inches" },
-                                        { value: "fr", label: "proportional" },
-                                    ]}
-                                    __nextHasNoMarginBottom
-                                />
-                            </span>
-                        </fieldset>
-
-                        <span>
-                            <Button variant="secondary" onClick={handleCancel}>
-                                Cancel
-                            </Button>
-
-                            <Button
-                                variant="primary"
-                                type="submit"
-                            >
-                                Update
-                            </Button>
-                        </span>
-                    </form>
-                </Modal >
-            )
-            }
-        </>
-    )
-};
+							<Button variant="primary" type="submit">
+								Update
+							</Button>
+						</span>
+					</form>
+				</Modal>
+			)}
+		</>
+	);
+}
 
 export { ConfigureRowHeight };

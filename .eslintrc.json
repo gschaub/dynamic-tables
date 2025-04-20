@@ -28,6 +28,7 @@
         "camelcase":"off",
         "eqeqeq":"off",
         "jsx-a11y/no-static-element-interactions": "off",
+        "jsx-a11y/no-noninteractive-element-interactions": "off",
         "react/jsx-key": "off",
         "prettier/prettier": "error" // Enforce Prettier formatting as ESLint errors
     }

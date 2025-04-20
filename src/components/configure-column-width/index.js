@@ -1,17 +1,16 @@
-import { useEffect, useState } from "@wordpress/element"
+import { useEffect, useState } from '@wordpress/element';
 /**
  * WordPress dependencies
  */
 
 import {
-    Modal,
-    SelectControl,
-    CheckboxControl,
-    Button,
-    __experimentalInputControl as InputControl,
-    __experimentalNumberControl as NumberControl
+	Modal,
+	SelectControl,
+	CheckboxControl,
+	Button,
+	__experimentalInputControl as InputControl,
+	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
-
 
 /**
  * Internal dependencies
@@ -19,430 +18,397 @@ import {
 import './style.scss';
 
 function ConfigureColumnWidth(props) {
+	const { openColumnWidth, columnId, columnLabel, columnAttributes, enableProFeatures } = props;
+	//    const [closePage, setClosePage] = useState(false)
 
-    const { openColumnWidth,
-        columnId,
-        columnLabel,
-        columnAttributes,
-        enableProFeatures
-    } = props;
-    //    const [closePage, setClosePage] = useState(false)
+	useEffect(() => {
+		switch (columnAttributes.columnWidthType) {
+			case 'Proportional': {
+				setHideProportional(false);
+				setHideCustom(true);
+				setHideFixed(true);
+				break;
+			}
 
-    useEffect(() => {
+			case 'Auto': {
+				setHideProportional(true);
+				setHideCustom(true);
+				setHideFixed(true);
+				break;
+			}
 
-        switch (columnAttributes.columnWidthType) {
-            case 'Proportional':
-                {
-                    setHideProportional(false)
-                    setHideCustom(true)
-                    setHideFixed(true)
-                    break;
-                }
+			case 'Fixed': {
+				setHideProportional(true);
+				setHideCustom(true);
+				setHideFixed(false);
+				break;
+			}
 
-            case 'Auto':
-                {
-                    setHideProportional(true)
-                    setHideCustom(true)
-                    setHideFixed(true)
-                    break;
-                }
+			case 'Custom': {
+				setHideProportional(true);
+				setHideCustom(false);
+				setHideFixed(true);
+				break;
+			}
+		}
 
-            case 'Fixed':
-                {
-                    setHideProportional(true)
-                    setHideCustom(true)
-                    setHideFixed(false)
-                    break;
-                }
+		setColumnWidthType(columnAttributes.columnWidthType);
+		setMinWidth(columnAttributes.minWidth);
+		setMinWidthUnits(columnAttributes.minWidthUnits);
+		setMaxWidth(columnAttributes.maxWidth);
+		setMaxWidthUnits(columnAttributes.maxWidthUnits);
+		setFixedWidth(columnAttributes.fixedWidth);
+		setFixedWidthUnits(columnAttributes.fixedWidth);
+		setDisableForPhone(columnAttributes.disableForPhone);
+		setDisableForTablet(columnAttributes.disableForTablet);
+	}, [columnAttributes]);
 
-            case 'Custom':
-                {
-                    setHideProportional(true)
-                    setHideCustom(false)
-                    setHideFixed(true)
-                    break;
-                }
-        }
+	function stopProp(event) {
+		event.stopPropagation();
+	}
 
-        setColumnWidthType(columnAttributes.columnWidthType)
-        setMinWidth(columnAttributes.minWidth)
-        setMinWidthUnits(columnAttributes.minWidthUnits)
-        setMaxWidth(columnAttributes.maxWidth)
-        setMaxWidthUnits(columnAttributes.maxWidthUnits)
-        setFixedWidth(columnAttributes.fixedWidth)
-        setFixedWidthUnits(columnAttributes.fixedWidth)
-        setDisableForPhone(columnAttributes.disableForPhone)
-        setDisableForTablet(columnAttributes.disableForTablet)
-    }, [columnAttributes])
+	function handleCancel(event) {
+		openColumnWidth(false);
+	}
 
-    function stopProp(event) {
-        event.stopPropagation()
-    }
+	const [columnWidthType, setColumnWidthType] = useState();
+	const [hideProportional, setHideProportional] = useState(true);
+	const [hideCustom, setHideCustom] = useState(true);
+	const [hideFixed, setHideFixed] = useState(true);
+	const [minWidth, setMinWidth] = useState(0);
+	const [minWidthUnits, setMinWidthUnits] = useState();
+	const [maxWidth, setMaxWidth] = useState(1);
+	const [maxWidthUnits, setMaxWidthUnits] = useState();
+	const [fixedWidth, setFixedWidth] = useState(0);
+	const [fixedWidthUnits, setFixedWidthUnits] = useState();
+	const [disableForTablet, setDisableForTablet] = useState(false);
+	const [disableForPhone, setDisableForPhone] = useState(false);
 
-    function handleCancel(event) {
-        openColumnWidth(false)
-    }
+	console.log('In Component ConfigureColumnWidth');
+	console.log(props);
 
-    const [columnWidthType, setColumnWidthType] = useState();
-    const [hideProportional, setHideProportional] = useState(true);
-    const [hideCustom, setHideCustom] = useState(true);
-    const [hideFixed, setHideFixed] = useState(true);
-    const [minWidth, setMinWidth] = useState(0);
-    const [minWidthUnits, setMinWidthUnits] = useState();
-    const [maxWidth, setMaxWidth] = useState(1);
-    const [maxWidthUnits, setMaxWidthUnits] = useState();
-    const [fixedWidth, setFixedWidth] = useState(0);
-    const [fixedWidthUnits, setFixedWidthUnits] = useState();
-    const [disableForTablet, setDisableForTablet] = useState(false);
-    const [disableForPhone, setDisableForPhone] = useState(false);
+	function onWidthType(event) {
+		console.log('...In Width Type Update');
+		console.log(event);
 
-    console.log('In Component ConfigureColumnWidth')
-    console.log(props)
+		switch (event) {
+			case 'Proportional': {
+				setMaxWidth(1);
+				setMaxWidthUnits('fr');
+				setMinWidth(20);
+				setMinWidthUnits('ch');
+				setFixedWidth(0);
+				setFixedWidthUnits('px');
+				setHideProportional(false);
+				setHideCustom(true);
+				setHideFixed(true);
+				break;
+			}
 
-    function onWidthType(event) {
-        console.log('...In Width Type Update');
-        console.log(event);
+			case 'Auto': {
+				setMaxWidth(0);
+				setMaxWidthUnits('fr');
+				setMinWidth(0);
+				setMinWidthUnits('ch');
+				setFixedWidth(0);
+				setFixedWidthUnits('px');
+				setHideProportional(true);
+				setHideCustom(true);
+				setHideFixed(true);
+				break;
+			}
 
-        switch (event) {
-            case 'Proportional':
-                {
-                    setMaxWidth(1)
-                    setMaxWidthUnits('fr')
-                    setMinWidth(20)
-                    setMinWidthUnits('ch')
-                    setFixedWidth(0)
-                    setFixedWidthUnits('px')
-                    setHideProportional(false)
-                    setHideCustom(true)
-                    setHideFixed(true)
-                    break;
-                }
+			case 'Fixed': {
+				setMaxWidth(0);
+				setMaxWidthUnits('fr');
+				setMinWidth(0);
+				setMinWidthUnits('ch');
+				setFixedWidth(40);
+				setFixedWidthUnits('px');
+				setHideProportional(true);
+				setHideCustom(true);
+				setHideFixed(false);
+				break;
+			}
 
-            case 'Auto':
-                {
-                    setMaxWidth(0)
-                    setMaxWidthUnits('fr')
-                    setMinWidth(0)
-                    setMinWidthUnits('ch')
-                    setFixedWidth(0)
-                    setFixedWidthUnits('px')
-                    setHideProportional(true)
-                    setHideCustom(true)
-                    setHideFixed(true)
-                    break;
-                }
+			case 'Custom': {
+				setMaxWidth(40);
+				setMaxWidthUnits('ch');
+				setMinWidth(20);
+				setMinWidthUnits('ch');
+				setFixedWidth(0);
+				setFixedWidthUnits('px');
+				setHideProportional(true);
+				setHideCustom(false);
+				setHideFixed(true);
+				break;
+			}
+		}
 
-            case 'Fixed':
-                {
-                    setMaxWidth(0)
-                    setMaxWidthUnits('fr')
-                    setMinWidth(0)
-                    setMinWidthUnits('ch')
-                    setFixedWidth(40)
-                    setFixedWidthUnits('px')
-                    setHideProportional(true)
-                    setHideCustom(true)
-                    setHideFixed(false)
-                    break;
-                }
+		setColumnWidthType(event);
+	}
 
-            case 'Custom':
-                {
-                    setMaxWidth(40)
-                    setMaxWidthUnits('ch')
-                    setMinWidth(20)
-                    setMinWidthUnits('ch')
-                    setFixedWidth(0)
-                    setFixedWidthUnits('px')
-                    setHideProportional(true)
-                    setHideCustom(false)
-                    setHideFixed(true)
-                    break;
-                }
-        }
+	function onMinimumWidth(event) {
+		console.log('...In MixWidth Update');
+		console.log(event);
+		setMinWidth(event.target.value);
+	}
 
-        setColumnWidthType(event)
-    }
+	function onMinimumWidthUnits(event) {
+		console.log('...In MixWidth Units Update');
+		console.log(event);
+		setMinWidthUnits(event);
+	}
 
-    function onMinimumWidth(event) {
-        console.log('...In MixWidth Update');
-        console.log(event);
-        setMinWidth(event.target.value)
-    }
+	function onMaximumWidth(event) {
+		console.log('...In Max Width Update');
+		console.log(event);
+		setMaxWidth(event.target.value);
+	}
 
-    function onMinimumWidthUnits(event) {
-        console.log('...In MixWidth Units Update');
-        console.log(event);
-        setMinWidthUnits(event)
-    }
+	function onMaximumWidthUnits(event) {
+		console.log('...In Max Width  Update');
+		console.log(event);
+		setMaxWidthUnits(event);
+	}
 
-    function onMaximumWidth(event) {
-        console.log('...In Max Width Update');
-        console.log(event);
-        setMaxWidth(event.target.value)
-    }
+	function onFixedWidth(event) {
+		console.log('...In Max Width Update');
+		console.log(event);
+		setFixedWidth(Number(event.target.value));
+	}
 
-    function onMaximumWidthUnits(event) {
-        console.log('...In Max Width  Update');
-        console.log(event);
-        setMaxWidthUnits(event)
-    }
+	function onFixedWidthUnits(event) {
+		console.log('...In Max Width Units Update');
+		console.log(event);
+		setFixedWidthUnits(event);
+	}
 
-    function onFixedWidth(event) {
-        console.log('...In Max Width Update');
-        console.log(event);
-        setFixedWidth(Number(event.target.value))
-    }
+	function onTablet(checked) {
+		console.log('...In Tablet Update');
+		console.log(checked);
 
-    function onFixedWidthUnits(event) {
-        console.log('...In Max Width Units Update');
-        console.log(event);
-        setFixedWidthUnits(event)
-    }
+		setDisableForTablet(checked);
+	}
 
-    function onTablet(checked) {
-        console.log('...In Tablet Update');
-        console.log(checked);
+	function onPhone(checked) {
+		console.log('...In Phone Update');
+		console.log(checked);
 
-        setDisableForTablet(checked)
-    }
+		setDisableForPhone(checked);
+	}
 
-    function onPhone(checked) {
-        console.log('...In Phone Update');
-        console.log(checked);
+	function onUpdate(event) {
+		// event.preventDefault()
+		console.log('COLUMN WIDTH UPDATED...');
+		console.log(event);
+		console.log('...Max Width = ' + maxWidth);
 
-        setDisableForPhone(checked)
-    }
+		const updatedColumnAttributes = {
+			columnWidthType: columnWidthType,
+			minWidth: minWidth,
+			minWidthUnits: minWidthUnits,
+			maxWidth: Number(maxWidth),
+			maxWidthUnits: maxWidthUnits,
+			fixedWidth: fixedWidth,
+			fixedWidthUnits: fixedWidthUnits,
+			disableForTablet: disableForTablet,
+			disableForPhone: disableForPhone,
+			isFixedLeftColumnGroup: false,
+			horizontalAlignment: 'none',
+		};
 
-    function onUpdate(event) {
-        // event.preventDefault()
-        console.log('COLUMN WIDTH UPDATED...')
-        console.log(event)
-        console.log('...Max Width = ' + maxWidth)
+		console.log(updatedColumnAttributes);
 
-        var updatedColumnAttributes =
-        {
-            columnWidthType: columnWidthType,
-            minWidth: minWidth,
-            minWidthUnits: minWidthUnits,
-            maxWidth: Number(maxWidth),
-            maxWidthUnits: maxWidthUnits,
-            fixedWidth: fixedWidth,
-            fixedWidthUnits: fixedWidthUnits,
-            disableForTablet: disableForTablet,
-            disableForPhone: disableForPhone,
-            isFixedLeftColumnGroup: false,
-            horizontalAlignment: "none"
-        }
+		openColumnWidth(false, updatedColumnAttributes);
+	}
 
-        console.log(updatedColumnAttributes)
+	console.log('RENDER PROPS');
+	console.log('...Disable Proportional Input = ' + hideProportional);
+	console.log('...Disable Fixed Input = ' + hideFixed);
+	console.log('...Disable Custom Input = ' + hideCustom);
 
-        openColumnWidth(false, updatedColumnAttributes)
-    }
+	return (
+		<>
+			{openColumnWidth && (
+				<Modal
+					title="Configure Column Width"
+					onRequestClose={handleCancel}
+					focusOnMount="firstContentElement"
+					isDismissible="false"
+					shouldCloseOnClickOutside="false"
+					size="large"
+				>
+					<p className="column-label">For column {columnLabel}</p>
 
-    console.log('RENDER PROPS');
-    console.log('...Disable Proportional Input = ' + hideProportional);
-    console.log('...Disable Fixed Input = ' + hideFixed);
-    console.log('...Disable Custom Input = ' + hideCustom);
+					<form
+						// className="blocks-table__placeholder-form"
+						onSubmit={onUpdate}
+						onMouseDown={stopProp}
+					>
+						<SelectControl
+							label="Width Type"
+							value={columnWidthType}
+							onChange={e => onWidthType(e)}
+							options={[
+								{ value: 'Proportional', label: 'Proportional' },
+								{ value: 'Auto', label: 'Automatic' },
+								{ value: 'Fixed', label: 'Fixed width' },
+								{ value: 'Custom', label: 'Custom' },
+							]}
+							__nextHasNoMarginBottom
+						/>
 
-    return (
-        <>
-            {(openColumnWidth) && (
-                <Modal
-                    title="Configure Column Width"
-                    onRequestClose={handleCancel}
-                    focusOnMount="firstContentElement"
-                    isDismissible="false"
-                    shouldCloseOnClickOutside="false"
-                    size="large">
-                    <p className="column-label">
-                        For column {columnLabel}
-                    </p>
+						<fieldset className={hideProportional === true ? ' column-width--not-visible' : ''}>
+							<legend>Set Proportional Width</legend>
+							<NumberControl
+								className="column-width-value-input"
+								label="Number of portions"
+								labelPosition="side"
+								onBlur={e => onMaximumWidth(e)}
+								value={maxWidth}
+							/>
 
-                    <form
-                        // className="blocks-table__placeholder-form"
-                        onSubmit={onUpdate}
-                        onMouseDown={stopProp}
+							<span className="column-width-span-input">
+								<NumberControl
+									className="column-width-value-input"
+									label="Minimum width"
+									labelPosition="left"
+									value={minWidth}
+									onBlur={e => onMinimumWidth(e)}
+								/>
 
-                    >
-                        <SelectControl
-                            label="Width Type"
-                            value={columnWidthType}
-                            onChange={e => onWidthType(e)}
-                            options={[
-                                { value: "Proportional", label: "Proportional" },
-                                { value: "Auto", label: "Automatic" },
-                                { value: "Fixed", label: "Fixed width" },
-                                { value: "Custom", label: "Custom" }
-                            ]}
-                            __nextHasNoMarginBottom
-                        />
+								<SelectControl
+									className="column-width-unit-input"
+									labelPosition="left"
+									label="Units"
+									value={minWidthUnits}
+									onChange={e => onMinimumWidthUnits(e)}
+									options={[
+										{ value: 'px', label: 'pixels' },
+										{ value: 'ch', label: 'characters' },
+										{ value: 'pt', label: 'points' },
+										{ value: 'in', label: 'inches' },
+										{ value: 'fr', label: 'proportional' },
+									]}
+									__nextHasNoMarginBottom
+								/>
+							</span>
+						</fieldset>
 
-                        <fieldset
-                            className={(hideProportional === true ? " column-width--not-visible" : "")}>
-                            <legend>Set Proportional Width</legend>
-                            <NumberControl
-                                className="column-width-value-input"
-                                label="Number of portions"
-                                labelPosition="side"
-                                onBlur={e => onMaximumWidth(e)}
-                                value={maxWidth}
-                            />
+						<fieldset className={hideFixed === true ? 'column-width--not-visible' : ''}>
+							<legend>Set Fixed Width</legend>
 
-                            <span
-                                className="column-width-span-input"
-                            >
-                                <NumberControl
-                                    className="column-width-value-input"
-                                    label="Minimum width"
-                                    labelPosition="left"
-                                    value={minWidth}
-                                    onBlur={e => onMinimumWidth(e)}
-                                />
+							<span className="column-width-span-input">
+								<NumberControl
+									className="column-width-input"
+									label="Fixed width"
+									labelPosition="left"
+									value={fixedWidth}
+									onBlur={e => onFixedWidth(e)}
+								/>
 
-                                <SelectControl
-                                    className="column-width-unit-input"
-                                    labelPosition="left"
-                                    label="Units"
-                                    value={minWidthUnits}
-                                    onChange={e => onMinimumWidthUnits(e)}
-                                    options={[
-                                        { value: "px", label: "pixels" },
-                                        { value: "ch", label: "characters" },
-                                        { value: "pt", label: "points" },
-                                        { value: "in", label: "inches" },
-                                        { value: "fr", label: "proportional" },
-                                    ]}
-                                    __nextHasNoMarginBottom
-                                />
-                            </span>
-                        </fieldset>
+								<SelectControl
+									className="column-width-unit-input"
+									label="Units"
+									labelPosition="left"
+									value={fixedWidthUnits}
+									onChange={e => onFixedWidthUnits(e)}
+									options={[
+										{ value: 'px', label: 'pixels' },
+										{ value: 'ch', label: 'font' },
+										{ value: 'pt', label: 'points' },
+										{ value: 'in', label: 'inches' },
+										{ value: 'fr', label: 'proportional' },
+									]}
+									__nextHasNoMarginBottom
+								/>
+							</span>
+						</fieldset>
 
-                        <fieldset
-                            className={(hideFixed === true ? "column-width--not-visible" : "")}>
-                            <legend>Set Fixed Width</legend>
+						<fieldset className={hideCustom === true ? 'column-width--not-visible' : ''}>
+							<legend>Set Custom Width</legend>
+							<span className="column-width-span-input">
+								<NumberControl
+									className="column-width-input"
+									label="Minimum width"
+									labelPosition="left"
+									value={minWidth}
+									onBlur={e => onMinimumWidth(e)}
+								/>
 
-                            <span
-                                className="column-width-span-input"
-                            >
-                                <NumberControl
-                                    className="column-width-input"
-                                    label="Fixed width"
-                                    labelPosition="left"
-                                    value={fixedWidth}
-                                    onBlur={e => onFixedWidth(e)}
-                                />
+								<SelectControl
+									className="column-width-unit-input"
+									labelPosition="left"
+									label="Units"
+									value={minWidthUnits}
+									onChange={e => onMinimumWidthUnits(e)}
+									options={[
+										{ value: 'px', label: 'pixels' },
+										{ value: 'ch', label: 'characters' },
+										{ value: 'pt', label: 'points' },
+										{ value: 'in', label: 'inches' },
+										{ value: 'fr', label: 'proportional' },
+									]}
+									__nextHasNoMarginBottom
+								/>
+							</span>
 
-                                <SelectControl
-                                    className="column-width-unit-input"
-                                    label="Units"
-                                    labelPosition="left"
-                                    value={fixedWidthUnits}
-                                    onChange={e => onFixedWidthUnits(e)}
-                                    options={[
-                                        { value: "px", label: "pixels" },
-                                        { value: "ch", label: "font" },
-                                        { value: "pt", label: "points" },
-                                        { value: "in", label: "inches" },
-                                        { value: "fr", label: "proportional" },
-                                    ]}
-                                    __nextHasNoMarginBottom
-                                />
-                            </span>
-                        </fieldset>
+							<span className="column-width-span-input">
+								<NumberControl
+									className="column-width-input"
+									label="Maximum width"
+									labelPosition="left"
+									value={maxWidth}
+									onBlur={e => onMaximumWidth(e)}
+								/>
 
-                        <fieldset
-                            className={(hideCustom === true ? "column-width--not-visible" : "")}>
-                            <legend>Set Custom Width</legend>
-                            <span
-                                className="column-width-span-input"
-                            >
-                                <NumberControl
-                                    className="column-width-input"
-                                    label="Minimum width"
-                                    labelPosition="left"
-                                    value={minWidth}
-                                    onBlur={e => onMinimumWidth(e)}
-                                />
+								<SelectControl
+									className="column-width-unit-input"
+									labelPosition="left"
+									label="Units"
+									value={maxWidthUnits}
+									onChange={e => onMaximumWidthUnits(e)}
+									options={[
+										{ value: 'px', label: 'pixels' },
+										{ value: 'ch', label: 'characters' },
+										{ value: 'pt', label: 'points' },
+										{ value: 'in', label: 'inches' },
+										{ value: 'fr', label: 'proportional' },
+									]}
+									__nextHasNoMarginBottom
+								/>
+							</span>
+						</fieldset>
 
-                                <SelectControl
-                                    className="column-width-unit-input"
-                                    labelPosition="left"
-                                    label="Units"
-                                    value={minWidthUnits}
-                                    onChange={e => onMinimumWidthUnits(e)}
-                                    options={[
-                                        { value: "px", label: "pixels" },
-                                        { value: "ch", label: "characters" },
-                                        { value: "pt", label: "points" },
-                                        { value: "in", label: "inches" },
-                                        { value: "fr", label: "proportional" },
-                                    ]}
-                                    __nextHasNoMarginBottom
-                                />
-                            </span>
+						{enableProFeatures && (
+							<>
+								<CheckboxControl
+									label="Hide for tablet"
+									checked={disableForTablet}
+									onChange={onTablet}
+								/>
+								<CheckboxControl
+									label="Hide for phone"
+									checked={disableForPhone}
+									onChange={onPhone}
+								/>
+							</>
+						)}
+						<span>
+							<Button variant="secondary" onClick={handleCancel}>
+								Cancel
+							</Button>
 
-                            <span
-                                className="column-width-span-input"
-                            >
-                                <NumberControl
-                                    className="column-width-input"
-                                    label="Maximum width"
-                                    labelPosition="left"
-                                    value={maxWidth}
-                                    onBlur={e => onMaximumWidth(e)}
-                                />
-
-                                <SelectControl
-                                    className="column-width-unit-input"
-                                    labelPosition="left"
-                                    label="Units"
-                                    value={maxWidthUnits}
-                                    onChange={e => onMaximumWidthUnits(e)}
-                                    options={[
-                                        { value: "px", label: "pixels" },
-                                        { value: "ch", label: "characters" },
-                                        { value: "pt", label: "points" },
-                                        { value: "in", label: "inches" },
-                                        { value: "fr", label: "proportional" },
-                                    ]}
-                                    __nextHasNoMarginBottom
-                                />
-                            </span>
-                        </fieldset>
-
-                        {enableProFeatures && (
-                            <>
-                                <CheckboxControl
-                                    label="Hide for tablet"
-                                    checked={disableForTablet}
-                                    onChange={onTablet}
-                                />
-                                <CheckboxControl
-                                    label="Hide for phone"
-                                    checked={disableForPhone}
-                                    onChange={onPhone}
-                                />
-                            </>
-                        )}
-                        <span>
-                            <Button variant="secondary" onClick={handleCancel}>
-                                Cancel
-                            </Button>
-
-                            <Button
-                                variant="primary"
-                                type="submit"
-                            >
-                                Update
-                            </Button>
-                        </span>
-                    </form>
-                </Modal >
-            )
-            }
-        </>
-    )
-};
+							<Button variant="primary" type="submit">
+								Update
+							</Button>
+						</span>
+					</form>
+				</Modal>
+			)}
+		</>
+	);
+}
 
 export { ConfigureColumnWidth };

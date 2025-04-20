@@ -584,7 +584,7 @@ function ConfigureColumnWidth(props) {
     console.log('COLUMN WIDTH UPDATED...');
     console.log(event);
     console.log('...Max Width = ' + maxWidth);
-    var updatedColumnAttributes = {
+    const updatedColumnAttributes = {
       columnWidthType: columnWidthType,
       minWidth: minWidth,
       minWidthUnits: minWidthUnits,
@@ -595,7 +595,7 @@ function ConfigureColumnWidth(props) {
       disableForTablet: disableForTablet,
       disableForPhone: disableForPhone,
       isFixedLeftColumnGroup: false,
-      horizontalAlignment: "none"
+      horizontalAlignment: 'none'
     };
     console.log(updatedColumnAttributes);
     openColumnWidth(false, updatedColumnAttributes);
@@ -624,21 +624,21 @@ function ConfigureColumnWidth(props) {
           value: columnWidthType,
           onChange: e => onWidthType(e),
           options: [{
-            value: "Proportional",
-            label: "Proportional"
+            value: 'Proportional',
+            label: 'Proportional'
           }, {
-            value: "Auto",
-            label: "Automatic"
+            value: 'Auto',
+            label: 'Automatic'
           }, {
-            value: "Fixed",
-            label: "Fixed width"
+            value: 'Fixed',
+            label: 'Fixed width'
           }, {
-            value: "Custom",
-            label: "Custom"
+            value: 'Custom',
+            label: 'Custom'
           }],
           __nextHasNoMarginBottom: true
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("fieldset", {
-          className: hideProportional === true ? " column-width--not-visible" : "",
+          className: hideProportional === true ? ' column-width--not-visible' : '',
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("legend", {
             children: "Set Proportional Width"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalNumberControl, {
@@ -662,26 +662,26 @@ function ConfigureColumnWidth(props) {
               value: minWidthUnits,
               onChange: e => onMinimumWidthUnits(e),
               options: [{
-                value: "px",
-                label: "pixels"
+                value: 'px',
+                label: 'pixels'
               }, {
-                value: "ch",
-                label: "characters"
+                value: 'ch',
+                label: 'characters'
               }, {
-                value: "pt",
-                label: "points"
+                value: 'pt',
+                label: 'points'
               }, {
-                value: "in",
-                label: "inches"
+                value: 'in',
+                label: 'inches'
               }, {
-                value: "fr",
-                label: "proportional"
+                value: 'fr',
+                label: 'proportional'
               }],
               __nextHasNoMarginBottom: true
             })]
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("fieldset", {
-          className: hideFixed === true ? "column-width--not-visible" : "",
+          className: hideFixed === true ? 'column-width--not-visible' : '',
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("legend", {
             children: "Set Fixed Width"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
@@ -699,26 +699,26 @@ function ConfigureColumnWidth(props) {
               value: fixedWidthUnits,
               onChange: e => onFixedWidthUnits(e),
               options: [{
-                value: "px",
-                label: "pixels"
+                value: 'px',
+                label: 'pixels'
               }, {
-                value: "ch",
-                label: "font"
+                value: 'ch',
+                label: 'font'
               }, {
-                value: "pt",
-                label: "points"
+                value: 'pt',
+                label: 'points'
               }, {
-                value: "in",
-                label: "inches"
+                value: 'in',
+                label: 'inches'
               }, {
-                value: "fr",
-                label: "proportional"
+                value: 'fr',
+                label: 'proportional'
               }],
               __nextHasNoMarginBottom: true
             })]
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("fieldset", {
-          className: hideCustom === true ? "column-width--not-visible" : "",
+          className: hideCustom === true ? 'column-width--not-visible' : '',
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("legend", {
             children: "Set Custom Width"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
@@ -736,20 +736,20 @@ function ConfigureColumnWidth(props) {
               value: minWidthUnits,
               onChange: e => onMinimumWidthUnits(e),
               options: [{
-                value: "px",
-                label: "pixels"
+                value: 'px',
+                label: 'pixels'
               }, {
-                value: "ch",
-                label: "characters"
+                value: 'ch',
+                label: 'characters'
               }, {
-                value: "pt",
-                label: "points"
+                value: 'pt',
+                label: 'points'
               }, {
-                value: "in",
-                label: "inches"
+                value: 'in',
+                label: 'inches'
               }, {
-                value: "fr",
-                label: "proportional"
+                value: 'fr',
+                label: 'proportional'
               }],
               __nextHasNoMarginBottom: true
             })]
@@ -768,20 +768,20 @@ function ConfigureColumnWidth(props) {
               value: maxWidthUnits,
               onChange: e => onMaximumWidthUnits(e),
               options: [{
-                value: "px",
-                label: "pixels"
+                value: 'px',
+                label: 'pixels'
               }, {
-                value: "ch",
-                label: "characters"
+                value: 'ch',
+                label: 'characters'
               }, {
-                value: "pt",
-                label: "points"
+                value: 'pt',
+                label: 'points'
               }, {
-                value: "in",
-                label: "inches"
+                value: 'in',
+                label: 'inches'
               }, {
-                value: "fr",
-                label: "proportional"
+                value: 'fr',
+                label: 'proportional'
               }],
               __nextHasNoMarginBottom: true
             })]
@@ -811,7 +811,6 @@ function ConfigureColumnWidth(props) {
     })
   });
 }
-;
 
 
 /***/ }),
@@ -990,7 +989,7 @@ function ConfigureRowHeight(props) {
     console.log('ROW HEIGHT  UPDATED...');
     console.log(event);
     console.log('...Max Height = ' + maxHeight);
-    var updatedRowAttributes = {
+    const updatedRowAttributes = {
       rowHeightType: rowHeightType,
       minHeight: minHeight,
       minHeightUnits: minHeightUnits,
@@ -999,7 +998,7 @@ function ConfigureRowHeight(props) {
       fixedHeight: fixedHeight,
       fixedHeightUnits: fixedHeightUnits,
       isFixedLeftRowGroup: false,
-      horizontalAlignment: "none"
+      horizontalAlignment: 'none'
     };
     console.log(updatedRowAttributes);
     openRowHeight(false, updatedRowAttributes);
@@ -1027,18 +1026,18 @@ function ConfigureRowHeight(props) {
           value: rowHeightType,
           onChange: e => onHeightType(e),
           options: [{
-            value: "Auto",
-            label: "Automatic"
+            value: 'Auto',
+            label: 'Automatic'
           }, {
-            value: "Fixed",
-            label: "Fixed height"
+            value: 'Fixed',
+            label: 'Fixed height'
           }, {
-            value: "Custom",
-            label: "Custom"
+            value: 'Custom',
+            label: 'Custom'
           }],
           __nextHasNoMarginBottom: true
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("fieldset", {
-          className: hideFixed === true ? "row-height--not-visible" : "",
+          className: hideFixed === true ? 'row-height--not-visible' : '',
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("legend", {
             children: "Set Fixed Height"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
@@ -1056,26 +1055,26 @@ function ConfigureRowHeight(props) {
               value: fixedHeightUnits,
               onChange: e => onFixedHeightUnits(e),
               options: [{
-                value: "px",
-                label: "pixels"
+                value: 'px',
+                label: 'pixels'
               }, {
-                value: "ch",
-                label: "font"
+                value: 'ch',
+                label: 'font'
               }, {
-                value: "pt",
-                label: "points"
+                value: 'pt',
+                label: 'points'
               }, {
-                value: "in",
-                label: "inches"
+                value: 'in',
+                label: 'inches'
               }, {
-                value: "fr",
-                label: "proportional"
+                value: 'fr',
+                label: 'proportional'
               }],
               __nextHasNoMarginBottom: true
             })]
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("fieldset", {
-          className: hideCustom === true ? "row-height--not-visible" : "",
+          className: hideCustom === true ? 'row-height--not-visible' : '',
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("legend", {
             children: "Set Custom Height"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
@@ -1093,20 +1092,20 @@ function ConfigureRowHeight(props) {
               value: minHeightUnits,
               onChange: e => onMinimumHeightUnits(e),
               options: [{
-                value: "px",
-                label: "pixels"
+                value: 'px',
+                label: 'pixels'
               }, {
-                value: "ch",
-                label: "characters"
+                value: 'ch',
+                label: 'characters'
               }, {
-                value: "pt",
-                label: "points"
+                value: 'pt',
+                label: 'points'
               }, {
-                value: "in",
-                label: "inches"
+                value: 'in',
+                label: 'inches'
               }, {
-                value: "fr",
-                label: "proportional"
+                value: 'fr',
+                label: 'proportional'
               }],
               __nextHasNoMarginBottom: true
             })]
@@ -1125,20 +1124,20 @@ function ConfigureRowHeight(props) {
               value: maxHeightUnits,
               onChange: e => onMaximumHeightUnits(e),
               options: [{
-                value: "px",
-                label: "pixels"
+                value: 'px',
+                label: 'pixels'
               }, {
-                value: "ch",
-                label: "characters"
+                value: 'ch',
+                label: 'characters'
               }, {
-                value: "pt",
-                label: "points"
+                value: 'pt',
+                label: 'points'
               }, {
-                value: "in",
-                label: "inches"
+                value: 'in',
+                label: 'inches'
               }, {
-                value: "fr",
-                label: "proportional"
+                value: 'fr',
+                label: 'proportional'
               }],
               __nextHasNoMarginBottom: true
             })]
@@ -1158,7 +1157,6 @@ function ConfigureRowHeight(props) {
     })
   });
 }
-;
 
 
 /***/ }),
