@@ -15,16 +15,18 @@
 		"start": "wp-scripts start --webpack-copy-php"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^30.7.0",
-		"babel-eslint": "^10.1.0",
-		"eslint": "^9.22.0",
-		"eslint-config-prettier": "^10.1.1",
-		"eslint-config-wordpress": "^2.0.0",
-		"eslint-plugin-prettier": "^5.2.3",
-		"prettier": "^3.5.3"
+		"@wordpress/eslint-plugin": "^22.8.0",
+		"@wordpress/scripts": "^30.15.0",
+		"eslint": "^8.57.1",
+		"eslint-config-prettier": "^10.1.2",
+		"eslint-plugin-prettier": "^5.2.6",
+		"globals": "^16.0.0",
+		"prettier": "^3.5.3",
+		"typescript": "^5.8.3",
+		"typescript-eslint": "^8.30.1"
 	},
 	"dependencies": {
 		"@formatjs/icu-messageformat-parser": "^2.6.2",
-		"@wordpress/icons": "^10.9.0"
+		"@wordpress/icons": "^10.22.0"
 	}
 }

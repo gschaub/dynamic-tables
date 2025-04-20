@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This function will return true for a non empty array
  *

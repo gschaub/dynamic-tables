@@ -125,7 +125,6 @@ function create_table_data( $tablearr, $wp_error = false ) {
 	}
 
 	$results = null;
-	// error_log(print_r($tablearr, true));
 
 	$block_table_ref       = $tablearr['header']['block_table_ref'];
 	$status                = $tablearr['header']['status'];
@@ -202,8 +201,6 @@ function create_table_data( $tablearr, $wp_error = false ) {
  * @return int|WP_Error Table id for new or updated table, WP_Error object on failure.
  */
 function update_table_data( $tablearr, $wp_error = false ) {
-	// error_log(print_r($tablearr, true));
-
 	if ( is_object( $tablearr ) ) {
 		// Non-escaped post was passed.
 		$tablearr = get_object_vars( $tablearr );
@@ -218,13 +215,7 @@ function update_table_data( $tablearr, $wp_error = false ) {
 		}
 		return 0;
 	}
-	// error_log(print_r('</br></br> Revised Table </br>'));
-	// error_log(print_r($tablearr));
-
-	// Merge old and new fields with new fields overwriting old ones.
 	$tablearr = array_merge( $table, $tablearr );
-	// error_log(print_r('</br></br> Merged Table </br> Revised Table </br>'));
-	// error_log(print_r($tablearr, true));
 
 	return create_table_data( $tablearr, $wp_error );
 }
@@ -410,6 +401,9 @@ function get_table( $table_id ) {
 /**
  * Sanitizes every table field.
  *
+ * Loops through each field for a table object, ensures they all exist, then passes them through
+ * a field specific filter.
+ *
  * @since 1.0.0
  *
  * @param object|WP_Post|array $table    The dynamic table  object or array
@@ -480,11 +474,12 @@ function sanitize_dynamic_table( $table, $context = 'display' ) {
 /**
  * Sanitizes a table based on context.
  *
- * @since 1.0.0
- *
+ * Performs sanitization for a specific field value passed into the function.
  * Possible context values are:  'edit', 'db', 'display', 'attribute' and
  * 'js'. The 'display' context is used by default. 'attribute' and 'js' contexts
  * are treated like 'display' when calling filters.
+ *
+ * @since 1.0.0
  *
  * @param string $field   The dynamic table Object field name.
  * @param mixed  $value   The dynamic table Object value.

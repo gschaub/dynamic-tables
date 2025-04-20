@@ -3,16 +3,14 @@
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
  */
-import { useSelect, useDispatch, dispatch } from "@wordpress/data";
-import { useState, useEffect, useRef } from "@wordpress/element"
-import { store as editorStore } from "@wordpress/editor";
+import { useSelect, useDispatch, dispatch } from '@wordpress/data';
+import { useState, useEffect, useRef } from '@wordpress/element';
+import { store as editorStore } from '@wordpress/editor';
 import { store as noticeStore } from '@wordpress/notices';
-import { useEntityRecords } from "@wordpress/core-data"
-import { usePrevious } from "@wordpress/compose";
+import { useEntityRecords } from '@wordpress/core-data';
+import { usePrevious } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
-import {
-	ForwardedRef
-} from 'react';
+import { ForwardedRef } from 'react';
 import {
 	Panel,
 	PanelBody,
@@ -27,7 +25,7 @@ import {
 	CheckboxControl,
 	__experimentalInputControl as InputControl,
 	BorderBoxControl,
-	__experimentalNumberControl as NumberControl
+	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
 import {
 	RichText,
@@ -39,7 +37,7 @@ import {
 	InspectorControls,
 	BlockControls,
 	BlockAlignmentToolbar,
-	PanelColorSettings
+	PanelColorSettings,
 } from '@wordpress/block-editor';
 import {
 	column,
@@ -61,7 +59,6 @@ import {
 	// trash
 } from '@wordpress/icons';
 
-
 /**
  *  * Internal Dependencies
  */
@@ -74,7 +71,7 @@ import {
 	setBorderContent,
 	openCurrentColumnMenu,
 	openCurrentRowMenu,
-	removeTags
+	removeTags,
 } from './utils';
 import {
 	initTable,
@@ -83,7 +80,7 @@ import {
 	getDefaultColumn,
 	getDefaultCell,
 	getDefaultTableClasses,
-	getDefaultTableAttributes
+	getDefaultTableAttributes,
 } from './table-defaults';
 import {
 	processColumns,
@@ -98,7 +95,7 @@ import {
 	getGridHeaderBackgroundColorStyle,
 	getHeaderTextAlignmentStyle,
 	getBorderStyleType,
-	getBorderStyle
+	getBorderStyle,
 } from './style';
 
 import { ColumnMenu, RowMenu } from './components';
@@ -113,17 +110,16 @@ dispatch('core').addEntities([
 		baseURLParams: { context: 'edit' },
 		plural: 'tables',
 		label: __('Table'),
-		getTitle: (record) => record?.title || __('Unnamed Table'),
-	}
+		getTitle: record => record?.title || __('Unnamed Table'),
+	},
 ]);
 
 export default function Edit(props) {
-
 	const blockProps = useBlockProps({
-		className: "dynamic-table-edit-block"
-	})
+		className: 'dynamic-table-edit-block',
+	});
 
-	console.log(props)
+	console.log(props);
 
 	/**
 	 * Esternal Store Action useDispatch declarations
@@ -151,8 +147,7 @@ export default function Edit(props) {
 	const { updateTableBorder } = useDispatch(tableStore);
 	const { processUnmountedTables } = useDispatch(tableStore);
 	const { processDeletedTables } = useDispatch(tableStore);
-	const { createNotice, removeNotice } = useDispatch(noticeStore)
-
+	const { createNotice, removeNotice } = useDispatch(noticeStore);
 
 	/**
 	 * Local State declarations
@@ -178,12 +173,12 @@ export default function Edit(props) {
 
 	const priorTableRef = useRef({});
 	const { table_id, block_table_ref, block_alignment } = props.attributes;
-	const themeColors = useSettings('color.palette')
+	const themeColors = useSettings('color.palette');
 	const borderBoxColors = themeColors[0].map(({ color, name }) => {
-		return { color, name }
-	})
+		return { color, name };
+	});
 
-	console.log('Block Table Ref - ' + block_table_ref)
+	console.log('Block Table Ref - ' + block_table_ref);
 
 	/**
 	 * Load entity framework for table entity type
@@ -206,20 +201,25 @@ export default function Edit(props) {
 	 * Determine if the State table id has changed
 	 */
 
-	const { currentTableId } = useSelect(
-		(select) => {
-			const { getTableIdByBlock } = select(tableStore);
-			let currentTableId = getTableIdByBlock(block_table_ref);
-			console.log('Current table id = ' + currentTableId);
+	const { currentTableId } = useSelect(select => {
+		const { getTableIdByBlock } = select(tableStore);
+		const currentTableId = getTableIdByBlock(block_table_ref);
+		console.log('Current table id = ' + currentTableId);
 
-			return {
-				currentTableId: currentTableId
-			}
-		}
-	)
+		return {
+			currentTableId: currentTableId,
+		};
+	});
 
 	console.log('NEW TABLE INFO');
-	console.log('Awaiting entity creation = ' + awaitingTableEntityCreation + ', Props table id = ' + table_id + ', Current table id = ' + currentTableId);
+	console.log(
+		'Awaiting entity creation = ' +
+			awaitingTableEntityCreation +
+			', Props table id = ' +
+			table_id +
+			', Current table id = ' +
+			currentTableId
+	);
 
 	const setTableIdChanged = () => {
 		if (awaitingTableEntityCreation && Number(currentTableId) !== Number(table_id)) {
@@ -228,12 +228,12 @@ export default function Edit(props) {
 		}
 		console.log('  ... In table changed - FALSE');
 		return false;
-	}
+	};
 
 	const isTableIdChanged = setTableIdChanged();
 
 	console.log('Table id after select = ' + currentTableId);
-	console.log('Table id update: ' + isTableIdChanged)
+	console.log('Table id update: ' + isTableIdChanged);
 
 	/**
 	 * Table blocks is unmounted when entering the text editor AND when deleted.  However,
@@ -243,38 +243,36 @@ export default function Edit(props) {
 	 *
 	 * We mark tables as deleted if they do not identify that the block has been remounted
 	 */
-	const { unmountedTables } = useSelect(
-		(select) => {
-			const { getUnmountedTables } = select(tableStore);
-			return {
-				unmountedTables: getUnmountedTables()
-			}
-		})
+	const { unmountedTables } = useSelect(select => {
+		const { getUnmountedTables } = select(tableStore);
+		return {
+			unmountedTables: getUnmountedTables(),
+		};
+	});
 
 	if (Object.keys(unmountedTables).length > 0) {
-		processUnmountedTables(unmountedTables)
+		processUnmountedTables(unmountedTables);
 	}
 
-	const { deletedTables } = useSelect(
-		(select) => {
-			const { getDeletedTables } = select(tableStore);
-			return {
-				deletedTables: getDeletedTables()
-			}
-		})
+	const { deletedTables } = useSelect(select => {
+		const { getDeletedTables } = select(tableStore);
+		return {
+			deletedTables: getDeletedTables(),
+		};
+	});
 
-	const postChangesAreSaved = usePostChangesSaved()
+	const postChangesAreSaved = usePostChangesSaved();
 	// console.log(postChangesAreSaved)
 	// console.log(unmountedTables)
 	useEffect(() => {
 		if (postChangesAreSaved) {
-			alert('Sync REST Now')
+			alert('Sync REST Now');
 			/**
 			 * Remove deleted tables from persisted store
 			 */
 			if (Object.keys(deletedTables).length > 0) {
-				console.log(deletedTables)
-				processDeletedTables(deletedTables)
+				console.log(deletedTables);
+				processDeletedTables(deletedTables);
 			}
 
 			/**
@@ -283,37 +281,36 @@ export default function Edit(props) {
 			 * tables from "new" to "saved" once the post is saved.
 			 */
 			if (table.table_status == 'new') {
-				console.log('Saving new table - ' + table.table_id)
-				setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved')
-				saveTableEntity(table.table_id)
-				console.log(table)
+				console.log('Saving new table - ' + table.table_id);
+				setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
+				saveTableEntity(table.table_id);
+				console.log(table);
 			}
 		}
-
 	}, [postChangesAreSaved, unmountedTables]);
 
 	const setBlockTableStatus = () => {
 		if (block_table_ref === '') {
-			return 'None'
+			return 'None';
 		}
 
 		if (table_id === '0') {
-			return 'New'
+			return 'New';
 		}
 
 		if (isTableStale) {
-			return 'Stale'
+			return 'Stale';
 		}
 
-		return 'Saved'
-	}
+		return 'Saved';
+	};
 
 	const setNewBlock = () => {
 		if (block_table_ref === '') {
-			return true
+			return true;
 		}
-		return false
-	}
+		return false;
+	};
 
 	const setSaveLock = () => {
 		lockPostSaving('lockPostSaving');
@@ -325,14 +322,14 @@ export default function Edit(props) {
 		lockPostAutosaving('unlockPostAutosaving');
 	};
 
-	const isNewBlock = setNewBlock()
+	const isNewBlock = setNewBlock();
 	const blockTableStatus = setBlockTableStatus();
 
 	/**
 	 * Prepare for New Block
 	 */
 	if (isNewBlock) {
-		setSaveLock()
+		setSaveLock();
 		// setNumColumns(1);
 		// setNumRows(1);
 	}
@@ -345,12 +342,25 @@ export default function Edit(props) {
 		tableStatus,
 		tableHasStartedResolving,
 		tableHasFinishedResolving,
-		tableIsResolving
+		tableIsResolving,
 	} = useSelect(
-		(select) => {
-			console.log('Table ID = ' + table_id + ', Stale = ' + isTableStale + ', Block Table Ref = ' + block_table_ref);
-			const { getTable, getTableIdByBlock, hasStartedResolution, hasFinishedResolution, isResolving } = select(tableStore);
-			const selectorArgs = [table_id, isTableStale]
+		select => {
+			console.log(
+				'Table ID = ' +
+					table_id +
+					', Stale = ' +
+					isTableStale +
+					', Block Table Ref = ' +
+					block_table_ref
+			);
+			const {
+				getTable,
+				getTableIdByBlock,
+				hasStartedResolution,
+				hasFinishedResolution,
+				isResolving,
+			} = select(tableStore);
+			const selectorArgs = [table_id, isTableStale];
 
 			if (block_table_ref === '') {
 				return {
@@ -358,36 +368,49 @@ export default function Edit(props) {
 					tableStatus: '',
 					tableHasStartedResolving: false,
 					tableHasFinishedResolving: false,
-					tableIsResolving: false
-				}
+					tableIsResolving: false,
+				};
 			}
 			const getBlockTable = (table_id, isTableStale, block_table_ref) => {
 				let selectedTable = getTable(table_id, isTableStale);
-				console.log(selectedTable)
+				console.log(selectedTable);
 				// if (table_id === '0' && selectedTable.block_table_ref.length === 0 && awaitingTableEntityCreation) {
-				if (table_id === '0' && selectedTable.block_table_ref === '' && awaitingTableEntityCreation) {
+				if (
+					table_id === '0' &&
+					selectedTable.block_table_ref === '' &&
+					awaitingTableEntityCreation
+				) {
 					const newTableId = getTableIdByBlock(block_table_ref);
 					selectedTable = getTable(newTableId, isTableStale);
 
 					// Must sync post_id here for new table because "resolving" attributes are not available
-					if (String(props.context.postId) !== selectedTable.post_id && String(props.context.postId) !== '0') {
-						setTableAttributes(selectedTable.table_id, 'post_id', '', 'PROP', String(props.context.postId))
+					if (
+						String(props.context.postId) !== selectedTable.post_id &&
+						String(props.context.postId) !== '0'
+					) {
+						setTableAttributes(
+							selectedTable.table_id,
+							'post_id',
+							'',
+							'PROP',
+							String(props.context.postId)
+						);
 					}
 
-					setAwaitingTableEntityCreation(false)
+					setAwaitingTableEntityCreation(false);
 					setClearSaveLock();
-					props.setAttributes({ table_id: Number(selectedTable.table_id) })
+					props.setAttributes({ table_id: Number(selectedTable.table_id) });
 				}
 				return selectedTable;
 			};
 
-			const blockTable = getBlockTable(table_id, isTableStale, block_table_ref)
-			const tableHasStartedResolving = hasStartedResolution('getTable', selectorArgs)
-			const tableHasFinishedResolving = hasFinishedResolution('getTable', selectorArgs)
-			const tableIsResolving = isResolving('getTable', selectorArgs)
+			const blockTable = getBlockTable(table_id, isTableStale, block_table_ref);
+			const tableHasStartedResolving = hasStartedResolution('getTable', selectorArgs);
+			const tableHasFinishedResolving = hasFinishedResolution('getTable', selectorArgs);
+			const tableIsResolving = isResolving('getTable', selectorArgs);
 
 			if (tableHasFinishedResolving) {
-				setTableStale(() => false)
+				setTableStale(() => false);
 			}
 
 			// console.log('isTableStale = ' + isTableStale)
@@ -400,52 +423,52 @@ export default function Edit(props) {
 				tableStatus: blockTable.table_status,
 				tableHasStartedResolving: tableHasStartedResolving,
 				tableHasFinishedResolving: tableHasFinishedResolving,
-				tableIsResolving: tableIsResolving
+				tableIsResolving: tableIsResolving,
 			};
 		},
-		[
-			table_id,
-			isTableIdChanged,
-			isTableStale,
-			block_table_ref
-		]
+		[table_id, isTableIdChanged, isTableStale, block_table_ref]
 	);
 
 	function getTablePropAttribute(tableAttributes, attributeName) {
-		let attributeValue = tableAttributes?.[attributeName]
+		const attributeValue = tableAttributes?.[attributeName];
 		// if (!attributeValue) {
 		// 	const defaultTableAttributes = getDefaultTableAttributes('table')
 		// 	attributeValue = defaultTableAttributes?.[attributeName]
 		// }
-		return attributeValue
+		return attributeValue;
 	}
 
 	/**
 	 * Extract and unpack table attributes
 	 */
-	const showGridLines = getTablePropAttribute(table.attributes, 'showGridLines')
-	const allowHorizontalScroll = getTablePropAttribute(table.attributes, 'allowHorizontalScroll')
-	const enableHeaderRow = getTablePropAttribute(table.attributes, 'enableHeaderRow')
-	const headerAlignment = getTablePropAttribute(table.attributes, 'headerAlignment')
-	const gridHeaderBackgroundColor = getTablePropAttribute(table.attributes, 'tableHeaderBackgroundColor')
-	const headerRowSticky = getTablePropAttribute(table.attributes, 'headerRowSticky')
-	const headerBorder = getTablePropAttribute(table.attributes, 'headerBorder')
-	const bodyAlignment = getTablePropAttribute(table.attributes, 'bodyAlignment')
-	const bodyBorder = getTablePropAttribute(table.attributes, 'bodyBorder')
-	const bandedRows = getTablePropAttribute(table.attributes, 'bandedRows')
-	const bandedTextColor = getTablePropAttribute(table.attributes, 'bandedTextColor')
-	const bandedRowBackgroundColor = getTablePropAttribute(table.attributes, 'bandedRowBackgroundColor')
-	const gridLineWidth = getTablePropAttribute(table.attributes, 'gridLineWidth')
+	const showGridLines = getTablePropAttribute(table.attributes, 'showGridLines');
+	const allowHorizontalScroll = getTablePropAttribute(table.attributes, 'allowHorizontalScroll');
+	const enableHeaderRow = getTablePropAttribute(table.attributes, 'enableHeaderRow');
+	const headerAlignment = getTablePropAttribute(table.attributes, 'headerAlignment');
+	const gridHeaderBackgroundColor = getTablePropAttribute(
+		table.attributes,
+		'tableHeaderBackgroundColor'
+	);
+	const headerRowSticky = getTablePropAttribute(table.attributes, 'headerRowSticky');
+	const headerBorder = getTablePropAttribute(table.attributes, 'headerBorder');
+	const bodyAlignment = getTablePropAttribute(table.attributes, 'bodyAlignment');
+	const bodyBorder = getTablePropAttribute(table.attributes, 'bodyBorder');
+	const bandedRows = getTablePropAttribute(table.attributes, 'bandedRows');
+	const bandedTextColor = getTablePropAttribute(table.attributes, 'bandedTextColor');
+	const bandedRowBackgroundColor = getTablePropAttribute(
+		table.attributes,
+		'bandedRowBackgroundColor'
+	);
+	const gridLineWidth = getTablePropAttribute(table.attributes, 'gridLineWidth');
 	const gridAlignment = block_alignment;
-	const horizontalAlignment = getTablePropAttribute(table.attributes, 'horizontalAlignment')
-	const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment')
-	const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle')
+	const horizontalAlignment = getTablePropAttribute(table.attributes, 'horizontalAlignment');
+	const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment');
+	const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle');
 	console.log(JSON.stringify(headerBorder, null, 4));
 
 	/**
 	 * Extract and unpack table classes
 	 */
-
 
 	/**
 	 * Synchronize PostId
@@ -460,24 +483,37 @@ export default function Edit(props) {
 	console.log('Old Post ID = ' + table.post_id);
 	console.log('New Post ID = ' + props.context.postId);
 
-	if (tableHasStartedResolving && tableHasFinishedResolving && !awaitingTableEntityCreation && String(props.context.postId) !== table.post_id) {
-		setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId))
-		saveTableEntity(table.table_id)
+	if (
+		tableHasStartedResolving &&
+		tableHasFinishedResolving &&
+		!awaitingTableEntityCreation &&
+		String(props.context.postId) !== table.post_id
+	) {
+		setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId));
+		saveTableEntity(table.table_id);
 	}
 
 	/**
 	 * Perform clean-up for deleted table block at time of deletion
 	 */
 	useEffect(() => {
-
 		return () => {
-			setTableAttributes(table.table_id, 'unmounted_blockid', '', 'PROP', blockProps["data-block"], false)
+			setTableAttributes(
+				table.table_id,
+				'unmounted_blockid',
+				'',
+				'PROP',
+				blockProps['data-block'],
+				false
+			);
 			// saveTableEntity(table.table_id)
 		};
-	}, [])
+	}, []);
 
-	const tableColumnLength = (JSON.stringify(table.table) === '{}' || blockTableStatus == 'None') ? 0 : table.columns.length
-	const tableRowLength = (JSON.stringify(table.table) === '{}' || blockTableStatus == 'None') ? 0 : table.rows.length
+	const tableColumnLength =
+		JSON.stringify(table.table) === '{}' || blockTableStatus == 'None' ? 0 : table.columns.length;
+	const tableRowLength =
+		JSON.stringify(table.table) === '{}' || blockTableStatus == 'None' ? 0 : table.rows.length;
 
 	/**
 	 * Set state for number of columns and rows when the number of table rows has changes
@@ -493,9 +529,7 @@ export default function Edit(props) {
 				setNumRows(tableRowLength);
 			}
 		}
-	},
-		[tableColumnLength, tableRowLength]
-	)
+	}, [tableColumnLength, tableRowLength]);
 
 	console.log('Table ID from Block - ' + table_id);
 	console.log('Block Table Ref from Block - ' + block_table_ref);
@@ -505,32 +539,31 @@ export default function Edit(props) {
 	 *
 	 * @param {*} tableId
 	 * @param {*} columnId
-	 * @returns
 	 */
 	function insertColumn(tableId, columnId) {
-		const newColumn = getDefaultColumn(tableId, columnId)
-		var tableCells = []
+		const newColumn = getDefaultColumn(tableId, columnId);
+		const tableCells = [];
 
 		for (let i = 0; i < numRows; i++) {
 			if (i === 0) {
-				let cell = getDefaultCell(tableId, columnId, i, 'Border')
-				tableCells.push(cell)
+				const cell = getDefaultCell(tableId, columnId, i, 'Border');
+				tableCells.push(cell);
 			} else {
-				let cell = getDefaultCell(tableId, columnId, i)
-				tableCells.push(cell)
+				const cell = getDefaultCell(tableId, columnId, i);
+				tableCells.push(cell);
 			}
 		}
 
-		console.log('ADDING COLUMN')
-		console.log('ColumnId = ' + columnId)
-		console.log(newColumn)
-		console.log(tableCells)
+		console.log('ADDING COLUMN');
+		console.log('ColumnId = ' + columnId);
+		console.log(newColumn);
+		console.log(tableCells);
 
-		addColumn(tableId, columnId, newColumn, tableCells)
+		addColumn(tableId, columnId, newColumn, tableCells);
 
 		console.log('Update coreStore');
-		setTableStale(false)
-		return (updateTableEntity(tableId));
+		setTableStale(false);
+		return updateTableEntity(tableId);
 	}
 
 	/**
@@ -541,30 +574,30 @@ export default function Edit(props) {
 	 * @returns
 	 */
 	function insertRow(tableId, rowId) {
-		const newRow = getDefaultRow(tableId, rowId)
-		var tableCells = []
+		const newRow = getDefaultRow(tableId, rowId);
+		const tableCells = [];
 
 		for (let i = 0; i < numColumns; i++) {
 			if (i === 0) {
-				let cell = getDefaultCell(tableId, i, rowId, 'Border')
+				const cell = getDefaultCell(tableId, i, rowId, 'Border');
 				// cell.content =
-				tableCells.push(cell)
+				tableCells.push(cell);
 			} else {
-				let cell = getDefaultCell(tableId, i, rowId)
-				tableCells.push(cell)
+				const cell = getDefaultCell(tableId, i, rowId);
+				tableCells.push(cell);
 			}
 		}
 
-		console.log('ADDING ROW')
-		console.log('RowId = ' + rowId)
-		console.log(newRow)
-		console.log(tableCells)
+		console.log('ADDING ROW');
+		console.log('RowId = ' + rowId);
+		console.log(newRow);
+		console.log(tableCells);
 
-		addRow(tableId, rowId, newRow, tableCells)
+		addRow(tableId, rowId, newRow, tableCells);
 
 		console.log('Update coreStore');
-		setTableStale(false)
-		return (updateTableEntity(tableId));
+		setTableStale(false);
+		return updateTableEntity(tableId);
 	}
 
 	/**
@@ -572,15 +605,14 @@ export default function Edit(props) {
 	 *
 	 * @param {*} tableId
 	 * @param {*} columnId
-	 * @returns
 	 */
 	function deleteColumn(tableId, columnId) {
-		console.log('Deleting Column - ' + columnId)
-		removeColumn(tableId, columnId)
+		console.log('Deleting Column - ' + columnId);
+		removeColumn(tableId, columnId);
 
 		console.log('Update coreStore');
-		setTableStale(false)
-		return (updateTableEntity(tableId));
+		setTableStale(false);
+		return updateTableEntity(tableId);
 	}
 
 	/**
@@ -588,100 +620,102 @@ export default function Edit(props) {
 	 *
 	 * @param {*} tableId
 	 * @param {*} rowId
-	 * @returns
 	 */
 	function deleteRow(tableId, rowId) {
-		console.log('Deleting Row - ' + rowId)
-		removeRow(tableId, rowId)
+		console.log('Deleting Row - ' + rowId);
+		removeRow(tableId, rowId);
 
 		console.log('Update coreStore');
-		setTableStale(false)
-		return (updateTableEntity(tableId));
+		setTableStale(false);
+		return updateTableEntity(tableId);
 	}
-
 
 	/**
 	 * Update table store to reflect changes made to EXISTING table attributes
 	 *
 	 *
-	 * @param {*} tableId - Id of table to update
+	 * @param {*} tableId   - Id of table to update
 	 * @param {*} attribute - Table Object Attribute
-	 * @param {*} id - Array Index Id
-	 * @param {*} type - See Below
-	 * @param {*} value - New attribute value
-	 * @param {*} persist - Write update to entity record
-	 * @returns
+	 * @param {*} id        - Array Index Id
+	 * @param {*} type      - See Below
+	 * @param {*} value     - New attribute value
+	 * @param {*} persist   - Write update to entity record
 	 *
-	 * Valid Types:
-	 * - CONTENT - Cell Content
-	 * - ATTRIBUTES - Array of attributes
-	 * - CLASSES - Array of Classes
-	 * - PROP - Table Property
+	 *                      Valid Types:
+	 *                      - CONTENT - Cell Content
+	 *                      - ATTRIBUTES - Array of attributes
+	 *                      - CLASSES - Array of Classes
+	 *                      - PROP - Table Property
 	 */
 
 	function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
-
-		console.log('Table Attribute Change: attribute - ' + attribute + ', id - ' + id + ', type - ' + type + ', value - ' + value)
+		console.log(
+			'Table Attribute Change: attribute - ' +
+				attribute +
+				', id - ' +
+				id +
+				', type - ' +
+				type +
+				', value - ' +
+				value
+		);
 		let updatedTable;
 
 		switch (type) {
-			case 'CONTENT':
-				{
-					if (attribute === 'cell') {
-						updateCell(tableId, id, 'content', value)
-					}
-					break;
+			case 'CONTENT': {
+				if (attribute === 'cell') {
+					updateCell(tableId, id, 'content', value);
 				}
-			case 'ATTRIBUTES':
-				{
-					if (attribute === 'cell') {
-						console.log('...Updating Cell')
-						updateCell(tableId, id, 'attributes', value)
-					} else if (attribute === 'row') {
-						console.log('...Updating Row')
-						console.log(value)
-						setRowAttributes(value)
-						updateRow(tableId, id, 'attributes', value)
-					} else if (attribute === 'column') {
-						console.log('...Updating Column')
-						console.log(value)
-						setColumnAttributes(value)
-						updateColumn(tableId, id, 'attributes', value)
-					} else if (attribute === 'table') {
-						console.log('...Updating Table Attributes')
-						console.log(value)
-						updateTableProp(tableId, 'attributes', value)
-					}
-					break;
+				break;
+			}
+			case 'ATTRIBUTES': {
+				if (attribute === 'cell') {
+					console.log('...Updating Cell');
+					updateCell(tableId, id, 'attributes', value);
+				} else if (attribute === 'row') {
+					console.log('...Updating Row');
+					console.log(value);
+					setRowAttributes(value);
+					updateRow(tableId, id, 'attributes', value);
+				} else if (attribute === 'column') {
+					console.log('...Updating Column');
+					console.log(value);
+					setColumnAttributes(value);
+					updateColumn(tableId, id, 'attributes', value);
+				} else if (attribute === 'table') {
+					console.log('...Updating Table Attributes');
+					console.log(value);
+					updateTableProp(tableId, 'attributes', value);
 				}
-			case 'CLASSES':
-				{
-					if (attribute === 'cell') {
-						updateCell(tableId, id, 'classes', value)
-					} else if (attribute === 'column') {
-						updateColumn(tableId, id, 'classes', value)
-					}
-					break;
+				break;
+			}
+			case 'CLASSES': {
+				if (attribute === 'cell') {
+					updateCell(tableId, id, 'classes', value);
+				} else if (attribute === 'column') {
+					updateColumn(tableId, id, 'classes', value);
 				}
+				break;
+			}
 			case 'PROP':
 				{
-					updateTableProp(tableId, attribute, value)
+					updateTableProp(tableId, attribute, value);
 
 					// Update Table Status only table change is for status and the
 					// call must bypass the regular persist (persist === false)
 					if (attribute === 'unmounted_blockid') {
-						updateTableEntity(tableId, 'unknown')
+						updateTableEntity(tableId, 'unknown');
 					}
 				}
 				break;
 
 			default:
-				console.log('Unrecognized Attibute Type')
+				console.log('Unrecognized Attibute Type');
 		}
 		console.log('Update coreStore');
-		setTableStale(false)
+		setTableStale(false);
 		if (persist) {
-			return (updateTableEntity(tableId));
+			return updateTableEntity(tableId);
 		}
 	}
 
@@ -693,66 +727,56 @@ export default function Edit(props) {
 	 * @returns
 	 */
 	function onToggleBorders(table, isChecked) {
-
-		console.log('TOGGLING BORDER')
+		console.log('TOGGLING BORDER');
 		console.log(table);
-		console.log('Number Columns before update = ' + numColumns)
+		console.log('Number Columns before update = ' + numColumns);
 
 		/**
 		 * Remove borders if unchecked
 		 */
 		if (isChecked === false) {
-			setNumColumns(numColumns - 1)
-			setNumRows(numRows - 1)
+			setNumColumns(numColumns - 1);
+			setNumRows(numRows - 1);
 
-			var updatedRows = table.rows
-				.filter((row) =>
-					row.row_id !== '0'
-				)
-			var updatedColumns = table.columns
-				.filter((column) =>
-					column.column_id !== '0'
-				)
-			var updatedCells = table.cells
-				.filter((cell) =>
-					cell.row_id !== '0' && cell.column_id !== '0'
-				)
-			console.log(updatedCells)
-			updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells)
-
+			const updatedRows = table.rows.filter(row => row.row_id !== '0');
+			const updatedColumns = table.columns.filter(column => column.column_id !== '0');
+			const updatedCells = table.cells.filter(
+				cell => cell.row_id !== '0' && cell.column_id !== '0'
+			);
+			console.log(updatedCells);
+			updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
 		} else {
-
 			/**
-			* Create borders if checked
-			*/
-			setNumColumns(numColumns + 1)
-			setNumRows(numRows + 1)
+			 * Create borders if checked
+			 */
+			setNumColumns(numColumns + 1);
+			setNumRows(numRows + 1);
 
 			// Create header row border at top of table
-			var rowBorder = []
-			rowBorder.push(getDefaultRow(table_id, 0, 'Border'))
+			const rowBorder = [];
+			rowBorder.push(getDefaultRow(table_id, 0, 'Border'));
 
-			var rowCells = []
+			const rowCells = [];
 			for (let i = 0; i <= numColumns; i++) {
-				let cell = getDefaultCell(table_id, i, 0, 'Border')
-				console.log(cell)
+				const cell = getDefaultCell(table_id, i, 0, 'Border');
+				console.log(cell);
 				rowCells.push(cell);
 			}
 
 			// Create column border down left side of table
-			var columnBorder = []
-			columnBorder.push(getDefaultColumn(table_id, 0, 'Border'))
+			const columnBorder = [];
+			columnBorder.push(getDefaultColumn(table_id, 0, 'Border'));
 
-			var columnCells = []
+			const columnCells = [];
 			for (let i = 1; i <= numRows; i++) {
-				let cell = getDefaultCell(table_id, 0, i, 'Border')
+				const cell = getDefaultCell(table_id, 0, i, 'Border');
 				columnCells.push(cell);
 			}
 
 			// Sort table parts
-			updatedRows = tableSort('rows', [...table.rows, ...rowBorder])
-			updatedColumns = tableSort('columns', [...table.columns, ...columnBorder])
-			updatedCells = tableSort('cells', [...table.cells, ...rowCells, ...columnCells])
+			updatedRows = tableSort('rows', [...table.rows, ...rowBorder]);
+			updatedColumns = tableSort('columns', [...table.columns, ...columnBorder]);
+			updatedCells = tableSort('cells', [...table.cells, ...rowCells, ...columnCells]);
 
 			// console.log(table)
 			// console.log('Row border - ' + JSON.stringify(rowBorder, null, 4));
@@ -760,75 +784,72 @@ export default function Edit(props) {
 			// console.log('Updated columns - ' + JSON.stringify(updatedColumns, null, 4));
 			// console.log('Updated cells - ' + JSON.stringify(updatedCells, null, 4));
 
-			updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells)
+			updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
 		}
 
 		setShowBorders(isChecked);
-		setTableStale(false)
+		setTableStale(false);
 		return;
 	}
 
 	function createTable(columnCount, rowCount, tableName) {
+		console.log('FUNCTION - CREATE TABLE');
+		console.log('InitialRows - ' + rowCount);
+		console.log('InitialColumns - ' + columnCount);
 
-		console.log('FUNCTION - CREATE TABLE')
-		console.log('InitialRows - ' + rowCount)
-		console.log('InitialColumns - ' + columnCount)
-
-		setTableStale(false)
-		var newBlockTableRef = generateBlockTableRef()
-		const newTable = initTable(newBlockTableRef, columnCount, rowCount, tableName)
+		setTableStale(false);
+		const newBlockTableRef = generateBlockTableRef();
+		const newTable = initTable(newBlockTableRef, columnCount, rowCount, tableName);
 
 		console.log(JSON.stringify(newTable, null, 4));
-		props.setAttributes({ block_table_ref: newBlockTableRef })
-		receiveNewTable(newTable)
-		setAwaitingTableEntityCreation(true)
+		props.setAttributes({ block_table_ref: newBlockTableRef });
+		receiveNewTable(newTable);
+		setAwaitingTableEntityCreation(true);
 		createTableEntity();
 		//		setBlockTableStatus('New');
 	}
 
 	function onCreateTable(event) {
 		event.preventDefault();
-		createTable(numColumns, numRows, tableName)
+		createTable(numColumns, numRows, tableName);
 	}
 
 	function onChangeInitialColumnCount(num_columns) {
-		let newNumColumns = num_columns
+		let newNumColumns = num_columns;
 		if (num_columns < 1 || num_columns > 50) {
-			const errorText = 'Cannot have ' + num_columns + ' columns.  You must have at least 1 and no more than 50 columns.'
-			createNotice(
-				'error',
-				errorText,
-				{
-					id: 'invalidNumColumns',
-					isDismissible: true,
-					politeness: 'assertive'
-				});
+			const errorText =
+				'Cannot have ' +
+				num_columns +
+				' columns.  You must have at least 1 and no more than 50 columns.';
+			createNotice('error', errorText, {
+				id: 'invalidNumColumns',
+				isDismissible: true,
+				politeness: 'assertive',
+			});
 
-			newNumColumns = Number(numColumns)
+			newNumColumns = Number(numColumns);
 		} else {
-			removeNotice('invalidNumColumns')
+			removeNotice('invalidNumColumns');
 		}
-		setNumColumns(newNumColumns)
+		setNumColumns(newNumColumns);
 	}
 
 	function onChangeInitialRowCount(num_rows) {
-		let newNumRows = num_rows
+		let newNumRows = num_rows;
 		if (num_rows < 1 || num_rows > 1000) {
-			const errorText = 'Cannot have ' + num_rows + ' rows.  You must have at least 1 and no more than 1,000 rows.'
-			createNotice(
-				'error',
-				errorText,
-				{
-					id: 'invalidNumRows',
-					isDismissible: true,
-					politeness: 'assertive'
-				});
+			const errorText =
+				'Cannot have ' + num_rows + ' rows.  You must have at least 1 and no more than 1,000 rows.';
+			createNotice('error', errorText, {
+				id: 'invalidNumRows',
+				isDismissible: true,
+				politeness: 'assertive',
+			});
 
-			newNumRows = Number(numRows)
+			newNumRows = Number(numRows);
 		} else {
-			removeNotice('invalidNumRows')
+			removeNotice('invalidNumRows');
 		}
-		setNumRows(newNumRows)
+		setNumRows(newNumRows);
 	}
 
 	function onUpdateColumn(event, updateType, tableId, columnId, updatedColumnAttributes) {
@@ -837,29 +858,26 @@ export default function Edit(props) {
 		console.log(updatedColumnAttributes);
 
 		switch (updateType) {
-			case 'attributes':
-				{
-					setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
-					break;
-				}
-			case 'insert':
-				{
-					setOpenColumnRow(0);
-					setColumnMenuVisible(false);
-					insertColumn(tableId, columnId);
-					break;
-				}
-			case 'delete':
-				{
-					setOpenColumnRow(0);
-					setColumnMenuVisible(false);
-					deleteColumn(tableId, columnId);
-					break;
-				}
+			case 'attributes': {
+				setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
+				break;
+			}
+			case 'insert': {
+				setOpenColumnRow(0);
+				setColumnMenuVisible(false);
+				insertColumn(tableId, columnId);
+				break;
+			}
+			case 'delete': {
+				setOpenColumnRow(0);
+				setColumnMenuVisible(false);
+				deleteColumn(tableId, columnId);
+				break;
+			}
 			default:
-				console.log('Unrecognized Column Update Type')
+				console.log('Unrecognized Column Update Type');
 		}
-		console.log('Show Borders = ' + showBorders)
+		console.log('Show Borders = ' + showBorders);
 	}
 
 	function onUpdateRow(event, updateType, tableId, rowId, updatedRowAttributes) {
@@ -868,89 +886,84 @@ export default function Edit(props) {
 		console.log(updatedRowAttributes);
 
 		switch (updateType) {
-			case 'attributes':
-				{
-					setTableAttributes(tableId, 'row', rowId, 'ATTRIBUTES', updatedRowAttributes);
-					break;
-				}
-			case 'insert':
-				{
-					setOpenColumnRow(0);
-					setRowMenuVisible(false);
-					insertRow(tableId, rowId);
-					break;
-				}
-			case 'delete':
-				{
-					setOpenColumnRow(0);
-					setRowMenuVisible(false);
-					deleteRow(tableId, rowId);
-					break;
-				}
+			case 'attributes': {
+				setTableAttributes(tableId, 'row', rowId, 'ATTRIBUTES', updatedRowAttributes);
+				break;
+			}
+			case 'insert': {
+				setOpenColumnRow(0);
+				setRowMenuVisible(false);
+				insertRow(tableId, rowId);
+				break;
+			}
+			case 'delete': {
+				setOpenColumnRow(0);
+				setRowMenuVisible(false);
+				deleteRow(tableId, rowId);
+				break;
+			}
 			default:
-				console.log('Unrecognized Row Update Type')
+				console.log('Unrecognized Row Update Type');
 		}
-		console.log('Show Borders = ' + showBorders)
+		console.log('Show Borders = ' + showBorders);
 	}
 
 	function onMouseBorderClick(column_id, row_id, table, event) {
-
-		console.log('MOUSE CLICKED IN BORDER')
-		console.log('Column = ' + column_id)
-		console.log('Row = ' + row_id)
-		console.log(table)
-		console.log(event)
+		console.log('MOUSE CLICKED IN BORDER');
+		console.log('Column = ' + column_id);
+		console.log('Row = ' + row_id);
+		console.log(table);
+		console.log(event);
 
 		if (row_id === '0' && column_id !== '0') {
-			console.log('Opening Column ' + column_id)
-			let compareColumnId = column_id
-			const clickedColumn = table.columns.find(({ column_id }) => column_id === compareColumnId)
-			console.log(clickedColumn)
-			setColumnAttributes(clickedColumn.attributes)
-			setColumnMenuVisible(true)
-			setOpenColumnRow(column_id)
+			console.log('Opening Column ' + column_id);
+			const compareColumnId = column_id;
+			const clickedColumn = table.columns.find(({ column_id }) => column_id === compareColumnId);
+			console.log(clickedColumn);
+			setColumnAttributes(clickedColumn.attributes);
+			setColumnMenuVisible(true);
+			setOpenColumnRow(column_id);
 		}
 
 		if (row_id !== '0' && column_id === '0') {
-			console.log('Opening Row ' + row_id)
-			let compareRowId = row_id
-			const clickedRow = table.rows.find(({ row_id }) => row_id === compareRowId)
-			console.log(clickedRow)
-			setRowAttributes(clickedRow.attributes)
-			setRowMenuVisible(true)
-			setOpenColumnRow(row_id)
+			console.log('Opening Row ' + row_id);
+			const compareRowId = row_id;
+			const clickedRow = table.rows.find(({ row_id }) => row_id === compareRowId);
+			console.log(clickedRow);
+			setRowAttributes(clickedRow.attributes);
+			setRowMenuVisible(true);
+			setOpenColumnRow(row_id);
 		}
 		// alert('Mouse clicked on column')
 		// return <ColumnMenu>Column Menu</ColumnMenu>
-		setTableStale(false)
-
+		setTableStale(false);
 	}
 
 	/**
-	* Hide the table title from displaying
-	*
-	* @param {*} table
-	* @param {*} isChecked
-	*/
+	 * Hide the table title from displaying
+	 *
+	 * @param {*} table
+	 * @param {*} isChecked
+	 */
 	function onHideTitle(table, isChecked) {
 		const updatedTableAttributes = {
 			...table.attributes,
-			hideTitle: isChecked
-		}
+			hideTitle: isChecked,
+		};
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
 	/**
-	* Allow the table to scroll horizontally
-	*
-	* @param {*} table
-	* @param {*} isChecked
-	*/
+	 * Allow the table to scroll horizontally
+	 *
+	 * @param {*} table
+	 * @param {*} isChecked
+	 */
 	function onAllowHorizontalScroll(table, isChecked) {
 		const updatedTableAttributes = {
 			...table.attributes,
-			allowHorizontalScroll: isChecked
-		}
+			allowHorizontalScroll: isChecked,
+		};
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
@@ -963,226 +976,319 @@ export default function Edit(props) {
 	function onShowBandedRows(table, isChecked) {
 		const updatedTableAttributes = {
 			...table.attributes,
-			bandedRows: isChecked
-		}
+			bandedRows: isChecked,
+		};
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
 	/**
-	* Show colored bands on even numbered table rows
-	*
-	* @param {*} table
-	* @param {*} color
-	*/
+	 * Show colored bands on even numbered table rows
+	 *
+	 * @param {*} table
+	 * @param     type
+	 * @param {*} color
+	 */
 	function onBandedRowColor(table, type, color) {
-		let updatedTableAttributes = ''
+		let updatedTableAttributes = '';
 		if (type == 'background') {
 			updatedTableAttributes = {
 				...table.attributes,
-				bandedRowBackgroundColor: color
-			}
-			console.log(updatedTableAttributes)
+				bandedRowBackgroundColor: color,
+			};
+			console.log(updatedTableAttributes);
 			setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 		}
 
 		if (type == 'text') {
 			updatedTableAttributes = {
 				...table.attributes,
-				bandedTextColor: color
-			}
-			console.log(updatedTableAttributes)
+				bandedTextColor: color,
+			};
+			console.log(updatedTableAttributes);
 			setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 		}
 	}
 
 	/**
-	* Make first table row the Header
-	*
-	* @param {*} table
-	* @param {*} isChecked
-	*/
+	 * Make first table row the Header
+	 *
+	 * @param {*} table
+	 * @param {*} isChecked
+	 */
 	function onEnableHeaderRow(table, isChecked) {
 		const updatedTableAttributes = {
 			...table.attributes,
 			enableHeaderRow: isChecked,
-			headerRowSticky: false
-		}
+			headerRowSticky: false,
+		};
 		console.log(updatedTableAttributes);
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 
 		const updatedRowAttributes = {
 			...table.rows.find(x => x.row_id === '1').attributes,
-			isHeader: isChecked ? true : false
-		}
+			isHeader: isChecked ? true : false,
+		};
 
 		console.log(updatedRowAttributes);
 		setTableAttributes(table.table_id, 'row', '1', 'ATTRIBUTES', updatedRowAttributes);
 	}
 
 	/**
-	* Make first table row the Header
-	*
-	* @param {*} table
-	* @param {*} alignmentValue
-	*/
+	 * Make first table row the Header
+	 *
+	 * @param {*} table
+	 * @param {*} alignmentValue
+	 * @param     alignment
+	 */
 	function onAlignHeader(table, alignment) {
-		console.log('ON HEADER ALIGNMENT')
-		console.log(alignment)
+		console.log('ON HEADER ALIGNMENT');
+		console.log(alignment);
 		const updatedTableAttributes = {
 			...table.attributes,
-			headerAlignment: alignment
-		}
-		console.log(updatedTableAttributes)
+			headerAlignment: alignment,
+		};
+		console.log(updatedTableAttributes);
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
 	/**
-	* Make first table row the Header
-	*
-	* @param {*} table
-	* @param {*} isChecked
-	*/
+	 * Make first table row the Header
+	 *
+	 * @param {*} table
+	 * @param {*} isChecked
+	 * @param     border
+	 */
 	function onHeaderBorder(table, border) {
-		console.log('ON HEADER BORDER')
-		console.log(border)
+		console.log('ON HEADER BORDER');
+		console.log(border);
 
 		const updatedTableAttributes = {
 			...table.attributes,
-			headerBorder: border
-		}
-		console.log(updatedTableAttributes)
+			headerBorder: border,
+		};
+		console.log(updatedTableAttributes);
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
 	/**
-	* Make first table row the Header
-	allowHorizontalScroll
-	*
-	* @param {*} table
-	* @param {*} isChecked
-	*/
+	 * Make first table row the Header
+	  allowHorizontalScroll
+	 *
+	 * @param {*} table
+	 * @param {*} isChecked
+	 */
 	function onHeaderRowSticky(table, isChecked) {
 		const updatedTableAttributes = {
 			...table.attributes,
-			headerRowSticky: isChecked
-		}
+			headerRowSticky: isChecked,
+		};
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
 	/**
-	* Make first table row the Header
-	*
-	* @param {*} table
-	* @param {*} alignmentValue
-	*/
+	 * Make first table row the Header
+	 *
+	 * @param {*} table
+	 * @param {*} alignmentValue
+	 * @param     alignment
+	 */
 	function onAlignBody(table, alignment) {
-		console.log('ON BODY  ALIGNMENT')
-		console.log(alignment)
+		console.log('ON BODY  ALIGNMENT');
+		console.log(alignment);
 		const updatedTableAttributes = {
 			...table.attributes,
-			bodyAlignment: alignment
-		}
-		console.log(updatedTableAttributes)
+			bodyAlignment: alignment,
+		};
+		console.log(updatedTableAttributes);
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
 	/**
-	* Make first table row the Header
-	*
-	* @param {*} table
-	* @param {*} isChecked
-	*/
+	 * Make first table row the Header
+	 *
+	 * @param {*} table
+	 * @param {*} isChecked
+	 * @param     border
+	 */
 	function onBodyBorder(table, border) {
-		console.log('ON BODY BORDER')
-		console.log(border)
+		console.log('ON BODY BORDER');
+		console.log(border);
 
 		const updatedTableAttributes = {
 			...table.attributes,
-			bodyBorder: border
-		}
-		console.log(updatedTableAttributes)
+			bodyBorder: border,
+		};
+		console.log(updatedTableAttributes);
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
-
-
 	/**
-	  * Show inner grid lines
-	*
-	* @param {*} table
-	* @param {*} isChecked
+	 * Show inner grid lines
+	 *
+	 * @param {*} table
+	 * @param {*} isChecked
 	 */
 	function onShowGridLines(table, isChecked) {
 		const updatedTableAttributes = {
 			...table.attributes,
-			showGridLines: isChecked
-		}
+			showGridLines: isChecked,
+		};
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
 	/**
-	  * Inner grid line width
-	*
-	* @param {*} table
-	* @param {*} gridLineWidth
+	 * Inner grid line width
+	 *
+	 * @param {*} table
+	 * @param {*} gridLineWidth
 	 */
 	function onGridLineWidth(table, gridLineWidth) {
 		const updatedTableAttributes = {
 			...table.attributes,
-			gridLineWidth: Number(gridLineWidth)
-		}
+			gridLineWidth: Number(gridLineWidth),
+		};
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
-	const gridColumnStyle = processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, table.columns)
-	const gridHeaderRowStyle = processHeaderRow(isNewBlock, tableIsResolving, table.rows)
-	const gridBodyRowStyle = processBodyRows(isNewBlock, tableIsResolving, table.rows)
-	const startGridHeaderRowNbrStyle = showBorders ? 2 : 1
-	const endGridHeaderRowNbrStyle = endGridRowNbr(1, 'Header', numRows, enableHeaderRow, showBorders, false)
-	const startGridBodyRowNbrStyle = startGridRowNbr(enableHeaderRow, showBorders)
-	const endGridBodyRowNbrStyle = endGridRowNbr(startGridBodyRowNbrStyle, 'Body', numRows, enableHeaderRow, showBorders, false)
+	const gridColumnStyle = processColumns(
+		isNewBlock,
+		tableIsResolving,
+		enableFutureFeatures,
+		table.columns
+	);
+	const gridHeaderRowStyle = processHeaderRow(isNewBlock, tableIsResolving, table.rows);
+	const gridBodyRowStyle = processBodyRows(isNewBlock, tableIsResolving, table.rows);
+	const startGridHeaderRowNbrStyle = showBorders ? 2 : 1;
+	const endGridHeaderRowNbrStyle = endGridRowNbr(
+		1,
+		'Header',
+		numRows,
+		enableHeaderRow,
+		showBorders,
+		false
+	);
+	const startGridBodyRowNbrStyle = startGridRowNbr(enableHeaderRow, showBorders);
+	const endGridBodyRowNbrStyle = endGridRowNbr(
+		startGridBodyRowNbrStyle,
+		'Body',
+		numRows,
+		enableHeaderRow,
+		showBorders,
+		false
+	);
 	const horizontalScrollStyle = allowHorizontalScroll ? 'auto' : 'hidden';
 
-	const gridBandedRowTextColor = gridBandedRowTextColorStyle(isNewBlock, tableIsResolving, bandedTextColor)
-	const gridBandedRowBackgroundColor = gridBandedRowBackgroundColorStyle(isNewBlock, tableIsResolving, bandedRowBackgroundColor)
-	const gridShowInnerLines = gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines)
-	const gridInnerLineWidth = gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, gridLineWidth)
+	const gridBandedRowTextColor = gridBandedRowTextColorStyle(
+		isNewBlock,
+		tableIsResolving,
+		bandedTextColor
+	);
+	const gridBandedRowBackgroundColor = gridBandedRowBackgroundColorStyle(
+		isNewBlock,
+		tableIsResolving,
+		bandedRowBackgroundColor
+	);
+	const gridShowInnerLines = gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines);
+	const gridInnerLineWidth = gridInnerBorderWidthStyle(
+		isNewBlock,
+		tableIsResolving,
+		showGridLines,
+		gridLineWidth
+	);
 
 	const headerRowStickyStyle = headerRowSticky ? 'auto' : 'hidden';
 	const headerRowStickyClass = headerRowSticky ? 'grid-control__header--sticky ' : '';
-	const gridHeaderBackgroundColorStyle = getGridHeaderBackgroundColorStyle(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor)
-
+	const gridHeaderBackgroundColorStyle = getGridHeaderBackgroundColorStyle(
+		isNewBlock,
+		tableIsResolving,
+		gridHeaderBackgroundColor,
+		blockProps.style.backgroundColor
+	);
 
 	/**
 	 * Header Styling
 	 */
-	const headerTextAlignmentStyle = getHeaderTextAlignmentStyle(isNewBlock, tableIsResolving, headerAlignment)
-	const headerBorderStyleType = getBorderStyleType(headerBorder)
+	const headerTextAlignmentStyle = getHeaderTextAlignmentStyle(
+		isNewBlock,
+		tableIsResolving,
+		headerAlignment
+	);
+	const headerBorderStyleType = getBorderStyleType(headerBorder);
+
 	// Top header border
 	const headerBorderTopColor = getBorderStyle(headerBorder, 'top', 'color', headerBorderStyleType);
 	const headerBorderTopStyle = getBorderStyle(headerBorder, 'top', 'style', headerBorderStyleType);
 	const headerBorderTopWidth = getBorderStyle(headerBorder, 'top', 'width', headerBorderStyleType);
 
 	// Right header border
-	const headerBorderRightColor = getBorderStyle(headerBorder, 'right', 'color', headerBorderStyleType);
-	const headerBorderRightStyle = getBorderStyle(headerBorder, 'right', 'style', headerBorderStyleType);
-	const headerBorderRightWidth = getBorderStyle(headerBorder, 'right', 'width', headerBorderStyleType);
+	const headerBorderRightColor = getBorderStyle(
+		headerBorder,
+		'right',
+		'color',
+		headerBorderStyleType
+	);
+	const headerBorderRightStyle = getBorderStyle(
+		headerBorder,
+		'right',
+		'style',
+		headerBorderStyleType
+	);
+	const headerBorderRightWidth = getBorderStyle(
+		headerBorder,
+		'right',
+		'width',
+		headerBorderStyleType
+	);
 
 	// Bottom header border
-	const headerBorderBottomColor = getBorderStyle(headerBorder, 'bottom', 'color', headerBorderStyleType);
-	const headerBorderBottomStyle = getBorderStyle(headerBorder, 'bottom', 'style', headerBorderStyleType);
-	const headerBorderBottomWidth = getBorderStyle(headerBorder, 'bottom', 'width', headerBorderStyleType);
+	const headerBorderBottomColor = getBorderStyle(
+		headerBorder,
+		'bottom',
+		'color',
+		headerBorderStyleType
+	);
+	const headerBorderBottomStyle = getBorderStyle(
+		headerBorder,
+		'bottom',
+		'style',
+		headerBorderStyleType
+	);
+	const headerBorderBottomWidth = getBorderStyle(
+		headerBorder,
+		'bottom',
+		'width',
+		headerBorderStyleType
+	);
 
 	// Left header border
-	const headerBorderLeftColor = getBorderStyle(headerBorder, 'left', 'color', headerBorderStyleType);
-	const headerBorderLeftStyle = getBorderStyle(headerBorder, 'left', 'style', headerBorderStyleType);
-	const headerBorderLeftWidth = getBorderStyle(headerBorder, 'left', 'width', headerBorderStyleType);
+	const headerBorderLeftColor = getBorderStyle(
+		headerBorder,
+		'left',
+		'color',
+		headerBorderStyleType
+	);
+	const headerBorderLeftStyle = getBorderStyle(
+		headerBorder,
+		'left',
+		'style',
+		headerBorderStyleType
+	);
+	const headerBorderLeftWidth = getBorderStyle(
+		headerBorder,
+		'left',
+		'width',
+		headerBorderStyleType
+	);
 
 	/**
 	 * Body Styling
 	 */
-	const bodyTextAlignmentStyle = getHeaderTextAlignmentStyle(isNewBlock, tableIsResolving, bodyAlignment)
-	const bodyBorderStyleType = getBorderStyleType(bodyBorder)
+	const bodyTextAlignmentStyle = getHeaderTextAlignmentStyle(
+		isNewBlock,
+		tableIsResolving,
+		bodyAlignment
+	);
+	const bodyBorderStyleType = getBorderStyleType(bodyBorder);
 	// Top body border
 	const bodyBorderTopColor = getBorderStyle(bodyBorder, 'top', 'color', bodyBorderStyleType);
 	const bodyBorderTopStyle = getBorderStyle(bodyBorder, 'top', 'style', bodyBorderStyleType);
@@ -1203,17 +1309,16 @@ export default function Edit(props) {
 	const bodyBorderLeftStyle = getBorderStyle(bodyBorder, 'left', 'style', bodyBorderStyleType);
 	const bodyBorderLeftWidth = getBorderStyle(bodyBorder, 'left', 'width', bodyBorderStyleType);
 
-
-	console.log('Grid Column Style = ' + gridColumnStyle)
+	console.log('Grid Column Style = ' + gridColumnStyle);
 	// const gridStyle = setGridStyle(isNewBlock, tableIsResolving, table)
-	console.log('Banded Grid Text Color = ' + gridBandedRowTextColor)
-	console.log('Banded Grid Background Color = ' + gridBandedRowBackgroundColor)
+	console.log('Banded Grid Text Color = ' + gridBandedRowTextColor);
+	console.log('Banded Grid Background Color = ' + gridBandedRowBackgroundColor);
 
-	console.log('MATCH VALUE FOR TABLE:')
-	console.log(table)
+	console.log('MATCH VALUE FOR TABLE:');
+	console.log(table);
 	// console.log(isRetrievingTable(table))
-	console.log(JSON.stringify(table))
-	console.log('Is Block New - ' + isNewBlock)
+	console.log(JSON.stringify(table));
+	console.log('Is Block New - ' + isNewBlock);
 	console.log('Block Table Status - ' + blockTableStatus);
 	console.log('Is Table Resolving - ' + tableIsResolving);
 	console.log('gridColumnStyle = ' + gridColumnStyle);
@@ -1227,66 +1332,73 @@ export default function Edit(props) {
 	}
 
 	return (
-		<div {...blockProps} >
+		<div {...blockProps}>
 			{!isNewBlock && !tableIsResolving && (
 				<>
 					<BlockControls>
 						<BlockAlignmentToolbar
 							value={block_alignment}
-							onChange={(e) => props.setAttributes({ block_alignment: e })}
+							onChange={e => props.setAttributes({ block_alignment: e })}
 						/>
 					</BlockControls>
 
 					<InspectorControls>
 						<Panel>
 							<PanelBody title="Definition" initialOpen={true}>
-
 								<PanelRow>
 									<div className="grid-control__inspector-controls--read-only">
-										<span className="grid-control__inspector-controls--read-only-label">Table Name:</span>
+										<span className="grid-control__inspector-controls--read-only-label">
+											Table Name:
+										</span>
 										{removeTags(table.table_name)}
 									</div>
 								</PanelRow>
 
 								<PanelRow>
 									<div className="grid-control__inspector-controls--read-only">
-										<span className="grid-control__inspector-controls--read-only-label">Table Columns/Rows:</span>
+										<span className="grid-control__inspector-controls--read-only-label">
+											Table Columns/Rows:
+										</span>
 										{numColumns}/{numRows}
 									</div>
 								</PanelRow>
 
 								<PanelRow>
-									<CheckboxControl label="Show table borders"
+									<CheckboxControl
+										label="Show table borders"
 										__nextHasNoMarginBottom
 										checked={showBorders}
-										onChange={(e) => onToggleBorders(table, e)}
+										onChange={e => onToggleBorders(table, e)}
 									/>
 								</PanelRow>
 
 								<PanelRow>
-									<CheckboxControl label="Hide Table Title"
+									<CheckboxControl
+										label="Hide Table Title"
 										__nextHasNoMarginBottom
 										checked={hideTitle}
-										onChange={(e) => onHideTitle(table, e)}
+										onChange={e => onHideTitle(table, e)}
 									/>
 								</PanelRow>
 							</PanelBody>
 
 							<PanelBody title="Table Header" initialOpen={false}>
 								<PanelRow>
-									<CheckboxControl label="First Row as Header?"
+									<CheckboxControl
+										label="First Row as Header?"
 										__nextHasNoMarginBottom
 										checked={enableHeaderRow}
-										onChange={(e) => onEnableHeaderRow(table, e)}
+										onChange={e => onEnableHeaderRow(table, e)}
 									/>
 								</PanelRow>
 
 								<PanelRow>
-									<CheckboxControl label="Freeze Header Row?"
+									<CheckboxControl
+										label="Freeze Header Row?"
 										__nextHasNoMarginBottom
 										disabled={!enableHeaderRow}
 										checked={headerRowSticky}
-										onChange={(e) => onHeaderRowSticky(table, e)}
+										onChange={e => onHeaderRowSticky(table, e)}
 									/>
 								</PanelRow>
 
@@ -1295,10 +1407,12 @@ export default function Edit(props) {
 										<AlignmentControl
 											id="header-alignment"
 											value={headerAlignment}
-											onChange={(e) => onAlignHeader(table, e)}
+											onChange={e => onAlignHeader(table, e)}
 										/>
-										<label className="inspector-controls-nemu__label--left-margin"
-											for="header-alignment">
+										<label
+											className="inspector-controls-nemu__label--left-margin"
+											htmlFor="header-alignment"
+										>
 											Text Alignment
 										</label>
 									</span>
@@ -1314,18 +1428,18 @@ export default function Edit(props) {
 										isCompact="true"
 										colors={borderBoxColors}
 										value={headerBorder}
-										onChange={(e) => onHeaderBorder(table, e)}
+										onChange={e => onHeaderBorder(table, e)}
 									/>
 								</PanelRow>
-
 							</PanelBody>
 
 							<PanelBody title="Table Body" initialOpen={false}>
 								<PanelRow>
-									<CheckboxControl label="Allow Horizontal Acroll?"
+									<CheckboxControl
+										label="Allow Horizontal Acroll?"
 										__nextHasNoMarginBottom
 										checked={allowHorizontalScroll}
-										onChange={(e) => onAllowHorizontalScroll(table, e)}
+										onChange={e => onAllowHorizontalScroll(table, e)}
 									/>
 								</PanelRow>
 
@@ -1334,10 +1448,12 @@ export default function Edit(props) {
 										<AlignmentControl
 											id="body-alignment"
 											value={bodyAlignment}
-											onChange={(e) => onAlignBody(table, e)}
+											onChange={e => onAlignBody(table, e)}
 										/>
-										<label className="inspector-controls-menu__label--left-margin"
-											for="body-alignment">
+										<label
+											className="inspector-controls-menu__label--left-margin"
+											htmlFor="body-alignment"
+										>
 											Text Alignment
 										</label>
 									</span>
@@ -1351,23 +1467,22 @@ export default function Edit(props) {
 										isCompact="true"
 										colors={borderBoxColors}
 										value={bodyBorder}
-										onChange={(e) => onBodyBorder(table, e)}
+										onChange={e => onBodyBorder(table, e)}
 									/>
 								</PanelRow>
-
 							</PanelBody>
-
 						</Panel>
 					</InspectorControls>
 
 					<InspectorControls group="styles">
 						<PanelBody title="Banded Table Rows" initialOpen={false}>
 							<PanelRow>
-								<CheckboxControl label="Display Banded Rows"
+								<CheckboxControl
+									label="Display Banded Rows"
 									__nextHasNoMarginBottom
 									checked={bandedRows}
 									// checked={true}
-									onChange={(e) => onShowBandedRows(table, e)}
+									onChange={e => onShowBandedRows(table, e)}
 								/>
 							</PanelRow>
 							<PanelColorSettings
@@ -1377,277 +1492,192 @@ export default function Edit(props) {
 								colorSettings={[
 									{
 										value: bandedTextColor,
-										onChange: (newColor) => onBandedRowColor(table, 'text', newColor),
-										label: 'Text'
+										onChange: newColor => onBandedRowColor(table, 'text', newColor),
+										label: 'Text',
 									},
 									{
 										value: bandedRowBackgroundColor,
-										onChange: (newColor) => onBandedRowColor(table, 'background', newColor),
-										label: 'Background'
-									}
+										onChange: newColor => onBandedRowColor(table, 'background', newColor),
+										label: 'Background',
+									},
 								]}
 							/>
 						</PanelBody>
 
 						<PanelBody title="Grid Lines" initialOpen={false}>
 							<PanelRow>
-								<CheckboxControl label="Display Inner Grid Lines"
+								<CheckboxControl
+									label="Display Inner Grid Lines"
 									__nextHasNoMarginBottom
 									checked={showGridLines}
-									onChange={(e) => onShowGridLines(table, e)}
+									onChange={e => onShowGridLines(table, e)}
 								/>
 							</PanelRow>
 
 							<PanelRow>
-								<NumberControl label="Inner Grid Line Width"
+								<NumberControl
+									label="Inner Grid Line Width"
 									value={gridLineWidth}
 									labelPosition="side"
-									onChange={(e) => onGridLineWidth(table, e)}
+									onChange={e => onGridLineWidth(table, e)}
 								/>
 							</PanelRow>
 						</PanelBody>
 					</InspectorControls>
-					<InspectorControls group="typography">
-					</InspectorControls>
+					<InspectorControls group="typography"></InspectorControls>
 
-					<div style={{ "display": "block" }}>
-						{!hideTitle &&
+					<div style={{ display: 'block' }}>
+						{!hideTitle && (
 							<RichText
 								id="tableTitle"
-								style={{ "--gridAlignment": gridAlignment }}
+								style={{ '--gridAlignment': gridAlignment }}
 								tagName="p"
 								allowedFormats={['core/bold', 'core/italic']}
 								onChange={e => setTableAttributes(table_id, 'table_name', '', 'PROP', e)}
-								value={table.table_name}>
-							</RichText>
-						}
+								value={table.table_name}
+							></RichText>
+						)}
 
 						<TabbableContainer>
-							< div className="grid-scroller"
+							<div
+								className="grid-scroller"
 								style={{
-									"--headerRowSticky": headerRowStickyStyle,
+									'--headerRowSticky': headerRowStickyStyle,
 									// "--startGridBodyRowNbr": startGridBodyRowNbrStyle,
 									// "--endGridBodyRowNbr": endGridBodyRowNbrStyle
-								}}>
-
-								<div className={"grid-control " + headerRowStickyClass}
+								}}
+							>
+								<div
+									className={'grid-control ' + headerRowStickyClass}
 									style={{
-										"--gridTemplateColumns": gridColumnStyle,
-										"--horizontalScroll": horizontalScrollStyle,
-										"--headerRowSticky": headerRowStickyStyle,
-										"--gridNumColumns": numColumns,
-										"--gridNumRows": numRows,
-										"--gridAlignment": gridAlignment
-									}}>
-
+										'--gridTemplateColumns': gridColumnStyle,
+										'--horizontalScroll': horizontalScrollStyle,
+										'--headerRowSticky': headerRowStickyStyle,
+										'--gridNumColumns': numColumns,
+										'--gridNumRows': numRows,
+										'--gridAlignment': gridAlignment,
+									}}
+								>
 									{/* Render Table Border Row if present */}
-									{showBorders &&
-										(<div className={"grid-control__border"}>
+									{showBorders && (
+										<div className={'grid-control__border'}>
 											{table.cells
 												.filter(cell => cell.attributes.border && cell.row_id === '0')
-												.map(({ table_id, row_id, column_id, cell_id, content, attributes, classes }) => {
-													console.log('Rendering Body Row Cell' + cell_id)
+												.map(
+													({
+														table_id,
+														row_id,
+														column_id,
+														cell_id,
+														content,
+														attributes,
+														classes,
+													}) => {
+														console.log('Rendering Body Row Cell' + cell_id);
 
-													const borderContent = setBorderContent(row_id, column_id, content)
-													const isOpenCurrentColumnMenu = openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id)
-													const isFirstColumn = column_id === '1' ? true : false;
-													return (
-														<>
-															{/* Show zoom to details column */}
-															{isFirstColumn && enableFutureFeatures && (
-																<div className={"grid-control__border-cells"} />
-															)}
-
-															< div
-																id={cell_id}
-																onMouseDown={e => onMouseBorderClick(column_id, row_id, table, e)}
-																className={classes}>
-																{borderContent}
-																{isOpenCurrentColumnMenu && (
-																	<ColumnMenu
-																		tableId={table_id}
-																		columnId={column_id}
-																		columnLabel={borderContent}
-																		columnAttributes={columnAttributes}
-																		enableProFeatures={enableProFeatures}
-																		updatedColumn={onUpdateColumn}>
-																	</ColumnMenu>
+														const borderContent = setBorderContent(row_id, column_id, content);
+														const isOpenCurrentColumnMenu = openCurrentColumnMenu(
+															columnMenuVisible,
+															openColumnRow,
+															column_id
+														);
+														const isFirstColumn = column_id === '1' ? true : false;
+														return (
+															<>
+																{/* Show zoom to details column */}
+																{isFirstColumn && enableFutureFeatures && (
+																	<div className={'grid-control__border-cells'} />
 																)}
-															</div>
-														</>
-													)
-												})}
-										</div>)
-									}
+
+																<div
+																	id={cell_id}
+																	onMouseDown={e => onMouseBorderClick(column_id, row_id, table, e)}
+																	className={classes}
+																>
+																	{borderContent}
+																	{isOpenCurrentColumnMenu && (
+																		<ColumnMenu
+																			tableId={table_id}
+																			columnId={column_id}
+																			columnLabel={borderContent}
+																			columnAttributes={columnAttributes}
+																			enableProFeatures={enableProFeatures}
+																			updatedColumn={onUpdateColumn}
+																		></ColumnMenu>
+																	)}
+																</div>
+															</>
+														);
+													}
+												)}
+										</div>
+									)}
 
 									{/* Render Table Header Row if present */}
-									{table.rows.filter(row => row.attributes.isHeader === true)
+									{table.rows
+										.filter(row => row.attributes.isHeader === true)
 										.map(({ row_id, attributes }) => {
 											const renderedRow = row_id;
 											return (
-												<div className="grid-control__header"
+												<div
+													className="grid-control__header"
 													style={{
-														"--gridTemplateHeaderRows": gridHeaderRowStyle,
-														"--startGridHeaderRowNbr": startGridHeaderRowNbrStyle,
-														"--endGridHeaderRowNbr": endGridHeaderRowNbrStyle,
-														"--headerBorderTopColor": headerBorderTopColor,
-														"--headerBorderTopStyle": headerBorderTopStyle,
-														"--headerBorderTopWidth": headerBorderTopWidth,
-														"--headerBorderRightColor": headerBorderRightColor,
-														"--headerBorderRightStyle": headerBorderRightStyle,
-														"--headerBorderRightWidth": headerBorderRightWidth,
-														"--headerBorderBottomColor": headerBorderBottomColor,
-														"--headerBorderBottomStyle": headerBorderBottomStyle,
-														"--headerBorderBottomWidth": headerBorderBottomWidth,
-														"--headerBorderLeftColor": headerBorderLeftColor,
-														"--headerBorderLeftStyle": headerBorderLeftStyle,
-														"--headerBorderLeftWidth": headerBorderLeftWidth,
-														"--headerTextAlignment": headerTextAlignmentStyle
+														'--gridTemplateHeaderRows': gridHeaderRowStyle,
+														'--startGridHeaderRowNbr': startGridHeaderRowNbrStyle,
+														'--endGridHeaderRowNbr': endGridHeaderRowNbrStyle,
+														'--headerBorderTopColor': headerBorderTopColor,
+														'--headerBorderTopStyle': headerBorderTopStyle,
+														'--headerBorderTopWidth': headerBorderTopWidth,
+														'--headerBorderRightColor': headerBorderRightColor,
+														'--headerBorderRightStyle': headerBorderRightStyle,
+														'--headerBorderRightWidth': headerBorderRightWidth,
+														'--headerBorderBottomColor': headerBorderBottomColor,
+														'--headerBorderBottomStyle': headerBorderBottomStyle,
+														'--headerBorderBottomWidth': headerBorderBottomWidth,
+														'--headerBorderLeftColor': headerBorderLeftColor,
+														'--headerBorderLeftStyle': headerBorderLeftStyle,
+														'--headerBorderLeftWidth': headerBorderLeftWidth,
+														'--headerTextAlignment': headerTextAlignmentStyle,
 													}}
 												>
 													{table.cells
 														.filter(cell => cell.row_id === renderedRow)
-														.map(({ table_id, row_id, column_id, cell_id, content, attributes, classes }) => {
-															const isFirstColumn = column_id === '1' ? true : false;
-															const isBorder = attributes.border;
-															const borderContent = setBorderContent(row_id, column_id, content)
-															const isOpenCurrentRowMenu = openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id)
-															let showGridLinesCSS = gridShowInnerLines
-															let gridLineWidthCSS = gridInnerLineWidth
-
-															return (
-																<>
-																	{/* Show zoom to details column */}
-																	{isFirstColumn && isBorder && enableFutureFeatures && (
-																		<div className={"grid-control__border-cells"} />
-																	)}
-
-																	{isBorder && (
-																		<div
-																			id={cell_id}
-																			onMouseDown={e => onMouseBorderClick(column_id, row_id, table, e)}
-																			className={classes}>
-																			{borderContent}
-																			{isOpenCurrentRowMenu && (
-																				<RowMenu
-																					tableId={table_id}
-																					rowId={row_id}
-																					rowLabel={borderContent}
-																					rowAttributes={rowAttributes}
-																					updatedRow={onUpdateRow}>
-																				</RowMenu>
-																			)}
-																		</div>
-																	)}
-																	{/* Show zoom to details column */}
-																	{isFirstColumn && enableFutureFeatures && (
-																		< div
-																			className={"grid-control__header-cells"}
-																			style={{
-																				"--showGridLines": showGridLinesCSS,
-																				"--gridLineWidth": gridLineWidthCSS
-																			}}
-																		></div >
-																	)}
-																	{!isBorder && (
-																		<RichText
-																			id={cell_id}
-																			className={"grid-control__header-cells"}
-																			style={{
-																				"--showGridLines": showGridLinesCSS,
-																				"--gridLineWidth": gridLineWidthCSS
-																			}}
-																			tabIndex="0"
-																			tagName="div"
-																			onChange={e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e)}
-																			value={content}>
-																		</RichText>
-																	)}
-																</>
-															)
-
-														})}
-												</div >
-											)
-										})}
-
-									{/* Render Table Body */}
-									<div className={"grid-control__body"}
-										style={{
-											"--gridTemplateBodyRows": gridBodyRowStyle,
-											"--startGridBodyRowNbr": startGridBodyRowNbrStyle,
-											"--endGridBodyRowNbr": endGridBodyRowNbrStyle,
-											"--bodyBorderTopColor": bodyBorderTopColor,
-											"--bodyBorderTopStyle": bodyBorderTopStyle,
-											"--bodyBorderTopWidth": bodyBorderTopWidth,
-											"--bodyBorderRightColor": bodyBorderRightColor,
-											"--bodyBorderRightStyle": bodyBorderRightStyle,
-											"--bodyBorderRightWidth": bodyBorderRightWidth,
-											"--bodyBorderBottomColor": bodyBorderBottomColor,
-											"--bodyBorderBottomStyle": bodyBorderBottomStyle,
-											"--bodyBorderBottomWidth": bodyBorderBottomWidth,
-											"--bodyBorderLeftColor": bodyBorderLeftColor,
-											"--bodyBorderLeftStyle": bodyBorderLeftStyle,
-											"--bodyBorderLeftWidth": bodyBorderLeftWidth,
-											"--bodyTextAlignment": bodyTextAlignmentStyle
-										}}
-									>
-
-										{/* Render Table Body Row Wrapper*/}
-										{table.rows.filter(row => row.attributes.isHeader !== true && row.row_id !== '0')
-											.map(({ row_id, attributes }) => {
-												const renderedRow = row_id;
-												// console.log('Rendering Body Row ' + renderedRow)
-
-												/**
-												 * Set calculated class names
-												 */
-												let calculatedClasses = ''
-
-												const bandedRowOffset = enableHeaderRow ? 1 : 0
-												if (bandedRows && bandedRowOffset == 0 && Number(row_id) % 2 === 0) {
-													calculatedClasses = calculatedClasses + 'grid-control__body-rows--banded-row '
-												}
-
-												if (bandedRows && bandedRowOffset == 1 && Number(row_id) > 1 && (Number(row_id) + bandedRowOffset) % 2 === 0) {
-													calculatedClasses = calculatedClasses + 'grid-control__body-rows--banded-row '
-												}
-
-												return (
-													<div className={"grid-control__body-row " + calculatedClasses}
-														style={{
-															"--bandedRowTextColor": gridBandedRowTextColor,
-															"--bandedRowBackgroundColor": gridBandedRowBackgroundColor,
-														}}
-													>
-
-														{/* Render Table Body Row Cells*/}
-														{table.cells
-															.filter(cell => cell.row_id === renderedRow)
-															.map(({ table_id, row_id, column_id, cell_id, content, attributes, classes }) => {
-																// console.log('Rendering Body Row Cell' + cell_id)
-																/**
-																 * Set general processing variables
-																 */
+														.map(
+															({
+																table_id,
+																row_id,
+																column_id,
+																cell_id,
+																content,
+																attributes,
+																classes,
+															}) => {
 																const isFirstColumn = column_id === '1' ? true : false;
 																const isBorder = attributes.border;
-																const borderContent = setBorderContent(row_id, column_id, content)
-																const isOpenCurrentRowMenu = openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id)
-																let showGridLinesCSS = gridShowInnerLines
-																let gridLineWidthCSS = gridInnerLineWidth
+																const borderContent = setBorderContent(row_id, column_id, content);
+																const isOpenCurrentRowMenu = openCurrentRowMenu(
+																	rowMenuVisible,
+																	openColumnRow,
+																	row_id
+																);
+																const showGridLinesCSS = gridShowInnerLines;
+																const gridLineWidthCSS = gridInnerLineWidth;
 
 																return (
 																	<>
 																		{/* Show zoom to details column */}
 																		{isFirstColumn && isBorder && enableFutureFeatures && (
-																			<div className={"grid-control__border-cells"} />
+																			<div className={'grid-control__border-cells'} />
 																		)}
 
 																		{isBorder && (
 																			<div
 																				id={cell_id}
-																				onMouseDown={e => onMouseBorderClick(column_id, row_id, table, e)}
-																				className={classes}>
+																				onMouseDown={e =>
+																					onMouseBorderClick(column_id, row_id, table, e)
+																				}
+																				className={classes}
+																			>
 																				{borderContent}
 																				{isOpenCurrentRowMenu && (
 																					<RowMenu
@@ -1655,117 +1685,264 @@ export default function Edit(props) {
 																						rowId={row_id}
 																						rowLabel={borderContent}
 																						rowAttributes={rowAttributes}
-																						updatedRow={onUpdateRow}>
-																					</RowMenu>
+																						updatedRow={onUpdateRow}
+																					></RowMenu>
 																				)}
 																			</div>
 																		)}
-
 																		{/* Show zoom to details column */}
-																		{isFirstColumn && !isBorder && enableFutureFeatures && (
+																		{isFirstColumn && enableFutureFeatures && (
 																			<div
-																				className={"grid-control__body-cells grid-control__body-cells--zoom"}
+																				className={'grid-control__header-cells'}
 																				style={{
-																					"--showGridLines": showGridLinesCSS,
-																					"--gridLineWidth": gridLineWidthCSS
+																					'--showGridLines': showGridLinesCSS,
+																					'--gridLineWidth': gridLineWidthCSS,
 																				}}
-																			>
-																				<Button
-																					href="#"
-																					icon={search}
-																				/>
-																			</div>
+																			></div>
 																		)}
-
 																		{!isBorder && (
 																			<RichText
 																				id={cell_id}
-																				className={'grid-control__body-cells ' + classes}
+																				className={'grid-control__header-cells'}
 																				style={{
-																					"--showGridLines": showGridLinesCSS,
-																					"--gridLineWidth": gridLineWidthCSS
+																					'--showGridLines': showGridLinesCSS,
+																					'--gridLineWidth': gridLineWidthCSS,
 																				}}
 																				tabIndex="0"
 																				tagName="div"
-																				onChange={e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e)}
-																				value={content}>
-																			</RichText>
+																				onChange={e =>
+																					setTableAttributes(
+																						table_id,
+																						'cell',
+																						cell_id,
+																						'CONTENT',
+																						e
+																					)
+																				}
+																				value={content}
+																			></RichText>
 																		)}
 																	</>
-																)
+																);
+															}
+														)}
+												</div>
+											);
+										})}
 
-															})}
-													</div >
-												)
-											})
-										}
+									{/* Render Table Body */}
+									<div
+										className={'grid-control__body'}
+										style={{
+											'--gridTemplateBodyRows': gridBodyRowStyle,
+											'--startGridBodyRowNbr': startGridBodyRowNbrStyle,
+											'--endGridBodyRowNbr': endGridBodyRowNbrStyle,
+											'--bodyBorderTopColor': bodyBorderTopColor,
+											'--bodyBorderTopStyle': bodyBorderTopStyle,
+											'--bodyBorderTopWidth': bodyBorderTopWidth,
+											'--bodyBorderRightColor': bodyBorderRightColor,
+											'--bodyBorderRightStyle': bodyBorderRightStyle,
+											'--bodyBorderRightWidth': bodyBorderRightWidth,
+											'--bodyBorderBottomColor': bodyBorderBottomColor,
+											'--bodyBorderBottomStyle': bodyBorderBottomStyle,
+											'--bodyBorderBottomWidth': bodyBorderBottomWidth,
+											'--bodyBorderLeftColor': bodyBorderLeftColor,
+											'--bodyBorderLeftStyle': bodyBorderLeftStyle,
+											'--bodyBorderLeftWidth': bodyBorderLeftWidth,
+											'--bodyTextAlignment': bodyTextAlignmentStyle,
+										}}
+									>
+										{/* Render Table Body Row Wrapper*/}
+										{table.rows
+											.filter(row => row.attributes.isHeader !== true && row.row_id !== '0')
+											.map(({ row_id, attributes }) => {
+												const renderedRow = row_id;
+												// console.log('Rendering Body Row ' + renderedRow)
+
+												/**
+												 * Set calculated class names
+												 */
+												let calculatedClasses = '';
+
+												const bandedRowOffset = enableHeaderRow ? 1 : 0;
+												if (bandedRows && bandedRowOffset == 0 && Number(row_id) % 2 === 0) {
+													calculatedClasses =
+														calculatedClasses + 'grid-control__body-rows--banded-row ';
+												}
+
+												if (
+													bandedRows &&
+													bandedRowOffset == 1 &&
+													Number(row_id) > 1 &&
+													(Number(row_id) + bandedRowOffset) % 2 === 0
+												) {
+													calculatedClasses =
+														calculatedClasses + 'grid-control__body-rows--banded-row ';
+												}
+
+												return (
+													<div
+														className={'grid-control__body-row ' + calculatedClasses}
+														style={{
+															'--bandedRowTextColor': gridBandedRowTextColor,
+															'--bandedRowBackgroundColor': gridBandedRowBackgroundColor,
+														}}
+													>
+														{/* Render Table Body Row Cells*/}
+														{table.cells
+															.filter(cell => cell.row_id === renderedRow)
+															.map(
+																({
+																	table_id,
+																	row_id,
+																	column_id,
+																	cell_id,
+																	content,
+																	attributes,
+																	classes,
+																}) => {
+																	// console.log('Rendering Body Row Cell' + cell_id)
+																	/**
+																	 * Set general processing variables
+																	 */
+																	const isFirstColumn = column_id === '1' ? true : false;
+																	const isBorder = attributes.border;
+																	const borderContent = setBorderContent(
+																		row_id,
+																		column_id,
+																		content
+																	);
+																	const isOpenCurrentRowMenu = openCurrentRowMenu(
+																		rowMenuVisible,
+																		openColumnRow,
+																		row_id
+																	);
+																	const showGridLinesCSS = gridShowInnerLines;
+																	const gridLineWidthCSS = gridInnerLineWidth;
+
+																	return (
+																		<>
+																			{/* Show zoom to details column */}
+																			{isFirstColumn && isBorder && enableFutureFeatures && (
+																				<div className={'grid-control__border-cells'} />
+																			)}
+
+																			{isBorder && (
+																				<div
+																					id={cell_id}
+																					onMouseDown={e =>
+																						onMouseBorderClick(column_id, row_id, table, e)
+																					}
+																					className={classes}
+																				>
+																					{borderContent}
+																					{isOpenCurrentRowMenu && (
+																						<RowMenu
+																							tableId={table_id}
+																							rowId={row_id}
+																							rowLabel={borderContent}
+																							rowAttributes={rowAttributes}
+																							updatedRow={onUpdateRow}
+																						></RowMenu>
+																					)}
+																				</div>
+																			)}
+
+																			{/* Show zoom to details column */}
+																			{isFirstColumn && !isBorder && enableFutureFeatures && (
+																				<div
+																					className={
+																						'grid-control__body-cells grid-control__body-cells--zoom'
+																					}
+																					style={{
+																						'--showGridLines': showGridLinesCSS,
+																						'--gridLineWidth': gridLineWidthCSS,
+																					}}
+																				>
+																					<Button href="#" icon={search} />
+																				</div>
+																			)}
+
+																			{!isBorder && (
+																				<RichText
+																					id={cell_id}
+																					className={'grid-control__body-cells ' + classes}
+																					style={{
+																						'--showGridLines': showGridLinesCSS,
+																						'--gridLineWidth': gridLineWidthCSS,
+																					}}
+																					tabIndex="0"
+																					tagName="div"
+																					onChange={e =>
+																						setTableAttributes(
+																							table_id,
+																							'cell',
+																							cell_id,
+																							'CONTENT',
+																							e
+																						)
+																					}
+																					value={content}
+																				></RichText>
+																			)}
+																		</>
+																	);
+																}
+															)}
+													</div>
+												);
+											})}
 									</div>
 								</div>
 							</div>
 						</TabbableContainer>
 					</div>
 				</>
-			)
-			}
+			)}
 
-			{
-				!isNewBlock && tableIsResolving && (
-					<Spinner>Retrieving Table Data</Spinner>
-				)
-			}
+			{!isNewBlock && tableIsResolving && <Spinner>Retrieving Table Data</Spinner>}
 
+			{isNewBlock && (
+				<Placeholder
+					label={__('Dynamic Table')}
+					icon={<BlockIcon icon={icon} showColors />}
+					instructions={__('Create a new dynamic table.')}
+				>
+					<form className="blocks-table__placeholder-form" onSubmit={onCreateTable}>
+						<InputControl
+							label={__('Table Name')}
+							placeholder="New Table"
+							required="true"
+							onChange={e => setTableName(e)}
+							value={tableName}
+							className="blocks-table__placeholder-input"
+						/>
 
-			{
-				isNewBlock && (
-					<Placeholder
-						label={__('Dynamic Table')}
-						icon={<BlockIcon icon={icon} showColors />}
-						instructions={__('Create a new dynamic table.')}
-					>
-						<form
-							className="blocks-table__placeholder-form"
-							onSubmit={onCreateTable}
-						>
+						<NumberControl
+							__nextHasNoMarginBottom
+							label={__('Table Columns')}
+							min={1}
+							required="true"
+							value={numColumns}
+							onChange={e => onChangeInitialColumnCount(e)}
+							className="blocks-table__placeholder-input"
+						/>
 
-							<InputControl
-								label={__('Table Name')}
-								placeholder="New Table"
-								required="true"
-								onChange={e => setTableName(e)}
-								value={tableName}
-								className="blocks-table__placeholder-input"
-							/>
-
-							<NumberControl
-								__nextHasNoMarginBottom
-								label={__('Table Columns')}
-								min={1}
-								required="true"
-								value={numColumns}
-								onChange={e => onChangeInitialColumnCount(e)}
-								className="blocks-table__placeholder-input"
-							/>
-
-							<NumberControl
-								__nextHasNoMarginBottom
-								label={__('Table Rows')}
-								required="true"
-								min={1}
-								value={numRows}
-								onChange={e => onChangeInitialRowCount(e)}
-								className="blocks-table__placeholder-input"
-							/>
-							<Button
-								className="blocks-table__placeholder-button"
-								variant="primary"
-								type="submit"
-							>
-								{__('Create Table')}
-							</Button>
-						</form>
-					</Placeholder>
-				)
-			}
-		</div >
-	)
+						<NumberControl
+							__nextHasNoMarginBottom
+							label={__('Table Rows')}
+							required="true"
+							min={1}
+							value={numRows}
+							onChange={e => onChangeInitialRowCount(e)}
+							className="blocks-table__placeholder-input"
+						/>
+						<Button className="blocks-table__placeholder-button" variant="primary" type="submit">
+							{__('Create Table')}
+						</Button>
+					</form>
+				</Placeholder>
+			)}
+		</div>
+	);
 }

@@ -125,12 +125,7 @@ class DynamicTablesVersionManagement {
 	 *
 	 * Create Dynamic Tables database entries if they do not already exist
 	 *
-	 * @since x.xx.xx
-	 * @deprecated x.x.x Use new_function_name()
-	 * @see Function/method/class relied on
-	 *
-	 * @link URL
-	 * @global [type]  Description
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
