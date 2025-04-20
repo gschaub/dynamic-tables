@@ -731,6 +731,10 @@ export default function Edit(props) {
 		console.log(table);
 		console.log('Number Columns before update = ' + numColumns);
 
+		let updatedRows;
+		let updatedColumns;
+		let updatedCells;
+
 		/**
 		 * Remove borders if unchecked
 		 */
@@ -738,11 +742,9 @@ export default function Edit(props) {
 			setNumColumns(numColumns - 1);
 			setNumRows(numRows - 1);
 
-			const updatedRows = table.rows.filter(row => row.row_id !== '0');
-			const updatedColumns = table.columns.filter(column => column.column_id !== '0');
-			const updatedCells = table.cells.filter(
-				cell => cell.row_id !== '0' && cell.column_id !== '0'
-			);
+			updatedRows = table.rows.filter(row => row.row_id !== '0');
+			updatedColumns = table.columns.filter(column => column.column_id !== '0');
+			updatedCells = table.cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
 			console.log(updatedCells);
 			updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
 		} else {

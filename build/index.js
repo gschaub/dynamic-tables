@@ -114,7 +114,6 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-
 const settings = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 24 24",
@@ -250,6 +249,16 @@ const tableRowDelete = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODUL
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tableRowDelete);
 //# sourceMappingURL=table-row-delete.js.map
+
+/***/ }),
+
+/***/ "./src/block.json":
+/*!************************!*\
+  !*** ./src/block.json ***!
+  \************************/
+/***/ ((module) => {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"dynamic-tables/dynamic-tables","version":"0.1.0","title":"Dynamic Tables","category":"design","icon":"editor-table","description":"Create custom table blocks with highly customizable and responsive formats","example":{},"textdomain":"dynamic-tables","attributes":{"table_id":{"type":"integer","default":"0"},"block_table_ref":{"type":"string","default":""},"block_alignment":{"type":"string","default":"undefined"}},"usesContext":["postId","postType"],"supports":{"html":false,"className":false,"color":{"button":true,"gradients":true,"heading":true,"link":true},"typography":{"fontSize":true,"__experimentalFontFamily":true,"__experimentalTextDecoration":true,"__experimentalFontStyle":true,"__experimentalFontWeight":true,"__experimentalLetterSpacing":true,"__experimentalWritingMode":true,"__experimentalDefaultControls":{"fontSize":true}},"interactivity":{"clientNavigation":true}},"editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ }),
 
@@ -807,6 +816,18 @@ function ConfigureColumnWidth(props) {
 
 /***/ }),
 
+/***/ "./src/components/configure-column-width/style.scss":
+/*!**********************************************************!*\
+  !*** ./src/components/configure-column-width/style.scss ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./src/components/configure-row-height/index.js":
 /*!******************************************************!*\
   !*** ./src/components/configure-row-height/index.js ***!
@@ -1138,6 +1159,18 @@ function ConfigureRowHeight(props) {
   });
 }
 ;
+
+
+/***/ }),
+
+/***/ "./src/components/configure-row-height/style.scss":
+/*!********************************************************!*\
+  !*** ./src/components/configure-row-height/style.scss ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
 
 
 /***/ }),
@@ -2687,7 +2720,7 @@ __webpack_require__.r(__webpack_exports__);
 }]);
 function Edit(props) {
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.useBlockProps)({
-    className: "dynamic-table-edit-block"
+    className: 'dynamic-table-edit-block'
   });
   console.log(props);
 
@@ -2826,7 +2859,7 @@ function Edit(props) {
     const {
       getTableIdByBlock
     } = select(_data__WEBPACK_IMPORTED_MODULE_10__.store);
-    let currentTableId = getTableIdByBlock(block_table_ref);
+    const currentTableId = getTableIdByBlock(block_table_ref);
     console.log('Current table id = ' + currentTableId);
     return {
       currentTableId: currentTableId
@@ -3012,7 +3045,7 @@ function Edit(props) {
     };
   }, [table_id, isTableIdChanged, isTableStale, block_table_ref]);
   function getTablePropAttribute(tableAttributes, attributeName) {
-    let attributeValue = tableAttributes?.[attributeName];
+    const attributeValue = tableAttributes?.[attributeName];
     // if (!attributeValue) {
     // 	const defaultTableAttributes = getDefaultTableAttributes('table')
     // 	attributeValue = defaultTableAttributes?.[attributeName]
@@ -3068,7 +3101,7 @@ function Edit(props) {
    */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     return () => {
-      setTableAttributes(table.table_id, 'unmounted_blockid', '', 'PROP', blockProps["data-block"], false);
+      setTableAttributes(table.table_id, 'unmounted_blockid', '', 'PROP', blockProps['data-block'], false);
       // saveTableEntity(table.table_id)
     };
   }, []);
@@ -3098,17 +3131,16 @@ function Edit(props) {
    *
    * @param {*} tableId
    * @param {*} columnId
-   * @returns
    */
   function insertColumn(tableId, columnId) {
     const newColumn = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultColumn)(tableId, columnId);
-    var tableCells = [];
+    const tableCells = [];
     for (let i = 0; i < numRows; i++) {
       if (i === 0) {
-        let cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, columnId, i, 'Border');
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, columnId, i, 'Border');
         tableCells.push(cell);
       } else {
-        let cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, columnId, i);
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, columnId, i);
         tableCells.push(cell);
       }
     }
@@ -3131,14 +3163,14 @@ function Edit(props) {
    */
   function insertRow(tableId, rowId) {
     const newRow = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultRow)(tableId, rowId);
-    var tableCells = [];
+    const tableCells = [];
     for (let i = 0; i < numColumns; i++) {
       if (i === 0) {
-        let cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, i, rowId, 'Border');
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, i, rowId, 'Border');
         // cell.content =
         tableCells.push(cell);
       } else {
-        let cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, i, rowId);
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, i, rowId);
         tableCells.push(cell);
       }
     }
@@ -3157,7 +3189,6 @@ function Edit(props) {
    *
    * @param {*} tableId
    * @param {*} columnId
-   * @returns
    */
   function deleteColumn(tableId, columnId) {
     console.log('Deleting Column - ' + columnId);
@@ -3172,7 +3203,6 @@ function Edit(props) {
    *
    * @param {*} tableId
    * @param {*} rowId
-   * @returns
    */
   function deleteRow(tableId, rowId) {
     console.log('Deleting Row - ' + rowId);
@@ -3186,19 +3216,18 @@ function Edit(props) {
    * Update table store to reflect changes made to EXISTING table attributes
    *
    *
-   * @param {*} tableId - Id of table to update
+   * @param {*} tableId   - Id of table to update
    * @param {*} attribute - Table Object Attribute
-   * @param {*} id - Array Index Id
-   * @param {*} type - See Below
-   * @param {*} value - New attribute value
-   * @param {*} persist - Write update to entity record
-   * @returns
+   * @param {*} id        - Array Index Id
+   * @param {*} type      - See Below
+   * @param {*} value     - New attribute value
+   * @param {*} persist   - Write update to entity record
    *
-   * Valid Types:
-   * - CONTENT - Cell Content
-   * - ATTRIBUTES - Array of attributes
-   * - CLASSES - Array of Classes
-   * - PROP - Table Property
+   *                      Valid Types:
+   *                      - CONTENT - Cell Content
+   *                      - ATTRIBUTES - Array of attributes
+   *                      - CLASSES - Array of Classes
+   *                      - PROP - Table Property
    */
 
   function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
@@ -3275,6 +3304,9 @@ function Edit(props) {
     console.log('TOGGLING BORDER');
     console.log(table);
     console.log('Number Columns before update = ' + numColumns);
+    let updatedRows;
+    let updatedColumns;
+    let updatedCells;
 
     /**
      * Remove borders if unchecked
@@ -3282,34 +3314,34 @@ function Edit(props) {
     if (isChecked === false) {
       setNumColumns(numColumns - 1);
       setNumRows(numRows - 1);
-      var updatedRows = table.rows.filter(row => row.row_id !== '0');
-      var updatedColumns = table.columns.filter(column => column.column_id !== '0');
-      var updatedCells = table.cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
+      updatedRows = table.rows.filter(row => row.row_id !== '0');
+      updatedColumns = table.columns.filter(column => column.column_id !== '0');
+      updatedCells = table.cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
       console.log(updatedCells);
       updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
     } else {
       /**
-      * Create borders if checked
-      */
+       * Create borders if checked
+       */
       setNumColumns(numColumns + 1);
       setNumRows(numRows + 1);
 
       // Create header row border at top of table
-      var rowBorder = [];
+      const rowBorder = [];
       rowBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultRow)(table_id, 0, 'Border'));
-      var rowCells = [];
+      const rowCells = [];
       for (let i = 0; i <= numColumns; i++) {
-        let cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(table_id, i, 0, 'Border');
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(table_id, i, 0, 'Border');
         console.log(cell);
         rowCells.push(cell);
       }
 
       // Create column border down left side of table
-      var columnBorder = [];
+      const columnBorder = [];
       columnBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultColumn)(table_id, 0, 'Border'));
-      var columnCells = [];
+      const columnCells = [];
       for (let i = 1; i <= numRows; i++) {
-        let cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(table_id, 0, i, 'Border');
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(table_id, 0, i, 'Border');
         columnCells.push(cell);
       }
 
@@ -3335,7 +3367,7 @@ function Edit(props) {
     console.log('InitialRows - ' + rowCount);
     console.log('InitialColumns - ' + columnCount);
     setTableStale(false);
-    var newBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.generateBlockTableRef)();
+    const newBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.generateBlockTableRef)();
     const newTable = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.initTable)(newBlockTableRef, columnCount, rowCount, tableName);
     console.log(JSON.stringify(newTable, null, 4));
     props.setAttributes({
@@ -3446,7 +3478,7 @@ function Edit(props) {
     console.log(event);
     if (row_id === '0' && column_id !== '0') {
       console.log('Opening Column ' + column_id);
-      let compareColumnId = column_id;
+      const compareColumnId = column_id;
       const clickedColumn = table.columns.find(({
         column_id
       }) => column_id === compareColumnId);
@@ -3457,7 +3489,7 @@ function Edit(props) {
     }
     if (row_id !== '0' && column_id === '0') {
       console.log('Opening Row ' + row_id);
-      let compareRowId = row_id;
+      const compareRowId = row_id;
       const clickedRow = table.rows.find(({
         row_id
       }) => row_id === compareRowId);
@@ -3472,11 +3504,11 @@ function Edit(props) {
   }
 
   /**
-  * Hide the table title from displaying
-  *
-  * @param {*} table
-  * @param {*} isChecked
-  */
+   * Hide the table title from displaying
+   *
+   * @param {*} table
+   * @param {*} isChecked
+   */
   function onHideTitle(table, isChecked) {
     const updatedTableAttributes = {
       ...table.attributes,
@@ -3486,11 +3518,11 @@ function Edit(props) {
   }
 
   /**
-  * Allow the table to scroll horizontally
-  *
-  * @param {*} table
-  * @param {*} isChecked
-  */
+   * Allow the table to scroll horizontally
+   *
+   * @param {*} table
+   * @param {*} isChecked
+   */
   function onAllowHorizontalScroll(table, isChecked) {
     const updatedTableAttributes = {
       ...table.attributes,
@@ -3514,11 +3546,12 @@ function Edit(props) {
   }
 
   /**
-  * Show colored bands on even numbered table rows
-  *
-  * @param {*} table
-  * @param {*} color
-  */
+   * Show colored bands on even numbered table rows
+   *
+   * @param {*} table
+   * @param     type
+   * @param {*} color
+   */
   function onBandedRowColor(table, type, color) {
     let updatedTableAttributes = '';
     if (type == 'background') {
@@ -3540,11 +3573,11 @@ function Edit(props) {
   }
 
   /**
-  * Make first table row the Header
-  *
-  * @param {*} table
-  * @param {*} isChecked
-  */
+   * Make first table row the Header
+   *
+   * @param {*} table
+   * @param {*} isChecked
+   */
   function onEnableHeaderRow(table, isChecked) {
     const updatedTableAttributes = {
       ...table.attributes,
@@ -3562,11 +3595,12 @@ function Edit(props) {
   }
 
   /**
-  * Make first table row the Header
-  *
-  * @param {*} table
-  * @param {*} alignmentValue
-  */
+   * Make first table row the Header
+   *
+   * @param {*} table
+   * @param {*} alignmentValue
+   * @param     alignment
+   */
   function onAlignHeader(table, alignment) {
     console.log('ON HEADER ALIGNMENT');
     console.log(alignment);
@@ -3579,11 +3613,12 @@ function Edit(props) {
   }
 
   /**
-  * Make first table row the Header
-  *
-  * @param {*} table
-  * @param {*} isChecked
-  */
+   * Make first table row the Header
+   *
+   * @param {*} table
+   * @param {*} isChecked
+   * @param     border
+   */
   function onHeaderBorder(table, border) {
     console.log('ON HEADER BORDER');
     console.log(border);
@@ -3596,12 +3631,12 @@ function Edit(props) {
   }
 
   /**
-  * Make first table row the Header
-  allowHorizontalScroll
-  *
-  * @param {*} table
-  * @param {*} isChecked
-  */
+   * Make first table row the Header
+    allowHorizontalScroll
+   *
+   * @param {*} table
+   * @param {*} isChecked
+   */
   function onHeaderRowSticky(table, isChecked) {
     const updatedTableAttributes = {
       ...table.attributes,
@@ -3611,11 +3646,12 @@ function Edit(props) {
   }
 
   /**
-  * Make first table row the Header
-  *
-  * @param {*} table
-  * @param {*} alignmentValue
-  */
+   * Make first table row the Header
+   *
+   * @param {*} table
+   * @param {*} alignmentValue
+   * @param     alignment
+   */
   function onAlignBody(table, alignment) {
     console.log('ON BODY  ALIGNMENT');
     console.log(alignment);
@@ -3628,11 +3664,12 @@ function Edit(props) {
   }
 
   /**
-  * Make first table row the Header
-  *
-  * @param {*} table
-  * @param {*} isChecked
-  */
+   * Make first table row the Header
+   *
+   * @param {*} table
+   * @param {*} isChecked
+   * @param     border
+   */
   function onBodyBorder(table, border) {
     console.log('ON BODY BORDER');
     console.log(border);
@@ -3645,10 +3682,10 @@ function Edit(props) {
   }
 
   /**
-    * Show inner grid lines
-  *
-  * @param {*} table
-  * @param {*} isChecked
+   * Show inner grid lines
+   *
+   * @param {*} table
+   * @param {*} isChecked
    */
   function onShowGridLines(table, isChecked) {
     const updatedTableAttributes = {
@@ -3659,10 +3696,10 @@ function Edit(props) {
   }
 
   /**
-    * Inner grid line width
-  *
-  * @param {*} table
-  * @param {*} gridLineWidth
+   * Inner grid line width
+   *
+   * @param {*} table
+   * @param {*} gridLineWidth
    */
   function onGridLineWidth(table, gridLineWidth) {
     const updatedTableAttributes = {
@@ -3692,6 +3729,7 @@ function Edit(props) {
    */
   const headerTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, headerAlignment);
   const headerBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyleType)(headerBorder);
+
   // Top header border
   const headerBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(headerBorder, 'top', 'color', headerBorderStyleType);
   const headerBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(headerBorder, 'top', 'style', headerBorderStyleType);
@@ -3828,7 +3866,7 @@ function Edit(props) {
                   onChange: e => onAlignHeader(table, e)
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
                   className: "inspector-controls-nemu__label--left-margin",
-                  for: "header-alignment",
+                  htmlFor: "header-alignment",
                   children: "Text Alignment"
                 })]
               })
@@ -3865,7 +3903,7 @@ function Edit(props) {
                   onChange: e => onAlignBody(table, e)
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
                   className: "inspector-controls-menu__label--left-margin",
-                  for: "body-alignment",
+                  htmlFor: "body-alignment",
                   children: "Text Alignment"
                 })]
               })
@@ -3933,12 +3971,12 @@ function Edit(props) {
         group: "typography"
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
         style: {
-          "display": "block"
+          display: 'block'
         },
         children: [!hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.RichText, {
           id: "tableTitle",
           style: {
-            "--gridAlignment": gridAlignment
+            '--gridAlignment': gridAlignment
           },
           tagName: "p",
           allowedFormats: ['core/bold', 'core/italic'],
@@ -3948,22 +3986,22 @@ function Edit(props) {
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
             className: "grid-scroller",
             style: {
-              "--headerRowSticky": headerRowStickyStyle
+              '--headerRowSticky': headerRowStickyStyle
               // "--startGridBodyRowNbr": startGridBodyRowNbrStyle,
               // "--endGridBodyRowNbr": endGridBodyRowNbrStyle
             },
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-              className: "grid-control " + headerRowStickyClass,
+              className: 'grid-control ' + headerRowStickyClass,
               style: {
-                "--gridTemplateColumns": gridColumnStyle,
-                "--horizontalScroll": horizontalScrollStyle,
-                "--headerRowSticky": headerRowStickyStyle,
-                "--gridNumColumns": numColumns,
-                "--gridNumRows": numRows,
-                "--gridAlignment": gridAlignment
+                '--gridTemplateColumns': gridColumnStyle,
+                '--horizontalScroll': horizontalScrollStyle,
+                '--headerRowSticky': headerRowStickyStyle,
+                '--gridNumColumns': numColumns,
+                '--gridNumRows': numRows,
+                '--gridAlignment': gridAlignment
               },
               children: [showBorders && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                className: "grid-control__border",
+                className: 'grid-control__border',
                 children: table.cells.filter(cell => cell.attributes.border && cell.row_id === '0').map(({
                   table_id,
                   row_id,
@@ -3979,7 +4017,7 @@ function Edit(props) {
                   const isFirstColumn = column_id === '1' ? true : false;
                   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
                     children: [isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                      className: "grid-control__border-cells"
+                      className: 'grid-control__border-cells'
                     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
                       id: cell_id,
                       onMouseDown: e => onMouseBorderClick(column_id, row_id, table, e),
@@ -4003,22 +4041,22 @@ function Edit(props) {
                 return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
                   className: "grid-control__header",
                   style: {
-                    "--gridTemplateHeaderRows": gridHeaderRowStyle,
-                    "--startGridHeaderRowNbr": startGridHeaderRowNbrStyle,
-                    "--endGridHeaderRowNbr": endGridHeaderRowNbrStyle,
-                    "--headerBorderTopColor": headerBorderTopColor,
-                    "--headerBorderTopStyle": headerBorderTopStyle,
-                    "--headerBorderTopWidth": headerBorderTopWidth,
-                    "--headerBorderRightColor": headerBorderRightColor,
-                    "--headerBorderRightStyle": headerBorderRightStyle,
-                    "--headerBorderRightWidth": headerBorderRightWidth,
-                    "--headerBorderBottomColor": headerBorderBottomColor,
-                    "--headerBorderBottomStyle": headerBorderBottomStyle,
-                    "--headerBorderBottomWidth": headerBorderBottomWidth,
-                    "--headerBorderLeftColor": headerBorderLeftColor,
-                    "--headerBorderLeftStyle": headerBorderLeftStyle,
-                    "--headerBorderLeftWidth": headerBorderLeftWidth,
-                    "--headerTextAlignment": headerTextAlignmentStyle
+                    '--gridTemplateHeaderRows': gridHeaderRowStyle,
+                    '--startGridHeaderRowNbr': startGridHeaderRowNbrStyle,
+                    '--endGridHeaderRowNbr': endGridHeaderRowNbrStyle,
+                    '--headerBorderTopColor': headerBorderTopColor,
+                    '--headerBorderTopStyle': headerBorderTopStyle,
+                    '--headerBorderTopWidth': headerBorderTopWidth,
+                    '--headerBorderRightColor': headerBorderRightColor,
+                    '--headerBorderRightStyle': headerBorderRightStyle,
+                    '--headerBorderRightWidth': headerBorderRightWidth,
+                    '--headerBorderBottomColor': headerBorderBottomColor,
+                    '--headerBorderBottomStyle': headerBorderBottomStyle,
+                    '--headerBorderBottomWidth': headerBorderBottomWidth,
+                    '--headerBorderLeftColor': headerBorderLeftColor,
+                    '--headerBorderLeftStyle': headerBorderLeftStyle,
+                    '--headerBorderLeftWidth': headerBorderLeftWidth,
+                    '--headerTextAlignment': headerTextAlignmentStyle
                   },
                   children: table.cells.filter(cell => cell.row_id === renderedRow).map(({
                     table_id,
@@ -4033,11 +4071,11 @@ function Edit(props) {
                     const isBorder = attributes.border;
                     const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.setBorderContent)(row_id, column_id, content);
                     const isOpenCurrentRowMenu = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.openCurrentRowMenu)(rowMenuVisible, openColumnRow, row_id);
-                    let showGridLinesCSS = gridShowInnerLines;
-                    let gridLineWidthCSS = gridInnerLineWidth;
+                    const showGridLinesCSS = gridShowInnerLines;
+                    const gridLineWidthCSS = gridInnerLineWidth;
                     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
                       children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                        className: "grid-control__border-cells"
+                        className: 'grid-control__border-cells'
                       }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
                         id: cell_id,
                         onMouseDown: e => onMouseBorderClick(column_id, row_id, table, e),
@@ -4050,17 +4088,17 @@ function Edit(props) {
                           updatedRow: onUpdateRow
                         })]
                       }), isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                        className: "grid-control__header-cells",
+                        className: 'grid-control__header-cells',
                         style: {
-                          "--showGridLines": showGridLinesCSS,
-                          "--gridLineWidth": gridLineWidthCSS
+                          '--showGridLines': showGridLinesCSS,
+                          '--gridLineWidth': gridLineWidthCSS
                         }
                       }), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.RichText, {
                         id: cell_id,
-                        className: "grid-control__header-cells",
+                        className: 'grid-control__header-cells',
                         style: {
-                          "--showGridLines": showGridLinesCSS,
-                          "--gridLineWidth": gridLineWidthCSS
+                          '--showGridLines': showGridLinesCSS,
+                          '--gridLineWidth': gridLineWidthCSS
                         },
                         tabIndex: "0",
                         tagName: "div",
@@ -4071,24 +4109,24 @@ function Edit(props) {
                   })
                 });
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                className: "grid-control__body",
+                className: 'grid-control__body',
                 style: {
-                  "--gridTemplateBodyRows": gridBodyRowStyle,
-                  "--startGridBodyRowNbr": startGridBodyRowNbrStyle,
-                  "--endGridBodyRowNbr": endGridBodyRowNbrStyle,
-                  "--bodyBorderTopColor": bodyBorderTopColor,
-                  "--bodyBorderTopStyle": bodyBorderTopStyle,
-                  "--bodyBorderTopWidth": bodyBorderTopWidth,
-                  "--bodyBorderRightColor": bodyBorderRightColor,
-                  "--bodyBorderRightStyle": bodyBorderRightStyle,
-                  "--bodyBorderRightWidth": bodyBorderRightWidth,
-                  "--bodyBorderBottomColor": bodyBorderBottomColor,
-                  "--bodyBorderBottomStyle": bodyBorderBottomStyle,
-                  "--bodyBorderBottomWidth": bodyBorderBottomWidth,
-                  "--bodyBorderLeftColor": bodyBorderLeftColor,
-                  "--bodyBorderLeftStyle": bodyBorderLeftStyle,
-                  "--bodyBorderLeftWidth": bodyBorderLeftWidth,
-                  "--bodyTextAlignment": bodyTextAlignmentStyle
+                  '--gridTemplateBodyRows': gridBodyRowStyle,
+                  '--startGridBodyRowNbr': startGridBodyRowNbrStyle,
+                  '--endGridBodyRowNbr': endGridBodyRowNbrStyle,
+                  '--bodyBorderTopColor': bodyBorderTopColor,
+                  '--bodyBorderTopStyle': bodyBorderTopStyle,
+                  '--bodyBorderTopWidth': bodyBorderTopWidth,
+                  '--bodyBorderRightColor': bodyBorderRightColor,
+                  '--bodyBorderRightStyle': bodyBorderRightStyle,
+                  '--bodyBorderRightWidth': bodyBorderRightWidth,
+                  '--bodyBorderBottomColor': bodyBorderBottomColor,
+                  '--bodyBorderBottomStyle': bodyBorderBottomStyle,
+                  '--bodyBorderBottomWidth': bodyBorderBottomWidth,
+                  '--bodyBorderLeftColor': bodyBorderLeftColor,
+                  '--bodyBorderLeftStyle': bodyBorderLeftStyle,
+                  '--bodyBorderLeftWidth': bodyBorderLeftWidth,
+                  '--bodyTextAlignment': bodyTextAlignmentStyle
                 },
                 children: table.rows.filter(row => row.attributes.isHeader !== true && row.row_id !== '0').map(({
                   row_id,
@@ -4109,10 +4147,10 @@ function Edit(props) {
                     calculatedClasses = calculatedClasses + 'grid-control__body-rows--banded-row ';
                   }
                   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                    className: "grid-control__body-row " + calculatedClasses,
+                    className: 'grid-control__body-row ' + calculatedClasses,
                     style: {
-                      "--bandedRowTextColor": gridBandedRowTextColor,
-                      "--bandedRowBackgroundColor": gridBandedRowBackgroundColor
+                      '--bandedRowTextColor': gridBandedRowTextColor,
+                      '--bandedRowBackgroundColor': gridBandedRowBackgroundColor
                     },
                     children: table.cells.filter(cell => cell.row_id === renderedRow).map(({
                       table_id,
@@ -4131,11 +4169,11 @@ function Edit(props) {
                       const isBorder = attributes.border;
                       const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.setBorderContent)(row_id, column_id, content);
                       const isOpenCurrentRowMenu = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.openCurrentRowMenu)(rowMenuVisible, openColumnRow, row_id);
-                      let showGridLinesCSS = gridShowInnerLines;
-                      let gridLineWidthCSS = gridInnerLineWidth;
+                      const showGridLinesCSS = gridShowInnerLines;
+                      const gridLineWidthCSS = gridInnerLineWidth;
                       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
                         children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                          className: "grid-control__border-cells"
+                          className: 'grid-control__border-cells'
                         }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
                           id: cell_id,
                           onMouseDown: e => onMouseBorderClick(column_id, row_id, table, e),
@@ -4148,10 +4186,10 @@ function Edit(props) {
                             updatedRow: onUpdateRow
                           })]
                         }), isFirstColumn && !isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                          className: "grid-control__body-cells grid-control__body-cells--zoom",
+                          className: 'grid-control__body-cells grid-control__body-cells--zoom',
                           style: {
-                            "--showGridLines": showGridLinesCSS,
-                            "--gridLineWidth": gridLineWidthCSS
+                            '--showGridLines': showGridLinesCSS,
+                            '--gridLineWidth': gridLineWidthCSS
                           },
                           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.Button, {
                             href: "#",
@@ -4161,8 +4199,8 @@ function Edit(props) {
                           id: cell_id,
                           className: 'grid-control__body-cells ' + classes,
                           style: {
-                            "--showGridLines": showGridLinesCSS,
-                            "--gridLineWidth": gridLineWidthCSS
+                            '--showGridLines': showGridLinesCSS,
+                            '--gridLineWidth': gridLineWidthCSS
                           },
                           tabIndex: "0",
                           tagName: "div",
@@ -4226,6 +4264,18 @@ function Edit(props) {
 
 /***/ }),
 
+/***/ "./src/editor.scss":
+/*!*************************!*\
+  !*** ./src/editor.scss ***!
+  \*************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./src/hooks.js":
 /*!**********************!*\
   !*** ./src/hooks.js ***!
@@ -4248,7 +4298,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * Returns `true` if post changes are saved, otherwise `false`.
- * 
+ *
  * @returns {boolean}
  */
 const usePostChangesSaved = () => {
@@ -4302,7 +4352,7 @@ console.log(_block_json__WEBPACK_IMPORTED_MODULE_3__.name);
   // From  edit.js
   apiVersion: 3,
   edit: _edit__WEBPACK_IMPORTED_MODULE_2__["default"],
-  save: function (props) {
+  save(props) {
     return null;
   }
 });
@@ -4333,11 +4383,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /**
  * Establish grid css grid-template-columns based upon attributes associated with columns
- * 
- * @param {*} isNewBlock 
- * @param {*} tableIsResolving 
- * @param {*} columns 
- * @returns 
+ *
+ * @param {*} isNewBlock
+ * @param {*} tableIsResolving
+ * @param {*} columns
+ * @returns
  */
 function processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, columns) {
   if (isNewBlock || tableIsResolving) {
@@ -4374,8 +4424,8 @@ function processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, colu
             if (minWidth > 0) {
               sizing = 'minmax(' + minWidth + minWidthUnits + ', ' + maxWidth + 'fr) ';
             } else
-            // sizing = '1fr '
-            sizing = maxWidth + 'fr ';
+              // sizing = '1fr '
+              sizing = maxWidth + 'fr ';
             newGridColumnStyle = newGridColumnStyle + sizing;
             break;
           }
@@ -4413,11 +4463,11 @@ function processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, colu
 
 /**
  * Establish grid css grid-template-rowss based upon attributes associated with rows
- * 
- * @param {*} isNewBlock 
- * @param {*} tableIsResolving 
- * @param {*} rows 
- * @returns 
+ *
+ * @param {*} isNewBlock
+ * @param {*} tableIsResolving
+ * @param {*} rows
+ * @returns
  */
 function processHeaderRow(isNewBlock, tableIsResolving, rows) {
   if (isNewBlock || tableIsResolving) {
@@ -4479,11 +4529,11 @@ function processHeaderRow(isNewBlock, tableIsResolving, rows) {
 
 /**
  * Establish grid css grid-template-rowss based upon attributes associated with rows
- * 
- * @param {*} isNewBlock 
- * @param {*} tableIsResolving 
- * @param {*} rows 
- * @returns 
+ *
+ * @param {*} isNewBlock
+ * @param {*} tableIsResolving
+ * @param {*} rows
+ * @returns
  */
 function processBodyRows(isNewBlock, tableIsResolving, rows) {
   if (isNewBlock || tableIsResolving) {
@@ -4546,85 +4596,77 @@ function processBodyRows(isNewBlock, tableIsResolving, rows) {
 
 /**
  * Create Styling Variable for showing inner grid borders/lines
-  * 
-  * @param {*} isNewBlock 
-  * @param {*} tableIsResolving 
-  * @param {*} showGridLines 
-  * @returns 
-  */
+ *
+ * @param {*} isNewBlock
+ * @param {*} tableIsResolving
+ * @param {*} showGridLines
+ * @returns
+ */
 function gridBandedRowTextColorStyle(isNewBlock, tableIsResolving, color) {
   if (isNewBlock || tableIsResolving) {
     return undefined;
   }
-  ;
   return color;
 }
 function gridBandedRowBackgroundColorStyle(isNewBlock, tableIsResolving, color) {
   if (isNewBlock || tableIsResolving) {
     return undefined;
   }
-  ;
   return color;
 }
 
 /**
-* Create Styling Variable for showing inner grid borders/lines
-* 
-* @param {*} isNewBlock 
-* @param {*} tableIsResolving 
-* @param {*} showGridLines 
-* @returns 
-*/
+ * Create Styling Variable for showing inner grid borders/lines
+ *
+ * @param {*} isNewBlock
+ * @param {*} tableIsResolving
+ * @param {*} showGridLines
+ * @returns
+ */
 function getGridHeaderBackgroundColorStyle(isNewBlock, tableIsResolving, tableColor, blockColor) {
   if (isNewBlock || tableIsResolving) {
     return undefined;
   }
-  ;
   if (tableColor) {
     return tableColor;
   }
-  ;
   return blockColor;
 }
 
 /**
  * Create Styling Variable for showing inner grid borders/lines
-  * 
-  * @param {*} isNewBlock 
-  * @param {*} tableIsResolving 
-  * @param {*} showGridLines 
-  * @returns 
-  */
+ *
+ * @param {*} isNewBlock
+ * @param {*} tableIsResolving
+ * @param {*} showGridLines
+ * @returns
+ */
 function gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines) {
   if (isNewBlock || tableIsResolving) {
     return undefined;
   }
-  ;
   console.log('show grid lines = ' + showGridLines);
   if (showGridLines) {
     return 'solid';
   }
-  ;
   return 'hidden';
 }
 
 /**
-* Create Styling Variable for inner grid borders/lines width
-* 
-* @param {*} isNewBlock 
-* @param {*} tableIsResolving 
-* @param {*} showGridLines 
-* @returns 
-*/
+ * Create Styling Variable for inner grid borders/lines width
+ *
+ * @param {*} isNewBlock
+ * @param {*} tableIsResolving
+ * @param {*} showGridLines
+ * @returns
+ */
 function gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, gridLineWidth) {
   if (isNewBlock || tableIsResolving) {
     return undefined;
   }
-  ;
   if (!showGridLines) {
     return '0px';
   }
-  ;
   return String(gridLineWidth) + 'px';
 }
 function startGridRowNbr(enableHeader, showBorders) {
@@ -4661,23 +4703,22 @@ function getHeaderTextAlignmentStyle(isNewBlock, tableIsResolving, textAlignment
   if (isNewBlock || tableIsResolving) {
     return undefined;
   }
-  ;
   return textAlignment;
 }
 
 /**
  * The BorderBoxControl stores the syle values as a flat object (simple) or as nested objects
  * (complex).  We evaluate the object value to determine which type it is.
- * 
- * @param {*} border 
- * @returns 
+ *
+ * @param {*} border
+ * @returns
  */
 function getBorderStyleType(border) {
   if (border) {
     const borderWrapper = Object.entries(border);
-    for (var i = 0; i < borderWrapper.length; i++) {
+    for (let i = 0; i < borderWrapper.length; i++) {
       if (borderWrapper[i].some(value => {
-        return typeof value == "object";
+        return typeof value == 'object';
       })) {
         console.log(borderWrapper[i]);
         return 'split';
@@ -4685,18 +4726,17 @@ function getBorderStyleType(border) {
     }
     return 'flat';
   }
-  ;
   return 'unknown';
 }
 
 /**
  * Get Style value for the specified border segment and attribute
- * 
- * @param {*} border 
- * @param {*} borderLocation 
- * @param {*} borderAttribute 
- * @param {*} borderType 
- * @returns 
+ *
+ * @param {*} border
+ * @param {*} borderLocation
+ * @param {*} borderAttribute
+ * @param {*} borderType
+ * @returns
  */
 function getBorderStyle(border, borderLocation, borderAttribute, borderType) {
   switch (borderType) {
@@ -4739,6 +4779,18 @@ function getBorderStyle(border, borderLocation, borderAttribute, borderType) {
 
 /***/ }),
 
+/***/ "./src/style.scss":
+/*!************************!*\
+  !*** ./src/style.scss ***!
+  \************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./src/table-defaults.js":
 /*!*******************************!*\
   !*** ./src/table-defaults.js ***!
@@ -4761,19 +4813,19 @@ function initTable(newBlockTableRef, columnCount, rowCount, tableName) {
   console.log('FUNCTION - CREATE TABLE');
   console.log('InitialRows - ' + rowCount);
   console.log('InitialColumns - ' + columnCount);
-  var tableCells = initTableCells(Number(columnCount), Number(rowCount));
-  var rowArray = [];
+  const tableCells = initTableCells(Number(columnCount), Number(rowCount));
+  const rowArray = [];
   for (let i = 1; i <= rowCount; i++) {
     console.log('Row loop - ' + i);
-    let row = getDefaultRow('0', i);
+    const row = getDefaultRow('0', i);
     // console.log('...looped row - ' + JSON.stringify(row, null, 4))
     rowArray.push(row);
     // console.log('...row array - ' + JSON.stringify(rowArray, null, 4))
   }
-  var columnArray = [];
+  const columnArray = [];
   for (let i = 1; i <= columnCount; i++) {
     console.log('Column loop - ' + i);
-    let column = getDefaultColumn('0', i);
+    const column = getDefaultColumn('0', i);
     // console.log('...looped column - ' + JSON.stringify(column, null, 4))
     columnArray.push(column);
     // console.log('...column array - ' + JSON.stringify(columnArray, null, 4))
@@ -4796,12 +4848,12 @@ function initTable(newBlockTableRef, columnCount, rowCount, tableName) {
 }
 function initTableCells(init_num_columns, init_num_rows) {
   console.log(init_num_rows);
-  var tableCells = [];
+  const tableCells = [];
   var x = 1;
-  var y = 1;
+  let y = 1;
   while (y <= init_num_rows) {
     while (x <= init_num_columns) {
-      let columnLetter = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.numberToLetter)(x);
+      const columnLetter = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.numberToLetter)(x);
       if (y == 1) {
         let cell = getDefaultCell('0', String(x), String(y));
         tableCells.push(cell);
@@ -4863,8 +4915,8 @@ function getDefaultColumn(tableId, columnId, columnLocation = 'Body') {
 }
 function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') {
   let cell;
-  let columnLetter = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.numberToLetter)(columnId);
-  let borderContent = rowId == 0 ? columnLetter : String(rowId);
+  const columnLetter = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.numberToLetter)(columnId);
+  const borderContent = rowId == 0 ? columnLetter : String(rowId);
   if (cellLocation === 'Border') {
     cell = {
       table_id: String(tableId),
@@ -4974,25 +5026,21 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
   switch (tableComponent) {
     case 'table':
       return tableBaseAttributes;
-      break;
     case 'columns':
       if (componentLocation === 'Border') {
         return columnBorderAttributes;
       }
       return columnAttributes;
-      break;
     case 'rows':
       if (componentLocation === 'Border') {
         return rowBorderAttributes;
       }
       return rowAttributes;
-      break;
     case 'cells':
       if (componentLocation === 'Border') {
         return cellBorderAttributes;
       }
       return cellAttributes;
-      break;
     default:
       return;
   }
@@ -5005,16 +5053,12 @@ function getDefaultTableClasses(tableComponent) {
   switch (tableComponent) {
     case 'table':
       return tableBaseClasses;
-      break;
     case 'columns':
       return columnClasses;
-      break;
     case 'rows':
       return rowClasses;
-      break;
     case 'cells':
       return cellClasses;
-      break;
     default:
       return;
   }
@@ -5123,7 +5167,7 @@ function numberToLetter(letterNumber) {
     console.log('...In Letter = 0');
     return '0';
   }
-  var letterLookup = letterNumber.toString(26).split('');
+  const letterLookup = letterNumber.toString(26).split('');
   let letterDigit = '';
   letterLookup.map(value => {
     letterDigit = letterDigit + letterMap.find(x => x.nbr === value).letter;
@@ -5147,50 +5191,46 @@ function tableSort(tablePart, tableArray) {
   console.log(tableArray);
   if (tablePart === 'rows') {
     console.log('...in Rows sort');
-    var sortedRows = [...tableArray];
+    const sortedRows = [...tableArray];
     sortedRows.sort((a, b) => {
       // console.log(number(a.row_id))
       // console.log(number([a.row_id]))
       if (Number([a.row_id]) < Number([b.row_id])) {
         return -1;
-      } else {
-        return 1;
       }
+      return 1;
     });
     return sortedRows;
   }
   if (tablePart === 'columns') {
     console.log('...in Columns sort');
-    var sortedColumns = [...tableArray];
+    const sortedColumns = [...tableArray];
     sortedColumns.sort((a, b) => {
       console.log(Number(a.column_id));
       if (Number([a.column_id]) < Number([b.column_id])) {
         return -1;
-      } else {
-        return 1;
       }
+      return 1;
     });
     console.log(sortedColumns);
     return sortedColumns;
   }
   if (tablePart === 'cells') {
     console.log('...in Cells sort');
-    var sortedCells = [...tableArray];
+    const sortedCells = [...tableArray];
     sortedCells.sort((a, b) => {
       console.log([Number([a.row_id]), Number([a.column_id])]);
       console.log([Number([b.row_id]), Number([b.column_id])]);
       if (Number([a.row_id]) === Number([b.row_id])) {
         if (Number([a.column_id]) < Number([b.column_id])) {
           return -1;
-        } else {
-          return 1;
         }
+        return 1;
       }
       if (Number([a.row_id]) < Number([b.row_id])) {
         return -1;
-      } else {
-        return 1;
       }
+      return 1;
 
       // if ([Number([a.row_id]), Number([a.column_id])] < [Number([b.row_id]), Number([b.column_id])]) {
       //     return -1
@@ -5210,9 +5250,8 @@ function generateBlockTableRef() {
 function setBorderContent(row, column, content) {
   if (row === '0' && column === '0') {
     return '';
-  } else {
-    return content;
   }
+  return content;
 }
 function openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id) {
   if (columnMenuVisible && openColumnRow === column_id) {
@@ -5227,81 +5266,14 @@ function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
   return false;
 }
 function removeTags(str) {
-  if (str === null || str === '') return false;else str = str.toString();
+  if (str === null || str === '') return false;
+  str = str.toString();
 
   // Regular expression to identify HTML tags in
   // the input string. Replacing the identified
   // HTML tag with a null string.
-  return str.replace(/(<([^>]+)>)/ig, '');
+  return str.replace(/(<([^>]+)>)/gi, '');
 }
-
-/***/ }),
-
-/***/ "./src/components/configure-column-width/style.scss":
-/*!**********************************************************!*\
-  !*** ./src/components/configure-column-width/style.scss ***!
-  \**********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
-/***/ "./src/components/configure-row-height/style.scss":
-/*!********************************************************!*\
-  !*** ./src/components/configure-row-height/style.scss ***!
-  \********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
-/***/ "./src/editor.scss":
-/*!*************************!*\
-  !*** ./src/editor.scss ***!
-  \*************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
-/***/ "./src/style.scss":
-/*!************************!*\
-  !*** ./src/style.scss ***!
-  \************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
-/***/ "react":
-/*!************************!*\
-  !*** external "React" ***!
-  \************************/
-/***/ ((module) => {
-
-module.exports = window["React"];
-
-/***/ }),
-
-/***/ "react/jsx-runtime":
-/*!**********************************!*\
-  !*** external "ReactJSXRuntime" ***!
-  \**********************************/
-/***/ ((module) => {
-
-module.exports = window["ReactJSXRuntime"];
 
 /***/ }),
 
@@ -5445,13 +5417,23 @@ module.exports = window["wp"]["url"];
 
 /***/ }),
 
-/***/ "./src/block.json":
+/***/ "react":
 /*!************************!*\
-  !*** ./src/block.json ***!
+  !*** external "React" ***!
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"dynamic-tables/dynamic-tables","version":"0.1.0","title":"Dynamic Tables","category":"design","icon":"editor-table","description":"Create custom table blocks with highly customizable and responsive formats","example":{},"textdomain":"dynamic-tables","attributes":{"table_id":{"type":"integer","default":"0"},"block_table_ref":{"type":"string","default":""},"block_alignment":{"type":"string","default":"undefined"}},"usesContext":["postId","postType"],"supports":{"html":false,"className":false,"color":{"button":true,"gradients":true,"heading":true,"link":true},"typography":{"fontSize":true,"__experimentalFontFamily":true,"__experimentalTextDecoration":true,"__experimentalFontStyle":true,"__experimentalFontWeight":true,"__experimentalLetterSpacing":true,"__experimentalWritingMode":true,"__experimentalDefaultControls":{"fontSize":true}},"interactivity":{"clientNavigation":true}},"editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = window["React"];
+
+/***/ }),
+
+/***/ "react/jsx-runtime":
+/*!**********************************!*\
+  !*** external "ReactJSXRuntime" ***!
+  \**********************************/
+/***/ ((module) => {
+
+module.exports = window["ReactJSXRuntime"];
 
 /***/ })
 
