@@ -1,3 +1,10 @@
 {
-    "eslint.debug": true
+    "eslint.debug": true,
+    "[javascript]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true
+    },
+    "[php]": {
+        "editor.formatOnSave": true
+    }
 }

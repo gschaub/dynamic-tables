@@ -1,0 +1,28 @@
+GIT pull workflow for test server
+---------------------------------
+sudo chown schaubadmin:schaubadmin -R ~/docker-wp/wp-test-1/wp-content/plugins/dynamic-tables
+cd ~/docker-wp/wp-test-1/wp-content/plugins/dynamic-tables
+git pull origin main
+sudo chown www-data:www-data  -R ~/docker-wp/wp-test-1/wp-content/plugins/dynamic-tables/*
+sudo find ~/docker-wp/wp-test-1/wp-content/plugins/dynamic-tables/ -type d -exec chmod 755 {} \;
+sudo find ~/docker-wp/wp-test-1/wp-content/plugins/dynamic-tables/ -type f -exec chmod 644 {} \;
+
+
+VS Code
+---------------------
+.eseditorconfig
+
+ES Lint and Prettier
+--------------------
+Install:  
+  - npm install eslint --save-dev
+  - Verify version is 8.x in package.json
+  - npm install prettier eslint-plugin-prettier eslint-config-prettier --save-dev
+  - npm install typescript --save-dev
+
+Create Config:
+  - create new file .eslintrc.json
+  - paste default config
+  
+Install
+  - npm install --save-dev @wordpress/eslint-plugin

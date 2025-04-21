@@ -1325,22 +1325,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 const TYPES = {
-  CREATE_TABLE: "CREATE_TABLE",
-  INSERT_COLUMN: "INSERT_COLUMN",
-  INSERT_ROW: "INSERT_ROW",
-  DELETE_TABLE: "DELETE_TABLE",
-  DELETE_COLUMN: "DELETE_COLUMN",
-  DELETE_ROW: "DELETE_ROW",
-  CHANGE_TABLE_ID: "CHANGE_TABLE_ID",
-  UPDATE_TABLE_PROP: "UPDATE_TABLE_PROP",
-  REMOVE_TABLE_PROP: "REMOVE_TABLE_PROP",
-  UPDATE_ROW: "UPDATE_ROW",
-  UPDATE_COLUMN: "UPDATE_COLUMN",
-  UPDATE_CELL: "UPDATE_CELL",
-  RECEIVE_HYDRATE: "RECEIVE_HYDRATE",
-  RECEIVE_HYDRATE_TEST: "RECEIVE_HYDRATE_TEST",
-  PERSIST: "PERSIST",
-  PROCESS_BORDERS: "PROCESS_BORDERS"
+  CREATE_TABLE: 'CREATE_TABLE',
+  INSERT_COLUMN: 'INSERT_COLUMN',
+  INSERT_ROW: 'INSERT_ROW',
+  DELETE_TABLE: 'DELETE_TABLE',
+  DELETE_COLUMN: 'DELETE_COLUMN',
+  DELETE_ROW: 'DELETE_ROW',
+  CHANGE_TABLE_ID: 'CHANGE_TABLE_ID',
+  UPDATE_TABLE_PROP: 'UPDATE_TABLE_PROP',
+  REMOVE_TABLE_PROP: 'REMOVE_TABLE_PROP',
+  UPDATE_ROW: 'UPDATE_ROW',
+  UPDATE_COLUMN: 'UPDATE_COLUMN',
+  UPDATE_CELL: 'UPDATE_CELL',
+  RECEIVE_HYDRATE: 'RECEIVE_HYDRATE',
+  RECEIVE_HYDRATE_TEST: 'RECEIVE_HYDRATE_TEST',
+  PERSIST: 'PERSIST',
+  PROCESS_BORDERS: 'PROCESS_BORDERS'
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TYPES);
 
@@ -1375,17 +1375,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateTableEntity: () => (/* binding */ updateTableEntity),
 /* harmony export */   updateTableProp: () => (/* binding */ updateTableProp)
 /* harmony export */ });
-/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
-/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/url */ "@wordpress/url");
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_url__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_data_controls__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data-controls */ "@wordpress/data-controls");
-/* harmony import */ var _wordpress_data_controls__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data_controls__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/url */ "@wordpress/url");
+/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_url__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_data_controls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data-controls */ "@wordpress/data-controls");
+/* harmony import */ var _wordpress_data_controls__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data_controls__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _table_entity__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./table-entity */ "./src/data/table-entity.js");
 /* harmony import */ var _action_types_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./action-types.js */ "./src/data/action-types.js");
-
 
 
 
@@ -1492,7 +1491,7 @@ const createTableEntity = () => async ({
   console.log('CREATING TABLE ENTITY');
   console.log(newTable);
   try {
-    const tableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).saveEntityRecord('dynamic-tables', 'table', newTable);
+    const tableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__.store).saveEntityRecord('dynamic-tables', 'table', newTable);
     dispatch.assignTableId(tableEntity.id);
     return tableEntity.id;
   } catch (error) {
@@ -1505,7 +1504,7 @@ const saveTableEntity = tableId => ({
 }) => {
   console.log('SAVING TABLE ENTITY');
   try {
-    registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).saveEditedEntityRecord('dynamic-tables', 'table', tableId);
+    registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__.store).saveEditedEntityRecord('dynamic-tables', 'table', tableId);
   } catch (error) {
     console.log('Error in saveTableEntity - Table ID - ' + tableId);
     alert('            ...Save Table Entity - async error - ' + error);
@@ -1531,16 +1530,16 @@ const updateTableEntity = (tableId, overrideTableStatus = '') => ({
   } = select.getTable(tableId, false);
 
   // Remove border row if it exists
-  var filteredRows = rows.filter(row => row.row_id !== '0');
+  const filteredRows = rows.filter(row => row.row_id !== '0');
 
   // Remove border column if it exists
-  var filteredColumns = columns.filter(column => column.column_id !== '0');
+  const filteredColumns = columns.filter(column => column.column_id !== '0');
 
   // Remove border cells if they exists
-  var filteredCells = cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
+  const filteredCells = cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
 
   // Remove cell_id from cells.  They don't go back to the webservice
-  var transformedCells = filteredCells.map(({
+  const transformedCells = filteredCells.map(({
     table_id,
     column_id,
     row_id,
@@ -1585,7 +1584,7 @@ const updateTableEntity = (tableId, overrideTableStatus = '') => ({
    *          undoIgnore: Bool
    */
   try {
-    registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).editEntityRecord('dynamic-tables', 'table', table_id, updatedTable);
+    registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__.store).editEntityRecord('dynamic-tables', 'table', table_id, updatedTable);
   } catch (error) {
     console.log('Error in updateTableEntity - Table ID - ' + tableId);
     alert('            ...Update Table Entity - async error - ' + error);
@@ -1598,7 +1597,7 @@ const deleteTableEntity = tableId => async ({
 }) => {
   console.log('In Action deleteTableEntity');
   try {
-    const deletedTableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).deleteEntityRecord('dynamic-tables', 'table', tableId);
+    const deletedTableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__.store).deleteEntityRecord('dynamic-tables', 'table', tableId);
     dispatch({
       type: DELETE_TABLE,
       tableId
@@ -1767,7 +1766,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-const STORE_NAME = "dynamic-tables/table";
+const STORE_NAME = 'dynamic-tables/table';
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (STORE_NAME);
 
 /***/ }),
@@ -2553,9 +2552,9 @@ function getTableIdByBlock(state, block_table_ref) {
 
 /**
  * Return all tables that are associated with unmounted blocks
- * 
- * @param {*} state 
- * @returns 
+ *
+ * @param {*} state
+ * @returns
  */
 function getUnmountedTables(state) {
   console.log(state.tables);

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /**
  * Retrieves the translation of text.
  *
