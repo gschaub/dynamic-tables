@@ -160,6 +160,7 @@
   border-width: var(--gridLineWidth);
   border-color: black;
   justify-content: var(--bodyTextAlignment);
+  min-height: 1.5em;
 }
 
 .grid-control__body-cells--zoom {
