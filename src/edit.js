@@ -1,9 +1,3 @@
-/* eslint-disable prettier/prettier */
-/**
- * Retrieves the translation of text.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
- */
 import { useSelect, useDispatch, dispatch } from '@wordpress/data';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
@@ -115,6 +109,13 @@ dispatch('core').addEntities([
 	},
 ]);
 
+/**
+ * Exports main logic for Dynamic Tables block.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} props
+ */
 export default function Edit(props) {
 	const blockProps = useBlockProps({
 		className: 'dynamic-table-edit-block',
@@ -122,15 +123,11 @@ export default function Edit(props) {
 
 	console.log(props);
 
-	/**
-	 * Esternal Store Action useDispatch declarations
-	 */
+	/* Esternal Store Action useDispatch declarations */
 	const { lockPostSaving } = useDispatch(editorStore);
 	const { lockPostAutosaving } = useDispatch(editorStore);
 
-	/**
-	 * Table Store Action useDispatch declarations
-	 */
+	/* Table Store Action useDispatch declarations */
 	const { receiveNewTable } = useDispatch(tableStore);
 	const { createTableEntity } = useDispatch(tableStore);
 	const { saveTableEntity } = useDispatch(tableStore);
@@ -150,9 +147,7 @@ export default function Edit(props) {
 	const { processDeletedTables } = useDispatch(tableStore);
 	const { createNotice, removeNotice } = useDispatch(noticeStore);
 
-	/**
-	 * Local State declarations
-	 */
+	/* Local State declarations */
 	const [isTableStale, setTableStale] = useState(true);
 	const [openColumnRow, setOpenColumnRow] = useState(0);
 	const [tablePropAttributes, setTablePropAttributes] = useState({});
@@ -168,7 +163,8 @@ export default function Edit(props) {
 	const [numRows, setNumRows] = useState(1);
 	const [gridCells, setGridCells] = useState([]);
 	const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = useState(false);
-	// Current future features: Zoom to details
+
+	/* Current future features: Zoom to details */
 	const enableFutureFeatures = false;
 	const enableProFeatures = false;
 
@@ -182,26 +178,13 @@ export default function Edit(props) {
 	console.log('Block Table Ref - ' + block_table_ref);
 
 	/**
-	 * Load entity framework for table entity type
+	 * Get Current Table Id.
+	 *
+	 * @type     {*}
+	 * @since    1.0.0
+	 *
+	 * @return Table Id
 	 */
-
-	// useEffect(() => {
-	// 	dispatch('core').addEntities([
-	// 		{
-	// 			name: 'table',
-	// 			kind: 'dynamic-tables/v1',
-	// 			baseURL: '/dynamic-tables/v1/tables',
-	// 			baseURLParams: { context: 'edit' },
-	// 			plural: 'tables',
-	// 			label: __('Table')
-	// 		}
-	// 	]);
-	// }, []);
-
-	/**
-	 * Determine if the State table id has changed
-	 */
-
 	const { currentTableId } = useSelect(select => {
 		const { getTableIdByBlock } = select(tableStore);
 		const currentTableId = getTableIdByBlock(block_table_ref);
@@ -222,6 +205,13 @@ export default function Edit(props) {
 			currentTableId
 	);
 
+	/**
+	 * Set Table ID for newly created tables
+	 *
+	 * @since    1.0.0
+	 *
+	 * @returns  {boolean} Was Table Changed?
+	 */
 	const setTableIdChanged = () => {
 		if (awaitingTableEntityCreation && Number(currentTableId) !== Number(table_id)) {
 			console.log('  ... In table changed - TRUE');
@@ -237,12 +227,16 @@ export default function Edit(props) {
 	console.log('Table id update: ' + isTableIdChanged);
 
 	/**
+	 * Identify unmounted tables
+	 *
 	 * Table blocks is unmounted when entering the text editor AND when deleted.  However,
 	 * don't know whether the table was deleted when an unmount is detected.  Therefore,
 	 * we mark them as unmounted at that time, and can identify whether the block was
 	 * truly deleted on the subsequent render.
 	 *
 	 * We mark tables as deleted if they do not identify that the block has been remounted
+	 *
+	 * @since    1.0.0
 	 */
 	const { unmountedTables } = useSelect(select => {
 		const { getUnmountedTables } = select(tableStore);
@@ -263,8 +257,7 @@ export default function Edit(props) {
 	});
 
 	const postChangesAreSaved = usePostChangesSaved();
-	// console.log(postChangesAreSaved)
-	// console.log(unmountedTables)
+
 	useEffect(() => {
 		if (postChangesAreSaved) {
 			alert('Sync REST Now');
@@ -290,6 +283,13 @@ export default function Edit(props) {
 		}
 	}, [postChangesAreSaved, unmountedTables]);
 
+	/**
+	 * Set Block Table Status
+	 *
+	 * @since    1.0.0
+	 *
+	 * @return  {("None" | "New" | "Stale" | "Saved")}  Table Status
+	 */
 	const setBlockTableStatus = () => {
 		if (block_table_ref === '') {
 			return 'None';
@@ -306,6 +306,13 @@ export default function Edit(props) {
 		return 'Saved';
 	};
 
+	/**
+	 * Summary. (use period). <break> Description. (use period).
+	 *
+	 * @since    1.0.0
+	 *
+	 * @return  {boolean} Is this a new dybamic table block?
+	 */
 	const setNewBlock = () => {
 		if (block_table_ref === '') {
 			return true;
@@ -313,11 +320,21 @@ export default function Edit(props) {
 		return false;
 	};
 
+	/**
+	 * Set lock for saving.
+	 *
+	 * @since    1.0.0
+	 */
 	const setSaveLock = () => {
 		lockPostSaving('lockPostSaving');
 		lockPostAutosaving('lockPostAutosaving');
 	};
 
+	/**
+	 * Remove lock for saving.
+	 *
+	 * @since    1.0.0
+	 */
 	const setClearSaveLock = () => {
 		lockPostSaving('unlockPostSaving');
 		lockPostAutosaving('unlockPostAutosaving');
@@ -331,12 +348,12 @@ export default function Edit(props) {
 	 */
 	if (isNewBlock) {
 		setSaveLock();
-		// setNumColumns(1);
-		// setNumRows(1);
 	}
 
 	/**
-	 * Retrieve table entity from table webservice and load table store
+	 * Retrieve table entity from table webservice and load table store.
+	 *
+	 * @since    1.0.0
 	 */
 	const {
 		table,
@@ -414,11 +431,6 @@ export default function Edit(props) {
 				setTableStale(() => false);
 			}
 
-			// console.log('isTableStale = ' + isTableStale)
-			// console.log('tableHasStartedResolving = ' + hasStartedResolution('getTable', selectorArgs))
-			// console.log('tableHasFinishedResolving = ' + hasFinishedResolution('getTable', selectorArgs))
-			// console.log('tableIsResolving = ' + isResolving('getTable', selectorArgs))
-
 			return {
 				table: blockTable,
 				tableStatus: blockTable.table_status,
@@ -430,12 +442,17 @@ export default function Edit(props) {
 		[table_id, isTableIdChanged, isTableStale, block_table_ref]
 	);
 
+	/**
+	 * Lookup table attribute value.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Array}  tableAttributes
+	 * @param {string} attributeName
+	 * @return {*} Attribute value
+	 */
 	function getTablePropAttribute(tableAttributes, attributeName) {
 		const attributeValue = tableAttributes?.[attributeName];
-		// if (!attributeValue) {
-		// 	const defaultTableAttributes = getDefaultTableAttributes('table')
-		// 	attributeValue = defaultTableAttributes?.[attributeName]
-		// }
 		return attributeValue;
 	}
 
@@ -468,22 +485,11 @@ export default function Edit(props) {
 	console.log(JSON.stringify(headerBorder, null, 4));
 
 	/**
-	 * Extract and unpack table classes
-	 */
-
-	/**
 	 * Synchronize PostId
 	 *
 	 * Post ID is assigned a value of '0' upon table creation and can change over the life of a post.
 	 * props.context is authoritative for Post ID so we ensure the table is sync'd to that.
 	 */
-
-	console.log('Is Resolving? = ' + tableIsResolving);
-	console.log('Started Resolving? = ' + tableHasStartedResolving);
-	console.log('Finished Resolving? = ' + tableHasFinishedResolving);
-	console.log('Old Post ID = ' + table.post_id);
-	console.log('New Post ID = ' + props.context.postId);
-
 	if (
 		tableHasStartedResolving &&
 		tableHasFinishedResolving &&
@@ -536,10 +542,13 @@ export default function Edit(props) {
 	console.log('Block Table Ref from Block - ' + block_table_ref);
 
 	/**
-	 * Called upon event to add a column
+	 * Insert a new column in the table.
 	 *
-	 * @param {*} tableId
-	 * @param {*} columnId
+	 * @since    1.0.0
+	 *
+	 * @param {number} tableId  Identifier key for the table
+	 * @param {number} columnId Identifier for the table column
+	 * @return {Object} Dynamic Table
 	 */
 	function insertColumn(tableId, columnId) {
 		const newColumn = getDefaultColumn(tableId, columnId);
@@ -555,24 +564,19 @@ export default function Edit(props) {
 			}
 		}
 
-		console.log('ADDING COLUMN');
-		console.log('ColumnId = ' + columnId);
-		console.log(newColumn);
-		console.log(tableCells);
-
 		addColumn(tableId, columnId, newColumn, tableCells);
-
-		console.log('Update coreStore');
 		setTableStale(false);
 		return updateTableEntity(tableId);
 	}
 
 	/**
-	 * Called upon event to add a row
+	 * Insert a new row in the table.
 	 *
-	 * @param {*} tableId
-	 * @param {*} rowId
-	 * @returns
+	 * @since    1.0.0
+	 *
+	 * @param {number} tableId Identifier key for the table
+	 * @param {number} rowId   Identifier for the table row
+	 * @return {Object} Dynamic Table
 	 */
 	function insertRow(tableId, rowId) {
 		const newRow = getDefaultRow(tableId, rowId);
@@ -589,79 +593,52 @@ export default function Edit(props) {
 			}
 		}
 
-		console.log('ADDING ROW');
-		console.log('RowId = ' + rowId);
-		console.log(newRow);
-		console.log(tableCells);
-
 		addRow(tableId, rowId, newRow, tableCells);
-
-		console.log('Update coreStore');
 		setTableStale(false);
 		return updateTableEntity(tableId);
 	}
 
 	/**
-	 * Called upon event to delete a column
+	 * Delete a column from the table
 	 *
-	 * @param {*} tableId
-	 * @param {*} columnId
+	 * @param {number} tableId  Identifier key for the table
+	 * @param {number} columnId Identifier for the table column
+	 * @return {Object} Dynamic Table
 	 */
 	function deleteColumn(tableId, columnId) {
-		console.log('Deleting Column - ' + columnId);
 		removeColumn(tableId, columnId);
-
-		console.log('Update coreStore');
 		setTableStale(false);
 		return updateTableEntity(tableId);
 	}
 
 	/**
-	 * Called upon event to delete a row
+	 * Delete a column from the table
+	 *
+	 * @since    1.0.0
 	 *
 	 * @param {*} tableId
 	 * @param {*} rowId
+	 * @return {Object} Dynamic Table
 	 */
 	function deleteRow(tableId, rowId) {
-		console.log('Deleting Row - ' + rowId);
 		removeRow(tableId, rowId);
-
-		console.log('Update coreStore');
 		setTableStale(false);
 		return updateTableEntity(tableId);
 	}
 
 	/**
-	 * Update table store to reflect changes made to EXISTING table attributes
+	 * Update table store to reflect changes made to EXISTING table attributes.
 	 *
+	 * @since    1.0.0
 	 *
-	 * @param {*} tableId   - Id of table to update
-	 * @param {*} attribute - Table Object Attribute
-	 * @param {*} id        - Array Index Id
-	 * @param {*} type      - See Below
-	 * @param {*} value     - New attribute value
-	 * @param {*} persist   - Write update to entity record
-	 *
-	 *                      Valid Types:
-	 *                      - CONTENT - Cell Content
-	 *                      - ATTRIBUTES - Array of attributes
-	 *                      - CLASSES - Array of Classes
-	 *                      - PROP - Table Property
+	 * @param {number}                  tableId        Identifier key for the table
+	 * @param {string}                  attribute      (table, column, row, cell)
+	 * @param {number | null}           id             Column and/or row id
+	 * @param {string}                  type           (CONTENT, ATTRIBUTES, CLASSES, PROP)
+	 * @param {string | number | Array} value          New value that will replace existing config
+	 * @param {boolean}                 [persist=true] Update table entity (not just the table store)
 	 */
-
 	function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
-		console.log(
-			'Table Attribute Change: attribute - ' +
-				attribute +
-				', id - ' +
-				id +
-				', type - ' +
-				type +
-				', value - ' +
-				value
-		);
-		let updatedTable;
-
 		switch (type) {
 			case 'CONTENT': {
 				if (attribute === 'cell') {
@@ -671,21 +648,14 @@ export default function Edit(props) {
 			}
 			case 'ATTRIBUTES': {
 				if (attribute === 'cell') {
-					console.log('...Updating Cell');
 					updateCell(tableId, id, 'attributes', value);
 				} else if (attribute === 'row') {
-					console.log('...Updating Row');
-					console.log(value);
 					setRowAttributes(value);
 					updateRow(tableId, id, 'attributes', value);
 				} else if (attribute === 'column') {
-					console.log('...Updating Column');
-					console.log(value);
 					setColumnAttributes(value);
 					updateColumn(tableId, id, 'attributes', value);
 				} else if (attribute === 'table') {
-					console.log('...Updating Table Attributes');
-					console.log(value);
 					updateTableProp(tableId, 'attributes', value);
 				}
 				break;
@@ -701,9 +671,6 @@ export default function Edit(props) {
 			case 'PROP':
 				{
 					updateTableProp(tableId, attribute, value);
-
-					// Update Table Status only table change is for status and the
-					// call must bypass the regular persist (persist === false)
 					if (attribute === 'unmounted_blockid') {
 						updateTableEntity(tableId, 'unknown');
 					}
@@ -713,25 +680,26 @@ export default function Edit(props) {
 			default:
 				console.log('Unrecognized Attibute Type');
 		}
-		console.log('Update coreStore');
 		setTableStale(false);
+
+		/**
+		 * Update Table Status only table change is for status and the
+		 * call must bypass the regular persist (persist === false)
+		 */
 		if (persist) {
 			return updateTableEntity(tableId);
 		}
 	}
 
 	/**
-	 * Add/remove grid control column and row when table attribute of "Show Grid" is checked
+	 * Show or hide column and row borders to support updates to them.
 	 *
-	 * @param {*} table
-	 * @param {*} isChecked
-	 * @returns
+	 * @since    1.0.0
+	 *
+	 * @param {Object}  table     Dynamic Table
+	 * @param {boolean} isChecked Are borders being toggled on?
 	 */
 	function onToggleBorders(table, isChecked) {
-		console.log('TOGGLING BORDER');
-		console.log(table);
-		console.log('Number Columns before update = ' + numColumns);
-
 		let updatedRows;
 		let updatedColumns;
 		let updatedCells;
@@ -755,7 +723,7 @@ export default function Edit(props) {
 			setNumColumns(numColumns + 1);
 			setNumRows(numRows + 1);
 
-			// Create header row border at top of table
+			/**  Create header row border at top of table */
 			const rowBorder = [];
 			rowBorder.push(getDefaultRow(table_id, 0, 'Border'));
 
@@ -766,7 +734,7 @@ export default function Edit(props) {
 				rowCells.push(cell);
 			}
 
-			// Create column border down left side of table
+			/** Create column border down left side of table */
 			const columnBorder = [];
 			columnBorder.push(getDefaultColumn(table_id, 0, 'Border'));
 
@@ -776,47 +744,56 @@ export default function Edit(props) {
 				columnCells.push(cell);
 			}
 
-			// Sort table parts
+			/** Sort table parts */
 			updatedRows = tableSort('rows', [...table.rows, ...rowBorder]);
 			updatedColumns = tableSort('columns', [...table.columns, ...columnBorder]);
 			updatedCells = tableSort('cells', [...table.cells, ...rowCells, ...columnCells]);
 
-			// console.log(table)
-			// console.log('Row border - ' + JSON.stringify(rowBorder, null, 4));
-			// console.log('Column border - ' + JSON.stringify(columnBorder, null, 4));
-			// console.log('Updated columns - ' + JSON.stringify(updatedColumns, null, 4));
-			// console.log('Updated cells - ' + JSON.stringify(updatedCells, null, 4));
-
 			updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
 		}
-
 		setShowBorders(isChecked);
 		setTableStale(false);
-		return;
 	}
 
+	/**
+	 * Create new table and related table entity.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {number} columnCount Number of columns in table
+	 * @param {number} rowCount    Number of rows in table
+	 * @param {string} tableName   Name of new table
+	 */
 	function createTable(columnCount, rowCount, tableName) {
-		console.log('FUNCTION - CREATE TABLE');
-		console.log('InitialRows - ' + rowCount);
-		console.log('InitialColumns - ' + columnCount);
-
 		setTableStale(false);
 		const newBlockTableRef = generateBlockTableRef();
 		const newTable = initTable(newBlockTableRef, columnCount, rowCount, tableName);
 
-		console.log(JSON.stringify(newTable, null, 4));
 		props.setAttributes({ block_table_ref: newBlockTableRef });
 		receiveNewTable(newTable);
 		setAwaitingTableEntityCreation(true);
 		createTableEntity();
-		//		setBlockTableStatus('New');
 	}
 
+	/**
+	 * Process event to create new table.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event Table Creation Event
+	 */
 	function onCreateTable(event) {
 		event.preventDefault();
 		createTable(numColumns, numRows, tableName);
 	}
 
+	/**
+	 * Process changes for the column count when defining a new table creation.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {number} num_columns Number of columns entered in form
+	 */
 	function onChangeInitialColumnCount(num_columns) {
 		let newNumColumns = num_columns;
 		if (num_columns < 1 || num_columns > 50) {
@@ -837,6 +814,13 @@ export default function Edit(props) {
 		setNumColumns(newNumColumns);
 	}
 
+	/**
+	 * Process changes for the row count when defining a new table creation.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {number} num_rows Number of rows entered in form
+	 */
 	function onChangeInitialRowCount(num_rows) {
 		let newNumRows = num_rows;
 		if (num_rows < 1 || num_rows > 1000) {
@@ -855,11 +839,18 @@ export default function Edit(props) {
 		setNumRows(newNumRows);
 	}
 
+	/**
+	 * Process updates (insert, update, delete) to a table column.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event                   Table Creation Event
+	 * @param {string} updateType              attribute (Update), insert, delete
+	 * @param {number} tableId                 Identifier key for the table
+	 * @param {number} columnId                Identifier for the table column
+	 * @param {Array}  updatedColumnAttributes New column attribute values
+	 */
 	function onUpdateColumn(event, updateType, tableId, columnId, updatedColumnAttributes) {
-		console.log('    ...onUpdateColumn');
-		console.log(event);
-		console.log(updatedColumnAttributes);
-
 		switch (updateType) {
 			case 'attributes': {
 				setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
@@ -880,14 +871,21 @@ export default function Edit(props) {
 			default:
 				console.log('Unrecognized Column Update Type');
 		}
-		console.log('Show Borders = ' + showBorders);
 	}
 
+	/**
+	 * Process updates (insert, update, delete) to a table row.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event                   Table Creation Event
+	 * @param {string} updateType              attribute (Update), insert, delete
+	 * @param {number} tableId                 Identifier key for the table
+	 * @param {number} rowId                   Identifier for the table row
+	 * @param {Array}  updatedColumnAttributes New column attribute values
+	 * @param {Array}  updatedRowAttributes    New row attribute values
+	 */
 	function onUpdateRow(event, updateType, tableId, rowId, updatedRowAttributes) {
-		console.log('    ...onUpdateRow');
-		console.log(event);
-		console.log(updatedRowAttributes);
-
 		switch (updateType) {
 			case 'attributes': {
 				setTableAttributes(tableId, 'row', rowId, 'ATTRIBUTES', updatedRowAttributes);
@@ -908,16 +906,19 @@ export default function Edit(props) {
 			default:
 				console.log('Unrecognized Row Update Type');
 		}
-		console.log('Show Borders = ' + showBorders);
 	}
 
+	/**
+	 * Process mouse clicks on the table borders.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {number} column_id Identifier for the table column
+	 * @param {number} row_id    Identifier for the table row
+	 * @param {Object} table     Dynamic Table
+	 * @param {Object} event     Border mouse click event
+	 */
 	function onMouseBorderClick(column_id, row_id, table, event) {
-		console.log('MOUSE CLICKED IN BORDER');
-		console.log('Column = ' + column_id);
-		console.log('Row = ' + row_id);
-		console.log(table);
-		console.log(event);
-
 		if (row_id === '0' && column_id !== '0') {
 			console.log('Opening Column ' + column_id);
 			const compareColumnId = column_id;
@@ -937,16 +938,16 @@ export default function Edit(props) {
 			setRowMenuVisible(true);
 			setOpenColumnRow(row_id);
 		}
-		// alert('Mouse clicked on column')
-		// return <ColumnMenu>Column Menu</ColumnMenu>
 		setTableStale(false);
 	}
 
 	/**
-	 * Hide the table title from displaying
+	 * Process request to prevent the table title from displaying
 	 *
-	 * @param {*} table
-	 * @param {*} isChecked
+	 * @since    1.0.0
+	 *
+	 * @param {Object}  table     Dynamic Table
+	 * @param {boolean} isChecked Is the table title being hidden?
 	 */
 	function onHideTitle(table, isChecked) {
 		const updatedTableAttributes = {
@@ -957,10 +958,12 @@ export default function Edit(props) {
 	}
 
 	/**
-	 * Allow the table to scroll horizontally
+	 * Process request to allow the table to scroll horizontally
 	 *
-	 * @param {*} table
-	 * @param {*} isChecked
+	 * @since    1.0.0
+	 *
+	 * @param {Object}  table     Dynamic Table
+	 * @param {boolean} isChecked Show horizontal scroll bar if appropriate?
 	 */
 	function onAllowHorizontalScroll(table, isChecked) {
 		const updatedTableAttributes = {
@@ -971,10 +974,12 @@ export default function Edit(props) {
 	}
 
 	/**
-	 * Show colored bands on even numbered table rows
+	 * Process request to show banded even numbered table rows
 	 *
-	 * @param {*} table
-	 * @param {*} isChecked
+	 * @since    1.0.0
+	 *
+	 * @param {Object}  table     Dynamic Table
+	 * @param {boolean} isChecked Show banded table rows?
 	 */
 	function onShowBandedRows(table, isChecked) {
 		const updatedTableAttributes = {
@@ -985,11 +990,11 @@ export default function Edit(props) {
 	}
 
 	/**
-	 * Show colored bands on even numbered table rows
+	 * Process requests for specific background and text colors on banded table rows
 	 *
-	 * @param {*} table
-	 * @param     type
-	 * @param {*} color
+	 * @param {Object} table Dynamic Table
+	 * @param {string} type  Attribute to be colored (background, text)
+	 * @param {string} color New color code (hex)
 	 */
 	function onBandedRowColor(table, type, color) {
 		let updatedTableAttributes = '';
@@ -998,7 +1003,6 @@ export default function Edit(props) {
 				...table.attributes,
 				bandedRowBackgroundColor: color,
 			};
-			console.log(updatedTableAttributes);
 			setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 		}
 
@@ -1007,16 +1011,17 @@ export default function Edit(props) {
 				...table.attributes,
 				bandedTextColor: color,
 			};
-			console.log(updatedTableAttributes);
 			setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 		}
 	}
 
 	/**
-	 * Make first table row the Header
+	 * Process request create a header row from the first table row.
 	 *
-	 * @param {*} table
-	 * @param {*} isChecked
+	 * @since    1.0.0
+	 *
+	 * @param {Object}  table     Dynamic Table
+	 * @param {boolean} isChecked Create a header row
 	 */
 	function onEnableHeaderRow(table, isChecked) {
 		const updatedTableAttributes = {
@@ -1024,61 +1029,54 @@ export default function Edit(props) {
 			enableHeaderRow: isChecked,
 			headerRowSticky: false,
 		};
-		console.log(updatedTableAttributes);
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 
 		const updatedRowAttributes = {
 			...table.rows.find(x => x.row_id === '1').attributes,
 			isHeader: isChecked ? true : false,
 		};
-
-		console.log(updatedRowAttributes);
 		setTableAttributes(table.table_id, 'row', '1', 'ATTRIBUTES', updatedRowAttributes);
 	}
 
 	/**
-	 * Make first table row the Header
+	 * Process request to align header column content horizontally.
 	 *
-	 * @param {*} table
-	 * @param {*} alignmentValue
-	 * @param     alignment
+	 * @since    1.0.0
+	 *
+	 * @param {Object} table     Dynamic Table
+	 * @param {string} alignment The alignment position (left, center, right)
 	 */
 	function onAlignHeader(table, alignment) {
-		console.log('ON HEADER ALIGNMENT');
-		console.log(alignment);
 		const updatedTableAttributes = {
 			...table.attributes,
 			headerAlignment: alignment,
 		};
-		console.log(updatedTableAttributes);
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
 	/**
-	 * Make first table row the Header
+	 * Process request to syle header row borders.
 	 *
-	 * @param {*} table
-	 * @param {*} isChecked
-	 * @param     border
+	 * @since    1.0.0
+	 *
+	 * @param {Object} table  Dynamic Table
+	 * @param {Array}  border Outside header border color, width, style
 	 */
 	function onHeaderBorder(table, border) {
-		console.log('ON HEADER BORDER');
-		console.log(border);
-
 		const updatedTableAttributes = {
 			...table.attributes,
 			headerBorder: border,
 		};
-		console.log(updatedTableAttributes);
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
 	/**
-	 * Make first table row the Header
-	  allowHorizontalScroll
+	 * Process request to make the header row sticky with vertical scroll.
 	 *
-	 * @param {*} table
-	 * @param {*} isChecked
+	 * @since    1.0.0
+	 *
+	 * @param {Object}  table     Dynamic Table
+	 * @param {boolean} isChecked Make header row sticky
 	 */
 	function onHeaderRowSticky(table, isChecked) {
 		const updatedTableAttributes = {
@@ -1089,47 +1087,44 @@ export default function Edit(props) {
 	}
 
 	/**
-	 * Make first table row the Header
+	 * Process request to align body column content horizontally.
 	 *
-	 * @param {*} table
-	 * @param {*} alignmentValue
-	 * @param     alignment
+	 * @since    1.0.0
+	 *
+	 * @param {Object} table     Dynamic Table
+	 * @param {string} alignment The alignment position (left, center, right)
 	 */
 	function onAlignBody(table, alignment) {
-		console.log('ON BODY  ALIGNMENT');
-		console.log(alignment);
 		const updatedTableAttributes = {
 			...table.attributes,
 			bodyAlignment: alignment,
 		};
-		console.log(updatedTableAttributes);
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
 	/**
-	 * Make first table row the Header
+	 * Process request to syle body row borders.
 	 *
-	 * @param {*} table
-	 * @param {*} isChecked
-	 * @param     border
+	 * @since    1.0.0
+	 *
+	 * @param {Object} table  Dynamic Table
+	 * @param {Array}  border Outside body border color, width, style
 	 */
 	function onBodyBorder(table, border) {
-		console.log('ON BODY BORDER');
-		console.log(border);
-
 		const updatedTableAttributes = {
 			...table.attributes,
 			bodyBorder: border,
 		};
-		console.log(updatedTableAttributes);
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
 	/**
-	 * Show inner grid lines
+	 * Process request to show inner body row grid lines.
 	 *
-	 * @param {*} table
-	 * @param {*} isChecked
+	 * @since    1.0.0
+	 *
+	 * @param {Object}  table     Dynamic Table
+	 * @param {boolean} isChecked Show inner body row grid lines
 	 */
 	function onShowGridLines(table, isChecked) {
 		const updatedTableAttributes = {
@@ -1140,10 +1135,12 @@ export default function Edit(props) {
 	}
 
 	/**
-	 * Inner grid line width
+	 * Process request to set grid line width
 	 *
-	 * @param {*} table
-	 * @param {*} gridLineWidth
+	 * @since    1.0.0
+	 *
+	 * @param {Object} table         Dynamic Table
+	 * @param {string} gridLineWidth Width of grid lines in pixels
 	 */
 	function onGridLineWidth(table, gridLineWidth) {
 		const updatedTableAttributes = {
@@ -1153,15 +1150,21 @@ export default function Edit(props) {
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
 
+	/**
+	 * Set variables used to render the dynamic table
+	 */
+
 	const gridColumnStyle = processColumns(
 		isNewBlock,
 		tableIsResolving,
 		enableFutureFeatures,
 		table.columns
 	);
+
 	const gridHeaderRowStyle = processHeaderRow(isNewBlock, tableIsResolving, table.rows);
 	const gridBodyRowStyle = processBodyRows(isNewBlock, tableIsResolving, table.rows);
 	const startGridHeaderRowNbrStyle = showBorders ? 2 : 1;
+
 	const endGridHeaderRowNbrStyle = endGridRowNbr(
 		1,
 		'Header',
@@ -1170,7 +1173,9 @@ export default function Edit(props) {
 		showBorders,
 		false
 	);
+
 	const startGridBodyRowNbrStyle = startGridRowNbr(enableHeaderRow, showBorders);
+
 	const endGridBodyRowNbrStyle = endGridRowNbr(
 		startGridBodyRowNbrStyle,
 		'Body',
@@ -1179,6 +1184,7 @@ export default function Edit(props) {
 		showBorders,
 		false
 	);
+
 	const horizontalScrollStyle = allowHorizontalScroll ? 'auto' : 'hidden';
 
 	const gridBandedRowTextColor = gridBandedRowTextColorStyle(
@@ -1186,12 +1192,15 @@ export default function Edit(props) {
 		tableIsResolving,
 		bandedTextColor
 	);
+
 	const gridBandedRowBackgroundColor = gridBandedRowBackgroundColorStyle(
 		isNewBlock,
 		tableIsResolving,
 		bandedRowBackgroundColor
 	);
+
 	const gridShowInnerLines = gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines);
+
 	const gridInnerLineWidth = gridInnerBorderWidthStyle(
 		isNewBlock,
 		tableIsResolving,
@@ -1201,6 +1210,7 @@ export default function Edit(props) {
 
 	const headerRowStickyStyle = headerRowSticky ? 'auto' : 'hidden';
 	const headerRowStickyClass = headerRowSticky ? 'grid-control__header--sticky ' : '';
+
 	const gridHeaderBackgroundColorStyle = getGridHeaderBackgroundColorStyle(
 		isNewBlock,
 		tableIsResolving,
@@ -1312,30 +1322,14 @@ export default function Edit(props) {
 	const bodyBorderLeftStyle = getBorderStyle(bodyBorder, 'left', 'style', bodyBorderStyleType);
 	const bodyBorderLeftWidth = getBorderStyle(bodyBorder, 'left', 'width', bodyBorderStyleType);
 
-	console.log('Grid Column Style = ' + gridColumnStyle);
-	// const gridStyle = setGridStyle(isNewBlock, tableIsResolving, table)
-	console.log('Banded Grid Text Color = ' + gridBandedRowTextColor);
-	console.log('Banded Grid Background Color = ' + gridBandedRowBackgroundColor);
-
-	console.log('MATCH VALUE FOR TABLE:');
-	console.log(table);
-	// console.log(isRetrievingTable(table))
-	console.log(JSON.stringify(table));
-	console.log('Is Block New - ' + isNewBlock);
-	console.log('Block Table Status - ' + blockTableStatus);
-	console.log('Is Table Resolving - ' + tableIsResolving);
-	console.log('gridColumnStyle = ' + gridColumnStyle);
-	console.log('gridRowHeaderStyle = ' + gridHeaderRowStyle);
-	console.log('gridRowBodyStyle = ' + gridBodyRowStyle);
-	console.log(blockProps);
-	console.log(blockProps.style.backgroundColor);
-
 	if (!tableIsResolving) {
 		// console.log(table.attributes?.bandedRows)
 	}
 
 	return (
 		<div {...blockProps}>
+			{/* Render an existing table after it has been fetched  */}
+
 			{!isNewBlock && !tableIsResolving && (
 				<>
 					<BlockControls>
@@ -1903,8 +1897,10 @@ export default function Edit(props) {
 				</>
 			)}
 
+			{/* Show a spinner while the table is being fetcheds */}
 			{!isNewBlock && tableIsResolving && <Spinner>Retrieving Table Data</Spinner>}
 
+			{/* Show the form to identify and create a new table */}
 			{isNewBlock && (
 				<Placeholder
 					label={__('Dynamic Table')}

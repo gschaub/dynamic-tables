@@ -151,7 +151,7 @@ export function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') 
 
 export function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
 	const tableBaseAttributes = {
-		showGridLines: false,
+		showGridLines: true,
 		bandedRows: false,
 		bandedRowBackgroundColor: '#d8dbda',
 		bandedTextColor: '#d8dbda',
