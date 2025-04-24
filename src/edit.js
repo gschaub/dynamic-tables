@@ -38,20 +38,6 @@ import {
 	column,
 	search,
 	blockTable as icon,
-	// tableColumnAfter,
-	// tableColumnBefore,
-	// tableColumnDelete,
-	// tableRowAfter,
-	// tableRowBefore,
-	// tableRowDelete,
-	// table,
-	// moreVertical,
-	// more,
-	// arrowLeft,
-	// arrowRight,
-	// arrowUp,
-	// arrowDown,
-	// trash
 } from '@wordpress/icons';
 
 /**
@@ -137,7 +123,6 @@ export default function Edit(props) {
 	const { removeColumn } = useDispatch(tableStore);
 	const { removeRow } = useDispatch(tableStore);
 	const { updateTableProp } = useDispatch(tableStore);
-	const { removeTableProp } = useDispatch(tableStore);
 	const { updateRow } = useDispatch(tableStore);
 	const { updateColumn } = useDispatch(tableStore);
 	const { updateCell } = useDispatch(tableStore);
@@ -236,7 +221,9 @@ export default function Edit(props) {
 	 *
 	 * We mark tables as deleted if they do not identify that the block has been remounted
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
+	 *
+	 * @type  {Object} Object of all table id's that are currently unmounted
 	 */
 	const { unmountedTables } = useSelect(select => {
 		const { getUnmountedTables } = select(tableStore);
@@ -249,6 +236,13 @@ export default function Edit(props) {
 		processUnmountedTables(unmountedTables);
 	}
 
+	/**
+	 * Retrive table id's of all tables in a status of deleted.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @type   {Object} Object of all table id's for tables with a 'deleted' status
+	 */
 	const { deletedTables } = useSelect(select => {
 		const { getDeletedTables } = select(tableStore);
 		return {
@@ -256,8 +250,20 @@ export default function Edit(props) {
 		};
 	});
 
+	/**
+	 * Identifies when the post which was being saved has completed the
+	 * save.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @type     {boolean} Post changes have been saved
+	 */
 	const postChangesAreSaved = usePostChangesSaved();
 
+	/**
+	 * Fires when posts have just finished saving and when a change is detected in
+	 * unmounted tables.
+	 */
 	useEffect(() => {
 		if (postChangesAreSaved) {
 			alert('Sync REST Now');

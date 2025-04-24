@@ -1363,7 +1363,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   processUnmountedTables: () => (/* binding */ processUnmountedTables),
 /* harmony export */   receiveNewTable: () => (/* binding */ receiveNewTable),
 /* harmony export */   receiveTable: () => (/* binding */ receiveTable),
-/* harmony export */   receiveTableTest: () => (/* binding */ receiveTableTest),
 /* harmony export */   removeColumn: () => (/* binding */ removeColumn),
 /* harmony export */   removeRow: () => (/* binding */ removeRow),
 /* harmony export */   removeTableProp: () => (/* binding */ removeTableProp),
@@ -1385,12 +1384,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _table_entity__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./table-entity */ "./src/data/table-entity.js");
 /* harmony import */ var _action_types_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./action-types.js */ "./src/data/action-types.js");
+/* External dependencies */
 
 
 
 
 
 
+/* Internal dependencies */
+
+
+/* Load constants */
 const {
   CREATE_TABLE,
   INSERT_COLUMN,
@@ -1410,16 +1414,15 @@ const {
   PROCESS_BORDERS
 } = _action_types_js__WEBPACK_IMPORTED_MODULE_5__["default"];
 
-// loadTableEntityConfig()
-
 /**
- * @example wp.data.dispatch( 'mfw/table').refreshPost
- * @example wp.data.dispatch( 'mfw/table' ).table
+ * Returns action object used in signalling a new table has been received
+ * from UI.
  *
+ * @since    1.0.0
  *
- *
+ * @param {Object} table Dynamic Table
+ * @return  {Object} Action object
  */
-
 function receiveNewTable(table) {
   console.log('Receiving New Table');
   console.log(table);
@@ -1430,6 +1433,25 @@ function receiveNewTable(table) {
     ...table
   };
 }
+
+/**
+ * Returns action object used in signalling a new table has been received
+ * from REST service.
+ *
+ * @since    1.0.0
+ *
+ * @param {number}       table_id        Identifier key for the table
+ * @param {string}       block_table_ref Cross reference identified linking table to block within post
+ * @param {string}       table_status    Status of retrieved table
+ * @param {number}       post_id         Identifier key for the post in which the table appears
+ * @param {string}       table_name      Descriptive name of table
+ * @param {Array}        attributes      Table header level attributes
+ * @param {string}       classes         Table header level classes
+ * @param {Array|Object} rows            Array of table row objects
+ * @param {Array|Object} columns         Array of table column objects
+ * @param {Array|Object} cells           Array of table cell objects
+ * @return {Object} Action object
+ */
 function receiveTable(table_id, block_table_ref, table_status, post_id, table_name, attributes, classes, rows, columns, cells) {
   console.log('            ...Action - In receiveTable');
   //console.log(table);
@@ -1455,6 +1477,15 @@ function receiveTable(table_id, block_table_ref, table_status, post_id, table_na
     }
   };
 }
+
+/**
+ * Action to create WordPress Core-Data dynamic table entity based on local table.
+ * persists the data as soon as the table is created, before post is saved/published.
+ *
+ * @since    1.0.0
+ *
+ * @return  {Object} Action object
+ */
 const createTableEntity = () => async ({
   select,
   dispatch,
@@ -1496,9 +1527,18 @@ const createTableEntity = () => async ({
     return tableEntity.id;
   } catch (error) {
     console.log('Error in createTableEntity -  Table ID - ' + table_id + ', block table ref = ' + block_table_ref + ', Post Id = ' + post_id);
-    alert('            ...Create Table Entity - async error - ' + error);
   }
 };
+
+/**
+ * Action to save table entity changes that are required for processing
+ * at time other than when the post is saved/published.
+ *
+ * @since    1.0.0
+ *
+ * @param {number} tableId Identifier key for the table
+ * @return {Object} Action Object
+ */
 const saveTableEntity = tableId => ({
   registry
 }) => {
@@ -1510,6 +1550,17 @@ const saveTableEntity = tableId => ({
     alert('            ...Save Table Entity - async error - ' + error);
   }
 };
+
+/**
+ * Update table entity based on changes made to local table updates.  This does
+ * not persist changes, only queues them for when the post is saved/published.
+ *
+ * @since    1.0.0
+ *
+ * @param {*}      tableId                  Identifier key for the table
+ * @param {string} [overrideTableStatus=''] Updates the table's status if populated
+ * @return  {Object} Action Object
+ */
 const updateTableEntity = (tableId, overrideTableStatus = '') => ({
   select,
   registry
@@ -1590,6 +1641,17 @@ const updateTableEntity = (tableId, overrideTableStatus = '') => ({
     alert('            ...Update Table Entity - async error - ' + error);
   }
 };
+
+/**
+ * Remove table entity.  The delete is persisted.
+ *
+ * @since    1.0.0
+ *
+ * @see      processDeletedTables
+ *
+ * @param {number} tableId Identifier key for the table
+ * @return {Object} Action Object
+ */
 const deleteTableEntity = tableId => async ({
   select,
   dispatch,
@@ -1608,9 +1670,17 @@ const deleteTableEntity = tableId => async ({
   }
   console.log('            Resolver - async completed');
 };
+
+/**
+ * Signals a delete of table entities for all local tables with a status of 'deleted'.
+ *
+ * @since    1.0.0
+ *
+ * @param {Array} deletedTables Array of table id's
+ * @return  {Object} Action object
+ */
 const processDeletedTables = deletedTables => ({
-  dispatch,
-  registry
+  dispatch
 }) => {
   console.log('In Action processDeletedTables');
   Object.keys(deletedTables).forEach(key => {
@@ -1619,11 +1689,21 @@ const processDeletedTables = deletedTables => ({
     dispatch.deleteTableEntity(deletedTables[key].table_id);
   });
 };
+
+/**
+ * Searches for previously unbounted tables' block in post.  If found, remove block id
+ * attribute. Otherwise, mark table with a deleted.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} unmountedTables Object of table id's of currently unmounted tables
+ * @return  {Object} Action object
+ */
 const processUnmountedTables = unmountedTables => ({
   dispatch,
   registry
 }) => {
-  console.log('In Action processDeletedTables');
+  console.log('In Action processUnmountedTables');
   Object.keys(unmountedTables).forEach(key => {
     const unmountedTableBlockId = unmountedTables[key].unmounted_blockid;
     const tableBlock = registry.select(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.store).getBlock(unmountedTableBlockId);
@@ -1637,6 +1717,18 @@ const processUnmountedTables = unmountedTables => ({
     }
   });
 };
+
+/**
+ * Signals the addition of a new table column.
+ *
+ * @since    1.0.0
+ *
+ * @param {number}       tableId     Identifier key for the table
+ * @param {number}       columnId    Identifier for a table column
+ * @param {Object}       newColumn   Column definition
+ * @param {Array|Object} columnCells Cell definitions associated with the column
+ * @return  {Object} Action object
+ */
 const addColumn = (tableId, columnId, newColumn, columnCells) => {
   return {
     type: INSERT_COLUMN,
@@ -1646,6 +1738,18 @@ const addColumn = (tableId, columnId, newColumn, columnCells) => {
     columnCells
   };
 };
+
+/**
+ * Signals the addition of a new table row.
+ *
+ * @since    1.0.0
+ *
+ * @param {number}       tableId  Identifier key for the table
+ * @param {number}       rowId    Identifier for a table row
+ * @param {Object}       newRow   Row definition
+ * @param {Array|Object} rowCells Cell definitions associated with the row
+ * @return  {Object} Action object
+ */
 const addRow = (tableId, rowId, newRow, rowCells) => {
   return {
     type: INSERT_ROW,
@@ -1655,6 +1759,16 @@ const addRow = (tableId, rowId, newRow, rowCells) => {
     rowCells
   };
 };
+
+/**
+ * Signals the removal of a table column.
+ *
+ * @since    1.0.0
+ *
+ * @param {number} tableId  Identifier key for the table
+ * @param {number} columnId Identifier for a table column
+ * @return  {Object} Action object
+ */
 const removeColumn = (tableId, columnId) => {
   return {
     type: DELETE_COLUMN,
@@ -1662,6 +1776,16 @@ const removeColumn = (tableId, columnId) => {
     columnId
   };
 };
+
+/**
+ * Signals the removal of a table row.
+ *
+ * @since    1.0.0
+ *
+ * @param {number} tableId Identifier key for the table
+ * @param {number} rowId   Identifier for a table row
+ * @return {Object} Action object
+ */
 const removeRow = (tableId, rowId) => {
   return {
     type: DELETE_ROW,
@@ -1669,14 +1793,33 @@ const removeRow = (tableId, rowId) => {
     rowId
   };
 };
+
+/**
+ * Signals the assignment of a table id following the creation of a new table.
+ *
+ * @since    1.0.0
+ *
+ * @param {number} tableId Identifier key for the table
+ * @return  {Object} Action object
+ */
 const assignTableId = tableId => {
-  console.log('In Action updateTableProp');
   return {
     type: CHANGE_TABLE_ID,
     tableId: '0',
     newTableId: String(tableId)
   };
 };
+
+/**
+ * Signal an update to a header level table attribute.
+ *
+ * @since    1.0.0
+ *
+ * @param {number}              tableId   Identifier key for the table
+ * @param {string}              attribute attribute name
+ * @param {string|number|Array} value     New value for the attribute
+ * @return  {Object} Action object
+ */
 const updateTableProp = (tableId, attribute, value) => {
   console.log('In Action updateTableProp');
   return {
@@ -1686,6 +1829,16 @@ const updateTableProp = (tableId, attribute, value) => {
     value
   };
 };
+
+/**
+ * Signal the removal of a header level table attribute.
+ *
+ * @since    1.0.0
+ *
+ * @param {number} tableId   Identifier key for the table
+ * @param {string} attribute attribute name
+ * @return  {Object} Action object
+ */
 const removeTableProp = (tableId, attribute) => {
   console.log('In Action removeTableProp');
   return {
@@ -1694,6 +1847,18 @@ const removeTableProp = (tableId, attribute) => {
     attribute
   };
 };
+
+/**
+ * Signal an update to a row attribute/prop.
+ *
+ * @since    1.0.0
+ *
+ * @param {number}        tableId   Identifier key for the table
+ * @param {number}        rowId     Identifier for a table row
+ * @param {string}        attribute Type of prop (attributes, classes)
+ * @param {Object|string} value     New value for the prop
+ * @return  {Object} Action object
+ */
 const updateRow = (tableId, rowId, attribute, value) => {
   console.log('In Action updateRow');
   return {
@@ -1704,6 +1869,18 @@ const updateRow = (tableId, rowId, attribute, value) => {
     value
   };
 };
+
+/**
+ * Signal an update to a row attribute/prop.
+ *
+ * @since    1.0.0
+ *
+ * @param {number}        tableId   Identifier key for the table
+ * @param {number}        columnId  Identifier for a table column
+ * @param {string}        attribute Type of prop (attributes, classes)
+ * @param {Object|string} value     New value for the prop
+ * @return  {Object} Action object
+ */
 const updateColumn = (tableId, columnId, attribute, value) => {
   console.log('In Action updateColumn');
   return {
@@ -1714,6 +1891,18 @@ const updateColumn = (tableId, columnId, attribute, value) => {
     value
   };
 };
+
+/**
+ * Signal an update to a cell attribute/prop.
+ *
+ * @since    1.0.0
+ *
+ * @param {number}        tableId   Identifier key for the table
+ * @param {string}        cellId    Identifier for a table cell
+ * @param {string}        attribute Type of prop (content, attributes, classes)
+ * @param {Object|string} value     New value for the prop
+ * @return {Object} Action object
+ */
 const updateCell = (tableId, cellId, attribute, value) => {
   console.log('In Action updateCell');
   return {
@@ -1724,6 +1913,18 @@ const updateCell = (tableId, cellId, attribute, value) => {
     value
   };
 };
+
+/**
+ * Signal the addition or removal of table borders.
+ *
+ * @since    1.0.0
+ *
+ * @param {Array|Object} tableId
+ * @param {Array|Object} tableRows    Array of table row objects
+ * @param {Array|Object} tableColumns Array of table column objects
+ * @param {Array|Object} tableCells   Array of table cell objects
+ * @return  {Object} Action object
+ */
 const updateTableBorder = (tableId, tableRows, tableColumns, tableCells) => async ({
   dispatch
 }) => {
@@ -1736,23 +1937,6 @@ const updateTableBorder = (tableId, tableRows, tableColumns, tableCells) => asyn
     cells: tableCells
   });
 };
-
-// Hold in case needed
-function receiveTableTest(tableEntity) {
-  console.log('            ...Action - In receiveTableTest');
-  //console.log(table);
-  // console.log('                - id: ' + table_id)
-  //console.log('                - table: ' + JSON.stringify(table));
-  //console.log('                - tableId ' + tableId);
-
-  return {
-    type: RECEIVE_HYDRATE_TEST,
-    tableEntity
-    // tableTest: {
-    //     testTable
-    // }
-  };
-}
 
 /***/ }),
 
@@ -2761,9 +2945,6 @@ function Edit(props) {
     updateTableProp
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
   const {
-    removeTableProp
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
-  const {
     updateRow
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
   const {
@@ -2879,7 +3060,9 @@ function Edit(props) {
    *
    * We mark tables as deleted if they do not identify that the block has been remounted
    *
-   * @since    1.0.0
+   * @since 1.0.0
+   *
+   * @type  {Object} Object of all table id's that are currently unmounted
    */
   const {
     unmountedTables
@@ -2894,6 +3077,14 @@ function Edit(props) {
   if (Object.keys(unmountedTables).length > 0) {
     processUnmountedTables(unmountedTables);
   }
+
+  /**
+   * Retrive table id's of all tables in a status of deleted.
+   *
+   * @since  1.0.0
+   *
+   * @type   {Object} Object of all table id's for tables with a 'deleted' status
+   */
   const {
     deletedTables
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
@@ -2904,7 +3095,21 @@ function Edit(props) {
       deletedTables: getDeletedTables()
     };
   });
+
+  /**
+   * Identifies when the post which was being saved has completed the
+   * save.
+   *
+   * @since    1.0.0
+   *
+   * @type     {boolean} Post changes have been saved
+   */
   const postChangesAreSaved = (0,_hooks__WEBPACK_IMPORTED_MODULE_11__.usePostChangesSaved)();
+
+  /**
+   * Fires when posts have just finished saving and when a change is detected in
+   * unmounted tables.
+   */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     if (postChangesAreSaved) {
       alert('Sync REST Now');
