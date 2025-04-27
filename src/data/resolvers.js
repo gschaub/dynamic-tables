@@ -1,15 +1,16 @@
-/**
- * Get Wordpress Dependencies
- */
-import { addQueryArgs } from '@wordpress/url';
-import apiFetch from '@wordpress/api-fetch';
+/* External dependencies */
 import { store as coreStore } from '@wordpress/core-data';
-import { loadTableEntityConfig } from './table-entity';
 import { numberToLetter } from '../utils';
 
-// import { hydrate } from "./actions";
-
-function computeCellId(fetchedCells) {
+/**
+ * Calculate the cell id for each cell in the Summary.
+ *
+ * @since    1.0.0
+ *
+ * @param {*} fetchedCells cell array retrieved the REST api
+ * @return  {Array|Object} Cells with the added cell id attribute
+ */
+function computeCellIds(fetchedCells) {
 	fetchedCells.forEach(cell => {
 		cell.cell_id = numberToLetter(cell.column_id) + cell.row_id;
 		console.log(cell);
@@ -19,23 +20,25 @@ function computeCellId(fetchedCells) {
 	};
 }
 
-// export function getTableIdByBlock(block_table_ref) {
-//     return
-// }
-
+/**
+ * Requests a table's record from the REST API.
+ *
+ * @since    1.0.0
+ *
+ * @param {number}  tableId      Identifier key for the table
+ * @param {boolean} isTableStale Whether the current state is stale
+ */
 export const getTable =
 	(tableId, isTableStale) =>
 	async ({ dispatch, registry }) => {
 		console.log('            ...Resolver - Before fetch');
 		console.log('            ...Table ID = ' + tableId);
 		console.log('            ...Table Stale = ' + isTableStale);
-		// if (blockTableStatus === 'New' || blockTableStatus === 'Saved' || tableId == '0') {
+
 		if (!isTableStale || tableId == '0') {
 			console.log('Bypassing API Call');
 			return;
 		}
-
-		// const entityConfig = await dispatch(loadTableEntityConfig());
 
 		try {
 			const tableEntity = await registry
@@ -52,7 +55,7 @@ export const getTable =
 			const classes = table.header.classes;
 			const rows = table.rows;
 			const columns = table.columns;
-			computeCellId(table.cells);
+			computeCellIds(table.cells);
 			const cells = table.cells;
 
 			dispatch.receiveTable(
@@ -71,5 +74,4 @@ export const getTable =
 			console.log('Error in getTable - Table ID = ' + tableId);
 			alert('            ...Resolver - async error - ' + JSON.stringify(error, null, 4));
 		}
-		console.log('            Resolver - async completed');
 	};

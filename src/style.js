@@ -370,7 +370,7 @@ export function getBorderStyleType(border) {
  * @param {*} borderLocation
  * @param {*} borderAttribute
  * @param {*} borderType
- * @returns
+ * @returns {Array|string} CSS style for border
  */
 export function getBorderStyle(border, borderLocation, borderAttribute, borderType) {
 	switch (borderType) {

@@ -1,3 +1,4 @@
+/* External dependencies */
 import { useSelect, useDispatch, dispatch } from '@wordpress/data';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
@@ -40,9 +41,7 @@ import {
 	blockTable as icon,
 } from '@wordpress/icons';
 
-/**
- *  * Internal Dependencies
- */
+/* Internal dependencies */
 import { store as tableStore } from './data';
 import { usePostChangesSaved } from './hooks';
 import {
@@ -80,9 +79,9 @@ import {
 } from './style';
 
 import { ColumnMenu, RowMenu } from './components';
-// import TABLE_ATTRIBUTE_TYPES from './constants'
 import './editor.scss';
 
+/* Create Dynamic Tables entity in WordPress core-data */
 dispatch('core').addEntities([
 	{
 		name: 'table',

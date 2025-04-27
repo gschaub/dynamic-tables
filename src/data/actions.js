@@ -1,9 +1,6 @@
 /* External dependencies */
-import { addQueryArgs } from '@wordpress/url';
-import { apiFetch } from '@wordpress/data-controls';
-import { addEntities, store as coreStore } from '@wordpress/core-data';
+import { store as coreStore } from '@wordpress/core-data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
-import { loadTableEntityConfig } from './table-entity';
 
 /* Internal dependencies */
 import TYPES from './action-types.js';
@@ -23,8 +20,6 @@ const {
 	UPDATE_COLUMN,
 	UPDATE_CELL,
 	RECEIVE_HYDRATE,
-	RECEIVE_HYDRATE_TEST,
-	PERSIST,
 	PROCESS_BORDERS,
 } = TYPES;
 

@@ -1,3 +1,10 @@
+/**
+ * Valid reducer action types.
+ *
+ * @since    x.x.x
+ *
+ * @type     {Object} Constants to support Reducer
+ */
 const TYPES = {
 	CREATE_TABLE: 'CREATE_TABLE',
 	INSERT_COLUMN: 'INSERT_COLUMN',

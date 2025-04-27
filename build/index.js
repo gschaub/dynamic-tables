@@ -1324,6 +1324,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/**
+ * Valid reducer action types.
+ *
+ * @since    x.x.x
+ *
+ * @type     {Object} Constants to support Reducer
+ */
 const TYPES = {
   CREATE_TABLE: 'CREATE_TABLE',
   INSERT_COLUMN: 'INSERT_COLUMN',
@@ -1374,20 +1381,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   updateTableEntity: () => (/* binding */ updateTableEntity),
 /* harmony export */   updateTableProp: () => (/* binding */ updateTableProp)
 /* harmony export */ });
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/url */ "@wordpress/url");
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_url__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_data_controls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data-controls */ "@wordpress/data-controls");
-/* harmony import */ var _wordpress_data_controls__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data_controls__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
-/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _table_entity__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./table-entity */ "./src/data/table-entity.js");
-/* harmony import */ var _action_types_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./action-types.js */ "./src/data/action-types.js");
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _action_types_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./action-types.js */ "./src/data/action-types.js");
 /* External dependencies */
-
-
-
 
 
 
@@ -1409,10 +1408,8 @@ const {
   UPDATE_COLUMN,
   UPDATE_CELL,
   RECEIVE_HYDRATE,
-  RECEIVE_HYDRATE_TEST,
-  PERSIST,
   PROCESS_BORDERS
-} = _action_types_js__WEBPACK_IMPORTED_MODULE_5__["default"];
+} = _action_types_js__WEBPACK_IMPORTED_MODULE_2__["default"];
 
 /**
  * Returns action object used in signalling a new table has been received
@@ -1522,7 +1519,7 @@ const createTableEntity = () => async ({
   console.log('CREATING TABLE ENTITY');
   console.log(newTable);
   try {
-    const tableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__.store).saveEntityRecord('dynamic-tables', 'table', newTable);
+    const tableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).saveEntityRecord('dynamic-tables', 'table', newTable);
     dispatch.assignTableId(tableEntity.id);
     return tableEntity.id;
   } catch (error) {
@@ -1544,7 +1541,7 @@ const saveTableEntity = tableId => ({
 }) => {
   console.log('SAVING TABLE ENTITY');
   try {
-    registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__.store).saveEditedEntityRecord('dynamic-tables', 'table', tableId);
+    registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).saveEditedEntityRecord('dynamic-tables', 'table', tableId);
   } catch (error) {
     console.log('Error in saveTableEntity - Table ID - ' + tableId);
     alert('            ...Save Table Entity - async error - ' + error);
@@ -1635,7 +1632,7 @@ const updateTableEntity = (tableId, overrideTableStatus = '') => ({
    *          undoIgnore: Bool
    */
   try {
-    registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__.store).editEntityRecord('dynamic-tables', 'table', table_id, updatedTable);
+    registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).editEntityRecord('dynamic-tables', 'table', table_id, updatedTable);
   } catch (error) {
     console.log('Error in updateTableEntity - Table ID - ' + tableId);
     alert('            ...Update Table Entity - async error - ' + error);
@@ -1659,7 +1656,7 @@ const deleteTableEntity = tableId => async ({
 }) => {
   console.log('In Action deleteTableEntity');
   try {
-    const deletedTableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__.store).deleteEntityRecord('dynamic-tables', 'table', tableId);
+    const deletedTableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).deleteEntityRecord('dynamic-tables', 'table', tableId);
     dispatch({
       type: DELETE_TABLE,
       tableId
@@ -1706,7 +1703,7 @@ const processUnmountedTables = unmountedTables => ({
   console.log('In Action processUnmountedTables');
   Object.keys(unmountedTables).forEach(key => {
     const unmountedTableBlockId = unmountedTables[key].unmounted_blockid;
-    const tableBlock = registry.select(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.store).getBlock(unmountedTableBlockId);
+    const tableBlock = registry.select(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.store).getBlock(unmountedTableBlockId);
     console.log(tableBlock);
     if (tableBlock) {
       dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_blockid');
@@ -1950,6 +1947,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/**
+ * The reducer key used by core data in store registration.
+ * This is defined in a separate file to avoid cycle-dependency
+ *
+ * @since    1.0.0
+ *
+ * @type     {string}
+ */
 const STORE_NAME = 'dynamic-tables/table';
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (STORE_NAME);
 
@@ -1972,21 +1977,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./actions */ "./src/data/actions.js");
 /* harmony import */ var _resolvers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./resolvers */ "./src/data/resolvers.js");
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./constants */ "./src/data/constants.js");
+/* External dependencies */
+
+
+/* Internal dependencies */
 
 
 
 
 
 
-
-// const storeConfig = () => ({
-//     selectors,
-//     actions,
-//     reducer,
-//     resolvers
-// });
-
-// export const store = createReduxStore(STORE_NAME, storeConfig());
+/**
+ * Create Dynamic Tables store.
+ *
+ * @since    1.0.0
+ *
+ * @type     {Object} Wordpress block store
+ */
 const store = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.createReduxStore)(_constants__WEBPACK_IMPORTED_MODULE_5__["default"], {
   reducer: _reducer__WEBPACK_IMPORTED_MODULE_1__["default"],
   selectors: _selectors__WEBPACK_IMPORTED_MODULE_2__,
@@ -1994,8 +2001,6 @@ const store = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.createReduxStore)(
   resolvers: _resolvers__WEBPACK_IMPORTED_MODULE_4__
 });
 (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.register)(store);
-
-// Register store after unlocking private selectors to allow resolvers to use them.
 
 /***/ }),
 
@@ -2011,6 +2016,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _action_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./action-types */ "./src/data/action-types.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* Internal dependencies */
 
 
 const {
@@ -2027,10 +2033,18 @@ const {
   UPDATE_COLUMN,
   UPDATE_CELL,
   RECEIVE_HYDRATE,
-  RECEIVE_HYDRATE_TEST,
-  PERSIST,
   PROCESS_BORDERS
 } = _action_types__WEBPACK_IMPORTED_MODULE_0__["default"];
+
+/**
+ * Dynamic Table reducer helper for a single table.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} state  Current table
+ * @param {Object} action Action activity to be performed
+ * @return {Object} Updated table
+ */
 const table = (state = {
   table: {}
 }, action) => {
@@ -2038,8 +2052,6 @@ const table = (state = {
   console.log('      Reducer. type: ' + action.type);
   switch (action.type) {
     case CREATE_TABLE:
-      console.log('In Reducer CREATE_TABLE');
-      console.log(action.table);
       return {
         table: {
           ...action.table
@@ -2050,38 +2062,38 @@ const table = (state = {
       const newTableIdState = {
         ...state
       };
-      var rowsWithNewId = [];
-      var columnsWithNewId = [];
-      var cellsWithNewId = [];
+      const rowsWithNewId_ChangeId = [];
+      const columnsWithNewId_ChangeId = [];
+      const cellsWithNewId_ChangeId = [];
       console.log(newTableIdState.rows);
       newTableIdState.rows.forEach(row => {
         console.log(row);
-        let newRow = {
+        const newRow_ChangeId = {
           ...row,
           table_id: action.newTableId
         };
-        rowsWithNewId.push(newRow);
+        rowsWithNewId_ChangeId.push(newRow_ChangeId);
       });
       newTableIdState.columns.forEach(column => {
-        let newColumn = {
+        const newColumn_ChangeId = {
           ...column,
           table_id: action.newTableId
         };
-        columnsWithNewId.push(newColumn);
+        columnsWithNewId_ChangeId.push(newColumn_ChangeId);
       });
       newTableIdState.cells.forEach(cell => {
-        let newCell = {
+        const newCell_ChangeId = {
           ...cell,
           table_id: action.newTableId
         };
-        cellsWithNewId.push(newCell);
+        cellsWithNewId_ChangeId.push(newCell_ChangeId);
       });
       const updatedTableId = {
         ...state,
         table_id: action.newTableId,
-        rows: [...rowsWithNewId],
-        columns: [...columnsWithNewId],
-        cells: [...cellsWithNewId]
+        rows: [...rowsWithNewId_ChangeId],
+        columns: [...columnsWithNewId_ChangeId],
+        cells: [...cellsWithNewId_ChangeId]
       };
       console.log(updatedTableId);
       return {
@@ -2108,275 +2120,270 @@ const table = (state = {
       };
     case INSERT_COLUMN:
       console.log('In Reducer INSERT_COLUMN');
-      let insertColumnState = {
+      const insertColumnState = {
         ...state
       };
 
       /**
        * Insert new column and update existing column_id's
        */
-      var columnsWithNewId = [];
+      const columnsWithNewId_InsertColumn = [];
       insertColumnState.columns.forEach(column => {
         if (Number(column.column_id) < Number(action.columnId)) {
-          columnsWithNewId.push(column);
+          columnsWithNewId_InsertColumn.push(column);
         } else {
-          let newColumn = {
+          const newColumn_InsertColumn = {
             table_id: column.table_id,
             column_id: String(Number(column.column_id) + 1),
             column_name: column.column_name,
             attributes: column.attributes,
             classes: column.classes
           };
-          columnsWithNewId.push(newColumn);
+          columnsWithNewId_InsertColumn.push(newColumn_InsertColumn);
         }
       });
-      columnsWithNewId.push(action.newColumn);
-      var sortedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('columns', columnsWithNewId);
+      columnsWithNewId_InsertColumn.push(action.newColumn);
+      const sortedColumns_InsertColumn = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('columns', columnsWithNewId_InsertColumn);
 
       /**
        * Insert new cells and update existing column_id's
        */
-      var cellsWithNewId = [];
+      const cellsWithNewId_InsertColumn = [];
       insertColumnState.cells.forEach(cell => {
         if (cell.column_id < action.columnId) {
-          cellsWithNewId.push(cell);
+          cellsWithNewId_InsertColumn.push(cell);
         } else {
-          let newColumnId = String(Number(cell.column_id) + 1);
-          let columnLetter = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(newColumnId);
-          let cellContent = Number(cell.row_id) == 0 ? columnLetter : cell.content;
-          let newCell = {
+          const newColumnId_InsertColumn = String(Number(cell.column_id) + 1);
+          const columnLetter_InsertColumn = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(newColumnId_InsertColumn);
+          const cellContent_InsertColumn = Number(cell.row_id) == 0 ? columnLetter_InsertColumn : cell.content;
+          const newCell_InsertColumn = {
             table_id: cell.table_id,
-            column_id: newColumnId,
+            column_id: newColumnId_InsertColumn,
             row_id: cell.row_id,
-            cell_id: columnLetter + cell.row_id,
+            cell_id: columnLetter_InsertColumn + cell.row_id,
             attributes: cell.attributes,
             classes: cell.classes,
-            content: cellContent
+            content: cellContent_InsertColumn
           };
-          cellsWithNewId.push(newCell);
+          cellsWithNewId_InsertColumn.push(newCell_InsertColumn);
         }
       });
-      var allNewColumnCells = [...cellsWithNewId, ...action.columnCells];
-      var sortedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('cells', allNewColumnCells);
-      var returnedTableNewColumn = {
+      const allNewColumnCells_InsertColumn = [...cellsWithNewId_InsertColumn, ...action.columnCells];
+      const sortedCells_InsertColumn = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('cells', allNewColumnCells_InsertColumn);
+      const returnedTableNewColumn_InsertColumn = {
         ...insertColumnState,
         rows: [...insertColumnState.rows],
-        columns: [...sortedColumns],
-        cells: [...sortedCells]
+        columns: [...sortedColumns_InsertColumn],
+        cells: [...sortedCells_InsertColumn]
       };
-      console.log(returnedTableNewColumn);
+      console.log(returnedTableNewColumn_InsertColumn);
       return {
-        table: returnedTableNewColumn
+        table: returnedTableNewColumn_InsertColumn
       };
     case INSERT_ROW:
       console.log('In Reducer INSERT_ROW');
-      let insertRowState = {
+      const insertRowState = {
         ...state
       };
+      console.log(insertRowState);
 
       /**
        * Insert new row and update existing row_id's
        */
-      var rowsWithNewId = [];
+      const rowsWithNewId_InsertRow = [];
       insertRowState.rows.forEach(row => {
         if (Number(row.row_id) < Number(action.rowId)) {
-          rowsWithNewId.push(row);
+          rowsWithNewId_InsertRow.push(row);
         } else {
-          let newRow = {
+          const newRow_InsertRow = {
             table_id: row.table_id,
             row_id: String(Number(row.row_id) + 1),
             attributes: row.attributes,
             classes: row.classes
           };
-          rowsWithNewId.push(newRow);
+          rowsWithNewId_InsertRow.push(newRow_InsertRow);
         }
       });
-      rowsWithNewId.push(action.newRow);
-      console.log(rowsWithNewId);
-      var sortedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('rows', rowsWithNewId);
+      rowsWithNewId_InsertRow.push(action.newRow);
+      console.log(rowsWithNewId_InsertRow);
+      const sortedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('rows', rowsWithNewId_InsertRow);
       console.log(sortedRows);
 
       /**
        * Insert new cells and update existing column_id's
        */
-      var cellsWithNewId = [];
+      const cellsWithNewId_InsertRow = [];
       insertRowState.cells.forEach(cell => {
         console.log(cell);
         if (Number(cell.row_id) < Number(action.rowId)) {
-          cellsWithNewId.push(cell);
+          cellsWithNewId_InsertRow.push(cell);
         } else {
-          let newRowId = String(Number(cell.row_id) + 1);
-          let columnLetter = cell.column_id == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(cell.column_id);
-          let cellContent = Number(cell.column_id) == 0 ? newRowId : cell.content;
-          let newCell = {
+          const newRowId_InsertRow = String(Number(cell.row_id) + 1);
+          const columnLetter_InsertRow = cell.column_id == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(cell.column_id);
+          const cellContent_InsertRow = Number(cell.column_id) == 0 ? newRowId_InsertRow : cell.content;
+          const newCell_InsertRow = {
             table_id: cell.table_id,
             column_id: cell.column_id,
-            row_id: newRowId,
-            cell_id: columnLetter + newRowId,
+            row_id: newRowId_InsertRow,
+            cell_id: columnLetter_InsertRow + newRowId_InsertRow,
             attributes: cell.attributes,
             classes: cell.classes,
-            content: cellContent
+            content: cellContent_InsertRow
           };
-          cellsWithNewId.push(newCell);
+          cellsWithNewId_InsertRow.push(newCell_InsertRow);
         }
       });
-      var allNewRowCells = [...cellsWithNewId, ...action.rowCells];
-      var sortedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('cells', allNewRowCells);
-      var returnedTableNewRow = {
+      const allNewRowCells = [...cellsWithNewId_InsertRow, ...action.rowCells];
+      const sortedCells_InsertRow = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('cells', allNewRowCells);
+      const returnedTableNewRow_InsertRow = {
         ...insertRowState,
         rows: [...sortedRows],
         columns: [...insertRowState.columns],
-        cells: [...sortedCells]
+        cells: [...sortedCells_InsertRow]
       };
       return {
-        table: returnedTableNewRow
+        table: returnedTableNewRow_InsertRow
       };
     case DELETE_COLUMN:
       console.log('In Reducer DELETE_COLUMN');
-      let deleteColumnState = {
+      const deleteColumnState = {
         ...state
       };
 
       /**
        * Delete new column and update existing column_id's
        */
-      var columnsWithNewId = [];
+      const columnsWithNewId_DeleteColumn = [];
       deleteColumnState.columns.forEach(column => {
         if (Number(column.column_id) < Number(action.columnId)) {
-          columnsWithNewId.push(column);
+          columnsWithNewId_DeleteColumn.push(column);
         } else if (Number(column.column_id) > Number(action.columnId)) {
-          let newColumn = {
+          const newColumn_DeleteColumn = {
             table_id: column.table_id,
             column_id: String(Number(column.column_id) - 1),
             column_name: column.column_name,
             attributes: column.attributes,
             classes: column.classes
           };
-          columnsWithNewId.push(newColumn);
+          columnsWithNewId_DeleteColumn.push(newColumn_DeleteColumn);
         }
       });
-      // columnsWithNewId.push(action.newColumn)
-      // var sortedColumns = tableSort('columns', columnsWithNewId)
 
       /**
        * Delete new cells and update existing column_id's
        */
-      var cellsWithNewId = [];
+      const cellsWithNewId_DeleteColumn = [];
       deleteColumnState.cells.forEach(cell => {
         if (Number(cell.column_id) < Number(action.columnId)) {
-          cellsWithNewId.push(cell);
+          cellsWithNewId_DeleteColumn.push(cell);
         } else if (Number(cell.column_id) > Number(action.columnId)) {
-          let newColumnId = String(Number(cell.column_id) - 1);
-          let columnLetter = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(newColumnId);
-          let cellContent = Number(cell.row_id) == 0 ? columnLetter : cell.content;
-          let newCell = {
+          const newColumnId_DeleteColumn = String(Number(cell.column_id) - 1);
+          const columnLetter_DeleteColumn = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(newColumnId_DeleteColumn);
+          const cellContent_DeleteColumn = Number(cell.row_id) == 0 ? columnLetter_DeleteColumn : cell.content;
+          const newCell_DeleteColumn = {
             table_id: cell.table_id,
-            column_id: newColumnId,
+            column_id: newColumnId_DeleteColumn,
             row_id: cell.row_id,
-            cell_id: columnLetter + cell.row_id,
+            cell_id: columnLetter_DeleteColumn + cell.row_id,
             attributes: cell.attributes,
             classes: cell.classes,
-            content: cellContent
+            content: cellContent_DeleteColumn
           };
-          cellsWithNewId.push(newCell);
+          cellsWithNewId_DeleteColumn.push(newCell_DeleteColumn);
         }
       });
-
-      // var allNewColumnCells = [...cellsWithNewId, ...action.columnCells]
-      // var sortedCells = tableSort('cells', allNewColumnCells)
-
-      var returnedTableNewColumn = {
+      const returnedTableNewColumn_DeleteColumn = {
         ...deleteColumnState,
         rows: [...deleteColumnState.rows],
-        columns: [...columnsWithNewId],
-        cells: [...cellsWithNewId]
+        columns: [...columnsWithNewId_DeleteColumn],
+        cells: [...cellsWithNewId_DeleteColumn]
       };
-      console.log(returnedTableNewColumn);
+      console.log(returnedTableNewColumn_DeleteColumn);
       return {
-        table: returnedTableNewColumn
+        table: returnedTableNewColumn_DeleteColumn
       };
     case DELETE_ROW:
       console.log('In Reducer DELETE_ROW');
-      let deleteRowState = {
+      const deleteRowState = {
         ...state
       };
 
       /**
        * Delete new column and update existing column_id's
        */
-      var rowsWithNewId = [];
+      const rowsWithNewId_DeleteRow = [];
       console.log(deleteRowState);
       deleteRowState.rows.forEach(row => {
         if (Number(row.row_id) < Number(action.rowId)) {
-          rowsWithNewId.push(row);
+          rowsWithNewId_DeleteRow.push(row);
         } else if (Number(row.row_id) > Number(action.rowId)) {
-          let newRow = {
+          const newRow_DeleteRow = {
             table_id: row.table_id,
             row_id: String(Number(row.row_id) - 1),
             attributes: row.attributes,
             classes: row.classes
           };
-          rowsWithNewId.push(newRow);
+          rowsWithNewId_DeleteRow.push(newRow_DeleteRow);
         }
       });
-      // rowsWithNewId.push(action.newColumn)
-      // var sortedRows= tableSort('rows', rowsWithNewId)
+      // rowsWithNewId_DeleteRow.push(action.newColumn)
+      // var sortedRows= tableSort('rows', rowsWithNewId_DeleteRow)
 
       /**
        * Delete new cells and update existing row_id's
        */
-      var cellsWithNewId = [];
+      const cellsWithNewId_DeleteRow = [];
       console.log(deleteRowState.cells);
       deleteRowState.cells.forEach(cell => {
         if (Number(cell.row_id) < Number(action.rowId)) {
-          cellsWithNewId.push(cell);
+          cellsWithNewId_DeleteRow.push(cell);
         } else if (Number(cell.row_id) > Number(action.rowId)) {
-          let newRowId = String(Number(cell.row_id) - 1);
-          let columnLetter = cell.column_id == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(cell.column_id);
-          let cellContent = Number(cell.column_id) == 0 ? newRowId : cell.content;
-          let newCell = {
+          const newRowId_DeleteRow = String(Number(cell.row_id) - 1);
+          const columnLetter_DeleteRow = cell.column_id == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(cell.column_id);
+          const cellContent_DeleteRow = Number(cell.column_id) == 0 ? newRowId_DeleteRow : cell.content;
+          const newCell_DeleteRow = {
             table_id: cell.table_id,
             column_id: cell.column_id,
-            row_id: newRowId,
-            cell_id: columnLetter + cell.row_id,
+            row_id: newRowId_DeleteRow,
+            cell_id: columnLetter_DeleteRow + cell.row_id,
             attributes: cell.attributes,
             classes: cell.classes,
-            content: cellContent
+            content: cellContent_DeleteRow
           };
-          cellsWithNewId.push(newCell);
+          cellsWithNewId_DeleteRow.push(newCell_DeleteRow);
         }
       });
 
-      // var allNewColumnCells = [...cellsWithNewId, ...action.columnCells]
+      // var allNewColumnCells = [...cellsWithNewId_DeleteRow, ...action.columnCells]
       // var sortedCells = tableSort('cells', allNewColumnCells)
 
-      var returnedTableNewRow = {
+      const returnedTableNewRow_DeleteRow = {
         ...deleteRowState,
-        rows: [...rowsWithNewId],
+        rows: [...rowsWithNewId_DeleteRow],
         columns: [...deleteRowState.columns],
-        cells: [...cellsWithNewId]
+        cells: [...cellsWithNewId_DeleteRow]
       };
-      console.log(returnedTableNewRow);
+      console.log(returnedTableNewRow_DeleteRow);
       return {
-        table: returnedTableNewRow
+        table: returnedTableNewRow_DeleteRow
       };
     case UPDATE_ROW:
       console.log('In Reducer UPDATE_ROW');
-      var transformedValue = ' "' + action.value + '"';
+      let transformedValue_UpdateRow = ' "' + action.value + '"';
       if (action.attribute === 'attributes') {
-        transformedValue = JSON.stringify(action.value);
+        transformedValue_UpdateRow = JSON.stringify(action.value);
       }
       console.log();
-      let newRowsState = {
+      const newRowsState = {
         ...state
       };
-      let updatedRowData = JSON.parse('{ "' + action.attribute + '" :' + transformedValue + '}');
+      const updatedRowData = JSON.parse('{ "' + action.attribute + '" :' + transformedValue_UpdateRow + '}');
       console.log(newRowsState);
       console.log(newRowsState.rows);
-      let updatedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newRowsState.rows, 'row_id', action.rowId, updatedRowData);
+      const updatedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newRowsState.rows, 'row_id', action.rowId, updatedRowData);
       console.log(updatedRowData);
       console.log(updatedRows);
-      var returnedUpdatedTableRow = {
+      const returnedUpdatedTableRow = {
         ...newRowsState,
         rows: [...updatedRows],
         columns: [...newRowsState.columns],
@@ -2387,21 +2394,21 @@ const table = (state = {
       };
     case UPDATE_COLUMN:
       console.log('In Reducer UPDATE_COLUMN');
-      var transformedValue = ' "' + action.value + '"';
+      let transformedValue_UpdateColumn = ' "' + action.value + '"';
       if (action.attribute === 'attributes') {
-        transformedValue = JSON.stringify(action.value);
+        transformedValue_UpdateColumn = JSON.stringify(action.value);
       }
-      console.log(transformedValue);
-      let newColumnsState = {
+      console.log(transformedValue_UpdateColumn);
+      const newColumnsState = {
         ...state
       };
-      let updatedColumnData = JSON.parse('{ "' + action.attribute + '" :' + transformedValue + '}');
+      const updatedColumnData = JSON.parse('{ "' + action.attribute + '" :' + transformedValue_UpdateColumn + '}');
       console.log(newColumnsState);
       console.log(newColumnsState.columns);
-      let updatedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newColumnsState.columns, 'column_id', action.columnId, updatedColumnData);
+      const updatedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newColumnsState.columns, 'column_id', action.columnId, updatedColumnData);
       console.log(updatedColumnData);
       console.log(updatedColumns);
-      var returnedUpdatedTableColumn = {
+      const returnedUpdatedTableColumn = {
         ...newColumnsState,
         rows: [...newColumnsState.rows],
         columns: [...updatedColumns],
@@ -2412,14 +2419,14 @@ const table = (state = {
       };
     case UPDATE_CELL:
       console.log('In Reducer UPDATE_CELL');
-      let newCellsState = {
+      const newCellsState = {
         ...state
       };
       console.log(state);
       console.log(newCellsState);
-      let updatedCellData = JSON.parse('{ "' + action.attribute + '" : "' + action.value + '"}');
-      let updatedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newCellsState.cells, 'cell_id', action.cellId, updatedCellData);
-      let returnedCellState = {
+      const updatedCellData = JSON.parse('{ "' + action.attribute + '" : "' + action.value + '"}');
+      const updatedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newCellsState.cells, 'cell_id', action.cellId, updatedCellData);
+      const returnedCellState = {
         ...state,
         rows: [...newCellsState.rows],
         columns: [...newCellsState.columns],
@@ -2434,7 +2441,7 @@ const table = (state = {
       const newBaseTableState = {
         ...state
       };
-      let returnedBorderState = {
+      const returnedBorderState = {
         ...newBaseTableState,
         rows: (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('rows', [...action.rows]),
         columns: (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('columns', [...action.columns]),
@@ -2459,23 +2466,39 @@ const table = (state = {
       return state;
   }
 };
+
+/**
+ * Main Dynamic Tables reducer for all tables in block.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} state  Current table state
+ * @param {Object} action Dispatched option
+ * @return  {Object} Updated state
+ */
 const reducer = (state = {
   tables: {}
 }, action) => {
-  console.log('MAIN REDUCER');
-  console.log(state);
-  console.log('  Action Table ID = ' + action.tableId);
-  console.log(action);
-  let tableKey = action.tableId;
-  console.log(state.tables[tableKey]);
-  let newTableState = table(state.tables[tableKey], action);
-  let returnedTable = {
-    [action.tableId]: newTableState.table
-  };
+  // console.log('MAIN REDUCER');
+  // console.log(state);
+  // console.log('  Action Table ID = ' + action.tableId);
+  // console.log(action);
+
+  const tableKey = action.tableId;
+  // console.log(state.tables[tableKey]);
+
+  // Updated state for the single table being acted upon
+  const newTableState = table(state.tables[tableKey], action);
+  // let returnedTable = {
+  // 	[action.tableId]: newTableState.table,
+  // };
+
+  // Return original state if the updated table is empty
   if (JSON.stringify(newTableState.table) === '{}') {
     return state;
   }
-  console.log(returnedTable);
+  // console.log(returnedTable);
+
   const newTablesState = {
     ...state.tables
   };
@@ -2542,46 +2565,6 @@ const reducer = (state = {
         }
       };
   }
-
-  // if (action.type === 'UPDATE_TABLE_PROP' && action.attribute === 'table_id') {
-  //     newTablesState = Object.keys(state.tables)
-  //         .filter((key) =>
-  //             state.tables[key] !== '0'
-  //         )
-  // }
-
-  // if (action.type === 'DELETE_TABLE') {
-  //     console.log('DELETE_TABLE...')
-
-  //     const deleteTablesState = Object.keys(state.tables)
-  //         .reduce((acc, key) => {
-  //             console.log('Reducer key = ' + key)
-  //             console.log('TableId to delete = ' + String(action.tableId))
-  //             console.log(acc)
-  //             if (key !== String(action.tableId)) {
-  //                 acc[key] = {
-  //                     ...state.tables[key],
-  //                     rows: [...state.tables[key].rows],
-  //                     columns: [...state.tables[key].columns],
-  //                     cells: [...state.tables[key].cells],
-  //                 }
-  //             }
-  //             return acc
-  //         }, {})
-
-  //     console.log(deleteTablesState)
-  //     return {
-  //         tables: {
-  //             ...deleteTablesState
-  //         }
-  //     }
-  // }
-
-  // if (action.type === 'PERSIST') {
-  //     console.log('PERSIST...')
-  // console.log('...Deleted table key = ' + JSON.stringify(newTablesState, null, 4))
-
-  // }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (reducer);
 
@@ -2597,28 +2580,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   getTable: () => (/* binding */ getTable)
 /* harmony export */ });
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/url */ "@wordpress/url");
-/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_url__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
-/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
-/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _table_entity__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./table-entity */ "./src/data/table-entity.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* External dependencies */
+
+
+
 /**
- * Get Wordpress Dependencies
+ * Calculate the cell id for each cell in the Summary.
+ *
+ * @since    1.0.0
+ *
+ * @param {*} fetchedCells cell array retrieved the REST api
+ * @return  {Array|Object} Cells with the added cell id attribute
  */
-
-
-
-
-
-
-// import { hydrate } from "./actions";
-
-function computeCellId(fetchedCells) {
+function computeCellIds(fetchedCells) {
   fetchedCells.forEach(cell => {
-    cell.cell_id = (0,_utils__WEBPACK_IMPORTED_MODULE_4__.numberToLetter)(cell.column_id) + cell.row_id;
+    cell.cell_id = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(cell.column_id) + cell.row_id;
     console.log(cell);
   });
   return {
@@ -2626,10 +2605,14 @@ function computeCellId(fetchedCells) {
   };
 }
 
-// export function getTableIdByBlock(block_table_ref) {
-//     return
-// }
-
+/**
+ * Requests a table's record from the REST API.
+ *
+ * @since    1.0.0
+ *
+ * @param {number}  tableId      Identifier key for the table
+ * @param {boolean} isTableStale Whether the current state is stale
+ */
 const getTable = (tableId, isTableStale) => async ({
   dispatch,
   registry
@@ -2637,16 +2620,12 @@ const getTable = (tableId, isTableStale) => async ({
   console.log('            ...Resolver - Before fetch');
   console.log('            ...Table ID = ' + tableId);
   console.log('            ...Table Stale = ' + isTableStale);
-  // if (blockTableStatus === 'New' || blockTableStatus === 'Saved' || tableId == '0') {
   if (!isTableStale || tableId == '0') {
     console.log('Bypassing API Call');
     return;
   }
-
-  // const entityConfig = await dispatch(loadTableEntityConfig());
-
   try {
-    const tableEntity = await registry.resolveSelect(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_2__.store).getEntityRecord('dynamic-tables', 'table', tableId);
+    const tableEntity = await registry.resolveSelect(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).getEntityRecord('dynamic-tables', 'table', tableId);
     const table = tableEntity;
     const table_id = table.id;
     const block_table_ref = table.header.block_table_ref;
@@ -2657,14 +2636,13 @@ const getTable = (tableId, isTableStale) => async ({
     const classes = table.header.classes;
     const rows = table.rows;
     const columns = table.columns;
-    computeCellId(table.cells);
+    computeCellIds(table.cells);
     const cells = table.cells;
     dispatch.receiveTable(table_id, block_table_ref, table_status, post_id, table_name, attributes, classes, rows, columns, cells);
   } catch (error) {
     console.log('Error in getTable - Table ID = ' + tableId);
     alert('            ...Resolver - async error - ' + JSON.stringify(error, null, 4));
   }
-  console.log('            Resolver - async completed');
 };
 
 /***/ }),
@@ -2785,39 +2763,6 @@ select => () => {
 
 /***/ }),
 
-/***/ "./src/data/table-entity.js":
-/*!**********************************!*\
-  !*** ./src/data/table-entity.js ***!
-  \**********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   loadTableEntityConfig: () => (/* binding */ loadTableEntityConfig)
-/* harmony export */ });
-/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
-/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__);
-
-const loadTableEntityConfig = () => {
-  const tableConfig = {
-    name: 'table',
-    kind: 'dynamic-tables/v1',
-    baseURL: '/dynamic-tables/v1/tables',
-    baseURLParams: {
-      context: 'edit'
-    },
-    plural: 'tables',
-    label: __('Table'),
-    getTitle: record => record?.title || __('Unnamed Table')
-  };
-  dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).addEntities(tableConfig);
-  console.log(tableConfig);
-  alert('processed Entity');
-  return tableConfig;
-};
-
-/***/ }),
-
 /***/ "./src/edit.js":
 /*!*********************!*\
   !*** ./src/edit.js ***!
@@ -2859,6 +2804,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__);
+/* External dependencies */
 
 
 
@@ -2871,17 +2817,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-/**
- *  * Internal Dependencies
- */
+/* Internal dependencies */
 
 
 
 
 
 
-// import TABLE_ATTRIBUTE_TYPES from './constants'
 
+
+/* Create Dynamic Tables entity in WordPress core-data */
 
 (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.dispatch)('core').addEntities([{
   name: 'table',
@@ -4962,7 +4907,7 @@ function getBorderStyleType(border) {
  * @param {*} borderLocation
  * @param {*} borderAttribute
  * @param {*} borderType
- * @returns
+ * @returns {Array|string} CSS style for border
  */
 function getBorderStyle(border, borderLocation, borderAttribute, borderType) {
   switch (borderType) {
@@ -5503,16 +5448,6 @@ function removeTags(str) {
 
 /***/ }),
 
-/***/ "@wordpress/api-fetch":
-/*!**********************************!*\
-  !*** external ["wp","apiFetch"] ***!
-  \**********************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["apiFetch"];
-
-/***/ }),
-
 /***/ "@wordpress/block-editor":
 /*!*************************************!*\
   !*** external ["wp","blockEditor"] ***!
@@ -5573,16 +5508,6 @@ module.exports = window["wp"]["data"];
 
 /***/ }),
 
-/***/ "@wordpress/data-controls":
-/*!**************************************!*\
-  !*** external ["wp","dataControls"] ***!
-  \**************************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["dataControls"];
-
-/***/ }),
-
 /***/ "@wordpress/editor":
 /*!********************************!*\
   !*** external ["wp","editor"] ***!
@@ -5630,16 +5555,6 @@ module.exports = window["wp"]["notices"];
 /***/ ((module) => {
 
 module.exports = window["wp"]["primitives"];
-
-/***/ }),
-
-/***/ "@wordpress/url":
-/*!*****************************!*\
-  !*** external ["wp","url"] ***!
-  \*****************************/
-/***/ ((module) => {
-
-module.exports = window["wp"]["url"];
 
 /***/ }),
 
