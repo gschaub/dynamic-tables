@@ -1,10 +1,13 @@
 /**
  * Establish grid css grid-template-columns based upon attributes associated with columns
  *
- * @param {*} isNewBlock
- * @param {*} tableIsResolving
- * @param {*} columns
- * @returns
+ * @since    1.0.0
+ *
+ * @param {boolean}      isNewBlock           Has the block been newly created and not yet persisted?
+ * @param {boolean}      tableIsResolving     Are we still waiting for table to finish resolving?
+ * @param {boolean}      enableFutureFeatures Include features intended for a future release?
+ * @param {Array|Object} columns              Table columns
+ * @return {string} Value for grid-template-columns css attribute
  */
 export function processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, columns) {
 	if (isNewBlock || tableIsResolving) {
@@ -59,26 +62,21 @@ export function processColumns(isNewBlock, tableIsResolving, enableFutureFeature
 				default:
 					console.log('Unrecognized Attibute Type');
 			}
-
-			// if (column_id === '0') {
-			// 	newGridColumnStyle = newGridColumnStyle + '20px ';
-			// } else {
-			// 	newGridColumnStyle = newGridColumnStyle + 'auto ';
-			// }
 		});
 	}
 	console.log('grid-template-columns = ' + newGridColumnStyle);
-	// setTableStale(false)
 	return newGridColumnStyle;
 }
 
 /**
- * Establish grid css grid-template-rowss based upon attributes associated with rows
+ * Establish grid css grid-template-rows based upon attributes associated with header row(s).
  *
- * @param {*} isNewBlock
- * @param {*} tableIsResolving
- * @param {*} rows
- * @returns
+ * @since    1.0.0
+ *
+ * @param {boolean}      isNewBlock       Has the block been newly created and not yet persisted?
+ * @param {boolean}      tableIsResolving Are we still waiting for table to finish resolving?
+ * @param {Array|Object} rows             Table rows
+ * @return {string} Value for grid-template-rows css attribute in header rows
  */
 export function processHeaderRow(isNewBlock, tableIsResolving, rows) {
 	if (isNewBlock || tableIsResolving) {
@@ -123,12 +121,6 @@ export function processHeaderRow(isNewBlock, tableIsResolving, rows) {
 						console.log('Unrecognized Attibute Type');
 				}
 			}
-
-			// if (row_id === '0') {
-			//     newGridRowStyle = newGridRowStyle + '25px ';
-			// }  else {
-			//     newGridRowStyle = newGridRowStyle + 'auto ';
-			// }
 		});
 	}
 	// setTableStale(false)
@@ -136,12 +128,14 @@ export function processHeaderRow(isNewBlock, tableIsResolving, rows) {
 }
 
 /**
- * Establish grid css grid-template-rowss based upon attributes associated with rows
+ * Establish grid css grid-template-rows based upon attributes associated with body row(s).
  *
- * @param {*} isNewBlock
- * @param {*} tableIsResolving
- * @param {*} rows
- * @returns
+ * @since    1.0.0
+ *
+ * @param {boolean}      isNewBlock       Has the block been newly created and not yet persisted?
+ * @param {boolean}      tableIsResolving Are we still waiting for table to finish resolving?
+ * @param {Array|Object} rows             Table rows
+ * @return {string} Value for grid-template-rows css attribute in body rows
  */
 export function processBodyRows(isNewBlock, tableIsResolving, rows) {
 	if (isNewBlock || tableIsResolving) {
@@ -188,24 +182,18 @@ export function processBodyRows(isNewBlock, tableIsResolving, rows) {
 			}
 		});
 	}
-	// {
-	//     rows.filter(row => !row.attributes.isHeader && row.row_id !== '0')
-	//         .map(({ row_id, attributes, classes }) => {
-	//             console.log('Row ID - ' + newGridRowStyle)
-	//             newGridRowStyle = newGridRowStyle + 'auto ';
-	//         })
-	// }
-	// setTableStale(false)
 	return newGridRowStyle;
 }
 
 /**
- * Create Styling Variable for showing inner grid borders/lines
+ * Create Styling Variable for the text color in banded rows.
  *
- * @param {*} isNewBlock
- * @param {*} tableIsResolving
- * @param {*} showGridLines
- * @returns
+ * @since    1.0.0
+ *
+ * @param {boolean} isNewBlock       Has the block been newly created and not yet persisted?
+ * @param {boolean} tableIsResolving Are we still waiting for table to finish resolving?
+ * @param {string}  color            Color code associated with the banded row text
+ * @return {string} CSS color code
  */
 export function gridBandedRowTextColorStyle(isNewBlock, tableIsResolving, color) {
 	if (isNewBlock || tableIsResolving) {
@@ -214,6 +202,16 @@ export function gridBandedRowTextColorStyle(isNewBlock, tableIsResolving, color)
 	return color;
 }
 
+/**
+ * Create Styling Variable for the background color in banded rows.
+ *
+ * @since    1.0.0
+ *
+ * @param {boolean} isNewBlock       Has the block been newly created and not yet persisted?
+ * @param {boolean} tableIsResolving Are we still waiting for table to finish resolving?
+ * @param {string}  color            Color code associated with the banded row background color
+ * @return {string} CSS color code
+ */
 export function gridBandedRowBackgroundColorStyle(isNewBlock, tableIsResolving, color) {
 	if (isNewBlock || tableIsResolving) {
 		return undefined;
@@ -222,12 +220,15 @@ export function gridBandedRowBackgroundColorStyle(isNewBlock, tableIsResolving, 
 }
 
 /**
- * Create Styling Variable for showing inner grid borders/lines
+ * Create Styling Variable for the header background color.
  *
- * @param {*} isNewBlock
- * @param {*} tableIsResolving
- * @param {*} showGridLines
- * @returns
+ * @since    1.0.0
+ *
+ * @param {boolean} isNewBlock       Has the block been newly created and not yet persisted?
+ * @param {boolean} tableIsResolving Are we still waiting for table to finish resolving?
+ * @param {string}  tableColor       Color code associated with table header color if populated
+ * @param {string}  blockColor       Color code associated with block
+ * @return {string} Value for header background-color
  */
 export function getGridHeaderBackgroundColorStyle(
 	isNewBlock,
@@ -247,12 +248,14 @@ export function getGridHeaderBackgroundColorStyle(
 }
 
 /**
- * Create Styling Variable for showing inner grid borders/lines
+ * Create Styling Variable for showing inner grid borders/lines.
  *
- * @param {*} isNewBlock
- * @param {*} tableIsResolving
- * @param {*} showGridLines
- * @returns
+ * @since    1.0.0
+ *
+ * @param {boolean} isNewBlock       Has the block been newly created and not yet persisted?
+ * @param {boolean} tableIsResolving Are we still waiting for table to finish resolving?
+ * @param {boolean} showGridLines    Do we render grid lines
+ * @return {string} CSS value to show vs. hide table inside grid (border) lines
  */
 export function gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines) {
 	if (isNewBlock || tableIsResolving) {
@@ -267,12 +270,15 @@ export function gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines
 }
 
 /**
- * Create Styling Variable for inner grid borders/lines width
+ * Create Styling Variable for inner grid borders/lines width.
  *
- * @param {*} isNewBlock
- * @param {*} tableIsResolving
- * @param {*} showGridLines
- * @returns
+ * @since    1.0.0
+ *
+ * @param {boolean} isNewBlock       Has the block been newly created and not yet persisted?
+ * @param {boolean} tableIsResolving Are we still waiting for table to finish resolving?
+ * @param {boolean} showGridLines    Do we render grid lines
+ * @param {string}  gridLineWidth    Number of pixels for grid line width
+ * @return  {string} CSS value for border width
  */
 export function gridInnerBorderWidthStyle(
 	isNewBlock,
@@ -291,6 +297,15 @@ export function gridInnerBorderWidthStyle(
 	return String(gridLineWidth) + 'px';
 }
 
+/**
+ * CSS starting grid row line number for body rows.
+ *
+ * @since    1.0.0
+ *
+ * @param {boolean} enableHeader Does the table contain a header row?
+ * @param {boolean} showBorders  Are borders to be displayed?
+ * @return  {number} First body row number
+ */
 export function startGridRowNbr(enableHeader, showBorders) {
 	let startGridLine = 1;
 	startGridLine = enableHeader ? startGridLine + 1 : startGridLine;
@@ -298,15 +313,27 @@ export function startGridRowNbr(enableHeader, showBorders) {
 
 	return startGridLine;
 }
-// endGridRowNbr(1, 'Header', numRows, enableHeaderRow, false)
 
+/**
+ * CSS ending grid row line number.
+ *
+ * @since    1.0.0
+ *
+ * @param {number}  startGridLine Starting line number for the row group
+ * @param {string}  rowGroup      Header or Body
+ * @param {number}  numRows       Total number of grid rows in this row group
+ * @param {boolean} enableHeader  Does the table contain a header row(s)?
+ * @param {boolean} showBorders   Are borders to be displayed?
+ * @param {boolean} enableFooter  Does the table contain a footer row(s)?
+ * @return  {number} Line number of ending grid row
+ */
 export function endGridRowNbr(
 	startGridLine,
 	rowGroup,
 	numRows,
 	enableHeader,
 	showBorders,
-	enableFooter
+	enableFooter // Always false.  Reserved for future functionality
 ) {
 	let endGridLine;
 
@@ -339,11 +366,15 @@ export function getHeaderTextAlignmentStyle(isNewBlock, tableIsResolving, textAl
 }
 
 /**
+ * Determine whether the border is styled differently or the same for each side of the border.
+ *
  * The BorderBoxControl stores the syle values as a flat object (simple) or as nested objects
  * (complex).  We evaluate the object value to determine which type it is.
  *
- * @param {*} border
- * @returns
+ * @since    1.0.0
+ *
+ * @param {Object} border Border style definition
+ * @return {string} Border type (flat vs. split)
  */
 export function getBorderStyleType(border) {
 	if (border) {
@@ -364,13 +395,15 @@ export function getBorderStyleType(border) {
 }
 
 /**
- * Get Style value for the specified border segment and attribute
+ * Get the border style, color, and width of the specified border segment.
  *
- * @param {*} border
- * @param {*} borderLocation
- * @param {*} borderAttribute
- * @param {*} borderType
- * @returns {Array|string} CSS style for border
+ * @since    1.0.0
+ *
+ * @param {Object} border          Border style definition
+ * @param {string} borderLocation  The specified border segment (top | right | bottom | left)
+ * @param {string} borderAttribute The attribute to be styled (style | color | width)
+ * @param {string} borderType      Whether the border is the same on all side (flat) or different (split)
+ * @return {string} CSS value for the requested attribute
  */
 export function getBorderStyle(border, borderLocation, borderAttribute, borderType) {
 	switch (borderType) {
@@ -398,13 +431,4 @@ export function getBorderStyle(border, borderLocation, borderAttribute, borderTy
 			}
 		}
 	}
-	// if (borderType === 'split') {
-	//     return border[borderLocation][borderAttribute]
-	// }
-
-	// if (borderType === 'flat') {
-	//     return border[borderAttribute]
-	// }
-
-	// return 'unknown'
 }

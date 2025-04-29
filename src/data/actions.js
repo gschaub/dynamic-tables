@@ -121,9 +121,7 @@ export const createTableEntity =
 			rows,
 			columns,
 			cells,
-		} = select.getTable('0', 'Saved');
-		const testTable = select.getTable('0', false);
-		console.log(testTable);
+		} = select.getTable('0', true);
 		const newTable = {
 			title: table_name,
 			header: {
@@ -198,8 +196,6 @@ export const saveTableEntity =
 export const updateTableEntity =
 	(tableId, overrideTableStatus = '') =>
 	({ select, registry }) => {
-		const testTable = select.getTable(tableId, false);
-		console.log(testTable);
 		const {
 			table_id,
 			block_table_ref,
@@ -311,7 +307,7 @@ export const deleteTableEntity =
  *
  * @since    1.0.0
  *
- * @param {Array} deletedTables Array of table id's
+ * @param {Object} deletedTables Object of deleted tables
  * @return  {Object} Action object
  */
 export const processDeletedTables =
@@ -331,7 +327,7 @@ export const processDeletedTables =
  *
  * @since    1.0.0
  *
- * @param {Object} unmountedTables Object of table id's of currently unmounted tables
+ * @param {Object} unmountedTables Object of currently unmounted tables
  * @return  {Object} Action object
  */
 export const processUnmountedTables =

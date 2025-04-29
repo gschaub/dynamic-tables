@@ -1498,9 +1498,7 @@ const createTableEntity = () => async ({
     rows,
     columns,
     cells
-  } = select.getTable('0', 'Saved');
-  const testTable = select.getTable('0', false);
-  console.log(testTable);
+  } = select.getTable('0', true);
   const newTable = {
     title: table_name,
     header: {
@@ -1562,8 +1560,6 @@ const updateTableEntity = (tableId, overrideTableStatus = '') => ({
   select,
   registry
 }) => {
-  const testTable = select.getTable(tableId, false);
-  console.log(testTable);
   const {
     table_id,
     block_table_ref,
@@ -1673,7 +1669,7 @@ const deleteTableEntity = tableId => async ({
  *
  * @since    1.0.0
  *
- * @param {Array} deletedTables Array of table id's
+ * @param {Object} deletedTables Object of deleted tables
  * @return  {Object} Action object
  */
 const processDeletedTables = deletedTables => ({
@@ -1693,7 +1689,7 @@ const processDeletedTables = deletedTables => ({
  *
  * @since    1.0.0
  *
- * @param {Object} unmountedTables Object of table id's of currently unmounted tables
+ * @param {Object} unmountedTables Object of currently unmounted tables
  * @return  {Object} Action object
  */
 const processUnmountedTables = unmountedTables => ({
@@ -2657,19 +2653,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   getDeletedTables: () => (/* binding */ getDeletedTables),
 /* harmony export */   getTable: () => (/* binding */ getTable),
-/* harmony export */   getTableBlockId: () => (/* binding */ getTableBlockId),
 /* harmony export */   getTableIdByBlock: () => (/* binding */ getTableIdByBlock),
-/* harmony export */   getTableTest: () => (/* binding */ getTableTest),
 /* harmony export */   getTables: () => (/* binding */ getTables),
 /* harmony export */   getUnmountedTables: () => (/* binding */ getUnmountedTables),
 /* harmony export */   getUnsavedTables: () => (/* binding */ getUnsavedTables)
 /* harmony export */ });
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
-/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_1__);
-
-
+/**
+ * Retrieve the current state of a single table by table id.  If stale, refresh
+ * the table from the REST api.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object}  state        Current state of tables
+ * @param {number}  tableId      Identifier key for the table
+ * @param {boolean} isTableStale Should fresh data be fetch from API?
+ * @return {Object} Requested Table
+ */
 function getTable(state, tableId, isTableStale) {
   console.log('Selector...GetTable ' + tableId);
   console.log('        ...Current Table Stale ' + isTableStale);
@@ -2691,9 +2690,28 @@ function getTable(state, tableId, isTableStale) {
   }
   return state.tables[tableId];
 }
+
+/**
+ * Retrieve the current state of a all tables (table blocks) in the post.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} state Current state of tables
+ * @return {Object} All tables
+ */
 function getTables(state) {
   return state.tables;
 }
+
+/**
+ * Retrieve the current state of a single table by the block's cross reference key.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} state           Current state of tables
+ * @param {string} block_table_ref Cross refernece from block to identify table
+ * @return {number} Table id of requested table
+ */
 function getTableIdByBlock(state, block_table_ref) {
   const newTable = Object.keys(state.tables).reduce((acc, key) => {
     if (state.tables[key]?.block_table_ref === block_table_ref) {
@@ -2718,6 +2736,14 @@ function getTableIdByBlock(state, block_table_ref) {
  * @param {*} state
  * @returns
  */
+/**
+ * Get all tables associated with unmounted blocks.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} state Current state of tables
+ * @return {Object} Unmounted tables
+ */
 function getUnmountedTables(state) {
   console.log(state.tables);
   const unmountedTables = Object.keys(state.tables).reduce((acc, key) => {
@@ -2730,6 +2756,15 @@ function getUnmountedTables(state) {
   }, {});
   return unmountedTables;
 }
+
+/**
+ * Get all tables with a status of 'deleted'.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} state Current state of tables
+ * @return {Object} Deleted tables
+ */
 function getDeletedTables(state) {
   const deletedTables = Object.keys(state.tables).reduce((acc, key) => {
     console.log(state.tables[key].table_status);
@@ -2742,8 +2777,18 @@ function getDeletedTables(state) {
   }, {});
   return deletedTables;
 }
+
+/**
+ * Get all tables with a status of 'new'.  There should theoretically only be one
+ * at any time.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} state Current state of tables
+ * @return {Object} New tables
+ */
 function getUnsavedTables(state) {
-  const deletedTables = Object.keys(state.tables).reduce((acc, key) => {
+  const newTables = Object.keys(state.tables).reduce((acc, key) => {
     console.log(state.tables[key].table_status);
     if (state.tables[key].table_status === 'new') {
       acc[key] = {
@@ -2752,14 +2797,8 @@ function getUnsavedTables(state) {
     }
     return acc;
   }, {});
-  return deletedTables;
+  return newTables;
 }
-function getTableBlockId(state) {}
-const getTableTest = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.createRegistrySelector)(
-// (select) => (state, tableId) => {
-select => () => {
-  return select(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_1__.store).getEntityRecord('dynamic-tables/v1', 'table', '18');
-});
 
 /***/ }),
 
@@ -4470,7 +4509,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Returns `true` if post changes are saved, otherwise `false`.
  *
- * @returns {boolean}
+ * @return {boolean}
  */
 const usePostChangesSaved = () => {
   console.log('In After Save Hook');
@@ -4555,10 +4594,13 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Establish grid css grid-template-columns based upon attributes associated with columns
  *
- * @param {*} isNewBlock
- * @param {*} tableIsResolving
- * @param {*} columns
- * @returns
+ * @since    1.0.0
+ *
+ * @param {boolean}      isNewBlock           Has the block been newly created and not yet persisted?
+ * @param {boolean}      tableIsResolving     Are we still waiting for table to finish resolving?
+ * @param {boolean}      enableFutureFeatures Include features intended for a future release?
+ * @param {Array|Object} columns              Table columns
+ * @return {string} Value for grid-template-columns css attribute
  */
 function processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, columns) {
   if (isNewBlock || tableIsResolving) {
@@ -4619,26 +4661,21 @@ function processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, colu
         default:
           console.log('Unrecognized Attibute Type');
       }
-
-      // if (column_id === '0') {
-      // 	newGridColumnStyle = newGridColumnStyle + '20px ';
-      // } else {
-      // 	newGridColumnStyle = newGridColumnStyle + 'auto ';
-      // }
     });
   }
   console.log('grid-template-columns = ' + newGridColumnStyle);
-  // setTableStale(false)
   return newGridColumnStyle;
 }
 
 /**
- * Establish grid css grid-template-rowss based upon attributes associated with rows
+ * Establish grid css grid-template-rows based upon attributes associated with header row(s).
  *
- * @param {*} isNewBlock
- * @param {*} tableIsResolving
- * @param {*} rows
- * @returns
+ * @since    1.0.0
+ *
+ * @param {boolean}      isNewBlock       Has the block been newly created and not yet persisted?
+ * @param {boolean}      tableIsResolving Are we still waiting for table to finish resolving?
+ * @param {Array|Object} rows             Table rows
+ * @return {string} Value for grid-template-rows css attribute in header rows
  */
 function processHeaderRow(isNewBlock, tableIsResolving, rows) {
   if (isNewBlock || tableIsResolving) {
@@ -4686,12 +4723,6 @@ function processHeaderRow(isNewBlock, tableIsResolving, rows) {
             console.log('Unrecognized Attibute Type');
         }
       }
-
-      // if (row_id === '0') {
-      //     newGridRowStyle = newGridRowStyle + '25px ';
-      // }  else {
-      //     newGridRowStyle = newGridRowStyle + 'auto ';
-      // }
     });
   }
   // setTableStale(false)
@@ -4699,12 +4730,14 @@ function processHeaderRow(isNewBlock, tableIsResolving, rows) {
 }
 
 /**
- * Establish grid css grid-template-rowss based upon attributes associated with rows
+ * Establish grid css grid-template-rows based upon attributes associated with body row(s).
  *
- * @param {*} isNewBlock
- * @param {*} tableIsResolving
- * @param {*} rows
- * @returns
+ * @since    1.0.0
+ *
+ * @param {boolean}      isNewBlock       Has the block been newly created and not yet persisted?
+ * @param {boolean}      tableIsResolving Are we still waiting for table to finish resolving?
+ * @param {Array|Object} rows             Table rows
+ * @return {string} Value for grid-template-rows css attribute in body rows
  */
 function processBodyRows(isNewBlock, tableIsResolving, rows) {
   if (isNewBlock || tableIsResolving) {
@@ -4754,24 +4787,18 @@ function processBodyRows(isNewBlock, tableIsResolving, rows) {
       }
     });
   }
-  // {
-  //     rows.filter(row => !row.attributes.isHeader && row.row_id !== '0')
-  //         .map(({ row_id, attributes, classes }) => {
-  //             console.log('Row ID - ' + newGridRowStyle)
-  //             newGridRowStyle = newGridRowStyle + 'auto ';
-  //         })
-  // }
-  // setTableStale(false)
   return newGridRowStyle;
 }
 
 /**
- * Create Styling Variable for showing inner grid borders/lines
+ * Create Styling Variable for the text color in banded rows.
  *
- * @param {*} isNewBlock
- * @param {*} tableIsResolving
- * @param {*} showGridLines
- * @returns
+ * @since    1.0.0
+ *
+ * @param {boolean} isNewBlock       Has the block been newly created and not yet persisted?
+ * @param {boolean} tableIsResolving Are we still waiting for table to finish resolving?
+ * @param {string}  color            Color code associated with the banded row text
+ * @return {string} CSS color code
  */
 function gridBandedRowTextColorStyle(isNewBlock, tableIsResolving, color) {
   if (isNewBlock || tableIsResolving) {
@@ -4779,6 +4806,17 @@ function gridBandedRowTextColorStyle(isNewBlock, tableIsResolving, color) {
   }
   return color;
 }
+
+/**
+ * Create Styling Variable for the background color in banded rows.
+ *
+ * @since    1.0.0
+ *
+ * @param {boolean} isNewBlock       Has the block been newly created and not yet persisted?
+ * @param {boolean} tableIsResolving Are we still waiting for table to finish resolving?
+ * @param {string}  color            Color code associated with the banded row background color
+ * @return {string} CSS color code
+ */
 function gridBandedRowBackgroundColorStyle(isNewBlock, tableIsResolving, color) {
   if (isNewBlock || tableIsResolving) {
     return undefined;
@@ -4787,12 +4825,15 @@ function gridBandedRowBackgroundColorStyle(isNewBlock, tableIsResolving, color) 
 }
 
 /**
- * Create Styling Variable for showing inner grid borders/lines
+ * Create Styling Variable for the header background color.
  *
- * @param {*} isNewBlock
- * @param {*} tableIsResolving
- * @param {*} showGridLines
- * @returns
+ * @since    1.0.0
+ *
+ * @param {boolean} isNewBlock       Has the block been newly created and not yet persisted?
+ * @param {boolean} tableIsResolving Are we still waiting for table to finish resolving?
+ * @param {string}  tableColor       Color code associated with table header color if populated
+ * @param {string}  blockColor       Color code associated with block
+ * @return {string} Value for header background-color
  */
 function getGridHeaderBackgroundColorStyle(isNewBlock, tableIsResolving, tableColor, blockColor) {
   if (isNewBlock || tableIsResolving) {
@@ -4805,12 +4846,14 @@ function getGridHeaderBackgroundColorStyle(isNewBlock, tableIsResolving, tableCo
 }
 
 /**
- * Create Styling Variable for showing inner grid borders/lines
+ * Create Styling Variable for showing inner grid borders/lines.
  *
- * @param {*} isNewBlock
- * @param {*} tableIsResolving
- * @param {*} showGridLines
- * @returns
+ * @since    1.0.0
+ *
+ * @param {boolean} isNewBlock       Has the block been newly created and not yet persisted?
+ * @param {boolean} tableIsResolving Are we still waiting for table to finish resolving?
+ * @param {boolean} showGridLines    Do we render grid lines
+ * @return {string} CSS value to show vs. hide table inside grid (border) lines
  */
 function gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines) {
   if (isNewBlock || tableIsResolving) {
@@ -4824,12 +4867,15 @@ function gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines) {
 }
 
 /**
- * Create Styling Variable for inner grid borders/lines width
+ * Create Styling Variable for inner grid borders/lines width.
  *
- * @param {*} isNewBlock
- * @param {*} tableIsResolving
- * @param {*} showGridLines
- * @returns
+ * @since    1.0.0
+ *
+ * @param {boolean} isNewBlock       Has the block been newly created and not yet persisted?
+ * @param {boolean} tableIsResolving Are we still waiting for table to finish resolving?
+ * @param {boolean} showGridLines    Do we render grid lines
+ * @param {string}  gridLineWidth    Number of pixels for grid line width
+ * @return  {string} CSS value for border width
  */
 function gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, gridLineWidth) {
   if (isNewBlock || tableIsResolving) {
@@ -4840,15 +4886,38 @@ function gridInnerBorderWidthStyle(isNewBlock, tableIsResolving, showGridLines, 
   }
   return String(gridLineWidth) + 'px';
 }
+
+/**
+ * CSS starting grid row line number for body rows.
+ *
+ * @since    1.0.0
+ *
+ * @param {boolean} enableHeader Does the table contain a header row?
+ * @param {boolean} showBorders  Are borders to be displayed?
+ * @return  {number} First body row number
+ */
 function startGridRowNbr(enableHeader, showBorders) {
   let startGridLine = 1;
   startGridLine = enableHeader ? startGridLine + 1 : startGridLine;
   startGridLine = showBorders ? startGridLine + 1 : startGridLine;
   return startGridLine;
 }
-// endGridRowNbr(1, 'Header', numRows, enableHeaderRow, false)
 
-function endGridRowNbr(startGridLine, rowGroup, numRows, enableHeader, showBorders, enableFooter) {
+/**
+ * CSS ending grid row line number.
+ *
+ * @since    1.0.0
+ *
+ * @param {number}  startGridLine Starting line number for the row group
+ * @param {string}  rowGroup      Header or Body
+ * @param {number}  numRows       Total number of grid rows in this row group
+ * @param {boolean} enableHeader  Does the table contain a header row(s)?
+ * @param {boolean} showBorders   Are borders to be displayed?
+ * @param {boolean} enableFooter  Does the table contain a footer row(s)?
+ * @return  {number} Line number of ending grid row
+ */
+function endGridRowNbr(startGridLine, rowGroup, numRows, enableHeader, showBorders, enableFooter // Always false.  Reserved for future functionality
+) {
   let endGridLine;
   switch (rowGroup) {
     case 'Header':
@@ -4878,11 +4947,15 @@ function getHeaderTextAlignmentStyle(isNewBlock, tableIsResolving, textAlignment
 }
 
 /**
+ * Determine whether the border is styled differently or the same for each side of the border.
+ *
  * The BorderBoxControl stores the syle values as a flat object (simple) or as nested objects
  * (complex).  We evaluate the object value to determine which type it is.
  *
- * @param {*} border
- * @returns
+ * @since    1.0.0
+ *
+ * @param {Object} border Border style definition
+ * @return {string} Border type (flat vs. split)
  */
 function getBorderStyleType(border) {
   if (border) {
@@ -4901,13 +4974,15 @@ function getBorderStyleType(border) {
 }
 
 /**
- * Get Style value for the specified border segment and attribute
+ * Get the border style, color, and width of the specified border segment.
  *
- * @param {*} border
- * @param {*} borderLocation
- * @param {*} borderAttribute
- * @param {*} borderType
- * @returns {Array|string} CSS style for border
+ * @since    1.0.0
+ *
+ * @param {Object} border          Border style definition
+ * @param {string} borderLocation  The specified border segment (top | right | bottom | left)
+ * @param {string} borderAttribute The attribute to be styled (style | color | width)
+ * @param {string} borderType      Whether the border is the same on all side (flat) or different (split)
+ * @return {string} CSS value for the requested attribute
  */
 function getBorderStyle(border, borderLocation, borderAttribute, borderType) {
   switch (borderType) {
@@ -4937,15 +5012,6 @@ function getBorderStyle(border, borderLocation, borderAttribute, borderType) {
         }
       }
   }
-  // if (borderType === 'split') {
-  //     return border[borderLocation][borderAttribute]
-  // }
-
-  // if (borderType === 'flat') {
-  //     return border[borderAttribute]
-  // }
-
-  // return 'unknown'
 }
 
 /***/ }),

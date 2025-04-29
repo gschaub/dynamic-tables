@@ -5,7 +5,7 @@ import { useSelect } from '@wordpress/data';
 /**
  * Returns `true` if post changes are saved, otherwise `false`.
  *
- * @returns {boolean}
+ * @return {boolean}
  */
 export const usePostChangesSaved = () => {
 	console.log('In After Save Hook');
