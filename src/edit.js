@@ -3,21 +3,15 @@ import { useSelect, useDispatch, dispatch } from '@wordpress/data';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { store as noticeStore } from '@wordpress/notices';
-import { useEntityRecords } from '@wordpress/core-data';
-import { usePrevious } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
-import { ForwardedRef } from 'react';
 import {
 	Panel,
 	PanelBody,
 	PanelRow,
-	Disabled,
 	TabbableContainer,
 	Button,
 	Spinner,
 	Placeholder,
-	ColorPicker,
-	ToggleControl,
 	CheckboxControl,
 	__experimentalInputControl as InputControl,
 	BorderBoxControl,
@@ -28,24 +22,18 @@ import {
 	useBlockProps,
 	useSettings,
 	BlockIcon,
-	AlignmentToolbar,
 	AlignmentControl,
 	InspectorControls,
 	BlockControls,
 	BlockAlignmentToolbar,
 	PanelColorSettings,
 } from '@wordpress/block-editor';
-import {
-	column,
-	search,
-	blockTable as icon,
-} from '@wordpress/icons';
+import { search, blockTable as icon } from '@wordpress/icons';
 
 /* Internal dependencies */
 import { store as tableStore } from './data';
 import { usePostChangesSaved } from './hooks';
 import {
-	numberToLetter,
 	tableSort,
 	generateBlockTableRef,
 	setBorderContent,
@@ -53,15 +41,7 @@ import {
 	openCurrentRowMenu,
 	removeTags,
 } from './utils';
-import {
-	initTable,
-	initTableCells,
-	getDefaultRow,
-	getDefaultColumn,
-	getDefaultCell,
-	getDefaultTableClasses,
-	getDefaultTableAttributes,
-} from './table-defaults';
+import { initTable, getDefaultRow, getDefaultColumn, getDefaultCell } from './table-defaults';
 import {
 	processColumns,
 	processHeaderRow,
@@ -116,7 +96,6 @@ export default function Edit(props) {
 	const { receiveNewTable } = useDispatch(tableStore);
 	const { createTableEntity } = useDispatch(tableStore);
 	const { saveTableEntity } = useDispatch(tableStore);
-	const { deleteTableEntity } = useDispatch(tableStore);
 	const { addColumn } = useDispatch(tableStore);
 	const { addRow } = useDispatch(tableStore);
 	const { removeColumn } = useDispatch(tableStore);
@@ -134,25 +113,20 @@ export default function Edit(props) {
 	/* Local State declarations */
 	const [isTableStale, setTableStale] = useState(true);
 	const [openColumnRow, setOpenColumnRow] = useState(0);
-	const [tablePropAttributes, setTablePropAttributes] = useState({});
 	const [columnAttributes, setColumnAttributes] = useState({});
 	const [columnMenuVisible, setColumnMenuVisible] = useState(false);
 	const [rowMenuVisible, setRowMenuVisible] = useState(false);
-	const [openRowColumn, setOpenRowColumn] = useState(0);
 	const [rowAttributes, setRowAttributes] = useState({});
-	const [render, setRender] = useState(0);
 	const [showBorders, setShowBorders] = useState(false);
 	const [tableName, setTableName] = useState('');
 	const [numColumns, setNumColumns] = useState(1);
 	const [numRows, setNumRows] = useState(1);
-	const [gridCells, setGridCells] = useState([]);
 	const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = useState(false);
 
 	/* Current future features: Zoom to details */
 	const enableFutureFeatures = false;
 	const enableProFeatures = false;
 
-	const priorTableRef = useRef({});
 	const { table_id, block_table_ref, block_alignment } = props.attributes;
 	const themeColors = useSettings('color.palette');
 	const borderBoxColors = themeColors[0].map(({ color, name }) => {
@@ -921,9 +895,8 @@ export default function Edit(props) {
 	 * @param {number} column_id Identifier for the table column
 	 * @param {number} row_id    Identifier for the table row
 	 * @param {Object} table     Dynamic Table
-	 * @param {Object} event     Border mouse click event
 	 */
-	function onMouseBorderClick(column_id, row_id, table, event) {
+	function onMouseBorderClick(column_id, row_id, table) {
 		if (row_id === '0' && column_id !== '0') {
 			console.log('Opening Column ' + column_id);
 			const compareColumnId = column_id;
@@ -1565,60 +1538,50 @@ export default function Edit(props) {
 										<div className={'grid-control__border'}>
 											{table.cells
 												.filter(cell => cell.attributes.border && cell.row_id === '0')
-												.map(
-													({
-														table_id,
-														row_id,
-														column_id,
-														cell_id,
-														content,
-														attributes,
-														classes,
-													}) => {
-														console.log('Rendering Body Row Cell' + cell_id);
+												.map(({ table_id, row_id, column_id, cell_id, content, classes }) => {
+													console.log('Rendering Body Row Cell' + cell_id);
 
-														const borderContent = setBorderContent(row_id, column_id, content);
-														const isOpenCurrentColumnMenu = openCurrentColumnMenu(
-															columnMenuVisible,
-															openColumnRow,
-															column_id
-														);
-														const isFirstColumn = column_id === '1' ? true : false;
-														return (
-															<>
-																{/* Show zoom to details column */}
-																{isFirstColumn && enableFutureFeatures && (
-																	<div className={'grid-control__border-cells'} />
+													const borderContent = setBorderContent(row_id, column_id, content);
+													const isOpenCurrentColumnMenu = openCurrentColumnMenu(
+														columnMenuVisible,
+														openColumnRow,
+														column_id
+													);
+													const isFirstColumn = column_id === '1' ? true : false;
+													return (
+														<>
+															{/* Show zoom to details column */}
+															{isFirstColumn && enableFutureFeatures && (
+																<div className={'grid-control__border-cells'} />
+															)}
+
+															<div
+																id={cell_id}
+																onMouseDown={e => onMouseBorderClick(column_id, row_id, table, e)}
+																className={classes}
+															>
+																{borderContent}
+																{isOpenCurrentColumnMenu && (
+																	<ColumnMenu
+																		tableId={table_id}
+																		columnId={column_id}
+																		columnLabel={borderContent}
+																		columnAttributes={columnAttributes}
+																		enableProFeatures={enableProFeatures}
+																		updatedColumn={onUpdateColumn}
+																	></ColumnMenu>
 																)}
-
-																<div
-																	id={cell_id}
-																	onMouseDown={e => onMouseBorderClick(column_id, row_id, table, e)}
-																	className={classes}
-																>
-																	{borderContent}
-																	{isOpenCurrentColumnMenu && (
-																		<ColumnMenu
-																			tableId={table_id}
-																			columnId={column_id}
-																			columnLabel={borderContent}
-																			columnAttributes={columnAttributes}
-																			enableProFeatures={enableProFeatures}
-																			updatedColumn={onUpdateColumn}
-																		></ColumnMenu>
-																	)}
-																</div>
-															</>
-														);
-													}
-												)}
+															</div>
+														</>
+													);
+												})}
 										</div>
 									)}
 
 									{/* Render Table Header Row if present */}
 									{table.rows
 										.filter(row => row.attributes.isHeader === true)
-										.map(({ row_id, attributes }) => {
+										.map(({ row_id }) => {
 											const renderedRow = row_id;
 											return (
 												<div
@@ -1757,7 +1720,7 @@ export default function Edit(props) {
 										{/* Render Table Body Row Wrapper*/}
 										{table.rows
 											.filter(row => row.attributes.isHeader !== true && row.row_id !== '0')
-											.map(({ row_id, attributes }) => {
+											.map(({ row_id }) => {
 												const renderedRow = row_id;
 												// console.log('Rendering Body Row ' + renderedRow)
 
