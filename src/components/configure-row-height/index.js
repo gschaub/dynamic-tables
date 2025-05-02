@@ -21,8 +21,7 @@ import './style.scss';
  * @return  {Object} Updated column properties
  */
 function ConfigureRowHeight(props) {
-	const { openRowHeight, rowId, rowLabel, rowAttributes } = props;
-	//    const [closePage, setClosePage] = useState(false)
+	const { openRowHeight, rowLabel, rowAttributes } = props;
 
 	useEffect(() => {
 		switch (rowAttributes.rowHeightType) {
@@ -86,9 +85,6 @@ function ConfigureRowHeight(props) {
 	const [fixedHeight, setFixedHeight] = useState(0);
 	const [fixedHeightUnits, setFixedHeightUnits] = useState();
 
-	console.log('In Component ConfigureRowHeight');
-	console.log(props);
-
 	/**
 	 * Process change in height type and set detault props for the type.
 	 *
@@ -97,9 +93,6 @@ function ConfigureRowHeight(props) {
 	 * @param {string} event New row height type
 	 */
 	function onHeightType(event) {
-		console.log('...In Height Type Update');
-		console.log(event);
-
 		switch (event) {
 			case 'Auto': {
 				setMaxHeight(0);
@@ -149,8 +142,6 @@ function ConfigureRowHeight(props) {
 	 * @param {Object} event Minimum height units
 	 */
 	function onMinimumHeight(event) {
-		console.log('...In MixHeight Update');
-		console.log(event);
 		setMinHeight(event.target.value);
 	}
 
@@ -162,8 +153,6 @@ function ConfigureRowHeight(props) {
 	 * @param {string} event Minimum height unit type
 	 */
 	function onMinimumHeightUnits(event) {
-		console.log('...In MixHeight Units Update');
-		console.log(event);
 		setMinHeightUnits(event);
 	}
 
@@ -175,8 +164,6 @@ function ConfigureRowHeight(props) {
 	 * @param {Object} event Maximum height units
 	 */
 	function onMaximumHeight(event) {
-		console.log('...In Max Height Update');
-		console.log(event);
 		setMaxHeight(event.target.value);
 	}
 
@@ -188,8 +175,6 @@ function ConfigureRowHeight(props) {
 	 * @param {string} event Maximum height unit type
 	 */
 	function onMaximumHeightUnits(event) {
-		console.log('...In Max Height Update');
-		console.log(event);
 		setMaxHeightUnits(event);
 	}
 
@@ -201,8 +186,6 @@ function ConfigureRowHeight(props) {
 	 * @param {Object} event Fixed height units
 	 */
 	function onFixedHeight(event) {
-		console.log('...In Max Height Update');
-		console.log(event);
 		setFixedHeight(Number(event.target.value));
 	}
 
@@ -214,8 +197,6 @@ function ConfigureRowHeight(props) {
 	 * @param {string} event Fixed height unit type
 	 */
 	function onFixedHeightUnits(event) {
-		console.log('...In Max Height Units Update');
-		console.log(event);
 		setFixedHeightUnits(event);
 	}
 
@@ -227,11 +208,6 @@ function ConfigureRowHeight(props) {
 	 * @param {Object} event Form submit
 	 */
 	function onUpdate(event) {
-		// event.preventDefault()
-		console.log('ROW HEIGHT  UPDATED...');
-		console.log(event);
-		console.log('...Max Height = ' + maxHeight);
-
 		const updatedRowAttributes = {
 			rowHeightType: rowHeightType,
 			minHeight: minHeight,
@@ -244,14 +220,8 @@ function ConfigureRowHeight(props) {
 			horizontalAlignment: 'none',
 		};
 
-		console.log(updatedRowAttributes);
-
 		openRowHeight(false, updatedRowAttributes);
 	}
-
-	console.log('RENDER PROPS');
-	console.log('...Disable Fixed Input = ' + hideFixed);
-	console.log('...Disable Custom Input = ' + hideCustom);
 
 	return (
 		<>
@@ -266,11 +236,7 @@ function ConfigureRowHeight(props) {
 				>
 					<p className="row-label">For row {rowLabel}</p>
 
-					<form
-						// className="blocks-table__placeholder-form"
-						onSubmit={onUpdate}
-						onMouseDown={stopProp}
-					>
+					<form onSubmit={onUpdate} onMouseDown={stopProp}>
 						<SelectControl
 							label="Height Type"
 							value={rowHeightType}

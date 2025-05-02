@@ -22,8 +22,7 @@ import './style.scss';
  * @return {Object} Updated column properties
  */
 function ConfigureColumnWidth(props) {
-	const { openColumnWidth, columnId, columnLabel, columnAttributes, enableProFeatures } = props;
-	//    const [closePage, setClosePage] = useState(false)
+	const { openColumnWidth, columnLabel, columnAttributes, enableProFeatures } = props;
 
 	useEffect(() => {
 		switch (columnAttributes.columnWidthType) {
@@ -102,9 +101,6 @@ function ConfigureColumnWidth(props) {
 	const [disableForTablet, setDisableForTablet] = useState(false);
 	const [disableForPhone, setDisableForPhone] = useState(false);
 
-	console.log('In Component ConfigureColumnWidth');
-	console.log(props);
-
 	/**
 	 * Process change in width type and set detault props for the type.
 	 *
@@ -113,9 +109,6 @@ function ConfigureColumnWidth(props) {
 	 * @param {string} event New column width type
 	 */
 	function onWidthType(event) {
-		console.log('...In Width Type Update');
-		console.log(event);
-
 		switch (event) {
 			case 'Proportional': {
 				setMaxWidth(1);
@@ -181,8 +174,6 @@ function ConfigureColumnWidth(props) {
 	 * @param {Object} event Minimum width units
 	 */
 	function onMinimumWidth(event) {
-		console.log('...In MixWidth Update');
-		console.log(event);
 		setMinWidth(event.target.value);
 	}
 
@@ -194,8 +185,6 @@ function ConfigureColumnWidth(props) {
 	 * @param {string} event Minimum width unit type
 	 */
 	function onMinimumWidthUnits(event) {
-		console.log('...In MixWidth Units Update');
-		console.log(event);
 		setMinWidthUnits(event);
 	}
 
@@ -207,8 +196,6 @@ function ConfigureColumnWidth(props) {
 	 * @param {Object} event Maximum width units
 	 */
 	function onMaximumWidth(event) {
-		console.log('...In Max Width Update');
-		console.log(event);
 		setMaxWidth(event.target.value);
 	}
 
@@ -220,8 +207,6 @@ function ConfigureColumnWidth(props) {
 	 * @param {string} event Maximum width unit type
 	 */
 	function onMaximumWidthUnits(event) {
-		console.log('...In Max Width  Update');
-		console.log(event);
 		setMaxWidthUnits(event);
 	}
 
@@ -233,8 +218,6 @@ function ConfigureColumnWidth(props) {
 	 * @param {Object} event Fixed width units
 	 */
 	function onFixedWidth(event) {
-		console.log('...In Max Width Update');
-		console.log(event);
 		setFixedWidth(Number(event.target.value));
 	}
 
@@ -246,8 +229,6 @@ function ConfigureColumnWidth(props) {
 	 * @param {string} event Fixed width unit type
 	 */
 	function onFixedWidthUnits(event) {
-		console.log('...In Max Width Units Update');
-		console.log(event);
 		setFixedWidthUnits(event);
 	}
 
@@ -259,9 +240,6 @@ function ConfigureColumnWidth(props) {
 	 * @param {boolean} checked Hide for tablets
 	 */
 	function onTablet(checked) {
-		console.log('...In Tablet Update');
-		console.log(checked);
-
 		setDisableForTablet(checked);
 	}
 
@@ -273,9 +251,6 @@ function ConfigureColumnWidth(props) {
 	 * @param {*} checked Hide for phones
 	 */
 	function onPhone(checked) {
-		console.log('...In Phone Update');
-		console.log(checked);
-
 		setDisableForPhone(checked);
 	}
 
@@ -287,11 +262,6 @@ function ConfigureColumnWidth(props) {
 	 * @param {Object} event Form submit
 	 */
 	function onUpdate(event) {
-		// event.preventDefault()
-		console.log('COLUMN WIDTH UPDATED...');
-		console.log(event);
-		console.log('...Max Width = ' + maxWidth);
-
 		const updatedColumnAttributes = {
 			columnWidthType: columnWidthType,
 			minWidth: minWidth,
@@ -305,16 +275,8 @@ function ConfigureColumnWidth(props) {
 			isFixedLeftColumnGroup: false,
 			horizontalAlignment: 'none',
 		};
-
-		console.log(updatedColumnAttributes);
-
 		openColumnWidth(false, updatedColumnAttributes);
 	}
-
-	console.log('RENDER PROPS');
-	console.log('...Disable Proportional Input = ' + hideProportional);
-	console.log('...Disable Fixed Input = ' + hideFixed);
-	console.log('...Disable Custom Input = ' + hideCustom);
 
 	return (
 		<>
@@ -329,11 +291,7 @@ function ConfigureColumnWidth(props) {
 				>
 					<p className="column-label">For column {columnLabel}</p>
 
-					<form
-						// className="blocks-table__placeholder-form"
-						onSubmit={onUpdate}
-						onMouseDown={stopProp}
-					>
+					<form onSubmit={onUpdate} onMouseDown={stopProp}>
 						<SelectControl
 							label="Width Type"
 							value={columnWidthType}

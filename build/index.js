@@ -276,18 +276,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/more-vertical.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-before.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-delete.js");
-/* harmony import */ var _configure_column_width__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../configure-column-width */ "./src/components/configure-column-width/index.js");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/more-vertical.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-before.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-delete.js");
+/* harmony import */ var _configure_column_width__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../configure-column-width */ "./src/components/configure-column-width/index.js");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__);
 /* External dependencies */
-
 
 
 
@@ -318,8 +315,6 @@ function ColumnMenu(props) {
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     setColumnAttributes(props.columnAttributes);
   }, [props.columnAttributes]);
-  console.log('In Component ColumnMenu');
-  console.log(props);
 
   /**
    * Column attributes for inserting new column.
@@ -330,9 +325,6 @@ function ColumnMenu(props) {
    * @param {number} columnId Column ID for new column
    */
   function onInsertColumn(event, columnId) {
-    console.log('    ...onInsertColumn');
-    console.log(event);
-    console.log('columnId = ' + columnId);
     updatedColumn(event, 'insert', tableId, columnId, '');
   }
 
@@ -345,9 +337,6 @@ function ColumnMenu(props) {
    * @param {number} columnId Column ID for column to remove
    */
   function onDeleteColumn(event, columnId) {
-    console.log('    ...onInsertColumn');
-    console.log(event);
-    console.log('columnId = ' + columnId);
     updatedColumn(event, 'delete', tableId, columnId, '');
   }
 
@@ -360,9 +349,6 @@ function ColumnMenu(props) {
    * @param {Object} updatedColumnAttributes Updated column attributes
    */
   function onUpdateColumnWidth(event, updatedColumnAttributes) {
-    console.log('    ...onUpdateColumn Width');
-    console.log(event);
-    console.log(updatedColumnAttributes);
     if (openModalColumnWidth) {
       setOpenModalColumnWidth(false);
       updatedColumn(event, 'attributes', tableId, columnId, updatedColumnAttributes);
@@ -371,35 +357,33 @@ function ColumnMenu(props) {
       setOpenModalColumnWidth(true);
     }
   }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.DropdownMenu
-    // style={{ display: "none" }}
-    , {
-      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.DropdownMenu, {
+      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
       defaultOpen: "true",
       label: columnLabel,
       children: ({
         onClose
-      }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
+      }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
             onClick: onUpdateColumnWidth,
             children: "Update Column Width"
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"],
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
             onClick: e => onInsertColumn(e, columnId),
             children: "Insert Column"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__["default"],
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"],
             onClick: e => onDeleteColumn(e, columnId),
             children: "Delete Column"
           })]
         })]
       })
-    }), openModalColumnWidth && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_configure_column_width__WEBPACK_IMPORTED_MODULE_3__.ConfigureColumnWidth, {
+    }), openModalColumnWidth && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_configure_column_width__WEBPACK_IMPORTED_MODULE_2__.ConfigureColumnWidth, {
       columnId: columnId,
       columnLabel: columnLabel,
       columnAttributes: columnAttributes,
@@ -450,13 +434,10 @@ __webpack_require__.r(__webpack_exports__);
 function ConfigureColumnWidth(props) {
   const {
     openColumnWidth,
-    columnId,
     columnLabel,
     columnAttributes,
     enableProFeatures
   } = props;
-  //    const [closePage, setClosePage] = useState(false)
-
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     switch (columnAttributes.columnWidthType) {
       case 'Proportional':
@@ -532,8 +513,6 @@ function ConfigureColumnWidth(props) {
   const [fixedWidthUnits, setFixedWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)();
   const [disableForTablet, setDisableForTablet] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [disableForPhone, setDisableForPhone] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-  console.log('In Component ConfigureColumnWidth');
-  console.log(props);
 
   /**
    * Process change in width type and set detault props for the type.
@@ -543,8 +522,6 @@ function ConfigureColumnWidth(props) {
    * @param {string} event New column width type
    */
   function onWidthType(event) {
-    console.log('...In Width Type Update');
-    console.log(event);
     switch (event) {
       case 'Proportional':
         {
@@ -610,8 +587,6 @@ function ConfigureColumnWidth(props) {
    * @param {Object} event Minimum width units
    */
   function onMinimumWidth(event) {
-    console.log('...In MixWidth Update');
-    console.log(event);
     setMinWidth(event.target.value);
   }
 
@@ -623,8 +598,6 @@ function ConfigureColumnWidth(props) {
    * @param {string} event Minimum width unit type
    */
   function onMinimumWidthUnits(event) {
-    console.log('...In MixWidth Units Update');
-    console.log(event);
     setMinWidthUnits(event);
   }
 
@@ -636,8 +609,6 @@ function ConfigureColumnWidth(props) {
    * @param {Object} event Maximum width units
    */
   function onMaximumWidth(event) {
-    console.log('...In Max Width Update');
-    console.log(event);
     setMaxWidth(event.target.value);
   }
 
@@ -649,8 +620,6 @@ function ConfigureColumnWidth(props) {
    * @param {string} event Maximum width unit type
    */
   function onMaximumWidthUnits(event) {
-    console.log('...In Max Width  Update');
-    console.log(event);
     setMaxWidthUnits(event);
   }
 
@@ -662,8 +631,6 @@ function ConfigureColumnWidth(props) {
    * @param {Object} event Fixed width units
    */
   function onFixedWidth(event) {
-    console.log('...In Max Width Update');
-    console.log(event);
     setFixedWidth(Number(event.target.value));
   }
 
@@ -675,8 +642,6 @@ function ConfigureColumnWidth(props) {
    * @param {string} event Fixed width unit type
    */
   function onFixedWidthUnits(event) {
-    console.log('...In Max Width Units Update');
-    console.log(event);
     setFixedWidthUnits(event);
   }
 
@@ -688,8 +653,6 @@ function ConfigureColumnWidth(props) {
    * @param {boolean} checked Hide for tablets
    */
   function onTablet(checked) {
-    console.log('...In Tablet Update');
-    console.log(checked);
     setDisableForTablet(checked);
   }
 
@@ -701,8 +664,6 @@ function ConfigureColumnWidth(props) {
    * @param {*} checked Hide for phones
    */
   function onPhone(checked) {
-    console.log('...In Phone Update');
-    console.log(checked);
     setDisableForPhone(checked);
   }
 
@@ -714,10 +675,6 @@ function ConfigureColumnWidth(props) {
    * @param {Object} event Form submit
    */
   function onUpdate(event) {
-    // event.preventDefault()
-    console.log('COLUMN WIDTH UPDATED...');
-    console.log(event);
-    console.log('...Max Width = ' + maxWidth);
     const updatedColumnAttributes = {
       columnWidthType: columnWidthType,
       minWidth: minWidth,
@@ -731,13 +688,8 @@ function ConfigureColumnWidth(props) {
       isFixedLeftColumnGroup: false,
       horizontalAlignment: 'none'
     };
-    console.log(updatedColumnAttributes);
     openColumnWidth(false, updatedColumnAttributes);
   }
-  console.log('RENDER PROPS');
-  console.log('...Disable Proportional Input = ' + hideProportional);
-  console.log('...Disable Fixed Input = ' + hideFixed);
-  console.log('...Disable Custom Input = ' + hideCustom);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
     children: openColumnWidth && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {
       title: "Configure Column Width",
@@ -750,7 +702,6 @@ function ConfigureColumnWidth(props) {
         className: "column-label",
         children: ["For column ", columnLabel]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
-        // className="blocks-table__placeholder-form"
         onSubmit: onUpdate,
         onMouseDown: stopProp,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
@@ -999,12 +950,9 @@ __webpack_require__.r(__webpack_exports__);
 function ConfigureRowHeight(props) {
   const {
     openRowHeight,
-    rowId,
     rowLabel,
     rowAttributes
   } = props;
-  //    const [closePage, setClosePage] = useState(false)
-
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     switch (rowAttributes.rowHeightType) {
       case 'Auto':
@@ -1065,8 +1013,6 @@ function ConfigureRowHeight(props) {
   const [maxHeightUnits, setMaxHeightUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)();
   const [fixedHeight, setFixedHeight] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [fixedHeightUnits, setFixedHeightUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)();
-  console.log('In Component ConfigureRowHeight');
-  console.log(props);
 
   /**
    * Process change in height type and set detault props for the type.
@@ -1076,8 +1022,6 @@ function ConfigureRowHeight(props) {
    * @param {string} event New row height type
    */
   function onHeightType(event) {
-    console.log('...In Height Type Update');
-    console.log(event);
     switch (event) {
       case 'Auto':
         {
@@ -1127,8 +1071,6 @@ function ConfigureRowHeight(props) {
    * @param {Object} event Minimum height units
    */
   function onMinimumHeight(event) {
-    console.log('...In MixHeight Update');
-    console.log(event);
     setMinHeight(event.target.value);
   }
 
@@ -1140,8 +1082,6 @@ function ConfigureRowHeight(props) {
    * @param {string} event Minimum height unit type
    */
   function onMinimumHeightUnits(event) {
-    console.log('...In MixHeight Units Update');
-    console.log(event);
     setMinHeightUnits(event);
   }
 
@@ -1153,8 +1093,6 @@ function ConfigureRowHeight(props) {
    * @param {Object} event Maximum height units
    */
   function onMaximumHeight(event) {
-    console.log('...In Max Height Update');
-    console.log(event);
     setMaxHeight(event.target.value);
   }
 
@@ -1166,8 +1104,6 @@ function ConfigureRowHeight(props) {
    * @param {string} event Maximum height unit type
    */
   function onMaximumHeightUnits(event) {
-    console.log('...In Max Height Update');
-    console.log(event);
     setMaxHeightUnits(event);
   }
 
@@ -1179,8 +1115,6 @@ function ConfigureRowHeight(props) {
    * @param {Object} event Fixed height units
    */
   function onFixedHeight(event) {
-    console.log('...In Max Height Update');
-    console.log(event);
     setFixedHeight(Number(event.target.value));
   }
 
@@ -1192,8 +1126,6 @@ function ConfigureRowHeight(props) {
    * @param {string} event Fixed height unit type
    */
   function onFixedHeightUnits(event) {
-    console.log('...In Max Height Units Update');
-    console.log(event);
     setFixedHeightUnits(event);
   }
 
@@ -1205,10 +1137,6 @@ function ConfigureRowHeight(props) {
    * @param {Object} event Form submit
    */
   function onUpdate(event) {
-    // event.preventDefault()
-    console.log('ROW HEIGHT  UPDATED...');
-    console.log(event);
-    console.log('...Max Height = ' + maxHeight);
     const updatedRowAttributes = {
       rowHeightType: rowHeightType,
       minHeight: minHeight,
@@ -1220,12 +1148,8 @@ function ConfigureRowHeight(props) {
       isFixedLeftRowGroup: false,
       horizontalAlignment: 'none'
     };
-    console.log(updatedRowAttributes);
     openRowHeight(false, updatedRowAttributes);
   }
-  console.log('RENDER PROPS');
-  console.log('...Disable Fixed Input = ' + hideFixed);
-  console.log('...Disable Custom Input = ' + hideCustom);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
     children: openRowHeight && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {
       title: "Configure Row Height",
@@ -1238,7 +1162,6 @@ function ConfigureRowHeight(props) {
         className: "row-label",
         children: ["For row ", rowLabel]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
-        // className="blocks-table__placeholder-form"
         onSubmit: onUpdate,
         onMouseDown: stopProp,
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
@@ -1410,8 +1333,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _configure_column_width__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./configure-column-width */ "./src/components/configure-column-width/index.js");
 /* harmony import */ var _row_dropdown_menu__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./row-dropdown-menu */ "./src/components/row-dropdown-menu/index.js");
 /* harmony import */ var _configure_row_height__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./configure-row-height */ "./src/components/configure-row-height/index.js");
+/* Export table column react components */
 
 
+
+/* Export table row react components */
 
 
 
@@ -1469,8 +1395,6 @@ function RowMenu(props) {
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     setRowAttributes(props.rowAttributes);
   }, [props.rowAttributes]);
-  console.log('In Component RowMenu');
-  console.log(props);
 
   /**
    * Row attributes for inserting new row.
@@ -1481,9 +1405,6 @@ function RowMenu(props) {
    * @param {number} rowId Row ID for new row
    */
   function onInsertRow(event, rowId) {
-    console.log('    ...onInsertRow');
-    console.log(event);
-    console.log('rowId = ' + rowId);
     updatedRow(event, 'insert', tableId, rowId, '');
   }
 
@@ -1496,9 +1417,6 @@ function RowMenu(props) {
    * @param {number} rowId Row ID for row to remove
    */
   function onDeleteRow(event, rowId) {
-    console.log('    ...onDeleteRow');
-    console.log(event);
-    console.log('rowId = ' + rowId);
     updatedRow(event, 'delete', tableId, rowId, '');
   }
 
@@ -1511,11 +1429,7 @@ function RowMenu(props) {
    * @param {Object} updatedRowAttributes Updated row attributes
    */
   function onUpdateRowHeight(event, updatedRowAttributes) {
-    console.log('    ...onUpdateRowHeight');
-    console.log(event);
-    console.log(updatedRowAttributes);
     if (openModalRowHeight) {
-      // event.preventDefault()
       setOpenModalRowHeight(false);
       updatedRow(event, 'attributes', tableId, rowId, updatedRowAttributes);
     } else {
@@ -1523,7 +1437,6 @@ function RowMenu(props) {
       setOpenModalRowHeight(true);
     }
   }
-  console.log('Open row height page = ' + openModalRowHeight);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.DropdownMenu
     // style={{ display: "none" }}

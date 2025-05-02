@@ -1,20 +1,7 @@
 /* External dependencies */
 import { useEffect, useState } from '@wordpress/element';
 import { DropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
-import {
-	blockTable as icon,
-	moreVertical,
-	more,
-	settings,
-	arrowLeft,
-	arrowRight,
-	arrowUp,
-	arrowDown,
-	tableRowBefore,
-	tableRowAfter,
-	tableRowDelete,
-	trash,
-} from '@wordpress/icons';
+import { moreVertical, settings, tableRowBefore, tableRowDelete } from '@wordpress/icons';
 
 /* Internal dependencies */
 import { ConfigureRowHeight } from '../configure-row-height';
@@ -38,9 +25,6 @@ function RowMenu(props) {
 		setRowAttributes(props.rowAttributes);
 	}, [props.rowAttributes]);
 
-	console.log('In Component RowMenu');
-	console.log(props);
-
 	/**
 	 * Row attributes for inserting new row.
 	 *
@@ -50,9 +34,6 @@ function RowMenu(props) {
 	 * @param {number} rowId Row ID for new row
 	 */
 	function onInsertRow(event, rowId) {
-		console.log('    ...onInsertRow');
-		console.log(event);
-		console.log('rowId = ' + rowId);
 		updatedRow(event, 'insert', tableId, rowId, '');
 	}
 
@@ -65,9 +46,6 @@ function RowMenu(props) {
 	 * @param {number} rowId Row ID for row to remove
 	 */
 	function onDeleteRow(event, rowId) {
-		console.log('    ...onDeleteRow');
-		console.log(event);
-		console.log('rowId = ' + rowId);
 		updatedRow(event, 'delete', tableId, rowId, '');
 	}
 
@@ -80,11 +58,7 @@ function RowMenu(props) {
 	 * @param {Object} updatedRowAttributes Updated row attributes
 	 */
 	function onUpdateRowHeight(event, updatedRowAttributes) {
-		console.log('    ...onUpdateRowHeight');
-		console.log(event);
-		console.log(updatedRowAttributes);
 		if (openModalRowHeight) {
-			// event.preventDefault()
 			setOpenModalRowHeight(false);
 			updatedRow(event, 'attributes', tableId, rowId, updatedRowAttributes);
 		} else {
@@ -92,8 +66,6 @@ function RowMenu(props) {
 			setOpenModalRowHeight(true);
 		}
 	}
-
-	console.log('Open row height page = ' + openModalRowHeight);
 
 	return (
 		<>
