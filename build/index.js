@@ -1614,10 +1614,7 @@ function receiveNewTable(table) {
  */
 function receiveTable(table_id, block_table_ref, table_status, post_id, table_name, attributes, classes, rows, columns, cells) {
   console.log('            ...Action - In receiveTable');
-  //console.log(table);
   console.log('                - id: ' + table_id);
-  //console.log('                - table: ' + JSON.stringify(table));
-  //console.log('                - tableId ' + tableId);
   console.log('Block Ref = ' + block_table_ref);
   console.log('Status = ' + table_status);
   return {
@@ -2833,11 +2830,7 @@ __webpack_require__.r(__webpack_exports__);
  * @return {Object} Requested Table
  */
 function getTable(state, tableId, isTableStale) {
-  console.log('Selector...GetTable ' + tableId);
-  console.log('        ...Current Table Stale ' + isTableStale);
-  console.log(state);
   if (!state.tables.hasOwnProperty(tableId)) {
-    console.log('State not defined');
     return {
       table_id: tableId,
       block_table_ref: '',
@@ -2878,9 +2871,6 @@ function getTables(state) {
 function getTableIdByBlock(state, block_table_ref) {
   const newTable = Object.keys(state.tables).reduce((acc, key) => {
     if (state.tables[key]?.block_table_ref === block_table_ref) {
-      console.log({
-        ...state.tables[key]?.block_table_ref
-      });
       acc[key] = {
         ...state.tables[key]
       };
@@ -2908,7 +2898,6 @@ function getTableIdByBlock(state, block_table_ref) {
  * @return {Object} Unmounted tables
  */
 function getUnmountedTables(state) {
-  console.log(state.tables);
   const unmountedTables = Object.keys(state.tables).reduce((acc, key) => {
     if (state.tables[key].unmounted_blockid) {
       acc[key] = {
@@ -2930,7 +2919,6 @@ function getUnmountedTables(state) {
  */
 function getDeletedTables(state) {
   const deletedTables = Object.keys(state.tables).reduce((acc, key) => {
-    console.log(state.tables[key].table_status);
     if (state.tables[key].table_status === 'deleted') {
       acc[key] = {
         ...state.tables[key]
@@ -2952,7 +2940,6 @@ function getDeletedTables(state) {
  */
 function getUnsavedTables(state) {
   const newTables = Object.keys(state.tables).reduce((acc, key) => {
-    console.log(state.tables[key].table_status);
     if (state.tables[key].table_status === 'new') {
       acc[key] = {
         ...state.tables[key]
@@ -3044,8 +3031,6 @@ function Edit(props) {
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.useBlockProps)({
     className: 'dynamic-table-edit-block'
   });
-  console.log(props);
-
   /* Esternal Store Action useDispatch declarations */
   const {
     lockPostSaving
@@ -3136,7 +3121,6 @@ function Edit(props) {
       name
     };
   });
-  console.log('Block Table Ref - ' + block_table_ref);
 
   /**
    * Get Current Table Id.
@@ -3153,13 +3137,10 @@ function Edit(props) {
       getTableIdByBlock
     } = select(_data__WEBPACK_IMPORTED_MODULE_7__.store);
     const currentTableId = getTableIdByBlock(block_table_ref);
-    console.log('Current table id = ' + currentTableId);
     return {
       currentTableId: currentTableId
     };
   });
-  console.log('NEW TABLE INFO');
-  console.log('Awaiting entity creation = ' + awaitingTableEntityCreation + ', Props table id = ' + table_id + ', Current table id = ' + currentTableId);
 
   /**
    * Set Table ID for newly created tables
@@ -3170,15 +3151,11 @@ function Edit(props) {
    */
   const setTableIdChanged = () => {
     if (awaitingTableEntityCreation && Number(currentTableId) !== Number(table_id)) {
-      console.log('  ... In table changed - TRUE');
       return true;
     }
-    console.log('  ... In table changed - FALSE');
     return false;
   };
   const isTableIdChanged = setTableIdChanged();
-  console.log('Table id after select = ' + currentTableId);
-  console.log('Table id update: ' + isTableIdChanged);
 
   /**
    * Identify unmounted tables
@@ -3242,12 +3219,10 @@ function Edit(props) {
    */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     if (postChangesAreSaved) {
-      alert('Sync REST Now');
       /**
        * Remove deleted tables from persisted store
        */
       if (Object.keys(deletedTables).length > 0) {
-        console.log(deletedTables);
         processDeletedTables(deletedTables);
       }
 
@@ -3257,10 +3232,8 @@ function Edit(props) {
        * tables from "new" to "saved" once the post is saved.
        */
       if (table.table_status == 'new') {
-        console.log('Saving new table - ' + table.table_id);
         setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
         saveTableEntity(table.table_id);
-        console.log(table);
       }
     }
   }, [postChangesAreSaved, unmountedTables]);
@@ -3340,7 +3313,6 @@ function Edit(props) {
     tableHasFinishedResolving,
     tableIsResolving
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
-    console.log('Table ID = ' + table_id + ', Stale = ' + isTableStale + ', Block Table Ref = ' + block_table_ref);
     const {
       getTable,
       getTableIdByBlock,
@@ -3360,8 +3332,6 @@ function Edit(props) {
     }
     const getBlockTable = (table_id, isTableStale, block_table_ref) => {
       let selectedTable = getTable(table_id, isTableStale);
-      console.log(selectedTable);
-      // if (table_id === '0' && selectedTable.block_table_ref.length === 0 && awaitingTableEntityCreation) {
       if (table_id === '0' && selectedTable.block_table_ref === '' && awaitingTableEntityCreation) {
         const newTableId = getTableIdByBlock(block_table_ref);
         selectedTable = getTable(newTableId, isTableStale);
@@ -3428,7 +3398,6 @@ function Edit(props) {
   const horizontalAlignment = getTablePropAttribute(table.attributes, 'horizontalAlignment');
   const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment');
   const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle');
-  console.log(JSON.stringify(headerBorder, null, 4));
 
   /**
    * Synchronize PostId
@@ -3468,8 +3437,6 @@ function Edit(props) {
       }
     }
   }, [tableColumnLength, tableRowLength]);
-  console.log('Table ID from Block - ' + table_id);
-  console.log('Block Table Ref from Block - ' + block_table_ref);
 
   /**
    * Insert a new column in the table.
@@ -3641,7 +3608,6 @@ function Edit(props) {
       updatedRows = table.rows.filter(row => row.row_id !== '0');
       updatedColumns = table.columns.filter(column => column.column_id !== '0');
       updatedCells = table.cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
-      console.log(updatedCells);
       updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
     } else {
       /**
@@ -3656,7 +3622,6 @@ function Edit(props) {
       const rowCells = [];
       for (let i = 0; i <= numColumns; i++) {
         const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_10__.getDefaultCell)(table_id, i, 0, 'Border');
-        console.log(cell);
         rowCells.push(cell);
       }
 
@@ -3844,23 +3809,19 @@ function Edit(props) {
    */
   function onMouseBorderClick(column_id, row_id, table) {
     if (row_id === '0' && column_id !== '0') {
-      console.log('Opening Column ' + column_id);
       const compareColumnId = column_id;
       const clickedColumn = table.columns.find(({
         column_id
       }) => column_id === compareColumnId);
-      console.log(clickedColumn);
       setColumnAttributes(clickedColumn.attributes);
       setColumnMenuVisible(true);
       setOpenColumnRow(column_id);
     }
     if (row_id !== '0' && column_id === '0') {
-      console.log('Opening Row ' + row_id);
       const compareRowId = row_id;
       const clickedRow = table.rows.find(({
         row_id
       }) => row_id === compareRowId);
-      console.log(clickedRow);
       setRowAttributes(clickedRow.attributes);
       setRowMenuVisible(true);
       setOpenColumnRow(row_id);
@@ -4145,9 +4106,6 @@ function Edit(props) {
   const bodyBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(bodyBorder, 'left', 'color', bodyBorderStyleType);
   const bodyBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(bodyBorder, 'left', 'style', bodyBorderStyleType);
   const bodyBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_11__.getBorderStyle)(bodyBorder, 'left', 'width', bodyBorderStyleType);
-  if (!tableIsResolving) {
-    // console.log(table.attributes?.bandedRows)
-  }
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("div", {
     ...blockProps,
     children: [!isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.Fragment, {
@@ -4365,7 +4323,6 @@ function Edit(props) {
                   content,
                   classes
                 }) => {
-                  console.log('Rendering Body Row Cell' + cell_id);
                   const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.setBorderContent)(row_id, column_id, content);
                   const isOpenCurrentColumnMenu = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.openCurrentColumnMenu)(columnMenuVisible, openColumnRow, column_id);
                   const isFirstColumn = column_id === '1' ? true : false;
@@ -4485,7 +4442,6 @@ function Edit(props) {
                   row_id
                 }) => {
                   const renderedRow = row_id;
-                  // console.log('Rendering Body Row ' + renderedRow)
 
                   /**
                    * Set calculated class names
@@ -4513,7 +4469,6 @@ function Edit(props) {
                       attributes,
                       classes
                     }) => {
-                      // console.log('Rendering Body Row Cell' + cell_id)
                       /**
                        * Set general processing variables
                        */
@@ -4654,12 +4609,10 @@ __webpack_require__.r(__webpack_exports__);
  * @return {boolean}
  */
 const usePostChangesSaved = () => {
-  console.log('In After Save Hook');
   const [areChangesSaved, setAreChangesSaved] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const {
     hasUnsavedChanges
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => {
-    // console.log('Getting Save Post Status')
     return {
       hasUnsavedChanges: select('core/editor').isEditedPostDirty()
     };
@@ -4673,8 +4626,6 @@ const usePostChangesSaved = () => {
       setAreChangesSaved(false);
     }
   }, [hasUnsavedChanges, hadUnsavedChanges]);
-
-  // console.log('Post Saved = ' + areChangesSaved)
   return areChangesSaved;
 };
 
@@ -4756,8 +4707,6 @@ function processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, colu
       attributes,
       classes
     }) => {
-      console.log('Column ID - ' + newGridColumnStyle);
-      console.log(attributes);
       const {
         columnWidthType,
         minWidth,
@@ -4805,7 +4754,6 @@ function processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, colu
       }
     });
   }
-  console.log('grid-template-columns = ' + newGridColumnStyle);
   return newGridColumnStyle;
 }
 
@@ -4830,8 +4778,6 @@ function processHeaderRow(isNewBlock, tableIsResolving, rows) {
       attributes,
       classes
     }) => {
-      console.log('Row ID - ' + newGridRowStyle);
-      console.log(attributes);
       const {
         rowHeightType,
         minHeight,
@@ -4892,8 +4838,6 @@ function processBodyRows(isNewBlock, tableIsResolving, rows) {
       attributes,
       classes
     }) => {
-      console.log('Row ID - ' + newGridRowStyle);
-      console.log(attributes);
       const {
         rowHeightType,
         minHeight,
@@ -5001,7 +4945,6 @@ function gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines) {
   if (isNewBlock || tableIsResolving) {
     return undefined;
   }
-  console.log('show grid lines = ' + showGridLines);
   if (showGridLines) {
     return 'solid';
   }
@@ -5106,7 +5049,6 @@ function getBorderStyleType(border) {
       if (borderWrapper[i].some(value => {
         return typeof value == 'object';
       })) {
-        console.log(borderWrapper[i]);
         return 'split';
       }
     }

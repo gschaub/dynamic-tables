@@ -8,11 +8,8 @@ import { useSelect } from '@wordpress/data';
  * @return {boolean}
  */
 export const usePostChangesSaved = () => {
-	console.log('In After Save Hook');
-
 	const [areChangesSaved, setAreChangesSaved] = useState(false);
 	const { hasUnsavedChanges } = useSelect(select => {
-		// console.log('Getting Save Post Status')
 		return {
 			hasUnsavedChanges: select('core/editor').isEditedPostDirty(),
 		};
@@ -28,6 +25,5 @@ export const usePostChangesSaved = () => {
 		}
 	}, [hasUnsavedChanges, hadUnsavedChanges]);
 
-	// console.log('Post Saved = ' + areChangesSaved)
 	return areChangesSaved;
 };

@@ -75,10 +75,7 @@ export function receiveTable(
 	cells
 ) {
 	console.log('            ...Action - In receiveTable');
-	//console.log(table);
 	console.log('                - id: ' + table_id);
-	//console.log('                - table: ' + JSON.stringify(table));
-	//console.log('                - tableId ' + tableId);
 	console.log('Block Ref = ' + block_table_ref);
 	console.log('Status = ' + table_status);
 

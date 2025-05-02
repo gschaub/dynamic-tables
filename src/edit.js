@@ -1,6 +1,6 @@
 /* External dependencies */
 import { useSelect, useDispatch, dispatch } from '@wordpress/data';
-import { useState, useEffect, useRef } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { store as noticeStore } from '@wordpress/notices';
 import { __ } from '@wordpress/i18n';
@@ -85,9 +85,6 @@ export default function Edit(props) {
 	const blockProps = useBlockProps({
 		className: 'dynamic-table-edit-block',
 	});
-
-	console.log(props);
-
 	/* Esternal Store Action useDispatch declarations */
 	const { lockPostSaving } = useDispatch(editorStore);
 	const { lockPostAutosaving } = useDispatch(editorStore);
@@ -133,8 +130,6 @@ export default function Edit(props) {
 		return { color, name };
 	});
 
-	console.log('Block Table Ref - ' + block_table_ref);
-
 	/**
 	 * Get Current Table Id.
 	 *
@@ -146,22 +141,11 @@ export default function Edit(props) {
 	const { currentTableId } = useSelect(select => {
 		const { getTableIdByBlock } = select(tableStore);
 		const currentTableId = getTableIdByBlock(block_table_ref);
-		console.log('Current table id = ' + currentTableId);
 
 		return {
 			currentTableId: currentTableId,
 		};
 	});
-
-	console.log('NEW TABLE INFO');
-	console.log(
-		'Awaiting entity creation = ' +
-			awaitingTableEntityCreation +
-			', Props table id = ' +
-			table_id +
-			', Current table id = ' +
-			currentTableId
-	);
 
 	/**
 	 * Set Table ID for newly created tables
@@ -172,17 +156,12 @@ export default function Edit(props) {
 	 */
 	const setTableIdChanged = () => {
 		if (awaitingTableEntityCreation && Number(currentTableId) !== Number(table_id)) {
-			console.log('  ... In table changed - TRUE');
 			return true;
 		}
-		console.log('  ... In table changed - FALSE');
 		return false;
 	};
 
 	const isTableIdChanged = setTableIdChanged();
-
-	console.log('Table id after select = ' + currentTableId);
-	console.log('Table id update: ' + isTableIdChanged);
 
 	/**
 	 * Identify unmounted tables
@@ -239,12 +218,10 @@ export default function Edit(props) {
 	 */
 	useEffect(() => {
 		if (postChangesAreSaved) {
-			alert('Sync REST Now');
 			/**
 			 * Remove deleted tables from persisted store
 			 */
 			if (Object.keys(deletedTables).length > 0) {
-				console.log(deletedTables);
 				processDeletedTables(deletedTables);
 			}
 
@@ -254,10 +231,8 @@ export default function Edit(props) {
 			 * tables from "new" to "saved" once the post is saved.
 			 */
 			if (table.table_status == 'new') {
-				console.log('Saving new table - ' + table.table_id);
 				setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
 				saveTableEntity(table.table_id);
-				console.log(table);
 			}
 		}
 	}, [postChangesAreSaved, unmountedTables]);
@@ -342,14 +317,6 @@ export default function Edit(props) {
 		tableIsResolving,
 	} = useSelect(
 		select => {
-			console.log(
-				'Table ID = ' +
-					table_id +
-					', Stale = ' +
-					isTableStale +
-					', Block Table Ref = ' +
-					block_table_ref
-			);
 			const {
 				getTable,
 				getTableIdByBlock,
@@ -370,8 +337,6 @@ export default function Edit(props) {
 			}
 			const getBlockTable = (table_id, isTableStale, block_table_ref) => {
 				let selectedTable = getTable(table_id, isTableStale);
-				console.log(selectedTable);
-				// if (table_id === '0' && selectedTable.block_table_ref.length === 0 && awaitingTableEntityCreation) {
 				if (
 					table_id === '0' &&
 					selectedTable.block_table_ref === '' &&
@@ -461,7 +426,6 @@ export default function Edit(props) {
 	const horizontalAlignment = getTablePropAttribute(table.attributes, 'horizontalAlignment');
 	const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment');
 	const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle');
-	console.log(JSON.stringify(headerBorder, null, 4));
 
 	/**
 	 * Synchronize PostId
@@ -516,9 +480,6 @@ export default function Edit(props) {
 			}
 		}
 	}, [tableColumnLength, tableRowLength]);
-
-	console.log('Table ID from Block - ' + table_id);
-	console.log('Block Table Ref from Block - ' + block_table_ref);
 
 	/**
 	 * Insert a new column in the table.
@@ -693,7 +654,6 @@ export default function Edit(props) {
 			updatedRows = table.rows.filter(row => row.row_id !== '0');
 			updatedColumns = table.columns.filter(column => column.column_id !== '0');
 			updatedCells = table.cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
-			console.log(updatedCells);
 			updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
 		} else {
 			/**
@@ -709,7 +669,6 @@ export default function Edit(props) {
 			const rowCells = [];
 			for (let i = 0; i <= numColumns; i++) {
 				const cell = getDefaultCell(table_id, i, 0, 'Border');
-				console.log(cell);
 				rowCells.push(cell);
 			}
 
@@ -898,20 +857,16 @@ export default function Edit(props) {
 	 */
 	function onMouseBorderClick(column_id, row_id, table) {
 		if (row_id === '0' && column_id !== '0') {
-			console.log('Opening Column ' + column_id);
 			const compareColumnId = column_id;
 			const clickedColumn = table.columns.find(({ column_id }) => column_id === compareColumnId);
-			console.log(clickedColumn);
 			setColumnAttributes(clickedColumn.attributes);
 			setColumnMenuVisible(true);
 			setOpenColumnRow(column_id);
 		}
 
 		if (row_id !== '0' && column_id === '0') {
-			console.log('Opening Row ' + row_id);
 			const compareRowId = row_id;
 			const clickedRow = table.rows.find(({ row_id }) => row_id === compareRowId);
-			console.log(clickedRow);
 			setRowAttributes(clickedRow.attributes);
 			setRowMenuVisible(true);
 			setOpenColumnRow(row_id);
@@ -1300,10 +1255,6 @@ export default function Edit(props) {
 	const bodyBorderLeftStyle = getBorderStyle(bodyBorder, 'left', 'style', bodyBorderStyleType);
 	const bodyBorderLeftWidth = getBorderStyle(bodyBorder, 'left', 'width', bodyBorderStyleType);
 
-	if (!tableIsResolving) {
-		// console.log(table.attributes?.bandedRows)
-	}
-
 	return (
 		<div {...blockProps}>
 			{/* Render an existing table after it has been fetched  */}
@@ -1539,8 +1490,6 @@ export default function Edit(props) {
 											{table.cells
 												.filter(cell => cell.attributes.border && cell.row_id === '0')
 												.map(({ table_id, row_id, column_id, cell_id, content, classes }) => {
-													console.log('Rendering Body Row Cell' + cell_id);
-
 													const borderContent = setBorderContent(row_id, column_id, content);
 													const isOpenCurrentColumnMenu = openCurrentColumnMenu(
 														columnMenuVisible,
@@ -1722,7 +1671,6 @@ export default function Edit(props) {
 											.filter(row => row.attributes.isHeader !== true && row.row_id !== '0')
 											.map(({ row_id }) => {
 												const renderedRow = row_id;
-												// console.log('Rendering Body Row ' + renderedRow)
 
 												/**
 												 * Set calculated class names
@@ -1766,7 +1714,6 @@ export default function Edit(props) {
 																	attributes,
 																	classes,
 																}) => {
-																	// console.log('Rendering Body Row Cell' + cell_id)
 																	/**
 																	 * Set general processing variables
 																	 */

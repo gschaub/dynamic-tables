@@ -17,8 +17,6 @@ export function processColumns(isNewBlock, tableIsResolving, enableFutureFeature
 	let newGridColumnStyle = '';
 	{
 		columns.map(({ column_id, column_name, attributes, classes }) => {
-			console.log('Column ID - ' + newGridColumnStyle);
-			console.log(attributes);
 			const {
 				columnWidthType,
 				minWidth,
@@ -64,7 +62,6 @@ export function processColumns(isNewBlock, tableIsResolving, enableFutureFeature
 			}
 		});
 	}
-	console.log('grid-template-columns = ' + newGridColumnStyle);
 	return newGridColumnStyle;
 }
 
@@ -86,8 +83,6 @@ export function processHeaderRow(isNewBlock, tableIsResolving, rows) {
 	let newGridRowStyle = '';
 	{
 		rows.map(({ row_id, attributes, classes }) => {
-			console.log('Row ID - ' + newGridRowStyle);
-			console.log(attributes);
 			const {
 				rowHeightType,
 				minHeight,
@@ -145,8 +140,6 @@ export function processBodyRows(isNewBlock, tableIsResolving, rows) {
 	let newGridRowStyle = '';
 	{
 		rows.map(({ row_id, attributes, classes }) => {
-			console.log('Row ID - ' + newGridRowStyle);
-			console.log(attributes);
 			const {
 				rowHeightType,
 				minHeight,
@@ -261,7 +254,6 @@ export function gridInnerBorderStyle(isNewBlock, tableIsResolving, showGridLines
 	if (isNewBlock || tableIsResolving) {
 		return undefined;
 	}
-	console.log('show grid lines = ' + showGridLines);
 	if (showGridLines) {
 		return 'solid';
 	}
@@ -385,7 +377,6 @@ export function getBorderStyleType(border) {
 					return typeof value == 'object';
 				})
 			) {
-				console.log(borderWrapper[i]);
 				return 'split';
 			}
 		}

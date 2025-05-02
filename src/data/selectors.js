@@ -10,12 +10,7 @@
  * @return {Object} Requested Table
  */
 export function getTable(state, tableId, isTableStale) {
-	console.log('Selector...GetTable ' + tableId);
-	console.log('        ...Current Table Stale ' + isTableStale);
-	console.log(state);
-
 	if (!state.tables.hasOwnProperty(tableId)) {
-		console.log('State not defined');
 		return {
 			table_id: tableId,
 			block_table_ref: '',
@@ -56,7 +51,6 @@ export function getTables(state) {
 export function getTableIdByBlock(state, block_table_ref) {
 	const newTable = Object.keys(state.tables).reduce((acc, key) => {
 		if (state.tables[key]?.block_table_ref === block_table_ref) {
-			console.log({ ...state.tables[key]?.block_table_ref });
 			acc[key] = { ...state.tables[key] };
 		}
 		return acc;
@@ -83,7 +77,6 @@ export function getTableIdByBlock(state, block_table_ref) {
  * @return {Object} Unmounted tables
  */
 export function getUnmountedTables(state) {
-	console.log(state.tables);
 	const unmountedTables = Object.keys(state.tables).reduce((acc, key) => {
 		if (state.tables[key].unmounted_blockid) {
 			acc[key] = { ...state.tables[key] };
@@ -103,7 +96,6 @@ export function getUnmountedTables(state) {
  */
 export function getDeletedTables(state) {
 	const deletedTables = Object.keys(state.tables).reduce((acc, key) => {
-		console.log(state.tables[key].table_status);
 		if (state.tables[key].table_status === 'deleted') {
 			acc[key] = { ...state.tables[key] };
 		}
@@ -123,7 +115,6 @@ export function getDeletedTables(state) {
  */
 export function getUnsavedTables(state) {
 	const newTables = Object.keys(state.tables).reduce((acc, key) => {
-		console.log(state.tables[key].table_status);
 		if (state.tables[key].table_status === 'new') {
 			acc[key] = { ...state.tables[key] };
 		}
