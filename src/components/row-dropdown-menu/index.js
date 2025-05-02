@@ -1,6 +1,6 @@
+/* External dependencies */
 import { useEffect, useState } from '@wordpress/element';
 import { DropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
-import { AlignmentToolbar } from '@wordpress/block-editor';
 import {
 	blockTable as icon,
 	moreVertical,
@@ -16,13 +16,18 @@ import {
 	trash,
 } from '@wordpress/icons';
 
-/**
- * Internal dependencies
- */
-import { store as tableStore } from '../../data';
+/* Internal dependencies */
 import { ConfigureRowHeight } from '../configure-row-height';
 import '../../editor.scss';
 
+/**
+ * React component drop down menu to configure current row properties.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} props
+ * @return {Object} Updated row
+ */
 function RowMenu(props) {
 	const [openModalRowHeight, setOpenModalRowHeight] = useState(false);
 	const [rowAttributes, setRowAttributes] = useState({});
@@ -36,6 +41,14 @@ function RowMenu(props) {
 	console.log('In Component RowMenu');
 	console.log(props);
 
+	/**
+	 * Row attributes for inserting new row.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event Menu action
+	 * @param {number} rowId Row ID for new row
+	 */
 	function onInsertRow(event, rowId) {
 		console.log('    ...onInsertRow');
 		console.log(event);
@@ -43,6 +56,14 @@ function RowMenu(props) {
 		updatedRow(event, 'insert', tableId, rowId, '');
 	}
 
+	/**
+	 * Row to delete.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event Menu action
+	 * @param {number} rowId Row ID for row to remove
+	 */
 	function onDeleteRow(event, rowId) {
 		console.log('    ...onDeleteRow');
 		console.log(event);
@@ -50,6 +71,14 @@ function RowMenu(props) {
 		updatedRow(event, 'delete', tableId, rowId, '');
 	}
 
+	/**
+	 * Updated row attributes for processing.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event                Menu action
+	 * @param {Object} updatedRowAttributes Updated row attributes
+	 */
 	function onUpdateRowHeight(event, updatedRowAttributes) {
 		console.log('    ...onUpdateRowHeight');
 		console.log(event);

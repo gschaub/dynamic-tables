@@ -1,15 +1,9 @@
+/* External dependencies */
 import { useEffect, useState } from '@wordpress/element';
-/**
- * WordPress dependencies
- */
-
 import {
 	Modal,
 	SelectControl,
-	CheckboxControl,
-	TabbableContainer,
 	Button,
-	__experimentalInputControl as InputControl,
 	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
 
@@ -18,6 +12,14 @@ import {
  */
 import './style.scss';
 
+/**
+ * React component to support updates for the current row height.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} props
+ * @return  {Object} Updated column properties
+ */
 function ConfigureRowHeight(props) {
 	const { openRowHeight, rowId, rowLabel, rowAttributes } = props;
 	//    const [closePage, setClosePage] = useState(false)
@@ -52,10 +54,24 @@ function ConfigureRowHeight(props) {
 		setFixedHeightUnits(rowAttributes.fixedHeightUnits);
 	}, [rowAttributes]);
 
+	/**
+	 * Stop event processing in favor of custom processing.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event Mouse down
+	 */
 	function stopProp(event) {
 		event.stopPropagation();
 	}
 
+	/**
+	 * Close modal on cancel.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event Cancel
+	 */
 	function handleCancel(event) {
 		openRowHeight(false);
 	}
@@ -73,6 +89,13 @@ function ConfigureRowHeight(props) {
 	console.log('In Component ConfigureRowHeight');
 	console.log(props);
 
+	/**
+	 * Process change in height type and set detault props for the type.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {string} event New row height type
+	 */
 	function onHeightType(event) {
 		console.log('...In Height Type Update');
 		console.log(event);
@@ -118,42 +141,91 @@ function ConfigureRowHeight(props) {
 		setRowHeightType(event);
 	}
 
+	/**
+	 * Process change to number of minimum height units.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event Minimum height units
+	 */
 	function onMinimumHeight(event) {
 		console.log('...In MixHeight Update');
 		console.log(event);
 		setMinHeight(event.target.value);
 	}
 
+	/**
+	 * Process change to the minimum height unit type.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {string} event Minimum height unit type
+	 */
 	function onMinimumHeightUnits(event) {
 		console.log('...In MixHeight Units Update');
 		console.log(event);
 		setMinHeightUnits(event);
 	}
 
+	/**
+	 * Process change to number of maximum height units.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event Maximum height units
+	 */
 	function onMaximumHeight(event) {
 		console.log('...In Max Height Update');
 		console.log(event);
 		setMaxHeight(event.target.value);
 	}
 
+	/**
+	 * Process change to the maximum height unit type
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {string} event Maximum height unit type
+	 */
 	function onMaximumHeightUnits(event) {
 		console.log('...In Max Height Update');
 		console.log(event);
 		setMaxHeightUnits(event);
 	}
 
+	/**
+	 * Process change to number of fixed height units.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event Fixed height units
+	 */
 	function onFixedHeight(event) {
 		console.log('...In Max Height Update');
 		console.log(event);
 		setFixedHeight(Number(event.target.value));
 	}
 
+	/**
+	 * Process change to the fixed height unit type
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {string} event Fixed height unit type
+	 */
 	function onFixedHeightUnits(event) {
 		console.log('...In Max Height Units Update');
 		console.log(event);
 		setFixedHeightUnits(event);
 	}
 
+	/**
+	 * Process form submit.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event Form submit
+	 */
 	function onUpdate(event) {
 		// event.preventDefault()
 		console.log('ROW HEIGHT  UPDATED...');

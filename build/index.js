@@ -278,26 +278,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/more-vertical.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-before.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-delete.js");
-/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../data */ "./src/data/index.js");
-/* harmony import */ var _configure_column_width__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../configure-column-width */ "./src/components/configure-column-width/index.js");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/more-vertical.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-before.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-delete.js");
+/* harmony import */ var _configure_column_width__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../configure-column-width */ "./src/components/configure-column-width/index.js");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+/* External dependencies */
 
 
+
+
+
+/* Internal dependencies */
 
 
 
 /**
- * Internal dependencies
+ * React component drop down menu to configure current column properties.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} props
+ * @return {Object} Updated column
  */
-
-
-
 
 function ColumnMenu(props) {
   const [openModalColumnWidth, setOpenModalColumnWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
@@ -314,18 +320,45 @@ function ColumnMenu(props) {
   }, [props.columnAttributes]);
   console.log('In Component ColumnMenu');
   console.log(props);
+
+  /**
+   * Column attributes for inserting new column.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event    Menu action
+   * @param {number} columnId Column ID for new column
+   */
   function onInsertColumn(event, columnId) {
     console.log('    ...onInsertColumn');
     console.log(event);
     console.log('columnId = ' + columnId);
     updatedColumn(event, 'insert', tableId, columnId, '');
   }
+
+  /**
+   * Column to delete.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event    Menu action
+   * @param {number} columnId Column ID for column to remove
+   */
   function onDeleteColumn(event, columnId) {
     console.log('    ...onInsertColumn');
     console.log(event);
     console.log('columnId = ' + columnId);
     updatedColumn(event, 'delete', tableId, columnId, '');
   }
+
+  /**
+   * Updated column attributes for processing.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event                   Menu action
+   * @param {Object} updatedColumnAttributes Updated column attributes
+   */
   function onUpdateColumnWidth(event, updatedColumnAttributes) {
     console.log('    ...onUpdateColumn Width');
     console.log(event);
@@ -338,36 +371,35 @@ function ColumnMenu(props) {
       setOpenModalColumnWidth(true);
     }
   }
-  console.log('Open column width page = ' + openModalColumnWidth);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.DropdownMenu
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.DropdownMenu
     // style={{ display: "none" }}
     , {
-      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
+      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
       defaultOpen: "true",
       label: columnLabel,
       children: ({
         onClose
-      }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"],
+      }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
             onClick: onUpdateColumnWidth,
             children: "Update Column Width"
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__["default"],
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"],
             onClick: e => onInsertColumn(e, columnId),
             children: "Insert Column"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__["default"],
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__["default"],
             onClick: e => onDeleteColumn(e, columnId),
             children: "Delete Column"
           })]
         })]
       })
-    }), openModalColumnWidth && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_configure_column_width__WEBPACK_IMPORTED_MODULE_4__.ConfigureColumnWidth, {
+    }), openModalColumnWidth && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_configure_column_width__WEBPACK_IMPORTED_MODULE_3__.ConfigureColumnWidth, {
       columnId: columnId,
       columnLabel: columnLabel,
       columnAttributes: columnAttributes,
@@ -397,10 +429,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-column-width/style.scss");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
-
-/**
- * WordPress dependencies
- */
+/* External dependencies */
 
 
 
@@ -408,6 +437,15 @@ __webpack_require__.r(__webpack_exports__);
  * Internal dependencies
  */
 
+
+/**
+ * React component to support updates for the current column width.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} props
+ * @return {Object} Updated column properties
+ */
 
 function ConfigureColumnWidth(props) {
   const {
@@ -460,9 +498,25 @@ function ConfigureColumnWidth(props) {
     setDisableForPhone(columnAttributes.disableForPhone);
     setDisableForTablet(columnAttributes.disableForTablet);
   }, [columnAttributes]);
+
+  /**
+   * Stop event processing in favor of custom processing.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event Mouse down
+   */
   function stopProp(event) {
     event.stopPropagation();
   }
+
+  /**
+   * Close modal on cancel.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event Cancel
+   */
   function handleCancel(event) {
     openColumnWidth(false);
   }
@@ -480,6 +534,14 @@ function ConfigureColumnWidth(props) {
   const [disableForPhone, setDisableForPhone] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   console.log('In Component ConfigureColumnWidth');
   console.log(props);
+
+  /**
+   * Process change in width type and set detault props for the type.
+   *
+   * @since    1.0.0
+   *
+   * @param {string} event New column width type
+   */
   function onWidthType(event) {
     console.log('...In Width Type Update');
     console.log(event);
@@ -539,46 +601,118 @@ function ConfigureColumnWidth(props) {
     }
     setColumnWidthType(event);
   }
+
+  /**
+   * Process change to number of minimum width units.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event Minimum width units
+   */
   function onMinimumWidth(event) {
     console.log('...In MixWidth Update');
     console.log(event);
     setMinWidth(event.target.value);
   }
+
+  /**
+   * Process change to the minimum width unit type.
+   *
+   * @since    1.0.0
+   *
+   * @param {string} event Minimum width unit type
+   */
   function onMinimumWidthUnits(event) {
     console.log('...In MixWidth Units Update');
     console.log(event);
     setMinWidthUnits(event);
   }
+
+  /**
+   * Process change to number of maximum width units.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event Maximum width units
+   */
   function onMaximumWidth(event) {
     console.log('...In Max Width Update');
     console.log(event);
     setMaxWidth(event.target.value);
   }
+
+  /**
+   * Process change to the maximum width unit type
+   *
+   * @since    1.0.0
+   *
+   * @param {string} event Maximum width unit type
+   */
   function onMaximumWidthUnits(event) {
     console.log('...In Max Width  Update');
     console.log(event);
     setMaxWidthUnits(event);
   }
+
+  /**
+   * Process change to number of fixed width units.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event Fixed width units
+   */
   function onFixedWidth(event) {
     console.log('...In Max Width Update');
     console.log(event);
     setFixedWidth(Number(event.target.value));
   }
+
+  /**
+   * Process change to the fixed width unit type
+   *
+   * @since    1.0.0
+   *
+   * @param {string} event Fixed width unit type
+   */
   function onFixedWidthUnits(event) {
     console.log('...In Max Width Units Update');
     console.log(event);
     setFixedWidthUnits(event);
   }
+
+  /**
+   * Process change to hide column for tablet form factor.
+   *
+   * @since    1.0.0
+   *
+   * @param {boolean} checked Hide for tablets
+   */
   function onTablet(checked) {
     console.log('...In Tablet Update');
     console.log(checked);
     setDisableForTablet(checked);
   }
+
+  /**
+   * Process change to hide column for phone form factor.
+   *
+   * @since    1.0.0
+   *
+   * @param {*} checked Hide for phones
+   */
   function onPhone(checked) {
     console.log('...In Phone Update');
     console.log(checked);
     setDisableForPhone(checked);
   }
+
+  /**
+   * Process form submit.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event Form submit
+   */
   function onUpdate(event) {
     // event.preventDefault()
     console.log('COLUMN WIDTH UPDATED...');
@@ -844,10 +978,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-row-height/style.scss");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
-
-/**
- * WordPress dependencies
- */
+/* External dependencies */
 
 
 
@@ -855,6 +986,15 @@ __webpack_require__.r(__webpack_exports__);
  * Internal dependencies
  */
 
+
+/**
+ * React component to support updates for the current row height.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} props
+ * @return  {Object} Updated column properties
+ */
 
 function ConfigureRowHeight(props) {
   const {
@@ -894,9 +1034,25 @@ function ConfigureRowHeight(props) {
     setFixedHeight(rowAttributes.fixedHeight);
     setFixedHeightUnits(rowAttributes.fixedHeightUnits);
   }, [rowAttributes]);
+
+  /**
+   * Stop event processing in favor of custom processing.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event Mouse down
+   */
   function stopProp(event) {
     event.stopPropagation();
   }
+
+  /**
+   * Close modal on cancel.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event Cancel
+   */
   function handleCancel(event) {
     openRowHeight(false);
   }
@@ -911,6 +1067,14 @@ function ConfigureRowHeight(props) {
   const [fixedHeightUnits, setFixedHeightUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)();
   console.log('In Component ConfigureRowHeight');
   console.log(props);
+
+  /**
+   * Process change in height type and set detault props for the type.
+   *
+   * @since    1.0.0
+   *
+   * @param {string} event New row height type
+   */
   function onHeightType(event) {
     console.log('...In Height Type Update');
     console.log(event);
@@ -954,36 +1118,92 @@ function ConfigureRowHeight(props) {
     }
     setRowHeightType(event);
   }
+
+  /**
+   * Process change to number of minimum height units.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event Minimum height units
+   */
   function onMinimumHeight(event) {
     console.log('...In MixHeight Update');
     console.log(event);
     setMinHeight(event.target.value);
   }
+
+  /**
+   * Process change to the minimum height unit type.
+   *
+   * @since    1.0.0
+   *
+   * @param {string} event Minimum height unit type
+   */
   function onMinimumHeightUnits(event) {
     console.log('...In MixHeight Units Update');
     console.log(event);
     setMinHeightUnits(event);
   }
+
+  /**
+   * Process change to number of maximum height units.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event Maximum height units
+   */
   function onMaximumHeight(event) {
     console.log('...In Max Height Update');
     console.log(event);
     setMaxHeight(event.target.value);
   }
+
+  /**
+   * Process change to the maximum height unit type
+   *
+   * @since    1.0.0
+   *
+   * @param {string} event Maximum height unit type
+   */
   function onMaximumHeightUnits(event) {
     console.log('...In Max Height Update');
     console.log(event);
     setMaxHeightUnits(event);
   }
+
+  /**
+   * Process change to number of fixed height units.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event Fixed height units
+   */
   function onFixedHeight(event) {
     console.log('...In Max Height Update');
     console.log(event);
     setFixedHeight(Number(event.target.value));
   }
+
+  /**
+   * Process change to the fixed height unit type
+   *
+   * @since    1.0.0
+   *
+   * @param {string} event Fixed height unit type
+   */
   function onFixedHeightUnits(event) {
     console.log('...In Max Height Units Update');
     console.log(event);
     setFixedHeightUnits(event);
   }
+
+  /**
+   * Process form submit.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event Form submit
+   */
   function onUpdate(event) {
     // event.preventDefault()
     console.log('ROW HEIGHT  UPDATED...');
@@ -1211,28 +1431,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/more-vertical.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-row-before.js");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-row-delete.js");
-/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../data */ "./src/data/index.js");
-/* harmony import */ var _configure_row_height__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../configure-row-height */ "./src/components/configure-row-height/index.js");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/more-vertical.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-row-before.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-row-delete.js");
+/* harmony import */ var _configure_row_height__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../configure-row-height */ "./src/components/configure-row-height/index.js");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__);
+/* External dependencies */
 
 
+
+
+/* Internal dependencies */
 
 
 
 /**
- * Internal dependencies
+ * React component drop down menu to configure current row properties.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} props
+ * @return {Object} Updated row
  */
-
-
-
 
 function RowMenu(props) {
   const [openModalRowHeight, setOpenModalRowHeight] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
@@ -1248,18 +1471,45 @@ function RowMenu(props) {
   }, [props.rowAttributes]);
   console.log('In Component RowMenu');
   console.log(props);
+
+  /**
+   * Row attributes for inserting new row.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event Menu action
+   * @param {number} rowId Row ID for new row
+   */
   function onInsertRow(event, rowId) {
     console.log('    ...onInsertRow');
     console.log(event);
     console.log('rowId = ' + rowId);
     updatedRow(event, 'insert', tableId, rowId, '');
   }
+
+  /**
+   * Row to delete.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event Menu action
+   * @param {number} rowId Row ID for row to remove
+   */
   function onDeleteRow(event, rowId) {
     console.log('    ...onDeleteRow');
     console.log(event);
     console.log('rowId = ' + rowId);
     updatedRow(event, 'delete', tableId, rowId, '');
   }
+
+  /**
+   * Updated row attributes for processing.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event                Menu action
+   * @param {Object} updatedRowAttributes Updated row attributes
+   */
   function onUpdateRowHeight(event, updatedRowAttributes) {
     console.log('    ...onUpdateRowHeight');
     console.log(event);
@@ -1274,35 +1524,35 @@ function RowMenu(props) {
     }
   }
   console.log('Open row height page = ' + openModalRowHeight);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.DropdownMenu
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.DropdownMenu
     // style={{ display: "none" }}
     , {
-      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
+      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
       defaultOpen: "true",
       label: rowLabel,
       children: ({
         onClose
-      }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"],
+      }) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
             onClick: onUpdateRowHeight,
             children: "Update Row Height"
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__["default"],
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
             onClick: e => onInsertRow(e, rowId),
             children: "Insert Row"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__["default"],
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"],
             onClick: e => onDeleteRow(e, rowId),
             children: "Delete Row"
           })]
         })]
       })
-    }), openModalRowHeight && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_configure_row_height__WEBPACK_IMPORTED_MODULE_4__.ConfigureRowHeight, {
+    }), openModalRowHeight && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_configure_row_height__WEBPACK_IMPORTED_MODULE_2__.ConfigureRowHeight, {
       rowId: rowId,
       rowLabel: rowLabel,
       rowAttributes: rowAttributes,

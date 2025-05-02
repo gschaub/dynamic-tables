@@ -1,3 +1,4 @@
+/* External dependencies */
 import { useEffect, useState } from '@wordpress/element';
 import { DropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
 import { AlignmentToolbar } from '@wordpress/block-editor';
@@ -16,13 +17,18 @@ import {
 	trash,
 } from '@wordpress/icons';
 
-/**
- * Internal dependencies
- */
-import { store as tableStore } from '../../data';
+/* Internal dependencies */
 import { ConfigureColumnWidth } from '../configure-column-width';
 import '../../editor.scss';
 
+/**
+ * React component drop down menu to configure current column properties.
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} props
+ * @return {Object} Updated column
+ */
 function ColumnMenu(props) {
 	const [openModalColumnWidth, setOpenModalColumnWidth] = useState(false);
 	const [columnAttributes, setColumnAttributes] = useState({});
@@ -36,6 +42,14 @@ function ColumnMenu(props) {
 	console.log('In Component ColumnMenu');
 	console.log(props);
 
+	/**
+	 * Column attributes for inserting new column.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event    Menu action
+	 * @param {number} columnId Column ID for new column
+	 */
 	function onInsertColumn(event, columnId) {
 		console.log('    ...onInsertColumn');
 		console.log(event);
@@ -43,6 +57,14 @@ function ColumnMenu(props) {
 		updatedColumn(event, 'insert', tableId, columnId, '');
 	}
 
+	/**
+	 * Column to delete.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event    Menu action
+	 * @param {number} columnId Column ID for column to remove
+	 */
 	function onDeleteColumn(event, columnId) {
 		console.log('    ...onInsertColumn');
 		console.log(event);
@@ -50,6 +72,14 @@ function ColumnMenu(props) {
 		updatedColumn(event, 'delete', tableId, columnId, '');
 	}
 
+	/**
+	 * Updated column attributes for processing.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event                   Menu action
+	 * @param {Object} updatedColumnAttributes Updated column attributes
+	 */
 	function onUpdateColumnWidth(event, updatedColumnAttributes) {
 		console.log('    ...onUpdateColumn Width');
 		console.log(event);
@@ -62,8 +92,6 @@ function ColumnMenu(props) {
 			setOpenModalColumnWidth(true);
 		}
 	}
-
-	console.log('Open column width page = ' + openModalColumnWidth);
 
 	return (
 		<>
