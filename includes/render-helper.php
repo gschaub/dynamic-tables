@@ -217,6 +217,16 @@ function format_row($row_attributes) {
 	return $grid_row_style;
 }
 
+/**
+ * Create grid-template-columns CSS variableUndocumented function.
+ *
+ * Loop each column and build the CSS variable from the attributes as formatted
+ * and concatenated.
+ *
+ * @since 1.0.0
+ * @param  array $columns Array of columns in the table
+ * @return string CSS value for grid-tempalte-columns
+ */
 function process_columns($columns) {
 	$new_grid_column_style = '';
 
@@ -262,12 +272,21 @@ function process_columns($columns) {
 	return $new_grid_column_style;
 }
 
+/**
+ * Return cells for the specified row.
+ *
+ * Updates returned cells with the cell id using letters for the column id.
+ *
+ * @since 1.0.0
+ *
+ * @param  Array $table_cells All cells for the table
+ * @param  int $row_id Current row id
+ * @return array Transformed cells for the current row
+ */
 function process_cells($table_cells, $row_id) {
 	$filtered_cells = array_filter($table_cells, function($v) use($row_id) {
 		return $v['row_id'] === $row_id;
 	}, ARRAY_FILTER_USE_BOTH);
-
-	// print_r($filtered_cells);
 
 	$return_cells = array();
 
@@ -284,6 +303,15 @@ function process_cells($table_cells, $row_id) {
 	return $return_cells;
 }
 
+/**
+ * Return CSS class for banded row formatting if the row should be banded.
+ *
+ * @since 1.0.0
+ * @param  int $row_id
+ * @param  bool $banded_rows Does this table use banded rows?
+ * @param  bool $enable_header_row Does this table have a header row?
+ * @return string
+ */
 function get_calculated_classes($row_id, $banded_rows, $enable_header_row) {
 
 	$banded_row_offset = $enable_header_row ? 1 : 0;
@@ -300,11 +328,27 @@ function get_calculated_classes($row_id, $banded_rows, $enable_header_row) {
 	return $calculated_classes;
 }
 
+/**
+ * Undocumented function
+ *
+ * Description - A supplement to the summary, above.  Full sentences.
+ *
+ * @since x.xx.xx
+ * @deprecated x.x.x Use new_function_name()
+ * @see Function/method/class relied on
+ *
+ * @link URL
+ * @global [type]  Description
+ *
+ * @param  [type] $enable_header
+ * @return void
+ */
 function start_grid_row_nbr($enable_header) {
 	$start_grid_line = 1;
 	$start_grid_line = $enable_header ? $start_grid_line + 1 : $start_grid_line;
 
-	return $start_grid_line;
+	return null;
+	// return $start_grid_line;
 }
 
 function end_grid_row_nbr($start_grid_line, $row_group, $num_rows, $enable_header, $enable_footer) {
@@ -323,15 +367,18 @@ function end_grid_row_nbr($start_grid_line, $row_group, $num_rows, $enable_heade
 			error_log('Unknown row type');
 	}
 
-	return $end_grid_line;
+	return null;
+	// return $end_grid_line;
 }
 
 /**
- * The border style values are stored as a flat object (simple) or as nested objects
- * (complex).  We evaluate the object value to determine which type it is.
+ * Identify whether the border is split (a potentially different style on each side) or
+ * flat (the same style on eaach side).
  *
- * @param {*} border
- * @returns
+ * @since 1.0.0
+ *
+ * @param  array $border The current border style
+ * @return string The boarder's stype type
  */
 function get_border_style_type($border) {
 	if ( $border ) {
@@ -346,13 +393,17 @@ function get_border_style_type($border) {
 }
 
 /**
- * Get Style value for the specified border segment and attribute
+ * Retrieve an attibute for table border styling
  *
- * @param {*} border
- * @param {*} borderLocation
- * @param {*} borderAttribute
- * @param {*} borderType
- * @returns
+ * Description - A supplement to the summary, above.  Full sentences.
+ *
+ * @since 1.0.0
+ *
+ * @param  array $border Table attribute for header border style
+ * @param  string $border_location The location for which to get the style (left, top, right, bottom)
+ * @param  string $border_attribute Attribute Type (color, stype, width)
+ * @param  string $border_type Border is slit vs. flat
+ * @return string Css style value
  */
 function get_border_style($border, $border_location, $border_attribute, $border_type) {
 	// lookup and return the style attibute if it is set

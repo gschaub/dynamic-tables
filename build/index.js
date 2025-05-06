@@ -4695,6 +4695,7 @@ __webpack_require__.r(__webpack_exports__);
  * @param {Array|Object} columns              Table columns
  * @return {string} Value for grid-template-columns css attribute
  */
+
 function processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, columns) {
   if (isNewBlock || tableIsResolving) {
     return undefined;
@@ -4813,7 +4814,6 @@ function processHeaderRow(isNewBlock, tableIsResolving, rows) {
       }
     });
   }
-  // setTableStale(false)
   return newGridRowStyle;
 }
 
@@ -5129,27 +5129,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   initTableCells: () => (/* binding */ initTableCells)
 /* harmony export */ });
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
+/* Internal dependencies */
 
+
+/**
+ * Create a new dynamic table
+ *
+ * @since    1.0.0
+ *
+ * @param {string} newBlockTableRef Block table cross reference unique string
+ * @param {number} columnCount      Number of columns to include in the table
+ * @param {number} rowCount         Number of rows to include in the table
+ * @param {string} tableName        Name of the new table
+ * @return  {Object} New Dynamic Table
+ */
 function initTable(newBlockTableRef, columnCount, rowCount, tableName) {
-  console.log('FUNCTION - CREATE TABLE');
-  console.log('InitialRows - ' + rowCount);
-  console.log('InitialColumns - ' + columnCount);
   const tableCells = initTableCells(Number(columnCount), Number(rowCount));
   const rowArray = [];
   for (let i = 1; i <= rowCount; i++) {
-    console.log('Row loop - ' + i);
     const row = getDefaultRow('0', i);
-    // console.log('...looped row - ' + JSON.stringify(row, null, 4))
     rowArray.push(row);
-    // console.log('...row array - ' + JSON.stringify(rowArray, null, 4))
   }
   const columnArray = [];
   for (let i = 1; i <= columnCount; i++) {
-    console.log('Column loop - ' + i);
     const column = getDefaultColumn('0', i);
-    // console.log('...looped column - ' + JSON.stringify(column, null, 4))
     columnArray.push(column);
-    // console.log('...column array - ' + JSON.stringify(columnArray, null, 4))
   }
   const newTable = {
     table: {
@@ -5167,33 +5171,48 @@ function initTable(newBlockTableRef, columnCount, rowCount, tableName) {
   };
   return newTable;
 }
+
+/**
+ * Build an array of table cells using default attribute values.
+ *
+ * @since    1.0.0
+ *
+ * @param {number} init_num_columns
+ * @param {number} init_num_rows
+ * @return  {Array} Array of cells associated with the new table
+ */
 function initTableCells(init_num_columns, init_num_rows) {
-  console.log(init_num_rows);
   const tableCells = [];
-  var x = 1;
+  let x = 1;
   let y = 1;
   while (y <= init_num_rows) {
     while (x <= init_num_columns) {
-      const columnLetter = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.numberToLetter)(x);
       if (y == 1) {
-        let cell = getDefaultCell('0', String(x), String(y));
+        const cell = getDefaultCell('0', String(x), String(y));
         tableCells.push(cell);
       } else {
-        let cell = getDefaultCell('0', String(x), String(y));
+        const cell = getDefaultCell('0', String(x), String(y));
         tableCells.push(cell);
       }
       x++;
     }
-    var x = 1;
+    x = 1;
     y++;
   }
   return tableCells;
 }
+
+/**
+ * Get a new row with default values.
+ *
+ * @since    1.0.0
+ *
+ * @param {number} tableId     Table id to assign to row
+ * @param {number} rowId       Row id to assign to row
+ * @param {string} rowLocation Border or another value, default = body
+ * @return  {Array} New table row
+ */
 function getDefaultRow(tableId, rowId, rowLocation = 'Body') {
-  console.log('In GetDefaultRow');
-  console.log('...tableId = ' + tableId);
-  console.log('...rowId = ' + rowId);
-  console.log('...rowLocation = ' + rowLocation);
   let row;
   if (rowLocation === 'Border') {
     row = {
@@ -5210,9 +5229,19 @@ function getDefaultRow(tableId, rowId, rowLocation = 'Body') {
       classes: getDefaultTableClasses('rows')
     };
   }
-  console.log(row);
   return row;
 }
+
+/**
+ * Get a new column with default values.
+ *
+ * @since    1.0.0
+ *
+ * @param {number} tableId        Table id to assign to column
+ * @param {number} columnId       Column id to assign to column
+ * @param {string} columnLocation Border or another value, default = body
+ * @return  {Array} New table column
+ */
 function getDefaultColumn(tableId, columnId, columnLocation = 'Body') {
   let column;
   if (columnLocation === 'Border') {
@@ -5234,6 +5263,18 @@ function getDefaultColumn(tableId, columnId, columnLocation = 'Body') {
   }
   return column;
 }
+
+/**
+ * Get a new cell with default values.
+ *
+ * @since    1.0.0
+ *
+ * @param {number} tableId      Table id to assign to cell
+ * @param {number} columnId     Column id to assign to column
+ * @param {number} rowId        Row id to assign to row
+ * @param {string} cellLocation Border or another value, default = body
+ * @return {Array} New table cell
+ */
 function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') {
   let cell;
   const columnLetter = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.numberToLetter)(columnId);
@@ -5261,6 +5302,16 @@ function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') {
   }
   return cell;
 }
+
+/**
+ * Get default attributes for a specific table part.
+ *
+ * @since    1.0.0
+ *
+ * @param {string} tableComponent    table header, rows, column, cell
+ * @param {string} componentLocation Border or another value, default = body
+ * @return {Object} Attributes
+ */
 function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
   const tableBaseAttributes = {
     showGridLines: true,
@@ -5287,9 +5338,6 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
     verticalAlignment: 'none',
     hideTitle: true
   };
-
-  //{color: white, style: hidden, width 0px}
-
   const columnAttributes = {
     columnWidthType: 'Proportional',
     minWidth: 2,
@@ -5362,10 +5410,17 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
         return cellBorderAttributes;
       }
       return cellAttributes;
-    default:
-      return;
   }
 }
+
+/**
+ * Get default classes for a specific table part.
+ *
+ * @since    1.0.0
+ *
+ * @param {string} tableComponent table header, rows, column, cell
+ * @return  {string} Classes
+ */
 function getDefaultTableClasses(tableComponent) {
   const tableBaseClasses = '';
   const columnClasses = '';
@@ -5380,8 +5435,6 @@ function getDefaultTableClasses(tableComponent) {
       return rowClasses;
     case 'cells':
       return cellClasses;
-    default:
-      return;
   }
 }
 
@@ -5404,6 +5457,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   tableSort: () => (/* binding */ tableSort),
 /* harmony export */   updateArray: () => (/* binding */ updateArray)
 /* harmony export */ });
+/**
+ * Convert a column number to a string of letters.
+ *
+ * @since    1.0.0
+ *
+ * @param {number} letterNumber Integer
+ * @return  {string} Column letter
+ */
 function numberToLetter(letterNumber) {
   const letterMap = [{
     nbr: '1',
@@ -5485,7 +5546,6 @@ function numberToLetter(letterNumber) {
     letter: 'Z'
   }];
   if (letterNumber === 0) {
-    console.log('...In Letter = 0');
     return '0';
   }
   const letterLookup = letterNumber.toString(26).split('');
@@ -5495,27 +5555,38 @@ function numberToLetter(letterNumber) {
   });
   return letterDigit;
 }
+
+/**
+ * Update one attribute value inside the array.
+ *
+ * @since    1.0.0
+ *
+ * @param {Array|Object} arrayIn     current state with nested arrays and objects
+ * @param {string}       key         State array type
+ * @param {number}       id          Identifier of object associated with they key
+ * @param {Object}       updatedData New object value
+ * @return  {Array|Object} Updated object that represents one attribute of the new state
+ */
 function updateArray(arrayIn, key, id, updatedData) {
-  console.log('Update Array');
-  console.log(arrayIn);
-  console.log(key);
-  console.log(id);
-  console.log(updatedData);
   return arrayIn.map(item => item[key] === id ? {
     ...item,
     ...updatedData
   } : item);
 }
+
+/**
+ * Sort table part array by the natural identifier assigned at design time.
+ *
+ * @since    1.0.0
+ *
+ * @param {string} tablePart  Table part to be sorted (columns | rows | cells)
+ * @param {Array}  tableArray Array of all attributes of the table part being sorted
+ * @return Sorted tableArray based on the ID of each object in the array
+ */
 function tableSort(tablePart, tableArray) {
-  console.log('SORTING TABLE');
-  console.log('Table Part = ' + tablePart);
-  console.log(tableArray);
   if (tablePart === 'rows') {
-    console.log('...in Rows sort');
     const sortedRows = [...tableArray];
     sortedRows.sort((a, b) => {
-      // console.log(number(a.row_id))
-      // console.log(number([a.row_id]))
       if (Number([a.row_id]) < Number([b.row_id])) {
         return -1;
       }
@@ -5524,24 +5595,18 @@ function tableSort(tablePart, tableArray) {
     return sortedRows;
   }
   if (tablePart === 'columns') {
-    console.log('...in Columns sort');
     const sortedColumns = [...tableArray];
     sortedColumns.sort((a, b) => {
-      console.log(Number(a.column_id));
       if (Number([a.column_id]) < Number([b.column_id])) {
         return -1;
       }
       return 1;
     });
-    console.log(sortedColumns);
     return sortedColumns;
   }
   if (tablePart === 'cells') {
-    console.log('...in Cells sort');
     const sortedCells = [...tableArray];
     sortedCells.sort((a, b) => {
-      console.log([Number([a.row_id]), Number([a.column_id])]);
-      console.log([Number([b.row_id]), Number([b.column_id])]);
       if (Number([a.row_id]) === Number([b.row_id])) {
         if (Number([a.column_id]) < Number([b.column_id])) {
           return -1;
@@ -5552,40 +5617,81 @@ function tableSort(tablePart, tableArray) {
         return -1;
       }
       return 1;
-
-      // if ([Number([a.row_id]), Number([a.column_id])] < [Number([b.row_id]), Number([b.column_id])]) {
-      //     return -1
-      // } else {
-      //     return 1
-      // }
     });
-    console.log(sortedCells);
     return sortedCells;
   }
-  console.log('...NO SORT RETURNED');
 }
+
+/**
+ * Create a random identifier for assignment as a block/table cross reference.
+ *
+ * @since    1.0.0
+ *
+ * @return  {string} New block_table_ref
+ */
 function generateBlockTableRef() {
   const timestamp = Date.now();
   return timestamp.toString(16);
 }
+
+/**
+ * Set content for borders occuring in rows (integers) and columns (letters).
+ *
+ * @since    1.0.0
+ *
+ * @param {*} row     current row_id
+ * @param {*} column  current column_id
+ * @param {*} content current content
+ * @return  {number | string | null} cell content
+ */
 function setBorderContent(row, column, content) {
   if (row === '0' && column === '0') {
     return '';
   }
   return content;
 }
+
+/**
+ * Identify whether to display the column menu component for the current column
+ *
+ * @since    1.0.0
+ *
+ * @param {boolean} columnMenuVisible Whether the column menu should be visible based on current state of processing
+ * @param {number}  openColumnRow     The column id or row id that should be open
+ * @param {number}  column_id         Current column id
+ * @return  {boolean} Show the current column menu?
+ */
 function openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id) {
   if (columnMenuVisible && openColumnRow === column_id) {
     return true;
   }
   return false;
 }
+
+/**
+ * Identify whether to display the row menu component for the current column
+ *
+ * @since    1.0.0
+ *
+ * @param {boolean} rowMenuVisible Whether the row menu should be visible based on current state of processing
+ * @param {number}  openColumnRow  The column id or row id that should be open
+ * @param {number}  row_id         Current row id
+ * @return  {boolean} Show the current row menu?
+ */
 function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
   if (rowMenuVisible && openColumnRow === row_id) {
     return true;
   }
   return false;
 }
+
+/**
+ * Strip any HTML tags.
+ *
+ * @param {string} str String to evaluate
+ * @return  {string} String with any embedded tages removed
+ * @since    1.0.0
+ */
 function removeTags(str) {
   if (str === null || str === '') return false;
   str = str.toString();

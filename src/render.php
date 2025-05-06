@@ -2,26 +2,15 @@
 
 namespace DynamicTables;
 
-// require_once plugin_dir_path(__DIR__) . 'includes/dynamicTablesDbPersist.php';
-// require_once plugin_dir_path(__DIR__) . 'includes/dynamicTablesRoutes.php';
-// require_once plugin_dir_path(__DIR__) . 'includes/dynamicTablesAPI.php';
-// require_once plugin_dir_path(__DIR__) . 'includes/dynamic-tables-rest-api.php';
-// require_once plugin_dir_path(__DIR__) . 'includes/render_helper.php';
-
-/**
- * @see https://github.com/WordPress/gutenberg/blob/trunk/docs/reference-guides/block-api/block-metadata.md#render
- */
-
 // Exit if accessed directly
-
 if ( ! defined('ABSPATH') ) {
 	exit;
 }
-error_log('Render Attribs = ' . json_encode($attributes));
+
 $table_id = $attributes['table_id'];
 $block_table_ref = $attributes['block_table_ref'];
 $grid_alignment = $attributes['block_alignment'];
-// $block_background_color = isset($attributes['backgroundColor']) ? $attributes['backgroundColor'] : '';
+
 
 /**
  * Get Table - Load variables
@@ -37,12 +26,10 @@ $table_name = $table_header['table_name'];
 $table_columns = $table['columns'];
 $table_rows = $table['rows'];
 $table_cells = $table['cells'];
-// print_r($table_rows);
 $num_columns = count($table_columns);
 $num_rows = count($table_rows);
 
 $table_header_attributes = get_table_header_attributes($table_header);
-// print_r($table_header_attributes);
 
 list( 'showGridLines' => $show_grid_lines,
 	'bandedRows' => $banded_rows,
@@ -59,7 +46,6 @@ list( 'showGridLines' => $show_grid_lines,
 	'bodyBorder' => $body_border,
 	'verticalAlignment' => $table_vertical_alignment,
 	'hideTitle' => $hide_title,
-	// 'tableHeaderBackgroundColor' => $table_header_background_color,  //Research = Does not exist as param and maps to gridHeaderBackgroundColor in edit.js
 ) = $table_header_attributes;
 
 
@@ -71,14 +57,9 @@ $horizontal_scroll_style = $allow_horizontal_scroll ? 'auto' : 'hidden' ;
 $grid_column_style = process_columns($table_columns);
 $grid_show_inner_lines = $show_grid_lines ? 'solid' : 'hidden';
 $grid_inner_line_width = $show_grid_lines ? strval($grid_line_width) . 'px' : '0px';
-// $grid_header_background_color_style = $table_header_background_color ? $table_header_background_color : $block_background_color;
 
 $block_wrapper = get_block_wrapper_attributes();
 $block_wrapper_sticky_header = str_replace('"', '', str_replace('class=', '', $block_wrapper)) . ' ';
-
-// echo '>' . $block_wrapper . '< </br>';
-// echo '>' . $block_wrapper_sticky_header . '< </br>';
-// echo 'Header Row Sticky = ' . $header_row_sticky;
 
 /**
 * Header Styling
@@ -104,12 +85,9 @@ $header_border_left_color = get_border_style($header_border, 'left', 'color', $h
 $header_border_left_style = get_border_style($header_border, 'left', 'style', $header_border_style_type);
 $header_border_left_width = get_border_style($header_border, 'left', 'width', $header_border_style_type);
 
-
-
 /**
 * Body Styling
 */
-// const bodyTextAlignmentStyle = getHeaderTextAlignmentStyle(isNewBlock, tableIsResolving, bodyAlignment)
 $body_border_style_type = get_border_style_type($body_border);
 // Top body border
 $body_border_top_color = get_border_style($body_border, 'top', 'color', $body_border_style_type);

@@ -1,29 +1,31 @@
+/* Internal dependencies */
 import { numberToLetter } from './utils';
 
+/**
+ * Create a new dynamic table
+ *
+ * @since    1.0.0
+ *
+ * @param {string} newBlockTableRef Block table cross reference unique string
+ * @param {number} columnCount      Number of columns to include in the table
+ * @param {number} rowCount         Number of rows to include in the table
+ * @param {string} tableName        Name of the new table
+ * @return  {Object} New Dynamic Table
+ */
 export function initTable(newBlockTableRef, columnCount, rowCount, tableName) {
-	console.log('FUNCTION - CREATE TABLE');
-	console.log('InitialRows - ' + rowCount);
-	console.log('InitialColumns - ' + columnCount);
-
 	const tableCells = initTableCells(Number(columnCount), Number(rowCount));
 	const rowArray = [];
 
 	for (let i = 1; i <= rowCount; i++) {
-		console.log('Row loop - ' + i);
 		const row = getDefaultRow('0', i);
-		// console.log('...looped row - ' + JSON.stringify(row, null, 4))
 		rowArray.push(row);
-		// console.log('...row array - ' + JSON.stringify(rowArray, null, 4))
 	}
 
 	const columnArray = [];
 
 	for (let i = 1; i <= columnCount; i++) {
-		console.log('Column loop - ' + i);
 		const column = getDefaultColumn('0', i);
-		// console.log('...looped column - ' + JSON.stringify(column, null, 4))
 		columnArray.push(column);
-		// console.log('...column array - ' + JSON.stringify(columnArray, null, 4))
 	}
 
 	const newTable = {
@@ -44,38 +46,49 @@ export function initTable(newBlockTableRef, columnCount, rowCount, tableName) {
 	return newTable;
 }
 
+/**
+ * Build an array of table cells using default attribute values.
+ *
+ * @since    1.0.0
+ *
+ * @param {number} init_num_columns
+ * @param {number} init_num_rows
+ * @return  {Array} Array of cells associated with the new table
+ */
 export function initTableCells(init_num_columns, init_num_rows) {
-	console.log(init_num_rows);
 	const tableCells = [];
 
-	var x = 1;
+	let x = 1;
 	let y = 1;
 
 	while (y <= init_num_rows) {
 		while (x <= init_num_columns) {
-			const columnLetter = numberToLetter(x);
 			if (y == 1) {
-				let cell = getDefaultCell('0', String(x), String(y));
+				const cell = getDefaultCell('0', String(x), String(y));
 				tableCells.push(cell);
 			} else {
-				let cell = getDefaultCell('0', String(x), String(y));
+				const cell = getDefaultCell('0', String(x), String(y));
 				tableCells.push(cell);
 			}
 			x++;
 		}
-		var x = 1;
+		x = 1;
 		y++;
 	}
-
 	return tableCells;
 }
 
+/**
+ * Get a new row with default values.
+ *
+ * @since    1.0.0
+ *
+ * @param {number} tableId     Table id to assign to row
+ * @param {number} rowId       Row id to assign to row
+ * @param {string} rowLocation Border or another value, default = body
+ * @return  {Array} New table row
+ */
 export function getDefaultRow(tableId, rowId, rowLocation = 'Body') {
-	console.log('In GetDefaultRow');
-	console.log('...tableId = ' + tableId);
-	console.log('...rowId = ' + rowId);
-	console.log('...rowLocation = ' + rowLocation);
-
 	let row;
 	if (rowLocation === 'Border') {
 		row = {
@@ -92,11 +105,19 @@ export function getDefaultRow(tableId, rowId, rowLocation = 'Body') {
 			classes: getDefaultTableClasses('rows'),
 		};
 	}
-
-	console.log(row);
 	return row;
 }
 
+/**
+ * Get a new column with default values.
+ *
+ * @since    1.0.0
+ *
+ * @param {number} tableId        Table id to assign to column
+ * @param {number} columnId       Column id to assign to column
+ * @param {string} columnLocation Border or another value, default = body
+ * @return  {Array} New table column
+ */
 export function getDefaultColumn(tableId, columnId, columnLocation = 'Body') {
 	let column;
 	if (columnLocation === 'Border') {
@@ -116,10 +137,20 @@ export function getDefaultColumn(tableId, columnId, columnLocation = 'Body') {
 			classes: getDefaultTableClasses('columns'),
 		};
 	}
-
 	return column;
 }
 
+/**
+ * Get a new cell with default values.
+ *
+ * @since    1.0.0
+ *
+ * @param {number} tableId      Table id to assign to cell
+ * @param {number} columnId     Column id to assign to column
+ * @param {number} rowId        Row id to assign to row
+ * @param {string} cellLocation Border or another value, default = body
+ * @return {Array} New table cell
+ */
 export function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') {
 	let cell;
 	const columnLetter = numberToLetter(columnId);
@@ -149,6 +180,15 @@ export function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') 
 	return cell;
 }
 
+/**
+ * Get default attributes for a specific table part.
+ *
+ * @since    1.0.0
+ *
+ * @param {string} tableComponent    table header, rows, column, cell
+ * @param {string} componentLocation Border or another value, default = body
+ * @return {Object} Attributes
+ */
 export function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
 	const tableBaseAttributes = {
 		showGridLines: true,
@@ -167,8 +207,6 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
 		verticalAlignment: 'none',
 		hideTitle: true,
 	};
-
-	//{color: white, style: hidden, width 0px}
 
 	const columnAttributes = {
 		columnWidthType: 'Proportional',
@@ -248,12 +286,17 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
 				return cellBorderAttributes;
 			}
 			return cellAttributes;
-
-		default:
-			return;
 	}
 }
 
+/**
+ * Get default classes for a specific table part.
+ *
+ * @since    1.0.0
+ *
+ * @param {string} tableComponent table header, rows, column, cell
+ * @return  {string} Classes
+ */
 export function getDefaultTableClasses(tableComponent) {
 	const tableBaseClasses = '';
 
@@ -272,7 +315,5 @@ export function getDefaultTableClasses(tableComponent) {
 			return rowClasses;
 		case 'cells':
 			return cellClasses;
-		default:
-			return;
 	}
 }

@@ -9,6 +9,7 @@
  * @param {Array|Object} columns              Table columns
  * @return {string} Value for grid-template-columns css attribute
  */
+
 export function processColumns(isNewBlock, tableIsResolving, enableFutureFeatures, columns) {
 	if (isNewBlock || tableIsResolving) {
 		return undefined;
@@ -118,7 +119,6 @@ export function processHeaderRow(isNewBlock, tableIsResolving, rows) {
 			}
 		});
 	}
-	// setTableStale(false)
 	return newGridRowStyle;
 }
 
