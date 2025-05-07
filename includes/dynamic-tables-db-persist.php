@@ -3,7 +3,7 @@
 /**
 * Database interface for dynamic tables
 *
-* @since 1.00.00
+* @since 1.0.0
 */
 class PersistTableData {
 
@@ -42,7 +42,7 @@ class PersistTableData {
 
 	/**
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @var array
 	 */
@@ -51,7 +51,7 @@ class PersistTableData {
 	/**
 	 * Query result from a specific database SELECT query
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @var array
 	 */
@@ -60,7 +60,7 @@ class PersistTableData {
 	/**
 	 * Query result from a specific database SELECT query
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @var string
 	 */
@@ -69,7 +69,7 @@ class PersistTableData {
 	/**
 	 * Query result from a specific database SELECT query
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @var string
 	 */
@@ -78,7 +78,7 @@ class PersistTableData {
 	/**
 	 * Empty consstructor
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -89,7 +89,7 @@ class PersistTableData {
 	/**
 	 *  Performs a SQL SELECT via the WordPress wpdb class and connection
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @param bool  $return_collection   Return multiple result rows (True) vs. a single row (false)
 	 * @return array Squery_result.      wpdb return array indexed from 0, or null on failure
@@ -140,7 +140,7 @@ class PersistTableData {
 	/**
 	 *  Performs a SQL DELETE via the WordPress wpdb class and connection
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @param string $db_table_name       Non-prefixed name of the table from which to delete rows
 	 * @return int:false Sdelete_result  wpdb rows deleted or FALSE on error
@@ -169,7 +169,7 @@ class PersistTableData {
 	 * Performs a SQL Insert/Update (update if the inserted row matches an existing primary key) via
 	 * the WordPress wpdb class and connection
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @param string $table_name         Non-prefixed name of the table from which to update rows
 	 * @return int|false Sreplacement_result.    wpdb number of records inserted/updated or FALSE on error
@@ -198,7 +198,7 @@ class PersistTableData {
 	/**
 	 *  Performs a SQL Insert via the WordPress wpdb class and connection
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @param string $block_table_ref     block_table_ref value that links the table to a specific post block
 	 * @param string $status            Status value of the table being created
@@ -248,7 +248,7 @@ class PersistTableData {
 	/**
 	 *  Update the dynamic table database header table dt_tables based on criteria received
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @param int    $table_id              ID value of the table being updated.
 	 * @param string $block_table_ref     block_table_ref value that links the table to a specific post block.
@@ -469,7 +469,7 @@ class PersistTableData {
 	/**
 	 *  Update the dynamic table database row table dt_table_rows based on criteria received
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @param int   $table_id              ID value of the table being updated
 	 * @param array $rows               Revised dynamic table row data for update
@@ -589,7 +589,7 @@ class PersistTableData {
 	/**
 	 *  Update the dynamic table database column table dt_table_columnss based on criteria received
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @param int   $table_id              ID value of the table being updated
 	 * @param array $columns               Revised dynamic table column data for update
@@ -723,7 +723,7 @@ class PersistTableData {
 	/**
 	 *  Update the dynamic table database cell table dt_table_cells based on criteria received
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @param int   $table_id              ID value of the table being updated
 	 * @param array $cells               Revised dynamic table cell data for update
@@ -871,7 +871,7 @@ class PersistTableData {
 	/**
 	 *  Retrieve the dynamic table data for a specific one dynamic table from one database table
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @param int    $table_id              ID value of the table being updated
 	 * @param string $db_table_name       database table name
@@ -1025,7 +1025,7 @@ class PersistTableData {
 	/**
 	 *  Delete the dynamic table data for a specific one dynamic table from all database table
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @param int    $table_id              ID value of the table being updated
 	 * @param string $db_table_name       database table name
@@ -1171,7 +1171,7 @@ class PersistTableData {
 	/**
 	 * Transform SQL arguments to support the $wpdb->prepare format.
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @return array    Transformed arguments.
 	 */
@@ -1204,7 +1204,7 @@ class PersistTableData {
 	/**
 	 * Transform SQL one argument to support the $wpdb->prepare format.
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @param array $arg_type   SQL Statement argument
 	 * @param array $arg_field  Table field name associated with the argument.
@@ -1232,7 +1232,7 @@ class PersistTableData {
 	/**
 	 * Build SQL query string.
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @return string    Valid SQL query string.
 	 */
@@ -1376,7 +1376,7 @@ class PersistTableData {
 	/**
 	 * Lookup Parameter data type for a specific query field.
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @param array $transType      SQL transaction type and position of the statement in query
 	 *                              or specific field names of INSERT transactions
@@ -1425,7 +1425,7 @@ class PersistTableData {
 	 * Count the number of arguments for a specific portion of the query statements to support
 	 * ability to properly terminate the statement.
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @param array $args         Array of arguments
 	 * @param array $arg_type      Argument type being counted

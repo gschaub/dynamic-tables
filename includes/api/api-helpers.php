@@ -1,50 +1,44 @@
 <?php
-/**
- * This function will return true for a non empty array
- *
- * @since   5.4.0
- *
- * @param   mixed $array The variable to test.
- * @return  boolean
- */
 namespace DynamicTables;
 
 /**
+ * Determine if Dynamic Tables has a specific setting
+ *
  * Alias of dynamic_tables()->has_setting()
  *
- * @since   5.6.5
+ * @since   1.0.0
  *
  * @param   string $name Name of the setting to check for.
- * @return  boolean
+ * @return  boolean Does setting exist
  */
 function dt_has_setting($name = '') {
 	return dynamic_tables()->has_setting($name);
 }
 
 /**
- * dt_raw_setting
+ * Retrieve the value of a dynamic tables setting
  *
  * alias of dynamic_tables()->get_setting()
  *
- * @since   5.6.5
+ * @since   1.0.0
  *
- * @param   n/a
- * @return  n/a
+ * @param   string Setting name
+ * @return  mixed setting value
  */
 function dt_raw_setting($name = '') {
 	return dynamic_tables()->get_setting($name);
 }
 
 /**
- * dt_update_setting
+ * Update a dynamic tables setting
  *
  * alias of dynamic_tables()->update_setting()
  *
- * @since   5.0.0
+ * @since 1.0.0
  *
- * @param   $name (string)
- * @param   $value (mixed)
- * @return  n/a
+ * @param  string $name Setting name
+ * @param  mixed $value New setting value
+ * @return mixed updated setting
  */
 function dt_update_setting($name, $value) {
 	// validate name.
@@ -55,28 +49,28 @@ function dt_update_setting($name, $value) {
 }
 
 /**
- * dt_validate_setting
- *
  * Returns the changed setting name if available.
  *
- * @since   5.6.5
+ * @since   1.0.0
  *
- * @param   n/a
- * @return  n/a
+ * @param  string $name Setting name
+ * @return mixed updated setting name if changed
  */
 function dt_validate_setting($name = '') {
-	// return apply_filters('dt/validate_setting', $name);
+	return apply_filters('dt/validate_setting', $name);
 	return $name;
 }
 
 /**
+ * Retrieve a setting value based on its name
+ *
  * Alias of dynamic_tables()->get_setting()
  *
- * @since   5.0.0
+ * @since   1.0.0
  *
  * @param   string $name  The name of the setting to test.
  * @param string $value An optional default value for the setting if it doesn't exist.
- * @return  n/a
+ * @return  mixed Setting value
  */
 function dt_get_setting($name, $value = null) {
 	$name = dt_validate_setting($name);

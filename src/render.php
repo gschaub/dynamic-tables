@@ -17,7 +17,6 @@ $grid_alignment = $attributes['block_alignment'];
  */
 $table = get_table($table_id);
 if ( is_wp_error($table) ) {
-	error_log('Table = ' . print_r($table, true));
 	die;
 }
 

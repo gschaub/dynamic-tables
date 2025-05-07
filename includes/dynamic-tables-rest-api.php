@@ -197,8 +197,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_item( $request ) {
-		// error_log(print_r($request, true));
-
 		$table = $this->get_table( $request['id'] );
 		if ( is_wp_error( $table ) ) {
 			return $table;
@@ -206,9 +204,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		$data     = $this->prepare_item_for_response( $table, $request );
 		$response = rest_ensure_response( $data );
-
-		error_log( 'GET RESPONSE' );
-		error_log( json_encode( $response ) );
 
 		return $response;
 	}
@@ -243,9 +238,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		$table_title     = $table['header']['table_name'];
 		$table = $table += array( 'title' => $table_title );
-
-		error_log( 'Table name = ' . $table['header']['table_name'] );
-		// error_log( 'Revised table = ' . json_encode( $table ) );
 
 		return $table;
 	}
@@ -291,8 +283,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return true|WP_Error True if the request has access to create items, WP_Error object otherwise.
 	 */
 	public function create_item_permissions_check( $request ) {
-		error_log('From Create Item Permission Check');
-		// error_log(print_r($request, true));
 		if ( (int) 0 !== (int) $request['id'] ) {
 			return new \WP_Error(
 				'rest_table_exists',
@@ -309,16 +299,12 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			if ( $post_id !== 0 ) {
 				$post = $this->get_post( $post_id);
 				if ( is_wp_error( $post ) ) {
-					// error_log(print_r($request, true));
-					error_log('Error getting post (id = 0)');
 					return $post;
 				}
 
 				$post_type = get_post_type_object( $post->post_type );
 
 				if ( $post && ! $this->check_update_permission( $post ) ) {
-					// error_log(print_r($request, true));
-					error_log('No post permissions 1');
 					return new \WP_Error(
 						'rest_cannot_edit',
 						__( 'Sorry, you are not allowed to create tables for this post as this user.' ),
@@ -327,8 +313,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				}
 
 				if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
-					// error_log(print_r($request, true));
-					error_log('No post permissions 2');
 					return new \WP_Error(
 						'rest_cannot_edit_others',
 						__( 'Sorry, you are not allowed to create tables for this post as this user.' ),
@@ -338,8 +322,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			}
 
 			if ( $post_id === 0 && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
-				// error_log(print_r($request, true));
-				error_log('No post permissions 3');
 				return new \WP_Error(
 					'rest_cannot_edit',
 					__( 'Sorry, you are not allowed to create tables for this post as this user.' ),
@@ -347,8 +329,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				);
 			}
 		} else {
-			// error_log(print_r($request, true));
-			error_log('Post ID missing');
 			return new \WP_Error(
 				'missing_post_id',
 				__( 'Post ID is missing from request.' ),
@@ -367,8 +347,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function create_item( $request ) {
-		error_log('From Create Item');
-
 		if ( (int) 0 !== (int) $request['id'] ) {
 			return new \WP_Error(
 				'rest_table_exists',
@@ -397,12 +375,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		}
 
 		$table       = get_table( $table_id );
-		$table_title = $table['header']['table_name'];
-		$table_test  = $table += array( 'title' => $table_title );
-
-		error_log( 'Table name = ' . $table['header']['table_name'] );
-		error_log( 'Revised table = ' . json_encode( $table_test ) );
-
 		$request->set_param( 'context', 'edit' );
 		$response = $this->prepare_item_for_response( $table, $request );
 		$response = rest_ensure_response( $response );
@@ -486,17 +458,12 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function update_item( $request ) {
-
-		// error_log('Reqest as delivered from Service');
-		// error_log(print_r($request, true));
 		$valid_check = $this->get_table( $request['id'] );
 		if ( is_wp_error( $valid_check ) ) {
 			return $valid_check;
 		}
 
 		$table = $this->prepare_item_for_database( $request );
-		// error_log('Reqest adter DB prep');
-		// error_log(print_r($table, true));
 
 		if ( is_wp_error( $table ) ) {
 			return $table;
@@ -669,7 +636,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return stdClass|WP_Error Post object or WP_Error.
 	 */
 	protected function prepare_item_for_database( $request ) {
-		// error_log(print_r($request, true));
 		$prepared_table = new \stdClass();
 		$current_status = '';
 

@@ -35,8 +35,6 @@ add_filter( 'dt_content_filtered_save_pre', 'wp_filter_global_styles_post', 9 );
  * @return int|WP_Error Table id for new or updated table, WP_Error object on failure.
  */
 function create_table_data( $tablearr, $wp_error = false ) {
-	// error_log(print_r($tablearr, true));
-
 	$tablearrdefault = $tablearr;
 
 	if ( is_object( $tablearr ) ) {
@@ -100,7 +98,6 @@ function create_table_data( $tablearr, $wp_error = false ) {
 	$tablearr = wp_parse_args( $tablearr, $defaults );
 	unset( $tablearr['filter'] );
 	$tablearr = sanitize_dynamic_table( $tablearr, 'db' );
-	// error_log(print_r($tablearr, true));
 
 	// Are we updating or creating?
 	$table_id = 0;
@@ -367,8 +364,6 @@ function get_table( $table_id ) {
 		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
 	}
 	$results += array( 'header' => $results_header['result'] );
-
-	// error_log(print_r($results, true));
 
 	$table       = 'dt_table_rows';
 	$get_table    = new PersistTableData();

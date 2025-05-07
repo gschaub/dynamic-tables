@@ -47,7 +47,7 @@ if ( ! class_exists( DT_Admin_Notices::class ) ) {
 			$message = 'Your selections were saved.';
 
 			return wp_get_admin_notice(
-				__( $message, 'Dynamic Tables' ),
+				__( $message, 'dynamic-tables' ),
 				array(
 					'type'           => 'success',
 					'dismissible'    => false,
@@ -64,7 +64,7 @@ if ( ! class_exists( DT_Admin_Notices::class ) ) {
 			$message = 'Sorry, you do not have permission to perform that action.';
 
 			return wp_get_admin_notice(
-				__( $message, 'Dynamic Tables' ),
+				__( $message, 'dynamic-tables' ),
 				array(
 					'type'           => 'error',
 					'dismissible'    => false,
@@ -84,7 +84,7 @@ if ( ! class_exists( DT_Admin_Notices::class ) ) {
 			$message .= 'retain the ability to restore existing Dynamic Table instances.';
 
 			return wp_get_admin_notice(
-				__( $message, 'Dynamic Tables' ),
+				__( $message, 'dynamic-tables' ),
 				array(
 					'type'               => 'warning',
 					'dismissible'        => true,

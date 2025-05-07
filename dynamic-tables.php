@@ -29,7 +29,7 @@ if ( ! class_exists( DynamicTables::class ) ) {
 	/**
 	 * Controlling class and entry point for Dynamic Tables.
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 */
 	final class DynamicTables {
 
@@ -94,8 +94,6 @@ if ( ! class_exists( DynamicTables::class ) ) {
 		 * @return void
 		 */
 		public function initialize() {
-			error_log( 'DT Initialize' );
-
 			/**
 			 * Define constants
 			 */
@@ -165,7 +163,7 @@ if ( ! class_exists( DynamicTables::class ) ) {
 		/**
 		 * Returns true if a setting exists for this name.
 		 *
-		 * @since   1.00.00
+		 * @since   1.0.0
 		 *
 		 * @param   string $name The setting name.
 		 * @return  boolean
@@ -177,7 +175,7 @@ if ( ! class_exists( DynamicTables::class ) ) {
 		/**
 		 * Returns a setting or null if doesn't exist.
 		 *
-		 * @since   1.00.00
+		 * @since   1.0.0
 		 *
 		 * @param   string $name The setting name.
 		 * @return  mixed
@@ -207,7 +205,7 @@ if ( ! class_exists( DynamicTables::class ) ) {
 		 * tables.  This includes creating, updating and deleting tables as well as retrieving
 		 * structured tables in JSON format
 		 *
-		 * @since 1.00.00
+		 * @since 1.0.0
 		 *
 		 * @return void
 		 */
@@ -234,7 +232,7 @@ if ( ! class_exists( DynamicTables::class ) ) {
 	*
 	* Description - The main function responsible for returning  one true dynamic tables instance.
 	*
-	* @since   1.00.00
+	* @since   1.0.0
 	*
 	* @return  DynamicTables
 	*/

@@ -4,7 +4,7 @@ namespace DynamicTables;
 /**
  * Support Dynamic Tables Plugin Activation, Deactivation, and Upgrades
  *
- * @since 1.00.00
+ * @since 1.0.0
  */
 class DynamicTablesVersionManagement {
 
@@ -22,7 +22,7 @@ class DynamicTablesVersionManagement {
 	 *
 	 * Includes the WD upgrade library and gets the installed database version.
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -40,7 +40,7 @@ class DynamicTablesVersionManagement {
 	 * Ensures that activation rules are met, fails the activation if not, and prepares
 	 * for activation database activities
 	 *
-	 * @since 1.00.00
+	 * @since 1.0.0
 	 *
 	 * @param  bool $network_wide True if the activation attempt is for the full network.
 	 * @return void
@@ -63,10 +63,8 @@ class DynamicTablesVersionManagement {
 			} else {
 
 				// Activate all sites if allowed
-				error_log('In multisite activation is supported');
 				$sites = get_sites();
 				foreach ( $sites as $site ) {
-					error_log('Looping site for activation');
 					switch_to_blog( $site->blog_id);
 					$this->create_environment_on_activation();
 					restore_current_blog();
@@ -74,20 +72,17 @@ class DynamicTablesVersionManagement {
 			}
 		} else {
 			// Activate specific site
-			error_log('Site level activation');
 			$this->create_environment_on_activation();
 		}
 	}
 
 	public function new_site_setup($site) {
-		error_log('Activating new site on multi-site network');
 		switch_to_blog( $site->id);
 		$this->create_environment_on_activation();
 		restore_current_blog();
 	}
 
 	public function deactivate_dynamic_tables() {
-		// Silence is golden
 		?><div>
 			<p class="dt-deactivate">
 				Do you want to remove underlying data tables?
@@ -96,14 +91,10 @@ class DynamicTablesVersionManagement {
 	}
 
 	public function uninstall_dynamic_tables($network_wide) {
-		error_log( 'Uninstalling DT' );
-
 		// Network (multisite) activation
 		if ( DT_IS_MULTISITE and $network_wide ) {
 			$sites = get_sites();
 			foreach ( $sites as $site ) {
-				error_log( 'Looping site for deactivation' );
-
 				switch_to_blog( $site->blog_id);
 				if ( get_option('dt_keep_tables_on_uninstall') ) {
 					update_option('dt_activation_status', 'Uninstalled');
@@ -129,20 +120,14 @@ class DynamicTablesVersionManagement {
 	 * @return void
 	 */
 	public function create_environment_on_activation() {
-		// $current_activation_status = ;
-		// error_log('Current Activation Status = '. $current_activation_status);
 		if ( get_option('dt_activation_status') ) {
-			error_log('Activating prior inactive install');
 			update_option( 'dt_activation_status', 'Active' );
 		} else {
-			error_log('New Activation');
 			add_option( 'dt_activation_status', 'Active' );
 			add_option( 'dt_keep_tables_on_uninstall', 1 );
 		}
 
 		if ( ! isset( $current_db_version ) ) {
-			error_log( 'Adding DT tables' );
-
 			global $wpdb;
 
 			$charset_collate = $wpdb->get_charset_collate();

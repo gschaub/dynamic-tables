@@ -1,5 +1,8 @@
 <?php
-	namespace DynamicTables;
+/**
+ * Provides the main Dynamic Tables admin page.
+ */
+namespace DynamicTables;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
