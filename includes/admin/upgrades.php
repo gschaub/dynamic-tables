@@ -1,5 +1,4 @@
 <?php
-
 namespace DynamicTables;
 
 /**
@@ -149,15 +148,10 @@ class DynamicTablesVersionManagement {
 			$charset_collate = $wpdb->get_charset_collate();
 
 			// Plugin tables
-			// $dt_header_tbl = $wpdb->prefix . 'dt_tables';
-			// $dt_columns_tbl = $wpdb->prefix . 'dt_table_columns';
-			// $dt_rows_tbl   = $wpdb->prefix . 'dt_table_rows';
-			// $dt_cells_tbl  = $wpdb->prefix . 'dt_table_cells';
-
-			$dt_header_tbl = $wpdb->prefix . 'dt_tables_test';
-			$dt_columns_tbl = $wpdb->prefix . 'dt_table_columns_test';
-			$dt_rows_tbl   = $wpdb->prefix . 'dt_table_rows_test';
-			$dt_cells_tbl  = $wpdb->prefix . 'dt_table_cells_test';
+			$dt_header_tbl = $wpdb->prefix . 'dt_tables';
+			$dt_columns_tbl = $wpdb->prefix . 'dt_table_columns';
+			$dt_rows_tbl   = $wpdb->prefix . 'dt_table_rows';
+			$dt_cells_tbl  = $wpdb->prefix . 'dt_table_cells';
 
 			/**
 			 * Create plugin tables
@@ -222,11 +216,6 @@ class DynamicTablesVersionManagement {
 		$dt_rows_tbl      = $wpdb->prefix . 'dt_table_rows';
 		$dt_cells_tbl     = $wpdb->prefix . 'dt_table_cells';
 
-		// $dt_header_tbl    = $wpdb->prefix . 'dt_tables_test';
-		// $dt_columns_tbl   = $wpdb->prefix . 'dt_table_columns_test';
-		// $dt_rows_tbl      = $wpdb->prefix . 'dt_table_rows_test';
-		// $dt_cells_tbl     = $wpdb->prefix . 'dt_table_cells_test';
-
 		$sql = "DROP TABLE IF EXISTS $dt_header_tbl";
 		$wpdb->query( $sql );
 
@@ -273,57 +262,9 @@ class DynamicTablesVersionManagement {
 		return false;
 	}
 
-	/**
-	 *  Runs upgrade routines if this site has an upgrade available.
-	 *
-	 *  @date  24/8/18
-	 *  @since 5.7.4
-	 */
-	public function dt_upgrade_all() {
-		// Increase time limit if possible.
-		if ( function_exists( 'set_time_limit' ) ) {
-			set_time_limit( 600 );
-		}
-
-		// start timer
-		// timer_start();
-
-		// log
-		// acf_dev_log('ACF Upgrade Begin.');
-
-		/**
-		 *  Placeholder for future release upgrades with the upgrade targets
-		 *  listed in ascending release order
-		 */
-
-		// Version number (x.x.x) for upgrade target
-		if ( $this->dt_version_compare( $this->current_db_version, '<', '5.0.0' ) ) {
-			// upgrade method for this upgrade version - e.g., dt_upgrade_500();
-		}
-
-		/**
-		 * When adding new upgrade routines here, increment the DT_UPGRADE_VERSION
-		 * constant in `dynamic-tables.php` to the new highest upgrade version.
-		 */
-
-		// upgrade DB version once all updates are complete
-		$this->dt_update_db_version( DT_VERSION );
-
-		if ( is_multisite() ) {
-			// Clears the network upgrade notification banner after site upgrades.
-			// delete_transient('acf_network_upgrade_needed_' . DT_UPGRADE_VERSION);
-		}
-
-		// log
-		// acf_dev_log('ACF Upgrade Complete.', $wpdb->num_queries, timer_stop(0));
-	}
-
 	/*
-	 *  dt_update_db_version
-	 *
 	 *  Updates the DT DB version.
 	 *
-	 *  @date    9/2/2024
 	 *  @since   1.0.0
 	 *
 	 *  @param   string $version The new version.

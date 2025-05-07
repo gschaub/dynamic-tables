@@ -9,10 +9,6 @@
  */
 namespace DynamicTables;
 
-function dt_is_array($array) {
-	return ( is_array($array) && ! empty($array) );
-}
-
 /**
  * Alias of dynamic_tables()->has_setting()
  *
@@ -97,62 +93,70 @@ function dt_get_setting($name, $value = null) {
 }
 
 /**
- * This function will create and echo a basic nonce input
+ * Create and echo a basic nonce input
  *
  * @since   1.0.0
  *
+ * @param string $nonce Nonce field.
  * @param string $nonce The nonce parameter string.
  */
-function dt_nonce_input($nonce = '') {
-	echo '<input type="hidden" name="_dt_nonce" value="' . esc_attr(wp_create_nonce($nonce)) . '" />';
+function dt_nonce_input($name = '_dt_nonce', $nonce = '') {
+	echo '<input type="hidden" name="' . esc_attr($name) . '" value="' . esc_attr(wp_create_nonce($nonce)) . '" />';
 }
 
 /**
- * This function will look at the $_POST['_dt_nonce'] value and return true or false
+ * Sanitizes and slashes nonce and verifies it.  Optionally verifies the user's permissions
+ * to ensure authorization.
  *
- * @since   1.0.0
+ * Permission verification only supports one capability.
  *
- * @param   $nonce (string)
- * @return  (boolean)
+ * @since 1.0.0
+ *
+ * @param  string $nonce Returned nonce value
+ * @param  string $nonce_action Action being performed
+ * @param  string $required_permissions
+ * @return bool Is authorization granted
  */
-function dt_verify_nonce($value) {
+function dt_verify_nonce($nonce, $nonce_action, $required_permissions = '') {
 
-	// vars
-	$nonce = dt_maybe_get_POST('_dt_nonce');
-
-	// bail early nonce does not match (post|user|comment|term)
-	if ( ! $nonce || ! wp_verify_nonce($nonce, $value) ) {
+	$dt_admin_nonce_prepared = isset($_POST[ $nonce ]) ? sanitize_text_field( wp_unslash($_POST[ $nonce ])) : '';
+	if ( ! wp_verify_nonce( $dt_admin_nonce_prepared, $nonce_action ) ) {
 		return false;
 	}
 
-	// reset nonce (only allow 1 save)
-	$_POST['_dt_nonce'] = false;
-
-	// return
+	if ( $required_permissions && ! current_user_can($required_permissions) ) {
+		return false;
+	}
 	return true;
 }
 
 /**
- * This function will return a var if it exists in an array
+ * Sanatized HTTP request arguments
  *
- * @since   1.0.0
+ * @since 1.0.0
  *
- * @param   $array (array) the array to look within
- * @param   $key (key) the array key to look for. Nested values may be found using '/'
- * @param   $default (mixed) the value returned if not found
- * @return  $post_id (int)
+ * @param  mixed $args Arguments to be sanitized
+ * @return mixed Sanitized arguments
  */
-function dt_maybe_get($array = [], $key = 0, $default = null) {
-
-	return isset($array[ $key ]) ? $array[ $key ] : $default;
-}
-
-function dt_maybe_get_POST($key = '', $default = null) {
-
-	// return isset( $_POST[ $key ] ) ? dt_sanitize_request_args( $_POST[ $key ] ) : $default; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing -- Checked elsewhere.
-}
-
-function dt_maybe_get_GET($key = '', $default = null) {
-
-	// return isset( $_GET[ $key ] ) ? dt_sanitize_request_args( $_GET[ $key ] ) : $default; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checked elsewhere.
+function dt_sanitize_request_args( $args = array() ) {
+	switch ( gettype( $args ) ) {
+		case 'boolean':
+			return (bool) $args;
+		case 'integer':
+			return (int) $args;
+		case 'double':
+			return (float) $args;
+		case 'array':
+			$sanitized = array();
+			foreach ( $args as $key => $value ) {
+				$key               = sanitize_text_field( $key );
+				$sanitized[ $key ] = dt_sanitize_request_args( $value );
+			}
+			return $sanitized;
+		case 'object':
+			return wp_kses_post_deep( $args );
+		case 'string':
+		default:
+			return wp_kses( $args, 'dt' );
+	}
 }

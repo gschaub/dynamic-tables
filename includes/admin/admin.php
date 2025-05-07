@@ -16,24 +16,15 @@ if ( ! class_exists( DT_Admin::class ) ) {
 		 * @since 5.0.0
 		 */
 		public function __construct() {
-			error_log( 'Construct class DT_Admin' );
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-
-			// add_action('admin_init', [ $this, 'plugin_settings' ]);
-			// add_action('admin_enqueue_scripts', [$this, 'admin_enqueue_scripts']);
-			// add_action('admin_body_class', [$this, 'admin_body_class']);
-			// add_action('current_screen', [$this, 'current_screen']);
-			// add_action('admin_init', [$this, 'dismiss_escaped_html_notice']);
-			// add_action('admin_init', [$this, 'clear_escaped_html_log']);
-			// add_filter('parent_file', [$this, 'ensure_menu_selection']);
-			// add_filter('submenu_file', [$this, 'ensure_submenu_selection']);
 		}
 
 		/**
 		 * Adds the Dynamic Tables menu item.
 		 *
-		 * @date    28/09/13
-		 * @since   5.0.0
+		 * @since   1.0.0
+		 *
+		 * @return void
 		 */
 		public function admin_menu() {
 			// Bail early if DT is hidden.
@@ -57,7 +48,6 @@ if ( ! class_exists( DT_Admin::class ) ) {
 			);
 
 			// make the location 21 for network page
-
 			$parent_slug = $menu_slug;
 			$menu_slug   = 'dynamic-tables/main-menu.php';
 
@@ -80,21 +70,19 @@ if ( ! class_exists( DT_Admin::class ) ) {
 		/**
 		 * Perform updates upon form submit
 		 *
-		 * @since   5.0.0
+		 * @since   1.0.0
+		 *
+		 * @return void
 		 */
 		public function handle_form() {
 			$notices = new DT_Admin_Notices();
 
-			if ( isset($_POST['dtAdminNonce']) and wp_verify_nonce( $_POST['dtAdminNonce'], 'saveSettings' ) and current_user_can( 'manage_options' ) ) {
-				$keep_tables_value = isset( $_POST['dt_keep_tables_on_uninstall'] ) ? '1' : '0';
-				update_option( 'dt_keep_tables_on_uninstall', $keep_tables_value );
-				echo $notices->admin_notice_library( 'save-success' );
+			$keep_tables_value = isset( $_POST['dt_keep_tables_on_uninstall'] ) ? '1' : '0'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing -- Checked elsewhere.
+			update_option( 'dt_keep_tables_on_uninstall', $keep_tables_value );
+			echo $notices->admin_notice_library( 'save-success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
 
-				if ( $keep_tables_value === '0' ) {
-					echo $notices->admin_notice_library( 'uninstall-table-warning' );
-				}
-			} else {
-				echo $notices->admin_notice_library( 'save-fail-permissions' );
+			if ( $keep_tables_value === '0' ) {
+				echo $notices->admin_notice_library( 'uninstall-table-warning' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
 			}
 		}
 
@@ -104,54 +92,57 @@ if ( ! class_exists( DT_Admin::class ) ) {
 		 * @since   5.0.0
 		 */
 		public function plugin_main_admin() {
-			?>
-					<div class="wrap dt-setting-default">
+			$notices = new DT_Admin_Notices();
 
-					<h1>Dynamic Tables</h1>
-
-					<p>
-						Welcome to the initial release of the <strong>Dynamic Tables</strong> block plugin.  We take a different
-						approach to displaying and formatting table data that other plugins we've seen to address challenges
-						we've experienced with other pluggings.  Dynamic tables directly helps with:
-						<ul>
-							<li>Responsive table formatting - Table columns can shrink and grow as the browers window size changes and the table will not become malformed</li>
-							<li class="li">Tables can be limited to a specific size with optionally available to support readability</li>
-							<li class="li">The first table row can optionionally be configured as a heading</li>
-							<li class="li">Highly granular support for formats including row banding, alignment and font support, and other tools support your presentational goals</li>
-						</ul>
-						This plugin is <strong>free</strong> to use.  A premium version is planned.
-					</p>
-
-					<h2>Settings</h2>
-				<?php
-				if ( $_POST ) {
-					if ( isset( $_POST['submitted'] ) and $_POST['submitted'] === 'true' ) {
-						$this->handle_form();
-					}
+			if ( $_POST ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing -- This is a nonce verification.
+				if ( ! dt_verify_nonce( 'dtAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
+					echo $notices->admin_notice_library( 'save-fail-permissions' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
+					return;
 				}
-				?>
 
-					<form method="POST">
-						<input type="hidden" name="submitted" value="true"></input>
-						<?php wp_nonce_field( 'saveSettings', 'dtAdminNonce' ); ?>
+				$this->handle_form();
+			}
 
-						<div class="admin-checkbox">
-							<span>
-								<label for="dt_keep_tables_on_uninstall">Do you want to keep table data when plugin is removed?</label>
-								<input name="dt_keep_tables_on_uninstall" id="dt_keep_tables_on_uninstall" type="checkbox" value="1"
-									<?php checked( '1', get_option( 'dt_keep_tables_on_uninstall' ) ); ?>></input>
-							</span>
-						</div>
+			?>
+			<div class="wrap dt-setting-default">
 
-						<div>
-							<input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
-						</div>
-					</form>
+				<h1>Dynamic Tables</h1>
+
+				<p>
+					Welcome to the initial release of the <strong>Dynamic Tables</strong> block plugin.  We take a different
+					approach to displaying and formatting table data that other plugins we've seen to address challenges
+					we've experienced with other pluggings.  Dynamic tables directly helps with:
+					<ul>
+						<li>Responsive table formatting - Table columns can shrink and grow as the browers window size changes and the table will not become malformed</li>
+						<li class="li">Tables can be limited to a specific size with optionally available to support readability</li>
+						<li class="li">The first table row can optionionally be configured as a heading</li>
+						<li class="li">Highly granular support for formats including row banding, alignment and font support, and other tools support your presentational goals</li>
+					</ul>
+					This plugin is <strong>free</strong> to use.  A premium version is planned.
+				</p>
+
+				<h2>Settings</h2>
+
+				<form method="POST">
+					<?php wp_nonce_field('saveSettings', 'dtAdminNonce'); ?>
+
+					<div class="admin-checkbox">
+						<span>
+							<label for="dt_keep_tables_on_uninstall">Do you want to keep table data when plugin is removed?</label>
+							<input name="dt_keep_tables_on_uninstall" id="dt_keep_tables_on_uninstall" type="checkbox" value="1"
+								<?php checked( '1', get_option( 'dt_keep_tables_on_uninstall' ) ); ?>></input>
+						</span>
 					</div>
-				<?php
+
+					<div>
+						<input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
+					</div>
+				</form>
+			</div>
+			<?php
 		}
 	}
 
-					// Instantiate.
-					dt_new_instance( 'DT_Admin' );
+	// Instantiate.
+	dt_new_instance( 'DT_Admin' );
 }
