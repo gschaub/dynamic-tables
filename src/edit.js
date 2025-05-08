@@ -1,6 +1,6 @@
 /* External dependencies */
 import { useSelect, useDispatch, dispatch } from '@wordpress/data';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { store as noticeStore } from '@wordpress/notices';
 import { __ } from '@wordpress/i18n';
@@ -152,7 +152,7 @@ export default function Edit(props) {
 	 *
 	 * @since    1.0.0
 	 *
-	 * @returns  {boolean} Was Table Changed?
+	 * @return {boolean} Was Table Changed?
 	 */
 	const setTableIdChanged = () => {
 		if (awaitingTableEntityCreation && Number(currentTableId) !== Number(table_id)) {
@@ -166,7 +166,7 @@ export default function Edit(props) {
 	/**
 	 * Identify unmounted tables
 	 *
-	 * Table blocks is unmounted when entering the text editor AND when deleted.  However,
+	 * Table blocks are unmounted when entering the text editor AND when deleted.  However,
 	 * don't know whether the table was deleted when an unmount is detected.  Therefore,
 	 * we mark them as unmounted at that time, and can identify whether the block was
 	 * truly deleted on the subsequent render.
@@ -386,6 +386,9 @@ export default function Edit(props) {
 		[table_id, isTableIdChanged, isTableStale, block_table_ref]
 	);
 
+	const currentStatus = useRef(tableStatus);
+	currentStatus.current = tableStatus;
+
 	/**
 	 * Lookup table attribute value.
 	 *
@@ -448,6 +451,7 @@ export default function Edit(props) {
 	 */
 	useEffect(() => {
 		return () => {
+			setTableAttributes(table.table_id, 'prior_status', '', 'PROP', currentStatus.current);
 			setTableAttributes(
 				table.table_id,
 				'unmounted_blockid',

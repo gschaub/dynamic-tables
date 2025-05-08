@@ -5,7 +5,7 @@ import { useSelect } from '@wordpress/data';
 /**
  * Returns `true` if post changes are saved, otherwise `false`.
  *
- * @return {boolean}
+ * @return {boolean} Are post changes saved
  */
 export const usePostChangesSaved = () => {
 	const [areChangesSaved, setAreChangesSaved] = useState(false);

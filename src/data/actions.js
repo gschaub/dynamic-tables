@@ -333,14 +333,18 @@ export const processUnmountedTables =
 		console.log('In Action processUnmountedTables');
 		Object.keys(unmountedTables).forEach(key => {
 			const unmountedTableBlockId = unmountedTables[key].unmounted_blockid;
+			const priorStatus = unmountedTables[key].prior_status;
 			const tableBlock = registry.select(blockEditorStore).getBlock(unmountedTableBlockId);
 			console.log(tableBlock);
 			if (tableBlock) {
-				dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_blockid');
 				dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status');
-			} else {
+				dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', priorStatus);
 				dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_blockid');
+				dispatch.removeTableProp(unmountedTables[key].table_id, 'prior_status');
+				dispatch.updateTableEntity(unmountedTables[key].table_id);
+			} else {
 				dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', 'deleted');
+				dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_blockid');
 			}
 		});
 	};
