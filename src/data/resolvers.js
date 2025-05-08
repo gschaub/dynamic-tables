@@ -13,7 +13,6 @@ import { numberToLetter } from '../utils';
 function computeCellIds(fetchedCells) {
 	fetchedCells.forEach(cell => {
 		cell.cell_id = numberToLetter(cell.column_id) + cell.row_id;
-		console.log(cell);
 	});
 	return {
 		fetchedCells,
@@ -31,12 +30,7 @@ function computeCellIds(fetchedCells) {
 export const getTable =
 	(tableId, isTableStale) =>
 	async ({ dispatch, registry }) => {
-		console.log('            ...Resolver - Before fetch');
-		console.log('            ...Table ID = ' + tableId);
-		console.log('            ...Table Stale = ' + isTableStale);
-
 		if (!isTableStale || tableId == '0') {
-			console.log('Bypassing API Call');
 			return;
 		}
 

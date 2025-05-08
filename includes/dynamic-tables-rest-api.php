@@ -396,23 +396,17 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	public function update_item_permissions_check( $request ) {
 		// Permissions for editing a table are based upon the underlying post to which
 		// it is attached.
-		// error_log('From Update Item');
-		// error_log(print_r($request, true));
-
-		return true;
 		if ( isset( $request['header']['post_id'] ) ) {
 			$post_id = (int) $request['header']['post_id'];
 
 			if ( $post_id !== 0 ) {
 				$post = $this->get_post( $post_id);
 				if ( is_wp_error( $post ) ) {
-					// error_log(print_r($request, true));
 					return $post;
 				}
 				$post_type = get_post_type_object( $post->post_type );
 
 				if ( $post && ! $this->check_update_permission( $post ) ) {
-					// error_log(print_r($request, true));
 					return new \WP_Error(
 						'rest_cannot_edit',
 						__( 'Sorry, you are not allowed to update tables for this post as this user.' ),
@@ -421,7 +415,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				}
 
 				if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
-					// error_log(print_r($request, true));
 					return new \WP_Error(
 						'rest_cannot_edit_others',
 						__( 'Sorry, you are not allowed to update tables for this post as this user.' ),
@@ -431,7 +424,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			}
 
 			if ( $post_id === 0 && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
-				// error_log(print_r($request, true));
 				return new \WP_Error(
 					'rest_cannot_edit',
 					__( 'Sorry, you are not allowed to update tables for this post as this user.' ),
@@ -439,7 +431,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				);
 			}
 		} else {
-			// error_log(print_r($request, true));
 			return new \WP_Error(
 				'missing_post_id',
 				__( 'Post ID is missing from request.' ),
@@ -888,10 +879,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		if ( rest_is_field_included( 'id', $fields ) ) {
 			$data['id'] = $table['id'];
-		}
-
-		if ( rest_is_field_included( 'id', $fields ) ) {
-			$data['title'] = $table['title'];
 		}
 
 		/**

@@ -33,10 +33,6 @@ const {
  * @return  {Object} Action object
  */
 export function receiveNewTable(table) {
-	console.log('Receiving New Table');
-	console.log(table);
-	console.log(table.table.table_id);
-
 	return {
 		type: CREATE_TABLE,
 		tableId: table.table.table_id,
@@ -74,11 +70,6 @@ export function receiveTable(
 	columns,
 	cells
 ) {
-	console.log('            ...Action - In receiveTable');
-	console.log('                - id: ' + table_id);
-	console.log('Block Ref = ' + block_table_ref);
-	console.log('Status = ' + table_status);
-
 	return {
 		type: RECEIVE_HYDRATE,
 		tableId: table_id,
@@ -135,9 +126,6 @@ export const createTableEntity =
 			cells: [...cells],
 		};
 
-		console.log('CREATING TABLE ENTITY');
-		console.log(newTable);
-
 		try {
 			const tableEntity = await registry
 				.dispatch(coreStore)
@@ -170,8 +158,6 @@ export const createTableEntity =
 export const saveTableEntity =
 	tableId =>
 	({ registry }) => {
-		console.log('SAVING TABLE ENTITY');
-
 		try {
 			registry.dispatch(coreStore).saveEditedEntityRecord('dynamic-tables', 'table', tableId);
 		} catch (error) {
@@ -251,9 +237,6 @@ export const updateTableEntity =
 			cells: [...transformedCells],
 		};
 
-		console.log('UPDATING TABLE ENTITY');
-		console.log(updatedTable);
-
 		/**
 		 * Options: isCached: Bool
 		 *          undoIgnore: Bool
@@ -281,8 +264,6 @@ export const updateTableEntity =
 export const deleteTableEntity =
 	tableId =>
 	async ({ select, dispatch, registry }) => {
-		console.log('In Action deleteTableEntity');
-
 		try {
 			const deletedTableEntity = await registry
 				.dispatch(coreStore)
@@ -296,7 +277,6 @@ export const deleteTableEntity =
 			console.log('Error in deleteTableEntity - Table ID - ' + tableId);
 			alert('            ...Resolver - async error - ' + error);
 		}
-		console.log('            Resolver - async completed');
 	};
 
 /**
@@ -310,10 +290,7 @@ export const deleteTableEntity =
 export const processDeletedTables =
 	deletedTables =>
 	({ dispatch }) => {
-		console.log('In Action processDeletedTables');
 		Object.keys(deletedTables).forEach(key => {
-			const deletedTableId = deletedTables[key].table_id;
-			console.log(deletedTableId);
 			dispatch.deleteTableEntity(deletedTables[key].table_id);
 		});
 	};
@@ -330,12 +307,10 @@ export const processDeletedTables =
 export const processUnmountedTables =
 	unmountedTables =>
 	({ dispatch, registry }) => {
-		console.log('In Action processUnmountedTables');
 		Object.keys(unmountedTables).forEach(key => {
 			const unmountedTableBlockId = unmountedTables[key].unmounted_blockid;
 			const priorStatus = unmountedTables[key].prior_status;
 			const tableBlock = registry.select(blockEditorStore).getBlock(unmountedTableBlockId);
-			console.log(tableBlock);
 			if (tableBlock) {
 				dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status');
 				dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', priorStatus);
@@ -452,7 +427,6 @@ export const assignTableId = tableId => {
  * @return  {Object} Action object
  */
 export const updateTableProp = (tableId, attribute, value) => {
-	console.log('In Action updateTableProp');
 	return {
 		type: UPDATE_TABLE_PROP,
 		tableId: tableId,
@@ -471,7 +445,6 @@ export const updateTableProp = (tableId, attribute, value) => {
  * @return  {Object} Action object
  */
 export const removeTableProp = (tableId, attribute) => {
-	console.log('In Action removeTableProp');
 	return {
 		type: REMOVE_TABLE_PROP,
 		tableId: tableId,
@@ -491,7 +464,6 @@ export const removeTableProp = (tableId, attribute) => {
  * @return  {Object} Action object
  */
 export const updateRow = (tableId, rowId, attribute, value) => {
-	console.log('In Action updateRow');
 	return {
 		type: UPDATE_ROW,
 		tableId,
@@ -513,7 +485,6 @@ export const updateRow = (tableId, rowId, attribute, value) => {
  * @return  {Object} Action object
  */
 export const updateColumn = (tableId, columnId, attribute, value) => {
-	console.log('In Action updateColumn');
 	return {
 		type: UPDATE_COLUMN,
 		tableId,
@@ -535,7 +506,6 @@ export const updateColumn = (tableId, columnId, attribute, value) => {
  * @return {Object} Action object
  */
 export const updateCell = (tableId, cellId, attribute, value) => {
-	console.log('In Action updateCell');
 	return {
 		type: UPDATE_CELL,
 		tableId,
@@ -559,8 +529,6 @@ export const updateCell = (tableId, cellId, attribute, value) => {
 export const updateTableBorder =
 	(tableId, tableRows, tableColumns, tableCells) =>
 	async ({ dispatch }) => {
-		console.log('Updating Border');
-
 		await dispatch({
 			type: PROCESS_BORDERS,
 			tableId: tableId,

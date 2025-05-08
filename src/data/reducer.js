@@ -34,9 +34,6 @@ const table = (
 	},
 	action
 ) => {
-	console.log('      Reducer. state: ' + JSON.stringify(state));
-	console.log('      Reducer. type: ' + action.type);
-
 	switch (action.type) {
 		case CREATE_TABLE:
 			return {
@@ -46,15 +43,12 @@ const table = (
 			};
 
 		case CHANGE_TABLE_ID:
-			console.log('In Reducer CHANGE_TABLE_ID');
 			const newTableIdState = { ...state };
 			const rowsWithNewId_ChangeId = [];
 			const columnsWithNewId_ChangeId = [];
 			const cellsWithNewId_ChangeId = [];
 
-			console.log(newTableIdState.rows);
 			newTableIdState.rows.forEach(row => {
-				console.log(row);
 				const newRow_ChangeId = {
 					...row,
 					table_id: action.newTableId,
@@ -85,20 +79,17 @@ const table = (
 				columns: [...columnsWithNewId_ChangeId],
 				cells: [...cellsWithNewId_ChangeId],
 			};
-			console.log(updatedTableId);
 
 			return {
 				table: updatedTableId,
 			};
 
 		case UPDATE_TABLE_PROP:
-			console.log('In Reducer UPDATE_TABLE_PROP');
 
 			const updatedTable = {
 				...state,
 				[action.attribute]: action.value,
 			};
-			console.log(updatedTable);
 
 			return {
 				table: updatedTable,
@@ -106,7 +97,6 @@ const table = (
 
 		case REMOVE_TABLE_PROP:
 			const tablePropRemoved = { ...state };
-			// const removedAttribute = action.attribute
 			delete tablePropRemoved[action.attribute];
 
 			return {
@@ -114,7 +104,6 @@ const table = (
 			};
 
 		case INSERT_COLUMN:
-			console.log('In Reducer INSERT_COLUMN');
 			const insertColumnState = { ...state };
 
 			/**
@@ -176,16 +165,12 @@ const table = (
 				cells: [...sortedCells_InsertColumn],
 			};
 
-			console.log(returnedTableNewColumn_InsertColumn);
-
 			return {
 				table: returnedTableNewColumn_InsertColumn,
 			};
 
 		case INSERT_ROW:
-			console.log('In Reducer INSERT_ROW');
 			const insertRowState = { ...state };
-			console.log(insertRowState);
 
 			/**
 			 * Insert new row and update existing row_id's
@@ -205,17 +190,13 @@ const table = (
 				}
 			});
 			rowsWithNewId_InsertRow.push(action.newRow);
-			console.log(rowsWithNewId_InsertRow);
-
 			const sortedRows = tableSort('rows', rowsWithNewId_InsertRow);
-			console.log(sortedRows);
 
 			/**
 			 * Insert new cells and update existing column_id's
 			 */
 			const cellsWithNewId_InsertRow = [];
 			insertRowState.cells.forEach(cell => {
-				console.log(cell);
 				if (Number(cell.row_id) < Number(action.rowId)) {
 					cellsWithNewId_InsertRow.push(cell);
 				} else {
@@ -252,7 +233,6 @@ const table = (
 			};
 
 		case DELETE_COLUMN:
-			console.log('In Reducer DELETE_COLUMN');
 			const deleteColumnState = { ...state };
 
 			/**
@@ -306,21 +286,17 @@ const table = (
 				cells: [...cellsWithNewId_DeleteColumn],
 			};
 
-			console.log(returnedTableNewColumn_DeleteColumn);
-
 			return {
 				table: returnedTableNewColumn_DeleteColumn,
 			};
 
 		case DELETE_ROW:
-			console.log('In Reducer DELETE_ROW');
 			const deleteRowState = { ...state };
 
 			/**
 			 * Delete new column and update existing column_id's
 			 */
 			const rowsWithNewId_DeleteRow = [];
-			console.log(deleteRowState);
 			deleteRowState.rows.forEach(row => {
 				if (Number(row.row_id) < Number(action.rowId)) {
 					rowsWithNewId_DeleteRow.push(row);
@@ -334,14 +310,11 @@ const table = (
 					rowsWithNewId_DeleteRow.push(newRow_DeleteRow);
 				}
 			});
-			// rowsWithNewId_DeleteRow.push(action.newColumn)
-			// var sortedRows= tableSort('rows', rowsWithNewId_DeleteRow)
 
 			/**
 			 * Delete new cells and update existing row_id's
 			 */
 			const cellsWithNewId_DeleteRow = [];
-			console.log(deleteRowState.cells);
 			deleteRowState.cells.forEach(cell => {
 				if (Number(cell.row_id) < Number(action.rowId)) {
 					cellsWithNewId_DeleteRow.push(cell);
@@ -364,9 +337,6 @@ const table = (
 				}
 			});
 
-			// var allNewColumnCells = [...cellsWithNewId_DeleteRow, ...action.columnCells]
-			// var sortedCells = tableSort('cells', allNewColumnCells)
-
 			const returnedTableNewRow_DeleteRow = {
 				...deleteRowState,
 				rows: [...rowsWithNewId_DeleteRow],
@@ -374,32 +344,22 @@ const table = (
 				cells: [...cellsWithNewId_DeleteRow],
 			};
 
-			console.log(returnedTableNewRow_DeleteRow);
-
 			return {
 				table: returnedTableNewRow_DeleteRow,
 			};
 
 		case UPDATE_ROW:
-			console.log('In Reducer UPDATE_ROW');
-
 			let transformedValue_UpdateRow = ' "' + action.value + '"';
 
 			if (action.attribute === 'attributes') {
 				transformedValue_UpdateRow = JSON.stringify(action.value);
 			}
-			console.log();
 
 			const newRowsState = { ...state };
 			const updatedRowData = JSON.parse(
 				'{ "' + action.attribute + '" :' + transformedValue_UpdateRow + '}'
 			);
-			console.log(newRowsState);
-			console.log(newRowsState.rows);
 			const updatedRows = updateArray(newRowsState.rows, 'row_id', action.rowId, updatedRowData);
-
-			console.log(updatedRowData);
-			console.log(updatedRows);
 
 			const returnedUpdatedTableRow = {
 				...newRowsState,
@@ -412,30 +372,22 @@ const table = (
 			};
 
 		case UPDATE_COLUMN:
-			console.log('In Reducer UPDATE_COLUMN');
-
 			let transformedValue_UpdateColumn = ' "' + action.value + '"';
 
 			if (action.attribute === 'attributes') {
 				transformedValue_UpdateColumn = JSON.stringify(action.value);
 			}
 
-			console.log(transformedValue_UpdateColumn);
 			const newColumnsState = { ...state };
 			const updatedColumnData = JSON.parse(
 				'{ "' + action.attribute + '" :' + transformedValue_UpdateColumn + '}'
 			);
-			console.log(newColumnsState);
-			console.log(newColumnsState.columns);
 			const updatedColumns = updateArray(
 				newColumnsState.columns,
 				'column_id',
 				action.columnId,
 				updatedColumnData
 			);
-
-			console.log(updatedColumnData);
-			console.log(updatedColumns);
 
 			const returnedUpdatedTableColumn = {
 				...newColumnsState,
@@ -448,10 +400,7 @@ const table = (
 			};
 
 		case UPDATE_CELL:
-			console.log('In Reducer UPDATE_CELL');
 			const newCellsState = { ...state };
-			console.log(state);
-			console.log(newCellsState);
 			const updatedCellData = JSON.parse('{ "' + action.attribute + '" : "' + action.value + '"}');
 			const updatedCells = updateArray(
 				newCellsState.cells,
@@ -466,13 +415,12 @@ const table = (
 				columns: [...newCellsState.columns],
 				cells: [...updatedCells],
 			};
-			console.log(returnedCellState);
+
 			return {
 				table: returnedCellState,
 			};
 
 		case PROCESS_BORDERS:
-			console.log('In Reducer PROCESS_BORDERS');
 			const newBaseTableState = { ...state };
 
 			const returnedBorderState = {
@@ -482,18 +430,11 @@ const table = (
 				cells: tableSort('cells', [...action.cells]),
 			};
 
-			console.log(newBaseTableState);
-			console.log(returnedBorderState);
-
 			return {
 				table: returnedBorderState,
 			};
 
 		case RECEIVE_HYDRATE:
-			console.log('RECEIVE_HYDATE...');
-			console.log(state);
-			console.log(action.table);
-
 			return {
 				table: {
 					...state.table,
@@ -521,50 +462,28 @@ const reducer = (
 	},
 	action
 ) => {
-	// console.log('MAIN REDUCER');
-	// console.log(state);
-	// console.log('  Action Table ID = ' + action.tableId);
-	// console.log(action);
 
 	const tableKey = action.tableId;
-	// console.log(state.tables[tableKey]);
-
-	// Updated state for the single table being acted upon
 	const newTableState = table(state.tables[tableKey], action);
-	// let returnedTable = {
-	// 	[action.tableId]: newTableState.table,
-	// };
 
-	// Return original state if the updated table is empty
 	if (JSON.stringify(newTableState.table) === '{}') {
 		return state;
 	}
-	// console.log(returnedTable);
 
 	const newTablesState = { ...state.tables };
-	// let newTablesStateKeys = Object.keys(state.tables)
 
 	switch (action.type) {
 		case CHANGE_TABLE_ID:
-			console.log('In Reducer CHANGE_TABLE_ID for state');
-
 			const returnedTableNewId = {
 				[action.newTableId]: newTableState.table,
 			};
-			console.log(returnedTableNewId);
 
 			const filteredTablesState = Object.keys(state.tables).reduce((acc, key) => {
-				console.log(state.tables[key]);
 				if (state.tables[key].table_id !== action.tableId) {
 					acc[key] = { ...state.tables[key] };
 				}
 				return acc;
 			}, {});
-			// const filteredTablesState = Object.keys(state.tables)
-			// .filter((key) =>
-			//     state.tables[key] !== '0'
-			// )
-			console.log(filteredTablesState);
 
 			return {
 				tables: {
@@ -574,12 +493,7 @@ const reducer = (
 			};
 
 		case DELETE_TABLE:
-			console.log('In Reducer DELETE_TABLE...');
-
 			const deleteTablesState = Object.keys(state.tables).reduce((acc, key) => {
-				console.log('Reducer key = ' + key);
-				console.log('TableId to delete = ' + String(action.tableId));
-				console.log(acc);
 				if (key !== String(action.tableId)) {
 					acc[key] = {
 						...state.tables[key],
@@ -591,7 +505,6 @@ const reducer = (
 				return acc;
 			}, {});
 
-			console.log(deleteTablesState);
 			return {
 				tables: {
 					...deleteTablesState,
@@ -599,7 +512,6 @@ const reducer = (
 			};
 
 		default:
-			console.log('In Reducer Default State Handling');
 			const returnedTableDefault = {
 				[action.tableId]: newTableState.table,
 			};
