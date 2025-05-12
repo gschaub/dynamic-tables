@@ -1,3 +1,249 @@
-.wp-block-dynamic-tables-dynamic-tables{padding:2px}#tableTitle{--gridAlignment:center;text-align:var(--gridAlignment)}.grid-scroller{background-color:inherit;display:grid;gap:0}.grid-control{--gridTemplateColumns:auto;--gridAlignment:left;--gridNumColumns:1;--horizontalScroll:auto;display:grid;gap:0;grid-template-columns:var(--gridTemplateColumns);justify-content:var(--gridAlignment);overflow-x:var(--horizontalScroll)}.grid-control__border{grid-column:1/calc(var(--gridNumColumns) + 2);grid-row:1/2;grid-template-columns:subgrid;grid-template-rows:auto}.grid-control__border,.grid-control__header{display:grid;overflow-x:inherit;position:sticky}.grid-control__header{--startGridHeaderRowNbr:1;--endGridHeaderRowNbr:2;--gridTemplateHeaderRows:auto;--headerTextAlignment:left;--headerBorderTopColor:#fff;--headerBorderTopStyle:solid;--headerBorderTopWidth:0px;--headerBorderRightColor:#fff;--headerBorderRightStyle:solid;--headerBorderRightWidth:0px;--headerBorderBottomColor:#fff;--headerBorderBottomStyle:solid;--headerBorderBottomWidth:0px;--headerBorderLeftColor:#fff;--headerBorderLeftStyle:solid;--headerBorderLeftWidth:0px;border-bottom:var(--headerBorderBottomWidth) var(--headerBorderBottomStyle) var(--headerBorderBottomColor);border-left:var(--headerBorderLeftWidth) var(--headerBorderLeftStyle) var(--headerBorderLeftColor);border-right:var(--headerBorderRightWidth) var(--headerBorderRightStyle) var(--headerBorderRightColor);border-top:var(--headerBorderTopWidth) var(--headerBorderTopStyle) var(--headerBorderTopColor);gap:1px;grid-column:1/calc(var(--gridNumColumns) + 2);grid-row:var(--startGridHeaderRowNbr)/var(--endGridHeaderRowNbr);grid-template-columns:subgrid;grid-template-rows:var(--gridTemplateHeaderRows)}.grid-control__header--sticky{max-height:80vh}.grid-control__header-cells{align-items:center;background-color:var(--gridHeaderColor);display:flex;justify-content:var(--headerTextAlignment);position:relative;top:0;z-index:1}.grid-control__body{--startGridBodyRowNbr:1;--endGridBodyRowNbr:2;--gridTemplateBodyRows:auto;--bodyTextAlignment:left;--bodyBorderTopColor:#fff;--bodyBorderTopStyle:solid;--bodyBorderTopWidth:0px;--bodyBorderRightColor:#fff;--bodyBorderRightStyle:solid;--bodyBorderRightWidth:0px;--bodyBorderBottomColor:#fff;--bodyBorderBottomStyle:solid;--bodyBorderBottomWidth:0px;--bodyBorderLeftColor:#fff;--bodyBorderLeftStyle:solid;--bodyBorderLeftWidth:0px;border-bottom:var(--bodyBorderBottomWidth) var(--bodyBorderBottomStyle) var(--bodyBorderBottomColor);border-left:var(--bodyBorderLeftWidth) var(--bodyBorderLeftStyle) var(--bodyBorderLeftColor);border-right:var(--bodyBorderRightWidth) var(--bodyBorderRightStyle) var(--bodyBorderRightColor);border-top:var(--bodyBorderTopWidth) var(--bodyBorderTopStyle) var(--bodyBorderTopColor);display:grid;gap:1px;grid-column:1/calc(var(--gridNumColumns) + 2);grid-row:var(--startGridBodyRowNbr)/var(--endGridBodyRowNbr);grid-template-columns:subgrid;grid-template-rows:var(--gridTemplateBodyRows);overflow-x:hidden;overflow-y:var(--headerRowSticky)}.grid-control__body-row{display:grid;grid-column:1/calc(var(--gridNumColumns) + 2);grid-template-columns:subgrid}.grid-control__body-rows--banded-row{--bandedRowTextColor:#000;--bandedRowBackgroundColor:#d8dbda;background-color:var(--bandedRowBackgroundColor);color:var(--bandedRowTextColor)}.grid-control__body-cells{justify-content:var(--bodyTextAlignment);min-height:1.5em;overflow:hidden;padding:5px;position:relative;text-overflow:ellipsis}.grid-control__body-cells,.grid-control__body-cells--zoom{border-color:#000;border-style:var(--showGridLines);border-width:var(--gridLineWidth);display:flex;margin:-1px}.grid-control__body-cells--zoom{justify-content:center;padding:0;vertical-align:middle}
-fieldset{border:thin solid #000;margin:10px;padding:10px}.column-width--not-visible{display:none}.column-width-span-input{display:flex;width:100%}.column-width-value-input{margin:5px;width:65%}.column-width-unit-input{margin:5px;width:30%}.column-label{font-size:large;font-style:italic;margin:8px;text-align:center}
-fieldset{border:thin solid #000;margin:10px;padding:10px}.row-height--not-visible{display:none}.row-height-span-input{display:flex;width:100%}.row-height-value-input{margin:5px;width:65%}.row-height-unit-input{margin:5px;width:30%}.row-label{font-size:large;font-style:italic;margin:8px;text-align:center}
+/*!***************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/style.scss ***!
+  \***************************************************************************************************************************************************************************************************************************************/
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+.wp-block-dynamic-tables-dynamic-tables {
+  padding: 2px;
+}
+
+#tableTitle {
+  --gridAlignment: center;
+  text-align: var(--gridAlignment);
+}
+
+.grid-scroller {
+  display: grid;
+  gap: 0px;
+  background-color: inherit;
+}
+
+.grid-control {
+  --gridTemplateColumns: auto;
+  --gridAlignment: left;
+  --gridNumColumns: 1;
+  --horizontalScroll: auto;
+  display: grid;
+  overflow-x: var(--horizontalScroll);
+  grid-template-columns: var(--gridTemplateColumns);
+  gap: 0px;
+  justify-content: var(--gridAlignment);
+}
+
+.grid-control__border {
+  display: grid;
+  overflow-x: inherit;
+  grid-column: 1/calc(var(--gridNumColumns) + 2);
+  grid-row: 1/2;
+  grid-template-columns: subgrid;
+  grid-template-rows: auto;
+  position: sticky;
+}
+
+.grid-control__header {
+  --startGridHeaderRowNbr: 1;
+  --endGridHeaderRowNbr: 2;
+  --gridTemplateHeaderRows: auto;
+  --headerTextAlignment: left;
+  --headerBorderTopColor: white;
+  --headerBorderTopStyle: solid;
+  --headerBorderTopWidth: 0px;
+  --headerBorderRightColor: white;
+  --headerBorderRightStyle: solid;
+  --headerBorderRightWidth: 0px;
+  --headerBorderBottomColor: white;
+  --headerBorderBottomStyle: solid;
+  --headerBorderBottomWidth: 0px;
+  --headerBorderLeftColor: white;
+  --headerBorderLeftStyle: solid;
+  --headerBorderLeftWidth: 0px;
+  display: grid;
+  overflow-x: inherit;
+  grid-column: 1/calc(var(--gridNumColumns) + 2);
+  grid-row: var(--startGridHeaderRowNbr)/var(--endGridHeaderRowNbr);
+  grid-template-columns: subgrid;
+  grid-template-rows: var(--gridTemplateHeaderRows);
+  position: sticky;
+  border-top-color: var(--headerBorderTopColor);
+  border-top-style: var(--headerBorderTopStyle);
+  border-top-width: var(--headerBorderTopWidth);
+  border-right-color: var(--headerBorderRightColor);
+  border-right-style: var(--headerBorderRightStyle);
+  border-right-width: var(--headerBorderRightWidth);
+  border-bottom-color: var(--headerBorderBottomColor);
+  border-bottom-style: var(--headerBorderBottomStyle);
+  border-bottom-width: var(--headerBorderBottomWidth);
+  border-left-color: var(--headerBorderLeftColor);
+  border-left-style: var(--headerBorderLeftStyle);
+  border-left-width: var(--headerBorderLeftWidth);
+  gap: 1px;
+}
+
+.grid-control__header--sticky {
+  max-height: 80vh;
+}
+
+.grid-control__header-cells {
+  display: flex;
+  position: relative;
+  top: 0;
+  z-index: 1;
+  align-items: center;
+  background-color: var(--gridHeaderColor);
+  justify-content: var(--headerTextAlignment);
+}
+
+.grid-control__body {
+  --startGridBodyRowNbr: 1;
+  --endGridBodyRowNbr: 2;
+  --gridTemplateBodyRows: auto;
+  --bodyTextAlignment: left;
+  --bodyBorderTopColor: white;
+  --bodyBorderTopStyle: solid;
+  --bodyBorderTopWidth: 0px;
+  --bodyBorderRightColor: white;
+  --bodyBorderRightStyle: solid;
+  --bodyBorderRightWidth: 0px;
+  --bodyBorderBottomColor: white;
+  --bodyBorderBottomStyle: solid;
+  --bodyBorderBottomWidth: 0px;
+  --bodyBorderLeftColor: white;
+  --bodyBorderLeftStyle: solid;
+  --bodyBorderLeftWidth: 0px;
+  display: grid;
+  overflow-y: var(--headerRowSticky);
+  overflow-x: hidden;
+  grid-column: 1/calc(var(--gridNumColumns) + 2);
+  grid-row: var(--startGridBodyRowNbr)/var(--endGridBodyRowNbr);
+  grid-template-columns: subgrid;
+  grid-template-rows: var(--gridTemplateBodyRows);
+  border-top-color: var(--bodyBorderTopColor);
+  border-top-style: var(--bodyBorderTopStyle);
+  border-top-width: var(--bodyBorderTopWidth);
+  border-right-color: var(--bodyBorderRightColor);
+  border-right-style: var(--bodyBorderRightStyle);
+  border-right-width: var(--bodyBorderRightWidth);
+  border-bottom-color: var(--bodyBorderBottomColor);
+  border-bottom-style: var(--bodyBorderBottomStyle);
+  border-bottom-width: var(--bodyBorderBottomWidth);
+  border-left-color: var(--bodyBorderLeftColor);
+  border-left-style: var(--bodyBorderLeftStyle);
+  border-left-width: var(--bodyBorderLeftWidth);
+  gap: 1px;
+}
+
+.grid-control__body-row {
+  display: grid;
+  grid-column: 1/calc(var(--gridNumColumns) + 2);
+  grid-template-columns: subgrid;
+}
+
+.grid-control__body-rows--banded-row {
+  --bandedRowTextColor: black;
+  --bandedRowBackgroundColor: #d8dbda;
+  color: var(--bandedRowTextColor);
+  background-color: var(--bandedRowBackgroundColor);
+}
+
+.grid-control__body-cells {
+  display: flex;
+  position: relative;
+  padding: 5px;
+  margin: -1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-style: var(--showGridLines);
+  border-width: var(--gridLineWidth);
+  border-color: black;
+  justify-content: var(--bodyTextAlignment);
+  min-height: 1.5em;
+}
+
+.grid-control__body-cells--zoom {
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  padding: 0px;
+  margin: -1px;
+  border-style: var(--showGridLines);
+  border-width: var(--gridLineWidth);
+  border-color: black;
+}
+/*!*************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/components/configure-column-width/style.scss ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************/
+fieldset {
+  border-style: solid;
+  border-width: thin;
+  border-color: black;
+  padding: 10px;
+  margin: 10px;
+}
+
+.column-width--not-visible {
+  display: none;
+}
+
+.column-width-span-input {
+  display: flex;
+  width: 100%;
+}
+
+.column-width-value-input {
+  width: 65%;
+  margin: 5px;
+}
+
+.column-width-unit-input {
+  width: 30%;
+  margin: 5px;
+}
+
+.column-label {
+  text-align: center;
+  font-size: large;
+  font-style: italic;
+  margin: 8px;
+}
+/*!***********************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/components/configure-row-height/style.scss ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************/
+fieldset {
+  border-style: solid;
+  border-width: thin;
+  border-color: black;
+  padding: 10px;
+  margin: 10px;
+}
+
+.row-height--not-visible {
+  display: none;
+}
+
+.row-height-span-input {
+  display: flex;
+  width: 100%;
+}
+
+.row-height-value-input {
+  width: 65%;
+  margin: 5px;
+}
+
+.row-height-unit-input {
+  width: 30%;
+  margin: 5px;
+}
+
+.row-label {
+  text-align: center;
+  font-size: large;
+  font-style: italic;
+  margin: 8px;
+}
+
+/*# sourceMappingURL=style-index.css.map*/
