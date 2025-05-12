@@ -105,7 +105,7 @@ if ( ! class_exists( DynamicTables::class ) ) {
 			define( 'DT_UPGRADE_VERSION', '0.0.9' ); // Highest version with an upgrade routine. See upgrades.php.
 			define( 'DT_IS_MULTISITE', is_multisite() ? true : false );
 			if ( DT_IS_MULTISITE ) {
-				define( 'DT_ALLOW_MULTISITE_ACTIVATION', true );
+				define( 'DT_ALLOW_MULTISITE_ACTIVATION', false );
 			}
 			define( 'TEST_MODE', false );
 
