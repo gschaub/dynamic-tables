@@ -1,14 +1,14 @@
-=== Dynamic Tables ===
-Contributors:      glschaub
-Tags:              block, table, responsive
-Tested up to:      6.1
-Stable tag:        1.0.0
-License:           GPL-2.0-or-later
-License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+# Dynamic Tables #
+**Contributors:** [glschaub](https://profiles.wordpress.org/glschaub/)  
+**Tags:**              block, table  
+**Tested up to:**      6.1  
+**Stable tag:**        1.0.0  
+**License:**           GPL-2.0-or-later  
+**License URI:**       https://www.gnu.org/licenses/gpl-2.0.html  
 
 Create highly responsive custom table blocks that are easily configured.
 
-== Description ==
+## Description ##
 
 Built from the ground up based upon the latest technology and designed to support WordPress' vision for the platform's
 future,  **Dynamic Tables** is a new WordPress block plugin to create and manage information that is best organized
@@ -61,7 +61,7 @@ the primary building blocks:
   * This framework provides responsiveness that doesn't "break" table structure.  Misalighed rows and columns, unexpected wrapping, and otherwise indecipherable tables have been beaten down.
 * The API architecture can theoretically support data stored in external files or web services. We're considering these capcbilities in our roadmap.
 
-== Installation ==
+## Installation ##
 #### Option 1: Through the Wordpress Plugin Directory
 1. Locate the plugin from the directory
 1. Click `Install Now`
@@ -83,7 +83,7 @@ the primary building blocks:
   * Dynamic Tables blocks cannot be restored if the underlying tables are deleted without performing a database restore
   * We plan to provide an export option in the future that will make retrieval backup and restoration of Dynamic Tables much easier.
 
-== Screenshots ==
+## Screenshots ##
 
 1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
 the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
@@ -91,12 +91,12 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 (or jpg, jpeg, gif).
 2. This is the second screen shot
 
-== Changelog ==
+## Changelog ##
 
-= 1.0.0 =
+### 1.0.0 ###
 * Initial Release
 
-== Arbitrary section ==
+## Arbitrary section ##
 
 You may provide arbitrary sections, in the same format as the ones above. This may be of use for extremely complicated
 plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or

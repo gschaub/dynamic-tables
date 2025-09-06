@@ -114,7 +114,7 @@ if ( ! class_exists( DT_Admin::class ) ) {
 				<p>
 					Welcome to the initial release of the <strong>Dynamic Tables</strong> block plugin.  We take a different
 					approach to displaying and formatting table data that other plugins we've seen to address challenges
-					we've experienced with other pluggings.  Dynamic tables directly helps with:
+					we've experienced with other plugins.  Dynamic tables directly helps with:
 					<ul>
 						<li>Responsive table formatting - Table columns can shrink and grow as the browers window size changes and the table will not become malformed</li>
 						<li class="li">Tables can be limited to a specific size with optionally available to support readability</li>

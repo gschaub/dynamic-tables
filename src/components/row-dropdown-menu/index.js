@@ -82,14 +82,16 @@ function RowMenu(props) {
 								Update Row Height
 							</MenuItem>
 						</MenuGroup>
-						<MenuGroup>
-							<MenuItem icon={tableRowBefore} onClick={e => onInsertRow(e, rowId)}>
-								Insert Row
-							</MenuItem>
-							<MenuItem icon={tableRowDelete} onClick={e => onDeleteRow(e, rowId)}>
-								Delete Row
-							</MenuItem>
-						</MenuGroup>
+						{!rowAttributes.isHeader && (
+							<MenuGroup>
+								<MenuItem icon={tableRowBefore} onClick={e => onInsertRow(e, rowId)}>
+									Insert Row
+								</MenuItem>
+								<MenuItem icon={tableRowDelete} onClick={e => onDeleteRow(e, rowId)}>
+									Delete Row
+								</MenuItem>
+							</MenuGroup>
+						)}
 					</>
 				)}
 			</DropdownMenu>
