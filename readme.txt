@@ -85,19 +85,15 @@ the primary building blocks:
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+1. Create a new Dynamic Table block
+2. Format specific table text
+3. Insert columns and rows
+4. Format header row if one exists
+5. Format header grid lines
+6. Format table body
+7. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
 
 = 1.0.0 =
 * Initial Release
-
-== Arbitrary section ==
-
-You may provide arbitrary sections, in the same format as the ones above. This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation." Arbitrary sections will be shown below the built-in sections outlined above.

@@ -182,7 +182,8 @@ if ( is_wp_error($table) ) {
 							--bodyBorderBottomWidth: <?php echo esc_attr($body_border_bottom_width); ?>;
 							--bodyBorderLeftColor: <?php echo esc_attr($body_border_left_color); ?>;
 							--bodyBorderLeftStyle: <?php echo esc_attr($body_border_left_style); ?>;
-							--bodyBorderLeftWidth: <?php echo esc_attr($body_border_left_width); ?>;">
+							--bodyBorderLeftWidth: <?php echo esc_attr($body_border_left_width); ?>;
+							--bodyTextAlignment: <?php echo esc_attr($body_alignment); ?>">
 
 						<?php foreach ( $body_rows['rows'] as $index => $body_row ) {
 							$calculated_classes = get_calculated_classes($body_row['row_id'], $banded_rows, $enable_header_row); ?>
