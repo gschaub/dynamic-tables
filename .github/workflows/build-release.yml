@@ -121,19 +121,7 @@ jobs:
               done
             fi
           done
-      - name: Force CSS minification (CSSO safety pass)
-        run: |
-        
-
           
-          npx --yes csso --version
-          for d in build assets; do
-            if [ -d "$d" ]; then
-              find "$d" -type f -name '*.css' ! -name '*.min.css' -print0 | \
-              xargs -0 -I{} sh -c 'npx --yes csso "{}" --output "{}"'
-            fi
-          done
-
       - name: Stage runtime files to package dir (allowlist)
         run: |
           rm -rf dist && mkdir -p "dist/${PLUGIN_SLUG}"
