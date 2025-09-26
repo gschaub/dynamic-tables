@@ -105,8 +105,27 @@ jobs:
             fi
           done
 
+      - name: Force CSS minification (CSSO, robust)
+        run: |
+          # Ensure we run the correct CLI even if it's not in devDeps:
+          npx --yes -p csso-cli csso --version
+
+          for d in build assets; do
+            if [ -d "$d" ]; then
+              # Minify all non-*.min.css files, atomically
+              find "$d" -type f -name '*.css' ! -name '*.min.css' -print0 | \
+              while IFS= read -r -d '' f; do
+                tmp="$(mktemp)"
+                npx --yes -p csso-cli csso "$f" --output "$tmp"
+                mv "$tmp" "$f"
+              done
+            fi
+          done
       - name: Force CSS minification (CSSO safety pass)
         run: |
+        
+
+          
           npx --yes csso --version
           for d in build assets; do
             if [ -d "$d" ]; then
