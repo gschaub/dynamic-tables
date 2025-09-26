@@ -9,7 +9,7 @@ on:
       plugin_slug:
         description: "Plugin slug (folder/zip name)"
         required: true
-        default: "your-plugin"
+        default: "dynamic-tables"
       base_branch:
         description: "Base branch to release from"
         required: true
@@ -75,10 +75,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
 
       - name: Build JS/CSS
         run: |
           npm ci
+          # If using wp-scripts, this runs webpack in prod mode (minifies).
           npm run build
 
       - name: Install Composer (prod only)
