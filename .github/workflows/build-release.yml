@@ -26,6 +26,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     env:
+      NODE_ENV: production
       VERSION: ${{ inputs.version }}
       TAG: v${{ inputs.version }}
       BASE_BRANCH: ${{ inputs.base_branch }}
@@ -85,6 +86,32 @@ jobs:
         run: |
           curl -sS https://getcomposer.org/installer | php
           php composer.phar install --no-dev --prefer-dist --no-progress --no-interaction
+
+      - name: Remove source maps
+        run: |
+          for d in build assets; do
+            [ -d "$d" ] && find "$d" -type f -name '*.map' -delete
+          done
+
+      - name: Force JS minification (Terser safety pass)
+        run: |
+          npx --yes terser --version
+          for d in build assets; do
+            if [ -d "$d" ]; then
+              find "$d" -type f -name '*.js' ! -name '*.min.js' -print0 | \
+              xargs -0 -I{} sh -c 'npx --yes terser "{}" -c passes=2,drop_console=true -m -o "{}"'
+            fi
+          done
+
+      - name: Force CSS minification (CSSO safety pass)
+        run: |
+          npx --yes csso --version
+          for d in build assets; do
+            if [ -d "$d" ]; then
+              find "$d" -type f -name '*.css' ! -name '*.min.css' -print0 | \
+              xargs -0 -I{} sh -c 'npx --yes csso "{}" --output "{}"'
+            fi
+          done
 
       - name: Stage runtime files to package dir (allowlist)
         run: |
