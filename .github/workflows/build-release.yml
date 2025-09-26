@@ -77,12 +77,12 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: Build JS/CSS
-        run: |
-          npm ci
-          # If using wp-scripts, this runs webpack in prod mode (minifies).
-          npm run build
+      - name: Install deps (include dev)
+        run: npm ci --include=dev
 
+      - name: Build assets
+        run: NODE_ENV=production npm run build
+  
       - name: Install Composer (prod only)
         if: hashFiles('composer.json') != ''
         run: |
