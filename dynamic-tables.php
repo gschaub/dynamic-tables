@@ -8,7 +8,7 @@
 	 * Author:            Gregory Schaub
 	 * License:           GPL-2.0-or-later
 	 * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
-	 * Text Domain:       dynamic-tables-blocks
+	 * Text Domain:       dynamic-table-blocks
 	 *
 	 * @package           dynamic-tables
 	 */
