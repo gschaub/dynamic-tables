@@ -1,5 +1,5 @@
-=== Dynamic Tables ===
-Contributors:      glschaub
+=== Dynamic Table Blocks ===
+Contributors:      glschaub, myfamilyweb
 Tags:              block, table, responsive
 Tested up to:      6.8
 Stable tag:        1.0.0
