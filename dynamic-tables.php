@@ -1,6 +1,6 @@
 <?php
 	/**
-	 * Plugin Name:       Dynamic Tables
+	 * Plugin Name:       Dynamic Table Blocks
 	 * Description:       Create custom table blocks with highly customizable and responsive formats
 	 * Requires at least: 6.1
 	 * Requires PHP:      8.0
