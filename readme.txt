@@ -1,7 +1,7 @@
 === Dynamic Tables ===
 Contributors:      glschaub
 Tags:              block, table, responsive
-Tested up to:      6.1
+Tested up to:      6.8
 Stable tag:        1.0.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
