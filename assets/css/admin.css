@@ -1,23 +1,23 @@
-h1 h2 {
+h1.dt-setting-default h2.dt-setting-default {
 	font-weight: 600;
 }
 
-h2 {
+h2.dt-setting-default {
 	margin: 1em 0 .5em 0;
 }
 
-p {
+p.dt-setting-default {
 	font-size: 14px;
 	line-height: 1.4em;
 	margin: 1em 0 1em 0;
 }
 
-ul {
+ul.dt-setting-default {
 	list-style-position: outside;
 	margin-left: 20px;
 }
 
-li {
+li.dt-setting-default {
 	list-style-type: initial;
 	margin: 0 0 3px 0px;
 }

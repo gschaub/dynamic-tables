@@ -394,6 +394,24 @@ function get_table( $table_id ) {
 }
 
 /**
+ * Extracts and returns the summary table data for all tables from the database
+ *
+ * @since 1.1.0
+ *
+ * @return array|WP_Error Table data retrieved.
+ */
+function get_tables() {
+	$get_table      = new PersistTableData();
+	$results = $get_table->get_tables();
+
+	if ( ! $results['success'] ) {
+		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+	}
+
+	return $results['result'];
+}
+
+/**
  * Sanitizes every table field.
  *
  * Loops through each field for a table object, ensures they all exist, then passes them through

@@ -8,7 +8,7 @@
 	 * Author:            Gregory Schaub
 	 * License:           GPL-2.0-or-later
 	 * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
-	 * Text Domain:       dynamic-table-blocks
+	 * Text Domain:       dynamic-table
 	 *
 	 * @package           dynamic-tables
 	 */
@@ -139,6 +139,7 @@ if ( ! class_exists( DynamicTables::class ) ) {
 				$admin_screen = 'true';
 				require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin.php';
 				require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin-notices.php';
+				require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin-list-dynamic-table.php';
 			}
 
 			// Handle Plugin Add, Upgrade, Delete

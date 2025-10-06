@@ -11,15 +11,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( DT_Admin::class ) ) {
 
 	class DT_Admin {
-
-
 		/**
 		 * Constructor.
 		 *
-		 * @since 5.0.0
+		 * @since 1.1.0
 		 */
 		public function __construct() {
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+			add_filter( 'set-screen-option', array( $this, 'set_per_page' ), 10, 3);
 		}
 
 		/**
@@ -36,8 +35,10 @@ if ( ! class_exists( DT_Admin::class ) ) {
 			}
 
 			// Vars.
+			global $table_maintenance_page_hook;
+
 			$cap       = dt_get_setting( 'capability' );
-			$menu_slug = 'dynamic-tables/main-menu.php';
+			$menu_slug = 'main_menu';
 
 			// Add menu items.
 			$main_page_hook = add_menu_page(
@@ -52,7 +53,6 @@ if ( ! class_exists( DT_Admin::class ) ) {
 
 			// make the location 21 for network page
 			$parent_slug = $menu_slug;
-			$menu_slug   = 'dynamic-tables/main-menu.php';
 
 			add_submenu_page(
 				$parent_slug,
@@ -63,7 +63,19 @@ if ( ! class_exists( DT_Admin::class ) ) {
 				array( $this, 'plugin_main_admin' )
 			);
 
+			$menu_slug   = 'list_dynamic_tables';
+
+			$table_maintenance_page_hook = add_submenu_page(
+				$parent_slug,
+				__( 'Main Admin' ),
+				__( 'Tables' ),
+				$cap,
+				$menu_slug,
+				array( $this, 'plugin_table_maintenance' )
+			);
+
 			add_action( "load-{$main_page_hook}", array( $this, 'enqueue_admin_assets' ) );
+			add_action( "load-{$table_maintenance_page_hook}", array( $this, 'dynamic_table_screen_options' ) );
 		}
 
 		public function enqueue_admin_assets() {
@@ -92,7 +104,7 @@ if ( ! class_exists( DT_Admin::class ) ) {
 		/**
 		 * Register all output admin main page
 		 *
-		 * @since   5.0.0
+		 * @since   1.0.0
 		 */
 		public function plugin_main_admin() {
 			$notices = new DT_Admin_Notices();
@@ -143,6 +155,54 @@ if ( ! class_exists( DT_Admin::class ) ) {
 				</form>
 			</div>
 			<?php
+		}
+
+		public function dynamic_table_screen_options() {
+			global $table_maintenance_page_hook;
+			global $table;
+
+			$screen = get_current_screen();
+
+			if ( ! is_object($screen) || $screen->id !== $table_maintenance_page_hook ) {
+				return;
+			}
+
+			$args = array(
+				'label'   => __( 'Number of tables per page', 'dynamic-table' ),
+				'default' => 20,
+				'option'  => 'dynamic_tables_per_page',
+			);
+			add_screen_option( 'per_page', $args );
+
+			$table = new DT_List_Dynamic_Tables();
+		}
+
+		public function set_per_page ($status, $option, $value) {
+			if ( 'dynamic_tables_per_page' === $option ) {
+				return (int) $value;
+			}
+			return $status;
+		}
+
+		/**
+		* Undocumented function
+		*
+		* Description - A supplement to the summary, above.  Full sentences.
+		*
+		* @since 1.1.0
+		*
+		* @return void
+		*/
+		public function plugin_table_maintenance() {
+			$admin_table_listing = new DT_List_Dynamic_Tables();
+
+			echo '<div class="wrap"><h2>Dynamic Table List</h2>';
+			echo '<form method="post">';
+
+			$admin_table_listing->prepare_items();
+			$admin_table_listing->display();
+
+			echo '</div>';
 		}
 	}
 

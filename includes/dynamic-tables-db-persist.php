@@ -727,7 +727,7 @@ class PersistTableData {
 	 *
 	 * @param int   $table_id              ID value of the table being updated
 	 * @param array $cells               Revised dynamic table cell data for update
-	 * @return array Sresult            Success status and updated cell values
+	 * @return array $result            Success status and updated cell values
 	 */
 	public function update_table_cells( $table_id, $cells ) {
 		$success = false;
@@ -863,6 +863,55 @@ class PersistTableData {
 		$this->result = array(
 			'success'      => $success,
 			'updated_rows' => $inserted_rows,
+		);
+
+		return $this->result;
+	}
+
+	public function get_tables() {
+		global $wpdb;
+
+		$success = false;
+		global $wpdb;
+
+		$return_collection = true;
+
+		$this->request_args = array();
+
+		array_push(
+			$this->request_args,
+			array(
+				'type'  => 'from',
+				'field' => 'dt_tables',
+				'value' => null,
+			)
+		);
+
+		$query_results = $this->get_table_data( $return_collection );
+
+		if ( ! $query_results ) {
+			$this->result = array(
+				'success' => $success,
+				'result'  => 'DB Query Error',
+			);
+
+			return $this->result;
+		}
+
+		$table_return = array();
+
+		foreach ( $query_results as $key => $table ) {
+			$serialized_table_attributes    = $table['attributes'];
+			$table_attributes               = maybe_unserialize( $serialized_table_attributes );
+			$table['attributes']            = $table_attributes;
+			array_push( $table_return, $table );
+		}
+
+		$success = true;
+
+		$this->result = array(
+			'success' => $success,
+			'result'  => $table_return,
 		);
 
 		return $this->result;
@@ -1246,7 +1295,7 @@ class PersistTableData {
 		$update_clause           = '';
 		$insert_clause           = '';
 		$set_clause              = 'SET ';
-		$where_clause            = 'WHERE ';
+		$where_clause            = '';
 		$current_set_position     = 0;
 		$current_order_by_position = 0;
 		$current_value_position   = 0;
@@ -1256,6 +1305,10 @@ class PersistTableData {
 		$order_by_type_count = $this->count_request_args_by_type( $this->request_args, 'order_by' );
 		$value_type_count   = $this->count_request_args_by_type( $this->request_args, 'value' );
 		$where_type_count   = $this->count_request_args_by_type( $this->request_args, 'where' );
+
+		if ( $where_type_count > 0 ) {
+			$where_clause = 'WHERE ';
+		}
 
 		if ( $order_by_type_count === 0 ) {
 			$order_by_clause = '';
