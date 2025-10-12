@@ -68,18 +68,46 @@ if ( ! class_exists( DT_Admin::class ) ) {
 			$table_maintenance_page_hook = add_submenu_page(
 				$parent_slug,
 				__( 'Main Admin' ),
-				__( 'Tables' ),
+				__( 'Table Maintenance' ),
 				$cap,
 				$menu_slug,
 				array( $this, 'plugin_table_maintenance' )
 			);
 
-			add_action( "load-{$main_page_hook}", array( $this, 'enqueue_admin_assets' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 			add_action( "load-{$table_maintenance_page_hook}", array( $this, 'dynamic_table_screen_options' ) );
 		}
 
-		public function enqueue_admin_assets() {
+
+		/**
+		 * Enqueue styles and javascript
+		 *
+		 * @since 1.1.0
+		 *
+		 * @return void
+		 */
+		public function enqueue_admin_assets($hook) {
 			wp_enqueue_style( 'adminCss', dt_get_setting( 'url' ) . 'assets/css/admin.css' );
+
+			// Fix to make conditional
+			// if ( 'list_dynamic_tables' === $hook ) {
+				wp_enqueue_script(
+					'dt-table-list',
+					dt_get_setting( 'url' ) . 'assets/js/dt-table-list.js',
+					[],
+					'1.1.0',
+					true
+				);
+
+				wp_localize_script( 'dt-table-list', 'DT_TABLE_LIST', [
+					'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+					'nonce'   => wp_create_nonce( 'dt-table-list' ),
+					'i18n'    => [
+						'deleted' => __( 'Deleted successfully.', 'dt-demo' ),
+						'error'   => __( 'Something went wrong.', 'dt-demo' ),
+					],
+				] );
+			// }
 		}
 
 		/**
@@ -157,6 +185,18 @@ if ( ! class_exists( DT_Admin::class ) ) {
 			<?php
 		}
 
+		/**
+		 * Create list options page
+		 *
+		 * Description - A supplement to the summary, above.  Full sentences.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @global Object  $table_maintenance_page_hook    Submenu
+		 * @global Object  $table                          DT_List_Dynamic_Tables
+		 *
+		 * @return void
+		 */
 		public function dynamic_table_screen_options() {
 			global $table_maintenance_page_hook;
 			global $table;
@@ -177,17 +217,29 @@ if ( ! class_exists( DT_Admin::class ) ) {
 			$table = new DT_List_Dynamic_Tables();
 		}
 
+		/**
+		 * Update options for the new number of tables to display on a page
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param  bool $status - Value has changed (true) or not (false)
+		 * @param  string $option - Identifier of specific screen option
+		 * @param  int $value - Number of pages for the option
+
+		 * @return int - Updated number of tables to display per page
+		 */
 		public function set_per_page ($status, $option, $value) {
 			if ( 'dynamic_tables_per_page' === $option ) {
-				return (int) $value;
+				$value = (int) $value;
+				if ($value < 1) $value = 1;
+				if ($value > 200) $value = 200;
+				return $value;
 			}
 			return $status;
 		}
 
 		/**
-		* Undocumented function
-		*
-		* Description - A supplement to the summary, above.  Full sentences.
+		* Create list of Dynamic Tables
 		*
 		* @since 1.1.0
 		*
@@ -200,8 +252,10 @@ if ( ! class_exists( DT_Admin::class ) ) {
 			echo '<form method="post">';
 
 			$admin_table_listing->prepare_items();
+			$admin_table_listing->search_box('Search Tables', 'search_id');
 			$admin_table_listing->display();
 
+			echo '</form>';
 			echo '</div>';
 		}
 	}

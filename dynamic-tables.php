@@ -139,6 +139,7 @@ if ( ! class_exists( DynamicTables::class ) ) {
 				$admin_screen = 'true';
 				require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin.php';
 				require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin-notices.php';
+				require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin-dt-ajax.php';
 				require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin-list-dynamic-table.php';
 			}
 

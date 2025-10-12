@@ -33,6 +33,8 @@ if ( ! class_exists( DT_Admin_Notices::class ) ) {
 			$notices                            = array();
 			$notices['save-success']            = $this->save_success();
 			$notices['save-fail-permissions']   = $this->save_fail_permissions();
+			$notices['bulk-delete-success']   = $this->bulk_delete_success();
+			$notices['bulk-status-update-success']   = $this->bulk_status_update_success();
 			$notices['uninstall-table-warning'] = $this->uninstall_table_warning();
 			$notices['network-activation-error'] = $this->network_activation_error();
 
@@ -44,10 +46,8 @@ if ( ! class_exists( DT_Admin_Notices::class ) ) {
 		 */
 		public function save_success() {
 
-			$message = 'Your selections were saved.';
-
 			return wp_get_admin_notice(
-				__( $message, 'dynamic-tables' ),
+				__( 'Your selections were saved.', 'dynamic-table' ),
 				array(
 					'type'           => 'success',
 					'dismissible'    => false,
@@ -61,14 +61,44 @@ if ( ! class_exists( DT_Admin_Notices::class ) ) {
 		 * Notice:  Save failed - permissions
 		 */
 		public function save_fail_permissions() {
-			$message = 'Sorry, you do not have permission to perform that action.';
-
 			return wp_get_admin_notice(
-				__( $message, 'dynamic-tables' ),
+				__( 'Sorry, you do not have permission to perform that action.', 'dynamic-table' ),
 				array(
 					'type'           => 'error',
 					'dismissible'    => false,
 					'id'             => 'fail',
+					'paragraph_wrap' => true,
+				)
+			);
+		}
+
+		/**
+		 * Notice:  Bulk table deletes were updated
+		 */
+		public function bulk_delete_success() {
+
+			return wp_get_admin_notice(
+				__( 'Your selections were successfully deleted.', 'dynamic-table' ),
+				array(
+					'type'           => 'success',
+					'dismissible'    => false,
+					'id'             => 'success',
+					'paragraph_wrap' => true,
+				)
+			);
+		}
+
+		/**
+		 * Notice:  Bulk table statuses were updated
+		 */
+		public function bulk_status_update_success() {
+
+			return wp_get_admin_notice(
+				__( 'The table statuses were updated successully.', 'dynamic-table' ),
+				array(
+					'type'           => 'success',
+					'dismissible'    => false,
+					'id'             => 'success',
 					'paragraph_wrap' => true,
 				)
 			);
@@ -84,7 +114,7 @@ if ( ! class_exists( DT_Admin_Notices::class ) ) {
 			$message .= 'retain the ability to restore existing Dynamic Table instances.';
 
 			return wp_get_admin_notice(
-				__( $message, 'dynamic-tables' ),
+				__( $message, 'dynamic-table' ),
 				array(
 					'type'               => 'warning',
 					'dismissible'        => true,

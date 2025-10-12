@@ -32,4 +32,5 @@ li.dt-setting-default {
 
 .admin-checkbox {
 	margin-bottom: 6px;
+	max-width: fit-content;
 }
