@@ -1,7 +1,10 @@
 <?php
 /**
  * Provides the main Dynamic Tables admin page.
+ *
+ * @since 1.0.0
  */
+
 namespace DynamicTables;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -41,8 +44,8 @@ if ( ! class_exists( DT_Admin::class ) ) {
 
 			// Add menu items.
 			$main_page_hook = add_menu_page(
-				__( 'Dynamic Tables' ),
-				__( 'Dynamic Tables' ),
+				__( 'Dynamic Tables', 'dynamic-table' ),
+				__( 'Dynamic Tables', 'dynamic-table' ),
 				$cap,
 				$menu_slug,
 				array( $this, 'plugin_main_admin' ),
@@ -56,8 +59,8 @@ if ( ! class_exists( DT_Admin::class ) ) {
 
 			add_submenu_page(
 				$parent_slug,
-				__( 'Main Admin' ),
-				__( 'Main' ),
+				__( 'Main Admin', 'dynamic-table' ),
+				__( 'Main', 'dynamic-table' ),
 				$cap,
 				$menu_slug,
 				array( $this, 'plugin_main_admin' )

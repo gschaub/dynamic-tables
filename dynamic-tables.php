@@ -1,19 +1,20 @@
 <?php
-	/**
-	 * Plugin Name:       Dynamic Table Blocks
-	 * Description:       Create custom table blocks with highly customizable and responsive formats
-	 * Requires at least: 6.1
-	 * Requires PHP:      8.0
-	 * Version:           1.0.0
-	 * Author:            Gregory Schaub
-	 * License:           GPL-2.0-or-later
-	 * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
-	 * Text Domain:       dynamic-table-blocks
-	 *
-	 * @package           dynamic-tables
-	 */
+/**
+ * Plugin Name:       Dynamic Table Blocks
+ * Description:       Create custom table blocks with highly customizable and responsive formats
+ * Requires at least: 6.1
+ * Requires PHP:      8.0
+ * Version:           1.0.0
+ * Author:            Gregory Schaub
+ * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       dynamic-table
+ * Domain Path:       dynamic-table
+ *
+ * @package           dynamic-table
+ */
 
-	namespace DynamicTables;
+namespace DynamicTables;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	// Exit if accessed directly
@@ -107,13 +108,12 @@ if ( ! class_exists( DynamicTables::class ) ) {
 			if ( DT_IS_MULTISITE ) {
 				define( 'DT_ALLOW_MULTISITE_ACTIVATION', false );
 			}
-			define( 'TEST_MODE', false );
 
 			/**
 			 * Define settings
 			 */
 			$this->settings = array(
-				'name'       => __( 'Dynamic Tables', 'dt' ),
+				'name'       => __( 'Dynamic Tables', 'dynamic-table' ),
 				'slug'       => dirname( DT_BASENAME ),
 				'version'    => DT_VERSION,
 				'basename'   => DT_BASENAME,

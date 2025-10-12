@@ -8,13 +8,12 @@ export const loadTableEntityConfig = () => {
 		baseURL: '/dynamic-tables/v1/tables',
 		baseURLParams: { context: 'edit' },
 		plural: 'tables',
-		label: __('Table'),
-		getTitle: record => record?.title || __('Unnamed Table'),
+		label: __('Table', 'dynamic-table'),
+		getTitle: record => record?.title || __('Unnamed Table', 'dynamic-table'),
 	};
 
 	dispatch('core').addEntities(tableConfig);
 	console.log(tableConfig);
-	alert('processed Entity');
 
 	return tableConfig;
 };

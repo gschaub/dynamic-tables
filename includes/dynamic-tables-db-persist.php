@@ -1,10 +1,16 @@
 <?php
-
 /**
-* Database interface for dynamic tables
+* Database interface api for dynamic tables
 *
 * @since 1.0.0
 */
+
+namespace DynamicTables;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class PersistTableData {
 
 	/**
@@ -118,7 +124,7 @@ class PersistTableData {
 				} else {
 					$this->query_result = array();
 				}
-			} catch ( Exception $e ) {
+			} catch ( \Exception $e ) {
 				$this->query_result = array();
 			}
 		} else {
@@ -129,7 +135,7 @@ class PersistTableData {
 				} else {
 					$this->query_result = array();
 				}
-			} catch ( Exception $e ) {
+			} catch ( \Exception $e ) {
 				$this->query_result = array();
 			}
 		}

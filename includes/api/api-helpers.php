@@ -1,5 +1,15 @@
 <?php
+/**
+ *  Various helper funtions associated with the API.
+ *
+ *  @since 1.0.0
+ */
+
 namespace DynamicTables;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Determine if Dynamic Tables has a specific setting

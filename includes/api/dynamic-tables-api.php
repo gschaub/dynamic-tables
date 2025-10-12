@@ -1,11 +1,20 @@
 <?php
 /**
- * Define filters for the dynamic tables object
+ *  API to receive data requests, interact with the database, and return structured
+ *  results.
+ *
+ *  @since 1.0.0
  */
 
-// Places to balance tags on input.
-// wp_pre_kses_less_than
-// wp_pre_kses_block_attributes
+namespace DynamicTables;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Define filters for the dynamic tables object
+ */
 
 foreach ( array( 'dt_content_save_pre' ) as $filter ) {
 	add_filter( $filter, 'convert_invalid_entities' );
@@ -113,7 +122,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 
 		if ( is_null( $table_before ) ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'invalid_table', __( 'Invalid table ID.' ) );
+				return new \WP_Error( 'invalid_table', __( 'Invalid table ID.', 'dynamic-table' ) );
 			}
 			return 0;
 		}
@@ -136,7 +145,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 
 		if ( ! $results['success'] ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+				return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table' ) );
 			}
 		}
 	} else {
@@ -145,7 +154,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 
 		if ( ! $results['success'] ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'db_insert_error', __( 'Database error creating table.' ) );
+				return new \WP_Error( 'db_insert_error', __( 'Database error creating table.', 'dynamic-table' ) );
 			}
 		}
 		$table_id = $results['table_id'];
@@ -158,7 +167,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 		$put_rows     = update_table_rows( $table_id, $request_rows );
 		if ( $put_rows === false ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'db_update_error', __( 'Database error creating table rows.' ) );
+				return new \WP_Error( 'db_update_error', __( 'Database error creating table rows.', 'dynamic-table' ) );
 			}
 		}
 	}
@@ -169,7 +178,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 		$put_columns     = update_table_columns( $table_id, $request_columns );
 		if ( $put_columns === false ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'db_update_error', __( 'Database error creating table columns.' ) );
+				return new \WP_Error( 'db_update_error', __( 'Database error creating table columns.', 'dynamic-table' ) );
 			}
 		}
 	}
@@ -180,7 +189,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 		$put_cells     = update_table_cells( $table_id, $request_cells );
 		if ( $put_cells === false ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'db_update_error', __( 'Database error creating table cells.' ) );
+				return new \WP_Error( 'db_update_error', __( 'Database error creating table cells.', 'dynamic-table' ) );
 			}
 		}
 	}
@@ -208,7 +217,7 @@ function update_table_data( $tablearr, $wp_error = false ) {
 
 	if ( is_null( $table ) ) {
 		if ( $wp_error ) {
-			return new WP_Error( 'invalid_table', __( 'Invalid table ID.' ) );
+			return new \WP_Error( 'invalid_table', __( 'Invalid table ID.', 'dynamic-table' ) );
 		}
 		return 0;
 	}
@@ -242,7 +251,7 @@ function update_table_rows( $table_id, $request_rows ) {
 	$results         = $update_table_rows->update_table_rows( $table_id, $rows );
 
 	if ( ! $results['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table' ) );
 	}
 
 	return $results;
@@ -274,7 +283,7 @@ function update_table_columns( $table_id, $request_columns ) {
 	$results            = $update_table_columns->update_table_columns( $table_id, $columns );
 
 	if ( ! $results['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table' ) );
 	}
 
 	return $results;
@@ -306,7 +315,7 @@ function update_table_cells( $table_id, $request_cells ) {
 	$results          = $update_table_cells->update_table_cells( $table_id, $cells );
 
 	if ( ! $results['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table') );
 	}
 
 	return $results;
@@ -326,7 +335,7 @@ function delete_table( $table_id = 0 ) {
 	$results       = $delete_table->delete_table_data( $table_id );
 
 	if ( ! $results['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table' ) );
 	}
 	return $existing_table;
 }
@@ -361,7 +370,7 @@ function get_table( $table_id ) {
 	$get_table      = new PersistTableData();
 	$results_header = $get_table->get_table( $table_id, $table );
 	if ( ! $results_header['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table' ) );
 	}
 	$results += array( 'header' => $results_header['result'] );
 
@@ -369,7 +378,7 @@ function get_table( $table_id ) {
 	$get_table    = new PersistTableData();
 	$results_rows = $get_table->get_table( $table_id, $table );
 	if ( ! $results_rows['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table') );
 	}
 	$results += array( 'rows' => $results_rows['result'] );
 
@@ -378,7 +387,7 @@ function get_table( $table_id ) {
 	$results_columns = $get_table->get_table( $table_id, $table );
 
 	if ( ! $results_columns['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table' ) );
 	}
 	$results += array( 'columns' => $results_columns['result'] );
 
@@ -386,7 +395,7 @@ function get_table( $table_id ) {
 	$get_table      = new PersistTableData();
 	$results_cells = $get_table->get_table( $table_id, $table );
 	if ( ! $results_cells['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table' ) );
 	}
 	$results += array( 'cells' => $results_cells['result'] );
 

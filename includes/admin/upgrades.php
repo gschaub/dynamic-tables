@@ -1,11 +1,16 @@
 <?php
-namespace DynamicTables;
-
 /**
  * Support Dynamic Tables Plugin Activation, Deactivation, and Upgrades
  *
  * @since 1.0.0
  */
+
+namespace DynamicTables;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class DynamicTablesVersionManagement {
 
 	/**
@@ -59,7 +64,7 @@ class DynamicTablesVersionManagement {
 					'back_link' => true,
 				);
 
-				wp_die($message, $title, $args);
+				wp_die(esc_html($message), esc_html($title) , esc_attr($args));
 			} else {
 
 				// Activate all sites if allowed
