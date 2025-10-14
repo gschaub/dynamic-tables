@@ -155,8 +155,6 @@ class PersistTableData {
 		global $wpdb;
 
 		$db_table = $wpdb->prefix . $db_table_name;
-		error_log($db_table);
-		// $where   = $this->process_args( $args_delete_build );
 		$where   = $this->process_args( $this->request_args );
 		if ( ! $where ) {
 			return false;
@@ -490,22 +488,33 @@ class PersistTableData {
 
 		$wpdb->query( 'START TRANSACTION' );
 
-		$this->request_args    = array();
-		$inserted_rows = 0;
+		$this->request_args = array();
+		$deleted_rows = 0;
 
 		$db_table = 'dt_table_rows';
 
 		// Delete table records that are targeted for replacement
-		$args_delete_build = array();
 		array_push(
-			$args_delete_build,
+			$this->request_args,
 			array(
 				'type'  => 'where',
 				'field' => 'table_id',
 				'value' => $table_id,
 			)
 		);
-		$query_returned_result = $this->delete_table( $db_table, $args_delete_build );
+		$query_returned_result = $this->delete_table( $db_table);
+
+		if ( $query_returned_result === 0 ) {
+			$wpdb->query( 'ROLLBACK' ); // rollback everything
+			$this->result = array(
+				'success'      => $success,
+				'updated_rows' => '0',
+			);
+			return $this->result;
+		}
+
+		$this->request_args = array();
+		$inserted_rows = 0;
 
 		// Insert new table rows
 		array_push(
@@ -609,22 +618,33 @@ class PersistTableData {
 
 		$wpdb->query( 'START TRANSACTION' );
 
-		$this->request_args    = array();
-		$inserted_rows = 0;
+		$this->request_args = array();
+		$deleted_rows = 0;
 
 		$db_table = 'dt_table_columns';
 
 		// Delete table records that are targeted for replacement
-		$args_delete_build = array();
 		array_push(
-			$args_delete_build,
+			$this->request_args,
 			array(
 				'type'  => 'where',
 				'field' => 'table_id',
 				'value' => $table_id,
 			)
 		);
-		$query_returned_result = $this->delete_table( $db_table, $args_delete_build );
+		$query_returned_result = $this->delete_table( $db_table );
+
+		if ( $query_returned_result === 0 ) {
+			$wpdb->query( 'ROLLBACK' ); // rollback everything
+			$this->result = array(
+				'success'      => $success,
+				'updated_rows' => '0',
+			);
+			return $this->result;
+		}
+
+		$this->request_args = array();
+		$inserted_rows = 0;
 
 		// Insert new table rows
 		array_push(
@@ -743,23 +763,33 @@ class PersistTableData {
 
 		$wpdb->query( 'START TRANSACTION' );
 
-		$this->request_args    = array();
-		$inserted_rows = 0;
+		$this->request_args = array();
+		$deleted_rows = 0;
 
 		$db_table = 'dt_table_cells';
 
-
 		// Delete table records that are targeted for replacement
-		$args_delete_build = array();
 		array_push(
-			$args_delete_build,
+			$this->request_args,
 			array(
 				'type'  => 'where',
 				'field' => 'table_id',
 				'value' => $table_id,
 			)
 		);
-		$query_returned_result = $this->delete_table( $db_table, $args_delete_build );
+		$query_returned_result = $this->delete_table( $db_table);
+
+		if ( $query_returned_result === 0 ) {
+			$wpdb->query( 'ROLLBACK' ); // rollback everything
+			$this->result = array(
+				'success'      => $success,
+				'updated_rows' => '0',
+			);
+			return $this->result;
+		}
+
+		$this->request_args = array();
+		$inserted_rows = 0;
 
 		// Insert new table rows
 		array_push(
