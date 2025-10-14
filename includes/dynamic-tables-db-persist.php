@@ -155,6 +155,8 @@ class PersistTableData {
 		global $wpdb;
 
 		$db_table = $wpdb->prefix . $db_table_name;
+		error_log($db_table);
+		// $where   = $this->process_args( $args_delete_build );
 		$where   = $this->process_args( $this->request_args );
 		if ( ! $where ) {
 			return false;
