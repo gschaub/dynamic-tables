@@ -19,7 +19,7 @@ if ( ! class_exists( DT_Admin::class ) ) {
 		/**
 		 * Constructor.
 		 *
-		 * @since 5.0.0
+		 * @since 1.0.0
 		 */
 		public function __construct() {
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
@@ -95,7 +95,7 @@ if ( ! class_exists( DT_Admin::class ) ) {
 		/**
 		 * Register all output admin main page
 		 *
-		 * @since   5.0.0
+		 * @since   1.0.0
 		 */
 		public function plugin_main_admin() {
 			$notices = new DT_Admin_Notices();

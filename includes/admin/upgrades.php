@@ -228,7 +228,6 @@ class DynamicTablesVersionManagement {
 	 *
 	 *  Returns true if this site has an upgrade avaialble.
 	 *
-	 *  @date    9/2/2024
 	 *  @since   1.0.0
 	 *
 	 *  @param   void

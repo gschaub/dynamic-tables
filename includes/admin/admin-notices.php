@@ -23,7 +23,7 @@ if ( ! class_exists( DT_Admin_Notices::class ) ) {
 		/**
 		 * Constructor.
 		 *
-		 * @since 5.0.0
+		 * @since 1.0.0
 		 */
 		public function __construct() {
 			// silence is golden.
@@ -32,8 +32,7 @@ if ( ! class_exists( DT_Admin_Notices::class ) ) {
 		/**
 		 * Admin Notice Library.
 		 *
-		 * @date    28/09/13
-		 * @since   5.0.0
+		 * @since   1.0.0
 		 */
 		public function admin_notice_library( $notice_id ) {
 			$notices                            = array();
