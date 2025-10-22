@@ -197,8 +197,10 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_item( $request ) {
+		error_log('In get table service, id = ' . $request['id']);
 		$table = $this->get_table( $request['id'] );
 		if ( is_wp_error( $table ) ) {
+			error_log('WP Error = ' . json_encode($table));
 			return $table;
 		}
 

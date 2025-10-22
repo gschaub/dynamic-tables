@@ -210,27 +210,23 @@ if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
 		}
 
 		protected function column_id ($item) {
-
-			$view_link = sprintf(
-				'<a href="#" data-dt-action="view" data-id="%d" data-confirm="%s">%s</a>',
-				(int) $item['id'],
-				esc_attr__( 'View this item?', 'dynamic-table' ),
-				esc_html__( 'View', 'dynamic-table' )
-			);
-
-
 			$actions = array(
 				'update_status' => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Update Status', 'dynamic-table') . '</a>',
-				$_REQUEST['page'],
+					$_REQUEST['page'],
 					'update_status',
 					$item['id']),
+
 				'export'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Export', 'dynamic-table') . '</a>',
-				$_REQUEST['page'],
+					$_REQUEST['page'],
 					'export',
 					$item['id']),
-				'view'          => $view_link,
+
+				'view'          => sprintf('<a href="#" data-dt-action="view" data-id="%d">%s</a>',
+					(int) $item['id'],
+					esc_html__( 'View', 'dynamic-table' )),
+
 				'delete'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Delete', 'dynamic-table') . '</a>',
-				$_REQUEST['page'],
+					$_REQUEST['page'],
 					'delete',
 					$item['id']),
 			);

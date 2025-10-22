@@ -42,8 +42,8 @@ if ( ! class_exists( DT_Admin::class ) ) {
 
 			// Add menu items.
 			$main_page_hook = add_menu_page(
-				__( 'Dynamic Tables' ),
-				__( 'Dynamic Tables' ),
+				__( 'Dynamic Tables', 'dynamic-tables' ),
+				__( 'Dynamic Tables', 'dynamic-tables' ),
 				$cap,
 				$menu_slug,
 				array( $this, 'plugin_main_admin' ),
@@ -56,8 +56,8 @@ if ( ! class_exists( DT_Admin::class ) ) {
 
 			add_submenu_page(
 				$parent_slug,
-				__( 'Main Admin' ),
-				__( 'Main' ),
+				__( 'Main Admin', 'dynamic-tables' ),
+				__( 'Main', 'dynamic-tables' ),
 				$cap,
 				$menu_slug,
 				array( $this, 'plugin_main_admin' )
@@ -67,8 +67,8 @@ if ( ! class_exists( DT_Admin::class ) ) {
 
 			$table_maintenance_page_hook = add_submenu_page(
 				$parent_slug,
-				__( 'Main Admin' ),
-				__( 'Table Maintenance' ),
+				__( 'Main Admin', 'dynamic-tables' ),
+				__( 'Table Maintenance', 'dynamic-tables' ),
 				$cap,
 				$menu_slug,
 				array( $this, 'plugin_table_maintenance' )
@@ -91,10 +91,13 @@ if ( ! class_exists( DT_Admin::class ) ) {
 
 			// Fix to make conditional
 			// if ( 'list_dynamic_tables' === $hook ) {
+				wp_enqueue_script( 'jquery-ui-dialog' );
+				wp_enqueue_style( 'wp-jquery-ui-dialog' );
 				wp_enqueue_script(
 					'dt-table-list',
+					// plugins_url('dt-table-list.js', __FILE__),
 					dt_get_setting( 'url' ) . 'assets/js/dt-table-list.js',
-					[],
+					[ 'jquery', 'jquery-ui-dialog' ],
 					'1.1.0',
 					true
 				);
@@ -103,8 +106,12 @@ if ( ! class_exists( DT_Admin::class ) ) {
 					'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 					'nonce'   => wp_create_nonce( 'dt-table-list' ),
 					'i18n'    => [
-						'deleted' => __( 'Deleted successfully.', 'dt-demo' ),
-						'error'   => __( 'Something went wrong.', 'dt-demo' ),
+						'view'         => __( 'View table data.', 'dynamic-tables' ),
+						'deleted'      => __( 'Deleted successfully.', 'dynamic-tables' ),
+						'error'        => __( 'Something went wrong.', 'dynamic-tables' ),
+						'confirmTitle' => __( 'Confirm Delete', 'dynamic-tables' ),
+						'confirmBody'  => __( 'Are you sure you want to delete the selected item(s)? This cannot be undone.', 'dynamic-tables' ),
+						'cancel'       => __( 'Cancel', 'dynamic-tables' ),
 					],
 				] );
 			// }
@@ -253,10 +260,20 @@ if ( ! class_exists( DT_Admin::class ) ) {
 
 			$admin_table_listing->prepare_items();
 			$admin_table_listing->search_box('Search Tables', 'search_id');
+
+			echo '<input type="hidden" name="page" value="list_dynamic_tables" />';
 			$admin_table_listing->display();
 
 			echo '</form>';
 			echo '</div>';
+
+			// A hidden dialog div the script will turn into a modal
+			echo '<div id="dt-dialog" title="' . esc_attr__( 'Confirm View', 'dynamic-table' ) . '" style="display:none;">
+			        <p>' . esc_html__( 'Are you sure you want to view the selected item?', 'dynamic-table' ) . '</p>
+      			</div>';
+
+			// (WP notice styles)
+			echo '<div id="dt-js-notices" aria-live="polite"></div>';
 		}
 	}
 
