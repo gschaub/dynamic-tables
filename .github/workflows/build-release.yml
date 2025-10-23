@@ -134,7 +134,6 @@ jobs:
             --include "/templates/***" \
             --include "/build/***" \
             --include "/assets/***" \
-            --include "/vendor/***" \
             --exclude "*" \
             ./ "dist/${PLUGIN_SLUG}/"
 
