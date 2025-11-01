@@ -522,9 +522,11 @@ function sanitize_dynamic_table_field( $field, $value, $table_id, $context = 'di
 		 */
 		$value = apply_filters( "{$field}_pre", $value );
 	} else {
-
-		// Use display filters by default.
-		$value = apply_filters( "table_{$field}", $value, $post_id, $context );
+		/**
+		 * Future implementation
+		 * Use display filters by default.
+		 *
+		 */
 
 		if ( 'attribute' === $context ) {
 			$value = esc_attr( $value );
