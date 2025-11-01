@@ -21,7 +21,7 @@
  */
 
 /* eslint-disable no-console */
-console.log('Hello World! (from dynamic-tables-dynamic-tables block)');
+console.log('Hello World! (from dynamic-table-blocks-dynamic-table-blocks block)');
 /* eslint-enable no-console */
 /******/ })()
 ;

@@ -5,7 +5,7 @@
 * @since 1.0.0
 */
 
-namespace DynamicTables;
+namespace DynamicTableBlocks;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -220,7 +220,7 @@ class PersistTableData {
 
 		$wpdb->query( 'START TRANSACTION' );
 
-		$db_table = $wpdb->prefix . 'dt_tables';
+		$db_table = $wpdb->prefix . 'dtbk_tables';
 
 		$data = array(
 			'block_table_ref' => $block_table_ref,
@@ -252,7 +252,7 @@ class PersistTableData {
 	}
 
 	/**
-	 *  Update the dynamic table database header table dt_tables based on criteria received
+	 *  Update the dynamic table database header table dtbk_tables based on criteria received
 	 *
 	 * @since 1.0.0
 	 *
@@ -275,13 +275,13 @@ class PersistTableData {
 		$this->request_args = array();
 
 		/**
-		 * Query the dt_tables table to get the current table values
+		 * Query the dtbk_tables table to get the current table values
 		 */
 		array_push(
 			$this->request_args,
 			array(
 				'type'  => 'from',
-				'field' => 'dt_tables',
+				'field' => 'dtbk_tables',
 				'value' => null,
 			)
 		);
@@ -431,9 +431,9 @@ class PersistTableData {
 		$where_format = array_map( 'trim', explode( ',', $query_string ) );
 
 		/**
-		 * Run update query for dt_tables
+		 * Run update query for dtbk_tables
 		 */
-		$db_table = $wpdb->prefix . 'dt_tables';
+		$db_table = $wpdb->prefix . 'dtbk_tables';
 
 		if ( ! ( $set && $where ) ) {
 			$this->result = array(
@@ -473,7 +473,7 @@ class PersistTableData {
 	}
 
 	/**
-	 *  Update the dynamic table database row table dt_table_rows based on criteria received
+	 *  Update the dynamic table database row table dtbk_table_rows based on criteria received
 	 *
 	 * @since 1.0.0
 	 *
@@ -491,7 +491,7 @@ class PersistTableData {
 		$this->request_args = array();
 		$deleted_rows = 0;
 
-		$db_table = 'dt_table_rows';
+		$db_table = 'dtbk_table_rows';
 
 		// Delete table records that are targeted for replacement
 		array_push(
@@ -578,7 +578,7 @@ class PersistTableData {
 				)
 			);
 
-			$query_returned_result = $this->replace_table( 'dt_table_rows', $table_id );
+			$query_returned_result = $this->replace_table( 'dtbk_table_rows', $table_id );
 
 			if ( ! $query_returned_result ) {
 				$wpdb->query( 'ROLLBACK' ); // rollback everything
@@ -604,7 +604,7 @@ class PersistTableData {
 	}
 
 	/**
-	 *  Update the dynamic table database column table dt_table_columnss based on criteria received
+	 *  Update the dynamic table database column table dtbk_table_columnss based on criteria received
 	 *
 	 * @since 1.0.0
 	 *
@@ -621,7 +621,7 @@ class PersistTableData {
 		$this->request_args = array();
 		$deleted_rows = 0;
 
-		$db_table = 'dt_table_columns';
+		$db_table = 'dtbk_table_columns';
 
 		// Delete table records that are targeted for replacement
 		array_push(
@@ -723,7 +723,7 @@ class PersistTableData {
 				)
 			);
 
-			$query_returned_result = $this->replace_table( 'dt_table_columns', $table_id );
+			$query_returned_result = $this->replace_table( 'dtbk_table_columns', $table_id );
 
 			if ( ! $query_returned_result ) {
 				$wpdb->query( 'ROLLBACK' ); // rollback everything
@@ -749,7 +749,7 @@ class PersistTableData {
 	}
 
 	/**
-	 *  Update the dynamic table database cell table dt_table_cells based on criteria received
+	 *  Update the dynamic table database cell table dtbk_table_cells based on criteria received
 	 *
 	 * @since 1.0.0
 	 *
@@ -766,7 +766,7 @@ class PersistTableData {
 		$this->request_args = array();
 		$deleted_rows = 0;
 
-		$db_table = 'dt_table_cells';
+		$db_table = 'dtbk_table_cells';
 
 		// Delete table records that are targeted for replacement
 		array_push(
@@ -882,7 +882,7 @@ class PersistTableData {
 				)
 			);
 
-			$query_returned_result = $this->replace_table( 'dt_table_cells', $table_id );
+			$query_returned_result = $this->replace_table( 'dtbk_table_cells', $table_id );
 
 			if ( ! $query_returned_result ) {
 				$wpdb->query( 'ROLLBACK' ); // rollback everything
@@ -922,20 +922,20 @@ class PersistTableData {
 		global $wpdb;
 
 		switch ( $db_table_name ) {
-			case 'dt_tables':
-				$dt_where_field     = 'id';
+			case 'dtbk_tables':
+				$dtbk_where_field     = 'id';
 				$return_collection = false;
 				break;
-			case 'dt_table_rows':
-				$dt_where_field     = 'table_id';
+			case 'dtbk_table_rows':
+				$dtbk_where_field     = 'table_id';
 				$return_collection = true;
 				break;
-			case 'dt_table_columns':
-				$dt_where_field     = 'table_id';
+			case 'dtbk_table_columns':
+				$dtbk_where_field     = 'table_id';
 				$return_collection = true;
 				break;
-			case 'dt_table_cells':
-				$dt_where_field     = 'table_id';
+			case 'dtbk_table_cells':
+				$dtbk_where_field     = 'table_id';
 				$return_collection = true;
 				break;
 			default:
@@ -961,12 +961,12 @@ class PersistTableData {
 			$this->request_args,
 			array(
 				'type'  => 'where',
-				'field' => $dt_where_field,
+				'field' => $dtbk_where_field,
 				'value' => $table_id,
 			)
 		);
 
-		if ( $db_table_name === 'dt_table_cells' ) {
+		if ( $db_table_name === 'dtbk_table_cells' ) {
 			array_push(
 				$this->request_args,
 				array(
@@ -977,7 +977,7 @@ class PersistTableData {
 			);
 		}
 
-		if ( $db_table_name === 'dt_table_columns' || $db_table_name === 'dt_table_cells' ) {
+		if ( $db_table_name === 'dtbk_table_columns' || $db_table_name === 'dtbk_table_cells' ) {
 			array_push(
 				$this->request_args,
 				array(
@@ -1000,13 +1000,13 @@ class PersistTableData {
 		}
 
 		switch ( $db_table_name ) {
-			case 'dt_tables':
+			case 'dtbk_tables':
 				$serialized_table_attributes    = $query_results['attributes'];
 				$table_attributes               = maybe_unserialize( $serialized_table_attributes );
 				$query_results['attributes']    = $table_attributes;
 				$table_return                   = $query_results;
 				break;
-			case 'dt_table_rows':
+			case 'dtbk_table_rows':
 				$table_row_return = array();
 
 				foreach ( $query_results as $key => $row ) {
@@ -1018,7 +1018,7 @@ class PersistTableData {
 
 				$table_return = $table_row_return;
 				break;
-			case 'dt_table_columns':
+			case 'dtbk_table_columns':
 				$table_column_return = array();
 
 				foreach ( $query_results as $key => $column ) {
@@ -1030,7 +1030,7 @@ class PersistTableData {
 
 				$table_return = $table_column_return;
 				break;
-			case 'dt_table_cells':
+			case 'dtbk_table_cells':
 				$table_cell_return = array();
 
 				foreach ( $query_results as $key => $row ) {
@@ -1076,12 +1076,12 @@ class PersistTableData {
 		$wpdb->query( 'START TRANSACTION' );
 
 		/**
-		 * Delete table from dt_tables
+		 * Delete table from dtbk_tables
 		 */
 
 		$this->request_args = array();
 
-		$db_table = 'dt_tables';
+		$db_table = 'dtbk_tables';
 
 		array_push(
 			$this->request_args,
@@ -1106,11 +1106,11 @@ class PersistTableData {
 		$deleted_table_rows = $query_returned_result;
 
 		/**
-		 * Delete table from dt_table_columns
+		 * Delete table from dtbk_table_rows
 		 */
 
 		$this->request_args = array();
-		$db_table   = 'dt_table_rows';
+		$db_table   = 'dtbk_table_rows';
 
 		array_push(
 			$this->request_args,
@@ -1136,11 +1136,11 @@ class PersistTableData {
 		$deleted_row_rows = $query_returned_result;
 
 		/**
-		 * Delete table from dt_table_columns
+		 * Delete table from dtbk_table_columns
 		 */
 
 		$this->request_args = array();
-		$db_table   = 'dt_table_columns';
+		$db_table   = 'dtbk_table_columns';
 
 		array_push(
 			$this->request_args,
@@ -1166,11 +1166,11 @@ class PersistTableData {
 		$deleted_column_rows = $query_returned_result;
 
 		/**
-		 * Delete table from dt_table_cells
+		 * Delete table from dtbk_table_cells
 		 */
 
 		$this->request_args = array();
-		$db_table   = 'dt_table_cells';
+		$db_table   = 'dtbk_table_cells';
 
 		array_push(
 			$this->request_args,

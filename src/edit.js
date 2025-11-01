@@ -65,8 +65,8 @@ import './editor.scss';
 dispatch('core').addEntities([
 	{
 		name: 'table',
-		kind: 'dynamic-tables',
-		baseURL: '/dynamic-tables/v1/tables',
+		kind: 'dynamic-table-blocks',
+		baseURL: '/dynamic-table-blocks/v1/tables',
 		baseURLParams: { context: 'edit' },
 		plural: 'tables',
 		label: __('Table'),

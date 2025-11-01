@@ -129,7 +129,7 @@ export const createTableEntity =
 		try {
 			const tableEntity = await registry
 				.dispatch(coreStore)
-				.saveEntityRecord('dynamic-tables', 'table', newTable);
+				.saveEntityRecord('dynamic-table-blocks', 'table', newTable);
 
 			dispatch.assignTableId(tableEntity.id);
 
@@ -159,7 +159,7 @@ export const saveTableEntity =
 	tableId =>
 	({ registry }) => {
 		try {
-			registry.dispatch(coreStore).saveEditedEntityRecord('dynamic-tables', 'table', tableId);
+			registry.dispatch(coreStore).saveEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
 		} catch (error) {
 			console.log('Error in saveTableEntity - Table ID - ' + tableId);
 			alert('            ...Save Table Entity - async error - ' + error);
@@ -244,7 +244,7 @@ export const updateTableEntity =
 		try {
 			registry
 				.dispatch(coreStore)
-				.editEntityRecord('dynamic-tables', 'table', table_id, updatedTable);
+				.editEntityRecord('dynamic-table-blocks', 'table', table_id, updatedTable);
 		} catch (error) {
 			console.log('Error in updateTableEntity - Table ID - ' + tableId);
 			alert('            ...Update Table Entity - async error - ' + error);
@@ -267,7 +267,7 @@ export const deleteTableEntity =
 		try {
 			const deletedTableEntity = await registry
 				.dispatch(coreStore)
-				.deleteEntityRecord('dynamic-tables', 'table', tableId);
+				.deleteEntityRecord('dynamic-table-blocks', 'table', tableId);
 
 			dispatch({
 				type: DELETE_TABLE,

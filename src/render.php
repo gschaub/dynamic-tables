@@ -1,6 +1,6 @@
 <?php
 
-namespace DynamicTables;
+namespace DynamicTableBlocks;
 
 // Exit if accessed directly
 if ( ! defined('ABSPATH') ) {

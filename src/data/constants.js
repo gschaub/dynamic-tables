@@ -6,5 +6,5 @@
  *
  * @type     {string}
  */
-const STORE_NAME = 'dynamic-tables/table';
+const STORE_NAME = 'dynamic-table-blocks/table';
 export default STORE_NAME;

@@ -258,7 +258,7 @@ const tableRowDelete = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODUL
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"dynamic-tables/dynamic-tables","version":"0.1.0","title":"Dynamic Tables","category":"design","icon":"editor-table","description":"Create custom table blocks with highly customizable and responsive formats","example":{},"textdomain":"dynamic-tables","attributes":{"table_id":{"type":"integer","default":"0"},"block_table_ref":{"type":"string","default":""},"block_alignment":{"type":"string","default":"undefined"}},"usesContext":["postId","postType"],"supports":{"html":false,"className":false,"color":{"button":true,"gradients":true,"heading":true,"link":true},"typography":{"fontSize":true,"__experimentalFontFamily":true,"__experimentalTextDecoration":true,"__experimentalFontStyle":true,"__experimentalFontWeight":true,"__experimentalLetterSpacing":true,"__experimentalWritingMode":true,"__experimentalDefaultControls":{"fontSize":true}},"interactivity":{"clientNavigation":true}},"editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"dynamic-table-blocks/dynamic-table-blocks","version":"0.1.0","title":"Dynamic Tables","category":"design","icon":"editor-table","description":"Create custom table blocks with highly customizable and responsive formats","example":{},"textdomain":"dynamic-table-blocks","attributes":{"table_id":{"type":"integer","default":"0"},"block_table_ref":{"type":"string","default":""},"block_alignment":{"type":"string","default":"undefined"}},"usesContext":["postId","postType"],"supports":{"html":false,"className":false,"color":{"button":true,"gradients":true,"heading":true,"link":true},"typography":{"fontSize":true,"__experimentalFontFamily":true,"__experimentalTextDecoration":true,"__experimentalFontStyle":true,"__experimentalFontWeight":true,"__experimentalLetterSpacing":true,"__experimentalWritingMode":true,"__experimentalDefaultControls":{"fontSize":true}},"interactivity":{"clientNavigation":true}},"editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ }),
 
@@ -1668,7 +1668,7 @@ const createTableEntity = () => async ({
     cells: [...cells]
   };
   try {
-    const tableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).saveEntityRecord('dynamic-tables', 'table', newTable);
+    const tableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).saveEntityRecord('dynamic-table-blocks', 'table', newTable);
     dispatch.assignTableId(tableEntity.id);
     return tableEntity.id;
   } catch (error) {
@@ -1689,7 +1689,7 @@ const saveTableEntity = tableId => ({
   registry
 }) => {
   try {
-    registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).saveEditedEntityRecord('dynamic-tables', 'table', tableId);
+    registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).saveEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
   } catch (error) {
     console.log('Error in saveTableEntity - Table ID - ' + tableId);
     alert('            ...Save Table Entity - async error - ' + error);
@@ -1776,7 +1776,7 @@ const updateTableEntity = (tableId, overrideTableStatus = '') => ({
    *          undoIgnore: Bool
    */
   try {
-    registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).editEntityRecord('dynamic-tables', 'table', table_id, updatedTable);
+    registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).editEntityRecord('dynamic-table-blocks', 'table', table_id, updatedTable);
   } catch (error) {
     console.log('Error in updateTableEntity - Table ID - ' + tableId);
     alert('            ...Update Table Entity - async error - ' + error);
@@ -1799,7 +1799,7 @@ const deleteTableEntity = tableId => async ({
   registry
 }) => {
   try {
-    const deletedTableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).deleteEntityRecord('dynamic-tables', 'table', tableId);
+    const deletedTableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).deleteEntityRecord('dynamic-table-blocks', 'table', tableId);
     dispatch({
       type: DELETE_TABLE,
       tableId
@@ -2090,7 +2090,7 @@ __webpack_require__.r(__webpack_exports__);
  *
  * @type     {string}
  */
-const STORE_NAME = 'dynamic-tables/table';
+const STORE_NAME = 'dynamic-table-blocks/table';
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (STORE_NAME);
 
 /***/ }),
@@ -2674,7 +2674,7 @@ const getTable = (tableId, isTableStale) => async ({
     return;
   }
   try {
-    const tableEntity = await registry.resolveSelect(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).getEntityRecord('dynamic-tables', 'table', tableId);
+    const tableEntity = await registry.resolveSelect(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).getEntityRecord('dynamic-table-blocks', 'table', tableId);
     const table = tableEntity;
     const table_id = table.id;
     const block_table_ref = table.header.block_table_ref;
@@ -2903,8 +2903,8 @@ __webpack_require__.r(__webpack_exports__);
 
 (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.dispatch)('core').addEntities([{
   name: 'table',
-  kind: 'dynamic-tables',
-  baseURL: '/dynamic-tables/v1/tables',
+  kind: 'dynamic-table-blocks',
+  baseURL: '/dynamic-table-blocks/v1/tables',
   baseURLParams: {
     context: 'edit'
   },
@@ -5866,7 +5866,7 @@ module.exports = window["ReactJSXRuntime"];
 /******/ 			return __webpack_require__.O(result);
 /******/ 		}
 /******/ 		
-/******/ 		var chunkLoadingGlobal = globalThis["webpackChunkdynamic_tables"] = globalThis["webpackChunkdynamic_tables"] || [];
+/******/ 		var chunkLoadingGlobal = globalThis["webpackChunkdynamic_table_blocks"] = globalThis["webpackChunkdynamic_table_blocks"] || [];
 /******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
 /******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
 /******/ 	})();

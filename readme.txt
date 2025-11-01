@@ -70,7 +70,7 @@ the primary building blocks:
 #### Option 2: Manually load the plugin .zip file
 1. Navigate to the `Pluging > Add Plugins Page`
 1. Press the `Upload Plugins` buttons
-1. Select the `dynamic-tables.zip` file and click `Install Now`
+1. Select the `dynamic-table-blocks.zip` file and click `Install Now`
 1. Activate the plugin through the 'Plugins' screen in WordPress
 
 **Important Notes:**

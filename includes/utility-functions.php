@@ -1,15 +1,15 @@
 <?php
-namespace DynamicTables;
+namespace DynamicTableBlocks;
 
 // Globals.
-global $dt_instances;
+global $dtbk_instances;
 
 // Initialize plaeholders.
-$dt_stores    = [];
-$dt_instances = [];
+$dtbk_stores    = [];
+$dtbk_instances = [];
 
 /**
- * dt_new_instance
+ * dtbk_new_instance
  *
  * Creates a new instance of the given class and stores it in the instances data store.
  *
@@ -18,12 +18,12 @@ $dt_instances = [];
  * @param   string $class The class name.
  * @return  object The instance.
  */
-function dt_new_instance($class = '', $namespace = '') {
+function dtbk_new_instance($class = '', $namespace = '') {
 	if ( ! $namespace ) {
-		$namespace = 'DynamicTables';
+		$namespace = 'DynamicTableBlocks';
 	}
 	$class = $namespace . "\\" . $class;
 
-	global $dt_instances;
-	return $dt_instances[ $class ] = new $class();
+	global $dtbk_instances;
+	return $dtbk_instances[ $class ] = new $class();
 }
