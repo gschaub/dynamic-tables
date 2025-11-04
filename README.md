@@ -1,4 +1,4 @@
-# Dynamic Table Blocks #
+# Dynamic Tables #
 **Contributors:** [glschaub](https://profiles.wordpress.org/glschaub/), [myfamilyweb](https://profiles.wordpress.org/myfamilyweb/)  
 **Tags:**              block, table, responsive  
 **Tested up to:**      6.8  
@@ -18,6 +18,7 @@ Dynamic Tables was created on a solid technical framework with the objective of 
 block solution for creating beautiful tables that are easy to maintain.  Additionally, this framework will provide a
 springboard to rapidly build upon this foundation to provide additional features.  Some capabilities on the
 roadmap include:
+* Support for templates and cloning.  Note that this support is **not currently available**. It is the first roadmap item.
 * Support for front end interactivity to sort and filter tables
 * Integrating Dynamic Tables with WordPress search
 * Allowing for specific content types and formats for all rows in a column (e.g, images, links, buttons, numeric formats, etc.) without the need to format each cell
