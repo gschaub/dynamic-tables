@@ -95,27 +95,35 @@ jobs:
       # ---------- Rename ZIP with version ----------
       - name: Rename plugin ZIP with version
         run: |
-          ZIP_FILE=$(ls ./*.zip | head -n 1)
-          VERSION="${{ steps.ver.outputs.version }}"
-          NEW_NAME="${{ env.PLUGIN_SLUG }}-${VERSION}.zip"
+          set -e
+          COUNT=$(ls -1 ./*.zip 2>/dev/null | wc -l | tr -d ' ')
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::error::No ZIP produced. Check earlier build logs and .distignore."
+            ls -la
+            exit 1
+          fi
+          ZIP_FILE=$(ls -1 ./*.zip | head -n 1)
+          NEW_NAME="${{ env.PLUGIN_SLUG }}-${{ steps.ver.outputs.version }}.zip"
           mv "$ZIP_FILE" "$NEW_NAME"
+          echo "ZIP_PATH=$NEW_NAME" >> "$GITHUB_ENV"
           echo "Renamed ZIP to: $NEW_NAME"
-          echo "zip_name=$NEW_NAME" >> "$GITHUB_ENV"
 
       - name: Upload versioned ZIP artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.PLUGIN_SLUG }}-${{ steps.ver.outputs.version }}.zip
-          path: ${{ env.PLUGIN_SLUG }}-${{ steps.ver.outputs.version }}.zip
+          path: ${{ env.ZIP_PATH }}
 
       # ---------- DRY-RUN SUMMARY: list files that will be deployed ----------
       - name: Show deploy manifest (dry-run)
         run: |
           set -e
-          ZIP="${{ steps.zip.outputs.zip_name }}"
-          echo "Generating deployment manifest from: $ZIP"
-          # Full manifest (paths + sizes)
-          unzip -l "$ZIP" > manifest.txt
+          if [ -z "${ZIP_PATH:-}" ] || [ ! -f "$ZIP_PATH" ]; then
+            echo "::warning::ZIP not found for manifest step. Skipping manifest generation."
+            exit 0
+          fi
+          echo "Generating deployment manifest from: $ZIP_PATH"
+          unzip -l "$ZIP_PATH" > manifest.txt
           echo ""
           echo "---- Manifest summary ----"
           TOTAL_FILES=$(tail -n 2 manifest.txt | head -n 1 | awk '{print $2}')
@@ -124,12 +132,12 @@ jobs:
           echo "Total (bytes in zip listing): $TOTAL_SIZE"
           echo ""
           echo "First 100 entries:"
-          # A concise preview in logs
-          unzip -Z1 "$ZIP" | head -n 100
+          unzip -Z1 "$ZIP_PATH" | head -n 100 || true
           echo "---------------------------"
           echo "Full manifest saved as artifact: manifest.txt"
 
       - name: Upload manifest artifact
+        if: ${{ env.ZIP_PATH != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: deploy-manifest
