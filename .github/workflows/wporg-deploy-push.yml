@@ -143,6 +143,14 @@ jobs:
           name: deploy-manifest
           path: manifest.txt
 
+       #--- Clear temp archive dir used by deploy action (prevents mkdir collision) ---
+      - name: Clear 10up temp archive dir
+        run: rm -rf /home/runner/archivetmp || true
+
+      # --- Optional: isolate temp dir for this run (adds safety for parallel jobs) ---
+      - name: Set unique TMPDIR
+        run: echo "TMPDIR=${RUNNER_TEMP}/wporg_${GITHUB_RUN_ID}_${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_ENV"
+        
       # ---------- Deploy to WordPress.org SVN ----------
       - name: Deploy to WordPress.org SVN
         if: ${{ github.event.inputs.deploy_to_svn == 'true' }}
