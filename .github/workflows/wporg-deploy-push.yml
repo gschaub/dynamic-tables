@@ -6,7 +6,7 @@ on:
       tag:
         description: 'Git tag (release version) to build and deploy, e.g. v1.3.0'
         required: true
-        default: '1.'
+        default: 'v1.'
       deploy_to_svn:
         description: 'Deploy to WordPress.org SVN after build?'
         type: boolean
