@@ -81,7 +81,7 @@ jobs:
 
       # ---------- Produce a zip identical to what would be deployed ----------
       - name: Build plugin zip
-        uses: 10up/actions-wordpress/plugin/build-zip@stable
+        uses: 10up/action-wordpress-plugin-build-zip@stable
 
       # ---------- Derive version number from tag ----------
       - name: Extract version
