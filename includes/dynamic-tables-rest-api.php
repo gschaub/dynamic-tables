@@ -3,10 +3,11 @@
  * REST API: Dynamic_Tables_REST_Controller class
  * Class to access dynamic tables via the WordPress REST API.
  *
+ * @since 1.0.0
  * @see WP_REST_Controller
  */
 
-namespace DynamicTables;
+namespace DynamicTableBlocks;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -19,7 +20,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->namespace = 'dynamic-tables/v1';
+		$this->namespace = 'dynamic-table-blocks/v1';
 		$this->rest_base = 'tables';
 	}
 
@@ -67,7 +68,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			array(
 				'args'   => array(
 					'id' => array(
-						'description' => __( 'Unique identifier for this table' ),
+						'description' => __( 'Unique identifier for this table', 'dynamic-table-blocks' ),
 						'type'        => 'integer',
 					),
 				),
@@ -107,7 +108,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			'get_tables',
 			sprintf(
 				/* translators: 1: The taxonomy name, 2: The property name, either 'rest_base' or 'name', 3: The conflicting value. */
-				__( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use' ),
+				__( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use', 'dynamic-table-blocks' ),
 			),
 			'1.0'
 		);
@@ -128,7 +129,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			'get_tables',
 			sprintf(
 				/* translators: 1: The taxonomy name, 2: The property name, either 'rest_base' or 'name', 3: The conflicting value. */
-				__( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use' ),
+				__( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use' , 'dynamic-table-blocks'),
 			),
 			'1.0'
 		);
@@ -163,7 +164,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				if ( 'edit' === $request['context'] && $post && ! $this->check_update_permission( $post ) ) {
 					return new \WP_Error(
 						'rest_forbidden_context',
-						__( 'Sorry, you are not allowed to edit this post.' ),
+						__( 'Sorry, you are not allowed to edit this post.', 'dynamic-table-blocks' ),
 						array( 'status' => rest_authorization_required_code() )
 					);
 				}
@@ -173,7 +174,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				if ( 'edit' === $request['context'] && ! current_user_can( 'edit_posts' ) ) {
 					return new \WP_Error(
 						'rest_forbidden_context',
-						__( 'Sorry, you are not allowed to edit this post.' ),
+						__( 'Sorry, you are not allowed to edit this post.', 'dynamic-table-blocks' ),
 						array( 'status' => rest_authorization_required_code() )
 					);
 				}
@@ -181,7 +182,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		} else {
 			return new \WP_Error(
 				'missing_post_id',
-				__( 'Post ID is missing from request.' ),
+				__( 'Post ID is missing from request.', 'dynamic-table-blocks' ),
 				array( 'status' => 500 )
 			);
 		}
@@ -221,7 +222,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	protected function get_table( $id ) {
 		$error = new \WP_Error(
 			'rest_table_invalid_id',
-			__( 'Invalid table ID.' ),
+			__( 'Invalid table ID.', 'dynamic-table-blocks' ),
 			array( 'status' => 404 )
 		);
 
@@ -255,7 +256,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	protected function get_post( $id ) {
 		$error = new \WP_Error(
 			'rest_post_invalid_id',
-			__( 'Invalid post ID.' ),
+			__( 'Invalid post ID.', 'dynamic-table-blocks' ),
 			array( 'status' => 500 )
 		);
 
@@ -265,7 +266,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		$error = new \WP_Error(
 			'rest_post_invalid',
-			__( 'Invalid post' ),
+			__( 'Invalid post', 'dynamic-table-blocks' ),
 			array( 'status' => 404 )
 		);
 
@@ -288,7 +289,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		if ( (int) 0 !== (int) $request['id'] ) {
 			return new \WP_Error(
 				'rest_table_exists',
-				__( 'Cannot create existing table.' ),
+				__( 'Cannot create existing table.', 'dynamic-table-blocks' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -309,7 +310,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				if ( $post && ! $this->check_update_permission( $post ) ) {
 					return new \WP_Error(
 						'rest_cannot_edit',
-						__( 'Sorry, you are not allowed to create tables for this post as this user.' ),
+						__( 'Sorry, you are not allowed to create tables for this post as this user.', 'dynamic-table-blocks' ),
 						array( 'status' => rest_authorization_required_code() )
 					);
 				}
@@ -317,7 +318,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
 					return new \WP_Error(
 						'rest_cannot_edit_others',
-						__( 'Sorry, you are not allowed to create tables for this post as this user.' ),
+						__( 'Sorry, you are not allowed to create tables for this post as this user.', 'dynamic-table-blocks' ),
 						array( 'status' => rest_authorization_required_code() )
 					);
 				}
@@ -326,14 +327,14 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			if ( $post_id === 0 && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
 				return new \WP_Error(
 					'rest_cannot_edit',
-					__( 'Sorry, you are not allowed to create tables for this post as this user.' ),
+					__( 'Sorry, you are not allowed to create tables for this post as this user.', 'dynamic-table-blocks' ),
 					array( 'status' => rest_authorization_required_code() )
 				);
 			}
 		} else {
 			return new \WP_Error(
 				'missing_post_id',
-				__( 'Post ID is missing from request.' ),
+				__( 'Post ID is missing from request.', 'dynamic-table-blocks' ),
 				array( 'status' => 500 )
 			);
 		}
@@ -352,7 +353,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		if ( (int) 0 !== (int) $request['id'] ) {
 			return new \WP_Error(
 				'rest_table_exists',
-				__( 'Cannot create existing post.' ),
+				__( 'Cannot create existing post.', 'dynamic-table-blocks' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -411,7 +412,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				if ( $post && ! $this->check_update_permission( $post ) ) {
 					return new \WP_Error(
 						'rest_cannot_edit',
-						__( 'Sorry, you are not allowed to update tables for this post as this user.' ),
+						__( 'Sorry, you are not allowed to update tables for this post as this user.', 'dynamic-table-blocks' ),
 						array( 'status' => rest_authorization_required_code() )
 					);
 				}
@@ -419,7 +420,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
 					return new \WP_Error(
 						'rest_cannot_edit_others',
-						__( 'Sorry, you are not allowed to update tables for this post as this user.' ),
+						__( 'Sorry, you are not allowed to update tables for this post as this user.', 'dynamic-table-blocks' ),
 						array( 'status' => rest_authorization_required_code() )
 					);
 				}
@@ -428,14 +429,14 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			if ( $post_id === 0 && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
 				return new \WP_Error(
 					'rest_cannot_edit',
-					__( 'Sorry, you are not allowed to update tables for this post as this user.' ),
+					__( 'Sorry, you are not allowed to update tables for this post as this user.', 'dynamic-table-blocks' ),
 					array( 'status' => rest_authorization_required_code() )
 				);
 			}
 		} else {
 			return new \WP_Error(
 				'missing_post_id',
-				__( 'Post ID is missing from request.' ),
+				__( 'Post ID is missing from request.', 'dynamic-table-blocks' ),
 				array( 'status' => 500 )
 			);
 		}
@@ -515,7 +516,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				if ( $post && ! $this->check_update_permission( $post ) ) {
 					return new \WP_Error(
 						'rest_cannot_edit',
-						__( 'Sorry, you are not allowed to delete tables for this post as this user.' ),
+						__( 'Sorry, you are not allowed to delete tables for this post as this user.', 'dynamic-table-blocks' ),
 						array( 'status' => rest_authorization_required_code() )
 					);
 				}
@@ -523,7 +524,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
 					return new \WP_Error(
 						'rest_cannot_edit_others',
-						__( 'Sorry, you are not allowed to delete tables for this post as this user.' ),
+						__( 'Sorry, you are not allowed to delete tables for this post as this user.', 'dynamic-table-blocks' ),
 						array( 'status' => rest_authorization_required_code() )
 					);
 				}
@@ -532,14 +533,14 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			if ( 0 === $post_id && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
 				return new \WP_Error(
 					'rest_cannot_edit',
-					__( 'Sorry, you are not allowed to delete tables for this post as this user.' ),
+					__( 'Sorry, you are not allowed to delete tables for this post as this user.', 'dynamic-table-blocks'),
 					array( 'status' => rest_authorization_required_code() )
 				);
 			}
 		} elseif ( 'edit' === $request['context'] && ! current_user_can( 'edit_posts' ) ) {
 				return new \WP_Error(
 					'rest_forbidden_context',
-					__( 'Sorry, you are not allowed to delete this post.' ),
+					__( 'Sorry, you are not allowed to delete this post.', 'dynamic-table-blocks' ),
 					array( 'status' => rest_authorization_required_code() )
 				);
 		}
@@ -576,7 +577,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		if ( ! $result ) {
 			return new \WP_Error(
 				'rest_cannot_delete',
-				__( 'The table cannot be deleted.' ),
+				__( 'The table cannot be deleted.', 'dynamic-table-blocks' ),
 				array( 'status' => 500 )
 			);
 		}
@@ -656,7 +657,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 					if ( (int) $request['header']['id'] !== (int) $request['id'] ) {
 						return new \WP_Error(
 							'rest_header_id_integrity',
-							__( 'Header ID does not match Request ID.' ),
+							__( 'Header ID does not match Request ID.', 'dynamic-table-blocks' ),
 							array( 'status' => 400 )
 						);
 					}
@@ -718,7 +719,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 						if ( (int) $request['rows'][ $key ]['table_id'] !== (int) $request['id'] ) {
 							return new \WP_Error(
 								'rest_header_id_integrity',
-								__( 'Row table ID does not match Request ID.' ),
+								__( 'Row table ID does not match Request ID.', 'dynamic-table-blocks' ),
 								array( 'status' => 400 )
 							);
 						}
@@ -762,7 +763,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 						if ( (int) $request['columns'][ $key ]['table_id'] !== (int) $request['id'] ) {
 							return new \WP_Error(
 								'rest_header_id_integrity',
-								__( 'Row table ID does not match Request ID.' ),
+								__( 'Row table ID does not match Request ID.', 'dynamic-table-blocks' ),
 								array( 'status' => 400 )
 							);
 						}
@@ -811,7 +812,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 						if ( (int) $request['cells'][ $key ]['table_id'] !== (int) $request['id'] ) {
 							return new \WP_Error(
 								'rest_header_id_integrity',
-								__( 'Row table ID does not match Request ID.' ),
+								__( 'Row table ID does not match Request ID.', 'dynamic-table-blocks' ),
 								array( 'status' => 400 )
 							);
 						}
@@ -850,16 +851,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			}
 		}
 
-		/**
-		 * Filters a table before it is inserted via the REST API.
-		 *
-		 * Possible hook names include:
-		 *
-		 * @param stdClass        $prepared_post An object representing a single post prepared
-		 *                                       for inserting or updating the database.
-		 * @param WP_REST_Request $request       Request object.
-		 */
-		return apply_filters( 'rest_pre_insert_dynamic-table', $prepared_table, $request );
+		return $prepared_table;
 	}
 
 	/**
@@ -992,14 +984,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		// Wrap the data in a response object.
 		$response = rest_ensure_response( $data );
 
-		/**
-		 * Filters the table data for a REST API response.
-		 *
-		 * @param WP_REST_Response $response The response object.
-		 * @param WP_Post          $post     Post object.
-		 * @param WP_REST_Request  $request  Request object.
-		 */
-		return apply_filters( 'rest_prepare_dynamic-table', $response, $table, $request );
+		return $response;
 	}
 
 	/**
@@ -1016,94 +1001,94 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		$schema = array(
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
-			'title'      => 'dynamic-table',
+			'title'      => 'dynamic-table-blocks',
 			'type'       => 'object',
 			'properties' => array(
 				'id'      => array(
-					'description' => __( 'Unique identifier for the table.' ),
+					'description' => __( 'Unique identifier for the table.', 'dynamic-table-blocks' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
 				'title'   => array(
-					'description' => __( 'Table name which can include html style elements.' ),
+					'description' => __( 'Table name which can include html style elements.', 'dynamic-table-blocks' ),
 					'type'        => 'string',
 				),
 				'header'  => array(
-					'description' => __( 'Tablewide properties.' ),
+					'description' => __( 'Tablewide properties.', 'dynamic-table-blocks' ),
 					'type'        => 'object',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 					'properties'  => array(
 						'id'              => array(
-							'description' => __( 'Table ID.' ),
+							'description' => __( 'Table ID.', 'dynamic-table-blocks' ),
 							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
 							'readonly'    => true,
 						),
 						'block_table_ref' => array(
-							'description' => __( 'Link to specific table block on post.' ),
+							'description' => __( 'Link to specific table block on post.', 'dynamic-table-blocks' ),
 							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
 						),
 						'status'          => array(
-							'description' => __( 'Status of table within context of its assigned post.' ),
+							'description' => __( 'Status of table within context of its assigned post.', 'dynamic-table-blocks' ),
 							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
 						),
 						'post_id'         => array(
-							'description' => __( 'Unique identifier for the post.' ),
+							'description' => __( 'Unique identifier for the post.', 'dynamic-table-blocks' ),
 							'type'        => 'integer',
 							'context'     => array( 'view', 'edit', 'embed' ),
 							'readonly'    => true,
 						),
 						'table_name'      => array(
-							'description' => __( 'Table name which can include html style elements.' ),
+							'description' => __( 'Table name which can include html style elements.', 'dynamic-table-blocks' ),
 							'type'        => 'string',
 						),
 						'attributes'      => array(
-							'description' => __( 'Tablewide attributes.' ),
+							'description' => __( 'Tablewide attributes.', 'dynamic-table-blocks' ),
 							'type'        => 'array',
 							'context'     => array( 'view', 'edit' ),
 						),
 						'classes'         => array(
-							'description' => __( 'Tablewide css classes.' ),
+							'description' => __( 'Tablewide css classes.', 'dynamic-table-blocks' ),
 							'type'        => 'array',
 							'context'     => array( 'view', 'edit' ),
 						),
 					),
 				),
 				'rows'    => array(
-					'description' => __( 'Table rows collection' ),
+					'description' => __( 'Table rows collection', 'dynamic-table-blocks' ),
 					'type'        => 'array',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 					'properties'  => array(
 						'row' => array(
-							'description' => __( 'Table row' ),
+							'description' => __( 'Table row', 'dynamic-table-blocks' ),
 							'type'        => 'object',
 							'context'     => array( 'view', 'edit' ),
 							'readonly'    => true,
 							'properties'  => array(
 								'table_id'   => array(
-									'description' => __( 'Table ID.' ),
+									'description' => __( 'Table ID.', 'dynamic-table-blocks' ),
 									'type'        => 'integer',
 									'context'     => array( 'view', 'edit' ),
 									'readonly'    => true,
 								),
 								'row_id'     => array(
-									'description' => __( 'Table Row Number.' ),
+									'description' => __( 'Table Row Number.', 'dynamic-table-blocks' ),
 									'type'        => 'integer',
 									'context'     => array( 'view', 'edit' ),
 									'readonly'    => true,
 								),
 								'attributes' => array(
-									'description' => __( 'Attributes for the row and inhereted by cells.' ),
+									'description' => __( 'Attributes for the row and inhereted by cells.', 'dynamic-table-blocks' ),
 									'type'        => 'array',
 									'context'     => array( 'view', 'edit' ),
 								),
 								'classes'    => array(
-									'description' => __( 'Css classes for the row and inhereted by cells.' ),
+									'description' => __( 'Css classes for the row and inhereted by cells.', 'dynamic-table-blocks' ),
 									'type'        => 'array',
 									'context'     => array( 'view', 'edit' ),
 								),
@@ -1112,42 +1097,42 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 					),
 				),
 				'columns' => array(
-					'description' => __( 'Table columns collection' ),
+					'description' => __( 'Table columns collection', 'dynamic-table-blocks' ),
 					'type'        => 'array',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 					'properties'  => array(
 						'column' => array(
-							'description' => __( 'Table column' ),
+							'description' => __( 'Table column', 'dynamic-table-blocks' ),
 							'type'        => 'object',
-							'context'     => array( 'view', 'edit' ),
+							'context'     => array( 'view', 'edit', 'dynamic-table-blocks' ),
 							'readonly'    => true,
 							'properties'  => array(
 								'table_id'    => array(
-									'description' => __( 'Table ID.' ),
+									'description' => __( 'Table ID.', 'dynamic-table-blocks' ),
 									'type'        => 'integer',
 									'context'     => array( 'view', 'edit' ),
 									'readonly'    => true,
 								),
 								'column_id'   => array(
-									'description' => __( 'Table Column Number.' ),
+									'description' => __( 'Table Column Number.', 'dynamic-table-blocks' ),
 									'type'        => 'integer',
 									'context'     => array( 'view', 'edit' ),
 									'readonly'    => true,
 								),
 								'column_name' => array(
-									'description' => __( 'Table Column Name.' ),
+									'description' => __( 'Table Column Name.', 'dynamic-table-blocks' ),
 									'type'        => 'string',
 									'context'     => array( 'view', 'edit' ),
 									'readonly'    => true,
 								),
 								'attributes'  => array(
-									'description' => __( 'Column attributes inhereted by cells.' ),
+									'description' => __( 'Column attributes inhereted by cells.', 'dynamic-table-blocks' ),
 									'type'        => 'array',
 									'context'     => array( 'view', 'edit' ),
 								),
 								'classes'     => array(
-									'description' => __( 'CSS column classes inhereted by cells.' ),
+									'description' => __( 'CSS column classes inhereted by cells.', 'dynamic-table-blocks' ),
 									'type'        => 'array',
 									'context'     => array( 'view', 'edit' ),
 								),
@@ -1156,47 +1141,47 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 					),
 				),
 				'cells'   => array(
-					'description' => __( 'Table cells collection.' ),
+					'description' => __( 'Table cells collection.', 'dynamic-table-blocks' ),
 					'type'        => 'array',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 					'properties'  => array(
 						'cell' => array(
-							'description' => __( 'Table cell' ),
+							'description' => __( 'Table cell', 'dynamic-table-blocks' ),
 							'type'        => 'object',
 							'context'     => array( 'view', 'edit' ),
 							'readonly'    => true,
 							'properties'  => array(
 								'table_id'   => array(
-									'description' => __( 'Table ID.' ),
+									'description' => __( 'Table ID.', 'dynamic-table-blocks' ),
 									'type'        => 'integer',
 									'context'     => array( 'view', 'edit' ),
 									'readonly'    => true,
 								),
 								'column_id'  => array(
-									'description' => __( 'Table Column Number.' ),
+									'description' => __( 'Table Column Number.', 'dynamic-table-blocks' ),
 									'type'        => 'integer',
 									'context'     => array( 'view', 'edit' ),
 									'readonly'    => true,
 								),
 								'row_id'     => array(
-									'description' => __( 'Table Row Number.' ),
+									'description' => __( 'Table Row Number.', 'dynamic-table-blocks' ),
 									'type'        => 'integer',
 									'context'     => array( 'view', 'edit' ),
 									'readonly'    => true,
 								),
 								'attributes' => array(
-									'description' => __( 'Cell attributes.' ),
+									'description' => __( 'Cell attributes.', 'dynamic-table-blocks' ),
 									'type'        => 'array',
 									'context'     => array( 'view', 'edit' ),
 								),
 								'classes'    => array(
-									'description' => __( 'CSS cell classes.' ),
+									'description' => __( 'CSS cell classes.', 'dynamic-table-blocks' ),
 									'type'        => 'array',
 									'context'     => array( 'view', 'edit' ),
 								),
 								'content'    => array(
-									'description' => __( 'Cell visible content which can include html style elements.' ),
+									'description' => __( 'Cell visible content which can include html style elements.', 'dynamic-table-blocks' ),
 									'type'        => 'array',
 									'context'     => array( 'view', 'edit' ),
 									'arg_options' => array(
@@ -1222,7 +1207,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				__METHOD__,
 				sprintf(
 					/* translators: %s: register_rest_field */
-					__( 'Please use %s to add new schema properties.' ),
+					__( 'Please use %s to add new schema properties.', 'dynamic-table-blocks' ),
 					'register_rest_field'
 				),
 				'5.4.0'

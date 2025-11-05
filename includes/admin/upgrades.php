@@ -1,12 +1,17 @@
 <?php
-namespace DynamicTables;
-
 /**
  * Support Dynamic Tables Plugin Activation, Deactivation, and Upgrades
  *
  * @since 1.0.0
  */
-class DynamicTablesVersionManagement {
+
+namespace DynamicTableBlocks;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+class DynamicTableBlocksVersionManagement {
 
 	/**
 	 * The plugin version number.
@@ -29,8 +34,8 @@ class DynamicTablesVersionManagement {
 	public function __construct() {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		if ( get_option( 'dt-version' ) ) {
-				$this->current_db_version = get_option( 'dt-version' );
+		if ( get_option( 'dtbk-version' ) ) {
+				$this->current_db_version = get_option( 'dtbk-version' );
 			}
 		}
 
@@ -45,21 +50,23 @@ class DynamicTablesVersionManagement {
 	 * @param  bool $network_wide True if the activation attempt is for the full network.
 	 * @return void
 	 */
-	public function activate_dynamic_tables($network_wide) {
-		$notices = new DT_Admin_Notices();
+	public function activate_dynamic_table_blocks($network_wide) {
+		$notices = new DTBK_Admin_Notices();
 
 		// Network (multisite) activation
-		if ( DT_IS_MULTISITE and $network_wide ) {
+		if ( DTBK_IS_MULTISITE and $network_wide ) {
 
 			// Error if multisite activation is not allowed
-			if ( ! DT_ALLOW_MULTISITE_ACTIVATION ) {
+			if ( ! DTBK_ALLOW_MULTISITE_ACTIVATION ) {
 				$message = $notices->admin_notice_library( 'network-activation-error' );
 				$title = 'Network Activation Not Allowed';
-				$args = array(
-					'back_link' => true,
-				);
 
-				wp_die($message, $title, $args);
+				wp_die(wp_kses_post($message),
+					esc_html($title),
+					array(
+						'back_link' => true,
+					)
+				);
 			} else {
 
 				// Activate all sites if allowed
@@ -82,29 +89,29 @@ class DynamicTablesVersionManagement {
 		restore_current_blog();
 	}
 
-	public function deactivate_dynamic_tables() {
+	public function deactivate_dynamic_table_blocks() {
 		?><div>
-			<p class="dt-deactivate">
+			<p class="dtbk-deactivate">
 				Do you want to remove underlying data tables?
 			</p>
 		</div><?php
 	}
 
-	public function uninstall_dynamic_tables($network_wide) {
+	public function uninstall_dynamic_table_blocks($network_wide) {
 		// Network (multisite) activation
-		if ( DT_IS_MULTISITE and $network_wide ) {
+		if ( DTBK_IS_MULTISITE and $network_wide ) {
 			$sites = get_sites();
 			foreach ( $sites as $site ) {
 				switch_to_blog( $site->blog_id);
-				if ( get_option('dt_keep_tables_on_uninstall') ) {
-					update_option('dt_activation_status', 'Uninstalled');
+				if ( get_option('dtbk_keep_tables_on_uninstall') ) {
+					update_option('dtbk_activation_status', 'Uninstalled');
 				} else {
 					$this->remove_environment_on_deactivation();
 				}
 				restore_current_blog();
 			}
-		} elseif ( get_option('dt_keep_tables_on_uninstall') ) {
-			update_option('dt_activation_status', 'Uninstalled');
+		} elseif ( get_option('dtbk_keep_tables_on_uninstall') ) {
+			update_option('dtbk_activation_status', 'Uninstalled');
 		} else {
 			$this->remove_environment_on_deactivation();
 		}
@@ -120,11 +127,11 @@ class DynamicTablesVersionManagement {
 	 * @return void
 	 */
 	public function create_environment_on_activation() {
-		if ( get_option('dt_activation_status') ) {
-			update_option( 'dt_activation_status', 'Active' );
+		if ( get_option('dtbk_activation_status') ) {
+			update_option( 'dtbk_activation_status', 'Active' );
 		} else {
-			add_option( 'dt_activation_status', 'Active' );
-			add_option( 'dt_keep_tables_on_uninstall', 1 );
+			add_option( 'dtbk_activation_status', 'Active' );
+			add_option( 'dtbk_keep_tables_on_uninstall', 1 );
 		}
 
 		if ( ! isset( $current_db_version ) ) {
@@ -133,15 +140,15 @@ class DynamicTablesVersionManagement {
 			$charset_collate = $wpdb->get_charset_collate();
 
 			// Plugin tables
-			$dt_header_tbl = $wpdb->prefix . 'dt_tables';
-			$dt_columns_tbl = $wpdb->prefix . 'dt_table_columns';
-			$dt_rows_tbl   = $wpdb->prefix . 'dt_table_rows';
-			$dt_cells_tbl  = $wpdb->prefix . 'dt_table_cells';
+			$dtbk_header_tbl = $wpdb->prefix . 'dtbk_tables';
+			$dtbk_columns_tbl = $wpdb->prefix . 'dtbk_table_columns';
+			$dtbk_rows_tbl   = $wpdb->prefix . 'dtbk_table_rows';
+			$dtbk_cells_tbl  = $wpdb->prefix . 'dtbk_table_cells';
 
 			/**
 			 * Create plugin tables
 			 */
-			$sql = "CREATE TABLE $dt_header_tbl (
+			$sql = "CREATE TABLE $dtbk_header_tbl (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             block_table_ref varchar(15) NOT NULL,
             status varchar(10) NOT NULL,
@@ -155,7 +162,7 @@ class DynamicTablesVersionManagement {
 
 			dbDelta( $sql );
 
-			$sql = "CREATE TABLE $dt_columns_tbl (
+			$sql = "CREATE TABLE $dtbk_columns_tbl (
             table_id bigint(20) unsigned NOT NULL,
             column_id int(11) NOT NULL,
             column_name varchar(60) NOT NULL DEFAULT ' ',
@@ -166,7 +173,7 @@ class DynamicTablesVersionManagement {
 
 			dbDelta( $sql );
 
-			$sql = "CREATE TABLE $dt_rows_tbl (
+			$sql = "CREATE TABLE $dtbk_rows_tbl (
             table_id bigint(20) unsigned NOT NULL,
             row_id int(11) NOT NULL,
             attributes text DEFAULT NULL,
@@ -176,7 +183,7 @@ class DynamicTablesVersionManagement {
 
 			dbDelta( $sql );
 
-			$sql = "CREATE TABLE $dt_cells_tbl (
+			$sql = "CREATE TABLE $dtbk_cells_tbl (
             table_id bigint(20) unsigned NOT NULL,
             column_id int(11) NOT NULL,
             row_id int(11) NOT NULL,
@@ -188,7 +195,7 @@ class DynamicTablesVersionManagement {
 
 			dbDelta( $sql );
 
-			add_option( 'dt_version', DT_VERSION );
+			add_option( 'dtbk_version', DTBK_VERSION );
 		}
 	}
 
@@ -196,26 +203,26 @@ class DynamicTablesVersionManagement {
 		global $wpdb;
 
 		// Plugin tables
-		$dt_header_tbl    = $wpdb->prefix . 'dt_tables';
-		$dt_columns_tbl   = $wpdb->prefix . 'dt_table_columns';
-		$dt_rows_tbl      = $wpdb->prefix . 'dt_table_rows';
-		$dt_cells_tbl     = $wpdb->prefix . 'dt_table_cells';
+		$dtbk_header_tbl    = $wpdb->prefix . 'dtbk_tables';
+		$dtbk_columns_tbl   = $wpdb->prefix . 'dtbk_table_columns';
+		$dtbk_rows_tbl      = $wpdb->prefix . 'dtbk_table_rows';
+		$dtbk_cells_tbl     = $wpdb->prefix . 'dtbk_table_cells';
 
-		$sql = "DROP TABLE IF EXISTS $dt_header_tbl";
+		$sql = "DROP TABLE IF EXISTS $dtbk_header_tbl";
 		$wpdb->query( $sql );
 
-		$sql = "DROP TABLE  IF EXISTS $dt_columns_tbl";
+		$sql = "DROP TABLE  IF EXISTS $dtbk_columns_tbl";
 		$wpdb->query( $sql );
 
-		$sql = "DROP TABLE  IF EXISTS $dt_rows_tbl";
+		$sql = "DROP TABLE  IF EXISTS $dtbk_rows_tbl";
 		$wpdb->query( $sql );
 
-		$sql = "DROP TABLE  IF EXISTS $dt_cells_tbl";
+		$sql = "DROP TABLE  IF EXISTS $dtbk_cells_tbl";
 		$wpdb->query( $sql );
 
-		delete_option( 'dt_version' );
-		delete_option( 'dt_keep_tables_on_uninstall' );
-		delete_option( 'dt_activation_status' );
+		delete_option( 'dtbk_version' );
+		delete_option( 'dtbk_keep_tables_on_uninstall' );
+		delete_option( 'dtbk_activation_status' );
 	}
 
 	/**
@@ -223,7 +230,6 @@ class DynamicTablesVersionManagement {
 	 *
 	 *  Returns true if this site has an upgrade avaialble.
 	 *
-	 *  @date    9/2/2024
 	 *  @since   1.0.0
 	 *
 	 *  @param   void
@@ -236,12 +242,12 @@ class DynamicTablesVersionManagement {
 			$this->current_db_version = '0.0.0';
 		}
 
-		if ( $this->current_db_version && $this->dt_version_compare( $this->current_db_version, '<', DT_UPGRADE_VERSION ) ) {
+		if ( $this->current_db_version && $this->dtbk_version_compare( $this->current_db_version, '<', DTBK_UPGRADE_VERSION ) ) {
 			return true;
 		}
 
-		if ( $this->current_db_version !== DT_VERSION ) {
-			$this->dt_update_db_version( DT_VERSION );
+		if ( $this->current_db_version !== DTBK_VERSION ) {
+			$this->dtbk_update_db_version( DTBK_VERSION );
 		}
 
 		return false;
@@ -255,23 +261,23 @@ class DynamicTablesVersionManagement {
 	 *  @param   string $version The new version.
 	 *  @return  void
 	 */
-	function dt_update_db_version( $version = '' ) {
-		update_option( 'dt_version', $version );
+	function dtbk_update_db_version( $version = '' ) {
+		update_option( 'dtbk_version', $version );
 	}
 
 	/**
-	 * dt_version_compare
+	 * dtbk_version_compare
 	 *
 	 * Similar to the version_compare() function but with extra functionality.
 	 *
-	 * @since   5.5.0
+	 * @since   1.0.0
 	 *
 	 * @param   string $left    The left version number.
 	 * @param   string $compare The compare operator.
 	 * @param   string $right   The right version number.
 	 * @return  boolean
 	 */
-	public function dt_version_compare( $left = '', $compare = '>', $right = '' ) {
+	public function dtbk_version_compare( $left = '', $compare = '>', $right = '' ) {
 
 		// Detect 'wp' placeholder.
 		if ( $left === 'wp' ) {

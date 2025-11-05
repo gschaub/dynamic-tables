@@ -1,14 +1,14 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "dynamic-tables/dynamic-tables",
+  "name": "dynamic-table-blocks/dynamic-table-blocks",
   "version": "0.1.0",
   "title": "Dynamic Tables",
   "category": "design",
   "icon": "editor-table",
   "description": "Create custom table blocks with highly customizable and responsive formats",
   "example": {},
-  "textdomain": "dynamic-tables",
+  "textdomain": "dynamic-table-blocks",
   "attributes": {
     "table_id": {
       "type": "integer",

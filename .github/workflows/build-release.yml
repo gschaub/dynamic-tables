@@ -4,23 +4,23 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Release version (e.g., 1.0.0)"
+        description: 'Release version (e.g., 1.0.0)'
         required: true
       plugin_slug:
-        description: "Plugin slug (folder/zip name)"
+        description: 'Plugin slug (folder/zip name)'
         required: true
-        default: "dynamic-tables"
+        default: 'dynamic-table-blocks'
       base_branch:
-        description: "Base branch to release from"
+        description: 'Base branch to release from'
         required: true
-        default: "main"
+        default: 'main'
       plugin_main_file:
-        description: "Main plugin file to read Version from"
+        description: 'Main plugin file to read Version from'
         required: true
-        default: "dynamic-tables.php"
+        default: 'dynamic-table-blocks.php'
 
 permissions:
-  contents: write   # needed to push branch, create tag, and publish release
+  contents: write # needed to push branch, create tag, and publish release
 
 jobs:
   release:
@@ -38,7 +38,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # we will create/push branch & tag
+          fetch-depth: 0 # we will create/push branch & tag
 
       - name: Configure Git identity
         run: |
@@ -74,15 +74,15 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install deps (include dev)
         run: npm ci --include=dev
 
       - name: Build assets
         run: NODE_ENV=production npm run build
-  
+
       - name: Install Composer (prod only)
         if: hashFiles('composer.json') != ''
         run: |
@@ -121,7 +121,7 @@ jobs:
               done
             fi
           done
-          
+
       - name: Stage runtime files to package dir (allowlist)
         run: |
           rm -rf dist && mkdir -p "dist/${PLUGIN_SLUG}"
@@ -134,7 +134,6 @@ jobs:
             --include "/templates/***" \
             --include "/build/***" \
             --include "/assets/***" \
-            --include "/vendor/***" \
             --exclude "*" \
             ./ "dist/${PLUGIN_SLUG}/"
 

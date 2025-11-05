@@ -65,8 +65,8 @@ import './editor.scss';
 dispatch('core').addEntities([
 	{
 		name: 'table',
-		kind: 'dynamic-tables',
-		baseURL: '/dynamic-tables/v1/tables',
+		kind: 'dynamic-table-blocks',
+		baseURL: '/dynamic-table-blocks/v1/tables',
 		baseURLParams: { context: 'edit' },
 		plural: 'tables',
 		label: __('Table'),
@@ -1822,13 +1822,13 @@ export default function Edit(props) {
 			{/* Show the form to identify and create a new table */}
 			{isNewBlock && (
 				<Placeholder
-					label={__('Dynamic Table')}
+					label={__('Dynamic Table', 'dynamic-table')}
 					icon={<BlockIcon icon={icon} showColors />}
-					instructions={__('Create a new dynamic table.')}
+					instructions={__('Create a new dynamic table.', 'dynamic-table')}
 				>
 					<form className="blocks-table__placeholder-form" onSubmit={onCreateTable}>
 						<InputControl
-							label={__('Table Name')}
+							label={__('Table Name', 'dynamic-table')}
 							placeholder="New Table"
 							required="true"
 							onChange={e => setTableName(e)}
@@ -1838,7 +1838,7 @@ export default function Edit(props) {
 
 						<NumberControl
 							__nextHasNoMarginBottom
-							label={__('Table Columns')}
+							label={__('Table Columns', 'dynamic-table')}
 							min={1}
 							required="true"
 							value={numColumns}
@@ -1848,7 +1848,7 @@ export default function Edit(props) {
 
 						<NumberControl
 							__nextHasNoMarginBottom
-							label={__('Table Rows')}
+							label={__('Table Rows', 'dynamic-table')}
 							required="true"
 							min={1}
 							value={numRows}

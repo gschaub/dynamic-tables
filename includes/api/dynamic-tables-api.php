@@ -1,29 +1,16 @@
 <?php
 /**
- * Define filters for the dynamic tables object
+ *  API to receive data requests, interact with the database, and return structured
+ *  results.
+ *
+ *  @since 1.0.0
  */
 
-// Places to balance tags on input.
-// wp_pre_kses_less_than
-// wp_pre_kses_block_attributes
+namespace DynamicTableBlocks;
 
-foreach ( array( 'dt_content_save_pre' ) as $filter ) {
-	add_filter( $filter, 'convert_invalid_entities' );
-	add_filter( $filter, 'balanceTags', 50 );
-	add_filter( $filter, 'wp_filter_global_styles_post', 9 ); // Removes unsafe rules for global styles
-	add_filter( $filter, 'title_save_pre' );
-	add_filter( $filter, 'wp_filter_post_kses' ); // Changes slash formatting
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
-
-foreach ( array( 'dt_table_name_save_pre' ) as $filter ) {
-	add_filter( $filter, 'title_save_pre' );
-}
-
-foreach ( array( 'dt_table_name_save_pre' ) as $filter ) {
-	add_filter( $filter, 'title_save_pre' );
-}
-
-add_filter( 'dt_content_filtered_save_pre', 'wp_filter_global_styles_post', 9 );
 
 /**
  * Create or update a dynamic table.
@@ -113,7 +100,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 
 		if ( is_null( $table_before ) ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'invalid_table', __( 'Invalid table ID.' ) );
+				return new \WP_Error( 'invalid_table', __( 'Invalid table ID.', 'dynamic-table-blocks' ) );
 			}
 			return 0;
 		}
@@ -136,7 +123,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 
 		if ( ! $results['success'] ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+				return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
 			}
 		}
 	} else {
@@ -145,7 +132,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 
 		if ( ! $results['success'] ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'db_insert_error', __( 'Database error creating table.' ) );
+				return new \WP_Error( 'db_insert_error', __( 'Database error creating table.', 'dynamic-table-blocks' ) );
 			}
 		}
 		$table_id = $results['table_id'];
@@ -158,7 +145,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 		$put_rows     = update_table_rows( $table_id, $request_rows );
 		if ( $put_rows === false ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'db_update_error', __( 'Database error creating table rows.' ) );
+				return new \WP_Error( 'db_update_error', __( 'Database error creating table rows.', 'dynamic-table-blocks' ) );
 			}
 		}
 	}
@@ -169,7 +156,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 		$put_columns     = update_table_columns( $table_id, $request_columns );
 		if ( $put_columns === false ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'db_update_error', __( 'Database error creating table columns.' ) );
+				return new \WP_Error( 'db_update_error', __( 'Database error creating table columns.', 'dynamic-table-blocks' ) );
 			}
 		}
 	}
@@ -180,7 +167,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 		$put_cells     = update_table_cells( $table_id, $request_cells );
 		if ( $put_cells === false ) {
 			if ( $wp_error ) {
-				return new WP_Error( 'db_update_error', __( 'Database error creating table cells.' ) );
+				return new \WP_Error( 'db_update_error', __( 'Database error creating table cells.', 'dynamic-table-blocks' ) );
 			}
 		}
 	}
@@ -208,7 +195,7 @@ function update_table_data( $tablearr, $wp_error = false ) {
 
 	if ( is_null( $table ) ) {
 		if ( $wp_error ) {
-			return new WP_Error( 'invalid_table', __( 'Invalid table ID.' ) );
+			return new \WP_Error( 'invalid_table', __( 'Invalid table ID.', 'dynamic-table-blocks' ) );
 		}
 		return 0;
 	}
@@ -242,7 +229,7 @@ function update_table_rows( $table_id, $request_rows ) {
 	$results         = $update_table_rows->update_table_rows( $table_id, $rows );
 
 	if ( ! $results['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
 	}
 
 	return $results;
@@ -274,7 +261,7 @@ function update_table_columns( $table_id, $request_columns ) {
 	$results            = $update_table_columns->update_table_columns( $table_id, $columns );
 
 	if ( ! $results['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
 	}
 
 	return $results;
@@ -306,7 +293,7 @@ function update_table_cells( $table_id, $request_cells ) {
 	$results          = $update_table_cells->update_table_cells( $table_id, $cells );
 
 	if ( ! $results['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks') );
 	}
 
 	return $results;
@@ -326,7 +313,7 @@ function delete_table( $table_id = 0 ) {
 	$results       = $delete_table->delete_table_data( $table_id );
 
 	if ( ! $results['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
 	}
 	return $existing_table;
 }
@@ -357,36 +344,36 @@ function get_table( $table_id ) {
 	);
 
 	$results      += array( 'id' => $table_id );
-	$table         = 'dt_tables';
+	$table         = 'dtbk_tables';
 	$get_table      = new PersistTableData();
 	$results_header = $get_table->get_table( $table_id, $table );
 	if ( ! $results_header['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
 	}
 	$results += array( 'header' => $results_header['result'] );
 
-	$table       = 'dt_table_rows';
+	$table       = 'dtbk_table_rows';
 	$get_table    = new PersistTableData();
 	$results_rows = $get_table->get_table( $table_id, $table );
 	if ( ! $results_rows['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks') );
 	}
 	$results += array( 'rows' => $results_rows['result'] );
 
-	$table          = 'dt_table_columns';
+	$table          = 'dtbk_table_columns';
 	$get_table       = new PersistTableData();
 	$results_columns = $get_table->get_table( $table_id, $table );
 
 	if ( ! $results_columns['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
 	}
 	$results += array( 'columns' => $results_columns['result'] );
 
-	$table        = 'dt_table_cells';
+	$table        = 'dtbk_table_cells';
 	$get_table      = new PersistTableData();
 	$results_cells = $get_table->get_table( $table_id, $table );
 	if ( ! $results_cells['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
 	}
 	$results += array( 'cells' => $results_cells['result'] );
 
@@ -428,7 +415,7 @@ function get_tables() {
  */
 function sanitize_dynamic_table( $table, $context = 'display' ) {
 	if ( is_object( $table ) ) {
-		// Check if post already filtered for this context.
+		// Check if table already filtered for this context.
 		if ( isset( $table->filter ) && $context === $table->filter ) {
 			return $table;
 		}
@@ -437,7 +424,7 @@ function sanitize_dynamic_table( $table, $context = 'display' ) {
 		}
 		$table->filter = $context;
 	} elseif ( is_array( $table ) ) {
-		// Check if post already filtered for this context.
+		// Check if table already filtered for this context.
 		if ( isset( $table['filter'] ) && $context === $table['filter'] ) {
 			return $table;
 		}
@@ -505,7 +492,6 @@ function sanitize_dynamic_table_field( $field, $value, $table_id, $context = 'di
 	if ( 'edit' === $context ) {
 
 		$format_to_edit = array( 'content', 'table_name' );
-		$value          = apply_filters( "edit_table_{$field}", $value, $table_id );
 
 		if ( in_array( $field, $format_to_edit, true ) ) {
 			if ( 'content' === $field ) {
@@ -519,21 +505,21 @@ function sanitize_dynamic_table_field( $field, $value, $table_id, $context = 'di
 			$value = esc_attr( $value );
 		}
 	} elseif ( 'db' === $context ) {
-		$value = apply_filters( "pre_table_{$field}", $value );
-
 		/**
-		 * Filters the value of a specific table field before saving.
+		 * Future implementation
+		 * Filter the value of a specific table field before saving.
 		 *
-		 * The dynamic portion of the hook name, `$field`, refers to the post
-		 * field name.
-		 *
-		 * @param mixed $value Value of the table field.
 		 */
-		$value = apply_filters( "{$field}_pre", $value );
-	} else {
 
-		// Use display filters by default.
-		$value = apply_filters( "table_{$field}", $value, $post_id, $context );
+		$value = apply_filters( "dtbk_pre_table_{$field}", $value );
+	} else {
+		/**
+		 * Future implementation
+		 * Use display filters by default.
+		 *
+		 */
+
+		$value = apply_filters( "dtbk_{$field}_pre", $value );
 
 		if ( 'attribute' === $context ) {
 			$value = esc_attr( $value );

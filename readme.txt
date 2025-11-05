@@ -1,4 +1,4 @@
-=== Dynamic Table Blocks ===
+=== Dynamic Tables ===
 Contributors:      glschaub, myfamilyweb
 Tags:              block, table, responsive
 Tested up to:      6.8
@@ -15,13 +15,14 @@ future,  **Dynamic Tables** is a new WordPress block plugin to create and manage
 as a table. The block is designed to be easily configured and highly responsive.
 
 Dynamic Tables was created on a solid technical framework with the objective of delivering a complete end-to-end
-block solution for creating beautiful tables that are easy to maintain.  Additionally, this famework will provide a
+block solution for creating beautiful tables that are easy to maintain.  Additionally, this framework will provide a
 springboard to rapidly build upon this foundation to provide additional features.  Some capabilities on the
 roadmap include:
+* Support for templates and cloning.  Note that this support is **not currently available**. It is the first roadmap item.
 * Support for front end interactivity to sort and filter tables
 * Integrating Dynamic Tables with WordPress search
 * Allowing for specific content types and formats for all rows in a column (e.g, images, links, buttons, numeric formats, etc.) without the need to format each cell
-* Importing and exporting table data in common formats (e.g., cvs, xlsx)
+* Importing and exporting table data in common formats (e.g., csv, xlsx)
 * Enhanced responsive formatting for mobile devices
 * Front end editing
 
@@ -29,7 +30,7 @@ This is just a sample of the roadmap, some of which will be included in this fre
 
 ### Formatting Features
 * Column & Row Actions
-  * "Show table borders" creates a spreadsheet metephore for intuitive column and row formatting. Toggle the boarders off when formats are set
+  * "Show table borders" creates a spreadsheet metaphore for intuitive column and row formatting. Toggle the boarders off when formats are set
   * Menu options to add or delete columns and rows
   * Fine grain control of column widths including support for:
     * Proportional or fix widths
@@ -50,7 +51,7 @@ This is just a sample of the roadmap, some of which will be included in this fre
 ### Love You Inner Geek!
 This information will be appealing to our techie friends, soothing their passion for embracing the technology.  Dynamic Blocks has an
 architecture that is somewhat unique to the world of Gutenberg development in that the table definition and content are stored in
-custom WordPress database tables because we didn't believe it structurally lent itself well to the Post data metephore.  These are
+custom WordPress database tables because we didn't believe it structurally lent itself well to the Post data metaphore.  These are
 the primary building blocks:
 * Table data and definitions are abstracted through a block entity types
 * Entities natively call RESTful api's
@@ -59,7 +60,7 @@ the primary building blocks:
 * The tables themselves leverage the newer CSS grid framework
   * Much of the flexibility is derived from grid functinality that has been incorporated into mainstream web browsers as recently as 2024
   * This framework provides responsiveness that doesn't "break" table structure.  Misalighed rows and columns, unexpected wrapping, and otherwise indecipherable tables have been beaten down.
-* The API architecture can theoretically support data stored in external files or web services. We're considering these capcbilities in our roadmap.
+* The API architecture can theoretically support data stored in external files or web services. We're considering these capabilities in our roadmap.
 
 == Installation ==
 #### Option 1: Through the Wordpress Plugin Directory
@@ -70,7 +71,7 @@ the primary building blocks:
 #### Option 2: Manually load the plugin .zip file
 1. Navigate to the `Pluging > Add Plugins Page`
 1. Press the `Upload Plugins` buttons
-1. Select the `dynamic-tables.zip` file and click `Install Now`
+1. Select the `dynamic-table-blocks.zip` file and click `Install Now`
 1. Activate the plugin through the 'Plugins' screen in WordPress
 
 **Important Notes:**

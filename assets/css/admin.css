@@ -22,11 +22,11 @@ li.dt-setting-default {
 	margin: 0 0 3px 0px;
 }
 
-#dt_keep_tables_on_uninstall {
+#dtbk_keep_tables_on_uninstall {
 	margin-left: 20px;
 }
 
-.dt-setting-default {
+.dtbk-setting-default {
 	font-size: 14px;
 }
 

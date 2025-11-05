@@ -37,7 +37,7 @@ export const getTable =
 		try {
 			const tableEntity = await registry
 				.resolveSelect(coreStore)
-				.getEntityRecord('dynamic-tables', 'table', tableId);
+				.getEntityRecord('dynamic-table-blocks', 'table', tableId);
 
 			const table = tableEntity;
 			const table_id = table.id;

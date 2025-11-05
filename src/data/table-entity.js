@@ -4,17 +4,16 @@ import { __ } from '@wordpress/i18n';
 export const loadTableEntityConfig = () => {
 	const tableConfig = {
 		name: 'table',
-		kind: 'dynamic-tables',
-		baseURL: '/dynamic-tables/v1/tables',
+		kind: 'dynamic-table-blocks',
+		baseURL: '/dynamic-table-blocks/v1/tables',
 		baseURLParams: { context: 'edit' },
 		plural: 'tables',
-		label: __('Table'),
-		getTitle: record => record?.title || __('Unnamed Table'),
+		label: __('Table', 'dynamic-table-blocks'),
+		getTitle: record => record?.title || __('Unnamed Table', 'dynamic-table-blocks'),
 	};
 
 	dispatch('core').addEntities(tableConfig);
 	console.log(tableConfig);
-	alert('processed Entity');
 
 	return tableConfig;
 };

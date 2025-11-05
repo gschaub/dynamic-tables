@@ -8,7 +8,7 @@
  *
  * @since 1.0.0
  */
-namespace DynamicTables;
+namespace DynamicTableBlocks;
 
 /**
  * Converts a column id (number) to the column id letter

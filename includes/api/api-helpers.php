@@ -1,5 +1,15 @@
 <?php
-namespace DynamicTables;
+/**
+ *  Various helper funtions associated with the API.
+ *
+ *  @since 1.0.0
+ */
+
+namespace DynamicTableBlocks;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Determine if Dynamic Tables has a specific setting
@@ -11,8 +21,8 @@ namespace DynamicTables;
  * @param   string $name Name of the setting to check for.
  * @return  boolean Does setting exist
  */
-function dt_has_setting($name = '') {
-	return dynamic_tables()->has_setting($name);
+function dtbk_has_setting($name = '') {
+	return DynamicTableBlocks::get_instance()->has_setting($name);
 }
 
 /**
@@ -25,8 +35,8 @@ function dt_has_setting($name = '') {
  * @param   string Setting name
  * @return  mixed setting value
  */
-function dt_raw_setting($name = '') {
-	return dynamic_tables()->get_setting($name);
+function dtbk_raw_setting($name = '') {
+	return DynamicTableBlocks::get_instance()->has_setting($name);
 }
 
 /**
@@ -40,12 +50,12 @@ function dt_raw_setting($name = '') {
  * @param  mixed $value New setting value
  * @return mixed updated setting
  */
-function dt_update_setting($name, $value) {
+function dtbk_update_setting($name, $value) {
 	// validate name.
-	$name = dt_validate_setting($name);
+	$name = dtbk_validate_setting($name);
 
 	// update.
-	return dynamic_tables()->update_setting($name, $value);
+	return DynamicTableBlocks::get_instance()->update_setting($name, $value);
 }
 
 /**
@@ -56,8 +66,8 @@ function dt_update_setting($name, $value) {
  * @param  string $name Setting name
  * @return mixed updated setting name if changed
  */
-function dt_validate_setting($name = '') {
-	return apply_filters('dt/validate_setting', $name);
+function dtbk_validate_setting($name = '') {
+	return apply_filters('dtbk/validate_setting', $name);
 	return $name;
 }
 
@@ -72,16 +82,16 @@ function dt_validate_setting($name = '') {
  * @param string $value An optional default value for the setting if it doesn't exist.
  * @return  mixed Setting value
  */
-function dt_get_setting($name, $value = null) {
-	$name = dt_validate_setting($name);
+function dtbk_get_setting($name, $value = null) {
+	$name = dtbk_validate_setting($name);
 
 	// replace default setting value if it exists.
-	if ( dt_has_setting($name) ) {
-		$value = dt_raw_setting($name);
+	if ( dtbk_has_setting($name) ) {
+		$value = dtbk_raw_setting($name);
 	}
 
 	// filter.
-	$value = apply_filters("dt/settings/{$name}", $value);
+	$value = apply_filters("dtbk/settings/{$name}", $value);
 
 	return $value;
 }
@@ -94,7 +104,7 @@ function dt_get_setting($name, $value = null) {
  * @param string $nonce Nonce field.
  * @param string $nonce The nonce parameter string.
  */
-function dt_nonce_input($name = '_dt_nonce', $nonce = '') {
+function dtbk_nonce_input($name = '_dtbk_nonce', $nonce = '') {
 	echo '<input type="hidden" name="' . esc_attr($name) . '" value="' . esc_attr(wp_create_nonce($nonce)) . '" />';
 }
 
@@ -111,10 +121,10 @@ function dt_nonce_input($name = '_dt_nonce', $nonce = '') {
  * @param  string $required_permissions
  * @return bool Is authorization granted
  */
-function dt_verify_nonce($nonce, $nonce_action, $required_permissions = '') {
+function dtbk_verify_nonce($nonce, $nonce_action, $required_permissions = '') {
 
-	$dt_admin_nonce_prepared = isset($_POST[ $nonce ]) ? sanitize_text_field( wp_unslash($_POST[ $nonce ])) : '';
-	if ( ! wp_verify_nonce( $dt_admin_nonce_prepared, $nonce_action ) ) {
+	$dtbk_admin_nonce_prepared = isset($_POST[ $nonce ]) ? sanitize_text_field( wp_unslash($_POST[ $nonce ])) : '';
+	if ( ! wp_verify_nonce( $dtbk_admin_nonce_prepared, $nonce_action ) ) {
 		return false;
 	}
 
@@ -132,7 +142,7 @@ function dt_verify_nonce($nonce, $nonce_action, $required_permissions = '') {
  * @param  mixed $args Arguments to be sanitized
  * @return mixed Sanitized arguments
  */
-function dt_sanitize_request_args( $args = array() ) {
+function dtbk_sanitize_request_args( $args = array() ) {
 	switch ( gettype( $args ) ) {
 		case 'boolean':
 			return (bool) $args;
@@ -144,13 +154,13 @@ function dt_sanitize_request_args( $args = array() ) {
 			$sanitized = array();
 			foreach ( $args as $key => $value ) {
 				$key               = sanitize_text_field( $key );
-				$sanitized[ $key ] = dt_sanitize_request_args( $value );
+				$sanitized[ $key ] = dtbk_sanitize_request_args( $value );
 			}
 			return $sanitized;
 		case 'object':
 			return wp_kses_post_deep( $args );
 		case 'string':
 		default:
-			return wp_kses( $args, 'dt' );
+			return wp_kses( $args, 'dtbk' );
 	}
 }

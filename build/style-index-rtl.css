@@ -7,21 +7,18 @@
  *
  * Replace them with your own styles or remove the file completely.
  */
-.wp-block-dynamic-tables-dynamic-tables {
+.wp-block-dynamic-table-blocks-dynamic-table-blocks {
   padding: 2px;
 }
-
 #tableTitle {
   --gridAlignment: center;
   text-align: var(--gridAlignment);
 }
-
 .grid-scroller {
   display: grid;
   gap: 0px;
   background-color: inherit;
 }
-
 .grid-control {
   --gridTemplateColumns: auto;
   --gridAlignment: left;
@@ -33,7 +30,6 @@
   gap: 0px;
   justify-content: var(--gridAlignment);
 }
-
 .grid-control__border {
   display: grid;
   overflow-x: inherit;
@@ -43,7 +39,6 @@
   grid-template-rows: auto;
   position: sticky;
 }
-
 .grid-control__header {
   --startGridHeaderRowNbr: 1;
   --endGridHeaderRowNbr: 2;
@@ -82,11 +77,9 @@
   border-right-width: var(--headerBorderLeftWidth);
   gap: 1px;
 }
-
 .grid-control__header--sticky {
   max-height: 80vh;
 }
-
 .grid-control__header-cells {
   display: flex;
   position: relative;
@@ -96,7 +89,6 @@
   background-color: var(--gridHeaderColor);
   justify-content: var(--headerTextAlignment);
 }
-
 .grid-control__body {
   --startGridBodyRowNbr: 1;
   --endGridBodyRowNbr: 2;
@@ -135,20 +127,17 @@
   border-right-width: var(--bodyBorderLeftWidth);
   gap: 1px;
 }
-
 .grid-control__body-row {
   display: grid;
   grid-column: 1/calc(var(--gridNumColumns) + 2);
   grid-template-columns: subgrid;
 }
-
 .grid-control__body-rows--banded-row {
   --bandedRowTextColor: black;
   --bandedRowBackgroundColor: #d8dbda;
   color: var(--bandedRowTextColor);
   background-color: var(--bandedRowBackgroundColor);
 }
-
 .grid-control__body-cells {
   display: flex;
   position: relative;
@@ -162,7 +151,6 @@
   justify-content: var(--bodyTextAlignment);
   min-height: 1.5em;
 }
-
 .grid-control__body-cells--zoom {
   display: flex;
   justify-content: center;
