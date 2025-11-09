@@ -392,7 +392,7 @@ function get_tables() {
 	$results = $get_table->get_tables();
 
 	if ( ! $results['success'] ) {
-		return new WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
 	}
 
 	return $results['result'];

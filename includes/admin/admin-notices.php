@@ -36,6 +36,8 @@ class DTBK_Admin_Notices {
 		$notices                            = array();
 		$notices['save-success']            = $this->save_success();
 		$notices['save-fail-permissions']   = $this->save_fail_permissions();
+		$notices['bulk-delete-success']   = $this->bulk_delete_success();
+		$notices['bulk-status-update-success']   = $this->bulk_status_update_success();
 		$notices['uninstall-table-warning'] = $this->uninstall_table_warning();
 		$notices['network-activation-error'] = $this->network_activation_error();
 
@@ -44,26 +46,29 @@ class DTBK_Admin_Notices {
 
 	/**
 	 * Notice:  Save was successful
+	 *
+	 * @since   1.0.0
 	 */
 	public function save_success() {
-
 		return wp_get_admin_notice(
-			__('Your selections were saved.', 'dynamic-table-blocks' ),
-				array(
-					'type'           => 'success',
-					'dismissible'    => false,
-					'id'             => 'success',
-					'paragraph_wrap' => true,
-				)
+			__( 'Your selections were saved.', 'dynamic-table-blocks' ),
+			array(
+				'type'           => 'success',
+				'dismissible'    => false,
+				'id'             => 'success',
+				'paragraph_wrap' => true,
+			)
 		);
 	}
 
 	/**
 	 * Notice:  Save failed - permissions
+	 *
+	 * @since   1.0.0
 	 */
 	public function save_fail_permissions() {
 		return wp_get_admin_notice(
-			__( 'Sorry, you do not have permission to perform that action.', 'dynamic-table-blocks' ),
+			__( 'Sorry, you do not have permission to perform that action.', 'dynamic-table_blocks' ),
 			array(
 				'type'           => 'error',
 				'dismissible'    => false,
@@ -74,7 +79,43 @@ class DTBK_Admin_Notices {
 	}
 
 	/**
+	 * Notice:  Bulk table deletes were updated
+	 *
+	 * @since   1.1.0
+	 */
+	public function bulk_delete_success() {
+		return wp_get_admin_notice(
+			__( 'Your selections were successfully deleted.', 'dynamic-table-blocks' ),
+			array(
+				'type'           => 'success',
+				'dismissible'    => false,
+				'id'             => 'success',
+				'paragraph_wrap' => true,
+			)
+		);
+	}
+
+	/**
+	 * Notice:  Bulk table statuses were updated
+	 *
+	 * @since   1.1.0
+	 */
+	public function bulk_status_update_success() {
+		return wp_get_admin_notice(
+			__( 'The table statuses were updated successully.', 'dynamic-table-blocks' ),
+			array(
+				'type'           => 'success',
+				'dismissible'    => false,
+				'id'             => 'success',
+				'paragraph_wrap' => true,
+			)
+		);
+	}
+
+	/**
 	 *  Notice:  Warning - Table data will be lost on plugin uninstall
+	 *
+	 * @since   1.0.0
 	 */
 	public function uninstall_table_warning() {
 		return wp_get_admin_notice(
@@ -91,6 +132,11 @@ class DTBK_Admin_Notices {
 		);
 	}
 
+	/**
+	 *  Notice:  Error - Attempt to network activate plugin
+	 *
+	 * @since   1.0.0
+	 */
 	public function network_activation_error() {
 		$network_activation_error_messsage = __('Dynamic tables may not be network activated.  Activate the plugin from the individual site(s).', 'dynamic-table-blocks');
 		$message_style = '"margin:5px 0 15px;padding:1px 12px;border:1px solid #c3c4c7;border-left-width:4px;';

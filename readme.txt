@@ -10,14 +10,9 @@ Create highly responsive custom table blocks that are easily configured.
 
 == Description ==
 
-Built from the ground up based upon the latest technology and designed to support WordPress' vision for the platform's
-future,  **Dynamic Tables** is a new WordPress block plugin to create and manage information that is best organized
-as a table. The block is designed to be easily configured and highly responsive.
+Built from the ground up based upon the latest technology and designed to support WordPress' vision for the platform's future,  **Dynamic Tables** is a new WordPress block plugin to create and manage information that is best organized as a table. The block is designed to be easily configured and highly responsive.
 
-Dynamic Tables was created on a solid technical framework with the objective of delivering a complete end-to-end
-block solution for creating beautiful tables that are easy to maintain.  Additionally, this framework will provide a
-springboard to rapidly build upon this foundation to provide additional features.  Some capabilities on the
-roadmap include:
+Dynamic Tables was created on a solid technical framework with the objective of delivering a complete end-to-end block solution for creating beautiful tables that are easy to maintain.  Additionally, this framework will provide a springboard to rapidly build upon this foundation to provide additional features.  Some capabilities on the roadmap include:
 * Support for templates and cloning.  Note that this support is **not currently available**. It is the first roadmap item.
 * Support for front end interactivity to sort and filter tables
 * Integrating Dynamic Tables with WordPress search
@@ -49,10 +44,7 @@ This is just a sample of the roadmap, some of which will be included in this fre
 * Optionally display or hide table title
 
 ### Love You Inner Geek!
-This information will be appealing to our techie friends, soothing their passion for embracing the technology.  Dynamic Blocks has an
-architecture that is somewhat unique to the world of Gutenberg development in that the table definition and content are stored in
-custom WordPress database tables because we didn't believe it structurally lent itself well to the Post data metaphore.  These are
-the primary building blocks:
+This information will be appealing to our techie friends, soothing their passion for embracing the technology.  Dynamic Blocks has an architecture that is somewhat unique to the world of Gutenberg development in that the table definition and content are stored in custom WordPress database tables because we didn't believe it structurally lent itself well to the Post data metaphore.  These are the primary building blocks:
 * Table data and definitions are abstracted through a block entity types
 * Entities natively call RESTful api's
 * There is an underlying WordPress REST API service that supports the loading and saving of table data

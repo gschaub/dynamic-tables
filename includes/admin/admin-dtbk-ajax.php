@@ -2,16 +2,16 @@
 /**
  * Provides the main Dynamic Tables admin page.
  */
-namespace DynamicTables;
+namespace DynamicTableBlocks;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
+if ( ! class_exists( DTBK_List_Dynamic_Table_Blocks::class ) ) {
 
 	// #[\AllowDynamicProperties]
-	class DT_Admin_Ajax {
+	class DTBK_Admin_Ajax {
 
 		// private array $notices = new DT_Admin_Notices();
 
@@ -21,24 +21,24 @@ if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
 		 * @since 1.1.0
 		 */
 		public function __construct() {
-			add_action('wp_ajax_dt_view_table', array( $this, 'view_table' ));
+			add_action('wp_ajax_dtbk_view_table', array( $this, 'view_table' ));
 		}
 
 		public function view_table() {
 			// error_log('In Ajax View');
 
-			check_ajax_referer( 'dt-table-list' );
+			check_ajax_referer( 'dtbk-table-list' );
 
 			error_log('Post Data = ' . json_encode($_POST));
 			$table_id = $_POST['id'];
 			if ( empty( $table_id ) ) {
-				wp_send_json_error( [ 'message' => __( 'No items selected.', 'dynamic-table' ) ], 400 );
+				wp_send_json_error( [ 'message' => __( 'No items selected.', 'dynamic-table_blocks' ) ], 400 );
 			}
 
 			// $table_id = isset($ids) ? $ids[0] : '';
 
 			wp_set_current_user( get_current_user_id() );
-			$request = new \WP_REST_Request( 'GET', '/dynamic-tables/v1/tables/' . $table_id);
+			$request = new \WP_REST_Request( 'GET', '/dynamic-table-blocks/v1/tables/' . $table_id);
 
 			$response = rest_do_request( $request );
 			$view_table_id = $response->data['id'];
@@ -94,13 +94,13 @@ if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
 
 			// wp_send_json_success( [
 			//  'removed' => $ids,
-			//  'notice'  => sprintf( _n( 'Deleted %d item.', 'Deleted %d items.', count( $ids ), 'dt-demo' ), count( $ids ) ),
+			//  'notice'  => sprintf( _n( 'Deleted %d item.', 'Deleted %d items.', count( $ids ), 'bk-demo' ), count( $ids ) ),
 			// ] );
 			wp_die();
 		}
 	}
 
 	// Instantiate.
-	dt_new_instance( 'DT_Admin_Ajax' );
+	dtbk_new_instance( 'DTBK_Admin_Ajax' );
 
 }

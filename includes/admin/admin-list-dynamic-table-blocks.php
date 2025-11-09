@@ -2,7 +2,7 @@
 /**
  * Provides the main Dynamic Tables admin page.
  */
-namespace DynamicTables;
+namespace DynamicTableBlocks;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -13,11 +13,11 @@ if ( ! class_exists( \WP_List_Table::class) ) {
 	require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
 }
 
-if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
+if ( ! class_exists( DTBK_List_Dynamic_Table_Blocks::class ) ) {
 
-	class DT_List_Dynamic_Tables extends \WP_List_Table {
+	class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 
-		// private array $notices = new DT_Admin_Notices();
+		// private array $notices = new DTBK_Admin_Notices();
 
 		/**
 		 * Constructor.
@@ -79,7 +79,7 @@ if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
 			usort($table_items, array( &$this, 'usort_reorder' ));
 
 			// Establish pagination
-			$per_page = get_user_option( 'dynamic_tables_per_page', get_current_user_id() );
+			$per_page = get_user_option( 'dynamic_table_blocks_per_page', get_current_user_id() );
 			if ( empty( $per_page ) || $per_page < 1 ) {
 				$per_page = 5; // Default if not set or invalid
 			}
@@ -102,11 +102,11 @@ if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
 		public function get_columns() {
 			$columns = array(
 				'cb'       => '<input type="checkbox" />',
-				'id'       => __('Table Id', 'dynamic-table-cookie-consent'),
-				'name'     => __('Description','dynamic-table-cookie-consent'),
-				'status'   => __('Status', 'dynamic-table-cookie-consent'),
-				'post'     => __('Post','dynamic-table-cookie-consent'),
-				'posttype' => __('Post Type','dynamic-table-cookie-consent'),
+				'id'       => __('Table Id', 'dynamic-table-blocks-cookie-consent'),
+				'name'     => __('Description','dynamic-table-blocks-cookie-consent'),
+				'status'   => __('Status', 'dynamic-table-blocks-cookie-consent'),
+				'post'     => __('Post','dynamic-table-blocks-cookie-consent'),
+				'posttype' => __('Post Type','dynamic-table-blocks-cookie-consent'),
 			);
 			return $columns;
 		}
@@ -114,10 +114,12 @@ if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
 		public function get_hidden_columns() {
 			$hidden = (
 				is_array(get_user_meta( get_current_user_id(),
-				'managedynamic-tables_page_list_dynamic_tablescolumnshidden', true)) ) ? get_user_meta(
-				get_current_user_id(), 'managedynamic-tables_page_list_dynamic_tablescolumnshidden', true) :
+				'managedynamic-tables_page_list_dynamic_table_blockscolumnshidden', true)) ) ? get_user_meta(
+				get_current_user_id(), 'managedynamic-tables_page_list_dynamic_table_blockscolumnshidden', true) :
 				array();
 			return $hidden;
+				// 'managedynamic-table-blocks_page_list_dynamic_table_blockscolumnshidden', true)) ) ? get_user_meta(
+				// get_current_user_id(), 'managedynamic-table-blocks_page_list_dynamic_table_blockscolumnshidden', true) :
 		}
 
 		protected function get_sortable_columns() {
@@ -211,21 +213,21 @@ if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
 
 		protected function column_id ($item) {
 			$actions = array(
-				'update_status' => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Update Status', 'dynamic-table') . '</a>',
+				'update_status' => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Update Status', 'dynamic-table-blocks') . '</a>',
 					$_REQUEST['page'],
 					'update_status',
 					$item['id']),
 
-				'export'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Export', 'dynamic-table') . '</a>',
+				'export'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Export', 'dynamic-table-blocks') . '</a>',
 					$_REQUEST['page'],
 					'export',
 					$item['id']),
 
-				'view'          => sprintf('<a href="#" data-dt-action="view" data-id="%d">%s</a>',
+				'view'          => sprintf('<a href="#" data-dtbk-action="view" data-id="%d">%s</a>',
 					(int) $item['id'],
-					esc_html__( 'View', 'dynamic-table' )),
+					esc_html__( 'View', 'dynamic-table-blocks' )),
 
-				'delete'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Delete', 'dynamic-table') . '</a>',
+				'delete'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Delete', 'dynamic-table-blocks') . '</a>',
 					$_REQUEST['page'],
 					'delete',
 					$item['id']),
@@ -235,8 +237,8 @@ if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
 
 		function get_bulk_actions() {
 			return array(
-				'update_all_statuses' => __('Update Status', 'dynamic-table'),
-				'delete_all'          => __('Delete', 'dynamic-table'),
+				'update_all_statuses' => __('Update Status', 'dynamic-table-blocks'),
+				'delete_all'          => __('Delete', 'dynamic-table-blocks'),
 			);
 		}
 
@@ -258,7 +260,7 @@ if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
 		}
 
 		public function process_action() {
-			$notices = new DT_Admin_Notices();
+			$notices = new DTBK_Admin_Notices();
 
 			// Verify nonce for security
 			// if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->screen->id ) ) {
@@ -288,7 +290,7 @@ if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
 								error_log('Update Status Bulk Rows, row = ' . $item_id);
 							}
 
-							if ( ! dt_verify_nonce( 'dtAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
+							if ( ! dtbk_verify_nonce( 'dtbkAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
 								echo $notices->admin_notice_library( 'bulk-status-update-success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
 							}
 						}
@@ -300,7 +302,7 @@ if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
 								error_log('Delete Bulk Rows, row = ' . $item_id);
 							}
 
-							if ( ! dt_verify_nonce( 'dtAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
+							if ( ! dtbk_verify_nonce( 'dtbkAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
 								echo $notices->admin_notice_library( 'bulk-delete-success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
 							}
 						}
@@ -314,7 +316,7 @@ if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
 
 							error_log('Update Status, row = ' . $item_id);
 
-							if ( ! dt_verify_nonce( 'dtAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
+							if ( ! dtbk_verify_nonce( 'dtbkAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
 								echo $notices->admin_notice_library( 'bulk-status-update-success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
 							}
 						}
@@ -325,7 +327,7 @@ if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
 
 							error_log('Export, row = ' . $item_id);
 
-							if ( ! dt_verify_nonce( 'dtAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
+							if ( ! dtbk_verify_nonce( 'dtbkAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
 								echo $notices->admin_notice_library( 'bulk-delete-success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
 							}
 						}
@@ -336,7 +338,7 @@ if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
 
 							error_log('View, row = ' . $item_id);
 
-							if ( ! dt_verify_nonce( 'dtAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
+							if ( ! dtbk_verify_nonce( 'dtbkAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
 								echo $notices->admin_notice_library( 'bulk-delete-success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
 							}
 						}
@@ -347,7 +349,7 @@ if ( ! class_exists( DT_List_Dynamic_Tables::class ) ) {
 
 							error_log('Delete, row = ' . $item_id);
 
-							if ( ! dt_verify_nonce( 'dtAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
+							if ( ! dtbk_verify_nonce( 'dtbkAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
 								echo $notices->admin_notice_library( 'bulk-delete-success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
 							}
 						}

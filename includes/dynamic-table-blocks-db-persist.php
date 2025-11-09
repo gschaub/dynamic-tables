@@ -906,6 +906,13 @@ class PersistTableData {
 		return $this->result;
 	}
 
+	/**
+	 * Get table header information for all tables
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return void
+	 */
 	public function get_tables() {
 		global $wpdb;
 
@@ -920,7 +927,7 @@ class PersistTableData {
 			$this->request_args,
 			array(
 				'type'  => 'from',
-				'field' => 'dt_tables',
+				'field' => 'dtbk_tables',
 				'value' => null,
 			)
 		);

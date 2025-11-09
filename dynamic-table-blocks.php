@@ -108,12 +108,12 @@ final class DynamicTableBlocks {
 		}
 
 		// Register included files
-		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-tables-rest-api.php';
-		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-tables-db-persist.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-table-blocks-rest-api.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-table-blocks-db-persist.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/admin/upgrades.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/render-helper.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/utility-functions.php';
-		require_once plugin_dir_path( __FILE__ ) . 'includes/api/dynamic-tables-api.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/api/dynamic-table-blocks-api.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/api/api-helpers.php';
 
 		// Register Include admin.
@@ -122,6 +122,8 @@ final class DynamicTableBlocks {
 			$admin_screen = 'true';
 			require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin.php';
 			require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin-notices.php';
+			require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin-dtbk-ajax.php';
+			require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin-list-dynamic-table-blocks.php';
 		}
 
 		// Handle Plugin Add, Upgrade, Delete
