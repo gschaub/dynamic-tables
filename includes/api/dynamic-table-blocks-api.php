@@ -381,6 +381,26 @@ function get_table( $table_id ) {
 }
 
 /**
+ *  Extract and returns the table object based on a reference id
+ *
+ * @since 1.1.0
+ *
+ * @param string $block_table_ref - Reference value for table lookup.
+ * @return array|WP_Error Table data retrieved.
+ */
+function get_table_by_ref( $block_table_ref ) {
+	$get_table      = new PersistTableData();
+	$result = $get_table->get_table_id( 'block_table_ref', $block_table_ref );
+
+	if ( ! $result['success'] ) {
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table id.', 'dynamic-table-blocks' ) );
+	}
+
+	$table_id = $result['result'];
+	return get_table( $table_id );
+}
+
+/**
  * Extracts and returns the summary table data for all tables from the database
  *
  * @since 1.1.0
@@ -392,7 +412,7 @@ function get_tables() {
 	$results = $get_table->get_tables();
 
 	if ( ! $results['success'] ) {
-		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.' ) );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving tables.','dynamic-table-blocks' ) );
 	}
 
 	return $results['result'];

@@ -23,7 +23,6 @@ class DTBK_Admin {
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_filter( "set_screen_option_{$this->per_page_option}", array( $this, 'set_per_page' ), 10, 3);
-		// add_filter( 'set-screen-option', array( $this, 'set_per_page' ), 10, 3);
 	}
 
 	/**
@@ -40,22 +39,30 @@ class DTBK_Admin {
 		}
 
 		// Vars.
-		$cap       = dtbk_get_setting( 'capability' );
-		$menu_slug = 'dynamic-table-blocks/main-menu.php';
+		$cap         = dtbk_get_setting( 'capability' );
+		$parent_slug = 'dynamic-table-blocks/main-menu.php';
 
 		// Add menu items.
-		$main_page_hook = add_menu_page(
+		add_menu_page(
 			__( 'Dynamic Tables', 'dynamic-table-blocks' ),
 			__( 'Dynamic Tables', 'dynamic-table-blocks' ),
 			$cap,
-			$menu_slug,
+			$parent_slug,
 			array( $this, 'plugin_main_admin' ),
 			'dashicons-editor-table',
 			40
 		);
 
+		/**
+		 * Ensure the URL Base uses the plugin slug rather than transforming the Dyamic Tables plugin name
+		 * to dynamic-tables which is the default behavior WordPress uses.
+		 */
+		global $admin_page_hooks;
+		if ( isset( $admin_page_hooks[ $parent_slug ] ) && 'dynamic-tables' === $admin_page_hooks[ $parent_slug ] ) {
+			$admin_page_hooks[ $parent_slug ] = 'dynamic-table-blocks'; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- stabilize screen base to ensure it matches plugin slug.
+		}
+
 		// make the location 21 for network page
-		$parent_slug = $menu_slug;
 		$menu_slug   = 'dynamic-table-blocks/main-menu.php';
 
 		add_submenu_page(
@@ -80,8 +87,6 @@ class DTBK_Admin {
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 		add_action( "load-{$table_maintenance_page_hook}", array( $this, 'dynamic_table_blocks_screen_options' ) );
-
-		// add_action( "load-{$main_page_hook}", array( $this, 'enqueue_admin_assets' ) );
 	}
 
 	public function enqueue_admin_assets() {
@@ -210,19 +215,8 @@ class DTBK_Admin {
 		global $table_maintenance_page_hook;
 		global $table;
 
-		$screen = get_current_screen();
-
-		error_log('Screen: ' . json_encode($screen));
-		error_log('Maint Table Hook: ' . json_encode($table_maintenance_page_hook));
-
-		/**
-		 * if ( ! is_object($screen) || $screen->id !== $table_maintenance_page_hook ) {
-		 *  return;
-		 * }
-		 */
-
 		$args = array(
-			'label'   => __( 'Number of tables per page', 'dynamic - table - blocks' ),
+			'label'   => __( 'Number of tables per page', 'dynamic-table-blocks' ),
 			'default' => 20,
 			'option'  => $this->per_page_option,
 		);
@@ -243,7 +237,6 @@ class DTBK_Admin {
 	 * @return int - Updated number of tables to display per page
 	 */
 	public function set_per_page ($status, $option, $value) {
-			error_log('In per page');
 		if ( $this->per_page_option === $option ) {
 			$value = (int) $value;
 			if ($value < 1) $value = 1;

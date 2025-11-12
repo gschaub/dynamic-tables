@@ -115,6 +115,8 @@ final class DynamicTableBlocks {
 		require_once plugin_dir_path( __FILE__ ) . 'includes/utility-functions.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/api/dynamic-table-blocks-api.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/api/api-helpers.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/api/api-helpers.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/maintenance.php';
 
 		// Register Include admin.
 		$admin_screen = 'false';

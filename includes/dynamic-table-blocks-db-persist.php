@@ -1117,6 +1117,57 @@ class PersistTableData {
 	}
 
 	/**
+	 *  Retrieve a dynamic table id based on a reference value
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $ref_type          database field(s) for table id lookup
+	 * @param string $ref_id            Related reference id(s)
+	 * @return array Sresult            Success status and data retrieved
+	 */
+	public function get_table_id( $ref_type, $ref_id ) {
+		global $wpdb;
+		$success = false;
+
+		$db_table_name = 'dtbk_tables';
+		$return_collection = false;
+
+
+		$this->request_args = array();
+
+		array_push(
+			$this->request_args,
+			array(
+				'type'  => 'from',
+				'field' => $db_table_name,
+				'value' => null,
+			)
+		);
+
+		array_push(
+			$this->request_args,
+			array(
+				'type'  => 'where',
+				'field' => $ref_type,
+				'value' => $ref_id,
+			)
+		);
+
+		$query_results = $this->get_table_data( $return_collection );
+		error_log('DB - Get Table ID - Query Resulta = ' . json_encode($query_results));
+
+		$table_id = $query_results['id'];
+		$success = true;
+
+		$this->result = array(
+			'success' => $success,
+			'result'  => $table_id,
+		);
+
+		return $this->result;
+	}
+
+	/**
 	 *  Delete the dynamic table data for a specific one dynamic table from all database table
 	 *
 	 * @since 1.0.0

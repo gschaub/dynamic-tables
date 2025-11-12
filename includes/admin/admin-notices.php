@@ -68,7 +68,7 @@ class DTBK_Admin_Notices {
 	 */
 	public function save_fail_permissions() {
 		return wp_get_admin_notice(
-			__( 'Sorry, you do not have permission to perform that action.', 'dynamic-table_blocks' ),
+			__( 'Sorry, you do not have permission to perform that action.', 'dynamic-table-blocks' ),
 			array(
 				'type'           => 'error',
 				'dismissible'    => false,
