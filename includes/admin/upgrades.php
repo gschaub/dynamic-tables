@@ -17,6 +17,7 @@ class DynamicTableBlocksVersionManagement {
 	 * The plugin version number.
 	 *
 	 * @since   1.0.0
+	 * @since   1.1.0 Added token for encrypted REST services
 	 *
 	 * @var string
 	 */
@@ -134,6 +135,13 @@ class DynamicTableBlocksVersionManagement {
 			add_option( 'dtbk_keep_tables_on_uninstall', 1 );
 		}
 
+		// Establish security token
+		if ( ! get_option( 'dtbk_token', false ) ) {
+			// Random, high entropy, stored only in DB
+			$secret = wp_generate_password( 64, true, true );
+			add_option( 'dtbk_token', $secret, '', false ); // autoload = false
+		}
+
 		if ( ! isset( $current_db_version ) ) {
 			global $wpdb;
 
@@ -223,6 +231,7 @@ class DynamicTableBlocksVersionManagement {
 		delete_option( 'dtbk_version' );
 		delete_option( 'dtbk_keep_tables_on_uninstall' );
 		delete_option( 'dtbk_activation_status' );
+		delete_option( 'dtbk_token' );
 	}
 
 	/**

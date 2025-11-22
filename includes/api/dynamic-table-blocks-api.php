@@ -191,7 +191,10 @@ function update_table_data( $tablearr, $wp_error = false ) {
 	}
 
 	// First, get all of the original fields.
-	$table = get_table( $tablearr['id'], ARRAY_A );
+	$table = get_table( $tablearr['id'] );
+
+	error_log('DT API - Table = ' . json_encode($table));
+	error_log('DT API - TableArray = ' . json_encode($tablearr));
 
 	if ( is_null( $table ) ) {
 		if ( $wp_error ) {
@@ -303,14 +306,18 @@ function update_table_cells( $table_id, $request_cells ) {
  *  Delete table from the database
  *
  * @since 1.0.0
+ * @since 1.1.0  Add "force" option
  *
  * @param int $table_id - Table id.
+ * @param int $force - Delete whatever table data exists
  * @return array|WP_Error Deleted table.
  */
-function delete_table( $table_id = 0 ) {
+function delete_table( $table_id = 0 , $force = false) {
 	$existing_table = get_table( $table_id );
 	$delete_table   = new PersistTableData();
-	$results       = $delete_table->delete_table_data( $table_id );
+	$results       = $delete_table->delete_table_data( $table_id, $force );
+
+	error_log('Delete result = ' . json_encode($results));
 
 	if ( ! $results['success'] ) {
 		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
@@ -322,11 +329,13 @@ function delete_table( $table_id = 0 ) {
  *  Extract and returns the table object from the database
  *
  * @since 1.0.0
+ * @since 1.1.0 Added simple check for existance of header row
  *
- * @param int $table_id - Table id.
- * @return array|WP_Error Table data retrieved.
+ * @param int $table_id                Table id.
+ * @param bool $validate_header_only   Ensure header record exists
+ * @return array|bool|WP_Error         Table data retrieved or simply that the header record exists
  */
-function get_table( $table_id ) {
+function get_table( $table_id, $validate_header_only = false ) {
 	$results = array();
 
 	$test_object = array(
@@ -347,16 +356,34 @@ function get_table( $table_id ) {
 	$table         = 'dtbk_tables';
 	$get_table      = new PersistTableData();
 	$results_header = $get_table->get_table( $table_id, $table );
+
 	if ( ! $results_header['success'] ) {
-		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
+		return new \WP_Error(
+			'db_read_error',
+			__( 'Database error retrieving table header.', 'dynamic-table-blocks' ),
+			array( 'status' => 404 ) );
 	}
+
+	if ( $validate_header_only ) {
+		if ( $results_header['success'] ) {
+			error_log ('...validated');
+			return true;
+		}else {
+			error_log ('...error');
+			return false;
+		}
+	}
+
 	$results += array( 'header' => $results_header['result'] );
 
 	$table       = 'dtbk_table_rows';
 	$get_table    = new PersistTableData();
 	$results_rows = $get_table->get_table( $table_id, $table );
 	if ( ! $results_rows['success'] ) {
-		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks') );
+		return new \WP_Error(
+			'db_read_error',
+			__( 'Database error retrieving table rows.', 'dynamic-table-blocks' ),
+			array( 'status' => 500 ) );
 	}
 	$results += array( 'rows' => $results_rows['result'] );
 
@@ -365,7 +392,10 @@ function get_table( $table_id ) {
 	$results_columns = $get_table->get_table( $table_id, $table );
 
 	if ( ! $results_columns['success'] ) {
-		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
+		return new \WP_Error(
+			'db_read_error',
+			__( 'Database error retrieving table columns.', 'dynamic-table-blocks' ),
+			array( 'status' => 500 ) );
 	}
 	$results += array( 'columns' => $results_columns['result'] );
 
@@ -373,7 +403,10 @@ function get_table( $table_id ) {
 	$get_table      = new PersistTableData();
 	$results_cells = $get_table->get_table( $table_id, $table );
 	if ( ! $results_cells['success'] ) {
-		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
+		return new \WP_Error(
+			'db_read_error',
+			__( 'Database error retrieving table cells.', 'dynamic-table-blocks' ),
+			array( 'status' => 500 ) );
 	}
 	$results += array( 'cells' => $results_cells['result'] );
 

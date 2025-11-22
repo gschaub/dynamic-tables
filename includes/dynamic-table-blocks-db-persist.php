@@ -1176,7 +1176,7 @@ class PersistTableData {
 	 * @param string $db_table_name       database table name
 	 * @return array Sresult            Success status and data retrieved
 	 */
-	public function delete_table_data( $table_id ) {
+	public function delete_table_data( $table_id, $force ) {
 		$success = 'Processing';
 		global $wpdb;
 
@@ -1200,11 +1200,12 @@ class PersistTableData {
 		);
 
 		$query_returned_result = $this->delete_table( $db_table );
-		if ( ! $query_returned_result ) {
+		if ( ! $query_returned_result && ! $force ) {
 			$wpdb->query( 'ROLLBACK' ); // rollback everything
 			$success = 'False';
 
 			$this->result = array(
+				'success'      => $success,
 				'deleted_rows' => '0',
 			);
 
@@ -1229,11 +1230,12 @@ class PersistTableData {
 		);
 
 		$query_returned_result = $this->delete_table( $db_table );
-		if ( ! $query_returned_result ) {
+		if ( ! $query_returned_result && ! $force ) {
 			$wpdb->query( 'ROLLBACK' ); // rollback everything
 			$success = 'False';
 
 			$this->result = array(
+				'success'      => $success,
 				'deleted_rows' => '0',
 			);
 
@@ -1259,11 +1261,12 @@ class PersistTableData {
 		);
 
 		$query_returned_result = $this->delete_table( $db_table );
-		if ( ! $query_returned_result ) {
+		if ( ! $query_returned_result && ! $force ) {
 			$wpdb->query( 'ROLLBACK' ); // rollback everything
 			$success = 'False';
 
 			$this->result = array(
+				'success'      => $success,
 				'deleted_rows' => '0',
 			);
 
@@ -1289,11 +1292,12 @@ class PersistTableData {
 		);
 
 		$query_returned_result = $this->delete_table( $db_table );
-		if ( ! $query_returned_result ) {
+		if ( ! $query_returned_result && ! $force ) {
 			$wpdb->query( 'ROLLBACK' ); // rollback everything
 			$success = 'False';
 
 			$this->result = array(
+				'success'      => $success,
 				'deleted_rows' => '0',
 			);
 

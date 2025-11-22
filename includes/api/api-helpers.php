@@ -97,6 +97,31 @@ function dtbk_get_setting($name, $value = null) {
 }
 
 /**
+ * Get encrypted signing key for maintenance REST access and 3rd party access
+ *
+ * Description - A supplement to the summary, above.  Full sentences.
+ *
+ * @since 1.1.0
+ *
+ * @return string    Signing key
+ */
+function dtbk_signing_key() {
+	$secret = get_option( 'dtbk_token', '' );
+
+	if ( ! $secret ) {
+		// Hard fallback if option is missing:
+		$secret = wp_generate_password( 64, true, true );
+		update_option( 'dtbk_token', $secret, false );
+	}
+
+	// Use wp-config salts as extra key material
+	$salt_material = AUTH_KEY . SECURE_AUTH_KEY . LOGGED_IN_KEY . NONCE_KEY;
+
+	// Derive a 256-bit key
+	return hash( 'sha256', $secret . $salt_material, true ); // raw binary
+}
+
+/**
  * Create and echo a basic nonce input
  *
  * @since   1.0.0
