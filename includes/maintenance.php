@@ -147,13 +147,16 @@ class DTBLMaintenance {
 				error_log('Moving to history');
 				$matching_post_history = $this->perform_indexed_and_search($post_blocks, $post_history_blocks_index, $post_search_criteria);
 				if ( $matching_post_history ) {
+					error_log('Processing History Match');
 					$this->process_table_post_matches($matching_post_history, $table);
 				} elseif ( $table['status'] !== 'orphan' ) {
 					// Tables without a matching post are marked as orphaned or optionally deleted
 					error_log('Table id = ' . $table_id);
 					$full_table = $this->get_table( (int) $table_id);
+					error_log('Returned full table = ' . json_encode($full_table));
 					if ( $this->is_api_return_error($full_table) ) {
 						// Table is corrupt - delete table
+						error_log('Table is Corrupt');
 						$this->delete_table( (int) $table_id);
 					} else {
 						$full_table['header']['status'] = 'orphan';
@@ -227,7 +230,6 @@ class DTBLMaintenance {
 					$this->update_table($full_table);
 			}
 			error_log('MARK POST BLOCK AS RESOLVED');
-			// post_block['resolved'] = true
 			++$posts_matched;
 		}
 
@@ -396,35 +398,37 @@ class DTBLMaintenance {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param  array $table  Table array to be created
-	 * @return int           New table ID
+	 * @param  int $table_id  ID of table to be fetchedTable array to be created
+	 * @return array|object    New table ID or REST Response Object
 	 */
 	private function get_table($table_id) {
-		wp_set_current_user( get_current_user_id() );
+		// Build authentication signature
+		$path   = '/dynamic-table-blocks/v1/tables/' .  $table_id;
+		$method = 'GET';
+		$body   = '';
+		$signature = $this->build_internal_signature( $method, $path, $body );
 
 		// Create rest request to create table
-		$request = new \WP_REST_Request( 'GET', '/dynamic-table-blocks/v1/tables/' .  $table_id );
+		$request = new \WP_REST_Request( $method, $path );
+		$request->set_header( 'X-DTBK-Signature', $signature );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_query_params( array( 'context' => 'edit' ));
+
 		error_log('Get Table REST Request headers = ' . json_encode($request->get_headers()));
 		error_log('Get Table REST Request body = ' . json_encode($request->get_body()));
 
 		// Execute the request
 		$response = rest_do_request( $request );
 		error_log('REST Response body = ' . json_encode($response->data));
-
+		if ($response->is_error()) return $response;
 
 		// Retrieve the response data
 		$server = rest_get_server();
 		$data   = $server->response_to_data( $response, false ); // Pass false to prevent authentication checks for internal requests
 
-		if ( is_wp_error( $data ) ) {
-			// Convert to a WP_Error object.
-			$error = $response->as_error();
-			// $message = $response->get_error_message();
-			// $error_data = $response->get_error_data();
-			$status = isset( $error_data['status'] ) ? $error_data['status'] : 500;
-			// wp_die( printf( '<p>An error occurred: %s (%d)</p>', $message, $error_data ) );
-		}
-		return $response->data;
+		error_log('Response to data = ' . json_encode($data) );
+		// error_log('Is Response error? ' . $this->is_api_return_error($response));
+		return $data;
 	}
 
 	/**
@@ -436,11 +440,20 @@ class DTBLMaintenance {
 	 * @return int           New table ID
 	 */
 	private function create_table($table) {
-		wp_set_current_user( get_current_user_id() );
+		// Build authentication signature
+		$path   = '/dynamic-table-blocks/v1/tables';
+		$method = 'POST';
+		$body   = wp_json_encode( $table );
+		$signature = $this->build_internal_signature( $method, $path, $body );
+
+		error_log('Table update data = ' . json_encode($table));
 
 		// Create rest request to create table
-		$request = new \WP_REST_Request( 'POST', '/dynamic-table-blocks/v1/tables' );
-		$request->set_body_params( $table );
+		$request = new \WP_REST_Request( $method, $path );
+		$request->set_header( 'X-DTBK-Signature', $signature );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_query_params( array( 'context' => 'edit' ));
+		$request->set_body_params( $body );
 
 		// Execute the request
 		$response = rest_do_request( $request );
@@ -484,17 +497,16 @@ class DTBLMaintenance {
 		// $request = new \WP_REST_Request( 'POST', '/dynamic-table-blocks/v1/tables/' .  (int) $table['id'] );
 		$request->set_header( 'X-DTBK-Signature', $signature );
 		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_query_params( array( 'context' => 'edit' ));
 		$request->set_body( $body );
 
-		if ( (int) $table['id'] === 89 ) {
-			// error_log('In Update');
-			// Execute the request
-			$response = rest_do_request( $request );
+		// error_log('In Update');
+		// Execute the request
+		$response = rest_do_request( $request );
 
-			// Retrieve the response data
-			$server = rest_get_server();
-			$data   = $server->response_to_data( $response, false ); // Pass false to prevent authentication checks for internal requests
-		}
+		// Retrieve the response data
+		$server = rest_get_server();
+		$data   = $server->response_to_data( $response, false ); // Pass false to prevent authentication checks for internal requests
 	}
 
 	/**
@@ -514,26 +526,24 @@ class DTBLMaintenance {
 
 		// Create rest request to create table
 		$request = new \WP_REST_Request( $method, $path);
-		if ( (int) $table_id === 131 ) {
-			$request->set_header( 'X-DTBK-Signature', $signature );
-			$request->set_header( 'Content-Type', 'application/json' );
-			// $request->set_body( $body );
+		$request->set_header( 'X-DTBK-Signature', $signature );
+		$request->set_header( 'Content-Type', 'application/json' );
+		// $request->set_body( $body );
 
-			// Execute the request
-			$response = rest_do_request( $request );
+		// Execute the request
+		$response = rest_do_request( $request );
 
-			// Retrieve the response data
-			$server = rest_get_server();
-			$data   = $server->response_to_data( $response, false ); // Pass false to prevent authentication checks for internal requests
+		// Retrieve the response data
+		$server = rest_get_server();
+		$data   = $server->response_to_data( $response, false ); // Pass false to prevent authentication checks for internal requests
 
-			if ( is_wp_error( $data ) ) {
-				// Convert to a WP_Error object.
-				$error = $response->as_error();
-				// $message = $response->get_error_message();
-				// $error_data = $response->get_error_data();
-				$status = isset( $error_data['status'] ) ? $error_data['status'] : 500;
-				// wp_die( printf( ' < p > An error occurred: % s ( % d) < / p > ', $message, $error_data ) );
-			}
+		if ( is_wp_error( $data ) ) {
+			// Convert to a WP_Error object.
+			$error = $response->as_error();
+			// $message = $response->get_error_message();
+			// $error_data = $response->get_error_data();
+			$status = isset( $error_data['status'] ) ? $error_data['status'] : 500;
+			// wp_die( printf( ' < p > An error occurred: % s ( % d) < / p > ', $message, $error_data ) );
 		}
 	}
 
@@ -649,15 +659,22 @@ class DTBLMaintenance {
 	}
 
 	private function is_api_return_error($response) {
+		// Check for WP_Error
+		if ( $response->is_error() ) {
+			$error = $response->as_error();  // returns WP_Error or null
+			if ( is_wp_error( $error ) ) {
+				error_log( 'Error Code = ' . $error->get_error_data()['status'] );
+				$wp_error_code = (int) $error->get_error_data()['status'];
+				if ( $wp_error_code !== 0 && ( $wp_error_code < 200 || $wp_error_code >= 299 )) return true;
+			}
+		}
 
-		error_log('API response = ' . json_encode($response));
-
-		if ( is_wp_error( $response ) ) return true;
-
+		// Check for normal http status error code
 		$status_code = wp_remote_retrieve_response_code( $response );
-		if ( $status_code < 200 && $status_code >= 299 ) return true;
+		error_log('API response status = ' . $status_code );
+		if ( $status_code !== '' && ( $status_code < 200 || $status_code >= 299 ) ) return true;
 
-		return true;
+		return false;
 	}
 
 	private function build_internal_signature($method,  $path,  $body) {

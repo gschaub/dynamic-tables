@@ -146,6 +146,17 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 */
 	public function get_item_permissions_check( $request ) {
 		error_log('REST API - getting table: ' . $request['id']);
+		// Permissions for editing a table are based upon the underlying post to which
+		// it is attached.
+		error_log('REST API - In GET permission check');
+
+		// Determine if this is from internal maintenance, verify signature, and authorize if verified
+		if ( $this->verify_internal_signature( $request ) ) {
+			$this->maintenance_request = true;
+			error_log('REST API - Internally signed');
+			return true;
+		}
+
 		$table = $this->get_table( $request['id'] );
 
 		if ( is_wp_error( $table ) ) {
@@ -316,6 +327,14 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				__( 'Cannot create existing table.', 'dynamic-table-blocks' ),
 				array( 'status' => 400 )
 			);
+		}
+
+		error_log('REST API - In POST permission check');
+		// Determine if this is from internal maintenance, verify signature, and authorize if verified
+		if ( $this->verify_internal_signature( $request ) ) {
+			$this->maintenance_request = true;
+			error_log('REST API - Internally signed');
+			return true;
 		}
 
 		// Permissions for creating a table are based upon the underlying post to which
