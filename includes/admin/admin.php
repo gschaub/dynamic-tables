@@ -90,6 +90,7 @@ class DTBK_Admin {
 	}
 
 	public function enqueue_admin_assets() {
+		// error_log('URL = ' . dtbk_get_setting( 'url' ));
 		wp_enqueue_style( 'adminCss', dtbk_get_setting( 'url' ) . 'assets/css/admin.css' );
 
 		// Fix to make conditional
@@ -132,10 +133,10 @@ class DTBK_Admin {
 
 		$keep_tables_value = isset( $_POST['dtbk_keep_tables_on_uninstall'] ) ? '1' : '0'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing -- Checked elsewhere.
 		update_option( 'dtbk_keep_tables_on_uninstall', $keep_tables_value );
-		echo $notices->admin_notice_library( 'save-success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
 
-		$keep_tables_value = isset( $_POST['dt_keep_tables_on_uninstall'] ) ? '1' : '0'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing -- Checked elsewhere.
-		update_option( 'dt_keep_tables_on_uninstall', $keep_tables_value );
+		$enable_cron = isset( $_POST['dtbk_cron_enabled'] ) ? '1' : '0'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing -- Checked elsewhere.
+		update_option( 'dtbk_cron_enabled', $enable_cron );
+
 		echo $notices->admin_notice_library( 'save-success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
 
 		if ( $keep_tables_value === '0' ) {
@@ -150,6 +151,8 @@ class DTBK_Admin {
 	 */
 	public function plugin_main_admin() {
 		$notices = new DTBK_Admin_Notices();
+		$maintenance = DTBK_Maintenance::get_instance();
+		$next = $maintenance->get_next_scheduled();
 
 		if ( $_POST ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing -- This is a nonce verification.
 			if ( ! dtbk_verify_nonce( 'dtbkAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
@@ -189,6 +192,36 @@ class DTBK_Admin {
 						<input name="dtbk_keep_tables_on_uninstall" id="dtbk_keep_tables_on_uninstall" type="checkbox" value="1"
 							<?php checked( '1', get_option( 'dtbk_keep_tables_on_uninstall' ) ); ?>></input>
 					</span>
+				</div>
+
+				<hr class="dtbk-setting-default">
+
+				<div class="admin-checkbox">
+					<span>
+						<label for="dtbk_cron_enabled">Enable background maintenance?</label>
+						<input name="dtbk_cron_enabled" id="dtbk_cron_enabled" type="checkbox" value="1"
+							<?php checked( '1', get_option( 'dtbk_cron_enabled' ) ); ?>></input>
+					</span>
+
+					<p class="description">
+						<?php esc_html_e( 'If your host disables WP-Cron, configure a real cron job to call wp-cron.php or disable this option.', 'dynamic-table-blocks' ); ?>
+					</p>
+
+					<p>
+						<strong><?php esc_html_e( 'Next scheduled run:', 'dynamic-table-blocks' ); ?></strong>
+						<?php
+						if ( $next ) {
+							printf(
+								esc_html__( '%1$s at %2$s', 'dynamic-table-blocks' ),
+								esc_html( date_i18n( get_option( 'date_format' ), $next ) ),
+								esc_html( date_i18n( get_option( 'time_format' ), $next ) )
+							);
+						} else {
+							esc_html_e( 'Not currently scheduled.', 'dynamic-table-blocks' );
+						}
+						?>
+					</p>
+
 				</div>
 
 				<div>

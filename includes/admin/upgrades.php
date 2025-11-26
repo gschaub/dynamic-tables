@@ -96,6 +96,11 @@ class DynamicTableBlocksVersionManagement {
 				Do you want to remove underlying data tables?
 			</p>
 		</div><?php
+
+		// Disable and remove cron.
+		$maintenance = DTBK_Maintenance::get_instance();
+		$maintenance->unschedule_cron_event();
+		delete_transient( 'drbk_cron_lock' );
 	}
 
 	public function uninstall_dynamic_table_blocks($network_wide) {
@@ -142,6 +147,18 @@ class DynamicTableBlocksVersionManagement {
 			add_option( 'dtbk_token', $secret, '', false ); // autoload = false
 		}
 
+		// Ensure cron is enabled and scheduled on activation.
+		$maintenance = DTBK_Maintenance::get_instance();
+
+		if ( false === get_option( 'dtbk_cron_enabled', false ) ) {
+			update_option( 'dtbk_cron_enabled', 1 );
+		}
+
+		if ( $maintenance->is_enabled() ) {
+			$maintenance->ensure_cron_scheduled();
+		}
+
+		// Create/Update database
 		if ( ! isset( $current_db_version ) ) {
 			global $wpdb;
 

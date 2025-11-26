@@ -22,6 +22,11 @@ li.dt-setting-default {
 	margin: 0 0 3px 0px;
 }
 
+hr.dt-setting-default {
+	border: none;
+	height: 2px;
+}
+
 #dtbk_keep_tables_on_uninstall {
 	margin-left: 20px;
 }

@@ -115,6 +115,7 @@ final class DynamicTableBlocks {
 		require_once plugin_dir_path( __FILE__ ) . 'includes/utility-functions.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/api/dynamic-table-blocks-api.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/api/api-helpers.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/cron-trait-schedulable.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/maintenance.php';
 
 		// Register Include admin.
@@ -133,10 +134,7 @@ final class DynamicTableBlocks {
 		}
 
 		register_activation_hook( __FILE__, array( $version_management, 'activate_dynamic_table_blocks' ) );
-		// add_action('wp_initialize_site', array( $version_management, 'new_site_setup' ));
-		// register_deactivation_hook( __FILE__, array( $version_management, 'deactivate_dynamic_table_blocks' ) );
 		register_deactivation_hook( __FILE__, array( $version_management, 'uninstall_dynamic_table_blocks' ) );
-		// register_uninstall_hook(__FILE__, [$version_management, 'uninstall_dynamic_table_blocks']);
 		$version_management->dynamic_tables_has_upgrade( DTBK_UPGRADE_VERSION );
 
 		// Initialize Web Services
@@ -144,6 +142,9 @@ final class DynamicTableBlocks {
 
 		// Init block
 		add_action( 'init', array( $this, 'dynamic_table_block_init' ) );
+
+		// Init Maintenance
+		add_action( 'init', function() {  DTBK_Maintenance::get_instance(); } );
 	}
 
 	/**
@@ -167,6 +168,7 @@ final class DynamicTableBlocks {
 	 * @return  mixed
 	 */
 	public function get_setting( $name ) {
+		// error_log('Settings: ' . json_encode($this->settings));
 		return isset( $this->settings[ $name ] ) ? $this->settings[ $name ] : null;
 	}
 

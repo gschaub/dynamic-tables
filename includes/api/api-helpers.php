@@ -91,9 +91,11 @@ function dtbk_get_setting($name, $value = null) {
 	}
 
 	// filter.
-	$value = apply_filters("dtbk/settings/{$name}", $value);
+	return DynamicTableBlocks::get_instance()->get_setting($name, $value);
 
-	return $value;
+	// $value = apply_filters("dtbk-settings-{$name}", $value);
+
+	// return $value;
 }
 
 /**

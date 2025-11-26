@@ -8,21 +8,74 @@
 
 namespace DynamicTableBlocks;
 
-use Error;
-use WP_Error;
+// use Error;
+// use WP_Error;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class DTBLMaintenance {
+class DTBK_Maintenance {
 
-	// Establish WordPress cron constants
-	const HOOK = 'dynamic-table-blocks/maintenance_run';
-	const SCHEDULE = 'dynamic-table-blocks_five_minutes';
-	const FIRST_DELAY = 1 * MINUTE_IN_SECONDS;
+	use DTBK_Cron_Schedulable;
 
-	private int $cron_minutes_between_runs = 1;
+	/**
+	 * Singleton instance.
+	 *
+	 * @var Dynamic_Tables_Cron_Manager
+	 */
+
+	protected static $instance;
+
+	/**
+	 * Cron schedule key used in cron_schedules.
+	 *
+	 * @var string
+	 */
+	protected string $cron_schedule_key;
+
+	/**
+	 * Interval in seconds.
+	 *
+	 * @var int
+	 */
+	protected int $cron_interval;
+
+	/**
+	 * Human-readable label for the schedule.
+	 *
+	 * @var string
+	 */
+	protected string $cron_schedule_label;
+
+	/**
+	 * Hook name for the cron event.
+	 *
+	 * @var string
+	 */
+	protected string $cron_event_hook;
+
+	/**
+	 * Option name for enabling/disabling cron tasks.
+	 *
+	 * @var string
+	 */
+	protected $option_enabled = 'dtbk_cron_enabled';
+
+	/**
+	 * Transient key for cron lock.
+	 *
+	 * @var string
+	 */
+	protected $lock_key = 'dynamic_tables_cron_lock';
+
+	/**
+	 * Lock lifetime (seconds).
+	 * Should be >= your cron interval.
+	 *
+	 * @var int
+	 */
+	protected $lock_ttl = 600; // 10 minutes.
 
 	/**
 	 * Constructor.
@@ -30,10 +83,32 @@ class DTBLMaintenance {
 	 * @since 1.1.0
 	 */
 	public function __construct() {
-		// Cron hooks
-		add_filter('cron_schedules', array( $this, 'add_schedule' ) );
-		add_action(self::HOOK, array( $this, 'run' ) );
-		add_action('init', array( $this, 'ensure_scheduled' ) );
+		// Cron schedule property initialization.
+		$this->cron_schedule_key   = 'dtbk_every_four_hours';
+		$this->cron_interval       = 240 * MINUTE_IN_SECONDS;  // 4 hour interval in seconds
+		$this->cron_schedule_label = __( 'Dynamic Tables: Every 4 hours', 'dynamic-table-blocks' );
+		$this->cron_event_hook     = 'dtbk_dynamic_tables';
+	}
+
+	public static function get_instance() {
+		if ( null === static::$instance ) {
+			static::$instance = new static();
+			static::$instance->init();
+		}
+
+		return static::$instance;
+	}
+
+	/**
+	 * Bootstrap hooks.
+	 */
+	public function init() {
+		// Initialize cron
+		add_filter( 'cron_schedules', array( $this, 'register_cron_schedule' ) ); // phpcs:ignore WordPress.WP.CronInterval.ChangeDetected
+		$this->ensure_scheduled();
+
+		// Pickup cron event
+		add_action( $this->cron_event_hook, array( $this, 'handle_cron_event' ) );
 
 		// Handle post template instanciation and clones
 		add_action( 'wp_after_insert_post', array( $this, 'on_after_insert_post' ), 10, 3 );
@@ -43,21 +118,14 @@ class DTBLMaintenance {
 	}
 
 	/**
-	 * Schedule the cron trigger
+	 * Is cron enabled
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param  array $schedules
-	 * @return array
+	 * @return bool
 	 */
-	public function add_schedule(array $schedules) {
-		if ( ! isset($schedules[ self::SCHEDULE ]) ) {
-			$schedules[ self::SCHEDULE ] = [
-				'interval' => $this->cron_minutes_between_runs * MINUTE_IN_SECONDS,
-				'display'  => __('Runs on a minutes based interval (Dynamic Blocks)', 'dynamic-table-blocks'),
-			];
-		}
-		return $schedules;
+	public function is_enabled() {
+		return (bool) get_option( $this->option_enabled, 1 );
 	}
 
 	/**
@@ -67,15 +135,49 @@ class DTBLMaintenance {
 	 *
 	 * @return void
 	 */
-	public static function ensure_scheduled() {
-		if ( ! wp_next_scheduled(self::HOOK) ) {
-			// start a few minutes from now to avoid slowing down page load
-			wp_schedule_event(time() + self::FIRST_DELAY, self::SCHEDULE, self::HOOK);
+	public function ensure_scheduled() {
+		if ( $this->is_enabled() ) {
+			$this->ensure_cron_scheduled();
+		} else {
+			$this->unschedule_cron_event();
 		}
 	}
 
 	/**
-	 * Cron tasks to run
+	 * Cron event handler
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return void
+	 */
+	public function handle_cron_event() {
+		error_log('Handling cron event');
+
+		if ( ! $this->is_enabled() ) {
+			return;
+		}
+
+		// Simple lock so two runs don’t overlap.
+		if ( get_transient( $this->lock_key ) ) {
+			$this->log( 'Cron skipped (lock present).' );
+			return;
+		}
+
+		set_transient( $this->lock_key, 1, $this->lock_ttl );
+		$this->log( 'Cron started.' );
+
+		try {
+			$this->run_scheduled_tasks();
+		} catch ( \Throwable $e ) {
+			$this->log( 'Cron error: ' . $e->getMessage() );
+		}
+
+		delete_transient( $this->lock_key );
+		$this->log( 'Cron finished.' );
+	}
+
+	/**
+	 * Cron tasks to run_scheduled_tasks
 	 *
 	 * Description - A supplement to the summary, above.  Full sentences.
 	 *
@@ -83,7 +185,8 @@ class DTBLMaintenance {
 	 *
 	 * @return void
 	 */
-	public function run() {
+	protected function run_scheduled_tasks() {
+		error_log('Running maint schedule');
 		$this->delete_expired_transients();
 		error_log('BEGIN TABLE VALIDATION');
 		error_log(' ');
@@ -91,6 +194,20 @@ class DTBLMaintenance {
 		error_log(' ');
 		error_log('END TABLE VALIDATION');
 		error_log(' ');
+	}
+
+	/**
+	 * Logger wrapper
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param  [type] $message
+	 * @return void
+	 */
+	protected function log( $message ) {
+	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+		error_log( '[DTBK Cron] ' . $message );
+	}
 	}
 
 	/**
@@ -114,7 +231,6 @@ class DTBLMaintenance {
 		$post_blocks = $this->get_dynamic_table_blocks( $search_post_types );
 		$post_indexed_fields = [ 'post_id', 'parent_post_id', 'table_id', 'block_table_ref', 'resolved' ];
 		$post_blocks_index = $this->build_index_for_array($post_blocks, $post_indexed_fields);
-		error_log('Post Blocks for reference = ' . print_r(json_encode($post_blocks), true));
 
 		$search_post_history_types = array(
 			'include' => array( 'revision' ),
@@ -124,13 +240,10 @@ class DTBLMaintenance {
 		$post_history_blocks = $this->get_dynamic_table_blocks( $search_post_history_types );
 		$post_history_indexed_fields = [ 'post_id', 'table_id', 'block_table_ref', 'resolved' ];
 		$post_history_blocks_index = $this->build_index_for_array($post_history_blocks, $post_history_indexed_fields);
-		error_log('Post History Blocks for reference = ' . print_r(json_encode($post_history_blocks), true));
 
 		// loop through each table for validation
 		$tables = get_tables();
 		foreach ( $tables as $table ) {
-			error_log('current table for validation is - ' . print_r(json_encode($table),true));
-
 			// Set search matching criteria
 			$table_id = (int) $table['id'];
 			$post_search_criteria = array(
@@ -144,25 +257,18 @@ class DTBLMaintenance {
 			} else {
 				// If no match is found, search historical post states.
 				// Table data will be maintained if there is a historical match.
-				error_log('Moving to history');
 				$matching_post_history = $this->perform_indexed_and_search($post_blocks, $post_history_blocks_index, $post_search_criteria);
 				if ( $matching_post_history ) {
-					error_log('Processing History Match');
 					$this->process_table_post_matches($matching_post_history, $table);
 				} elseif ( $table['status'] !== 'orphan' ) {
 					// Tables without a matching post are marked as orphaned or optionally deleted
-					error_log('Table id = ' . $table_id);
 					$full_table = $this->get_table( (int) $table_id);
-					error_log('Returned full table = ' . json_encode($full_table));
 					if ( $this->is_api_return_error($full_table) ) {
 						// Table is corrupt - delete table
-						error_log('Table is Corrupt');
 						$this->delete_table( (int) $table_id);
 					} else {
 						$full_table['header']['status'] = 'orphan';
-						error_log('Orphan Table = ' . json_encode($full_table));
 						$response = $this->update_table($full_table);
-						error_log('Error updating table = ' . json_encode($response));
 					}
 				}
 			}
@@ -187,13 +293,10 @@ class DTBLMaintenance {
 		$posts_matched = 0;
 
 		foreach ( $matching_posts as $post_block ) {
-			error_log ('Found post block: ' . print_r(json_encode($post_block), true));
-
 			if ( (int) $table['post_id'] === 0 ) {
 				if ( $post_block['block_table_ref'] === $table['block_table_ref'] ) {
 					// Update Post Id
 					$full_table = $this->get_table( (int) $table['id']);
-					error_log('Original table = ' . json_encode($full_table));
 					$full_table['header']['post_id'] = $post_block['post_id'];
 					$this->update_table($full_table);
 
@@ -414,20 +517,13 @@ class DTBLMaintenance {
 		$request->set_header( 'Content-Type', 'application/json' );
 		$request->set_query_params( array( 'context' => 'edit' ));
 
-		error_log('Get Table REST Request headers = ' . json_encode($request->get_headers()));
-		error_log('Get Table REST Request body = ' . json_encode($request->get_body()));
-
 		// Execute the request
 		$response = rest_do_request( $request );
-		error_log('REST Response body = ' . json_encode($response->data));
 		if ($response->is_error()) return $response;
 
 		// Retrieve the response data
 		$server = rest_get_server();
 		$data   = $server->response_to_data( $response, false ); // Pass false to prevent authentication checks for internal requests
-
-		error_log('Response to data = ' . json_encode($data) );
-		// error_log('Is Response error? ' . $this->is_api_return_error($response));
 		return $data;
 	}
 
@@ -446,8 +542,6 @@ class DTBLMaintenance {
 		$body   = wp_json_encode( $table );
 		$signature = $this->build_internal_signature( $method, $path, $body );
 
-		error_log('Table update data = ' . json_encode($table));
-
 		// Create rest request to create table
 		$request = new \WP_REST_Request( $method, $path );
 		$request->set_header( 'X-DTBK-Signature', $signature );
@@ -461,15 +555,6 @@ class DTBLMaintenance {
 		// Retrieve the response data
 		$server = rest_get_server();
 		$data   = $server->response_to_data( $response, false ); // Pass false to prevent authentication checks for internal requests
-
-		if ( is_wp_error( $data ) ) {
-			// Convert to a WP_Error object.
-			$error = $response->as_error();
-			// $message = $response->get_error_message();
-			// $error_data = $response->get_error_data();
-			$status = isset( $error_data['status'] ) ? $error_data['status'] : 500;
-			// wp_die( printf( '<p>An error occurred: %s (%d)</p>', $message, $error_data ) );
-		}
 		return $data['id'];
 	}
 
@@ -485,28 +570,18 @@ class DTBLMaintenance {
 		$path   = '/dynamic-table-blocks/v1/tables/' .  (int) $table['id'];
 		$method = 'PUT';
 		$body   = wp_json_encode( $table );
-		error_log('Table update data = ' . json_encode($table));
 
 		$signature = $this->build_internal_signature( $method, $path, $body );
-		error_log('DETERMINE FINAL CRON USER STRATEGY');
-		// wp_set_current_user( 'sysadmin' );
-		// error_log('Table UPdate = ' . json_encode($table));
 
 		// Create rest request to create table
 		$request = new \WP_REST_Request( $method, $path, $body);
-		// $request = new \WP_REST_Request( 'POST', '/dynamic-table-blocks/v1/tables/' .  (int) $table['id'] );
 		$request->set_header( 'X-DTBK-Signature', $signature );
 		$request->set_header( 'Content-Type', 'application/json' );
 		$request->set_query_params( array( 'context' => 'edit' ));
 		$request->set_body( $body );
 
-		// error_log('In Update');
 		// Execute the request
-		$response = rest_do_request( $request );
-
-		// Retrieve the response data
-		$server = rest_get_server();
-		$data   = $server->response_to_data( $response, false ); // Pass false to prevent authentication checks for internal requests
+		rest_do_request( $request );
 	}
 
 	/**
@@ -531,20 +606,7 @@ class DTBLMaintenance {
 		// $request->set_body( $body );
 
 		// Execute the request
-		$response = rest_do_request( $request );
-
-		// Retrieve the response data
-		$server = rest_get_server();
-		$data   = $server->response_to_data( $response, false ); // Pass false to prevent authentication checks for internal requests
-
-		if ( is_wp_error( $data ) ) {
-			// Convert to a WP_Error object.
-			$error = $response->as_error();
-			// $message = $response->get_error_message();
-			// $error_data = $response->get_error_data();
-			$status = isset( $error_data['status'] ) ? $error_data['status'] : 500;
-			// wp_die( printf( ' < p > An error occurred: % s ( % d) < / p > ', $message, $error_data ) );
-		}
+		rest_do_request( $request );
 	}
 
 	/**
@@ -642,7 +704,6 @@ class DTBLMaintenance {
 						isset( $block['attrs']) &&
 						! empty( $block['attrs']  ) ) {
 							$attrs = $block['attrs'];
-							error_log('Block attributes = ' . json_encode($attrs));
 							array_push( $post_blocks, [
 								'post_id'         => (int) $post->ID,
 								'parent_post_id'  => (int) wp_is_post_revision( $post->ID ) ? (int) wp_get_post_parent_id( $post->ID ) : (int) $post->ID,
@@ -663,7 +724,6 @@ class DTBLMaintenance {
 		if ( $response->is_error() ) {
 			$error = $response->as_error();  // returns WP_Error or null
 			if ( is_wp_error( $error ) ) {
-				error_log( 'Error Code = ' . $error->get_error_data()['status'] );
 				$wp_error_code = (int) $error->get_error_data()['status'];
 				if ( $wp_error_code !== 0 && ( $wp_error_code < 200 || $wp_error_code >= 299 )) return true;
 			}
@@ -671,7 +731,6 @@ class DTBLMaintenance {
 
 		// Check for normal http status error code
 		$status_code = wp_remote_retrieve_response_code( $response );
-		error_log('API response status = ' . $status_code );
 		if ( $status_code !== '' && ( $status_code < 200 || $status_code >= 299 ) ) return true;
 
 		return false;
@@ -755,4 +814,5 @@ class DTBLMaintenance {
 	}
 }
 
-dtbk_new_instance( 'DTBLMaintenance' );
+// DTBK_Maintenance::get_instance();
+// add_action( 'init', array( 'DynamicTableBlocks\DTBK_Maintenance', 'get_instance' ) );
