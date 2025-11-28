@@ -46,7 +46,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		$tables = get_tables();
 		$table_items = array();
 
-		foreach ( $tables as $index => $table ) {
+		foreach ( $tables as $table ) {
 			$table_data = $this->prepare_table($table);
 
 			// Filter results if submitted a search string
@@ -54,7 +54,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 				$table_items[] = $table_data;
 			} else {
 				$found = false;
-				foreach ( $table_data as $key => $column ) {
+				foreach ( $table_data as $column ) {
 					if ( ! $found ) {
 						if ( stripos( strtolower($column), strtolower($_POST['s'])) !== false ) {
 							$found = true;
@@ -71,7 +71,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		$hidden = $this->get_hidden_columns();
 		$sortable = $this->get_sortable_columns();
 
-		$primary = 'id';
+		$primary = 'name';
 		$this->_column_headers = array( $columns, $hidden, $sortable, $primary );
 
 		usort($table_items, array( &$this, 'usort_reorder' ));
@@ -92,6 +92,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 			'per_page'    => $per_page,
 			'total_pages' => ceil( $num_tables / $per_page ),
 		));
+		error_log('Table Items = '. print_r(json_encode($table_items), true));
 
 		$this->items = $table_items;
 		$this->process_action();
@@ -100,8 +101,8 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 	public function get_columns() {
 		$columns = array(
 			'cb'       => '<input type="checkbox" />',
-			'id'       => __('Table Id', 'dynamic-table-blocks'),
-			'name'     => __('Description','dynamic-table-blocks'),
+			'name'     => __('Table Name','dynamic-table-blocks'),
+			'id'       => __('ID', 'dynamic-table-blocks'),
 			'status'   => __('Status', 'dynamic-table-blocks'),
 			'post'     => __('Post','dynamic-table-blocks'),
 			'posttype' => __('Post Type','dynamic-table-blocks'),
@@ -177,8 +178,8 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		}
 
 		$transformed_table = array(
-			'id'       => ( (int) $table['id'] ),
 			'name'     => $table['table_name'],
+			'id'       => ( (int) $table['id'] ),
 			'status'   => $table['status'],
 			'post'     => $post_display,
 			'posttype' => $post_type,
@@ -206,7 +207,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		);
 	}
 
-	protected function column_id ($item) {
+	protected function column_name ($item) {
 		$actions = array(
 			'update_status' => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Update Status', 'dynamic-table-blocks') . '</a>',
 				$_REQUEST['page'],

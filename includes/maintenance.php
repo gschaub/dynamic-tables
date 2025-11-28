@@ -151,8 +151,6 @@ class DTBK_Maintenance {
 	 * @return void
 	 */
 	public function handle_cron_event() {
-		error_log('Handling cron event');
-
 		if ( ! $this->is_enabled() ) {
 			return;
 		}

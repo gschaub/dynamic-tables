@@ -21,7 +21,6 @@ trait DTBK_Cron_Schedulable {
 	 * @return array
 	 */
 	public function register_cron_schedule( $schedules ) {
-		error_log('In Cron Registration');
 		if ( empty( $this->cron_schedule_key ) || empty( $this->cron_interval ) ) {
 			return $schedules;
 		}
@@ -40,7 +39,6 @@ trait DTBK_Cron_Schedulable {
 	 * Call from activation hook or init.
 	 */
 	public function ensure_cron_scheduled() {
-		error_log('In Ensure Scheduled');
 		if ( empty( $this->cron_event_hook ) || empty( $this->cron_schedule_key ) ) {
 			return;
 		}
@@ -56,8 +54,6 @@ trait DTBK_Cron_Schedulable {
 	 * Call from deactivation hook, or when disabling via settings.
 	 */
 	public function unschedule_cron_event() {
-		error_log('In Cron unschedule');
-
 		if ( empty( $this->cron_event_hook ) ) {
 			return;
 		}
@@ -75,7 +71,6 @@ trait DTBK_Cron_Schedulable {
 	 * @return int|false
 	 */
 	public function get_next_scheduled() {
-		error_log('In Cron get mext schedule');
 		if ( empty( $this->cron_event_hook ) ) {
 			return false;
 		}
