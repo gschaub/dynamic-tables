@@ -109,7 +109,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			'get_tables',
 			sprintf(
 				/* translators: 1: The taxonomy name, 2: The property name, either 'rest_base' or 'name', 3: The conflicting value. */
-				__( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use', 'dynamic-table-blocks' ),
+				esc_attr_e( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use', 'dynamic-table-blocks' ),
 			),
 			'1.0'
 		);
@@ -130,7 +130,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			'get_tables',
 			sprintf(
 				/* translators: 1: The taxonomy name, 2: The property name, either 'rest_base' or 'name', 3: The conflicting value. */
-				__( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use' , 'dynamic-table-blocks'),
+				esc_attr_e( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use' , 'dynamic-table-blocks'),
 			),
 			'1.0'
 		);
@@ -145,15 +145,12 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return bool|WP_Error True if the request has read access for the item, WP_Error object or false otherwise.
 	 */
 	public function get_item_permissions_check( $request ) {
-		error_log('REST API - getting table: ' . $request['id']);
 		// Permissions for editing a table are based upon the underlying post to which
 		// it is attached.
-		error_log('REST API - In GET permission check');
 
 		// Determine if this is from internal maintenance, verify signature, and authorize if verified
 		if ( $this->verify_internal_signature( $request ) ) {
 			$this->maintenance_request = true;
-			error_log('REST API - Internally signed');
 			return true;
 		}
 
@@ -163,7 +160,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			return $table;
 		}
 
-		// Permissions for reading  a table are based upon the underlying post to which
+		// Permissions for reading a table are based upon the underlying post to which
 		// it is attached.
 		if ( isset( $table['header']['post_id'] ) ) {
 			$post_id = (int) $table['header']['post_id'];
@@ -211,10 +208,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_item( $request ) {
-		error_log('In get table service, id = ' . $request['id']);
 		$table = $this->get_table( $request['id'] );
 		if ( is_wp_error( $table ) ) {
-			error_log('WP Error = ' . json_encode($table));
 			return $table;
 		}
 
@@ -250,30 +245,24 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		}
 
 		$table = get_table( (int) $id, $validate_header_only );
-		error_log('REST API - Returned Table: ' . json_encode($table));
 		if ( is_wp_error( $table ) && $table->get_error_code() === 404 ) {
-			error_log('REST API - Error 1');
 			return $error_header;
 		}
 
 		if ( is_wp_error( $table ) && $table->get_error_code() === 500 ) {
-			error_log('REST API - Error 2');
 			return $error_body;
 		}
 
 		if ( is_wp_error( $table ) ) {
-			error_log('REST API - Error 3');
 			return $error_body;
 		}
 
 		if ( empty( $table ) ) {
-			error_log('REST API - Error 4');
 			return $error_body;
 		}
 
 		if ($validate_header_only) return $table;
 
-		error_log('REST API - Prepping Return');
 		$table_title     = $table['header']['table_name'];
 		$table = $table += array( 'title' => $table_title );
 
@@ -329,11 +318,9 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			);
 		}
 
-		error_log('REST API - In POST permission check');
 		// Determine if this is from internal maintenance, verify signature, and authorize if verified
 		if ( $this->verify_internal_signature( $request ) ) {
 			$this->maintenance_request = true;
-			error_log('REST API - Internally signed');
 			return true;
 		}
 
@@ -442,26 +429,21 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	public function update_item_permissions_check( $request ) {
 		// Permissions for editing a table are based upon the underlying post to which
 		// it is attached.
-		error_log('REST API - In UPDATE permission check');
 
 		// Determine if this is from internal maintenance, verify signature, and authorize if verified
 		if ( $this->verify_internal_signature( $request ) ) {
 			$this->maintenance_request = true;
-			error_log('REST API - Internally signed');
 			return true;
 		}
 
-		error_log('REST API - Checking Update Permissions');
 		if ( isset( $request['header']['post_id'] ) ) {
 			$post_id = (int) $request['header']['post_id'];
-			error_log('REST API - Found Post ID = ' . $post_id);
 
 			if ( $post_id !== 0 ) {
 				$post = $this->get_post( $post_id);
 				if ( is_wp_error( $post ) ) {
 					return $post;
 				}
-				error_log('REST API - Found Post');
 				$post_type = get_post_type_object( $post->post_type );
 
 				if ( $post && ! $this->check_update_permission( $post ) ) {
@@ -471,7 +453,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 						array( 'status' => rest_authorization_required_code() )
 					);
 				}
-				error_log('REST API - Passed Permission Check');
 
 				if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
 					return new \WP_Error(
@@ -480,7 +461,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 						array( 'status' => rest_authorization_required_code() )
 					);
 				}
-				error_log('REST API - Passed Author Permission Check');
 			}
 
 			if ( $post_id === 0 && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
@@ -509,7 +489,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function update_item( $request ) {
-		error_log('Update request: ' . $request->get_body());
 		$valid_check = $this->get_table( $request['id'] );
 		if ( is_wp_error( $valid_check ) ) {
 			return $valid_check;
@@ -554,19 +533,15 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return true|WP_Error True if the request has access to delete the item, WP_Error object otherwise.
 	 */
 	public function delete_item_permissions_check( $request ) {
-		error_log('REST API - In permission check');
-
 		// Determine if this is from internal maintenance, verify signature, and authorize if verified
 		if ( $this->verify_internal_signature( $request ) ) {
 			$this->maintenance_request = true;
-			error_log('REST API - Internally signed');
 			return true;
 		}
 
 		$table = $this->get_table( $request['id'] );
 
 		if ( is_wp_error( $table ) ) {
-			error_log('REST API - Error retrieving table to delete');
 			return new \WP_Error(
 				'rest_table_invalid_id',
 				__( 'Invalid table ID.', 'dynamic-table-blocks' ),
@@ -578,7 +553,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		// it is attached.
 		if ( isset( $table['header']['post_id'] ) ) {
 			$post_id = (int) $table['header']['post_id'];
-			error_log('REST API - Post ID is set and post id = ' . $post_id);
 
 			if ( ! $post_id === 0 ) {
 				$post = $this->get_post( $post_id);
@@ -617,15 +591,12 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				);
 			}
 		} elseif ( 'edit' === $request['context'] && ! current_user_can( 'edit_posts' ) ) {
-			error_log('REST API - No permission to edit post');
 			return new \WP_Error(
 				'rest_forbidden_context',
 				__( 'Sorry, you are not allowed to delete this post.', 'dynamic-table-blocks' ),
 				array( 'status' => rest_authorization_required_code() )
 			);
 		}
-
-		error_log('REST API - Passed Delete Check');
 
 		return true;
 	}
@@ -647,7 +618,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		}
 
 		if ( is_wp_error( $table ) ) {
-			error_log('Delete could not find table');
 			return $table;
 		}
 
@@ -655,12 +625,10 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		$request->set_param( 'context', 'edit' );
 
 		if ( $this->maintenance_request ) {
-			error_log('REST API - Forcing validation of table');
 			$response_result = array(
 				'deleted' => true,
 			);
 		} else {
-			error_log('REST API - Preparing regular delete response');
 			$previous = $this->prepare_item_for_response( $table, $request );
 			$response_result = array(
 				'deleted'  => true,
@@ -670,7 +638,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		$result   = delete_table( $id, $this->maintenance_request );
 		$response = new \WP_REST_Response();
 		$response->set_data($response_result);
-		error_log('Delete data has run with result = ' . json_encode($result));
 
 		if ( ! $result ) {
 			return new \WP_Error(
@@ -697,8 +664,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			return false;
 		}
 
-		error_log('REST API - Current User is ' . json_encode(get_current_user()));
-		error_log('REST API - Post ID = ' . $post->ID);
 		return current_user_can( 'edit_post', $post->ID );
 	}
 
@@ -1326,8 +1291,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		$expected = hash_hmac( 'sha256', $msg, $key );
 		$header   = $request->get_header( 'x-dtbk-signature' );
-		error_log('Expected Token = ' . $expected);
-		error_log('Token = ' . $header);
 
 		return $header && hash_equals( $expected, $header );
 	}

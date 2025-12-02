@@ -1,41 +1,59 @@
-h1.dt-setting-default h2.dt-setting-default {
+.dtbk-setting-default {
+	font-size: 14px;
+}
+
+.dtbk-setting-default h1,
+.dt-setting-default h2 {
 	font-weight: 600;
 }
 
-h2.dt-setting-default {
+.dtbk-setting-default h2 {
 	margin: 1em 0 .5em 0;
 }
 
-p.dt-setting-default {
-	font-size: 14px;
+.dtbk-setting-default p {
 	line-height: 1.4em;
 	margin: 1em 0 1em 0;
 }
 
-ul.dt-setting-default {
+.dtbk-setting-default ul {
 	list-style-position: outside;
 	margin-left: 20px;
 }
 
-li.dt-setting-default {
+.dtbk-setting-default li {
 	list-style-type: initial;
 	margin: 0 0 3px 0px;
 }
 
-hr.dt-setting-default {
-	border: none;
-	height: 2px;
+.dtbk-setting-default hr {
+	border: none; /* Remove default user agent styles */
+  	border-top: 2px solid #ccc; /* Lighter color for the top/highlight */
+  	border-bottom: 2px solid #666; /* Darker color for the bottom/shadow */
+  	height: 0; /* Ensures no extra space between the two borders */
+  	margin: 10px 0; /* Add some margin above and below */
 }
 
 #dtbk_keep_tables_on_uninstall {
 	margin-left: 20px;
 }
 
-.dtbk-setting-default {
-	font-size: 14px;
-}
-
 .admin-checkbox {
 	margin-bottom: 6px;
 	max-width: fit-content;
+}
+
+.dtbk-view-table-data {
+	font-size: 14px;;
+}
+
+.dtbk-view-table-data2 table {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dtbk-view-table-data thead,
+.dtbk-view-table-data p {
+	text-align: center;
 }

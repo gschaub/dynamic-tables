@@ -8,7 +8,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-// #[\AllowDynamicProperties]
 class DTBK_Admin_Ajax {
 
 	// private array $notices = new DT_Admin_Notices();
@@ -23,34 +22,31 @@ class DTBK_Admin_Ajax {
 	}
 
 	public function view_table() {
-		// error_log('In Ajax View');
-
+		// Check nonce
 		check_ajax_referer( 'dtbk-table-list' );
 
-		error_log('Post Data = ' . json_encode($_POST));
 		$table_id = $_POST['id'];
 		if ( empty( $table_id ) ) {
 			wp_send_json_error( [ 'message' => __( 'No items selected.', 'dynamic-table-blocks' ) ], 400 );
 		}
 
-		// $table_id = isset($ids) ? $ids[0] : '';
-
+		// Create rest request to create table
 		wp_set_current_user( get_current_user_id() );
-		$request = new Dynamic_Tables_REST_Controller( 'GET', '/dynamic-table-blocks/v1/tables/' . $table_id);
+		$path   = '/dynamic-table-blocks/v1/tables/' .  $table_id;
+		$method = 'GET';
+		$request = new \WP_REST_Request( $method, $path );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_query_params( array( 'context' => 'edit' ));
 
+		// Execute the request
 		$response = rest_do_request( $request );
-		$view_table_id = $response->data['id'];
-		$view_table_num_columns = count($response->data['columns']);
-		$view_table_num_rows = count($response->data['columns']);
+		if ($response->is_error()) return $response;
+
 		$view_current_row = (int) 1;
 		$view_table_rows = array();
 		$view_table_row_cells = array();
 
-		error_log('Table Data = ' . json_encode($response->data));
-		error_log(' ');
-
-		foreach ( $response->data['cells'] as $key => $cell ) {
-
+		foreach ( $response->data['cells'] as $cell ) {
 			if ( $cell['row_id'] > $view_current_row ) {
 				array_push(
 					$view_table_rows,
@@ -81,19 +77,13 @@ class DTBK_Admin_Ajax {
 			)
 		);
 
-		error_log('Cells Processed = ' . json_encode($view_table_rows));
-
 		wp_send_json_success(
 			array(
-				'cells' => $view_table_rows,
+				'cells' => json_encode($view_table_rows),
 			),
 			200
 		);
 
-		// wp_send_json_success( [
-		//  'removed' => $ids,
-		//  'notice'  => sprintf( _n( 'Deleted %d item.', 'Deleted %d items.', count( $ids ), 'bk-demo' ), count( $ids ) ),
-		// ] );
 		wp_die();
 	}
 }

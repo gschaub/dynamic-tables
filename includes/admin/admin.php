@@ -90,7 +90,6 @@ class DTBK_Admin {
 	}
 
 	public function enqueue_admin_assets() {
-		// error_log('URL = ' . dtbk_get_setting( 'url' ));
 		wp_enqueue_style( 'adminCss', dtbk_get_setting( 'url' ) . 'assets/css/admin.css' );
 
 		// Fix to make conditional
@@ -98,19 +97,18 @@ class DTBK_Admin {
 			wp_enqueue_script( 'jquery-ui-dialog' );
 			wp_enqueue_style( 'wp-jquery-ui-dialog' );
 			wp_enqueue_script(
-				'dt-table-list',
-				// plugins_url('dt-table-list.js', __FILE__),
-				dtbk_get_setting( 'url' ) . 'assets/js/dt-table-list.js',
+				'dtbk-table-list',
+				dtbk_get_setting( 'url' ) . 'assets/js/dtbk-table-list.js',
 				[ 'jquery', 'jquery-ui-dialog' ],
 				'1.1.0',
 				true
 			);
 
-			wp_localize_script( 'dt-table-list', 'DT_TABLE_LIST', [
+			wp_localize_script( 'dtbk-table-list', 'DTBK_TABLE_LIST', [
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( 'dt-table-list' ),
+				'nonce'   => wp_create_nonce( 'dtbk-table-list' ),
 				'i18n'    => [
-					'view'         => __( 'View table data.', 'dynamic-table-blocks' ),
+					'view'         => __( 'Table Data ', 'dynamic-table-blocks' ),
 					'deleted'      => __( 'Deleted successfully.', 'dynamic-table-blocks' ),
 					'error'        => __( 'Something went wrong.', 'dynamic-table-blocks' ),
 					'confirmTitle' => __( 'Confirm Delete', 'dynamic-table-blocks' ),
@@ -194,7 +192,7 @@ class DTBK_Admin {
 					</span>
 				</div>
 
-				<hr class="dtbk-setting-default">
+				<hr>
 
 				<div class="admin-checkbox">
 					<span>
@@ -289,7 +287,7 @@ class DTBK_Admin {
 	public function plugin_table_maintenance() {
 		$admin_table_listing = new DTBK_List_Dynamic_Table_Blocks();
 
-		echo '<div class = "wrap"><h2>Dynamic Table List</h2>';
+		echo '<div class = "wrap"><h2>Dynamic Tables</h2>';
 		echo '<form method = "post">';
 
 		$admin_table_listing->prepare_items();

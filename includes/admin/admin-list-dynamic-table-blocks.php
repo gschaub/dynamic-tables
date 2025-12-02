@@ -48,6 +48,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 
 		foreach ( $tables as $table ) {
 			$table_data = $this->prepare_table($table);
+			error_log('$_POST output = ' . json_encode($_POST));
 
 			// Filter results if submitted a search string
 			if ( ! isset($_POST['s']) ) {
@@ -92,12 +93,35 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 			'per_page'    => $per_page,
 			'total_pages' => ceil( $num_tables / $per_page ),
 		));
-		error_log('Table Items = '. print_r(json_encode($table_items), true));
 
 		$this->items = $table_items;
 		$this->process_action();
 	}
 
+	/**
+	 * Provide links at the top to filter tables
+	 *
+	 * Description - Part of WP_List_Table class extension to provide view filter links.  Reserved for future
+	 *               use.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return void
+	 */
+	protected function get_views() {
+		$status_links = array();
+		return $this->get_views_links( $status_links );
+	}
+
+	/**
+	 * Create column definitions
+	 *
+	 * Description - Identifies each column to display and the column order and assigns column header text.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array Column definition array
+	 */
 	public function get_columns() {
 		$columns = array(
 			'cb'       => '<input type="checkbox" />',
@@ -110,6 +134,15 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		return $columns;
 	}
 
+	/**
+	 * Identifies which columns will be hidden or displayed
+	 *
+	 * Description - Accesses user meta options to determine which columns should be displayed.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array Columns to hide in the UI
+	 */
 	public function get_hidden_columns() {
 		$hidden = (
 			is_array(get_user_meta( get_current_user_id(),
@@ -119,6 +152,13 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		return $hidden;
 	}
 
+	/**
+	 * Identify which columns the user can sort by.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return array List of sortable columns
+	 */
 	protected function get_sortable_columns() {
 		$sortable_columns = array(
 			'name'     => array( 'name', false, __('Table Name','dynamic-table-blocks'), __('Decsription of Table Contents','dynamic-table-blocks') ),
@@ -159,6 +199,14 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		return ( $order === 'asc' ) ? $result : -$result;
 	}
 
+	/**
+	 * Prepare the data for each row that will be displayed
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param  array $table   Data from database associated with each table list item
+	 * @return array          Transformed table item data
+	 */
 	public function prepare_table($table) {
 		$is_post = null !== get_post( $table['post_id']);
 		$post_type = 'No Post';
@@ -187,6 +235,18 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		return $transformed_table;
 	}
 
+	/**
+	 * Provide default handling for each column
+	 *
+	 * Description - Column are only those that do not have their own specific handling
+	 *               requirements.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param  array          $item           Table Row
+	 * @param  string         $column_name    Column associated with the table row
+	 * @return string|array                   Contents of the column
+	 */
 	protected function column_default( $item, $column_name) {
 		switch ( $column_name ) {
 			case 'name':
@@ -199,6 +259,14 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		}
 	}
 
+	/**
+	 * Column check box
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param  array   $item   Table Row
+	 * @return string          HTML table row checkbox
+	 */
 	protected function column_cb ($item) {
 		return sprintf(
 			'<input type="checkbox" name="%1$s[]" value="%2$s" />',
@@ -207,35 +275,74 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		);
 	}
 
+	/**
+	 * Available actions associated with the name column
+	 *
+	 * Description - Each action will appear under the table row when on hover of the row and
+	 *               will provide the hook for processing the action
+	 *
+	 * @since 1.1.0
+	 * @todo Implement remaining actions
+	 *
+	 * @param  array   $item   Table Row
+	 * @return string          HTML required to display and process the action
+	 */
 	protected function column_name ($item) {
+		error_log('Column Name $_REQUEST output = ' . json_encode($_REQUEST));
+
 		$actions = array(
-			'update_status' => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Update Status', 'dynamic-table-blocks') . '</a>',
-				$_REQUEST['page'],
-				'update_status',
-				$item['id']),
+			// 'update_status' => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Update Status', 'dynamic-table-blocks') . '</a>',
+			//  $_REQUEST['page'],
+			//  'update_status',
+			//  $item['id']),
 
-			'export'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Export', 'dynamic-table-blocks') . '</a>',
-				$_REQUEST['page'],
-				'export',
-				$item['id']),
-
-			'view'          => sprintf('<a href="#" data-dtbk-action="view" data-id="%d">%s</a>',
+			// 'export'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Export', 'dynamic-table-blocks') . '</a>',
+			//  $_REQUEST['page'],
+			//  'export',
+			//  $item['id']),
+			//
+			'view' => sprintf('<a href="#" data-dtbk-action="view" data-id="%d">%s</a>',
 				(int) $item['id'],
 				esc_html__( 'View', 'dynamic-table-blocks' )),
 
-			'delete'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Delete', 'dynamic-table-blocks') . '</a>',
-				$_REQUEST['page'],
-				'delete',
-				$item['id']),
+			// 'delete'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Delete', 'dynamic-table-blocks') . '</a>',
+			//  $_REQUEST['page'],
+			//  'delete',
+			//  $item['id']),
 		);
-		return sprintf('%1$s %2$s', $item['id'], $this->row_actions($actions));
+		return sprintf('%1$s %2$s', $item['name'], $this->row_actions($actions));
 	}
 
+	/**
+	 * ID number associated with a particular table row
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param  array   $item   Table Row
+	 * @return int             Table ID
+	 */
+	protected function column_id( $item ) {
+		return (int) $item['id'];
+	}
+
+	/**
+	 * Available bulk actions available based on associated check boxes
+	 *
+	 * Description - Each action will appear as a drop down in the table header and
+	 *               footer.  The selected bulk action will be applied to all rows selected
+	 *               with a checked box on the left.
+	 *
+	 * @since 1.1.0
+	 * @todo Bulk actions to be implemented
+	 *
+	 * @return array    All available bulk actions for the table
+	 */
 	function get_bulk_actions() {
-		return array(
-			'update_all_statuses' => __('Update Status', 'dynamic-table-blocks'),
-			'delete_all'          => __('Delete', 'dynamic-table-blocks'),
-		);
+		// Reserved for future use
+		// return array(
+		//  'update_all_statuses' => __('Update Status', 'dynamic-table-blocks'),
+		//  'delete_all'          => __('Delete', 'dynamic-table-blocks'),
+		// );
 	}
 
 	/**
@@ -255,6 +362,13 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		echo '</style>';
 	}
 
+	/**
+	 * Perform the action selected, whether single row or in bulk
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return void
+	 */
 	public function process_action() {
 		$notices = new DTBK_Admin_Notices();
 
@@ -263,7 +377,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		//  wp_die( 'Security check failed.' );
 		// }
 
-		error_log('GET Request = ' . wp_json_encode( $_REQUEST));
+		error_log('Process Action $_REQUEST output = ' . json_encode($_REQUEST));
 
 		$action = $this->current_action();
 		$bulk_action = isset( $_REQUEST['bulk_action'] );
