@@ -4,7 +4,7 @@
  * Description:       Create custom table blocks with highly customizable and responsive formats
  * Requires at least: 6.1
  * Requires PHP:      8.0
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            Gregory Schaub
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -108,13 +108,15 @@ final class DynamicTableBlocks {
 		}
 
 		// Register included files
-		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-tables-rest-api.php';
-		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-tables-db-persist.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-table-blocks-rest-api.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-table-blocks-db-persist.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/admin/upgrades.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/render-helper.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/utility-functions.php';
-		require_once plugin_dir_path( __FILE__ ) . 'includes/api/dynamic-tables-api.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/api/dynamic-table-blocks-api.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/api/api-helpers.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/cron-trait-schedulable.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/maintenance.php';
 
 		// Register Include admin.
 		$admin_screen = 'false';
@@ -122,6 +124,8 @@ final class DynamicTableBlocks {
 			$admin_screen = 'true';
 			require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin.php';
 			require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin-notices.php';
+			require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin-dtbk-ajax.php';
+			require_once plugin_dir_path( __FILE__ ) . 'includes/admin/admin-list-dynamic-table-blocks.php';
 		}
 
 		// Handle Plugin Add, Upgrade, Delete
@@ -130,10 +134,7 @@ final class DynamicTableBlocks {
 		}
 
 		register_activation_hook( __FILE__, array( $version_management, 'activate_dynamic_table_blocks' ) );
-		// add_action('wp_initialize_site', array( $version_management, 'new_site_setup' ));
-		// register_deactivation_hook( __FILE__, array( $version_management, 'deactivate_dynamic_table_blocks' ) );
 		register_deactivation_hook( __FILE__, array( $version_management, 'uninstall_dynamic_table_blocks' ) );
-		// register_uninstall_hook(__FILE__, [$version_management, 'uninstall_dynamic_table_blocks']);
 		$version_management->dynamic_tables_has_upgrade( DTBK_UPGRADE_VERSION );
 
 		// Initialize Web Services
@@ -141,6 +142,9 @@ final class DynamicTableBlocks {
 
 		// Init block
 		add_action( 'init', array( $this, 'dynamic_table_block_init' ) );
+
+		// Init Maintenance
+		add_action( 'init', function() {  DTBK_Maintenance::get_instance(); } );
 	}
 
 	/**
@@ -164,6 +168,7 @@ final class DynamicTableBlocks {
 	 * @return  mixed
 	 */
 	public function get_setting( $name ) {
+		// error_log('Settings: ' . json_encode($this->settings));
 		return isset( $this->settings[ $name ] ) ? $this->settings[ $name ] : null;
 	}
 

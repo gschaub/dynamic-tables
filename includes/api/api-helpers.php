@@ -21,8 +21,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param   string $name Name of the setting to check for.
  * @return  boolean Does setting exist
  */
-function dtbk_has_setting($name = '') {
-	return DynamicTableBlocks::get_instance()->has_setting($name);
+function dtbk_has_setting( $name = '' ) {
+	return DynamicTableBlocks::get_instance()->has_setting( $name );
 }
 
 /**
@@ -35,8 +35,8 @@ function dtbk_has_setting($name = '') {
  * @param   string Setting name
  * @return  mixed setting value
  */
-function dtbk_raw_setting($name = '') {
-	return DynamicTableBlocks::get_instance()->has_setting($name);
+function dtbk_raw_setting( $name = '' ) {
+	return DynamicTableBlocks::get_instance()->has_setting( $name );
 }
 
 /**
@@ -47,15 +47,15 @@ function dtbk_raw_setting($name = '') {
  * @since 1.0.0
  *
  * @param  string $name Setting name
- * @param  mixed $value New setting value
+ * @param  mixed  $value New setting value
  * @return mixed updated setting
  */
-function dtbk_update_setting($name, $value) {
+function dtbk_update_setting( $name, $value ) {
 	// validate name.
-	$name = dtbk_validate_setting($name);
+	$name = dtbk_validate_setting( $name );
 
 	// update.
-	return DynamicTableBlocks::get_instance()->update_setting($name, $value);
+	return DynamicTableBlocks::get_instance()->update_setting( $name, $value );
 }
 
 /**
@@ -66,8 +66,8 @@ function dtbk_update_setting($name, $value) {
  * @param  string $name Setting name
  * @return mixed updated setting name if changed
  */
-function dtbk_validate_setting($name = '') {
-	return apply_filters('dtbk/validate_setting', $name);
+function dtbk_validate_setting( $name = '' ) {
+	return apply_filters( 'dtbk/validate_setting', $name );
 	return $name;
 }
 
@@ -82,18 +82,45 @@ function dtbk_validate_setting($name = '') {
  * @param string $value An optional default value for the setting if it doesn't exist.
  * @return  mixed Setting value
  */
-function dtbk_get_setting($name, $value = null) {
-	$name = dtbk_validate_setting($name);
+function dtbk_get_setting( $name, $value = null ) {
+	$name = dtbk_validate_setting( $name );
 
 	// replace default setting value if it exists.
-	if ( dtbk_has_setting($name) ) {
-		$value = dtbk_raw_setting($name);
+	if ( dtbk_has_setting( $name ) ) {
+		$value = dtbk_raw_setting( $name );
 	}
 
 	// filter.
-	$value = apply_filters("dtbk/settings/{$name}", $value);
+	return DynamicTableBlocks::get_instance()->get_setting( $name, $value );
 
-	return $value;
+	// $value = apply_filters("dtbk-settings-{$name}", $value);
+
+	// return $value;
+}
+
+/**
+ * Get encrypted signing key for maintenance REST access and 3rd party access
+ *
+ * Description - A supplement to the summary, above.  Full sentences.
+ *
+ * @since 1.1.0
+ *
+ * @return string    Signing key
+ */
+function dtbk_signing_key() {
+	$secret = get_option( 'dtbk_token', '' );
+
+	if ( ! $secret ) {
+		// Hard fallback if option is missing:
+		$secret = wp_generate_password( 64, true, true );
+		update_option( 'dtbk_token', $secret, false );
+	}
+
+	// Use wp-config salts as extra key material
+	$salt_material = AUTH_KEY . SECURE_AUTH_KEY . LOGGED_IN_KEY . NONCE_KEY;
+
+	// Derive a 256-bit key
+	return hash( 'sha256', $secret . $salt_material, true ); // raw binary
 }
 
 /**
@@ -104,8 +131,8 @@ function dtbk_get_setting($name, $value = null) {
  * @param string $nonce Nonce field.
  * @param string $nonce The nonce parameter string.
  */
-function dtbk_nonce_input($name = '_dtbk_nonce', $nonce = '') {
-	echo '<input type="hidden" name="' . esc_attr($name) . '" value="' . esc_attr(wp_create_nonce($nonce)) . '" />';
+function dtbk_nonce_input( $name = '_dtbk_nonce', $nonce = '' ) {
+	echo '<input type="hidden" name="' . esc_attr( $name ) . '" value="' . esc_attr( wp_create_nonce( $nonce ) ) . '" />';
 }
 
 /**
@@ -121,14 +148,14 @@ function dtbk_nonce_input($name = '_dtbk_nonce', $nonce = '') {
  * @param  string $required_permissions
  * @return bool Is authorization granted
  */
-function dtbk_verify_nonce($nonce, $nonce_action, $required_permissions = '') {
+function dtbk_verify_nonce( $nonce, $nonce_action, $required_permissions = '' ) {
 
-	$dtbk_admin_nonce_prepared = isset($_POST[ $nonce ]) ? sanitize_text_field( wp_unslash($_POST[ $nonce ])) : '';
+	$dtbk_admin_nonce_prepared = isset( $_POST[ $nonce ] ) ? sanitize_text_field( wp_unslash( $_POST[ $nonce ] ) ) : '';
 	if ( ! wp_verify_nonce( $dtbk_admin_nonce_prepared, $nonce_action ) ) {
 		return false;
 	}
 
-	if ( $required_permissions && ! current_user_can($required_permissions) ) {
+	if ( $required_permissions && ! current_user_can( $required_permissions ) ) {
 		return false;
 	}
 	return true;

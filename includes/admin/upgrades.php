@@ -17,6 +17,7 @@ class DynamicTableBlocksVersionManagement {
 	 * The plugin version number.
 	 *
 	 * @since   1.0.0
+	 * @since   1.1.0 Added token for encrypted REST services
 	 *
 	 * @var string
 	 */
@@ -36,8 +37,8 @@ class DynamicTableBlocksVersionManagement {
 
 		if ( get_option( 'dtbk-version' ) ) {
 				$this->current_db_version = get_option( 'dtbk-version' );
-			}
 		}
+	}
 
 	/**
 	 * Workflow for activation
@@ -50,7 +51,7 @@ class DynamicTableBlocksVersionManagement {
 	 * @param  bool $network_wide True if the activation attempt is for the full network.
 	 * @return void
 	 */
-	public function activate_dynamic_table_blocks($network_wide) {
+	public function activate_dynamic_table_blocks( $network_wide ) {
 		$notices = new DTBK_Admin_Notices();
 
 		// Network (multisite) activation
@@ -59,10 +60,11 @@ class DynamicTableBlocksVersionManagement {
 			// Error if multisite activation is not allowed
 			if ( ! DTBK_ALLOW_MULTISITE_ACTIVATION ) {
 				$message = $notices->admin_notice_library( 'network-activation-error' );
-				$title = 'Network Activation Not Allowed';
+				$title   = 'Network Activation Not Allowed';
 
-				wp_die(wp_kses_post($message),
-					esc_html($title),
+				wp_die(
+					wp_kses_post( $message ),
+					esc_html( $title ),
 					array(
 						'back_link' => true,
 					)
@@ -72,7 +74,7 @@ class DynamicTableBlocksVersionManagement {
 				// Activate all sites if allowed
 				$sites = get_sites();
 				foreach ( $sites as $site ) {
-					switch_to_blog( $site->blog_id);
+					switch_to_blog( $site->blog_id );
 					$this->create_environment_on_activation();
 					restore_current_blog();
 				}
@@ -83,8 +85,8 @@ class DynamicTableBlocksVersionManagement {
 		}
 	}
 
-	public function new_site_setup($site) {
-		switch_to_blog( $site->id);
+	public function new_site_setup( $site ) {
+		switch_to_blog( $site->id );
 		$this->create_environment_on_activation();
 		restore_current_blog();
 	}
@@ -94,24 +96,30 @@ class DynamicTableBlocksVersionManagement {
 			<p class="dtbk-deactivate">
 				Do you want to remove underlying data tables?
 			</p>
-		</div><?php
+		</div>
+		<?php
+
+		// Disable and remove cron.
+		$maintenance = DTBK_Maintenance::get_instance();
+		$maintenance->unschedule_cron_event();
+		delete_transient( 'drbk_cron_lock' );
 	}
 
-	public function uninstall_dynamic_table_blocks($network_wide) {
+	public function uninstall_dynamic_table_blocks( $network_wide ) {
 		// Network (multisite) activation
 		if ( DTBK_IS_MULTISITE and $network_wide ) {
 			$sites = get_sites();
 			foreach ( $sites as $site ) {
-				switch_to_blog( $site->blog_id);
-				if ( get_option('dtbk_keep_tables_on_uninstall') ) {
-					update_option('dtbk_activation_status', 'Uninstalled');
+				switch_to_blog( $site->blog_id );
+				if ( get_option( 'dtbk_keep_tables_on_uninstall' ) ) {
+					update_option( 'dtbk_activation_status', 'Uninstalled' );
 				} else {
 					$this->remove_environment_on_deactivation();
 				}
 				restore_current_blog();
 			}
-		} elseif ( get_option('dtbk_keep_tables_on_uninstall') ) {
-			update_option('dtbk_activation_status', 'Uninstalled');
+		} elseif ( get_option( 'dtbk_keep_tables_on_uninstall' ) ) {
+			update_option( 'dtbk_activation_status', 'Uninstalled' );
 		} else {
 			$this->remove_environment_on_deactivation();
 		}
@@ -127,23 +135,42 @@ class DynamicTableBlocksVersionManagement {
 	 * @return void
 	 */
 	public function create_environment_on_activation() {
-		if ( get_option('dtbk_activation_status') ) {
+		if ( get_option( 'dtbk_activation_status' ) ) {
 			update_option( 'dtbk_activation_status', 'Active' );
 		} else {
 			add_option( 'dtbk_activation_status', 'Active' );
 			add_option( 'dtbk_keep_tables_on_uninstall', 1 );
 		}
 
+		// Establish security token
+		if ( ! get_option( 'dtbk_token', false ) ) {
+			// Random, high entropy, stored only in DB
+			$secret = wp_generate_password( 64, true, true );
+			add_option( 'dtbk_token', $secret, '', false ); // autoload = false
+		}
+
+		// Ensure cron is enabled and scheduled on activation.
+		$maintenance = DTBK_Maintenance::get_instance();
+
+		if ( false === get_option( 'dtbk_cron_enabled', false ) ) {
+			update_option( 'dtbk_cron_enabled', 1 );
+		}
+
+		if ( $maintenance->is_enabled() ) {
+			$maintenance->ensure_cron_scheduled();
+		}
+
+		// Create/Update database
 		if ( ! isset( $current_db_version ) ) {
 			global $wpdb;
 
 			$charset_collate = $wpdb->get_charset_collate();
 
 			// Plugin tables
-			$dtbk_header_tbl = $wpdb->prefix . 'dtbk_tables';
+			$dtbk_header_tbl  = $wpdb->prefix . 'dtbk_tables';
 			$dtbk_columns_tbl = $wpdb->prefix . 'dtbk_table_columns';
-			$dtbk_rows_tbl   = $wpdb->prefix . 'dtbk_table_rows';
-			$dtbk_cells_tbl  = $wpdb->prefix . 'dtbk_table_cells';
+			$dtbk_rows_tbl    = $wpdb->prefix . 'dtbk_table_rows';
+			$dtbk_cells_tbl   = $wpdb->prefix . 'dtbk_table_cells';
 
 			/**
 			 * Create plugin tables
@@ -203,10 +230,10 @@ class DynamicTableBlocksVersionManagement {
 		global $wpdb;
 
 		// Plugin tables
-		$dtbk_header_tbl    = $wpdb->prefix . 'dtbk_tables';
-		$dtbk_columns_tbl   = $wpdb->prefix . 'dtbk_table_columns';
-		$dtbk_rows_tbl      = $wpdb->prefix . 'dtbk_table_rows';
-		$dtbk_cells_tbl     = $wpdb->prefix . 'dtbk_table_cells';
+		$dtbk_header_tbl  = $wpdb->prefix . 'dtbk_tables';
+		$dtbk_columns_tbl = $wpdb->prefix . 'dtbk_table_columns';
+		$dtbk_rows_tbl    = $wpdb->prefix . 'dtbk_table_rows';
+		$dtbk_cells_tbl   = $wpdb->prefix . 'dtbk_table_cells';
 
 		$sql = "DROP TABLE IF EXISTS $dtbk_header_tbl";
 		$wpdb->query( $sql );
@@ -223,6 +250,7 @@ class DynamicTableBlocksVersionManagement {
 		delete_option( 'dtbk_version' );
 		delete_option( 'dtbk_keep_tables_on_uninstall' );
 		delete_option( 'dtbk_activation_status' );
+		delete_option( 'dtbk_token' );
 	}
 
 	/**

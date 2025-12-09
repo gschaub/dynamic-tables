@@ -15,6 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
+	private bool $maintenance_request = false;
 
 	/**
 	 * Constructor
@@ -73,16 +74,16 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 					),
 				),
 				array(
-					'methods'             => \WP_REST_SERVER::READABLE,
+					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_item' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 					'args'                => $get_item_args,
 				),
 				array(
-					'methods'             => \WP_REST_SERVER::EDITABLE,
+					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'update_item' ),
 					'permission_callback' => array( $this, 'update_item_permissions_check' ),
-					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_SERVER::EDITABLE ),
+					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::EDITABLE ),
 				),
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
@@ -107,8 +108,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		_doing_it_wrong(
 			'get_tables',
 			sprintf(
-				/* translators: 1: The taxonomy name, 2: The property name, either 'rest_base' or 'name', 3: The conflicting value. */
-				__( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use', 'dynamic-table-blocks' ),
+				esc_attr( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use' )
 			),
 			'1.0'
 		);
@@ -129,7 +129,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			'get_tables',
 			sprintf(
 				/* translators: 1: The taxonomy name, 2: The property name, either 'rest_base' or 'name', 3: The conflicting value. */
-				__( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use' , 'dynamic-table-blocks'),
+				esc_attr_e( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use', 'dynamic-table-blocks' ),
 			),
 			'1.0'
 		);
@@ -144,19 +144,28 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return bool|WP_Error True if the request has read access for the item, WP_Error object or false otherwise.
 	 */
 	public function get_item_permissions_check( $request ) {
+		// Permissions for editing a table are based upon the underlying post to which
+		// it is attached.
+
+		// Determine if this is from internal maintenance, verify signature, and authorize if verified
+		if ( $this->verify_internal_signature( $request ) ) {
+			$this->maintenance_request = true;
+			return true;
+		}
+
 		$table = $this->get_table( $request['id'] );
 
 		if ( is_wp_error( $table ) ) {
 			return $table;
 		}
 
-		// Permissions for reading  a table are based upon the underlying post to which
+		// Permissions for reading a table are based upon the underlying post to which
 		// it is attached.
 		if ( isset( $table['header']['post_id'] ) ) {
 			$post_id = (int) $table['header']['post_id'];
-			if ( $post_id === 0 ) {
+			if ( $post_id !== 0 ) {
 
-				$post = $this->get_post( $post_id);
+				$post = $this->get_post( $post_id );
 				if ( is_wp_error( $post ) ) {
 					return $post;
 				}
@@ -217,28 +226,46 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @param int $id Supplied ID.
 	 * @return WP_Post|WP_Error Post object if ID is valid, WP_Error otherwise.
 	 */
-	protected function get_table( $id ) {
-		$error = new \WP_Error(
+	protected function get_table( $id, $validate_header_only = false ) {
+		$error_header = new \WP_Error(
 			'rest_table_invalid_id',
 			__( 'Invalid table ID.', 'dynamic-table-blocks' ),
 			array( 'status' => 404 )
 		);
 
+		$error_body = new \WP_Error(
+			'rest_table_corrupted',
+			__( 'Table parts are missing.', 'dynamic-table-blocks' ),
+			array( 'status' => 500 )
+		);
+
 		if ( (int) $id <= 0 ) {
-			return $error;
+			return $error_header;
 		}
 
-		$table = get_table( (int) $id );
+		$table = get_table( (int) $id, $validate_header_only );
+		if ( is_wp_error( $table ) && $table->get_error_code() === 404 ) {
+			return $error_header;
+		}
+
+		if ( is_wp_error( $table ) && $table->get_error_code() === 500 ) {
+			return $error_body;
+		}
+
 		if ( is_wp_error( $table ) ) {
-			return $error;
+			return $error_body;
 		}
 
 		if ( empty( $table ) ) {
-			return $error;
+			return $error_body;
 		}
 
-		$table_title     = $table['header']['table_name'];
-		$table = $table += array( 'title' => $table_title );
+		if ( $validate_header_only ) {
+			return $table;
+		}
+
+		$table_title = $table['header']['table_name'];
+		$table       = $table += array( 'title' => $table_title );
 
 		return $table;
 	}
@@ -292,13 +319,19 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			);
 		}
 
+		// Determine if this is from internal maintenance, verify signature, and authorize if verified
+		if ( $this->verify_internal_signature( $request ) ) {
+			$this->maintenance_request = true;
+			return true;
+		}
+
 		// Permissions for creating a table are based upon the underlying post to which
 		// it is attached.
 		if ( isset( $request['header']['post_id'] ) ) {
 			$post_id = (int) $request['header']['post_id'];
 
 			if ( $post_id !== 0 ) {
-				$post = $this->get_post( $post_id);
+				$post = $this->get_post( $post_id );
 				if ( is_wp_error( $post ) ) {
 					return $post;
 				}
@@ -375,7 +408,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			return $table_id;
 		}
 
-		$table       = get_table( $table_id );
+		$table = get_table( $table_id );
+
 		$request->set_param( 'context', 'edit' );
 		$response = $this->prepare_item_for_response( $table, $request );
 		$response = rest_ensure_response( $response );
@@ -397,11 +431,18 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	public function update_item_permissions_check( $request ) {
 		// Permissions for editing a table are based upon the underlying post to which
 		// it is attached.
+
+		// Determine if this is from internal maintenance, verify signature, and authorize if verified
+		if ( $this->verify_internal_signature( $request ) ) {
+			$this->maintenance_request = true;
+			return true;
+		}
+
 		if ( isset( $request['header']['post_id'] ) ) {
 			$post_id = (int) $request['header']['post_id'];
 
 			if ( $post_id !== 0 ) {
-				$post = $this->get_post( $post_id);
+				$post = $this->get_post( $post_id );
 				if ( is_wp_error( $post ) ) {
 					return $post;
 				}
@@ -494,9 +535,20 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return true|WP_Error True if the request has access to delete the item, WP_Error object otherwise.
 	 */
 	public function delete_item_permissions_check( $request ) {
+		// Determine if this is from internal maintenance, verify signature, and authorize if verified
+		if ( $this->verify_internal_signature( $request ) ) {
+			$this->maintenance_request = true;
+			return true;
+		}
+
 		$table = $this->get_table( $request['id'] );
+
 		if ( is_wp_error( $table ) ) {
-			return $table;
+			return new \WP_Error(
+				'rest_table_invalid_id',
+				__( 'Invalid table ID.', 'dynamic-table-blocks' ),
+				array( 'status' => 404 )
+			);
 		}
 
 		// Permissions for deleting a table are based upon the underlying post to which
@@ -504,11 +556,16 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		if ( isset( $table['header']['post_id'] ) ) {
 			$post_id = (int) $table['header']['post_id'];
 
-			if ( 0 === $post_id ) {
-				$post = $this->get_post( $post_id);
+			if ( ! $post_id === 0 ) {
+				$post = $this->get_post( $post_id );
 				if ( is_wp_error( $post ) ) {
-					return $post;
+					return new \WP_Error(
+						'rest_table_invalid_id',
+						__( 'Invalid Post ID.', 'dynamic-table-blocks' ),
+						array( 'status' => 404 )
+					);
 				}
+
 				$post_type = get_post_type_object( $post->post_type );
 
 				if ( $post && ! $this->check_update_permission( $post ) ) {
@@ -528,20 +585,21 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				}
 			}
 
-			if ( 0 === $post_id && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
+			if ( $post_id === 0 && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
 				return new \WP_Error(
 					'rest_cannot_edit',
-					__( 'Sorry, you are not allowed to delete tables for this post as this user.', 'dynamic-table-blocks'),
+					__( 'Sorry, you are not allowed to delete tables for this post as this user.', 'dynamic-table-blocks' ),
 					array( 'status' => rest_authorization_required_code() )
 				);
 			}
 		} elseif ( 'edit' === $request['context'] && ! current_user_can( 'edit_posts' ) ) {
-				return new \WP_Error(
-					'rest_forbidden_context',
-					__( 'Sorry, you are not allowed to delete this post.', 'dynamic-table-blocks' ),
-					array( 'status' => rest_authorization_required_code() )
-				);
+			return new \WP_Error(
+				'rest_forbidden_context',
+				__( 'Sorry, you are not allowed to delete this post.', 'dynamic-table-blocks' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
 		}
+
 		return true;
 	}
 
@@ -554,23 +612,34 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function delete_item( $request ) {
-		$table = $this->get_table( $request['id'] );
+
+		if ( $this->maintenance_request ) {
+			$table = $this->get_table( $request['id'], true );
+		} else {
+			$table = $this->get_table( $request['id'] );
+		}
+
 		if ( is_wp_error( $table ) ) {
 			return $table;
 		}
 
-		$id = $table['id'];
+		$id = $request['id'];
 		$request->set_param( 'context', 'edit' );
 
-		$previous = $this->prepare_item_for_response( $table, $request );
-		$result   = delete_table( $id );
-		$response = new \WP_REST_Response();
-		$response->set_data(
-			array(
+		if ( $this->maintenance_request ) {
+			$response_result = array(
+				'deleted' => true,
+			);
+		} else {
+			$previous        = $this->prepare_item_for_response( $table, $request );
+			$response_result = array(
 				'deleted'  => true,
 				'previous' => $previous->get_data(),
-			)
-		);
+			);
+		}
+		$result   = delete_table( $id, $this->maintenance_request );
+		$response = new \WP_REST_Response();
+		$response->set_data( $response_result );
 
 		if ( ! $result ) {
 			return new \WP_Error(
@@ -596,6 +665,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		if ( ! $this->check_is_post_type_allowed( $post_type ) ) {
 			return false;
 		}
+
 		return current_user_can( 'edit_post', $post->ID );
 	}
 
@@ -1205,7 +1275,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				__METHOD__,
 				sprintf(
 					/* translators: %s: register_rest_field */
-					__( 'Please use %s to add new schema properties.', 'dynamic-table-blocks' ),
+					'Please use %s to add new schema properties.',
 					'register_rest_field'
 				),
 				'5.4.0'
@@ -1213,5 +1283,17 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		}
 		$this->schema = $schema;
 		return $this->add_additional_fields_schema( $this->schema );
+	}
+
+	function verify_internal_signature( $request ) {
+		$key = dtbk_signing_key();
+
+		$body = $request->get_body() ?? '';
+		$msg  = strtoupper( $request->get_method() ) . "\n" . $request->get_route() . "\n" . $body;
+
+		$expected = hash_hmac( 'sha256', $msg, $key );
+		$header   = $request->get_header( 'x-dtbk-signature' );
+
+		return $header && hash_equals( $expected, $header );
 	}
 }

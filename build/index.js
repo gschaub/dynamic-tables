@@ -1606,9 +1606,12 @@ const createTableEntity = () => async ({
   };
   try {
     const tableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).saveEntityRecord('dynamic-table-blocks', 'table', newTable);
+    console.log('Created table entity with id = ' + tableEntity.id);
     dispatch.assignTableId(tableEntity.id);
     return tableEntity.id;
   } catch (error) {
+    console.log('Error details: ' + error);
+    console.log(newTable);
     console.log('Error in createTableEntity -  Table ID - ' + table_id + ', block table ref = ' + block_table_ref + ', Post Id = ' + post_id);
   }
 };
@@ -3365,6 +3368,7 @@ function Edit(props) {
    * @param {boolean}                 [persist=true] Update table entity (not just the table store)
    */
   function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
+    console.log('In setAttributes - tableId: ' + tableId + ' attribute: ' + attribute + ' id: ' + id + ' type: ' + type + ' value: ' + value + ' persist: ' + persist);
     switch (type) {
       case 'CONTENT':
         {

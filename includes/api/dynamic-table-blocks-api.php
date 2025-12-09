@@ -119,7 +119,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 
 	if ( $update ) {
 		$update_table = new PersistTableData();
-		$results     = $update_table->update_table( $table_id, $block_table_ref, $status, $post_id, $table_name, $serialized_attributes, $classes );
+		$results      = $update_table->update_table( $table_id, $block_table_ref, $status, $post_id, $table_name, $serialized_attributes, $classes );
 
 		if ( ! $results['success'] ) {
 			if ( $wp_error ) {
@@ -128,7 +128,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 		}
 	} else {
 		$new_table = new PersistTableData();
-		$results  = $new_table->create_table_data( $block_table_ref, $status, $post_id, $table_name, $serialized_attributes, $classes );
+		$results   = $new_table->create_table_data( $block_table_ref, $status, $post_id, $table_name, $serialized_attributes, $classes );
 
 		if ( ! $results['success'] ) {
 			if ( $wp_error ) {
@@ -191,7 +191,7 @@ function update_table_data( $tablearr, $wp_error = false ) {
 	}
 
 	// First, get all of the original fields.
-	$table = get_table( $tablearr['id'], ARRAY_A );
+	$table = get_table( $tablearr['id'] );
 
 	if ( is_null( $table ) ) {
 		if ( $wp_error ) {
@@ -218,7 +218,7 @@ function update_table_rows( $table_id, $request_rows ) {
 	$rows    = array();
 
 	foreach ( $request_rows as $index => $row ) {
-		$row_id                 = $row['row_id'];
+		$row_id                = $row['row_id'];
 		$serialized_attributes = maybe_serialize( $row['attributes'] );
 		$classes               = $row['classes'];
 
@@ -226,7 +226,7 @@ function update_table_rows( $table_id, $request_rows ) {
 	}
 
 	$update_table_rows = new PersistTableData();
-	$results         = $update_table_rows->update_table_rows( $table_id, $rows );
+	$results           = $update_table_rows->update_table_rows( $table_id, $rows );
 
 	if ( ! $results['success'] ) {
 		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
@@ -249,8 +249,8 @@ function update_table_columns( $table_id, $request_columns ) {
 	$columns = array();
 
 	foreach ( $request_columns as $index => $column ) {
-		$column_id              = $column['column_id'];
-		$column_name            = $column['column_name'];
+		$column_id             = $column['column_id'];
+		$column_name           = $column['column_name'];
 		$serialized_attributes = maybe_serialize( $column['attributes'] );
 		$classes               = $column['classes'];
 
@@ -258,7 +258,7 @@ function update_table_columns( $table_id, $request_columns ) {
 	}
 
 	$update_table_columns = new PersistTableData();
-	$results            = $update_table_columns->update_table_columns( $table_id, $columns );
+	$results              = $update_table_columns->update_table_columns( $table_id, $columns );
 
 	if ( ! $results['success'] ) {
 		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
@@ -281,8 +281,8 @@ function update_table_cells( $table_id, $request_cells ) {
 	$cells   = array();
 
 	foreach ( $request_cells as $index => $cell ) {
-		$column_id              = $cell['column_id'];
-		$row_id                 = $cell['row_id'];
+		$column_id             = $cell['column_id'];
+		$row_id                = $cell['row_id'];
 		$serialized_attributes = maybe_serialize( $cell['attributes'] );
 		$classes               = $cell['classes'];
 		$content               = wp_kses_post( $cell['content'] );
@@ -290,10 +290,10 @@ function update_table_cells( $table_id, $request_cells ) {
 	}
 
 	$update_table_cells = new PersistTableData();
-	$results          = $update_table_cells->update_table_cells( $table_id, $cells );
+	$results            = $update_table_cells->update_table_cells( $table_id, $cells );
 
 	if ( ! $results['success'] ) {
-		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks') );
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
 	}
 
 	return $results;
@@ -303,14 +303,16 @@ function update_table_cells( $table_id, $request_cells ) {
  *  Delete table from the database
  *
  * @since 1.0.0
+ * @since 1.1.0  Add "force" option
  *
  * @param int $table_id - Table id.
+ * @param int $force - Delete whatever table data exists
  * @return array|WP_Error Deleted table.
  */
-function delete_table( $table_id = 0 ) {
+function delete_table( $table_id = 0, $force = false ) {
 	$existing_table = get_table( $table_id );
 	$delete_table   = new PersistTableData();
-	$results       = $delete_table->delete_table_data( $table_id );
+	$results        = $delete_table->delete_table_data( $table_id, $force );
 
 	if ( ! $results['success'] ) {
 		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
@@ -322,11 +324,13 @@ function delete_table( $table_id = 0 ) {
  *  Extract and returns the table object from the database
  *
  * @since 1.0.0
+ * @since 1.1.0 Added simple check for existance of header row
  *
- * @param int $table_id - Table id.
- * @return array|WP_Error Table data retrieved.
+ * @param int  $table_id                Table id.
+ * @param bool $validate_header_only   Ensure header record exists
+ * @return array|bool|WP_Error         Table data retrieved or simply that the header record exists
  */
-function get_table( $table_id ) {
+function get_table( $table_id, $validate_header_only = false ) {
 	$results = array();
 
 	$test_object = array(
@@ -343,41 +347,105 @@ function get_table( $table_id ) {
 		'horizontalAlignment'    => 'none',
 	);
 
-	$results      += array( 'id' => $table_id );
-	$table         = 'dtbk_tables';
+	$results       += array( 'id' => $table_id );
+	$table          = 'dtbk_tables';
 	$get_table      = new PersistTableData();
 	$results_header = $get_table->get_table( $table_id, $table );
+
 	if ( ! $results_header['success'] ) {
-		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
+		return new \WP_Error(
+			'db_read_error',
+			__( 'Database error retrieving table header.', 'dynamic-table-blocks' ),
+			array( 'status' => 404 )
+		);
 	}
+
+	if ( $validate_header_only ) {
+		if ( $results_header['success'] ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	$results += array( 'header' => $results_header['result'] );
 
-	$table       = 'dtbk_table_rows';
+	$table        = 'dtbk_table_rows';
 	$get_table    = new PersistTableData();
 	$results_rows = $get_table->get_table( $table_id, $table );
 	if ( ! $results_rows['success'] ) {
-		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks') );
+		return new \WP_Error(
+			'db_read_error',
+			__( 'Database error retrieving table rows.', 'dynamic-table-blocks' ),
+			array( 'status' => 500 )
+		);
 	}
 	$results += array( 'rows' => $results_rows['result'] );
 
-	$table          = 'dtbk_table_columns';
+	$table           = 'dtbk_table_columns';
 	$get_table       = new PersistTableData();
 	$results_columns = $get_table->get_table( $table_id, $table );
 
 	if ( ! $results_columns['success'] ) {
-		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
+		return new \WP_Error(
+			'db_read_error',
+			__( 'Database error retrieving table columns.', 'dynamic-table-blocks' ),
+			array( 'status' => 500 )
+		);
 	}
 	$results += array( 'columns' => $results_columns['result'] );
 
-	$table        = 'dtbk_table_cells';
-	$get_table      = new PersistTableData();
+	$table         = 'dtbk_table_cells';
+	$get_table     = new PersistTableData();
 	$results_cells = $get_table->get_table( $table_id, $table );
 	if ( ! $results_cells['success'] ) {
-		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
+		return new \WP_Error(
+			'db_read_error',
+			__( 'Database error retrieving table cells.', 'dynamic-table-blocks' ),
+			array( 'status' => 500 )
+		);
 	}
 	$results += array( 'cells' => $results_cells['result'] );
 
 	return $results;
+}
+
+/**
+ *  Extract and returns the table object based on a reference id
+ *
+ * @since 1.1.0
+ *
+ * @param string $block_table_ref - Reference value for table lookup.
+ * @return array|WP_Error Table data retrieved.
+ */
+function get_table_by_ref( $block_table_ref ) {
+	$get_table = new PersistTableData();
+	$result    = $get_table->get_table_id( 'block_table_ref', $block_table_ref );
+
+	if ( ! $result['success'] ) {
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table id.', 'dynamic-table-blocks' ) );
+	}
+
+	$table_id = $result['result'];
+	return get_table( $table_id );
+}
+
+/**
+ * Extracts and returns the summary table data for all tables from the database
+ *
+ * @since 1.1.0
+ *
+ * @return array|WP_Error Table data retrieved.
+ */
+function get_tables() {
+	$get_table = new PersistTableData();
+	$results   = $get_table->get_tables();
+
+	if ( ! $results['success'] ) {
+		return new \WP_Error( 'db_read_error', __( 'Database error retrieving tables.', 'dynamic-table-blocks' ) );
+	}
+
+	return $results['result'];
 }
 
 /**
@@ -490,7 +558,6 @@ function sanitize_dynamic_table_field( $field, $value, $table_id, $context = 'di
 		/**
 		 * Future implementation
 		 * Filter the value of a specific table field before saving.
-		 *
 		 */
 
 		$value = apply_filters( "dtbk_pre_table_{$field}", $value );
@@ -498,7 +565,6 @@ function sanitize_dynamic_table_field( $field, $value, $table_id, $context = 'di
 		/**
 		 * Future implementation
 		 * Use display filters by default.
-		 *
 		 */
 
 		$value = apply_filters( "dtbk_{$field}_pre", $value );
