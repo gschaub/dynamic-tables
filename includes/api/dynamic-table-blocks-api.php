@@ -193,9 +193,6 @@ function update_table_data( $tablearr, $wp_error = false ) {
 	// First, get all of the original fields.
 	$table = get_table( $tablearr['id'] );
 
-	error_log('DT API - Table = ' . json_encode($table));
-	error_log('DT API - TableArray = ' . json_encode($tablearr));
-
 	if ( is_null( $table ) ) {
 		if ( $wp_error ) {
 			return new \WP_Error( 'invalid_table', __( 'Invalid table ID.', 'dynamic-table-blocks' ) );
@@ -317,8 +314,6 @@ function delete_table( $table_id = 0 , $force = false) {
 	$delete_table   = new PersistTableData();
 	$results       = $delete_table->delete_table_data( $table_id, $force );
 
-	error_log('Delete result = ' . json_encode($results));
-
 	if ( ! $results['success'] ) {
 		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
 	}
@@ -366,10 +361,8 @@ function get_table( $table_id, $validate_header_only = false ) {
 
 	if ( $validate_header_only ) {
 		if ( $results_header['success'] ) {
-			error_log ('...validated');
 			return true;
 		}else {
-			error_log ('...error');
 			return false;
 		}
 	}

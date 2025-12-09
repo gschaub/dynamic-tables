@@ -583,6 +583,20 @@ export default function Edit(props) {
 	 * @param {boolean}                 [persist=true] Update table entity (not just the table store)
 	 */
 	function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
+		console.log(
+			'In setAttributes - tableId: ' +
+				tableId +
+				' attribute: ' +
+				attribute +
+				' id: ' +
+				id +
+				' type: ' +
+				type +
+				' value: ' +
+				value +
+				' persist: ' +
+				persist
+		);
 		switch (type) {
 			case 'CONTENT': {
 				if (attribute === 'cell') {

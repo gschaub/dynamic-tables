@@ -25,7 +25,7 @@ class DTBK_Admin_Ajax {
 		// Check nonce
 		check_ajax_referer( 'dtbk-table-list' );
 
-		$table_id = $_POST['id'];
+		$table_id = isset($_POST['id']) ? esc_attr( wp_unslash( $_POST['id'] ) ) : '';
 		if ( empty( $table_id ) ) {
 			wp_send_json_error( [ 'message' => __( 'No items selected.', 'dynamic-table-blocks' ) ], 400 );
 		}
@@ -79,7 +79,7 @@ class DTBK_Admin_Ajax {
 
 		wp_send_json_success(
 			array(
-				'cells' => json_encode($view_table_rows),
+				'cells' => wp_json_encode($view_table_rows),
 			),
 			200
 		);

@@ -108,8 +108,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		_doing_it_wrong(
 			'get_tables',
 			sprintf(
-				/* translators: 1: The taxonomy name, 2: The property name, either 'rest_base' or 'name', 3: The conflicting value. */
-				esc_attr_e( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use', 'dynamic-table-blocks' ),
+				esc_attr( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use')
 			),
 			'1.0'
 		);
@@ -409,7 +408,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		$table = get_table( $table_id );
 
-		error_log('Created table data: ' . json_encode($table));
 		$request->set_param( 'context', 'edit' );
 		$response = $this->prepare_item_for_response( $table, $request );
 		$response = rest_ensure_response( $response );
@@ -1275,7 +1273,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				__METHOD__,
 				sprintf(
 					/* translators: %s: register_rest_field */
-					__( 'Please use %s to add new schema properties.', 'dynamic-table-blocks' ),
+					'Please use %s to add new schema properties.',
 					'register_rest_field'
 				),
 				'5.4.0'

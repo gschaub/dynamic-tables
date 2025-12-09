@@ -22,39 +22,39 @@ namespace DynamicTableBlocks;
  * @param  int $letter_number Integer to be converted to a string of one or more letters
  * @return void string Letter representation of number provided
  */
-function number_to_letter($letter_number) {
+function number_to_letter( $letter_number ) {
 
-	$letter_map = [];
+	$letter_map = array();
 
-	$letter_map += [ "1" => "A" ];
-	$letter_map += [ "2" => "B" ];
-	$letter_map += [ "3" => "C" ];
-	$letter_map += [ "4" => "D" ];
-	$letter_map += [ "5" => "E" ];
-	$letter_map += [ "6" => "F" ];
-	$letter_map += [ "7" => "G" ];
-	$letter_map += [ "8" => "H" ];
-	$letter_map += [ "9" => "I" ];
-	$letter_map += [ "a" => "J" ];
-	$letter_map += [ "b" => "K" ];
-	$letter_map += [ "c" => "L" ];
-	$letter_map += [ "d" => "M" ];
-	$letter_map += [ "e" => "N" ];
-	$letter_map += [ "f" => "O" ];
-	$letter_map += [ "g" => "P" ];
-	$letter_map += [ "h" => "Q" ];
-	$letter_map += [ "i" => "R" ];
-	$letter_map += [ "j" => "S" ];
-	$letter_map += [ "k" => "T" ];
-	$letter_map += [ "l" => "U" ];
-	$letter_map += [ "m" => "V" ];
-	$letter_map += [ "n" => "W" ];
-	$letter_map += [ "o" => "X" ];
-	$letter_map += [ "p" => "Y" ];
-	$letter_map += [ "q" => "Z" ];
+	$letter_map += array( '1' => 'A' );
+	$letter_map += array( '2' => 'B' );
+	$letter_map += array( '3' => 'C' );
+	$letter_map += array( '4' => 'D' );
+	$letter_map += array( '5' => 'E' );
+	$letter_map += array( '6' => 'F' );
+	$letter_map += array( '7' => 'G' );
+	$letter_map += array( '8' => 'H' );
+	$letter_map += array( '9' => 'I' );
+	$letter_map += array( 'a' => 'J' );
+	$letter_map += array( 'b' => 'K' );
+	$letter_map += array( 'c' => 'L' );
+	$letter_map += array( 'd' => 'M' );
+	$letter_map += array( 'e' => 'N' );
+	$letter_map += array( 'f' => 'O' );
+	$letter_map += array( 'g' => 'P' );
+	$letter_map += array( 'h' => 'Q' );
+	$letter_map += array( 'i' => 'R' );
+	$letter_map += array( 'j' => 'S' );
+	$letter_map += array( 'k' => 'T' );
+	$letter_map += array( 'l' => 'U' );
+	$letter_map += array( 'm' => 'V' );
+	$letter_map += array( 'n' => 'W' );
+	$letter_map += array( 'o' => 'X' );
+	$letter_map += array( 'p' => 'Y' );
+	$letter_map += array( 'q' => 'Z' );
 
-	$letter_lookup = str_split(base_convert($letter_number, 10, 26));
-	$letter_digit = '';
+	$letter_lookup = str_split( base_convert( $letter_number, 10, 26 ) );
+	$letter_digit  = '';
 
 	foreach ( $letter_lookup as $letter ) {
 		$letter_digit .= $letter_map[ $letter ];
@@ -62,6 +62,54 @@ function number_to_letter($letter_number) {
 
 	return $letter_digit;
 }
+
+
+/**
+ * Does render request originate from an editor preview context?
+ *
+ * Description - Detects whether this render is being executed for an editor preview
+ * context (post editor, site editor, inserter preview, etc.).
+ *
+ * @since 1.1.0
+ *
+ * @return bool True if editor preview request, false otherwise.
+ */
+function dtbk_is_editor_preview_request() {
+	// Classic wp-admin block editor.
+	if ( is_admin() ) {
+		// Post editor, widgets editor, etc.
+		if ( function_exists( 'get_current_screen' ) ) {
+			$screen = get_current_screen();
+			if ( $screen && ! empty( $screen->is_block_editor ) ) {
+				return true;
+			}
+		}
+	}
+
+	// REST-based previews (used by post editor, site editor, inserter, etc.).
+	if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+		$context = $_REQUEST['context'] ?? null; // phpcs:ignore WordPress.Security.NonceVerification
+
+		if ( $context === 'edit' ) {
+			return true;
+		}
+
+		$uri = $_SERVER['REQUEST_URI'] ?? '';
+		if ( $context === 'edit' && strpos( $uri, '/wp-json/wp/v2/posts' ) !== false ) {
+			return true;
+		}
+	}
+
+	// Fallback: some previews come in via AJAX.
+	if ( wp_doing_ajax() ) {
+		$action = $_POST['action'] ?? ''; // phpcs:ignore WordPress.Security.NonceVerification
+		if ( is_string( $action ) && strpos( $action, 'edit-' ) !== false ) {
+			return true;
+		}
+	}
+	return false;
+}
+
 
 /**
  * Retrieve attribute values for the table header.
@@ -75,7 +123,7 @@ function number_to_letter($letter_number) {
  * @param  array $table_header Metadata about the table
  * @return array Table attributes
  */
-function get_table_header_attributes ($table_header) {
+function get_table_header_attributes( $table_header ) {
 
 	$table_default_attributes = array(
 		'showGridLines'            => false,
@@ -87,23 +135,23 @@ function get_table_header_attributes ($table_header) {
 		'enableHeaderRow'          => false,
 		'headerAlignment'          => 'center',
 		'headerRowSticky'          => false,
-		'headerBorder'             => [
+		'headerBorder'             => array(
 			'color' => 'black',
 			'style' => 'solid',
 			'width' => '1px',
-		],
+		),
 		'horizontalAlignment'      => 'none',
 		'bodyAlignment'            => null,
-		'bodyBorder'               => [
+		'bodyBorder'               => array(
 			'color' => 'black',
 			'style' => 'solid',
 			'width' => '1px',
-		],
+		),
 		'verticalAlignment'        => 'none',
 		'hideTitle'                => false,
 	);
 
-	$table_header_attributes = array_merge($table_default_attributes, $table_header['attributes']);
+	$table_header_attributes = array_merge( $table_default_attributes, $table_header['attributes'] );
 	return $table_header_attributes;
 }
 
@@ -116,11 +164,11 @@ function get_table_header_attributes ($table_header) {
  *
  * @since 1.0.0
  *
- * @param  array $rows All table rows
+ * @param  array  $rows All table rows
  * @param  string $filter identifies whether process table header vs. body rows.
  * @return array css variables for table row
  */
-function process_rows($rows, $filter) {
+function process_rows( $rows, $filter ) {
 
 	$row_default_attributes = array(
 		'rowHeightType'     => 'Auto',
@@ -134,18 +182,18 @@ function process_rows($rows, $filter) {
 		'verticalAlignment' => 'none',
 	);
 
-	$return_result = array();
-	$return_rows = array();
+	$return_result         = array();
+	$return_rows           = array();
 	$return_grid_row_style = '';
 
 	foreach ( $rows as $index => $row ) {
-		$row_attributes = array_merge($row_default_attributes, $row['attributes']);
+		$row_attributes = array_merge( $row_default_attributes, $row['attributes'] );
 
 		switch ( $filter ) {
 			case 'is_header':
 				if ( $row['attributes']['isHeader'] === true ) {
-					$grid_row_style = format_row($row_attributes);
-					$grid_row = array(
+					$grid_row_style = format_row( $row_attributes );
+					$grid_row       = array(
 						'row_id'       => $row['row_id'],
 						'gridRowStyle' => $grid_row_style,
 					);
@@ -155,8 +203,8 @@ function process_rows($rows, $filter) {
 				break;
 			case 'is_body':
 				if ( $row['attributes']['isHeader'] !== true ) {
-					$grid_row_style = format_row($row_attributes);
-					$grid_row = array(
+					$grid_row_style = format_row( $row_attributes );
+					$grid_row       = array(
 						'row_id'       => $row['row_id'],
 						'gridRowStyle' => $grid_row_style,
 					);
@@ -184,7 +232,7 @@ function process_rows($rows, $filter) {
  * @param  array $row_attributes All attributes associated with a single table row
  * @return string formatted css variable
  */
-function format_row($row_attributes) {
+function format_row( $row_attributes ) {
 
 	list('rowHeightType'    => $row_height_type,
 		'minHeight'         => $min_height,
@@ -196,7 +244,7 @@ function format_row($row_attributes) {
 		'verticalAlignment' => $vertical_alignment,
 	) = $row_attributes;
 
-	$sizing = '';
+	$sizing         = '';
 	$grid_row_style = '';
 
 	switch ( $row_height_type ) {
@@ -204,14 +252,14 @@ function format_row($row_attributes) {
 			$grid_row_style .= 'auto ';
 			break;
 		case 'Fixed':
-			$grid_row_style .= strval($fixed_height) . $fixed_height_units . ' ';
+			$grid_row_style .= strval( $fixed_height ) . $fixed_height_units . ' ';
 			break;
 		case 'Custom':
-			$sizing = 'minmax(' . strval($min_height) . $min_height_units . ', ' . strval($max_height) . $max_height_units . ') ';
+			$sizing          = 'minmax(' . strval( $min_height ) . $min_height_units . ', ' . strval( $max_height ) . $max_height_units . ') ';
 			$grid_row_style .= $sizing;
 			break;
 		default:
-			error_log('Unrecognized Attibute Type');
+			error_log( 'Unrecognized Attibute Type' );
 	}
 
 	return $grid_row_style;
@@ -227,7 +275,7 @@ function format_row($row_attributes) {
  * @param  array $columns Array of columns in the table
  * @return string CSS value for grid-tempalte-columns
  */
-function process_columns($columns) {
+function process_columns( $columns ) {
 	$new_grid_column_style = '';
 
 	foreach ( $columns as $index => $column ) {
@@ -250,7 +298,7 @@ function process_columns($columns) {
 		switch ( $column_width_type ) {
 			case 'Proportional':
 				if ( $min_width > 0 ) {
-					$sizing = 'minmax(' . strval($min_width) . $min_width_units . ', ' . strval($max_width) . 'fr) ';
+					$sizing = 'minmax(' . strval( $min_width ) . $min_width_units . ', ' . strval( $max_width ) . 'fr) ';
 				} else {
 					$sizing = $max_width . 'fr ';
 				}
@@ -260,14 +308,14 @@ function process_columns($columns) {
 				$new_grid_column_style .= 'auto ';
 				break;
 			case 'Fixed':
-				$new_grid_column_style .= strval($fixed_width) . $fixed_width_units . ' ';
+				$new_grid_column_style .= strval( $fixed_width ) . $fixed_width_units . ' ';
 				break;
 			case 'Custom':
-				$sizing = 'minmax(' . strval($min_width) . $min_width_units . ', ' . strval($max_width) . $max_width_units . ') ';
+				$sizing                 = 'minmax(' . strval( $min_width ) . $min_width_units . ', ' . strval( $max_width ) . $max_width_units . ') ';
 				$new_grid_column_style .= $sizing;
 				break;
 		}
-}
+	}
 
 	return $new_grid_column_style;
 }
@@ -280,18 +328,22 @@ function process_columns($columns) {
  * @since 1.0.0
  *
  * @param  Array $table_cells All cells for the table
- * @param  int $row_id Current row id
+ * @param  int   $row_id Current row id
  * @return array Transformed cells for the current row
  */
-function process_cells($table_cells, $row_id) {
-	$filtered_cells = array_filter($table_cells, function($v) use($row_id) {
-		return $v['row_id'] === $row_id;
-	}, ARRAY_FILTER_USE_BOTH);
+function process_cells( $table_cells, $row_id ) {
+	$filtered_cells = array_filter(
+		$table_cells,
+		function ( $v ) use( $row_id ) {
+			return $v['row_id'] === $row_id;
+		},
+		ARRAY_FILTER_USE_BOTH
+	);
 
 	$return_cells = array();
 
 	foreach ( $filtered_cells as $index => $cell ) {
-		$cell_id = number_to_letter($cell['column_id']) . $cell['row_id'];
+		$cell_id = number_to_letter( $cell['column_id'] ) . $cell['row_id'];
 
 		$grid_cell = array(
 			'cell_id' => $cell_id,
@@ -307,14 +359,14 @@ function process_cells($table_cells, $row_id) {
  * Return CSS class for banded row formatting if the row should be banded.
  *
  * @since 1.0.0
- * @param  int $row_id
+ * @param  int  $row_id
  * @param  bool $banded_rows Does this table use banded rows?
  * @param  bool $enable_header_row Does this table have a header row?
  * @return string
  */
-function get_calculated_classes($row_id, $banded_rows, $enable_header_row) {
+function get_calculated_classes( $row_id, $banded_rows, $enable_header_row ) {
 
-	$banded_row_offset = $enable_header_row ? 1 : 0;
+	$banded_row_offset  = $enable_header_row ? 1 : 0;
 	$calculated_classes = '';
 
 	if ( $banded_rows && $banded_row_offset === 0 && $row_id % 2 === 0 ) {
@@ -343,7 +395,7 @@ function get_calculated_classes($row_id, $banded_rows, $enable_header_row) {
  * @param  [type] $enable_header
  * @return void
  */
-function start_grid_row_nbr($enable_header) {
+function start_grid_row_nbr( $enable_header ) {
 	$start_grid_line = 1;
 	$start_grid_line = $enable_header ? $start_grid_line + 1 : $start_grid_line;
 
@@ -351,7 +403,7 @@ function start_grid_row_nbr($enable_header) {
 	// return $start_grid_line;
 }
 
-function end_grid_row_nbr($start_grid_line, $row_group, $num_rows, $enable_header, $enable_footer) {
+function end_grid_row_nbr( $start_grid_line, $row_group, $num_rows, $enable_header, $enable_footer ) {
 	$end_grid_line = 0;
 
 	switch ( $row_group ) {
@@ -364,7 +416,7 @@ function end_grid_row_nbr($start_grid_line, $row_group, $num_rows, $enable_heade
 			$end_grid_line = $enable_header ? $end_grid_line - 1 : $end_grid_line;
 			break;
 		default:
-			error_log('Unknown row type');
+			error_log( 'Unknown row type' );
 	}
 
 	return null;
@@ -380,14 +432,14 @@ function end_grid_row_nbr($start_grid_line, $row_group, $num_rows, $enable_heade
  * @param  array $border The current border style
  * @return string The boarder's stype type
  */
-function get_border_style_type($border) {
+function get_border_style_type( $border ) {
 	if ( $border ) {
 		foreach ( $border as $index => $border_segment ) {
-			if ( is_array($border_segment) ) {
+			if ( is_array( $border_segment ) ) {
 				return 'split';
 			}
 		}
-	return 'flat';
+		return 'flat';
 	}
 	return 'unknown';
 }
@@ -399,22 +451,22 @@ function get_border_style_type($border) {
  *
  * @since 1.0.0
  *
- * @param  array $border Table attribute for header border style
+ * @param  array  $border Table attribute for header border style
  * @param  string $border_location The location for which to get the style (left, top, right, bottom)
  * @param  string $border_attribute Attribute Type (color, stype, width)
  * @param  string $border_type Border is slit vs. flat
  * @return string Css style value
  */
-function get_border_style($border, $border_location, $border_attribute, $border_type) {
+function get_border_style( $border, $border_location, $border_attribute, $border_type ) {
 	// lookup and return the style attibute if it is set
 	switch ( $border_type ) {
 		case 'split':
-			if ( isset($border[ $border_location ][ $border_attribute ]) ) {
+			if ( isset( $border[ $border_location ][ $border_attribute ] ) ) {
 				return $border[ $border_location ][ $border_attribute ];
 			}
 			break;
 		case 'flat':
-			if ( isset($border[ $border_attribute ]) ) {
+			if ( isset( $border[ $border_attribute ] ) ) {
 				return $border[ $border_attribute ];
 			}
 			break;

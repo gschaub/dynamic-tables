@@ -1,8 +1,8 @@
 === Dynamic Tables ===
 Contributors:      glschaub, myfamilyweb
 Tags:              block, table, responsive
-Tested up to:      6.8
-Stable tag:        1.0.0
+Tested up to:      6.9
+Stable tag:        1.1.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,7 +13,6 @@ Create highly responsive custom table blocks that are easily configured.
 Built from the ground up based upon the latest technology and designed to support WordPress' vision for the platform's future,  **Dynamic Tables** is a new WordPress block plugin to create and manage information that is best organized as a table. The block is designed to be easily configured and highly responsive.
 
 Dynamic Tables was created on a solid technical framework with the objective of delivering a complete end-to-end block solution for creating beautiful tables that are easy to maintain.  Additionally, this framework will provide a springboard to rapidly build upon this foundation to provide additional features.  Some capabilities on the roadmap include:
-* Support for templates and cloning.  Note that this support is **not currently available**. It is the first roadmap item.
 * Support for front end interactivity to sort and filter tables
 * Integrating Dynamic Tables with WordPress search
 * Allowing for specific content types and formats for all rows in a column (e.g, images, links, buttons, numeric formats, etc.) without the need to format each cell
@@ -87,6 +86,13 @@ This information will be appealing to our techie friends, soothing their passion
 7. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+
+= 1.1.0 =
+* Support for post templates and cloning.
+* Created scheduled maintenance to ensure posts and tables are internally consistent
+* Automatically remove tables when their underying posts are deleted from the admin page
+* Provide visibility to all tables, their status, associated post, and to view the table data
+* Bump support for WordPress 6.9
 
 = 1.0.0 =
 * Initial Release

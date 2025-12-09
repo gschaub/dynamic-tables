@@ -85,7 +85,6 @@ const table = (
 			};
 
 		case UPDATE_TABLE_PROP:
-
 			const updatedTable = {
 				...state,
 				[action.attribute]: action.value,
@@ -462,7 +461,6 @@ const reducer = (
 	},
 	action
 ) => {
-
 	const tableKey = action.tableId;
 	const newTableState = table(state.tables[tableKey], action);
 

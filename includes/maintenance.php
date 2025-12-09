@@ -184,14 +184,8 @@ class DTBK_Maintenance {
 	 * @return void
 	 */
 	protected function run_scheduled_tasks() {
-		error_log('Running maint schedule');
 		$this->delete_expired_transients();
-		error_log('BEGIN TABLE VALIDATION');
-		error_log(' ');
 		$this->validate_tables();
-		error_log(' ');
-		error_log('END TABLE VALIDATION');
-		error_log(' ');
 	}
 
 	/**
@@ -270,8 +264,6 @@ class DTBK_Maintenance {
 					}
 				}
 			}
-			error_log('HANDLE POSTS BLOCKS WITHOUT TABLE');
-			error_log(' ');
 		}
 	}
 
@@ -330,7 +322,6 @@ class DTBK_Maintenance {
 					$full_table['header']['status'] = 'currupted';
 					$this->update_table($full_table);
 			}
-			error_log('MARK POST BLOCK AS RESOLVED');
 			++$posts_matched;
 		}
 
@@ -811,6 +802,3 @@ class DTBK_Maintenance {
 		return array_intersect_key($searchable_data, array_flip($matching_keys));
 	}
 }
-
-// DTBK_Maintenance::get_instance();
-// add_action( 'init', array( 'DynamicTableBlocks\DTBK_Maintenance', 'get_instance' ) );

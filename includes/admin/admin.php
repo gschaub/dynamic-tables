@@ -90,17 +90,20 @@ class DTBK_Admin {
 	}
 
 	public function enqueue_admin_assets() {
-		wp_enqueue_style( 'adminCss', dtbk_get_setting( 'url' ) . 'assets/css/admin.css' );
+		$ver_css = filemtime(dtbk_get_setting( 'path' ) . 'assets/css/admin.css');
+		wp_enqueue_style( 'adminCss', dtbk_get_setting( 'url' ) . 'assets/css/admin.css', array(), $ver_css );
 
 		// Fix to make conditional
 		// if ( 'list_dynamic_table_blocks' === $hook ) {
 			wp_enqueue_script( 'jquery-ui-dialog' );
 			wp_enqueue_style( 'wp-jquery-ui-dialog' );
+
+			$ver_js = filemtime(dtbk_get_setting( 'path' ) . 'assets/js/dtbk-table-list.js');
 			wp_enqueue_script(
 				'dtbk-table-list',
 				dtbk_get_setting( 'url' ) . 'assets/js/dtbk-table-list.js',
 				[ 'jquery', 'jquery-ui-dialog' ],
-				'1.1.0',
+				$ver_js,
 				true
 			);
 
@@ -210,7 +213,7 @@ class DTBK_Admin {
 						<?php
 						if ( $next ) {
 							printf(
-								esc_html__( '%1$s at %2$s', 'dynamic-table-blocks' ),
+								esc_html( '%1$s at %2$s'),
 								esc_html( date_i18n( get_option( 'date_format' ), $next ) ),
 								esc_html( date_i18n( get_option( 'time_format' ), $next ) )
 							);

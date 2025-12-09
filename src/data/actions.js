@@ -131,10 +131,13 @@ export const createTableEntity =
 				.dispatch(coreStore)
 				.saveEntityRecord('dynamic-table-blocks', 'table', newTable);
 
+			console.log('Created table entity with id = ' + tableEntity.id);
 			dispatch.assignTableId(tableEntity.id);
 
 			return tableEntity.id;
 		} catch (error) {
+			console.log('Error details: ' + error);
+				console.log(newTable);
 			console.log(
 				'Error in createTableEntity -  Table ID - ' +
 					table_id +

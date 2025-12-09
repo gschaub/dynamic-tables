@@ -44,21 +44,11 @@ jQuery($ => {
 		}
 
 		/**
-		 * Initialize event handlers.
+		 * Prepare table for viewing.
 		 *
 		 * @since    1.1.0
 		 *
-		 * @param {Array}  tableAttributes
-		 * @param {string} attributeName
-		 * @return {*} Attribute value
-		 */
-
-		/**
-		 * Initialize event handlers.
-		 *
-		 * @since    1.1.0
-		 *
-		 * @param {Object} e Event object
+		 * @param {Object} e Event object.
 		 */
 		prepareViewTable(e) {
 			e.preventDefault();
@@ -73,6 +63,13 @@ jQuery($ => {
 			this.viewTable(id);
 		}
 
+		/**
+		 * Get table data and build HTML for display.
+		 *
+		 * @since    1.1.0
+		 *
+		 * @param {number} id Table ID.
+		 */
 		async viewTable(id) {
 			// Simple loading state
 			this.openDialog('<p>Loading…</p>');
@@ -110,6 +107,23 @@ jQuery($ => {
 			}
 		}
 
+		/**
+		 * Initialize event handlers.
+		 *
+		 * @since    1.1.0
+		 *
+		 * @param {Array}  tableAttributes
+		 * @param {string} attributeName
+		 * @return {*} Attribute value
+		 */
+
+		/**
+		 * Fetch the table data.
+		 *
+		 * @since    1.1.0
+		 *
+		 * @param {number} id Table ID.
+		 */
 		async postView(id) {
 			// Create the request call
 			const fd = new FormData();
@@ -133,7 +147,6 @@ jQuery($ => {
 			const $dlg = this.$(`#${this.listRowId}`);
 			const minWidth = Math.min(1000, this.$(window).width() - 80);
 			const tableWidth = $dlg.html(contentHtml).width;
-			console.log('Table width = ' + tableWidth);
 
 			$dlg.html(contentHtml).dialog({
 				modal: true,

@@ -48,7 +48,6 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 
 		foreach ( $tables as $table ) {
 			$table_data = $this->prepare_table($table);
-			error_log('$_POST output = ' . json_encode($_POST));
 
 			// Filter results if submitted a search string
 			if ( ! isset($_POST['s']) ) {
@@ -288,8 +287,6 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 	 * @return string          HTML required to display and process the action
 	 */
 	protected function column_name ($item) {
-		error_log('Column Name $_REQUEST output = ' . json_encode($_REQUEST));
-
 		$actions = array(
 			// 'update_status' => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Update Status', 'dynamic-table-blocks') . '</a>',
 			//  $_REQUEST['page'],
@@ -377,7 +374,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		//  wp_die( 'Security check failed.' );
 		// }
 
-		error_log('Process Action $_REQUEST output = ' . json_encode($_REQUEST));
+		// error_log('Process Action $_REQUEST output = ' . json_encode($_REQUEST));
 
 		$action = $this->current_action();
 		$bulk_action = isset( $_REQUEST['bulk_action'] );
@@ -397,7 +394,6 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 					// Update all statuses to the supplied value
 					if ( ! empty( $item_ids ) ) {
 						foreach ( $item_ids as $item_id ) {
-							error_log('Update Status Bulk Rows, row = ' . $item_id);
 						}
 
 						if ( ! dtbk_verify_nonce( 'dtbkAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
@@ -409,7 +405,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 					// Handle deletion of selected items
 					if ( ! empty( $item_ids ) ) {
 						foreach ( $item_ids as $item_id ) {
-							error_log('Delete Bulk Rows, row = ' . $item_id);
+							// Future use to delete each selected item
 						}
 
 						if ( ! dtbk_verify_nonce( 'dtbkAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
@@ -421,10 +417,9 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		} else {
 			switch ( $action ) {
 				case 'update_status':
-					// Update statuse to the supplied value
+					// Update status to the supplied value
 					if ( ! empty( $item_id ) ) {
-
-						error_log('Update Status, row = ' . $item_id);
+						// Future use to update status of selected item
 
 						if ( ! dtbk_verify_nonce( 'dtbkAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
 							echo $notices->admin_notice_library( 'bulk-status-update-success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
@@ -432,10 +427,9 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 					}
 					break;
 				case 'export':
-					// Handle deletion of selected item
+					// Handle export of selected item
 					if ( ! empty( $item_id ) ) {
-
-						error_log('Export, row = ' . $item_id);
+						// Future use to export selected item
 
 						if ( ! dtbk_verify_nonce( 'dtbkAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
 							echo $notices->admin_notice_library( 'bulk-delete-success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
@@ -445,9 +439,6 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 				case 'view':
 					// Handle deletion of selected item
 					if ( ! empty( $item_id ) ) {
-
-						error_log('View, row = ' . $item_id);
-
 						if ( ! dtbk_verify_nonce( 'dtbkAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
 							echo $notices->admin_notice_library( 'bulk-delete-success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
 						}
@@ -457,7 +448,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 					// Handle deletion of selected item
 					if ( ! empty( $item_id ) ) {
 
-						error_log('Delete, row = ' . $item_id);
+						// Future use to delete selected item
 
 						if ( ! dtbk_verify_nonce( 'dtbkAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
 							echo $notices->admin_notice_library( 'bulk-delete-success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
