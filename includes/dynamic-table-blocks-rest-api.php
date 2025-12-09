@@ -407,7 +407,9 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			return $table_id;
 		}
 
-		$table       = get_table( $table_id );
+		$table = get_table( $table_id );
+
+		error_log('Created table data: ' . json_encode($table));
 		$request->set_param( 'context', 'edit' );
 		$response = $this->prepare_item_for_response( $table, $request );
 		$response = rest_ensure_response( $response );
