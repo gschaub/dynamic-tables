@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class DTBK_Admin {
 
-	private string $per_page_option   = 'dynamic_table_blocks_per_page';
+	private string $per_page_option = 'dynamic_table_blocks_per_page';
 
 	/**
 	 * Constructor.
@@ -22,7 +22,7 @@ class DTBK_Admin {
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-		add_filter( "set_screen_option_{$this->per_page_option}", array( $this, 'set_per_page' ), 10, 3);
+		add_filter( "set_screen_option_{$this->per_page_option}", array( $this, 'set_per_page' ), 10, 3 );
 	}
 
 	/**
@@ -63,7 +63,7 @@ class DTBK_Admin {
 		}
 
 		// make the location 21 for network page
-		$menu_slug   = 'dynamic-table-blocks/main-menu.php';
+		$menu_slug = 'dynamic-table-blocks/main-menu.php';
 
 		add_submenu_page(
 			$parent_slug,
@@ -74,7 +74,7 @@ class DTBK_Admin {
 			array( $this, 'plugin_main_admin' )
 		);
 
-		$menu_slug   = 'list_dynamic_table_blocks';
+		$menu_slug = 'list_dynamic_table_blocks';
 
 		$table_maintenance_page_hook = add_submenu_page(
 			$parent_slug,
@@ -90,7 +90,7 @@ class DTBK_Admin {
 	}
 
 	public function enqueue_admin_assets() {
-		$ver_css = filemtime(dtbk_get_setting( 'path' ) . 'assets/css/admin.css');
+		$ver_css = filemtime( dtbk_get_setting( 'path' ) . 'assets/css/admin.css' );
 		wp_enqueue_style( 'adminCss', dtbk_get_setting( 'url' ) . 'assets/css/admin.css', array(), $ver_css );
 
 		// Fix to make conditional
@@ -98,27 +98,31 @@ class DTBK_Admin {
 			wp_enqueue_script( 'jquery-ui-dialog' );
 			wp_enqueue_style( 'wp-jquery-ui-dialog' );
 
-			$ver_js = filemtime(dtbk_get_setting( 'path' ) . 'assets/js/dtbk-table-list.js');
+			$ver_js = filemtime( dtbk_get_setting( 'path' ) . 'assets/js/dtbk-table-list.js' );
 			wp_enqueue_script(
 				'dtbk-table-list',
 				dtbk_get_setting( 'url' ) . 'assets/js/dtbk-table-list.js',
-				[ 'jquery', 'jquery-ui-dialog' ],
+				array( 'jquery', 'jquery-ui-dialog' ),
 				$ver_js,
 				true
 			);
 
-			wp_localize_script( 'dtbk-table-list', 'DTBK_TABLE_LIST', [
-				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( 'dtbk-table-list' ),
-				'i18n'    => [
-					'view'         => __( 'Table Data ', 'dynamic-table-blocks' ),
-					'deleted'      => __( 'Deleted successfully.', 'dynamic-table-blocks' ),
-					'error'        => __( 'Something went wrong.', 'dynamic-table-blocks' ),
-					'confirmTitle' => __( 'Confirm Delete', 'dynamic-table-blocks' ),
-					'confirmBody'  => __( 'Are you sure you want to delete the selected item(s)? This cannot be undone.', 'dynamic-table-blocks' ),
-					'cancel'       => __( 'Cancel', 'dynamic-table-blocks' ),
-				],
-			] );
+			wp_localize_script(
+				'dtbk-table-list',
+				'DTBK_TABLE_LIST',
+				array(
+					'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+					'nonce'   => wp_create_nonce( 'dtbk-table-list' ),
+					'i18n'    => array(
+						'view'         => __( 'Table Data ', 'dynamic-table-blocks' ),
+						'deleted'      => __( 'Deleted successfully.', 'dynamic-table-blocks' ),
+						'error'        => __( 'Something went wrong.', 'dynamic-table-blocks' ),
+						'confirmTitle' => __( 'Confirm Delete', 'dynamic-table-blocks' ),
+						'confirmBody'  => __( 'Are you sure you want to delete the selected item(s)? This cannot be undone.', 'dynamic-table-blocks' ),
+						'cancel'       => __( 'Cancel', 'dynamic-table-blocks' ),
+					),
+				)
+			);
 		// }
 	}
 
@@ -151,9 +155,9 @@ class DTBK_Admin {
 	 * @since   1.0.0
 	 */
 	public function plugin_main_admin() {
-		$notices = new DTBK_Admin_Notices();
+		$notices     = new DTBK_Admin_Notices();
 		$maintenance = DTBK_Maintenance::get_instance();
-		$next = $maintenance->get_next_scheduled();
+		$next        = $maintenance->get_next_scheduled();
 
 		if ( $_POST ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing -- This is a nonce verification.
 			if ( ! dtbk_verify_nonce( 'dtbkAdminNonce', 'saveSettings', 'edit_plugins' ) ) {
@@ -185,7 +189,7 @@ class DTBK_Admin {
 			<h2>Settings</h2>
 
 			<form method="POST">
-				<?php wp_nonce_field('saveSettings', 'dtbkAdminNonce'); ?>
+				<?php wp_nonce_field( 'saveSettings', 'dtbkAdminNonce' ); ?>
 
 				<div class="admin-checkbox">
 					<span>
@@ -213,7 +217,7 @@ class DTBK_Admin {
 						<?php
 						if ( $next ) {
 							printf(
-								esc_html( '%1$s at %2$s'),
+								esc_html( '%1$s at %2$s' ),
 								esc_html( date_i18n( get_option( 'date_format' ), $next ) ),
 								esc_html( date_i18n( get_option( 'time_format' ), $next ) )
 							);
@@ -264,29 +268,33 @@ class DTBK_Admin {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param  bool $status - Value has changed (true) or not (false)
+	 * @param  bool   $status - Value has changed (true) or not (false)
 	 * @param  string $option - Identifier of specific screen option
-	 * @param  int $value - Number of pages for the option
+	 * @param  int    $value - Number of pages for the option
 	 *
 	 * @return int - Updated number of tables to display per page
 	 */
-	public function set_per_page ($status, $option, $value) {
+	public function set_per_page( $status, $option, $value ) {
 		if ( $this->per_page_option === $option ) {
 			$value = (int) $value;
-			if ($value < 1) $value = 1;
-			if ($value > 200) $value = 200;
+			if ( $value < 1 ) {
+				$value = 1;
+			}
+			if ( $value > 200 ) {
+				$value = 200;
+			}
 			return $value;
 		}
 		return $status;
 	}
 
 	/**
-	* Create HTML formattedlist of Dynamic Tables
-	*
-	* @since 1.1.0
-	*
-	* @return void
-	*/
+	 * Create HTML formattedlist of Dynamic Tables
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return void
+	 */
 	public function plugin_table_maintenance() {
 		$admin_table_listing = new DTBK_List_Dynamic_Table_Blocks();
 
@@ -294,7 +302,7 @@ class DTBK_Admin {
 		echo '<form method = "post">';
 
 		$admin_table_listing->prepare_items();
-		$admin_table_listing->search_box('Search Tables', 'search_id');
+		$admin_table_listing->search_box( 'Search Tables', 'search_id' );
 
 		echo ' <input type="hidden" name="page" value="list_dynamic_table_blocks"/> ';
 		$admin_table_listing->display();
