@@ -3239,6 +3239,8 @@ function Edit(props) {
    *
    * Post ID is assigned a value of '0' upon table creation and can change over the life of a post.
    * props.context is authoritative for Post ID so we ensure the table is sync'd to that.
+   *
+   * @since    1.0.0
    */
   if (tableHasStartedResolving && tableHasFinishedResolving && !awaitingTableEntityCreation && String(props.context.postId) !== table.post_id) {
     setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId));
@@ -3246,15 +3248,32 @@ function Edit(props) {
   }
 
   /**
+   * Determine if table has been loaded.
+   *
+   * @since    1.1.0
+   *
+   * @return {boolean}  Table loaded?
+   */
+  const setTableLoaded = () => {
+    if (!!table.block_table_ref && blockTableStatus !== 'None') return true;
+    return false;
+  };
+  const tableLoaded = setTableLoaded();
+
+  /**
    * Perform clean-up for deleted table block at time of deletion
    */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     return () => {
-      setTableAttributes(table.table_id, 'prior_status', '', 'PROP', currentStatus.current);
-      setTableAttributes(table.table_id, 'unmounted_blockid', '', 'PROP', blockProps['data-block'], false);
-      // saveTableEntity(table.table_id)
+      // Process table clean-up only if table was loaded
+      if (tableLoaded) {
+        // Set table status to 'deleted' and clear unmounted block ID
+        setTableAttributes(table.table_id, 'prior_status', '', 'PROP', currentStatus.current);
+        setTableAttributes(table.table_id, 'unmounted_blockid', '', 'PROP', blockProps['data-block'], false);
+        saveTableEntity(table.table_id);
+      }
     };
-  }, []);
+  }, [tableLoaded]);
   const tableColumnLength = JSON.stringify(table.table) === '{}' || blockTableStatus == 'None' ? 0 : table.columns.length;
   const tableRowLength = JSON.stringify(table.table) === '{}' || blockTableStatus == 'None' ? 0 : table.rows.length;
 
@@ -3415,7 +3434,7 @@ function Edit(props) {
     setTableStale(false);
 
     /**
-     * Update Table Status only table change is for status and the
+     * Update Table Status only. Table change is for status and the
      * call must bypass the regular persist (persist === false)
      */
     if (persist) {
