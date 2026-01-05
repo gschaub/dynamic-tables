@@ -1,23 +1,6 @@
 /* External dependencies */
 import { store as coreStore } from '@wordpress/core-data';
-import { numberToLetter } from '../utils';
-
-/**
- * Calculate the cell id for each cell in the Summary.
- *
- * @since    1.0.0
- *
- * @param {*} fetchedCells cell array retrieved the REST api
- * @return  {Array|Object} Cells with the added cell id attribute
- */
-function computeCellIds(fetchedCells) {
-	fetchedCells.forEach(cell => {
-		cell.cell_id = numberToLetter(cell.column_id) + cell.row_id;
-	});
-	return {
-		fetchedCells,
-	};
-}
+import { computeCellIds } from '../utils';
 
 /**
  * Requests a table's record from the REST API.

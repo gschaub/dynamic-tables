@@ -50,7 +50,10 @@ export function getTables(state) {
  */
 export function getTableIdByBlock(state, block_table_ref) {
 	const newTable = Object.keys(state.tables).reduce((acc, key) => {
-		if (state.tables[key]?.block_table_ref === block_table_ref) {
+		if (
+			state.tables[key]?.block_table_ref === block_table_ref &&
+			state.tables[key].table_status !== 'pending-entity'
+		) {
 			acc[key] = { ...state.tables[key] };
 		}
 		return acc;
@@ -65,8 +68,8 @@ export function getTableIdByBlock(state, block_table_ref) {
 /**
  * Return all tables that are associated with unmounted blocks
  *
- * @param {*} state
- * @returns
+ * @param {Object} state Current state of tables
+ * @return {Object} unmountedTables
  */
 /**
  * Get all tables associated with unmounted blocks.
@@ -78,7 +81,7 @@ export function getTableIdByBlock(state, block_table_ref) {
  */
 export function getUnmountedTables(state) {
 	const unmountedTables = Object.keys(state.tables).reduce((acc, key) => {
-		if (state.tables[key].unmounted_blockid) {
+		if (state.tables[key].unmounted_block) {
 			acc[key] = { ...state.tables[key] };
 		}
 		return acc;

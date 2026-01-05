@@ -85,6 +85,7 @@ const table = (
 			};
 
 		case UPDATE_TABLE_PROP:
+			console.log('Updating yable Prop for ' + [action.attribute]);
 			const updatedTable = {
 				...state,
 				[action.attribute]: action.value,
@@ -95,6 +96,7 @@ const table = (
 			};
 
 		case REMOVE_TABLE_PROP:
+			console.log('Removing table Prop for ' + [action.attribute]);
 			const tablePropRemoved = { ...state };
 			delete tablePropRemoved[action.attribute];
 
@@ -462,6 +464,10 @@ const reducer = (
 	action
 ) => {
 	const tableKey = action.tableId;
+
+	console.log('Reducer beginning state...');
+	console.log(state);
+	console.log('Table ID = ' + tableKey);
 	const newTableState = table(state.tables[tableKey], action);
 
 	if (JSON.stringify(newTableState.table) === '{}') {

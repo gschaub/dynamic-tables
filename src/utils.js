@@ -129,6 +129,24 @@ export function generateBlockTableRef() {
 }
 
 /**
+ * Calculate the cell id for each cell in the Summary.
+ *
+ * @since    1.0.0
+ * @since	 1.1.0 Moved from resolvers.js to utils.js
+ *
+ * @param {*} fetchedCells cell array retrieved the REST api
+ * @return  {Array|Object} Cells with the added cell id attribute
+ */
+export function computeCellIds(fetchedCells) {
+	fetchedCells.forEach(cell => {
+		cell.cell_id = numberToLetter(cell.column_id) + cell.row_id;
+	});
+	return {
+		fetchedCells,
+	};
+}
+
+/**
  * Set content for borders occuring in rows (integers) and columns (letters).
  *
  * @since    1.0.0

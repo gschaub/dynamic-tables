@@ -4,6 +4,7 @@ import { store as blockEditorStore } from '@wordpress/block-editor';
 
 /* Internal dependencies */
 import TYPES from './action-types.js';
+import { computeCellIds } from '../utils';
 
 /* Load constants */
 const {
@@ -89,6 +90,119 @@ export function receiveTable(
 }
 
 /**
+ * Signals that table needs to be cloned, setting the table_id to zero and providng
+ * a new table postId and blockTableRef.
+ *
+ * @since    1.0.0
+ *
+ * @param {*} tableId
+ * @param {*} postId
+ * @param {*} blockTableRef
+ * @return {Object} Action object
+ */
+export const cloneTable =
+	(tableId, postId, blockTableRef) =>
+	async ({ select, dispatch, registry }) => {
+		const { table_name, attributes, classes, rows, columns, cells } = select.getTable(
+			tableId,
+			true
+		);
+
+		const rowsWithResetId = [];
+		const columnsWithResetId = [];
+		const cellsWithResetId = [];
+
+		rows.forEach(row => {
+			const cloneRow = {
+				...row,
+				table_id: '0',
+			};
+			rowsWithResetId.push(cloneRow);
+		});
+
+		columns.forEach(column => {
+			const cloneColumn = {
+				...column,
+				table_id: '0',
+			};
+			columnsWithResetId.push(cloneColumn);
+		});
+
+		cells.forEach(cell => {
+			const cloneCell = {
+				...cell,
+				table_id: '0',
+			};
+			cellsWithResetId.push(cloneCell);
+		});
+
+		const newTable = {
+			title: table_name,
+			header: {
+				id: '0',
+				block_table_ref: blockTableRef,
+				status: 'new',
+				post_id: postId,
+				table_name: table_name,
+				attributes: attributes,
+				classes: classes,
+			},
+			rows: [...rowsWithResetId],
+			columns: [...columnsWithResetId],
+			cells: [...cellsWithResetId],
+		};
+
+		try {
+			alert('Executing create table');
+			const tableEntity = await registry
+				.dispatch(coreStore)
+				.saveEntityRecord('dynamic-table-blocks', 'table', newTable);
+			console.log('Created table entity with id = ' + tableEntity.id);
+
+			const table = tableEntity;
+			const table_id = table.id;
+			const block_table_ref = table.header.block_table_ref;
+			const table_status = table.header.status;
+			const post_id = table.header.post_id;
+			const table_name = table.header.table_name;
+			const attributes = table.header.attributes;
+			const classes = table.header.classes;
+			const rows = table.rows;
+			const columns = table.columns;
+			computeCellIds(table.cells);
+			const cells = table.cells;
+
+			dispatch.receiveTable(
+				table_id,
+				block_table_ref,
+				table_status,
+				post_id,
+				table_name,
+				attributes,
+				classes,
+				rows,
+				columns,
+				cells
+			);
+			// dispatch.assignTableId(tableEntity.id);
+			alert('Done create table');
+			return tableEntity.id;
+		} catch (error) {
+			alert('Error create table');
+			console.log('Error details: ' + error);
+			console.log(newTable);
+			console.log(
+				'Error in createTableEntity -  Table ID - ' +
+					table_id +
+					', block table ref = ' +
+					block_table_ref +
+					', Post Id = ' +
+					post_id
+			);
+		}
+	};
+
+/**
  * Action to create WordPress Core-Data dynamic table entity based on local table.
  * persists the data as soon as the table is created, before post is saved/published.
  *
@@ -99,6 +213,7 @@ export function receiveTable(
 export const createTableEntity =
 	() =>
 	async ({ select, dispatch, registry }) => {
+		console.log(select.getTable('0', true));
 		const {
 			table_id,
 			block_table_ref,
@@ -127,17 +242,20 @@ export const createTableEntity =
 		};
 
 		try {
+			alert('Executing create table');
 			const tableEntity = await registry
 				.dispatch(coreStore)
 				.saveEntityRecord('dynamic-table-blocks', 'table', newTable);
 
 			console.log('Created table entity with id = ' + tableEntity.id);
 			dispatch.assignTableId(tableEntity.id);
+			alert('Done create table');
 
 			return tableEntity.id;
 		} catch (error) {
+			alert('Error create table');
 			console.log('Error details: ' + error);
-				console.log(newTable);
+			console.log(newTable);
 			console.log(
 				'Error in createTableEntity -  Table ID - ' +
 					table_id +
@@ -268,9 +386,9 @@ export const deleteTableEntity =
 	tableId =>
 	async ({ select, dispatch, registry }) => {
 		try {
-			const deletedTableEntity = await registry
-				.dispatch(coreStore)
-				.deleteEntityRecord('dynamic-table-blocks', 'table', tableId);
+			// const deletedTableEntity = await registry
+			// 	.dispatch(coreStore)
+			// 	.deleteEntityRecord('dynamic-table-blocks', 'table', tableId);
 
 			dispatch({
 				type: DELETE_TABLE,
@@ -299,10 +417,11 @@ export const processDeletedTables =
 	};
 
 /**
- * Searches for previously unbounted tables' block in post.  If found, remove block id
+ * Searches for previously unmounted tables block in post.  If found, remove block id
  * attribute. Otherwise, mark table with a deleted.
  *
  * @since    1.0.0
+ * @since    1.1.0  Refactored to use table_id and block_table_ref for matching
  *
  * @param {Object} unmountedTables Object of currently unmounted tables
  * @return  {Object} Action object
@@ -311,21 +430,83 @@ export const processUnmountedTables =
 	unmountedTables =>
 	({ dispatch, registry }) => {
 		Object.keys(unmountedTables).forEach(key => {
-			const unmountedTableBlockId = unmountedTables[key].unmounted_blockid;
 			const priorStatus = unmountedTables[key].prior_status;
-			const tableBlock = registry.select(blockEditorStore).getBlock(unmountedTableBlockId);
+			const isBlockPattern = unmountedTables[key].isPattern ? true : false;
+
+			// Search all blocks to find a match for this unmounted table block.
+			const tableBlock = hasDynamicTableBlock(registry, unmountedTables[key]);
+
 			if (tableBlock) {
-				dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status');
 				dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', priorStatus);
-				dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_blockid');
 				dispatch.removeTableProp(unmountedTables[key].table_id, 'prior_status');
+				dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_block');
 				dispatch.updateTableEntity(unmountedTables[key].table_id);
+			} else if (isBlockPattern) {
+				dispatch.removeTableProp(unmountedTables[key].table_id, 'isPattern');
 			} else {
 				dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', 'deleted');
-				dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_blockid');
+				dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_block');
 			}
 		});
 	};
+
+/**
+ * Find your Dynamic Tables block by a stable key (block_table_ref) or fallback (table_id).
+ *
+ * @since    1.0.0
+ *
+ * @param {Object} registry      - Redux registry
+ * @param {Object} tableStateRow - Unmounted table
+ * @return {Object|null} block
+ */
+const hasDynamicTableBlock = (registry, tableStateRow) => {
+	const tableId = tableStateRow.table_id;
+	const blockTableRef = tableStateRow.block_table_ref;
+
+	if (!blockTableRef || tableId === undefined || tableId === null) {
+		return false;
+	}
+
+	const allBlocks = registry.select(blockEditorStore).getBlocks();
+	return blockTreeHasMatch(
+		allBlocks,
+		b =>
+			b?.name === 'dynamic-table-blocks/dynamic-table-blocks' &&
+			b?.attributes?.block_table_ref === blockTableRef &&
+			Number(b?.attributes?.table_id) === Number(tableId)
+	);
+};
+
+const blockTreeHasMatch = (blocks, predicate) => {
+	for (const block of blocks) {
+		if (predicate(block)) {
+			return true;
+		}
+
+		if (block.innerBlocks?.length) {
+			if (blockTreeHasMatch(block.innerBlocks, predicate)) {
+				return true;
+			}
+		}
+	}
+	return false;
+};
+
+/**
+ * Signals the removal of a table from the state tree only. The underlying table
+ * remains persisted in the database.
+ *
+ * @since    1.0.0
+ *
+ * @param {number} tableId
+ * @return {Object} Action object
+ */
+export const removeTableBlock = tableId => {
+	return {
+		type: DELETE_TABLE,
+		tableId,
+	};
+};
 
 /**
  * Signals the addition of a new table column.

@@ -8,9 +8,6 @@
 
 namespace DynamicTableBlocks;
 
-// use Error;
-// use WP_Error;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -90,6 +87,16 @@ class DTBK_Maintenance {
 		$this->cron_event_hook     = 'dtbk_dynamic_tables';
 	}
 
+	/**
+	 * Instance object.
+	 *
+	 * Description - Create a new object instance if none exists. Otherwise return
+	 * the existing instance.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return DTBK_Maintenance
+	 */
 	public static function get_instance() {
 		if ( null === static::$instance ) {
 			static::$instance = new static();
@@ -184,6 +191,7 @@ class DTBK_Maintenance {
 	 * @return void
 	 */
 	protected function run_scheduled_tasks() {
+		error_log( 'Running Cron Tasks for Dynamic Table Blocks' );
 		$this->delete_expired_transients();
 		$this->validate_tables();
 	}
@@ -215,6 +223,7 @@ class DTBK_Maintenance {
 	 * @return void
 	 */
 	public function validate_tables() {
+		error_log( 'Running Validate Table' );
 		// Retrieve dynamic table blocks in all parent posts and index fields
 		$search_post_types = array(
 			'exclude' => array( 'revision', 'attachment', 'nav_menu_item', 'custom_css', 'changeset' ),
@@ -297,10 +306,10 @@ class DTBK_Maintenance {
 						$this->update_table( $full_table );
 					}
 				} elseif ( $table['status'] !== 'corrupted' ) {
-						// Update table status = 'saved'
-						$full_table                     = $this->get_table( (int) $table['id'] );
-						$full_table['header']['status'] = 'corrupted';
-						$this->update_table( $full_table );
+					// Update table status = 'saved'
+					$full_table                     = $this->get_table( (int) $table['id'] );
+					$full_table['header']['status'] = 'corrupted';
+					$this->update_table( $full_table );
 				}
 			} elseif ( (int) $table['post_id'] === $post_block['parent_post_id'] ) {
 				if ( $post_block['block_table_ref'] === $table['block_table_ref'] ) {
@@ -311,26 +320,26 @@ class DTBK_Maintenance {
 						$this->update_table( $full_table );
 					}
 				} elseif ( $table['status'] !== 'corrupted' ) {
-						// Update table status = 'corrupted'
-						$full_table                     = $this->get_table( (int) $table['id'] );
-						$full_table['header']['status'] = 'currupted';
-						$this->update_table( $full_table );
-				}
-			} elseif ( $table['status'] !== 'corrupted' ) {
 					// Update table status = 'corrupted'
 					$full_table                     = $this->get_table( (int) $table['id'] );
 					$full_table['header']['status'] = 'currupted';
 					$this->update_table( $full_table );
+				}
+			} elseif ( $table['status'] !== 'corrupted' ) {
+				// Update table status = 'corrupted'
+				$full_table                     = $this->get_table( (int) $table['id'] );
+				$full_table['header']['status'] = 'currupted';
+				$this->update_table( $full_table );
 			}
 			++$posts_matched;
 		}
 
 		if ( $posts_matched > 1 ) {
 			if ( $table['status'] !== 'corrupted' ) {
-					// Update table status = 'corrupted'
-					$full_table                     = $this->get_table( (int) $table['id'] );
-					$full_table['header']['status'] = 'currupted';
-					$this->update_table( $full_table );
+				// Update table status = 'corrupted'
+				$full_table                     = $this->get_table( (int) $table['id'] );
+				$full_table['header']['status'] = 'currupted';
+				$this->update_table( $full_table );
 			}
 		}
 	}
@@ -349,32 +358,74 @@ class DTBK_Maintenance {
 	 * @return void
 	 */
 	public function on_after_insert_post( $post_id, $post, $update ) {
-		if ( wp_is_post_revision( $post_id ) || get_post_status( $post ) === 'trash' || $update ) {
+		static $in_progress = array();
+
+		if ( isset( $in_progress[ $post_id ] ) ) {
 			return;
 		}
+		$in_progress[ $post_id ] = true;
 
-		// Temporarily unhook so we don’t loop
-		remove_action( 'wp_after_insert_post', array( $this, 'on_after_insert_post' ), 10 );
+		try {
+			// Verify post is an object.
+			if ( ! is_object( $post ) ) {
+				$post = get_post( $post_id );
+				if ( ! $post ) {
+					return;
+				}
+			}
 
-		$content = $post->post_content;
-		$blocks  = parse_blocks( $content );
-		$changed = false;
+			// Skip post revisions and autosaves.
+			if ( wp_is_post_revision( $post_id ) || get_post_status( $post ) === 'trash' || $update ) {
+				return;
+			}
 
-		$changed_blocks = $this->deduplicate_blocks( $blocks, $post_id, $changed );
+			// Skip trash.
+			if ( isset( $post->post_status ) && 'trash' === $post->post_status ) {
+				return;
+			}
 
-		if ( $changed ) {
-			$new_content = serialize_blocks( $changed_blocks );
-			wp_update_post(
-				array(
-					'ID'           => $post_id,
-					'post_content' => $new_content,
-				)
-			);
+			// Allow updates for wp_block and wp_template_part.
+			if ( $update && ! in_array( $post->post_type, array( 'wp_block', 'wp_template_part' ), true ) ) {
+				return;
+			}
+
+			// Temporarily unhook so we don’t loop.
+			remove_action( 'wp_after_insert_post', array( $this, 'on_after_insert_post' ), 10 );
+
+			$content = isset( $post->post_content ) ? (string) $post->post_content : '';
+			if ( '' === $content ) {
+				return;
+			}
+
+			$blocks  = parse_blocks( $content );
+			$changed = false;
+
+			$changed_blocks = $this->deduplicate_blocks( $blocks, $post_id, $changed );
+
+			if ( is_wp_error( $changed_blocks ) ) {
+				return;
+			}
+
+			if ( $changed ) {
+				$new_content = serialize_blocks( $changed_blocks );
+
+				// Only update if content actually changed.
+				if ( $new_content !== $content ) {
+					wp_update_post(
+						array(
+							'ID'           => $post_id,
+							'post_content' => $new_content,
+						)
+					);
+				}
+			}
+		} finally {
+			// Re-hook
+			add_action( 'wp_after_insert_post', array( $this, 'on_after_insert_post' ), 10, 3 );
+			unset( $in_progress[ $post_id ] );
 		}
-
-		// Re-hook
-		add_action( 'wp_after_insert_post', array( $this, 'on_after_insert_post' ), 10, 3 );
 	}
+
 
 	/**
 	 * Creates a new table object and updates the block reference for each Dynamic Tables block
@@ -388,26 +439,47 @@ class DTBK_Maintenance {
 	 */
 	protected function deduplicate_blocks( $blocks, $post_id, &$changed ) {
 		foreach ( $blocks as &$block ) {
+
+			// Recurse into inner blocks.
+			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+				$block['innerBlocks'] = $this->deduplicate_blocks( $block['innerBlocks'], $post_id, $changed );
+
+				// Propagate errors up.
+				if ( is_wp_error( $block['innerBlocks'] ) ) {
+					return $block['innerBlocks'];
+				}
+			}
+
 			if ( isset( $block['blockName'] ) && $block['blockName'] === 'dynamic-table-blocks/dynamic-table-blocks' ) {
 				$attrs   = $block['attrs'] ?? array();
 				$old_ref = $attrs['block_table_ref'] ?? '';
 
-				if ( $old_ref ) {
-					$original_table = get_table_by_ref( $old_ref );
-					if ( $original_table['header']['post_id'] !== $post_id ) {
-						$new_table    = $this->prepare_table_for_cloning( $original_table, $post_id );
-						$new_table_id = $this->create_table( $new_table );
-
-						$block['attrs']['block_table_ref'] = $new_table['header']['block_table_ref'];
-						$block['attrs']['table_id']        = $new_table_id;
-						$changed                           = true;
-					}
-				} else {
-					// All dynamic table blocks must have a valid reference
+				if ( ! $old_ref ) {
+					// All dynamic table blocks must have a valid reference.
 					return new \WP_Error(
-						'table not found',
-						__( 'Sorry, you are not allowed to edit this post.', 'dynamic-table-blocks' )
+						'dtbk_table_ref_missing',
+						__( 'Dynamic Tables block is missing a table reference.', 'dynamic-table-blocks' )
 					);
+				}
+
+				$original_table = get_table_by_ref( $old_ref );
+
+				if ( empty( $original_table ) || empty( $original_table['header'] ) ) {
+					return new \WP_Error(
+						'dtbk_table_not_found',
+						__( 'Dynamic Tables table could not be found for that reference.', 'dynamic-table-blocks' )
+					);
+				}
+
+				$original_post_id = isset( $original_table['header']['post_id'] ) ? (int) $original_table['header']['post_id'] : 0;
+
+				if ( $original_post_id !== (int) $post_id ) {
+					$new_table    = $this->prepare_table_for_cloning( $original_table, $post_id );
+					$new_table_id = $this->create_table( $new_table );
+
+					$block['attrs']['block_table_ref'] = $new_table['header']['block_table_ref'];
+					$block['attrs']['table_id']        = $new_table_id;
+					$changed                           = true;
 				}
 			}
 		}
@@ -430,7 +502,7 @@ class DTBK_Maintenance {
 	private function prepare_table_for_cloning( $table, $post_id ) {
 		$table['id']                        = 0;
 		$table['header']['id']              = 0;
-		$table['header']['post_id']         = $post_id;
+		$table['header']['post_id']         = (int) $post_id;
 		$table['header']['block_table_ref'] = $this->generate_new_block_table_ref();
 		$table                              = $this->reset_table_ids( $table );
 
@@ -510,6 +582,7 @@ class DTBK_Maintenance {
 
 		// Execute the request
 		$response = rest_do_request( $request );
+		error_log( 'Get Table Response: ' . json_encode( $response ) );
 		if ( $response->is_error() ) {
 			return $response;
 		}
@@ -529,25 +602,22 @@ class DTBK_Maintenance {
 	 * @return int           New table ID
 	 */
 	private function create_table( $table ) {
-		// Build authentication signature
-		$path      = '/dynamic-table-blocks/v1/tables';
-		$method    = 'POST';
-		$body      = wp_json_encode( $table );
-		$signature = $this->build_internal_signature( $method, $path, $body );
+		// REST request parameters
+		$path   = '/dynamic-table-blocks/v1/tables';
+		$method = 'POST';
 
 		// Create rest request to create table
 		$request = new \WP_REST_Request( $method, $path );
-		$request->set_header( 'X-DTBK-Signature', $signature );
 		$request->set_header( 'Content-Type', 'application/json' );
 		$request->set_query_params( array( 'context' => 'edit' ) );
-		$request->set_body_params( $body );
+		$request->set_body_params( $table );
 
 		// Execute the request
 		$response = rest_do_request( $request );
 
 		// Retrieve the response data
 		$server = rest_get_server();
-		$data   = $server->response_to_data( $response, false ); // Pass false to prevent authentication checks for internal requests
+		$data   = $server->response_to_data( $response, false );
 		return $data['id'];
 	}
 
@@ -624,6 +694,7 @@ class DTBK_Maintenance {
 	 * @return void
 	 */
 	private function delete_expired_transients() {
+		error_log( 'Running Delete Transients' );
 		global $wpdb;
 		$expiration_cutoff = time() - DAY_IN_SECONDS;
 
@@ -717,8 +788,22 @@ class DTBK_Maintenance {
 		return $post_blocks;
 	}
 
+	/**
+	 * Check for error in table API response
+	 *
+	 * Description - An error will signify that the table is corrupt.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param  object $response
+	 * @return bool
+	 */
 	private function is_api_return_error( $response ) {
-		// Check for WP_Error
+		if ( is_array( $response ) ) {
+			return false;
+		}
+
+		// Check for WP_Error in REST response
 		if ( $response->is_error() ) {
 			$error = $response->as_error();  // returns WP_Error or null
 			if ( is_wp_error( $error ) ) {

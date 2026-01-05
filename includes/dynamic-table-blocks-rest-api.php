@@ -311,6 +311,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return true|WP_Error True if the request has access to create items, WP_Error object otherwise.
 	 */
 	public function create_item_permissions_check( $request ) {
+		error_log( 'In create_item_permissions_check' );
+
 		if ( (int) 0 !== (int) $request['id'] ) {
 			return new \WP_Error(
 				'rest_table_exists',
@@ -327,6 +329,49 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		// Permissions for creating a table are based upon the underlying post to which
 		// it is attached.
+		error_log( 'Request object: ' . json_encode( $request ) );
+		if ( isset( $request['header']['post_id'] ) ) {
+			$post_id = (int) $request['header']['post_id'];
+
+			if ( $post_id !== 0 ) {
+				$post = $this->get_post( $post_id );
+				if ( is_wp_error( $post ) ) {
+					return $post;
+				}
+
+				$post_type = get_post_type_object( $post->post_type );
+
+				if ( $post && ! $this->check_update_permission( $post ) ) {
+					return new \WP_Error(
+						'rest_cannot_edit',
+						__( 'Sorry, you are not allowed to create tables for this post as this user.', 'dynamic-table-blocks' ),
+						array( 'status' => rest_authorization_required_code() )
+					);
+				}
+
+				if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
+					return new \WP_Error(
+						'rest_cannot_edit_others',
+						__( 'Sorry, you are not allowed to create tables for this post as this user.', 'dynamic-table-blocks' ),
+						array( 'status' => rest_authorization_required_code() )
+					);
+				}
+			}
+
+			if ( $post_id === 0 && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
+				return new \WP_Error(
+					'rest_cannot_edit',
+					__( 'Sorry, you are not allowed to create tables for this post as this user.', 'dynamic-table-blocks' ),
+					array( 'status' => rest_authorization_required_code() )
+				);
+			}
+		} else {
+			return new \WP_Error(
+				'missing_post_id',
+				__( 'Post ID is missing from request.', 'dynamic-table-blocks' ),
+				array( 'status' => 500 )
+			);
+		}
 		if ( isset( $request['header']['post_id'] ) ) {
 			$post_id = (int) $request['header']['post_id'];
 

@@ -18,6 +18,14 @@
       "type": "string",
       "default": ""
     },
+    "original_post_type": {
+      "type": "string",
+      "default": ""
+    },
+    "original_post_id": {
+      "type": "integer",
+      "default": "0"
+    },
     "block_alignment": {
       "type": "string",
       "default": "undefined"

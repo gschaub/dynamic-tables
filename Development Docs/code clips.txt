@@ -1,0 +1,49 @@
+SELECT *
+FROM wp_dtbk_tables
+where status = 'orphan';
+
+
+SELECT *
+FROM wp_dtbk_table_rows a
+where not exists (select 'x' from wp_dtbk_tables x
+                  where x.id = a.table_id);
+
+SELECT *
+FROM wp_dtbk_table_columns a
+where not exists (select 'x' from wp_dtbk_tables x
+              where x.id = a.table_id);
+
+SELECT *
+FROM wp_dtbk_table_cells a
+where not exists (select 'x' from wp_dtbk_tables x
+              where x.id = a.table_id);
+
+
+
+
+DELETE FROM wp_dtbk_tables
+where status = 'orphan';
+
+DELETE FROM wp_dtbk_table_rows
+where not exists (select 'x' from wp_dtbk_tables x
+                  where x.id = table_id);
+
+
+DELETE FROM wp_dtbk_table_columns
+where not exists (select 'x' from wp_dtbk_tables x
+                  where x.id = table_id);
+
+
+DELETE FROM wp_dtbk_table_cells
+where not exists (select 'x' from wp_dtbk_tables x
+                  where x.id = table_id);
+
+
+
+
+
+update wp_dtbk_tables set post_id = 478 where id = 1205
+
+update wp_dtbk_table_rows
+update wp_dtbk_table_columns
+update wp_dtbk_table_cells
