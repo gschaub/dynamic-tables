@@ -1573,7 +1573,7 @@ function receiveTable(table_id, block_table_ref, table_status, post_id, table_na
  * Signals that table needs to be cloned, setting the table_id to zero and providng
  * a new table postId and blockTableRef.
  *
- * @since    1.0.0
+ * @since    1.1.0
  *
  * @param {*} tableId
  * @param {*} postId
@@ -1633,9 +1633,7 @@ const cloneTable = (tableId, postId, blockTableRef) => async ({
     cells: [...cellsWithResetId]
   };
   try {
-    alert('Executing create table');
     const tableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).saveEntityRecord('dynamic-table-blocks', 'table', newTable);
-    console.log('Created table entity with id = ' + tableEntity.id);
     const table = tableEntity;
     const table_id = table.id;
     const block_table_ref = table.header.block_table_ref;
@@ -1649,14 +1647,11 @@ const cloneTable = (tableId, postId, blockTableRef) => async ({
     (0,_utils__WEBPACK_IMPORTED_MODULE_3__.computeCellIds)(table.cells);
     const cells = table.cells;
     dispatch.receiveTable(table_id, block_table_ref, table_status, post_id, table_name, attributes, classes, rows, columns, cells);
-    // dispatch.assignTableId(tableEntity.id);
-    alert('Done create table');
     return tableEntity.id;
   } catch (error) {
-    alert('Error create table');
     console.log('Error details: ' + error);
     console.log(newTable);
-    console.log('Error in createTableEntity -  Table ID - ' + table_id + ', block table ref = ' + block_table_ref + ', Post Id = ' + post_id);
+    console.log('Error in createTableEntity -  Block table ref = ' + newTable.header.block_table_ref + ', Post Id = ' + newTable.header.post_id);
   }
 };
 
@@ -1673,7 +1668,6 @@ const createTableEntity = () => async ({
   dispatch,
   registry
 }) => {
-  console.log(select.getTable('0', true));
   const {
     table_id,
     block_table_ref,
@@ -1701,14 +1695,10 @@ const createTableEntity = () => async ({
     cells: [...cells]
   };
   try {
-    alert('Executing create table');
     const tableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).saveEntityRecord('dynamic-table-blocks', 'table', newTable);
-    console.log('Created table entity with id = ' + tableEntity.id);
     dispatch.assignTableId(tableEntity.id);
-    alert('Done create table');
     return tableEntity.id;
   } catch (error) {
-    alert('Error create table');
     console.log('Error details: ' + error);
     console.log(newTable);
     console.log('Error in createTableEntity -  Table ID - ' + table_id + ', block table ref = ' + block_table_ref + ', Post Id = ' + post_id);
@@ -1838,10 +1828,7 @@ const deleteTableEntity = tableId => async ({
   registry
 }) => {
   try {
-    // const deletedTableEntity = await registry
-    // 	.dispatch(coreStore)
-    // 	.deleteEntityRecord('dynamic-table-blocks', 'table', tableId);
-
+    const deletedTableEntity = await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).deleteEntityRecord('dynamic-table-blocks', 'table', tableId);
     dispatch({
       type: DELETE_TABLE,
       tableId
@@ -2323,7 +2310,6 @@ const table = (state = {
         table: updatedTableId
       };
     case UPDATE_TABLE_PROP:
-      console.log('Updating yable Prop for ' + [action.attribute]);
       const updatedTable = {
         ...state,
         [action.attribute]: action.value
@@ -2332,7 +2318,6 @@ const table = (state = {
         table: updatedTable
       };
     case REMOVE_TABLE_PROP:
-      console.log('Removing table Prop for ' + [action.attribute]);
       const tablePropRemoved = {
         ...state
       };
@@ -2661,9 +2646,6 @@ const reducer = (state = {
   tables: {}
 }, action) => {
   const tableKey = action.tableId;
-  console.log('Reducer beginning state...');
-  console.log(state);
-  console.log('Table ID = ' + tableKey);
   const newTableState = table(state.tables[tableKey], action);
   if (JSON.stringify(newTableState.table) === '{}') {
     return state;
@@ -3070,7 +3052,6 @@ function Edit(props) {
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_wordpress_notices__WEBPACK_IMPORTED_MODULE_3__.store);
 
   /* Local State declarations */
-  const [createdTableId, setCreatedTableId] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [isTableStale, setTableStale] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
   const [openColumnRow, setOpenColumnRow] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(0);
   const [columnAttributes, setColumnAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({});
@@ -3106,7 +3087,6 @@ function Edit(props) {
       name
     };
   });
-  console.log('%cSTARTING RENDER FOR TABLE ' + table_id, 'color: blue; font-weight: bold;');
 
   /**
    * Get Current Table Id.
@@ -3115,6 +3095,14 @@ function Edit(props) {
    * @since    1.0.0
    *
    * @return Table Id
+   */
+
+  /**
+   * Identify current table id by its block table reference
+   *
+   * @since 1.1.0
+   *
+   * @type  {number} Object of all table id's that are currently unmounted
    */
   const {
     currentTableId
@@ -3174,7 +3162,6 @@ function Edit(props) {
   const {
     unmountedTables
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
-    // alert('Getting all unmounted tables')
     const {
       getUnmountedTables
     } = select(_data__WEBPACK_IMPORTED_MODULE_9__.store);
@@ -3183,8 +3170,6 @@ function Edit(props) {
     };
   });
   if (Object.keys(unmountedTables).length > 0) {
-    console.log('Found unmounted tables:');
-    console.log(unmountedTables);
     processUnmountedTables(unmountedTables);
   }
 
@@ -3221,8 +3206,6 @@ function Edit(props) {
    * unmounted tables.
    */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    console.log('Detected tables to delete:');
-    console.log(deletedTables);
     if (postChangesAreSaved) {
       /**
        * Remove deleted tables from persisted store
@@ -3283,7 +3266,6 @@ function Edit(props) {
    * @since    1.0.0
    */
   const setSaveLock = () => {
-    console.log('%Setting save lock', 'color: DarkViolet; font-weight: bold;');
     lockPostSaving(SAVE_LOCK_KEY);
     lockPostAutosaving(SAVE_LOCK_KEY);
   };
@@ -3294,24 +3276,16 @@ function Edit(props) {
    * @since    1.0.0
    */
   const setClearSaveLock = () => {
-    console.log('%cClearing save lock', 'color: DarkViolet; font-weight: bold;');
     unlockPostSaving(SAVE_LOCK_KEY);
     unlockPostAutosaving(SAVE_LOCK_KEY);
   };
   const isNewBlock = setNewBlock();
   const blockTableStatus = setBlockTableStatus();
-  console.log('Block Table Status: ' + blockTableStatus);
-  console.log('Current block_table_ref: ' + block_table_ref);
   const {
     postId,
     postType
   } = (0,_hooks__WEBPACK_IMPORTED_MODULE_10__.useEditorIdentity)(props);
   const inInserterBlock = !(0,_hooks__WEBPACK_IMPORTED_MODULE_10__.useNotInInserterPreview)();
-  // const isBlockInserterOpen = useIsInserterOpen();
-  // const isBlockInEditedContentTree = useIsInEditedContentTree(props?.clientId);
-  // const isBlockInInserter = (isBlockInserterOpen, isBlockInEditedContentTree) => {
-  // 	return isBlockInserterOpen || isBlockInEditedContentTree;
-  // };
 
   /**
    * Prepare for New Block
@@ -3340,11 +3314,7 @@ function Edit(props) {
       isResolving
     } = select(_data__WEBPACK_IMPORTED_MODULE_9__.store);
     const selectorArgs = [table_id, isTableStale];
-    console.log('Awaiting Teble Entity Creation = ' + awaitingTableEntityCreation);
-    console.log('Created Teble ID  = ' + createdTableId);
-    console.log('Has Table Id Changed = ' + isTableIdChanged);
     if (block_table_ref === '') {
-      console.log('%cEmpty block_table_ref found', 'color: darkgoldenrod; font-weight: bold;');
       return {
         table: {},
         tableStatus: '',
@@ -3355,14 +3325,9 @@ function Edit(props) {
     }
     const getBlockTable = (table_id, isTableStale, block_table_ref) => {
       let selectedTable = getTable(table_id, isTableStale);
-      console.log('%cBlockTable...selected table...', 'color: darkgoldenrod; font-weight: bold;');
-      console.log(selectedTable);
-      console.log('TableId By Block = ' + Number(getTableIdByBlock(block_table_ref)));
       if ((selectedTable.block_table_ref === '' || selectedTable.block_table_ref !== block_table_ref && Number(getTableIdByBlock(block_table_ref)) > 0) && awaitingTableEntityCreation) {
-        console.log('%cProcessing new block', 'color: darkgoldenrod; font-weight: bold;');
         const newTableId = getTableIdByBlock(block_table_ref);
         selectedTable = getTable(newTableId, isTableStale);
-        console.log('New Table ID = ' + newTableId);
 
         // Must sync post_id here for new table because "resolving" attributes are not available
         if (String(postId) !== selectedTable.post_id && String(postId) !== '0') {
@@ -3410,25 +3375,6 @@ function Edit(props) {
     return false;
   };
   const tableLoaded = setTableLoaded();
-  const isPostTemplate = () => {
-    if (postType === 'wp_template' || postType === 'wp_template_part') {
-      return true;
-    }
-    return false;
-  };
-  console.log('Is Block Loaded: ' + tableLoaded);
-  console.log('Block Post ID: ' + postId);
-  console.log('Table Post ID: ' + table.post_id);
-  console.log('Table Post Type: ' + postType);
-  console.log('Is post a template? ' + isPostTemplate());
-  console.log('Block is in inserter? ' + !!inInserterBlock);
-  // console.log('Is Inserter Open? ' + isBlockInserterOpen);
-  // console.log('Is In Edited Content Tree? ' + isBlockInEditedContentTree);
-
-  // const patternName = props.attributes?.metadata?.patternName;
-  // const isFromPattern = !!patternName;
-
-  console.log(table);
 
   /**
    * Create a latch key before clone to identify the specific block being cloned. The block
@@ -3474,48 +3420,37 @@ function Edit(props) {
    * @param {boolean} inInserterBlock
    */
   function checkDuplicateTable(tableLoaded, table, postId, inInserterBlock) {
-    console.log('%cCHECKING FOR CLONE', 'color: darkgoldenrod; font-weight: bold;');
     const patternName = props.attributes?.metadata?.patternName;
     const isBlockFromPattern = !!patternName;
 
     // Exit if table is not loaded
     if (!tableLoaded) {
-      console.log('Skip Clone: Table not loaded');
       return false;
     }
 
     // Exit if table is being created manually
     if (isNewBlock) {
-      console.log('Skip Clone: New Block');
       return false;
     }
+
+    // Inserted post type is not a pattern
     if (original_post_type !== 'wp_block') {
-      console.log('Skip Clone: Original Post Type is NOT a pattern');
       return false;
     }
 
     // Inserted Patterns have meta and pattern meta does not load in preview inserter
     if (!isBlockFromPattern) {
-      console.log('Skip Clone: Only clone if from pattern');
       return false;
     }
-    if (Number(original_post_id) === Number(postId) && Number(table.post_id) > 0
-    // table.post_id
-    ) {
-      console.log('Skip Clone: Matching original non-zero post ids');
+    if (Number(original_post_id) === Number(postId) && Number(table.post_id) > 0) {
       return false;
     }
     if (inInserterBlock) {
-      console.log('Skip Clone: In Inserter Block');
       return false;
     }
     if (Number(table.post_id) === Number(postId)) {
-      console.log('Skip Clone: Matching post ids');
       return false;
     }
-
-    // !isPostTemplate()  Not Sure about this one
-
     const {
       locked
     } = acquireCloneLatch({
@@ -3524,11 +3459,10 @@ function Edit(props) {
       tableId: table.table_id
     });
     if (locked) {
-      console.log('Skip Clone: Already cloned');
       return false;
     }
-    alert('Cloning Table: ' + JSON.stringify(table, null, 4));
-    console.log('%cCLONING TABLE NOW...', 'color: darkgoldenrod; font-weight: bold;');
+
+    // Verified that this is a clone operation.  Proceed with clone.
     setSaveLock();
     setTableStale(false);
     const cloneBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_11__.generateBlockTableRef)();
@@ -3536,14 +3470,8 @@ function Edit(props) {
       block_table_ref: cloneBlockTableRef
     });
     cloneTable(table.table_id, postId, cloneBlockTableRef);
-    // removeTableBlock(table_id);
-    // props.setAttributes({ table_id: 0 });
     setAwaitingTableEntityCreation(true);
-    // const createdTableId = createTableEntity();
-    console.log('%c...CLONING DONE', 'color: darkgoldenrod; font-weight: bold;');
     return true;
-    // setCreatedTableId(createdTableId);
-    // return createdTableId;
   }
 
   // Set block original post type if not populated
@@ -3560,8 +3488,6 @@ function Edit(props) {
     });
   }
   const newClonedTableId = checkDuplicateTable(tableLoaded, table, postId, inInserterBlock);
-  // setCreatedTableId(newClonedTableId);
-  // createdTableId, setCreatedTableId
 
   /**
    * Synchronize PostId
@@ -3572,7 +3498,6 @@ function Edit(props) {
    * @since    1.0.0
    */
   if (tableHasStartedResolving && tableHasFinishedResolving && !awaitingTableEntityCreation && Number(props.context.postId) !== 0 && Number(table.post_id) === 0) {
-    console.log('Sync PostId Table = ' + table.table_id);
     setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId));
     saveTableEntity(table.table_id);
   }
@@ -3588,19 +3513,13 @@ function Edit(props) {
   currentStatus.current = tableStatus;
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     return () => {
-      alert('%cBlocks unmounted', 'color: DarkViolet; font-weight: bold;');
-      console.log('%cTable ' + table.table_id + ' unmounted', 'color: DarkViolet; font-weight: bold;');
-      console.log('Clone Latch State: ' + JSON.stringify(cloneLatchRef.current, null, 4));
-
       // Process table clean-up only if table was loaded
-      if (tableLoaded && !isNewBlock) {
+      if (tableLoaded && !isNewBlock && Number(table.table_id) > 0) {
         if (inInserterBlock || original_post_type === 'wp_block') {
           // Set table's prior status to the current status before unmounting
-          console.log('Prior Status Block Unmount table = ' + table.table_id);
           setTableAttributes(table.table_id, 'isPattern', '', 'PROP', true);
         } else {
           // Set table's prior status to the current status before unmounting
-          console.log('Prior Status Block Unmount table = ' + table.table_id);
           setTableAttributes(table.table_id, 'prior_status', '', 'PROP', currentStatus.current);
 
           // Set the table's block identifier so that we can reattach it on remount and update
@@ -3748,7 +3667,6 @@ function Edit(props) {
    * @param {boolean}                 [persist=true] Update table entity (not just the table store)
    */
   function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
-    console.log('In setTableAttributes - tableId: ' + tableId + ' attribute: ' + attribute + ' id: ' + id + ' type: ' + type + ' value: ' + value + ' persist: ' + persist);
     switch (type) {
       case 'CONTENT':
         {
@@ -4323,11 +4241,6 @@ function Edit(props) {
   const bodyBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_13__.getBorderStyle)(bodyBorder, 'left', 'color', bodyBorderStyleType);
   const bodyBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_13__.getBorderStyle)(bodyBorder, 'left', 'style', bodyBorderStyleType);
   const bodyBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_13__.getBorderStyle)(bodyBorder, 'left', 'width', bodyBorderStyleType);
-  console.log('Post Props:');
-  console.log(props);
-  console.log('Block Props:');
-  console.log(blockProps);
-  console.log('Post Type: ' + props.context.postType);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__.jsxs)("div", {
     ...blockProps,
     children: [!isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__.Fragment, {
@@ -4814,7 +4727,6 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   useEditorIdentity: () => (/* binding */ useEditorIdentity),
-/* harmony export */   useIsInEditedContentTree: () => (/* binding */ useIsInEditedContentTree),
 /* harmony export */   useNotInInserterPreview: () => (/* binding */ useNotInInserterPreview),
 /* harmony export */   usePostChangesSaved: () => (/* binding */ usePostChangesSaved)
 /* harmony export */ });
@@ -4869,8 +4781,6 @@ function useEditorIdentity(props) {
   const context = props.context || {};
   const contextPostId = context.postId;
   const contextPostType = context.postType;
-  console.log('contextPostId: ' + contextPostId);
-  console.log('contextPostType: ' + contextPostType);
   const {
     storePostId,
     storePostType
@@ -4880,7 +4790,6 @@ function useEditorIdentity(props) {
     const editorPostId = editor?.getCurrentPostId?.();
     const editorPostType = editor?.getCurrentPostType?.();
     if (editorPostId && editorPostType) {
-      console.log('PostId and PostType found in editor');
       return {
         storePostId: editorPostId,
         storePostType: editorPostType
@@ -4889,7 +4798,6 @@ function useEditorIdentity(props) {
 
     // Legacy fallback for Site Editor to retrieve postId and postType when current Wordpress
     // version < 6.8. These values were previously stored in site editor.
-    console.log('Falling back to site editor for PostId and PostType');
     const editSite = select('core/edit-site');
     return {
       storePostId: editSite?.getEditedPostId?.(),
@@ -4912,7 +4820,6 @@ function useEditorIdentity(props) {
  *
  * @since    1.1.0
  *
- * @param {string} clientId
  * @return {boolean} Is block editor inserter panel open
  */
 function useNotInInserterPreview() {
@@ -4924,28 +4831,6 @@ function useNotInInserterPreview() {
     const isPreview = !!settings.isPreviewMode || !!settings.__unstableIsPreviewMode || !!settings.__experimentalIsPreviewMode;
     return !isPreview;
   }, []);
-}
-
-/**
- * Identifies whether the given block is in the edited content tree.
- * block is just in preview.
- *
- * @since    1.1.0
- *
- * @param {string} clientId Client ID of the block to check
- * @return {boolean} Is block in content tree
- */
-function useIsInEditedContentTree(clientId) {
-  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => {
-    const be = select('core/block-editor');
-
-    // If store isn't available for some reason, be conservative and allow.
-    if (!be?.getBlockRootClientId) {
-      return true;
-    }
-    const root = be.getBlockRootClientId(clientId);
-    return root !== undefined;
-  }, [clientId]);
 }
 
 /***/ }),
@@ -5772,103 +5657,55 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   tableSort: () => (/* binding */ tableSort),
 /* harmony export */   updateArray: () => (/* binding */ updateArray)
 /* harmony export */ });
+const LETTER_MAP = {
+  1: 'A',
+  2: 'B',
+  3: 'C',
+  4: 'D',
+  5: 'E',
+  6: 'F',
+  7: 'G',
+  8: 'H',
+  9: 'I',
+  a: 'J',
+  b: 'K',
+  c: 'L',
+  d: 'M',
+  e: 'N',
+  f: 'O',
+  g: 'P',
+  h: 'Q',
+  i: 'R',
+  j: 'S',
+  k: 'T',
+  l: 'U',
+  m: 'V',
+  n: 'W',
+  o: 'X',
+  p: 'Y',
+  q: 'Z'
+};
+
 /**
  * Convert a column number to a string of letters.
  *
  * @since    1.0.0
+ * @since    1.1.0 Refactored
  *
  * @param {number} letterNumber Integer
  * @return  {string} Column letter
  */
 function numberToLetter(letterNumber) {
-  const letterMap = [{
-    nbr: '1',
-    letter: 'A'
-  }, {
-    nbr: '2',
-    letter: 'B'
-  }, {
-    nbr: '3',
-    letter: 'C'
-  }, {
-    nbr: '4',
-    letter: 'D'
-  }, {
-    nbr: '5',
-    letter: 'E'
-  }, {
-    nbr: '6',
-    letter: 'F'
-  }, {
-    nbr: '7',
-    letter: 'G'
-  }, {
-    nbr: '8',
-    letter: 'H'
-  }, {
-    nbr: '9',
-    letter: 'I'
-  }, {
-    nbr: 'a',
-    letter: 'J'
-  }, {
-    nbr: 'b',
-    letter: 'k'
-  }, {
-    nbr: 'c',
-    letter: 'L'
-  }, {
-    nbr: 'd',
-    letter: 'M'
-  }, {
-    nbr: 'e',
-    letter: 'N'
-  }, {
-    nbr: 'f',
-    letter: 'O'
-  }, {
-    nbr: 'g',
-    letter: 'P'
-  }, {
-    nbr: 'h',
-    letter: 'Q'
-  }, {
-    nbr: 'i',
-    letter: 'R'
-  }, {
-    nbr: 'j',
-    letter: 'S'
-  }, {
-    nbr: 'k',
-    letter: 'T'
-  }, {
-    nbr: 'l',
-    letter: 'U'
-  }, {
-    nbr: 'm',
-    letter: 'V'
-  }, {
-    nbr: 'n',
-    letter: 'W'
-  }, {
-    nbr: 'o',
-    letter: 'X'
-  }, {
-    nbr: 'p',
-    letter: 'Y'
-  }, {
-    nbr: 'q',
-    letter: 'Z'
-  }];
   if (letterNumber === 0) {
     return '0';
   }
-  const letterLookup = letterNumber.toString(26).split('');
-  let letterDigit = '';
-  letterLookup.map(value => {
-    letterDigit = letterDigit + letterMap.find(x => x.nbr === value).letter;
-  });
-  return letterDigit;
+  const digits = letterNumber.toString(26);
+  let result = '';
+  for (let i = 0; i < digits.length; i++) {
+    var _LETTER_MAP$digits$i;
+    result += (_LETTER_MAP$digits$i = LETTER_MAP[digits[i]]) !== null && _LETTER_MAP$digits$i !== void 0 ? _LETTER_MAP$digits$i : '';
+  }
+  return result;
 }
 
 /**

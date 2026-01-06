@@ -43,22 +43,17 @@ export function useEditorIdentity(props) {
 	const contextPostId = context.postId;
 	const contextPostType = context.postType;
 
-	console.log('contextPostId: ' + contextPostId);
-	console.log('contextPostType: ' + contextPostType);
-
 	const { storePostId, storePostType } = useSelect(select => {
 		// Retrieve postId and postType from the editor.
 		const editor = select('core/editor');
 		const editorPostId = editor?.getCurrentPostId?.();
 		const editorPostType = editor?.getCurrentPostType?.();
 		if (editorPostId && editorPostType) {
-			console.log('PostId and PostType found in editor');
 			return { storePostId: editorPostId, storePostType: editorPostType };
 		}
 
 		// Legacy fallback for Site Editor to retrieve postId and postType when current Wordpress
 		// version < 6.8. These values were previously stored in site editor.
-		console.log('Falling back to site editor for PostId and PostType');
 		const editSite = select('core/edit-site');
 		return {
 			storePostId: editSite?.getEditedPostId?.(),
@@ -79,7 +74,6 @@ export function useEditorIdentity(props) {
  *
  * @since    1.1.0
  *
- * @param {string} clientId
  * @return {boolean} Is block editor inserter panel open
  */
 export function useNotInInserterPreview() {
@@ -95,30 +89,4 @@ export function useNotInInserterPreview() {
 
 		return !isPreview;
 	}, []);
-}
-
-/**
- * Identifies whether the given block is in the edited content tree.
- * block is just in preview.
- *
- * @since    1.1.0
- *
- * @param {string} clientId Client ID of the block to check
- * @return {boolean} Is block in content tree
- */
-export function useIsInEditedContentTree(clientId) {
-	return useSelect(
-		select => {
-			const be = select('core/block-editor');
-
-			// If store isn't available for some reason, be conservative and allow.
-			if (!be?.getBlockRootClientId) {
-				return true;
-			}
-
-			const root = be.getBlockRootClientId(clientId);
-			return root !== undefined;
-		},
-		[clientId]
-	);
 }

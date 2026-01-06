@@ -1,53 +1,54 @@
+const LETTER_MAP = {
+	1: 'A',
+	2: 'B',
+	3: 'C',
+	4: 'D',
+	5: 'E',
+	6: 'F',
+	7: 'G',
+	8: 'H',
+	9: 'I',
+	a: 'J',
+	b: 'K',
+	c: 'L',
+	d: 'M',
+	e: 'N',
+	f: 'O',
+	g: 'P',
+	h: 'Q',
+	i: 'R',
+	j: 'S',
+	k: 'T',
+	l: 'U',
+	m: 'V',
+	n: 'W',
+	o: 'X',
+	p: 'Y',
+	q: 'Z',
+};
+
 /**
  * Convert a column number to a string of letters.
  *
  * @since    1.0.0
+ * @since    1.1.0 Refactored
  *
  * @param {number} letterNumber Integer
  * @return  {string} Column letter
  */
 export function numberToLetter(letterNumber) {
-	const letterMap = [
-		{ nbr: '1', letter: 'A' },
-		{ nbr: '2', letter: 'B' },
-		{ nbr: '3', letter: 'C' },
-		{ nbr: '4', letter: 'D' },
-		{ nbr: '5', letter: 'E' },
-		{ nbr: '6', letter: 'F' },
-		{ nbr: '7', letter: 'G' },
-		{ nbr: '8', letter: 'H' },
-		{ nbr: '9', letter: 'I' },
-		{ nbr: 'a', letter: 'J' },
-		{ nbr: 'b', letter: 'k' },
-		{ nbr: 'c', letter: 'L' },
-		{ nbr: 'd', letter: 'M' },
-		{ nbr: 'e', letter: 'N' },
-		{ nbr: 'f', letter: 'O' },
-		{ nbr: 'g', letter: 'P' },
-		{ nbr: 'h', letter: 'Q' },
-		{ nbr: 'i', letter: 'R' },
-		{ nbr: 'j', letter: 'S' },
-		{ nbr: 'k', letter: 'T' },
-		{ nbr: 'l', letter: 'U' },
-		{ nbr: 'm', letter: 'V' },
-		{ nbr: 'n', letter: 'W' },
-		{ nbr: 'o', letter: 'X' },
-		{ nbr: 'p', letter: 'Y' },
-		{ nbr: 'q', letter: 'Z' },
-	];
-
 	if (letterNumber === 0) {
 		return '0';
 	}
 
-	const letterLookup = letterNumber.toString(26).split('');
-	let letterDigit = '';
+	const digits = letterNumber.toString(26);
+	let result = '';
 
-	letterLookup.map(value => {
-		letterDigit = letterDigit + letterMap.find(x => x.nbr === value).letter;
-	});
+	for (let i = 0; i < digits.length; i++) {
+		result += LETTER_MAP[digits[i]] ?? '';
+	}
 
-	return letterDigit;
+	return result;
 }
 
 /**

@@ -33,14 +33,7 @@ import { search, blockTable as icon } from '@wordpress/icons';
 
 /* Internal dependencies */
 import { store as tableStore } from './data';
-import {
-	usePostChangesSaved,
-	useEditorIdentity,
-	// useNotInInserter,
-	useNotInInserterPreview,
-	// useIsInserterOpen,
-	useIsInEditedContentTree,
-} from './hooks';
+import { usePostChangesSaved, useEditorIdentity, useNotInInserterPreview } from './hooks';
 
 import {
 	tableSort,
@@ -120,7 +113,6 @@ export default function Edit(props) {
 	const { createNotice, removeNotice } = useDispatch(noticeStore);
 
 	/* Local State declarations */
-	const [createdTableId, setCreatedTableId] = useState(false);
 	const [isTableStale, setTableStale] = useState(true);
 	const [openColumnRow, setOpenColumnRow] = useState(0);
 	const [columnAttributes, setColumnAttributes] = useState({});
@@ -147,8 +139,6 @@ export default function Edit(props) {
 		return { color, name };
 	});
 
-	console.log('%cSTARTING RENDER FOR TABLE ' + table_id, 'color: blue; font-weight: bold;');
-
 	/**
 	 * Get Current Table Id.
 	 *
@@ -156,6 +146,14 @@ export default function Edit(props) {
 	 * @since    1.0.0
 	 *
 	 * @return Table Id
+	 */
+
+	/**
+	 * Identify current table id by its block table reference
+	 *
+	 * @since 1.1.0
+	 *
+	 * @type  {number} Object of all table id's that are currently unmounted
 	 */
 	const { currentTableId } = useSelect(select => {
 		const { getTableIdByBlock } = select(tableStore);
@@ -211,7 +209,6 @@ export default function Edit(props) {
 	 * @type  {Object} Object of all table id's that are currently unmounted
 	 */
 	const { unmountedTables } = useSelect(select => {
-		// alert('Getting all unmounted tables')
 		const { getUnmountedTables } = select(tableStore);
 		return {
 			unmountedTables: getUnmountedTables(),
@@ -219,8 +216,6 @@ export default function Edit(props) {
 	});
 
 	if (Object.keys(unmountedTables).length > 0) {
-		console.log('Found unmounted tables:');
-		console.log(unmountedTables);
 		processUnmountedTables(unmountedTables);
 	}
 
@@ -253,9 +248,6 @@ export default function Edit(props) {
 	 * unmounted tables.
 	 */
 	useEffect(() => {
-		console.log('Detected tables to delete:');
-		console.log(deletedTables);
-
 		if (postChangesAreSaved) {
 			/**
 			 * Remove deleted tables from persisted store
@@ -319,7 +311,6 @@ export default function Edit(props) {
 	 * @since    1.0.0
 	 */
 	const setSaveLock = () => {
-		console.log('%Setting save lock', 'color: DarkViolet; font-weight: bold;');
 		lockPostSaving(SAVE_LOCK_KEY);
 		lockPostAutosaving(SAVE_LOCK_KEY);
 	};
@@ -330,23 +321,14 @@ export default function Edit(props) {
 	 * @since    1.0.0
 	 */
 	const setClearSaveLock = () => {
-		console.log('%cClearing save lock', 'color: DarkViolet; font-weight: bold;');
 		unlockPostSaving(SAVE_LOCK_KEY);
 		unlockPostAutosaving(SAVE_LOCK_KEY);
 	};
 
 	const isNewBlock = setNewBlock();
 	const blockTableStatus = setBlockTableStatus();
-	console.log('Block Table Status: ' + blockTableStatus);
-	console.log('Current block_table_ref: ' + block_table_ref);
-
 	const { postId, postType } = useEditorIdentity(props);
 	const inInserterBlock = !useNotInInserterPreview();
-	// const isBlockInserterOpen = useIsInserterOpen();
-	// const isBlockInEditedContentTree = useIsInEditedContentTree(props?.clientId);
-	// const isBlockInInserter = (isBlockInserterOpen, isBlockInEditedContentTree) => {
-	// 	return isBlockInserterOpen || isBlockInEditedContentTree;
-	// };
 
 	/**
 	 * Prepare for New Block
@@ -377,12 +359,7 @@ export default function Edit(props) {
 			} = select(tableStore);
 			const selectorArgs = [table_id, isTableStale];
 
-			console.log('Awaiting Teble Entity Creation = ' + awaitingTableEntityCreation);
-			console.log('Created Teble ID  = ' + createdTableId);
-			console.log('Has Table Id Changed = ' + isTableIdChanged);
-
 			if (block_table_ref === '') {
-				console.log('%cEmpty block_table_ref found', 'color: darkgoldenrod; font-weight: bold;');
 				return {
 					table: {},
 					tableStatus: '',
@@ -394,9 +371,6 @@ export default function Edit(props) {
 
 			const getBlockTable = (table_id, isTableStale, block_table_ref) => {
 				let selectedTable = getTable(table_id, isTableStale);
-				console.log('%cBlockTable...selected table...', 'color: darkgoldenrod; font-weight: bold;');
-				console.log(selectedTable);
-				console.log('TableId By Block = ' + Number(getTableIdByBlock(block_table_ref)));
 
 				if (
 					(selectedTable.block_table_ref === '' ||
@@ -404,10 +378,8 @@ export default function Edit(props) {
 							Number(getTableIdByBlock(block_table_ref)) > 0)) &&
 					awaitingTableEntityCreation
 				) {
-					console.log('%cProcessing new block', 'color: darkgoldenrod; font-weight: bold;');
 					const newTableId = getTableIdByBlock(block_table_ref);
 					selectedTable = getTable(newTableId, isTableStale);
-					console.log('New Table ID = ' + newTableId);
 
 					// Must sync post_id here for new table because "resolving" attributes are not available
 					if (String(postId) !== selectedTable.post_id && String(postId) !== '0') {
@@ -457,27 +429,6 @@ export default function Edit(props) {
 
 	const tableLoaded = setTableLoaded();
 
-	const isPostTemplate = () => {
-		if (postType === 'wp_template' || postType === 'wp_template_part') {
-			return true;
-		}
-		return false;
-	};
-
-	console.log('Is Block Loaded: ' + tableLoaded);
-	console.log('Block Post ID: ' + postId);
-	console.log('Table Post ID: ' + table.post_id);
-	console.log('Table Post Type: ' + postType);
-	console.log('Is post a template? ' + isPostTemplate());
-	console.log('Block is in inserter? ' + !!inInserterBlock);
-	// console.log('Is Inserter Open? ' + isBlockInserterOpen);
-	// console.log('Is In Edited Content Tree? ' + isBlockInEditedContentTree);
-
-	// const patternName = props.attributes?.metadata?.patternName;
-	// const isFromPattern = !!patternName;
-
-	console.log(table);
-
 	/**
 	 * Create a latch key before clone to identify the specific block being cloned. The block
 	 * will not be cloned if it is currently locked for cloning.
@@ -514,53 +465,40 @@ export default function Edit(props) {
 	 * @param {boolean} inInserterBlock
 	 */
 	function checkDuplicateTable(tableLoaded, table, postId, inInserterBlock) {
-		console.log('%cCHECKING FOR CLONE', 'color: darkgoldenrod; font-weight: bold;');
 		const patternName = props.attributes?.metadata?.patternName;
 		const isBlockFromPattern = !!patternName;
 
 		// Exit if table is not loaded
 		if (!tableLoaded) {
-			console.log('Skip Clone: Table not loaded');
 			return false;
 		}
 
 		// Exit if table is being created manually
 		if (isNewBlock) {
-			console.log('Skip Clone: New Block');
 			return false;
 		}
 
+		// Inserted post type is not a pattern
 		if (original_post_type !== 'wp_block') {
-			console.log('Skip Clone: Original Post Type is NOT a pattern');
 			return false;
 		}
 
 		// Inserted Patterns have meta and pattern meta does not load in preview inserter
 		if (!isBlockFromPattern) {
-			console.log('Skip Clone: Only clone if from pattern');
 			return false;
 		}
 
-		if (
-			Number(original_post_id) === Number(postId) &&
-			Number(table.post_id) > 0
-			// table.post_id
-		) {
-			console.log('Skip Clone: Matching original non-zero post ids');
+		if (Number(original_post_id) === Number(postId) && Number(table.post_id) > 0) {
 			return false;
 		}
 
 		if (inInserterBlock) {
-			console.log('Skip Clone: In Inserter Block');
 			return false;
 		}
 
 		if (Number(table.post_id) === Number(postId)) {
-			console.log('Skip Clone: Matching post ids');
 			return false;
 		}
-
-		// !isPostTemplate()  Not Sure about this one
 
 		const { locked } = acquireCloneLatch({
 			clientId: props.clientId,
@@ -569,27 +507,18 @@ export default function Edit(props) {
 		});
 
 		if (locked) {
-			console.log('Skip Clone: Already cloned');
 			return false;
 		}
 
-		alert('Cloning Table: ' + JSON.stringify(table, null, 4));
-		console.log('%cCLONING TABLE NOW...', 'color: darkgoldenrod; font-weight: bold;');
-
+		// Verified that this is a clone operation.  Proceed with clone.
 		setSaveLock();
 		setTableStale(false);
 		const cloneBlockTableRef = generateBlockTableRef();
 		props.setAttributes({ block_table_ref: cloneBlockTableRef });
 
 		cloneTable(table.table_id, postId, cloneBlockTableRef);
-		// removeTableBlock(table_id);
-		// props.setAttributes({ table_id: 0 });
 		setAwaitingTableEntityCreation(true);
-		// const createdTableId = createTableEntity();
-		console.log('%c...CLONING DONE', 'color: darkgoldenrod; font-weight: bold;');
 		return true;
-		// setCreatedTableId(createdTableId);
-		// return createdTableId;
 	}
 
 	// Set block original post type if not populated
@@ -603,8 +532,6 @@ export default function Edit(props) {
 	}
 
 	const newClonedTableId = checkDuplicateTable(tableLoaded, table, postId, inInserterBlock);
-	// setCreatedTableId(newClonedTableId);
-	// createdTableId, setCreatedTableId
 
 	/**
 	 * Synchronize PostId
@@ -621,7 +548,6 @@ export default function Edit(props) {
 		Number(props.context.postId) !== 0 &&
 		Number(table.post_id) === 0
 	) {
-		console.log('Sync PostId Table = ' + table.table_id);
 		setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId));
 		saveTableEntity(table.table_id);
 	}
@@ -638,22 +564,13 @@ export default function Edit(props) {
 
 	useEffect(() => {
 		return () => {
-			alert('%cBlocks unmounted', 'color: DarkViolet; font-weight: bold;');
-			console.log(
-				'%cTable ' + table.table_id + ' unmounted',
-				'color: DarkViolet; font-weight: bold;'
-			);
-			console.log('Clone Latch State: ' + JSON.stringify(cloneLatchRef.current, null, 4));
-
 			// Process table clean-up only if table was loaded
-			if (tableLoaded && !isNewBlock) {
+			if (tableLoaded && !isNewBlock && Number(table.table_id) > 0) {
 				if (inInserterBlock || original_post_type === 'wp_block') {
 					// Set table's prior status to the current status before unmounting
-					console.log('Prior Status Block Unmount table = ' + table.table_id);
 					setTableAttributes(table.table_id, 'isPattern', '', 'PROP', true);
 				} else {
 					// Set table's prior status to the current status before unmounting
-					console.log('Prior Status Block Unmount table = ' + table.table_id);
 					setTableAttributes(table.table_id, 'prior_status', '', 'PROP', currentStatus.current);
 
 					// Set the table's block identifier so that we can reattach it on remount and update
@@ -814,20 +731,6 @@ export default function Edit(props) {
 	 * @param {boolean}                 [persist=true] Update table entity (not just the table store)
 	 */
 	function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
-		console.log(
-			'In setTableAttributes - tableId: ' +
-				tableId +
-				' attribute: ' +
-				attribute +
-				' id: ' +
-				id +
-				' type: ' +
-				type +
-				' value: ' +
-				value +
-				' persist: ' +
-				persist
-		);
 		switch (type) {
 			case 'CONTENT': {
 				if (attribute === 'cell') {
@@ -1503,11 +1406,7 @@ export default function Edit(props) {
 	const bodyBorderLeftColor = getBorderStyle(bodyBorder, 'left', 'color', bodyBorderStyleType);
 	const bodyBorderLeftStyle = getBorderStyle(bodyBorder, 'left', 'style', bodyBorderStyleType);
 	const bodyBorderLeftWidth = getBorderStyle(bodyBorder, 'left', 'width', bodyBorderStyleType);
-	console.log('Post Props:');
-	console.log(props);
-	console.log('Block Props:');
-	console.log(blockProps);
-	console.log('Post Type: ' + props.context.postType);
+
 	return (
 		<div {...blockProps}>
 			{/* Render an existing table after it has been fetched  */}

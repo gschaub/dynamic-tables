@@ -93,7 +93,7 @@ export function receiveTable(
  * Signals that table needs to be cloned, setting the table_id to zero and providng
  * a new table postId and blockTableRef.
  *
- * @since    1.0.0
+ * @since    1.1.0
  *
  * @param {*} tableId
  * @param {*} postId
@@ -153,11 +153,9 @@ export const cloneTable =
 		};
 
 		try {
-			alert('Executing create table');
 			const tableEntity = await registry
 				.dispatch(coreStore)
 				.saveEntityRecord('dynamic-table-blocks', 'table', newTable);
-			console.log('Created table entity with id = ' + tableEntity.id);
 
 			const table = tableEntity;
 			const table_id = table.id;
@@ -184,20 +182,15 @@ export const cloneTable =
 				columns,
 				cells
 			);
-			// dispatch.assignTableId(tableEntity.id);
-			alert('Done create table');
 			return tableEntity.id;
 		} catch (error) {
-			alert('Error create table');
 			console.log('Error details: ' + error);
 			console.log(newTable);
 			console.log(
-				'Error in createTableEntity -  Table ID - ' +
-					table_id +
-					', block table ref = ' +
-					block_table_ref +
+				'Error in createTableEntity -  Block table ref = ' +
+					newTable.header.block_table_ref +
 					', Post Id = ' +
-					post_id
+					newTable.header.post_id
 			);
 		}
 	};
@@ -213,7 +206,6 @@ export const cloneTable =
 export const createTableEntity =
 	() =>
 	async ({ select, dispatch, registry }) => {
-		console.log(select.getTable('0', true));
 		const {
 			table_id,
 			block_table_ref,
@@ -242,18 +234,13 @@ export const createTableEntity =
 		};
 
 		try {
-			alert('Executing create table');
 			const tableEntity = await registry
 				.dispatch(coreStore)
 				.saveEntityRecord('dynamic-table-blocks', 'table', newTable);
 
-			console.log('Created table entity with id = ' + tableEntity.id);
 			dispatch.assignTableId(tableEntity.id);
-			alert('Done create table');
-
 			return tableEntity.id;
 		} catch (error) {
-			alert('Error create table');
 			console.log('Error details: ' + error);
 			console.log(newTable);
 			console.log(
@@ -386,9 +373,9 @@ export const deleteTableEntity =
 	tableId =>
 	async ({ select, dispatch, registry }) => {
 		try {
-			// const deletedTableEntity = await registry
-			// 	.dispatch(coreStore)
-			// 	.deleteEntityRecord('dynamic-table-blocks', 'table', tableId);
+			const deletedTableEntity = await registry
+				.dispatch(coreStore)
+				.deleteEntityRecord('dynamic-table-blocks', 'table', tableId);
 
 			dispatch({
 				type: DELETE_TABLE,
