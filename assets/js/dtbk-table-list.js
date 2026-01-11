@@ -24,6 +24,7 @@ jQuery($ => {
 
 			// Handle click on row "view" links
 			this.$doc.on('click', 'a[data-dtbk-action="view"]', e => this.prepareViewTable(e));
+			this.$doc.on('click', 'a[data-dtbk-action="export"]', e => this.prepareExportTable(e));
 		}
 
 		// methods
@@ -108,6 +109,50 @@ jQuery($ => {
 		}
 
 		/**
+		 * Prepare table for viewing.
+		 *
+		 * @since    1.1.0
+		 *
+		 * @param {Object} e Event object.
+		 */
+		prepareExportTable(e) {
+			e.preventDefault();
+
+			const $link = this.$(e.currentTarget);
+			const id = Number.parseInt($link.data('id'), 10);
+
+			if (!id) {
+				return;
+			}
+
+			this.exportTableJSON(id);
+		}
+
+		/**
+		 * Get table data json and write it to an export file.
+		 *
+		 * @since    1.1.1
+		 *
+		 * @param {number} id Table ID.
+		 */
+		async exportTableJSON(id) {
+			// Simple loading state
+			this.openDialog('<p>Loading…</p>');
+
+			try {
+				const response = await this.postExport(id);
+				const tableData = response.data.table ? JSON.parse(response.data.table) : null;
+
+			} catch (error) {
+				const message = DTBK_TABLE_LIST?.i18n?.error || 'Request failed. Please try again.';
+
+				this.openDialog(
+					`<div class="notice notice-error"><p>${this.escapeHtml(message)}</p></div>`
+				);
+			}
+		}
+
+		/**
 		 * Initialize event handlers.
 		 *
 		 * @since    1.1.0
@@ -128,6 +173,32 @@ jQuery($ => {
 			// Create the request call
 			const fd = new FormData();
 			fd.append('action', 'dtbk_view_table');
+			fd.append('_ajax_nonce', DTBK_TABLE_LIST.nonce);
+			fd.append('id', id);
+
+			// Fetch the data
+			const res = await fetch(DTBK_TABLE_LIST.ajaxUrl, {
+				method: 'POST',
+				body: fd,
+				credentials: 'same-origin',
+			});
+
+			// Capture and return the JSON response
+			const json = await res.json();
+			return json;
+		}
+
+		/**
+		 * Fetch the table data.
+		 *
+		 * @since    1.1.0
+		 *
+		 * @param {number} id Table ID.
+		 */
+		async postExtract(id) {
+			// Create the request call
+			const fd = new FormData();
+			fd.append('action', 'dtbk_extract_table');
 			fd.append('_ajax_nonce', DTBK_TABLE_LIST.nonce);
 			fd.append('id', id);
 

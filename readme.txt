@@ -87,9 +87,12 @@ This information will be appealing to our techie friends, soothing their passion
 
 == Changelog ==
 
+= 1.1.1 =
+* Add keyboard navigation through table cells via arrow keys.
+
 = 1.1.0 =
 * Fix bug that caused fatal error when editing post with "Show Template" enabled.
-* Support for post templates and cloning.
+* Support for post templates and patterns.
 * Created scheduled maintenance to ensure posts and tables are internally consistent
 * Automatically remove tables when their underying posts are deleted from the admin page
 * Provide visibility to all tables, their status, associated post, and to view the table data

@@ -305,11 +305,12 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 			// 'update_status',
 			// $item['id']),
 
-			// 'export'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Export', 'dynamic-table-blocks') . '</a>',
-			// $_REQUEST['page'],
-			// 'export',
-			// $item['id']),
-			//
+			'export' => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Export', 'dynamic-table-blocks') . '</a>',
+			'<a href="#" data-dtbk-action="view" data-id="%d">%s</a>',
+			$_REQUEST['page'],
+			'export',
+			$item['id']),
+
 			'view' => sprintf(
 				'<a href="#" data-dtbk-action="view" data-id="%d">%s</a>',
 				(int) $item['id'],

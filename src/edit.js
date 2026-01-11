@@ -30,6 +30,7 @@ import {
 	PanelColorSettings,
 } from '@wordpress/block-editor';
 import { search, blockTable as icon } from '@wordpress/icons';
+import { UP, DOWN, RIGHT, LEFT, TAB } from '@wordpress/keycodes';
 
 /* Internal dependencies */
 import { store as tableStore } from './data';
@@ -127,6 +128,10 @@ export default function Edit(props) {
 
 	// Support table creation and cloning
 	const cloneLatchRef = useRef(new Set());
+
+	// Support keyboard navigation in table
+	const [focusedCell, setFocusedCell] = useState({ col: 0, row: 0 });
+	const gridRef = useRef(null);
 
 	/* Current future features: Zoom to details */
 	const enableFutureFeatures = false;
@@ -591,6 +596,22 @@ export default function Edit(props) {
 		JSON.stringify(table.table) === '{}' || blockTableStatus == 'None' ? 0 : table.rows.length;
 
 	/**
+	 * Set the initial focus cell when the dynamic table receives focus
+	 *
+	 * @since    1.1.1
+	 */
+	useEffect(() => {
+		// Only initial focus when table is loaded and nothing focused yet
+		if (!gridRef.current) return;
+
+		// If editor already focused something inside, don't steal focus
+		if (gridRef.current.contains(document.activeElement)) return;
+
+		focusCell(1, 1);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [tableLoaded]);
+
+	/**
 	 * Set state for number of columns and rows when the number of table rows has changes
 	 *
 	 * TODO: Verify this is still needed following update to table store to track all tables in editor
@@ -961,6 +982,112 @@ export default function Edit(props) {
 			default:
 				console.log('Unrecognized Column Update Type');
 		}
+	}
+
+	/**
+	 * Sets the focused cell state when a cell in the dynamic table receives focus.
+	 *
+	 * @since    1.1.1
+	 *
+	 * @param {Object} event onFocusCapture event
+	 * @return {void}
+	 */
+	function onGridFocusCapture(event) {
+		const target = event.target;
+
+		const col = target?.dataset?.col;
+		const row = target?.dataset?.row;
+
+		if (col == null || row == null) return;
+
+		const next = { col: Number(col), row: Number(row) };
+
+		setFocusedCell(prev => (prev.col === next.col && prev.row === next.row ? prev : next));
+	}
+
+	/**
+	 * Set focus to specified cell coordinates in the dynamic table.
+	 *
+	 * @since    1.1.1
+	 *
+	 * @param {number} col Column number of the cell in which the focus action occured
+	 * @param {number} row Row number of the cell in which the focus action occured
+	 * @return {boolean} Was focus successful?
+	 */
+	function focusCell(col, row) {
+		const root = gridRef.current;
+		if (!root) return false;
+
+		const el = root.querySelector(`[data-col="${col}"][data-row="${row}"]`);
+		if (!el) return false;
+
+		// Make sure it's tabbable before focusing (roving tabindex)
+		el.tabIndex = 0;
+
+		// Focusing on next frame helps if DOM is mid-rerender
+		window.requestAnimationFrame(() => el.focus());
+
+		return true;
+	}
+
+	/**
+	 * Handle keyboard navigation within the active dynamic table block and updates focus appropriately
+	 *
+	 * @since    1.1.1
+	 *
+	 * @param {Object} event onKeyDown event
+	 * @return {void}
+	 */
+	function onCellKeyDown(event) {
+		const isActiveKeyEvent =
+			event.keyCode === UP ||
+			event.keyCode === DOWN ||
+			event.keyCode === LEFT ||
+			event.keyCode === RIGHT ||
+			event.keyCode === TAB;
+
+		if (!isActiveKeyEvent) {
+			return;
+		}
+
+		event.preventDefault();
+		let { col, row } = focusedCell;
+
+		switch (event.keyCode) {
+			case UP: {
+				row = Math.max(1, row - 1);
+				break;
+			}
+
+			case DOWN: {
+				row = Math.min(numRows, row + 1);
+				break;
+			}
+
+			case LEFT: {
+				col = Math.max(1, col - 1);
+				break;
+			}
+
+			case RIGHT: {
+				col = Math.min(numColumns, col + 1);
+				break;
+			}
+
+			case TAB: {
+				if (col < numColumns) {
+					col = col + 1;
+				} else if (row < numRows) {
+					row = row + 1;
+					col = 1;
+				}
+				break;
+			}
+
+			default:
+				console.log('Key Code = ' + event.key);
+		}
+		focusCell(col, row);
 	}
 
 	/**
@@ -1616,7 +1743,12 @@ export default function Edit(props) {
 							></RichText>
 						)}
 
-						<TabbableContainer>
+						<div
+							ref={gridRef}
+							onKeyDown={onCellKeyDown}
+							onFocusCapture={onGridFocusCapture}
+							tabIndex={0}
+						>
 							<div
 								className="grid-scroller"
 								style={{
@@ -1729,6 +1861,10 @@ export default function Edit(props) {
 																const showGridLinesCSS = gridShowInnerLines;
 																const gridLineWidthCSS = gridInnerLineWidth;
 
+																const isFocused =
+																	focusedCell.col === Number(column_id) &&
+																	focusedCell.row === Number(row_id);
+
 																return (
 																	<>
 																		{/* Show zoom to details column */}
@@ -1774,8 +1910,11 @@ export default function Edit(props) {
 																					'--showGridLines': showGridLinesCSS,
 																					'--gridLineWidth': gridLineWidthCSS,
 																				}}
-																				tabIndex="0"
 																				tagName="div"
+																				key={cell_id}
+																				data-col={Number(column_id)}
+																				data-row={Number(row_id)}
+																				tabIndex={isFocused ? 0 : -1}
 																				onChange={e =>
 																					setTableAttributes(
 																						table_id,
@@ -1883,6 +2022,9 @@ export default function Edit(props) {
 																	);
 																	const showGridLinesCSS = gridShowInnerLines;
 																	const gridLineWidthCSS = gridInnerLineWidth;
+																	const isFocused =
+																		focusedCell.col === Number(column_id) &&
+																		focusedCell.row === Number(row_id);
 
 																	return (
 																		<>
@@ -1898,6 +2040,10 @@ export default function Edit(props) {
 																						onMouseBorderClick(column_id, row_id, table, e)
 																					}
 																					className={classes}
+																					key={cell_id}
+																					data-col={Number(column_id)}
+																					data-row={Number(row_id)}
+																					tabIndex={-1}
 																				>
 																					{borderContent}
 																					{isOpenCurrentRowMenu && (
@@ -1922,6 +2068,10 @@ export default function Edit(props) {
 																						'--showGridLines': showGridLinesCSS,
 																						'--gridLineWidth': gridLineWidthCSS,
 																					}}
+																					key={cell_id}
+																					data-col={Number(column_id)}
+																					data-row={Number(row_id)}
+																					tabIndex={isFocused ? 0 : -1}
 																				>
 																					<Button href="#" icon={search} />
 																				</div>
@@ -1935,8 +2085,11 @@ export default function Edit(props) {
 																						'--showGridLines': showGridLinesCSS,
 																						'--gridLineWidth': gridLineWidthCSS,
 																					}}
-																					tabIndex="0"
 																					tagName="div"
+																					key={cell_id}
+																					data-col={Number(column_id)}
+																					data-row={Number(row_id)}
+																					tabIndex={isFocused ? 0 : -1}
 																					onChange={e =>
 																						setTableAttributes(
 																							table_id,
@@ -1959,7 +2112,7 @@ export default function Edit(props) {
 									</div>
 								</div>
 							</div>
-						</TabbableContainer>
+						</div>
 					</div>
 				</>
 			)}

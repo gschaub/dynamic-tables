@@ -10,8 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class DTBK_Admin_Ajax {
 
-	// private array $notices = new DT_Admin_Notices();
-
 	/**
 	 * Constructor.
 	 *
@@ -19,6 +17,7 @@ class DTBK_Admin_Ajax {
 	 */
 	public function __construct() {
 		add_action( 'wp_ajax_dtbk_view_table', array( $this, 'view_table' ) );
+		add_action( 'wp_ajax_dtbk_extract_table', array( $this, 'extract_table' ) );
 	}
 
 	public function view_table() {
@@ -82,6 +81,51 @@ class DTBK_Admin_Ajax {
 		wp_send_json_success(
 			array(
 				'cells' => wp_json_encode( $view_table_rows ),
+			),
+			200
+		);
+
+		wp_die();
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * Description - A supplement to the summary, above.  Full sentences.
+	 *
+	 * @since 1.1.1
+	 *
+	 * @link URL
+	 * @global [type]  Description
+	 *
+	 * @return void
+	 */
+	public function extract_table() {
+		// Check nonce
+		check_ajax_referer( 'dtbk-table-list' );
+
+		$table_id = isset( $_POST['id'] ) ? esc_attr( wp_unslash( $_POST['id'] ) ) : '';
+		if ( empty( $table_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'No items selected.', 'dynamic-table-blocks' ) ), 400 );
+		}
+
+		// Create rest request to create table
+		wp_set_current_user( get_current_user_id() );
+		$path    = '/dynamic-table-blocks/v1/tables/' . $table_id;
+		$method  = 'GET';
+		$request = new \WP_REST_Request( $method, $path );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_query_params( array( 'context' => 'view' ) );
+
+		// Execute the request
+		$response = rest_do_request( $request );
+		if ( $response->is_error() ) {
+			return $response;
+		}
+
+		wp_send_json_success(
+			array(
+				'table' => wp_json_encode( $response ),
 			),
 			200
 		);
