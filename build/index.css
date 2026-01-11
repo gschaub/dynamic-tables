@@ -36,6 +36,12 @@
 .inspector-controls-nemu__label--left-margin {
   margin-left: 12px;
 }
+.grid-control__body-cells--focused {
+  border-color: green;
+  border-style: solid;
+  border-width: 3px;
+  caret-color: auto;
+}
 .grid-control__border-cells {
   font-size: small;
   font-weight: bold;

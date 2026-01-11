@@ -1850,6 +1850,7 @@ export default function Edit(props) {
 																attributes,
 																classes,
 															}) => {
+																let calculatedClasses = '';
 																const isFirstColumn = column_id === '1' ? true : false;
 																const isBorder = attributes.border;
 																const borderContent = setBorderContent(row_id, column_id, content);
@@ -1864,6 +1865,11 @@ export default function Edit(props) {
 																const isFocused =
 																	focusedCell.col === Number(column_id) &&
 																	focusedCell.row === Number(row_id);
+
+																if (isFocused) {
+																	calculatedClasses =
+																		calculatedClasses + 'grid-control__body-cells--focused ';
+																}
 
 																return (
 																	<>
@@ -1905,7 +1911,11 @@ export default function Edit(props) {
 																		{!isBorder && (
 																			<RichText
 																				id={cell_id}
-																				className={'grid-control__header-cells'}
+																				className={
+																					'grid-control__header-cells ' +
+																					classes +
+																					calculatedClasses
+																				}
 																				style={{
 																					'--showGridLines': showGridLinesCSS,
 																					'--gridLineWidth': gridLineWidthCSS,
@@ -2008,6 +2018,7 @@ export default function Edit(props) {
 																	/**
 																	 * Set general processing variables
 																	 */
+																	calculatedClasses = '';
 																	const isFirstColumn = column_id === '1' ? true : false;
 																	const isBorder = attributes.border;
 																	const borderContent = setBorderContent(
@@ -2025,6 +2036,10 @@ export default function Edit(props) {
 																	const isFocused =
 																		focusedCell.col === Number(column_id) &&
 																		focusedCell.row === Number(row_id);
+																	if (isFocused) {
+																		calculatedClasses =
+																			calculatedClasses + 'grid-control__body-cells--focused ';
+																	}
 
 																	return (
 																		<>
@@ -2080,7 +2095,11 @@ export default function Edit(props) {
 																			{!isBorder && (
 																				<RichText
 																					id={cell_id}
-																					className={'grid-control__body-cells ' + classes}
+																					className={
+																						'grid-control__body-cells ' +
+																						classes +
+																						calculatedClasses
+																					}
 																					style={{
 																						'--showGridLines': showGridLinesCSS,
 																						'--gridLineWidth': gridLineWidthCSS,

@@ -4639,6 +4639,7 @@ function Edit(props) {
                     attributes,
                     classes
                   }) => {
+                    let calculatedClasses = '';
                     const isFirstColumn = column_id === '1' ? true : false;
                     const isBorder = attributes.border;
                     const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.setBorderContent)(row_id, column_id, content);
@@ -4646,6 +4647,9 @@ function Edit(props) {
                     const showGridLinesCSS = gridShowInnerLines;
                     const gridLineWidthCSS = gridInnerLineWidth;
                     const isFocused = focusedCell.col === Number(column_id) && focusedCell.row === Number(row_id);
+                    if (isFocused) {
+                      calculatedClasses = calculatedClasses + 'grid-control__body-cells--focused ';
+                    }
                     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
                       children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
                         className: 'grid-control__border-cells'
@@ -4668,7 +4672,7 @@ function Edit(props) {
                         }
                       }), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
                         id: cell_id,
-                        className: 'grid-control__header-cells',
+                        className: 'grid-control__header-cells ' + classes + calculatedClasses,
                         style: {
                           '--showGridLines': showGridLinesCSS,
                           '--gridLineWidth': gridLineWidthCSS
@@ -4737,6 +4741,7 @@ function Edit(props) {
                       /**
                        * Set general processing variables
                        */
+                      calculatedClasses = '';
                       const isFirstColumn = column_id === '1' ? true : false;
                       const isBorder = attributes.border;
                       const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.setBorderContent)(row_id, column_id, content);
@@ -4744,6 +4749,9 @@ function Edit(props) {
                       const showGridLinesCSS = gridShowInnerLines;
                       const gridLineWidthCSS = gridInnerLineWidth;
                       const isFocused = focusedCell.col === Number(column_id) && focusedCell.row === Number(row_id);
+                      if (isFocused) {
+                        calculatedClasses = calculatedClasses + 'grid-control__body-cells--focused ';
+                      }
                       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
                         children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
                           className: 'grid-control__border-cells'
@@ -4776,7 +4784,7 @@ function Edit(props) {
                           })
                         }, cell_id), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
                           id: cell_id,
-                          className: 'grid-control__body-cells ' + classes,
+                          className: 'grid-control__body-cells ' + classes + calculatedClasses,
                           style: {
                             '--showGridLines': showGridLinesCSS,
                             '--gridLineWidth': gridLineWidthCSS
