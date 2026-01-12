@@ -752,6 +752,7 @@ export default function Edit(props) {
 	 * @param {boolean}                 [persist=true] Update table entity (not just the table store)
 	 */
 	function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
+		console.log(`Setting Table Attribute: ${attribute} Type: ${type} Value: ${value}`);
 		switch (type) {
 			case 'CONTENT': {
 				if (attribute === 'cell') {
@@ -1909,22 +1910,20 @@ export default function Edit(props) {
 																			></div>
 																		)}
 																		{!isBorder && (
-																			<RichText
-																				id={cell_id}
+																			<Cell
+																				cell_id={cell_id}
+																				table_id={table_id}
+																				row_id={row_id}
+																				column_id={column_id}
+																				content={content}
+																				isFocused={isFocused}
 																				className={
 																					'grid-control__header-cells ' +
 																					classes +
 																					calculatedClasses
 																				}
-																				style={{
-																					'--showGridLines': showGridLinesCSS,
-																					'--gridLineWidth': gridLineWidthCSS,
-																				}}
-																				tagName="div"
-																				key={cell_id}
-																				data-col={Number(column_id)}
-																				data-row={Number(row_id)}
-																				tabIndex={isFocused ? 0 : -1}
+																				showGridLinesCSS={showGridLinesCSS}
+																				gridLineWidthCSS={gridLineWidthCSS}
 																				onChange={e =>
 																					setTableAttributes(
 																						table_id,
@@ -1934,8 +1933,7 @@ export default function Edit(props) {
 																						e
 																					)
 																				}
-																				value={content}
-																			></RichText>
+																			></Cell>
 																		)}
 																	</>
 																);
@@ -2093,22 +2091,20 @@ export default function Edit(props) {
 																			)}
 
 																			{!isBorder && (
-																				<RichText
-																					id={cell_id}
+																				<Cell
+																					cell_id={cell_id}
+																					table_id={table_id}
+																					row_id={row_id}
+																					column_id={column_id}
+																					content={content}
+																					isFocused={isFocused}
 																					className={
 																						'grid-control__body-cells ' +
 																						classes +
 																						calculatedClasses
 																					}
-																					style={{
-																						'--showGridLines': showGridLinesCSS,
-																						'--gridLineWidth': gridLineWidthCSS,
-																					}}
-																					tagName="div"
-																					key={cell_id}
-																					data-col={Number(column_id)}
-																					data-row={Number(row_id)}
-																					tabIndex={isFocused ? 0 : -1}
+																					showGridLinesCSS={showGridLinesCSS}
+																					gridLineWidthCSS={gridLineWidthCSS}
 																					onChange={e =>
 																						setTableAttributes(
 																							table_id,
@@ -2118,8 +2114,7 @@ export default function Edit(props) {
 																							e
 																						)
 																					}
-																					value={content}
-																				></RichText>
+																				></Cell>
 																			)}
 																		</>
 																	);
@@ -2182,5 +2177,57 @@ export default function Edit(props) {
 				</Placeholder>
 			)}
 		</div>
+	);
+}
+
+/**
+ * Component to render and manage cell content editing
+ *
+ * @since 1.1.1
+ *
+ * @param {Object} props Passed attributes
+ * @return {Object} events for cell content editing
+ */
+function Cell(props) {
+	const {
+		cell_id,
+		row_id,
+		column_id,
+		content,
+		isFocused,
+		className,
+		showGridLinesCSS,
+		gridLineWidthCSS,
+		onChange,
+	} = props;
+
+	/**
+	 * Handle onChange event for cell content update
+	 *
+	 * @since 1.1.1
+	 *
+	 * @param {string} type Type of cell data to update
+	 * @param {Object} e    event data
+	 */
+	const updateCellData = (type, e) => {
+		onChange(e, type);
+	};
+
+	return (
+		<RichText
+			id={cell_id}
+			className={className}
+			style={{
+				'--showGridLines': showGridLinesCSS,
+				'--gridLineWidth': gridLineWidthCSS,
+			}}
+			tagName="div"
+			key={cell_id}
+			data-col={Number(column_id)}
+			data-row={Number(row_id)}
+			tabIndex={isFocused ? 0 : -1}
+			onChange={e => updateCellData('CONTENT', e)}
+			value={content}
+		></RichText>
 	);
 }

@@ -3692,6 +3692,7 @@ function Edit(props) {
    * @param {boolean}                 [persist=true] Update table entity (not just the table store)
    */
   function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
+    console.log(`Setting Table Attribute: ${attribute} Type: ${type} Value: ${value}`);
     switch (type) {
       case 'CONTENT':
         {
@@ -4670,20 +4671,18 @@ function Edit(props) {
                           '--showGridLines': showGridLinesCSS,
                           '--gridLineWidth': gridLineWidthCSS
                         }
-                      }), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
-                        id: cell_id,
+                      }), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(Cell, {
+                        cell_id: cell_id,
+                        table_id: table_id,
+                        row_id: row_id,
+                        column_id: column_id,
+                        content: content,
+                        isFocused: isFocused,
                         className: 'grid-control__header-cells ' + classes + calculatedClasses,
-                        style: {
-                          '--showGridLines': showGridLinesCSS,
-                          '--gridLineWidth': gridLineWidthCSS
-                        },
-                        tagName: "div",
-                        "data-col": Number(column_id),
-                        "data-row": Number(row_id),
-                        tabIndex: isFocused ? 0 : -1,
-                        onChange: e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e),
-                        value: content
-                      }, cell_id)]
+                        showGridLinesCSS: showGridLinesCSS,
+                        gridLineWidthCSS: gridLineWidthCSS,
+                        onChange: e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e)
+                      })]
                     });
                   })
                 });
@@ -4782,20 +4781,18 @@ function Edit(props) {
                             href: "#",
                             icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"]
                           })
-                        }, cell_id), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
-                          id: cell_id,
+                        }, cell_id), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(Cell, {
+                          cell_id: cell_id,
+                          table_id: table_id,
+                          row_id: row_id,
+                          column_id: column_id,
+                          content: content,
+                          isFocused: isFocused,
                           className: 'grid-control__body-cells ' + classes + calculatedClasses,
-                          style: {
-                            '--showGridLines': showGridLinesCSS,
-                            '--gridLineWidth': gridLineWidthCSS
-                          },
-                          tagName: "div",
-                          "data-col": Number(column_id),
-                          "data-row": Number(row_id),
-                          tabIndex: isFocused ? 0 : -1,
-                          onChange: e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e),
-                          value: content
-                        }, cell_id)]
+                          showGridLinesCSS: showGridLinesCSS,
+                          gridLineWidthCSS: gridLineWidthCSS,
+                          onChange: e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e)
+                        })]
                       });
                     })
                   });
@@ -4849,6 +4846,54 @@ function Edit(props) {
       })
     })]
   });
+}
+
+/**
+ * Component to render and manage cell content editing
+ *
+ * @since 1.1.1
+ *
+ * @param {Object} props Passed attributes
+ * @return {Object} events for cell content editing
+ */
+function Cell(props) {
+  const {
+    cell_id,
+    row_id,
+    column_id,
+    content,
+    isFocused,
+    className,
+    showGridLinesCSS,
+    gridLineWidthCSS,
+    onChange
+  } = props;
+
+  /**
+   * Handle onChange event for cell content update
+   *
+   * @since 1.1.1
+   *
+   * @param {string} type Type of cell data to update
+   * @param {Object} e    event data
+   */
+  const updateCellData = (type, e) => {
+    onChange(e, type);
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
+    id: cell_id,
+    className: className,
+    style: {
+      '--showGridLines': showGridLinesCSS,
+      '--gridLineWidth': gridLineWidthCSS
+    },
+    tagName: "div",
+    "data-col": Number(column_id),
+    "data-row": Number(row_id),
+    tabIndex: isFocused ? 0 : -1,
+    onChange: e => updateCellData('CONTENT', e),
+    value: content
+  }, cell_id);
 }
 
 /***/ }),

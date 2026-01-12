@@ -89,6 +89,7 @@ This information will be appealing to our techie friends, soothing their passion
 
 = 1.1.1 =
 * Add keyboard navigation through table cells via arrow keys.
+* Refactor editor to break out Cell as its own component in support of future enhancements
 
 = 1.1.0 =
 * Fix bug that caused fatal error when editing post with "Show Template" enabled.
