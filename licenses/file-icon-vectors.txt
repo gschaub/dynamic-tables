@@ -1,9 +1,0 @@
-File Icon Vectors (Classic)
-
-Copyright (c) Daniel Hendricks
-
-Licensed under the MIT License.
-https://opensource.org/licenses/MIT
-
-Source:
-https://github.com/dmhendricks/file-icon-vectors
