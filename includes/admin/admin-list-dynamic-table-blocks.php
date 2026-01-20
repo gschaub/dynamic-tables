@@ -299,28 +299,43 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 	 * @return string          HTML required to display and process the action
 	 */
 	protected function column_name( $item ) {
+		error_log( 'In column_name for item ID: ' . $item['id'] );
+		$export_nonce = wp_create_nonce( 'dtbk_export_download' );
 		$actions = array(
 			// 'update_status' => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Update Status', 'dynamic-table-blocks') . '</a>',
 			// $_REQUEST['page'],
 			// 'update_status',
 			// $item['id']),
 
-			'export' => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Export', 'dynamic-table-blocks') . '</a>',
-			'<a href="#" data-dtbk-action="view" data-id="%d">%s</a>',
-			$_REQUEST['page'],
-			'export',
-			$item['id']),
+			// 'export' => sprintf(
+			// 	'<a href="#" data-dtbk-action="export" data-id="%d">%s</a>',
+			// 	(int) $item['id'],
+			// 	esc_html__( 'Export', 'dynamic-table-blocks' )
+			// ),
 
-			'view' => sprintf(
+
+			// 'export' => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Export', 'dynamic-table-blocks') . '</a>',
+			// '<a href="#" data-dtbk-action="view" data-id="%d">%s</a>',
+			// $_REQUEST['page'],
+			// 'export',
+			// $item['id']),
+
+			'export' => sprintf(
+				'<a href="#" data-dtbk-action="export" data-id="%d" data-nonce="%s">%s</a>',
+				(int) $item['id'],
+				esc_attr( $export_nonce ),
+				esc_html__( 'Export…', 'dynamic-table-blocks' )
+			),
+
+			'view'   => sprintf(
 				'<a href="#" data-dtbk-action="view" data-id="%d">%s</a>',
 				(int) $item['id'],
 				esc_html__( 'View', 'dynamic-table-blocks' )
 			),
-
-			// 'delete'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Delete', 'dynamic-table-blocks') . '</a>',
-			// $_REQUEST['page'],
-			// 'delete',
-			// $item['id']),
+				// 'delete'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Delete', 'dynamic-table-blocks') . '</a>',
+				// $_REQUEST['page'],
+				// 'delete',
+				// $item['id']),
 		);
 		return sprintf( '%1$s %2$s', $item['name'], $this->row_actions( $actions ) );
 	}
@@ -389,10 +404,11 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		// wp_die( 'Security check failed.' );
 		// }
 
-		// error_log('Process Action $_REQUEST output = ' . json_encode($_REQUEST));
+		error_log( 'Process Action $_REQUEST output = ' . json_encode( $_REQUEST ) );
 
 		$action      = $this->current_action();
 		$bulk_action = isset( $_REQUEST['bulk_action'] );
+		error_log( 'Process Action: action = ' . $action . ', bulk_action = ' . ( $bulk_action ? 'true' : 'false' ) );
 
 		$item_ids = null;
 		$item_id  = null;
