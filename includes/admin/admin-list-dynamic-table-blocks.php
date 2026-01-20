@@ -293,31 +293,18 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 	 *               will provide the hook for processing the action
 	 *
 	 * @since 1.1.0
+	 * @since 1.1.0 Added export action
 	 * @todo Implement remaining actions
 	 *
 	 * @param  array $item   Table Row
 	 * @return string          HTML required to display and process the action
 	 */
 	protected function column_name( $item ) {
-		error_log( 'In column_name for item ID: ' . $item['id'] );
 		$export_nonce = wp_create_nonce( 'dtbk_export_download' );
-		$actions = array(
+		$actions      = array(
 			// 'update_status' => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Update Status', 'dynamic-table-blocks') . '</a>',
 			// $_REQUEST['page'],
 			// 'update_status',
-			// $item['id']),
-
-			// 'export' => sprintf(
-			// 	'<a href="#" data-dtbk-action="export" data-id="%d">%s</a>',
-			// 	(int) $item['id'],
-			// 	esc_html__( 'Export', 'dynamic-table-blocks' )
-			// ),
-
-
-			// 'export' => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Export', 'dynamic-table-blocks') . '</a>',
-			// '<a href="#" data-dtbk-action="view" data-id="%d">%s</a>',
-			// $_REQUEST['page'],
-			// 'export',
 			// $item['id']),
 
 			'export' => sprintf(
@@ -332,10 +319,10 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 				(int) $item['id'],
 				esc_html__( 'View', 'dynamic-table-blocks' )
 			),
-				// 'delete'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Delete', 'dynamic-table-blocks') . '</a>',
-				// $_REQUEST['page'],
-				// 'delete',
-				// $item['id']),
+			// 'delete'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Delete', 'dynamic-table-blocks') . '</a>',
+			// $_REQUEST['page'],
+			// 'delete',
+			// $item['id']),
 		);
 		return sprintf( '%1$s %2$s', $item['name'], $this->row_actions( $actions ) );
 	}
@@ -397,18 +384,9 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 	 * @return void
 	 */
 	public function process_action() {
-		$notices = new DTBK_Admin_Notices();
-
-		// Verify nonce for security
-		// if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->screen->id ) ) {
-		// wp_die( 'Security check failed.' );
-		// }
-
-		error_log( 'Process Action $_REQUEST output = ' . json_encode( $_REQUEST ) );
-
+		$notices     = new DTBK_Admin_Notices();
 		$action      = $this->current_action();
 		$bulk_action = isset( $_REQUEST['bulk_action'] );
-		error_log( 'Process Action: action = ' . $action . ', bulk_action = ' . ( $bulk_action ? 'true' : 'false' ) );
 
 		$item_ids = null;
 		$item_id  = null;

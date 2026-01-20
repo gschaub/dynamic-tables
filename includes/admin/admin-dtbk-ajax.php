@@ -19,6 +19,21 @@ class DTBK_Admin_Ajax {
 		add_action( 'wp_ajax_dtbk_view_table', array( $this, 'view_table' ) );
 	}
 
+	/**
+	 * Supply data for modal view in .
+	 *
+	 * @since 1.1.0
+	 */
+
+	/**
+	 * Supply data for modal view data view in table list.
+	 *
+	 * Description - Extract and format table cell contents in support of UX view of table data
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return void | WP_Error
+	 */
 	public function view_table() {
 		// Check nonce
 		check_ajax_referer( 'dtbk-table-list' );

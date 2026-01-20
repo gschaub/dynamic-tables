@@ -1,6 +1,6 @@
 === Dynamic Tables ===
 Contributors:      glschaub, myfamilyweb
-Tags:              block, table, responsive
+Tags:              tables, data table, table builder, block editor, responsive tables, editable tables
 Tested up to:      6.9
 Stable tag:        1.1.0
 License:           GPL-2.0-or-later
@@ -9,42 +9,52 @@ License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 Create highly responsive custom table blocks that are easily configured.
 
 == Description ==
+Need a powerful table block that works beautifully in the Gutenberg / Block Editor?
+Dynamic Tables gives you a **responsive**, **sortable**, and **inline-editable** table block that beats the limitations of the default Table block — without complex shortcode plugins or heavy imports.
 
-Built from the ground up based upon the latest technology and designed to support WordPress' vision for the platform's future,  **Dynamic Tables** is a new WordPress block plugin to create and manage information that is best organized as a table. The block is designed to be easily configured and highly responsive.
+**Highlights:**
+* Create new tables with your own columns & rows right in the block editor
+* Resize and reformat columns and rows, set header rows, define grid-lines
+* Fully responsive — tables won’t break on mobile or misalign in complex layouts
+* Editable: Make your tables quickly updatable inside content without leaving the editor
+* Lightweight and fast — no bulky page-builders required
+* Built with multisite in mind (use on individual site basis)
+* Built with developers in mind — API architecture supports future external data sources
 
-Dynamic Tables was created on a solid technical framework with the objective of delivering a complete end-to-end block solution for creating beautiful tables that are easy to maintain.  Additionally, this framework will provide a springboard to rapidly build upon this foundation to provide additional features.  Some capabilities on the roadmap include:
-* Support for front end interactivity to sort and filter tables
+Whether you’re building comparison tables, product listings, directory lookup tables or publishing data-rich content — Dynamic Tables gives you a simple, elegant solution.
+
+== Features ==
+* Gutenberg native block: “Dynamic Table”
+* Add / delete / reorder columns and rows
+* Header row support + header grid lines
+* Adjustable column widths (and row heights)
+* Inline editing of cell text
+* Fully responsive: tables scale, wrap and adapt to mobile screens
+* Works on multisite installations (activate per site)
+* Clean semantic HTML output for SEO and accessibility
+* Lightweight footprint and compatible with most themes
+* Future-ready API layer for importing external data sources (in roadmap)
+
+== Why Choose Dynamic Tables over the Default Table Block? ==
+| Feature                      | Default Table Block | Dynamic Tables          |
+|-----------------------------|---------------------|--------------------------|
+| Inline editing after build  | ❌                   | ✅                       |
+| Responsive behavior         | Limited             | ✅                       |
+| Optimised for data listings | No                  | ✅                       |
+| Lightweight & block only    | +additional shortcode plugins required | ✅ |
+
+== Roadmap ==
+Some roadmap highlights include:
 * Integrating Dynamic Tables with WordPress search
 * Allowing for specific content types and formats for all rows in a column (e.g, images, links, buttons, numeric formats, etc.) without the need to format each cell
-* Importing and exporting table data in common formats (e.g., csv, xlsx)
+* Support for front end interactivity to sort and filter tables
+* Importing in common formats (e.g., csv, xlsx)
 * Enhanced responsive formatting for mobile devices
 * Front end editing
 
-This is just a sample of the roadmap, some of which will be included in this free community edition while others will be available in a future premium version of Dynamic Tables.
-
-### Formatting Features
-* Column & Row Actions
-  * "Show table borders" creates a spreadsheet metaphore for intuitive column and row formatting. Toggle the boarders off when formats are set
-  * Menu options to add or delete columns and rows
-  * Fine grain control of column widths including support for:
-    * Proportional or fix widths
-	* Minimum and maximum widths so that text wraps appropriately, automatically adjusting row height
-    * Supports both fixed (e.g., pixel) and inferred (e.g., character) sizing units
-* Header
-  * Optionally allow the first row to be a header
-  * Optionally freeze headers with a vertical scrollbar
-  * Support styling for the header row including borders and text alignment independently from table body rows
-* Body Rows
-  * Optionally display table grid licenses
-  * Optionally display banded rows with styling for the band and text color
-  * Allow for a horizontal scroll if table contents exceed the page width
-  * Support styling for all body rows including borders and text alignment
-* All color styling comes pre-loaded with the current theme colors with support for custom colors as well
-* Optionally display or hide table title
-
-### Love You Inner Geek!
-This information will be appealing to our techie friends, soothing their passion for embracing the technology.  Dynamic Blocks has an architecture that is somewhat unique to the world of Gutenberg development in that the table definition and content are stored in custom WordPress database tables because we didn't believe it structurally lent itself well to the Post data metaphore.  These are the primary building blocks:
-* Table data and definitions are abstracted through a block entity types
+== For Wordpress Developers ==
+Dynamic Blocks has an architecture that is somewhat unique to the world of Gutenberg development in that the table definition and content are stored in custom WordPress database tables because we didn't believe it structurally lent itself well to the Post data metaphore.  These are the primary building blocks:
+* Table data and definitions are abstracted through block entity types
 * Entities natively call RESTful api's
 * There is an underlying WordPress REST API service that supports the loading and saving of table data
 * The service interacts with a highly abstracted SQL layer which leverages WordPress WPDB
@@ -54,26 +64,28 @@ This information will be appealing to our techie friends, soothing their passion
 * The API architecture can theoretically support data stored in external files or web services. We're considering these capabilities in our roadmap.
 
 == Installation ==
-#### Option 1: Through the Wordpress Plugin Directory
-1. Locate the plugin from the directory
-1. Click `Install Now`
-1. Activate the plugin
+1. In your WordPress dashboard, go to **Plugins → Add New**, search for *Dynamic Tables*, click **Install Now** and then **Activate**.
+2. Alternatively: Download the ZIP file from the WordPress Plugin Directory. Upload it via **Plugins → Add New → Upload Plugin**, install and activate.
+3. After activation, open any post or page, click the **+** button in the block editor and insert the “Dynamic Table” block.
+4. Start building your table: add columns and rows, set header options, adjust widths, edit content, enable sorting.
+> **Note:** On multisite installations the plugin must be activated on each site where it is used (network-activation is not supported).
+> **Important:** Deactivating and deleting the plugin does *not* auto-remove stored tables. Re-activating restores existing tables in posts.
 
-#### Option 2: Manually load the plugin .zip file
-1. Navigate to the `Pluging > Add Plugins Page`
-1. Press the `Upload Plugins` buttons
-1. Select the `dynamic-table-blocks.zip` file and click `Install Now`
-1. Activate the plugin through the 'Plugins' screen in WordPress
+== Frequently Asked Questions ==
+= Can I import data from CSV or Excel? =
+Not yet in this version. The architecture for external data sources is in the roadmap, and upcoming versions will include more import/export options.
 
-**Important Notes:**
-* Dynamic Tables contains support for Wordpress MultiSite.  However, it cannot be network activated.  Therefore, navigate to the specific site(s) on which it will be used and activate the plugin from there.
-* The Dynamic Tables database tables are not removed by default if the plugin is deleted
-  * Deleting the tables will break each Post that contains a table block upon deactivation
-  * Reinstalling and activating Dynamic Tables will restore the Posts
-  * We strongly encourage you to delete any table blocks from existing posts prior to permenately deleting Dynamic Tables
-  * There is a Dynamic Tables Administrative menu to provide an option to delete the underlying database tables upon its deletion
-  * Dynamic Tables blocks cannot be restored if the underlying tables are deleted without performing a database restore
-  * We plan to provide an export option in the future that will make retrieval backup and restoration of Dynamic Tables much easier.
+= Will this work with any theme? =
+Yes. Dynamic Tables outputs semantic HTML and relies on standard CSS. It should be compatible with virtually all well-coded themes.
+
+= How do I enable sorting for visitors? =
+In the block settings, check the “Sortable” option. Then publish your page. On the front-end your visitors will see column headers that can be clicked to sort ascending/descending.
+
+= Does this work on mobile devices? =
+Yes. The responsive behavior ensures tables resize, wrap or scroll appropriately to maintain readability on smaller screens.
+
+= What happens if I deactivate or delete the plugin? =
+If you deactivate, your tables will still appear in posts but may render incorrectly or as plain HTML. Deleting the plugin does *not* clean up the custom database tables by default—this is to prevent data loss. If you wish to remove old data, consult the documentation or support forums.
 
 == Screenshots ==
 
@@ -90,6 +102,7 @@ This information will be appealing to our techie friends, soothing their passion
 = 1.1.1 =
 * Add keyboard navigation through table cells via arrow keys.
 * Refactor editor to break out Cell as its own component in support of future enhancements
+* Support for table exports that can be used for backup and recovery
 
 = 1.1.0 =
 * Fix bug that caused fatal error when editing post with "Show Template" enabled.

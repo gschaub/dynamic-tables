@@ -70,27 +70,13 @@ jQuery($ => {
 		}
 
 		/**
-		 * Initialize Export dialog box.
-		 *
-		 * @since    1.1.1
-		 */
-		ensureExportDialog() {
-			if (this.$(`#${this.exportDialogId}`).length) {
-				return;
-			}
-
-			this.$('body').append(`<div id="${this.exportDialogId}" style="display:none;"></div>`);
-		}
-
-		/**
-		 * Prepare table for viewing.
+		 * Retrieve table id and prepare viewing data retrieval.
 		 *
 		 * @since    1.1.0
 		 *
 		 * @param {Object} e Event object.
 		 */
 		prepareViewTable(e) {
-			console.log('In prepareViewTable');
 			e.preventDefault();
 
 			const $link = this.$(e.currentTarget);
@@ -111,7 +97,6 @@ jQuery($ => {
 		 * @param {number} id Table ID.
 		 */
 		async openViewTable(id) {
-			// Simple loading state
 			this.openViewDialog('<p>Loading…</p>');
 
 			const htmlHeader = `
@@ -148,45 +133,12 @@ jQuery($ => {
 		}
 
 		/**
-		 * Prepare table for export.
-		 *
-		 * @since    1.1.1
-		 *
-		 * @param {Object} e Event object.
-		 */
-		prepareExportTable(e) {
-			e.preventDefault();
-
-			const $link = this.$(e.currentTarget);
-
-			// Support either data-id (single) or data-ids (future bulk reuse)
-			const id = $link.data('id');
-			const ids = $link.data('ids');
-
-			this.exportIds = '';
-
-			if (ids) {
-				this.exportIds = String(ids);
-			} else if (id) {
-				this.exportIds = String(Number.parseInt(id, 10));
-			}
-
-			if (!this.exportIds) {
-				return;
-			}
-
-			console.log('Export IDs:', this.exportIds);
-			this.exportNonce = String($link.data('nonce') || DTBK_TABLE_LIST?.exportNonce || '');
-
-			this.openExportDialog();
-		}
-
-		/**
 		 * Fetch the table data for viewing.
 		 *
 		 * @since    1.1.0
 		 *
 		 * @param {number} id Table ID.
+		 * @return {string} Formatted JSON of table data.
 		 */
 		async postView(id) {
 			// Create the request call
@@ -207,6 +159,13 @@ jQuery($ => {
 			return json;
 		}
 
+		/**
+		 * Open dialog to select the export format and trigger the download.
+		 *
+		 * @since    1.1.0
+		 *
+		 * @param {string} contentHtml
+		 */
 		openViewDialog(contentHtml) {
 			const $dlg = this.$(`#${this.listRowId}`);
 			const minWidth = Math.min(1000, this.$(window).width() - 80);
@@ -234,9 +193,56 @@ jQuery($ => {
 		}
 
 		/**
+		 * Initialize Export dialog box.
+		 *
+		 * @since    1.1.1
+		 */
+		ensureExportDialog() {
+			if (this.$(`#${this.exportDialogId}`).length) {
+				return;
+			}
+
+			this.$('body').append(`<div id="${this.exportDialogId}" style="display:none;"></div>`);
+		}
+
+		/**
+		 * Retrieve table id(s) and prepare for export.
+		 *
+		 * @since    1.1.1
+		 *
+		 * @param {Object} e Event object.
+		 */
+		prepareExportTable(e) {
+			e.preventDefault();
+
+			const $link = this.$(e.currentTarget);
+
+			// Support either data-id (single) or data-ids (future bulk reuse)
+			const id = $link.data('id');
+			const ids = $link.data('ids');
+
+			this.exportIds = '';
+
+			if (ids) {
+				this.exportIds = String(ids);
+			} else if (id) {
+				this.exportIds = String(Number.parseInt(id, 10));
+			}
+
+			if (!this.exportIds) {
+				return;
+			}
+
+			this.exportNonce = String($link.data('nonce') || DTBK_TABLE_LIST?.exportNonce || '');
+
+			this.openExportDialog();
+		}
+
+
+		/**
 		 * Get table data and build HTML for display.
 		 *
-		 * @since    1.1.0
+		 * @since    1.1.1
 		 *
 		 * @param {number} id Table ID.
 		 */
@@ -401,12 +407,17 @@ jQuery($ => {
 			});
 		}
 
+		/**
+		 * Initiate server side download stream.
+		 *
+		 * @since    1.1.1
+		 *
+		 *
+		 * @param {Object} format Export file format.
+		 */
 		startDownload(format) {
 			try {
-				console.log('Starting export for format:', format);
-
 				const url = this.buildExportUrl(format);
-				console.log('Starting download:', url);
 
 				// Close picker before navigation
 				const $dlg = this.$(`#${this.exportDialogId}`);
@@ -425,6 +436,14 @@ jQuery($ => {
 			}
 		}
 
+		/**
+		 * Build full export URL for the download stream.
+		 *
+		 * @since    1.1.1
+		 *
+		 * @param {Object} format Export file format.
+		 * @return {string} Full export URL.
+		 */
 		buildExportUrl(format) {
 			const adminPostUrl = DTBK_TABLE_LIST?.adminPostUrl;
 			const action = DTBK_TABLE_LIST?.exportAction;
@@ -446,6 +465,14 @@ jQuery($ => {
 			return url.toString();
 		}
 
+		/**
+		 * Replace symbols with escaped html strings.
+		 *
+		 * @since    1.1.1
+		 *
+		 * @param {string} str String to be escaped.
+		 * @return {string} Full export URL.
+		 */
 		escapeHtml(str) {
 			return String(str)
 				.replace(/&/g, '&amp;')
@@ -455,6 +482,14 @@ jQuery($ => {
 				.replace(/'/g, '&#039;');
 		}
 
+		/**
+		 * Replace symbols with escaped html attributes.
+		 *
+		 * @since    1.1.1
+		 *
+		 * @param {string} str String to be escaped.
+		 * @return {string} Full export URL.
+		 */
 		escapeAttr(str) {
 			// Basic attribute-safe escape
 			return this.escapeHtml(str).replace(/`/g, '&#096;');
