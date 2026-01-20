@@ -69,7 +69,7 @@ Dynamic Blocks has an architecture that is somewhat unique to the world of Guten
 3. After activation, open any post or page, click the **+** button in the block editor and insert the “Dynamic Table” block.
 4. Start building your table: add columns and rows, set header options, adjust widths, edit content, enable sorting.
 > **Note:** On multisite installations the plugin must be activated on each site where it is used (network-activation is not supported).
-> **Important:** Deactivating and deleting the plugin does *not* auto-remove stored tables. Re-activating restores existing tables in posts.
+> **Important:** Deactivating and deleting the plugin does *not* auto-remove stored tables. However, there is an setting to support the removal of stored tables. Re-activating restores existing tables in posts.
 
 ## Frequently Asked Questions ##
 ### Can I import data from CSV or Excel? ###
@@ -83,6 +83,9 @@ In the block settings, check the “Sortable” option. Then publish your page. 
 
 ### Does this work on mobile devices? ###
 Yes. The responsive behavior ensures tables resize, wrap or scroll appropriately to maintain readability on smaller screens.
+
+### Is there a fee to use this plugin? ###
+No. This plugin is free to use. However, we are planning for a premium version of Dynamic Tables to support advanced features.
 
 ### What happens if I deactivate or delete the plugin? ###
 If you deactivate, your tables will still appear in posts but may render incorrectly or as plain HTML. Deleting the plugin does *not* clean up the custom database tables by default—this is to prevent data loss. If you wish to remove old data, consult the documentation or support forums.
@@ -100,12 +103,13 @@ If you deactivate, your tables will still appear in posts but may render incorre
 ## Changelog ##
 
 ### 1.1.1 ###
-* Add keyboard navigation through table cells via arrow keys.
+* Add keyboard navigation through table cells via arrow keys
+* Added a visual indicator to easily identify what cell you're currently editing
 * Refactor editor to break out Cell as its own component in support of future enhancements
 * Support for table exports that can be used for backup and recovery
 
 ### 1.1.0 ###
-* Fix bug that caused fatal error when editing post with "Show Template" enabled.
+* Fix bug that caused fatal error when editing post with "Show Template" enabled
 * Support for post templates and patterns.
 * Created scheduled maintenance to ensure posts and tables are internally consistent
 * Automatically remove tables when their underying posts are deleted from the admin page
