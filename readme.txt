@@ -36,12 +36,19 @@ Whether you’re building comparison tables, product listings, directory lookup 
 * Future-ready API layer for importing external data sources (in roadmap)
 
 == Why Choose Dynamic Tables over the Default Table Block? ==
-| Feature                      | Default Table Block | Dynamic Tables          |
-|-----------------------------|---------------------|--------------------------|
-| Inline editing after build  | ❌                   | ✅                       |
-| Responsive behavior         | Limited             | ✅                       |
-| Optimised for data listings | No                  | ✅                       |
-| Lightweight & block only    | +additional shortcode plugins required | ✅ |
+
+The default WordPress Table block is well-suited for simple, static tables. However, as content becomes more structured or data-driven, its limitations become more apparent.
+
+Dynamic Tables is designed specifically for tables that require ongoing updates, consistent structure, and reliable responsive behavior.
+
+With Dynamic Tables you can:
+* Edit table content inline without rebuilding the table
+* Maintain consistent column and row structure as content evolves
+* Present data in a way that remains readable across desktop and mobile devices
+* Build tables intended for comparisons, listings, and structured datasets
+* Avoid the need for shortcode-based table plugins or external builders
+
+If your use case goes beyond basic layout tables and into repeatable, data-oriented content, Dynamic Tables provides a purpose-built solution that stays fully native to the block editor.
 
 == Roadmap ==
 Some roadmap highlights include:
