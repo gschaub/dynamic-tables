@@ -9,8 +9,7 @@
 Create highly responsive custom table blocks that are easily configured.
 
 ## Description ##
-Need a powerful table block that works beautifully in the Gutenberg / Block Editor?
-Dynamic Tables gives you a **responsive**, **sortable**, and **inline-editable** table block that beats the limitations of the default Table block — without complex shortcode plugins or heavy imports.
+Need a powerful table block that works beautifully in the Gutenberg / Block Editor? **Dynamic Tables** gives you a responsive, user friendly, and inline-editable table block that beats the limitations of the default table block — without complex shortcode plugins or heavy imports.
 
 **Highlights:**
 * Create new tables with your own columns & rows right in the block editor
