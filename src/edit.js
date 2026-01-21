@@ -1911,6 +1911,8 @@ export default function Edit(props) {
 																		)}
 																		{!isBorder && (
 																			<Cell
+																				cellType={'body'}
+																				dataFormat={'general'}
 																				cell_id={cell_id}
 																				table_id={table_id}
 																				row_id={row_id}
@@ -2047,28 +2049,22 @@ export default function Edit(props) {
 																			)}
 
 																			{isBorder && (
-																				<div
-																					id={cell_id}
+																				<Cell
+																					cellType={'border'}
+																					cell_id={cell_id}
+																					table={table}
+																					table_id={table_id}
+																					row_id={row_id}
+																					column_id={column_id}
+																					content={borderContent}
+																					isMenuOpen={isOpenCurrentRowMenu}
+																					menuAttributes={rowAttributes}
+																					className={classes}
+																					updatedRow={onUpdateRow}
 																					onMouseDown={e =>
 																						onMouseBorderClick(column_id, row_id, table, e)
 																					}
-																					className={classes}
-																					key={cell_id}
-																					data-col={Number(column_id)}
-																					data-row={Number(row_id)}
-																					tabIndex={-1}
-																				>
-																					{borderContent}
-																					{isOpenCurrentRowMenu && (
-																						<RowMenu
-																							tableId={table_id}
-																							rowId={row_id}
-																							rowLabel={borderContent}
-																							rowAttributes={rowAttributes}
-																							updatedRow={onUpdateRow}
-																						></RowMenu>
-																					)}
-																				</div>
+																				></Cell>
 																			)}
 
 																			{/* Show zoom to details column */}
@@ -2092,6 +2088,8 @@ export default function Edit(props) {
 
 																			{!isBorder && (
 																				<Cell
+																					cellType={'body'}
+																					dataFormat={'general'}
 																					cell_id={cell_id}
 																					table_id={table_id}
 																					row_id={row_id}
@@ -2190,15 +2188,23 @@ export default function Edit(props) {
  */
 function Cell(props) {
 	const {
-		cell_id,
+		cellType,
+		dataFormat,
+		table,
+		table_id,
 		row_id,
+		cell_id,
 		column_id,
 		content,
 		isFocused,
+		isMenuOpen,
+		menuAttributes,
 		className,
 		showGridLinesCSS,
 		gridLineWidthCSS,
 		onChange,
+		onMouseDown,
+		updatedRow,
 	} = props;
 
 	/**
@@ -2209,25 +2215,88 @@ function Cell(props) {
 	 * @param {string} type Type of cell data to update
 	 * @param {Object} e    event data
 	 */
-	const updateCellData = (type, e) => {
+	function updateCellData(type, e) {
 		onChange(e, type);
+	}
+
+	function passMouseBorderClick(column_id, row_id, table, e) {
+		onMouseDown(e, column_id, row_id, table);
+	}
+
+	function processUpdatedRow(event, updateType, tableId, rowId, updatedRowAttributes) {
+		updatedRow(event, updateType, tableId, rowId, updatedRowAttributes);
+	}
+
+	const renderTypes = {
+		richText: () => (
+			<RichText
+				id={cell_id}
+				className={className}
+				style={{
+					'--showGridLines': showGridLinesCSS,
+					'--gridLineWidth': gridLineWidthCSS,
+				}}
+				tagName="div"
+				key={cell_id}
+				data-col={Number(column_id)}
+				data-row={Number(row_id)}
+				tabIndex={isFocused ? 0 : -1}
+				onChange={e => updateCellData('CONTENT', e)}
+				value={content}
+			></RichText>
+		),
+		border: () => (
+			<div
+				id={cell_id}
+				onMouseDown={e => passMouseBorderClick(column_id, row_id, table, e)}
+				className={className}
+				key={cell_id}
+				data-col={Number(column_id)}
+				data-row={Number(row_id)}
+				tabIndex={-1}
+			>
+				{content}
+				{isMenuOpen && (
+					<RowMenu
+						tableId={table_id}
+						rowId={row_id}
+						rowLabel={content}
+						rowAttributes={menuAttributes}
+						updatedRow={processUpdatedRow}
+					></RowMenu>
+				)}
+			</div>
+		),
 	};
 
+	let renderPipeline = [];
+
+	switch (cellType) {
+		case 'border':
+			renderPipeline = ['border'];
+			break;
+		case 'body':
+			switch (dataFormat) {
+				case 'general':
+					renderPipeline = ['richText'];
+					break;
+			}
+			break;
+	}
+
 	return (
-		<RichText
-			id={cell_id}
-			className={className}
-			style={{
-				'--showGridLines': showGridLinesCSS,
-				'--gridLineWidth': gridLineWidthCSS,
-			}}
-			tagName="div"
-			key={cell_id}
-			data-col={Number(column_id)}
-			data-row={Number(row_id)}
-			tabIndex={isFocused ? 0 : -1}
-			onChange={e => updateCellData('CONTENT', e)}
-			value={content}
-		></RichText>
+		<>
+			{renderPipeline.map(key => {
+				const renderPart = renderTypes[key];
+
+				if (!renderPart) {
+					// Fail-soft: ignore unknown keys (or log in dev)
+					return null;
+				}
+
+				// Stable key in React list:
+				return <React.Fragment key={key}>{renderPart()}</React.Fragment>;
+			})}
+		</>
 	);
 }

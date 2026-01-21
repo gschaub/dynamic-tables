@@ -228,7 +228,7 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
 		minWidthUnits: '',
 		maxWidth: 0,
 		maxWidthUnits: '',
-		fixedWidth: 20,
+		fixedWidth: 28,
 		fixedWidthUnits: 'px',
 		disableForTablet: false,
 		disableForPhone: false,
