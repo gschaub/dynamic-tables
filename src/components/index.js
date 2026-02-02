@@ -4,4 +4,4 @@ export { ConfigureColumnWidth } from './configure-column-width';
 
 /* Export table row react components */
 export { RowMenu } from './row-dropdown-menu';
-export { ConfigureRowHeight } from './configure-row-height';
+export { RowHeightModal } from './configure-row-height';

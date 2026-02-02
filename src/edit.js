@@ -1,6 +1,6 @@
 /* External dependencies */
 import { useSelect, useDispatch, dispatch } from '@wordpress/data';
-import { useState, useEffect, useRef } from '@wordpress/element';
+import { useState, useEffect, useRef, Fragment } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { store as noticeStore } from '@wordpress/notices';
 import { __ } from '@wordpress/i18n';
@@ -8,7 +8,6 @@ import {
 	Panel,
 	PanelBody,
 	PanelRow,
-	TabbableContainer,
 	Button,
 	Spinner,
 	Placeholder,
@@ -41,7 +40,6 @@ import {
 	generateBlockTableRef,
 	setBorderContent,
 	openCurrentColumnMenu,
-	openCurrentRowMenu,
 	removeTags,
 } from './utils';
 
@@ -62,7 +60,7 @@ import {
 	getBorderStyle,
 } from './style';
 
-import { ColumnMenu, RowMenu } from './components';
+import { ColumnMenu, RowMenu, RowHeightModal } from './components';
 import './editor.scss';
 
 /* Create Dynamic Tables entity in WordPress core-data */
@@ -116,15 +114,99 @@ export default function Edit(props) {
 	/* Local State declarations */
 	const [isTableStale, setTableStale] = useState(true);
 	const [openColumnRow, setOpenColumnRow] = useState(0);
-	const [columnAttributes, setColumnAttributes] = useState({});
 	const [columnMenuVisible, setColumnMenuVisible] = useState(false);
-	const [rowMenuVisible, setRowMenuVisible] = useState(false);
-	const [rowAttributes, setRowAttributes] = useState({});
+	const [columnAttributes, setColumnAttributes] = useState({});
 	const [showBorders, setShowBorders] = useState(false);
 	const [tableName, setTableName] = useState('');
 	const [numColumns, setNumColumns] = useState(1);
 	const [numRows, setNumRows] = useState(1);
 	const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = useState(false);
+
+	/**
+	 * Support row border drop down menu
+	 */
+	const [rowMenu, setRowMenu] = useState({
+		isOpen: false,
+		anchorEl: null,
+		rowId: null,
+		rowLabel: '',
+		rowAttributes: null,
+	});
+
+	const lastInvokerElRef = useRef(null);
+
+	const openRowMenu = (e, rowId, rowLabel, rowAttributes) => {
+		e?.preventDefault?.();
+		e?.stopPropagation?.();
+
+		// Capture a real element, not the synthetic event
+		const el = e?.currentTarget || null;
+		lastInvokerElRef.current = el;
+
+		setRowMenu({
+			isOpen: true,
+			anchorEl: el,
+			rowId,
+			rowLabel,
+			rowAttributes,
+		});
+	};
+
+	const closeRowMenu = () => {
+		setRowMenu(prev => ({ ...prev, isOpen: false, anchorEl: null }));
+
+		// restore focus to the invoker (menu trigger)
+		window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+	};
+
+	const [rowHeightModal, setRowHeightModal] = useState({
+		isOpen: false,
+		// anchorEl: null,
+		rowId: null,
+		rowLabel: '',
+		rowAttributes: null,
+	});
+
+	/**
+	 * Open row height configuration dialog page.
+	 *
+	 * Description: Responds to clicked row menu item to update the row height configuration.
+	 *
+	 * @since    1.1.2
+	 *
+	 * @param {Object} e             row menu click event
+	 * @param {number} rowId         Row number to update
+	 * @param {string} rowLabel      Display label at top of dialog
+	 * @param {Object} rowAttributes Row attributes that control row height, among other things
+	 */
+	const openRowHeightModal = (e, rowId, rowLabel, rowAttributes) => {
+		e?.preventDefault?.();
+		e?.stopPropagation?.();
+
+		// Capture a real element, not the synthetic event
+		const el = e?.currentTarget || null;
+		lastInvokerElRef.current = el;
+
+		setRowHeightModal({
+			isOpen: true,
+			// anchorEl: el,
+			rowId,
+			rowLabel,
+			rowAttributes,
+		});
+	};
+
+	/**
+	 * Close row height configuration dialog page.
+	 *
+	 * @since    1.1.2
+	 */
+	const closeRowHeightModal = () => {
+		setRowHeightModal(prev => ({ ...prev, isOpen: false }));
+
+		// restore focus to the invoker (menu trigger)
+		window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+	};
 
 	// Support table creation and cloning
 	const cloneLatchRef = useRef(new Set());
@@ -764,7 +846,6 @@ export default function Edit(props) {
 				if (attribute === 'cell') {
 					updateCell(tableId, id, 'attributes', value);
 				} else if (attribute === 'row') {
-					setRowAttributes(value);
 					updateRow(tableId, id, 'attributes', value);
 				} else if (attribute === 'column') {
 					setColumnAttributes(value);
@@ -1092,32 +1173,39 @@ export default function Edit(props) {
 	}
 
 	/**
-	 * Process updates (insert, update, delete) to a table row.
+	 * Update table row based on row menu actions.
+	 *
+	 * Descrption: Current actions include row insert, delete, update height.
 	 *
 	 * @since    1.0.0
+	 * @since    1.1.1  Updated to support row menu refactor.
 	 *
-	 * @param {Object} event                   Table Creation Event
+	 * @param {Object} e                       Table Creation Event
 	 * @param {string} updateType              attribute (Update), insert, delete
 	 * @param {number} tableId                 Identifier key for the table
 	 * @param {number} rowId                   Identifier for the table row
 	 * @param {Array}  updatedColumnAttributes New column attribute values
 	 * @param {Array}  updatedRowAttributes    New row attribute values
 	 */
-	function onUpdateRow(event, updateType, tableId, rowId, updatedRowAttributes) {
+	function onUpdateRow(e, updateType, tableId, rowId, updatedRowAttributes) {
 		switch (updateType) {
 			case 'attributes': {
-				setTableAttributes(tableId, 'row', rowId, 'ATTRIBUTES', updatedRowAttributes);
+				if (!updatedRowAttributes) {
+					const clickedRow = table.rows.find(r => r.row_id === rowId);
+					const attrs = clickedRow?.attributes || {};
+					openRowHeightModal(e, rowId, String(rowId), attrs);
+				} else {
+					setTableAttributes(tableId, 'row', rowId, 'ATTRIBUTES', updatedRowAttributes);
+				}
 				break;
 			}
 			case 'insert': {
 				setOpenColumnRow(0);
-				setRowMenuVisible(false);
 				insertRow(tableId, rowId);
 				break;
 			}
 			case 'delete': {
 				setOpenColumnRow(0);
-				setRowMenuVisible(false);
 				deleteRow(tableId, rowId);
 				break;
 			}
@@ -1134,8 +1222,15 @@ export default function Edit(props) {
 	 * @param {number} column_id Identifier for the table column
 	 * @param {number} row_id    Identifier for the table row
 	 * @param {Object} table     Dynamic Table
+	 * @param {Object} e         Mouse Click Event
 	 */
-	function onMouseBorderClick(column_id, row_id, table) {
+	function onMouseBorderClick(column_id, row_id, table, e) {
+		console.log('onMouseBorderClick Column ID: ' + column_id + ' Row ID: ' + row_id);
+		console.log(e);
+
+		e?.preventDefault?.();
+		e?.stopPropagation?.();
+
 		if (row_id === '0' && column_id !== '0') {
 			const compareColumnId = column_id;
 			const clickedColumn = table.columns.find(({ column_id }) => column_id === compareColumnId);
@@ -1145,11 +1240,11 @@ export default function Edit(props) {
 		}
 
 		if (row_id !== '0' && column_id === '0') {
-			const compareRowId = row_id;
-			const clickedRow = table.rows.find(({ row_id }) => row_id === compareRowId);
-			setRowAttributes(clickedRow.attributes);
-			setRowMenuVisible(true);
-			setOpenColumnRow(row_id);
+			const clickedRow = table.rows.find(r => r.row_id === row_id);
+			const attrs = clickedRow?.attributes || {};
+
+			setColumnMenuVisible(false);
+			openRowMenu(e, row_id, String(row_id), attrs);
 		}
 		setTableStale(false);
 	}
@@ -1366,7 +1461,6 @@ export default function Edit(props) {
 	/**
 	 * Set variables used to render the dynamic table
 	 */
-
 	const gridColumnStyle = processColumns(
 		isNewBlock,
 		tableIsResolving,
@@ -1541,6 +1635,32 @@ export default function Edit(props) {
 
 			{!isNewBlock && !tableIsResolving && (
 				<>
+					{/* Open Row Menu */}
+					{rowMenu.isOpen && rowMenu.anchorEl && (
+						<RowMenu
+							debugSource="EDIT_TOP_LEVEL"
+							anchor={rowMenu.anchorEl}
+							tableId={table_id}
+							rowId={rowMenu.rowId}
+							rowLabel={rowMenu.rowLabel}
+							rowAttributes={rowMenu.rowAttributes}
+							updatedRow={onUpdateRow}
+							onRequestClose={closeRowMenu}
+						/>
+					)}
+
+					{/* Open Row Height Modal */}
+					{rowHeightModal.isOpen && (
+						<RowHeightModal
+							tableId={table_id}
+							rowId={rowHeightModal.rowId}
+							rowLabel={rowHeightModal.rowLabel}
+							rowAttributes={rowHeightModal.rowAttributes}
+							updatedRow={onUpdateRow}
+							onRequestClose={closeRowHeightModal}
+						/>
+					)}
+
 					<BlockControls>
 						<BlockAlignmentToolbar
 							value={block_alignment}
@@ -1855,11 +1975,6 @@ export default function Edit(props) {
 																const isFirstColumn = column_id === '1' ? true : false;
 																const isBorder = attributes.border;
 																const borderContent = setBorderContent(row_id, column_id, content);
-																const isOpenCurrentRowMenu = openCurrentRowMenu(
-																	rowMenuVisible,
-																	openColumnRow,
-																	row_id
-																);
 																const showGridLinesCSS = gridShowInnerLines;
 																const gridLineWidthCSS = gridInnerLineWidth;
 
@@ -1888,15 +2003,6 @@ export default function Edit(props) {
 																				className={classes}
 																			>
 																				{borderContent}
-																				{isOpenCurrentRowMenu && (
-																					<RowMenu
-																						tableId={table_id}
-																						rowId={row_id}
-																						rowLabel={borderContent}
-																						rowAttributes={rowAttributes}
-																						updatedRow={onUpdateRow}
-																					></RowMenu>
-																				)}
 																			</div>
 																		)}
 																		{/* Show zoom to details column */}
@@ -2026,11 +2132,6 @@ export default function Edit(props) {
 																		column_id,
 																		content
 																	);
-																	const isOpenCurrentRowMenu = openCurrentRowMenu(
-																		rowMenuVisible,
-																		openColumnRow,
-																		row_id
-																	);
 																	const showGridLinesCSS = gridShowInnerLines;
 																	const gridLineWidthCSS = gridInnerLineWidth;
 																	const isFocused =
@@ -2050,20 +2151,15 @@ export default function Edit(props) {
 
 																			{isBorder && (
 																				<Cell
-																					cellType={'border'}
+																					cellType="border"
 																					cell_id={cell_id}
 																					table={table}
 																					table_id={table_id}
 																					row_id={row_id}
 																					column_id={column_id}
 																					content={borderContent}
-																					isMenuOpen={isOpenCurrentRowMenu}
-																					menuAttributes={rowAttributes}
 																					className={classes}
-																					updatedRow={onUpdateRow}
-																					onMouseDown={e =>
-																						onMouseBorderClick(column_id, row_id, table, e)
-																					}
+																					onMouseDown={onMouseBorderClick}
 																				></Cell>
 																			)}
 
@@ -2191,20 +2287,16 @@ function Cell(props) {
 		cellType,
 		dataFormat,
 		table,
-		table_id,
 		row_id,
 		cell_id,
 		column_id,
 		content,
 		isFocused,
-		isMenuOpen,
-		menuAttributes,
 		className,
 		showGridLinesCSS,
 		gridLineWidthCSS,
 		onChange,
 		onMouseDown,
-		updatedRow,
 	} = props;
 
 	/**
@@ -2219,12 +2311,18 @@ function Cell(props) {
 		onChange(e, type);
 	}
 
+	/**
+	 * Relay mouse down event for border cells
+	 *
+	 * @since 1.1.2
+	 *
+	 * @param {number} column_id Clicked table row
+	 * @param {number} row_id    Clicked table row
+	 * @param {Object} table     Current Dynamic Table
+	 * @param {Object} e         Border click event object
+	 */
 	function passMouseBorderClick(column_id, row_id, table, e) {
-		onMouseDown(e, column_id, row_id, table);
-	}
-
-	function processUpdatedRow(event, updateType, tableId, rowId, updatedRowAttributes) {
-		updatedRow(event, updateType, tableId, rowId, updatedRowAttributes);
+		onMouseDown(column_id, row_id, table, e);
 	}
 
 	const renderTypes = {
@@ -2256,15 +2354,6 @@ function Cell(props) {
 				tabIndex={-1}
 			>
 				{content}
-				{isMenuOpen && (
-					<RowMenu
-						tableId={table_id}
-						rowId={row_id}
-						rowLabel={content}
-						rowAttributes={menuAttributes}
-						updatedRow={processUpdatedRow}
-					></RowMenu>
-				)}
 			</div>
 		),
 	};
@@ -2295,7 +2384,7 @@ function Cell(props) {
 				}
 
 				// Stable key in React list:
-				return <React.Fragment key={key}>{renderPart()}</React.Fragment>;
+				return <Fragment key={key}>{renderPart()}</Fragment>;
 			})}
 		</>
 	);
