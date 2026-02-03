@@ -4507,199 +4507,208 @@ function Edit(props) {
   const bodyBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'left', 'color', bodyBorderStyleType);
   const bodyBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'left', 'style', bodyBorderStyleType);
   const bodyBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'left', 'width', bodyBorderStyleType);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-    ...blockProps,
-    children: [!isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-      children: [rowMenu.isOpen && rowMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.RowMenu, {
-        debugSource: "EDIT_TOP_LEVEL",
-        anchor: rowMenu.anchorEl,
-        tableId: table_id,
-        rowId: rowMenu.rowId,
-        rowLabel: rowMenu.rowLabel,
-        rowAttributes: rowMenu.rowAttributes,
-        updatedRow: onUpdateRow,
-        onRequestClose: closeRowMenu
-      }), rowHeightModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.RowHeightModal, {
-        tableId: table_id,
-        rowId: rowHeightModal.rowId,
-        rowLabel: rowHeightModal.rowLabel,
-        rowAttributes: rowHeightModal.rowAttributes,
-        updatedRow: onUpdateRow,
-        onRequestClose: closeRowHeightModal
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockControls, {
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockAlignmentToolbar, {
-          value: block_alignment,
-          onChange: e => props.setAttributes({
-            block_alignment: e
-          })
+  const renderOpenRowMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
+    children: rowMenu.isOpen && rowMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.RowMenu, {
+      debugSource: "EDIT_TOP_LEVEL",
+      anchor: rowMenu.anchorEl,
+      tableId: table_id,
+      rowId: rowMenu.rowId,
+      rowLabel: rowMenu.rowLabel,
+      rowAttributes: rowMenu.rowAttributes,
+      updatedRow: onUpdateRow,
+      onRequestClose: closeRowMenu
+    })
+  });
+  const renderOpenRowHeightModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
+    children: rowHeightModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.RowHeightModal, {
+      tableId: table_id,
+      rowId: rowHeightModal.rowId,
+      rowLabel: rowHeightModal.rowLabel,
+      rowAttributes: rowHeightModal.rowAttributes,
+      updatedRow: onUpdateRow,
+      onRequestClose: closeRowHeightModal
+    })
+  });
+  const renderControls = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockAlignmentToolbar, {
+        value: block_alignment,
+        onChange: e => props.setAttributes({
+          block_alignment: e
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Panel, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
-            title: "Definition",
-            initialOpen: true,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                className: "grid-control__inspector-controls--read-only",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                  className: "grid-control__inspector-controls--read-only-label",
-                  children: "Table Name:"
-                }), (0,_utils__WEBPACK_IMPORTED_MODULE_12__.removeTags)(table.table_name)]
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                className: "grid-control__inspector-controls--read-only",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
-                  className: "grid-control__inspector-controls--read-only-label",
-                  children: "Table Columns/Rows:"
-                }), numColumns, "/", numRows]
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
-                label: "Show table borders",
-                __nextHasNoMarginBottom: true,
-                checked: showBorders,
-                onChange: e => onToggleBorders(table, e)
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
-                label: "Hide Table Title",
-                __nextHasNoMarginBottom: true,
-                checked: hideTitle,
-                onChange: e => onHideTitle(table, e)
-              })
-            })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
-            title: "Table Header",
-            initialOpen: false,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
-                label: "First Row as Header?",
-                __nextHasNoMarginBottom: true,
-                checked: enableHeaderRow,
-                onChange: e => onEnableHeaderRow(table, e)
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
-                label: "Freeze Header Row?",
-                __nextHasNoMarginBottom: true,
-                disabled: !enableHeaderRow,
-                checked: headerRowSticky,
-                onChange: e => onHeaderRowSticky(table, e)
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("span", {
-                className: "inspector-controls-menu__header-alignment--middle",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
-                  id: "header-alignment",
-                  value: headerAlignment,
-                  onChange: e => onAlignHeader(table, e)
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
-                  className: "inspector-controls-nemu__label--left-margin",
-                  htmlFor: "header-alignment",
-                  children: "Text Alignment"
-                })]
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.BorderBoxControl, {
-                className: "border-box-workaround",
-                __next40pxDefaultSize: true,
-                __experimentalIsRenderedInSidebar: true,
-                label: "Borders"
-                // hideLabelFromVision="false"
-                ,
-                isCompact: "true",
-                colors: borderBoxColors,
-                value: headerBorder,
-                onChange: e => onHeaderBorder(table, e)
-              })
-            })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
-            title: "Table Body",
-            initialOpen: false,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
-                label: "Allow Horizontal Acroll?",
-                __nextHasNoMarginBottom: true,
-                checked: allowHorizontalScroll,
-                onChange: e => onAllowHorizontalScroll(table, e)
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("span", {
-                className: "inspector-controls-menu__header-alignment--middle",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
-                  id: "body-alignment",
-                  value: bodyAlignment,
-                  onChange: e => onAlignBody(table, e)
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
-                  className: "inspector-controls-menu__label--left-margin",
-                  htmlFor: "body-alignment",
-                  children: "Text Alignment"
-                })]
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.BorderBoxControl, {
-                className: "border-box-workaround",
-                label: "Borders",
-                hideLabelFromVision: "false",
-                isCompact: "true",
-                colors: borderBoxColors,
-                value: bodyBorder,
-                onChange: e => onBodyBorder(table, e)
-              })
-            })]
-          })]
-        })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
-        group: "styles",
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Panel, {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
-          title: "Banded Table Rows",
-          initialOpen: false,
+          title: "Definition",
+          initialOpen: true,
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
-              label: "Display Banded Rows",
-              __nextHasNoMarginBottom: true,
-              checked: bandedRows
-              // checked={true}
-              ,
-              onChange: e => onShowBandedRows(table, e)
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.PanelColorSettings, {
-            __experimentalIsRenderedInSidebar: true,
-            title: 'Banded Row Color',
-            colors: themeColors,
-            colorSettings: [{
-              value: bandedTextColor,
-              onChange: newColor => onBandedRowColor(table, 'text', newColor),
-              label: 'Text'
-            }, {
-              value: bandedRowBackgroundColor,
-              onChange: newColor => onBandedRowColor(table, 'background', newColor),
-              label: 'Background'
-            }]
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
-          title: "Grid Lines",
-          initialOpen: false,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
-              label: "Display Inner Grid Lines",
-              __nextHasNoMarginBottom: true,
-              checked: showGridLines,
-              onChange: e => onShowGridLines(table, e)
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+              className: "grid-control__inspector-controls--read-only",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
+                className: "grid-control__inspector-controls--read-only-label",
+                children: "Table Name:"
+              }), (0,_utils__WEBPACK_IMPORTED_MODULE_12__.removeTags)(table.table_name)]
             })
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
-              label: "Inner Grid Line Width",
-              value: gridLineWidth,
-              labelPosition: "side",
-              onChange: e => onGridLineWidth(table, e)
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+              className: "grid-control__inspector-controls--read-only",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
+                className: "grid-control__inspector-controls--read-only-label",
+                children: "Table Columns/Rows:"
+              }), numColumns, "/", numRows]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+              label: "Show table borders",
+              __nextHasNoMarginBottom: true,
+              checked: showBorders,
+              onChange: e => onToggleBorders(table, e)
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+              label: "Hide Table Title",
+              __nextHasNoMarginBottom: true,
+              checked: hideTitle,
+              onChange: e => onHideTitle(table, e)
+            })
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+          title: "Table Header",
+          initialOpen: false,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+              label: "First Row as Header?",
+              __nextHasNoMarginBottom: true,
+              checked: enableHeaderRow,
+              onChange: e => onEnableHeaderRow(table, e)
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+              label: "Freeze Header Row?",
+              __nextHasNoMarginBottom: true,
+              disabled: !enableHeaderRow,
+              checked: headerRowSticky,
+              onChange: e => onHeaderRowSticky(table, e)
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("span", {
+              className: "inspector-controls-menu__header-alignment--middle",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
+                id: "header-alignment",
+                value: headerAlignment,
+                onChange: e => onAlignHeader(table, e)
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
+                className: "inspector-controls-nemu__label--left-margin",
+                htmlFor: "header-alignment",
+                children: "Text Alignment"
+              })]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.BorderBoxControl, {
+              className: "border-box-workaround",
+              __next40pxDefaultSize: true,
+              __experimentalIsRenderedInSidebar: true,
+              label: "Borders"
+              // hideLabelFromVision="false"
+              ,
+              isCompact: "true",
+              colors: borderBoxColors,
+              value: headerBorder,
+              onChange: e => onHeaderBorder(table, e)
+            })
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+          title: "Table Body",
+          initialOpen: false,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+              label: "Allow Horizontal Acroll?",
+              __nextHasNoMarginBottom: true,
+              checked: allowHorizontalScroll,
+              onChange: e => onAllowHorizontalScroll(table, e)
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("span", {
+              className: "inspector-controls-menu__header-alignment--middle",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
+                id: "body-alignment",
+                value: bodyAlignment,
+                onChange: e => onAlignBody(table, e)
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
+                className: "inspector-controls-menu__label--left-margin",
+                htmlFor: "body-alignment",
+                children: "Text Alignment"
+              })]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.BorderBoxControl, {
+              className: "border-box-workaround",
+              label: "Borders",
+              hideLabelFromVision: "false",
+              isCompact: "true",
+              colors: borderBoxColors,
+              value: bodyBorder,
+              onChange: e => onBodyBorder(table, e)
             })
           })]
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
-        group: "typography"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
+      group: "styles",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+        title: "Banded Table Rows",
+        initialOpen: false,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+            label: "Display Banded Rows",
+            __nextHasNoMarginBottom: true,
+            checked: bandedRows
+            // checked={true}
+            ,
+            onChange: e => onShowBandedRows(table, e)
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.PanelColorSettings, {
+          __experimentalIsRenderedInSidebar: true,
+          title: 'Banded Row Color',
+          colors: themeColors,
+          colorSettings: [{
+            value: bandedTextColor,
+            onChange: newColor => onBandedRowColor(table, 'text', newColor),
+            label: 'Text'
+          }, {
+            value: bandedRowBackgroundColor,
+            onChange: newColor => onBandedRowColor(table, 'background', newColor),
+            label: 'Background'
+          }]
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+        title: "Grid Lines",
+        initialOpen: false,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+            label: "Display Inner Grid Lines",
+            __nextHasNoMarginBottom: true,
+            checked: showGridLines,
+            onChange: e => onShowGridLines(table, e)
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
+            label: "Inner Grid Line Width",
+            value: gridLineWidth,
+            labelPosition: "side",
+            onChange: e => onGridLineWidth(table, e)
+          })
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
+      group: "typography"
+    })]
+  });
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+    ...blockProps,
+    children: [!isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
+      children: [renderOpenRowMenu, renderOpenRowHeightModal, renderControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
         style: {
           display: 'block'
         },

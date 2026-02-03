@@ -108,6 +108,9 @@ If you deactivate, your tables will still appear in posts but may render incorre
 
 == Changelog ==
 
+= 1.1.2 =
+* Refactor Row menus to enhance stability and performance
+
 = 1.1.1 =
 * Add keyboard navigation through table cells via arrow keys
 * Added a visual indicator to easily identify what cell you're currently editing

@@ -1629,228 +1629,241 @@ export default function Edit(props) {
 	const bodyBorderLeftStyle = getBorderStyle(bodyBorder, 'left', 'style', bodyBorderStyleType);
 	const bodyBorderLeftWidth = getBorderStyle(bodyBorder, 'left', 'width', bodyBorderStyleType);
 
+	const renderOpenRowMenu = (
+		<>
+			{rowMenu.isOpen && rowMenu.anchorEl && (
+				<RowMenu
+					debugSource="EDIT_TOP_LEVEL"
+					anchor={rowMenu.anchorEl}
+					tableId={table_id}
+					rowId={rowMenu.rowId}
+					rowLabel={rowMenu.rowLabel}
+					rowAttributes={rowMenu.rowAttributes}
+					updatedRow={onUpdateRow}
+					onRequestClose={closeRowMenu}
+				/>
+			)}
+		</>
+	);
+
+	const renderOpenRowHeightModal = (
+		<>
+			{rowHeightModal.isOpen && (
+				<RowHeightModal
+					tableId={table_id}
+					rowId={rowHeightModal.rowId}
+					rowLabel={rowHeightModal.rowLabel}
+					rowAttributes={rowHeightModal.rowAttributes}
+					updatedRow={onUpdateRow}
+					onRequestClose={closeRowHeightModal}
+				/>
+			)}
+		</>
+	);
+
+	const renderControls = (
+		<>
+			<BlockControls>
+				<BlockAlignmentToolbar
+					value={block_alignment}
+					onChange={e => props.setAttributes({ block_alignment: e })}
+				/>
+			</BlockControls>
+
+			<InspectorControls>
+				<Panel>
+					<PanelBody title="Definition" initialOpen={true}>
+						<PanelRow>
+							<div className="grid-control__inspector-controls--read-only">
+								<span className="grid-control__inspector-controls--read-only-label">
+									Table Name:
+								</span>
+								{removeTags(table.table_name)}
+							</div>
+						</PanelRow>
+
+						<PanelRow>
+							<div className="grid-control__inspector-controls--read-only">
+								<span className="grid-control__inspector-controls--read-only-label">
+									Table Columns/Rows:
+								</span>
+								{numColumns}/{numRows}
+							</div>
+						</PanelRow>
+
+						<PanelRow>
+							<CheckboxControl
+								label="Show table borders"
+								__nextHasNoMarginBottom
+								checked={showBorders}
+								onChange={e => onToggleBorders(table, e)}
+							/>
+						</PanelRow>
+
+						<PanelRow>
+							<CheckboxControl
+								label="Hide Table Title"
+								__nextHasNoMarginBottom
+								checked={hideTitle}
+								onChange={e => onHideTitle(table, e)}
+							/>
+						</PanelRow>
+					</PanelBody>
+
+					<PanelBody title="Table Header" initialOpen={false}>
+						<PanelRow>
+							<CheckboxControl
+								label="First Row as Header?"
+								__nextHasNoMarginBottom
+								checked={enableHeaderRow}
+								onChange={e => onEnableHeaderRow(table, e)}
+							/>
+						</PanelRow>
+
+						<PanelRow>
+							<CheckboxControl
+								label="Freeze Header Row?"
+								__nextHasNoMarginBottom
+								disabled={!enableHeaderRow}
+								checked={headerRowSticky}
+								onChange={e => onHeaderRowSticky(table, e)}
+							/>
+						</PanelRow>
+
+						<PanelRow>
+							<span className="inspector-controls-menu__header-alignment--middle">
+								<AlignmentControl
+									id="header-alignment"
+									value={headerAlignment}
+									onChange={e => onAlignHeader(table, e)}
+								/>
+								<label
+									className="inspector-controls-nemu__label--left-margin"
+									htmlFor="header-alignment"
+								>
+									Text Alignment
+								</label>
+							</span>
+						</PanelRow>
+
+						<PanelRow>
+							<BorderBoxControl
+								className="border-box-workaround"
+								__next40pxDefaultSize
+								__experimentalIsRenderedInSidebar
+								label="Borders"
+								// hideLabelFromVision="false"
+								isCompact="true"
+								colors={borderBoxColors}
+								value={headerBorder}
+								onChange={e => onHeaderBorder(table, e)}
+							/>
+						</PanelRow>
+					</PanelBody>
+
+					<PanelBody title="Table Body" initialOpen={false}>
+						<PanelRow>
+							<CheckboxControl
+								label="Allow Horizontal Acroll?"
+								__nextHasNoMarginBottom
+								checked={allowHorizontalScroll}
+								onChange={e => onAllowHorizontalScroll(table, e)}
+							/>
+						</PanelRow>
+
+						<PanelRow>
+							<span className="inspector-controls-menu__header-alignment--middle">
+								<AlignmentControl
+									id="body-alignment"
+									value={bodyAlignment}
+									onChange={e => onAlignBody(table, e)}
+								/>
+								<label
+									className="inspector-controls-menu__label--left-margin"
+									htmlFor="body-alignment"
+								>
+									Text Alignment
+								</label>
+							</span>
+						</PanelRow>
+
+						<PanelRow>
+							<BorderBoxControl
+								className="border-box-workaround"
+								label="Borders"
+								hideLabelFromVision="false"
+								isCompact="true"
+								colors={borderBoxColors}
+								value={bodyBorder}
+								onChange={e => onBodyBorder(table, e)}
+							/>
+						</PanelRow>
+					</PanelBody>
+				</Panel>
+			</InspectorControls>
+
+			<InspectorControls group="styles">
+				<PanelBody title="Banded Table Rows" initialOpen={false}>
+					<PanelRow>
+						<CheckboxControl
+							label="Display Banded Rows"
+							__nextHasNoMarginBottom
+							checked={bandedRows}
+							// checked={true}
+							onChange={e => onShowBandedRows(table, e)}
+						/>
+					</PanelRow>
+					<PanelColorSettings
+						__experimentalIsRenderedInSidebar
+						title={'Banded Row Color'}
+						colors={themeColors}
+						colorSettings={[
+							{
+								value: bandedTextColor,
+								onChange: newColor => onBandedRowColor(table, 'text', newColor),
+								label: 'Text',
+							},
+							{
+								value: bandedRowBackgroundColor,
+								onChange: newColor => onBandedRowColor(table, 'background', newColor),
+								label: 'Background',
+							},
+						]}
+					/>
+				</PanelBody>
+
+				<PanelBody title="Grid Lines" initialOpen={false}>
+					<PanelRow>
+						<CheckboxControl
+							label="Display Inner Grid Lines"
+							__nextHasNoMarginBottom
+							checked={showGridLines}
+							onChange={e => onShowGridLines(table, e)}
+						/>
+					</PanelRow>
+
+					<PanelRow>
+						<NumberControl
+							label="Inner Grid Line Width"
+							value={gridLineWidth}
+							labelPosition="side"
+							onChange={e => onGridLineWidth(table, e)}
+						/>
+					</PanelRow>
+				</PanelBody>
+			</InspectorControls>
+			<InspectorControls group="typography"></InspectorControls>
+		</>
+	);
+
 	return (
 		<div {...blockProps}>
 			{/* Render an existing table after it has been fetched  */}
-
 			{!isNewBlock && !tableIsResolving && (
 				<>
-					{/* Open Row Menu */}
-					{rowMenu.isOpen && rowMenu.anchorEl && (
-						<RowMenu
-							debugSource="EDIT_TOP_LEVEL"
-							anchor={rowMenu.anchorEl}
-							tableId={table_id}
-							rowId={rowMenu.rowId}
-							rowLabel={rowMenu.rowLabel}
-							rowAttributes={rowMenu.rowAttributes}
-							updatedRow={onUpdateRow}
-							onRequestClose={closeRowMenu}
-						/>
-					)}
-
-					{/* Open Row Height Modal */}
-					{rowHeightModal.isOpen && (
-						<RowHeightModal
-							tableId={table_id}
-							rowId={rowHeightModal.rowId}
-							rowLabel={rowHeightModal.rowLabel}
-							rowAttributes={rowHeightModal.rowAttributes}
-							updatedRow={onUpdateRow}
-							onRequestClose={closeRowHeightModal}
-						/>
-					)}
-
-					<BlockControls>
-						<BlockAlignmentToolbar
-							value={block_alignment}
-							onChange={e => props.setAttributes({ block_alignment: e })}
-						/>
-					</BlockControls>
-
-					<InspectorControls>
-						<Panel>
-							<PanelBody title="Definition" initialOpen={true}>
-								<PanelRow>
-									<div className="grid-control__inspector-controls--read-only">
-										<span className="grid-control__inspector-controls--read-only-label">
-											Table Name:
-										</span>
-										{removeTags(table.table_name)}
-									</div>
-								</PanelRow>
-
-								<PanelRow>
-									<div className="grid-control__inspector-controls--read-only">
-										<span className="grid-control__inspector-controls--read-only-label">
-											Table Columns/Rows:
-										</span>
-										{numColumns}/{numRows}
-									</div>
-								</PanelRow>
-
-								<PanelRow>
-									<CheckboxControl
-										label="Show table borders"
-										__nextHasNoMarginBottom
-										checked={showBorders}
-										onChange={e => onToggleBorders(table, e)}
-									/>
-								</PanelRow>
-
-								<PanelRow>
-									<CheckboxControl
-										label="Hide Table Title"
-										__nextHasNoMarginBottom
-										checked={hideTitle}
-										onChange={e => onHideTitle(table, e)}
-									/>
-								</PanelRow>
-							</PanelBody>
-
-							<PanelBody title="Table Header" initialOpen={false}>
-								<PanelRow>
-									<CheckboxControl
-										label="First Row as Header?"
-										__nextHasNoMarginBottom
-										checked={enableHeaderRow}
-										onChange={e => onEnableHeaderRow(table, e)}
-									/>
-								</PanelRow>
-
-								<PanelRow>
-									<CheckboxControl
-										label="Freeze Header Row?"
-										__nextHasNoMarginBottom
-										disabled={!enableHeaderRow}
-										checked={headerRowSticky}
-										onChange={e => onHeaderRowSticky(table, e)}
-									/>
-								</PanelRow>
-
-								<PanelRow>
-									<span className="inspector-controls-menu__header-alignment--middle">
-										<AlignmentControl
-											id="header-alignment"
-											value={headerAlignment}
-											onChange={e => onAlignHeader(table, e)}
-										/>
-										<label
-											className="inspector-controls-nemu__label--left-margin"
-											htmlFor="header-alignment"
-										>
-											Text Alignment
-										</label>
-									</span>
-								</PanelRow>
-
-								<PanelRow>
-									<BorderBoxControl
-										className="border-box-workaround"
-										__next40pxDefaultSize
-										__experimentalIsRenderedInSidebar
-										label="Borders"
-										// hideLabelFromVision="false"
-										isCompact="true"
-										colors={borderBoxColors}
-										value={headerBorder}
-										onChange={e => onHeaderBorder(table, e)}
-									/>
-								</PanelRow>
-							</PanelBody>
-
-							<PanelBody title="Table Body" initialOpen={false}>
-								<PanelRow>
-									<CheckboxControl
-										label="Allow Horizontal Acroll?"
-										__nextHasNoMarginBottom
-										checked={allowHorizontalScroll}
-										onChange={e => onAllowHorizontalScroll(table, e)}
-									/>
-								</PanelRow>
-
-								<PanelRow>
-									<span className="inspector-controls-menu__header-alignment--middle">
-										<AlignmentControl
-											id="body-alignment"
-											value={bodyAlignment}
-											onChange={e => onAlignBody(table, e)}
-										/>
-										<label
-											className="inspector-controls-menu__label--left-margin"
-											htmlFor="body-alignment"
-										>
-											Text Alignment
-										</label>
-									</span>
-								</PanelRow>
-
-								<PanelRow>
-									<BorderBoxControl
-										className="border-box-workaround"
-										label="Borders"
-										hideLabelFromVision="false"
-										isCompact="true"
-										colors={borderBoxColors}
-										value={bodyBorder}
-										onChange={e => onBodyBorder(table, e)}
-									/>
-								</PanelRow>
-							</PanelBody>
-						</Panel>
-					</InspectorControls>
-
-					<InspectorControls group="styles">
-						<PanelBody title="Banded Table Rows" initialOpen={false}>
-							<PanelRow>
-								<CheckboxControl
-									label="Display Banded Rows"
-									__nextHasNoMarginBottom
-									checked={bandedRows}
-									// checked={true}
-									onChange={e => onShowBandedRows(table, e)}
-								/>
-							</PanelRow>
-							<PanelColorSettings
-								__experimentalIsRenderedInSidebar
-								title={'Banded Row Color'}
-								colors={themeColors}
-								colorSettings={[
-									{
-										value: bandedTextColor,
-										onChange: newColor => onBandedRowColor(table, 'text', newColor),
-										label: 'Text',
-									},
-									{
-										value: bandedRowBackgroundColor,
-										onChange: newColor => onBandedRowColor(table, 'background', newColor),
-										label: 'Background',
-									},
-								]}
-							/>
-						</PanelBody>
-
-						<PanelBody title="Grid Lines" initialOpen={false}>
-							<PanelRow>
-								<CheckboxControl
-									label="Display Inner Grid Lines"
-									__nextHasNoMarginBottom
-									checked={showGridLines}
-									onChange={e => onShowGridLines(table, e)}
-								/>
-							</PanelRow>
-
-							<PanelRow>
-								<NumberControl
-									label="Inner Grid Line Width"
-									value={gridLineWidth}
-									labelPosition="side"
-									onChange={e => onGridLineWidth(table, e)}
-								/>
-							</PanelRow>
-						</PanelBody>
-					</InspectorControls>
-					<InspectorControls group="typography"></InspectorControls>
+					{renderOpenRowMenu}
+					{renderOpenRowHeightModal}
+					{renderControls}
 
 					<div style={{ display: 'block' }}>
 						{!hideTitle && (
