@@ -209,6 +209,7 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
 	};
 
 	const columnAttributes = {
+		columnDataType: { dataType: 'General' },
 		columnWidthType: 'Proportional',
 		minWidth: 2,
 		minWidthUnits: 'ch',

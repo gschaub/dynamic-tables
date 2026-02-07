@@ -1,6 +1,6 @@
 /* External dependencies */
 import { useSelect, useDispatch, dispatch } from '@wordpress/data';
-import { useState, useEffect, useRef, Fragment } from '@wordpress/element';
+import { useState, useEffect, useRef, useMemo, Fragment } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { store as noticeStore } from '@wordpress/notices';
 import { __ } from '@wordpress/i18n';
@@ -28,7 +28,7 @@ import {
 	BlockAlignmentToolbar,
 	PanelColorSettings,
 } from '@wordpress/block-editor';
-import { search, blockTable as icon } from '@wordpress/icons';
+import { search, blockTable as icon, column } from '@wordpress/icons';
 import { UP, DOWN, RIGHT, LEFT, TAB } from '@wordpress/keycodes';
 
 /* Internal dependencies */
@@ -60,7 +60,7 @@ import {
 	getBorderStyle,
 } from './style';
 
-import { ColumnMenu, RowMenu, RowHeightModal } from './components';
+import { RowMenu, RowHeightModal, ColumnMenu, ColumnWidthModal } from './components';
 import './editor.scss';
 
 /* Create Dynamic Tables entity in WordPress core-data */
@@ -113,17 +113,21 @@ export default function Edit(props) {
 
 	/* Local State declarations */
 	const [isTableStale, setTableStale] = useState(true);
-	const [openColumnRow, setOpenColumnRow] = useState(0);
-	const [columnMenuVisible, setColumnMenuVisible] = useState(false);
-	const [columnAttributes, setColumnAttributes] = useState({});
+	// const [openColumnRow, setOpenColumnRow] = useState(0);
+	// const [columnMenuVisible, setColumnMenuVisible] = useState(false);
+	// const [columnAttributes, setColumnAttributes] = useState({});
 	const [showBorders, setShowBorders] = useState(false);
 	const [tableName, setTableName] = useState('');
 	const [numColumns, setNumColumns] = useState(1);
 	const [numRows, setNumRows] = useState(1);
 	const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = useState(false);
 
+	// Location of border cell last clicked
+	const lastInvokerElRef = useRef(null);
+
 	/**
-	 * Support row border drop down menu
+	 * Support column border drop down menu and settings
+	 * dialog boxes
 	 */
 	const [rowMenu, setRowMenu] = useState({
 		isOpen: false,
@@ -132,8 +136,6 @@ export default function Edit(props) {
 		rowLabel: '',
 		rowAttributes: null,
 	});
-
-	const lastInvokerElRef = useRef(null);
 
 	const openRowMenu = (e, rowId, rowLabel, rowAttributes) => {
 		e?.preventDefault?.();
@@ -203,6 +205,89 @@ export default function Edit(props) {
 	 */
 	const closeRowHeightModal = () => {
 		setRowHeightModal(prev => ({ ...prev, isOpen: false }));
+
+		// restore focus to the invoker (menu trigger)
+		window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+	};
+
+	/**
+	 * Support column border drop down menu and settings
+	 * dialog boxes
+	 */
+	const [columnMenu, setColumnMenu] = useState({
+		isOpen: false,
+		anchorEl: null,
+		columnId: null,
+		columnLabel: '',
+		columnAttributes: null,
+	});
+
+	const openColumnMenu = (e, columnId, columnLabel, columnAttributes) => {
+		e?.preventDefault?.();
+		e?.stopPropagation?.();
+
+		// Capture a real element, not the synthetic event
+		const el = e?.currentTarget || null;
+		lastInvokerElRef.current = el;
+
+		setColumnMenu({
+			isOpen: true,
+			anchorEl: el,
+			columnId,
+			columnLabel,
+			columnAttributes,
+		});
+	};
+
+	const closeColumnMenu = () => {
+		setColumnMenu(prev => ({ ...prev, isOpen: false, anchorEl: null }));
+
+		// restore focus to the invoker (menu trigger)
+		window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+	};
+
+	const [columnWidthModal, setColumnWidthModal] = useState({
+		isOpen: false,
+		columnId: null,
+		columnLabel: '',
+		columnAttributes: null,
+	});
+
+	/**
+	 * Open column height configuration dialog page.
+	 *
+	 * Description: Responds to clicked column menu item to update the column height configuration.
+	 *
+	 * @since    1.1.2
+	 *
+	 * @param {Object} e                Column menu click event
+	 * @param {number} columnId         Column number to update
+	 * @param {string} columnLabel      Display label at top of dialog
+	 * @param {Object} columnAttributes Column attributes that control column height, among other things
+	 */
+	const openColumnWidthModal = (e, columnId, columnLabel, columnAttributes) => {
+		e?.preventDefault?.();
+		e?.stopPropagation?.();
+
+		// Capture a real element, not the synthetic event
+		const el = e?.currentTarget || null;
+		lastInvokerElRef.current = el;
+
+		setColumnWidthModal({
+			isOpen: true,
+			columnId,
+			columnLabel,
+			columnAttributes,
+		});
+	};
+
+	/**
+	 * Close row height configuration dialog page.
+	 *
+	 * @since    1.1.2
+	 */
+	const closeColumnWidthModal = () => {
+		setColumnWidthModal(prev => ({ ...prev, isOpen: false }));
 
 		// restore focus to the invoker (menu trigger)
 		window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
@@ -736,6 +821,17 @@ export default function Edit(props) {
 	const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment');
 	const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle');
 
+
+	const columnDataTypes = useMemo(() => {
+		const map = {};
+
+		table.columns.forEach(({column_id, attributes}) => {
+			map[column_id] = attributes?.columnDataType ? attributes.columnDataType : 'general';
+		});
+
+		return map;
+	}, [table.columns]);
+
 	/**
 	 * Insert a new column in the table.
 	 *
@@ -848,7 +944,7 @@ export default function Edit(props) {
 				} else if (attribute === 'row') {
 					updateRow(tableId, id, 'attributes', value);
 				} else if (attribute === 'column') {
-					setColumnAttributes(value);
+					// setColumnAttributes(value);
 					updateColumn(tableId, id, 'attributes', value);
 				} else if (attribute === 'table') {
 					updateTableProp(tableId, 'attributes', value);
@@ -1033,40 +1129,6 @@ export default function Edit(props) {
 	}
 
 	/**
-	 * Process updates (insert, update, delete) to a table column.
-	 *
-	 * @since    1.0.0
-	 *
-	 * @param {Object} event                   Table Creation Event
-	 * @param {string} updateType              attribute (Update), insert, delete
-	 * @param {number} tableId                 Identifier key for the table
-	 * @param {number} columnId                Identifier for the table column
-	 * @param {Array}  updatedColumnAttributes New column attribute values
-	 */
-	function onUpdateColumn(event, updateType, tableId, columnId, updatedColumnAttributes) {
-		switch (updateType) {
-			case 'attributes': {
-				setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
-				break;
-			}
-			case 'insert': {
-				setOpenColumnRow(0);
-				setColumnMenuVisible(false);
-				insertColumn(tableId, columnId);
-				break;
-			}
-			case 'delete': {
-				setOpenColumnRow(0);
-				setColumnMenuVisible(false);
-				deleteColumn(tableId, columnId);
-				break;
-			}
-			default:
-				console.log('Unrecognized Column Update Type');
-		}
-	}
-
-	/**
 	 * Sets the focused cell state when a cell in the dynamic table receives focus.
 	 *
 	 * @since    1.1.1
@@ -1173,9 +1235,7 @@ export default function Edit(props) {
 	}
 
 	/**
-	 * Update table row based on row menu actions.
-	 *
-	 * Descrption: Current actions include row insert, delete, update height.
+	 * Process updates (insert, update, delete) to a table column.
 	 *
 	 * @since    1.0.0
 	 * @since    1.1.1  Updated to support row menu refactor.
@@ -1183,9 +1243,49 @@ export default function Edit(props) {
 	 * @param {Object} e                       Table Creation Event
 	 * @param {string} updateType              attribute (Update), insert, delete
 	 * @param {number} tableId                 Identifier key for the table
-	 * @param {number} rowId                   Identifier for the table row
+	 * @param {number} columnId                Identifier for the table column
 	 * @param {Array}  updatedColumnAttributes New column attribute values
-	 * @param {Array}  updatedRowAttributes    New row attribute values
+	 */
+	function onUpdateColumn(e, updateType, tableId, columnId, updatedColumnAttributes) {
+		switch (updateType) {
+			case 'attributes': {
+				if (!updatedColumnAttributes) {
+					const clickedColumn = table.columns.find(c => c.column_id === columnId);
+					const attrs = clickedColumn?.attributes || {};
+					openColumnWidthModal(e, columnId, String(columnId), attrs);
+				} else {
+					setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
+				}
+				break;
+			}
+			case 'insert': {
+				// setOpenColumnRow(0);
+				insertColumn(tableId, columnId);
+				break;
+			}
+			case 'delete': {
+				// setOpenColumnRow(0);
+				deleteColumn(tableId, columnId);
+				break;
+			}
+			default:
+				console.log('Unrecognized Column Update Type');
+		}
+	}
+
+	/**
+	 * Update table row based on row menu actions.
+	 *
+	 * Descrption: Current actions include row insert, delete, update height.
+	 *
+	 * @since    1.0.0
+	 * @since    1.1.1  Updated to support row menu refactor.
+	 *
+	 * @param {Object} e                    Table Creation Event
+	 * @param {string} updateType           attribute (Update), insert, delete
+	 * @param {number} tableId              Identifier key for the table
+	 * @param {number} rowId                Identifier for the table row
+	 * @param {Array}  updatedRowAttributes New row attribute values
 	 */
 	function onUpdateRow(e, updateType, tableId, rowId, updatedRowAttributes) {
 		switch (updateType) {
@@ -1200,12 +1300,12 @@ export default function Edit(props) {
 				break;
 			}
 			case 'insert': {
-				setOpenColumnRow(0);
+				// setOpenColumnRow(0);
 				insertRow(tableId, rowId);
 				break;
 			}
 			case 'delete': {
-				setOpenColumnRow(0);
+				// setOpenColumnRow(0);
 				deleteRow(tableId, rowId);
 				break;
 			}
@@ -1232,18 +1332,14 @@ export default function Edit(props) {
 		e?.stopPropagation?.();
 
 		if (row_id === '0' && column_id !== '0') {
-			const compareColumnId = column_id;
-			const clickedColumn = table.columns.find(({ column_id }) => column_id === compareColumnId);
-			setColumnAttributes(clickedColumn.attributes);
-			setColumnMenuVisible(true);
-			setOpenColumnRow(column_id);
+			const clickedColumn = table.columns.find(c => c.column_id === column_id);
+			const attrs = clickedColumn?.attributes || {};
+			openColumnMenu(e, column_id, String(column_id), attrs);
 		}
 
 		if (row_id !== '0' && column_id === '0') {
 			const clickedRow = table.rows.find(r => r.row_id === row_id);
 			const attrs = clickedRow?.attributes || {};
-
-			setColumnMenuVisible(false);
 			openRowMenu(e, row_id, String(row_id), attrs);
 		}
 		setTableStale(false);
@@ -1629,7 +1725,7 @@ export default function Edit(props) {
 	const bodyBorderLeftStyle = getBorderStyle(bodyBorder, 'left', 'style', bodyBorderStyleType);
 	const bodyBorderLeftWidth = getBorderStyle(bodyBorder, 'left', 'width', bodyBorderStyleType);
 
-	const renderOpenRowMenu = (
+	const renderRowMenu = (
 		<>
 			{rowMenu.isOpen && rowMenu.anchorEl && (
 				<RowMenu
@@ -1646,7 +1742,7 @@ export default function Edit(props) {
 		</>
 	);
 
-	const renderOpenRowHeightModal = (
+	const renderRowHeightModal = (
 		<>
 			{rowHeightModal.isOpen && (
 				<RowHeightModal
@@ -1656,6 +1752,39 @@ export default function Edit(props) {
 					rowAttributes={rowHeightModal.rowAttributes}
 					updatedRow={onUpdateRow}
 					onRequestClose={closeRowHeightModal}
+				/>
+			)}
+		</>
+	);
+
+	const renderColumnMenu = (
+		<>
+			{columnMenu.isOpen && columnMenu.anchorEl && (
+				<ColumnMenu
+					debugSource="EDIT_TOP_LEVEL"
+					anchor={columnMenu.anchorEl}
+					tableId={table_id}
+					columnId={columnMenu.columnId}
+					columnLabel={columnMenu.columnLabel}
+					columnAttributes={columnMenu.columnAttributes}
+					updatedColumn={onUpdateColumn}
+					onRequestClose={closeColumnMenu}
+				/>
+			)}
+		</>
+	);
+
+	const renderColumnWidthModal = (
+		<>
+			{columnWidthModal.isOpen && (
+				<ColumnWidthModal
+					tableId={table_id}
+					columnId={columnWidthModal.columnId}
+					columnLabel={columnWidthModal.columnLabel}
+					columnAttributes={columnWidthModal.columnAttributes}
+					enableProFeatures={enableProFeatures}
+					updatedColumn={onUpdateColumn}
+					onRequestClose={closeColumnWidthModal}
 				/>
 			)}
 		</>
@@ -1861,8 +1990,10 @@ export default function Edit(props) {
 			{/* Render an existing table after it has been fetched  */}
 			{!isNewBlock && !tableIsResolving && (
 				<>
-					{renderOpenRowMenu}
-					{renderOpenRowHeightModal}
+					{renderRowMenu}
+					{renderRowHeightModal}
+					{renderColumnMenu}
+					{renderColumnWidthModal}
 					{renderControls}
 
 					<div style={{ display: 'block' }}>
@@ -1909,11 +2040,11 @@ export default function Edit(props) {
 												.filter(cell => cell.attributes.border && cell.row_id === '0')
 												.map(({ table_id, row_id, column_id, cell_id, content, classes }) => {
 													const borderContent = setBorderContent(row_id, column_id, content);
-													const isOpenCurrentColumnMenu = openCurrentColumnMenu(
-														columnMenuVisible,
-														openColumnRow,
-														column_id
-													);
+													// const isOpenCurrentColumnMenu = openCurrentColumnMenu(
+													// 	columnMenuVisible,
+													// 	openColumnRow,
+													// 	column_id
+													// );
 													const isFirstColumn = column_id === '1' ? true : false;
 													return (
 														<>
@@ -1922,23 +2053,17 @@ export default function Edit(props) {
 																<div className={'grid-control__border-cells'} />
 															)}
 
-															<div
-																id={cell_id}
-																onMouseDown={e => onMouseBorderClick(column_id, row_id, table, e)}
+															<Cell
+																cellType="border"
+																cell_id={cell_id}
+																table={table}
+																table_id={table_id}
+																row_id={row_id}
+																column_id={column_id}
+																content={borderContent}
 																className={classes}
-															>
-																{borderContent}
-																{isOpenCurrentColumnMenu && (
-																	<ColumnMenu
-																		tableId={table_id}
-																		columnId={column_id}
-																		columnLabel={borderContent}
-																		columnAttributes={columnAttributes}
-																		enableProFeatures={enableProFeatures}
-																		updatedColumn={onUpdateColumn}
-																	></ColumnMenu>
-																)}
-															</div>
+																onMouseDown={onMouseBorderClick}
+															></Cell>
 														</>
 													);
 												})}
@@ -2008,16 +2133,19 @@ export default function Edit(props) {
 																		)}
 
 																		{isBorder && (
-																			<div
-																				id={cell_id}
-																				onMouseDown={e =>
-																					onMouseBorderClick(column_id, row_id, table, e)
-																				}
+																			<Cell
+																				cellType="border"
+																				cell_id={cell_id}
+																				table={table}
+																				table_id={table_id}
+																				row_id={row_id}
+																				column_id={column_id}
+																				content={borderContent}
 																				className={classes}
-																			>
-																				{borderContent}
-																			</div>
+																				onMouseDown={onMouseBorderClick}
+																			></Cell>
 																		)}
+
 																		{/* Show zoom to details column */}
 																		{isFirstColumn && enableFutureFeatures && (
 																			<div
@@ -2155,6 +2283,9 @@ export default function Edit(props) {
 																			calculatedClasses + 'grid-control__body-cells--focused ';
 																	}
 
+																	console.log('Column Data Types')
+																	console.log(columnDataTypes[column_id])
+
 																	return (
 																		<>
 																			{/* Show zoom to details column */}
@@ -2198,7 +2329,7 @@ export default function Edit(props) {
 																			{!isBorder && (
 																				<Cell
 																					cellType={'body'}
-																					dataFormat={'general'}
+																					dataFormat={columnDataTypes[column_id]}
 																					cell_id={cell_id}
 																					table_id={table_id}
 																					row_id={row_id}

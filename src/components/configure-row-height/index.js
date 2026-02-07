@@ -140,7 +140,6 @@ function ConfigureRowHeight(props = {}) {
 				break;
 			}
 		}
-
 		setRowHeightType(event);
 	}
 

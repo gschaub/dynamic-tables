@@ -165,6 +165,7 @@ function RowMenuImpl(props = {}) {
 			<Popover
 				anchor={anchor}
 				ref={menuRootRef}
+				className="menu-row__main"
 				role="menu"
 				aria-label={`Row ${rowLabel} menu`}
 				placement="right-start"
@@ -176,15 +177,15 @@ function RowMenuImpl(props = {}) {
 				onKeyDown={onKeyDown}
 				onClose={handlePopoverClose}
 			>
-				<MenuGroup>
+				<MenuGroup className="components-menu-group">
 					<MenuItem icon={settings} onClick={e => onUpdateRowHeight(e, rowId)} ref={firstItemRef}>
-						Update Row Height
+						Update Row Height...
 					</MenuItem>
 				</MenuGroup>
 
 				<MenuGroup>
 					<MenuItem icon={tableRowBefore} onClick={e => onInsertRow(e, rowId)}>
-						Insert Row
+						Insert Row (Below)
 					</MenuItem>
 
 					<MenuItem icon={tableRowDelete} onClick={e => onDeleteRow(e, rowId)}>

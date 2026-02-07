@@ -1,5 +1,5 @@
 /* External dependencies */
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useState, memo } from '@wordpress/element';
 import {
 	Modal,
 	SelectControl,
@@ -21,8 +21,21 @@ import './style.scss';
  * @param {Object} props
  * @return {Object} Updated column properties
  */
-function ConfigureColumnWidth(props) {
-	const { openColumnWidth, columnLabel, columnAttributes, enableProFeatures } = props;
+function ConfigureColumnWidth(props = {}) {
+	const { tableId, columnId, columnLabel, columnAttributes, enableProFeatures, updatedColumn, onRequestClose } = props;
+
+	const [columnWidthType, setColumnWidthType] = useState();
+	const [hideProportional, setHideProportional] = useState(true);
+	const [hideCustom, setHideCustom] = useState(true);
+	const [hideFixed, setHideFixed] = useState(true);
+	const [minWidth, setMinWidth] = useState(0);
+	const [minWidthUnits, setMinWidthUnits] = useState();
+	const [maxWidth, setMaxWidth] = useState(1);
+	const [maxWidthUnits, setMaxWidthUnits] = useState();
+	const [fixedWidth, setFixedWidth] = useState(0);
+	const [fixedWidthUnits, setFixedWidthUnits] = useState();
+	const [disableForTablet, setDisableForTablet] = useState(false);
+	const [disableForPhone, setDisableForPhone] = useState(false);
 
 	useEffect(() => {
 		switch (columnAttributes.columnWidthType) {
@@ -88,18 +101,36 @@ function ConfigureColumnWidth(props) {
 		openColumnWidth(false);
 	}
 
-	const [columnWidthType, setColumnWidthType] = useState();
-	const [hideProportional, setHideProportional] = useState(true);
-	const [hideCustom, setHideCustom] = useState(true);
-	const [hideFixed, setHideFixed] = useState(true);
-	const [minWidth, setMinWidth] = useState(0);
-	const [minWidthUnits, setMinWidthUnits] = useState();
-	const [maxWidth, setMaxWidth] = useState(1);
-	const [maxWidthUnits, setMaxWidthUnits] = useState();
-	const [fixedWidth, setFixedWidth] = useState(0);
-	const [fixedWidthUnits, setFixedWidthUnits] = useState();
-	const [disableForTablet, setDisableForTablet] = useState(false);
-	const [disableForPhone, setDisableForPhone] = useState(false);
+	/**
+	 * Close component modal.
+	 *
+	 * @since    1.1.2
+	 */
+	function close() {
+		onRequestClose?.();
+	}
+
+	/**
+	 * Stop event processing in favor of custom processing.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event Mouse down
+	 */
+	function stopProp(event) {
+		event.stopPropagation();
+	}
+
+	/**
+	 * Close modal on cancel.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @param {Object} event Cancel
+	 */
+	function handleCancel() {
+		onRequestClose?.();
+	}
 
 	/**
 	 * Process change in width type and set detault props for the type.
@@ -162,19 +193,7 @@ function ConfigureColumnWidth(props) {
 				break;
 			}
 		}
-
 		setColumnWidthType(event);
-	}
-
-	/**
-	 * Process change to number of minimum width units.
-	 *
-	 * @since    1.0.0
-	 *
-	 * @param {Object} event Minimum width units
-	 */
-	function onMinimumWidth(event) {
-		setMinWidth(event.target.value);
 	}
 
 	/**
@@ -189,17 +208,6 @@ function ConfigureColumnWidth(props) {
 	}
 
 	/**
-	 * Process change to number of maximum width units.
-	 *
-	 * @since    1.0.0
-	 *
-	 * @param {Object} event Maximum width units
-	 */
-	function onMaximumWidth(event) {
-		setMaxWidth(event.target.value);
-	}
-
-	/**
 	 * Process change to the maximum width unit type
 	 *
 	 * @since    1.0.0
@@ -208,17 +216,6 @@ function ConfigureColumnWidth(props) {
 	 */
 	function onMaximumWidthUnits(event) {
 		setMaxWidthUnits(event);
-	}
-
-	/**
-	 * Process change to number of fixed width units.
-	 *
-	 * @since    1.0.0
-	 *
-	 * @param {Object} event Fixed width units
-	 */
-	function onFixedWidth(event) {
-		setFixedWidth(Number(event.target.value));
 	}
 
 	/**
@@ -275,12 +272,14 @@ function ConfigureColumnWidth(props) {
 			isFixedLeftColumnGroup: false,
 			horizontalAlignment: 'none',
 		};
-		openColumnWidth(false, updatedColumnAttributes);
+
+		updatedColumn(event, 'attributes', tableId, columnId, updatedColumnAttributes);
+		close();
+		// openColumnWidth(false, updatedColumnAttributes);
 	}
 
 	return (
 		<>
-			{openColumnWidth && (
 				<Modal
 					title="Configure Column Width"
 					onRequestClose={handleCancel}
@@ -311,8 +310,8 @@ function ConfigureColumnWidth(props) {
 								className="column-width-value-input"
 								label="Number of portions"
 								labelPosition="side"
-								onBlur={e => onMaximumWidth(e)}
 								value={maxWidth}
+								onChange={value => setMaxWidth(Number(value))}
 							/>
 
 							<span className="column-width-span-input">
@@ -321,7 +320,7 @@ function ConfigureColumnWidth(props) {
 									label="Minimum width"
 									labelPosition="left"
 									value={minWidth}
-									onBlur={e => onMinimumWidth(e)}
+									onChange={value => setMinWidth(Number(value))}
 								/>
 
 								<SelectControl
@@ -351,7 +350,7 @@ function ConfigureColumnWidth(props) {
 									label="Fixed width"
 									labelPosition="left"
 									value={fixedWidth}
-									onBlur={e => onFixedWidth(e)}
+									onChange={value => setFixedWidth(Number(value))}
 								/>
 
 								<SelectControl
@@ -380,7 +379,7 @@ function ConfigureColumnWidth(props) {
 									label="Minimum width"
 									labelPosition="left"
 									value={minWidth}
-									onBlur={e => onMinimumWidth(e)}
+									onChange={value => setMinWidth(Number(value))}
 								/>
 
 								<SelectControl
@@ -406,7 +405,7 @@ function ConfigureColumnWidth(props) {
 									label="Maximum width"
 									labelPosition="left"
 									value={maxWidth}
-									onBlur={e => onMaximumWidth(e)}
+									onChange={value => setMaxWidth(Number(value))}
 								/>
 
 								<SelectControl
@@ -452,9 +451,8 @@ function ConfigureColumnWidth(props) {
 						</span>
 					</form>
 				</Modal>
-			)}
 		</>
 	);
 }
 
-export { ConfigureColumnWidth };
+export const ColumnWidthModal = memo(ConfigureColumnWidth);
