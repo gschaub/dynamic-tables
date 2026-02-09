@@ -37,6 +37,7 @@ function ConfigureColumnWidth(props = {}) {
 	const [disableForTablet, setDisableForTablet] = useState(false);
 	const [disableForPhone, setDisableForPhone] = useState(false);
 
+
 	useEffect(() => {
 		switch (columnAttributes.columnWidthType) {
 			case 'Proportional': {
@@ -275,182 +276,181 @@ function ConfigureColumnWidth(props = {}) {
 
 		updatedColumn(event, 'attributes', tableId, columnId, updatedColumnAttributes);
 		close();
-		// openColumnWidth(false, updatedColumnAttributes);
 	}
 
 	return (
 		<>
-				<Modal
-					title="Configure Column Width"
-					onRequestClose={handleCancel}
-					focusOnMount="firstContentElement"
-					isDismissible="false"
-					shouldCloseOnClickOutside="false"
-					size="large"
-				>
-					<p className="column-label">For column {columnLabel}</p>
+			<Modal
+				title="Configure Column Width"
+				onRequestClose={handleCancel}
+				focusOnMount="firstContentElement"
+				isDismissible="false"
+				shouldCloseOnClickOutside="false"
+				size="large"
+			>
+				<p className="column-label">For column {columnLabel}</p>
 
-					<form onSubmit={onUpdate} onMouseDown={stopProp}>
-						<SelectControl
-							label="Width Type"
-							value={columnWidthType}
-							onChange={e => onWidthType(e)}
-							options={[
-								{ value: 'Proportional', label: 'Proportional' },
-								{ value: 'Auto', label: 'Automatic' },
-								{ value: 'Fixed', label: 'Fixed width' },
-								{ value: 'Custom', label: 'Custom' },
-							]}
-							__nextHasNoMarginBottom
+				<form onSubmit={onUpdate} onMouseDown={stopProp}>
+					<SelectControl
+						label="Width Type"
+						value={columnWidthType}
+						onChange={e => onWidthType(e)}
+						options={[
+							{ value: 'Proportional', label: 'Proportional' },
+							{ value: 'Auto', label: 'Automatic' },
+							{ value: 'Fixed', label: 'Fixed width' },
+							{ value: 'Custom', label: 'Custom' },
+						]}
+						__nextHasNoMarginBottom
+					/>
+
+					<fieldset className={hideProportional === true ? ' column-width--not-visible' : ''}>
+						<legend>Set Proportional Width</legend>
+						<NumberControl
+							className="column-width-value-input"
+							label="Number of portions"
+							labelPosition="side"
+							value={maxWidth}
+							onChange={value => setMaxWidth(Number(value))}
 						/>
 
-						<fieldset className={hideProportional === true ? ' column-width--not-visible' : ''}>
-							<legend>Set Proportional Width</legend>
+						<span className="column-width-span-input">
 							<NumberControl
 								className="column-width-value-input"
-								label="Number of portions"
-								labelPosition="side"
+								label="Minimum width"
+								labelPosition="left"
+								value={minWidth}
+								onChange={value => setMinWidth(Number(value))}
+							/>
+
+							<SelectControl
+								className="column-width-unit-input"
+								labelPosition="left"
+								label="Units"
+								value={minWidthUnits}
+								onChange={e => onMinimumWidthUnits(e)}
+								options={[
+									{ value: 'px', label: 'pixels' },
+									{ value: 'ch', label: 'characters' },
+									{ value: 'pt', label: 'points' },
+									{ value: 'in', label: 'inches' },
+									{ value: 'fr', label: 'proportional' },
+								]}
+								__nextHasNoMarginBottom
+							/>
+						</span>
+					</fieldset>
+
+					<fieldset className={hideFixed === true ? 'column-width--not-visible' : ''}>
+						<legend>Set Fixed Width</legend>
+
+						<span className="column-width-span-input">
+							<NumberControl
+								className="column-width-input"
+								label="Fixed width"
+								labelPosition="left"
+								value={fixedWidth}
+								onChange={value => setFixedWidth(Number(value))}
+							/>
+
+							<SelectControl
+								className="column-width-unit-input"
+								label="Units"
+								labelPosition="left"
+								value={fixedWidthUnits}
+								onChange={e => onFixedWidthUnits(e)}
+								options={[
+									{ value: 'px', label: 'pixels' },
+									{ value: 'ch', label: 'font' },
+									{ value: 'pt', label: 'points' },
+									{ value: 'in', label: 'inches' },
+									{ value: 'fr', label: 'proportional' },
+								]}
+								__nextHasNoMarginBottom
+							/>
+						</span>
+					</fieldset>
+
+					<fieldset className={hideCustom === true ? 'column-width--not-visible' : ''}>
+						<legend>Set Custom Width</legend>
+						<span className="column-width-span-input">
+							<NumberControl
+								className="column-width-input"
+								label="Minimum width"
+								labelPosition="left"
+								value={minWidth}
+								onChange={value => setMinWidth(Number(value))}
+							/>
+
+							<SelectControl
+								className="column-width-unit-input"
+								labelPosition="left"
+								label="Units"
+								value={minWidthUnits}
+								onChange={e => onMinimumWidthUnits(e)}
+								options={[
+									{ value: 'px', label: 'pixels' },
+									{ value: 'ch', label: 'characters' },
+									{ value: 'pt', label: 'points' },
+									{ value: 'in', label: 'inches' },
+									{ value: 'fr', label: 'proportional' },
+								]}
+								__nextHasNoMarginBottom
+							/>
+						</span>
+
+						<span className="column-width-span-input">
+							<NumberControl
+								className="column-width-input"
+								label="Maximum width"
+								labelPosition="left"
 								value={maxWidth}
 								onChange={value => setMaxWidth(Number(value))}
 							/>
 
-							<span className="column-width-span-input">
-								<NumberControl
-									className="column-width-value-input"
-									label="Minimum width"
-									labelPosition="left"
-									value={minWidth}
-									onChange={value => setMinWidth(Number(value))}
-								/>
-
-								<SelectControl
-									className="column-width-unit-input"
-									labelPosition="left"
-									label="Units"
-									value={minWidthUnits}
-									onChange={e => onMinimumWidthUnits(e)}
-									options={[
-										{ value: 'px', label: 'pixels' },
-										{ value: 'ch', label: 'characters' },
-										{ value: 'pt', label: 'points' },
-										{ value: 'in', label: 'inches' },
-										{ value: 'fr', label: 'proportional' },
-									]}
-									__nextHasNoMarginBottom
-								/>
-							</span>
-						</fieldset>
-
-						<fieldset className={hideFixed === true ? 'column-width--not-visible' : ''}>
-							<legend>Set Fixed Width</legend>
-
-							<span className="column-width-span-input">
-								<NumberControl
-									className="column-width-input"
-									label="Fixed width"
-									labelPosition="left"
-									value={fixedWidth}
-									onChange={value => setFixedWidth(Number(value))}
-								/>
-
-								<SelectControl
-									className="column-width-unit-input"
-									label="Units"
-									labelPosition="left"
-									value={fixedWidthUnits}
-									onChange={e => onFixedWidthUnits(e)}
-									options={[
-										{ value: 'px', label: 'pixels' },
-										{ value: 'ch', label: 'font' },
-										{ value: 'pt', label: 'points' },
-										{ value: 'in', label: 'inches' },
-										{ value: 'fr', label: 'proportional' },
-									]}
-									__nextHasNoMarginBottom
-								/>
-							</span>
-						</fieldset>
-
-						<fieldset className={hideCustom === true ? 'column-width--not-visible' : ''}>
-							<legend>Set Custom Width</legend>
-							<span className="column-width-span-input">
-								<NumberControl
-									className="column-width-input"
-									label="Minimum width"
-									labelPosition="left"
-									value={minWidth}
-									onChange={value => setMinWidth(Number(value))}
-								/>
-
-								<SelectControl
-									className="column-width-unit-input"
-									labelPosition="left"
-									label="Units"
-									value={minWidthUnits}
-									onChange={e => onMinimumWidthUnits(e)}
-									options={[
-										{ value: 'px', label: 'pixels' },
-										{ value: 'ch', label: 'characters' },
-										{ value: 'pt', label: 'points' },
-										{ value: 'in', label: 'inches' },
-										{ value: 'fr', label: 'proportional' },
-									]}
-									__nextHasNoMarginBottom
-								/>
-							</span>
-
-							<span className="column-width-span-input">
-								<NumberControl
-									className="column-width-input"
-									label="Maximum width"
-									labelPosition="left"
-									value={maxWidth}
-									onChange={value => setMaxWidth(Number(value))}
-								/>
-
-								<SelectControl
-									className="column-width-unit-input"
-									labelPosition="left"
-									label="Units"
-									value={maxWidthUnits}
-									onChange={e => onMaximumWidthUnits(e)}
-									options={[
-										{ value: 'px', label: 'pixels' },
-										{ value: 'ch', label: 'characters' },
-										{ value: 'pt', label: 'points' },
-										{ value: 'in', label: 'inches' },
-										{ value: 'fr', label: 'proportional' },
-									]}
-									__nextHasNoMarginBottom
-								/>
-							</span>
-						</fieldset>
-
-						{enableProFeatures && (
-							<>
-								<CheckboxControl
-									label="Hide for tablet"
-									checked={disableForTablet}
-									onChange={onTablet}
-								/>
-								<CheckboxControl
-									label="Hide for phone"
-									checked={disableForPhone}
-									onChange={onPhone}
-								/>
-							</>
-						)}
-						<span>
-							<Button variant="secondary" onClick={handleCancel}>
-								Cancel
-							</Button>
-
-							<Button variant="primary" type="submit">
-								Update
-							</Button>
+							<SelectControl
+								className="column-width-unit-input"
+								labelPosition="left"
+								label="Units"
+								value={maxWidthUnits}
+								onChange={e => onMaximumWidthUnits(e)}
+								options={[
+									{ value: 'px', label: 'pixels' },
+									{ value: 'ch', label: 'characters' },
+									{ value: 'pt', label: 'points' },
+									{ value: 'in', label: 'inches' },
+									{ value: 'fr', label: 'proportional' },
+								]}
+								__nextHasNoMarginBottom
+							/>
 						</span>
-					</form>
-				</Modal>
+					</fieldset>
+
+					{enableProFeatures && (
+						<>
+							<CheckboxControl
+								label="Hide for tablet"
+								checked={disableForTablet}
+								onChange={onTablet}
+							/>
+							<CheckboxControl
+								label="Hide for phone"
+								checked={disableForPhone}
+								onChange={onPhone}
+							/>
+						</>
+					)}
+					<span className="configure-column-modal__button-group">
+						<Button variant="secondary" onClick={handleCancel}>
+							Cancel
+						</Button>
+
+						<Button variant="primary" type="submit">
+							Update
+						</Button>
+					</span>
+				</form>
+			</Modal>
 		</>
 	);
 }

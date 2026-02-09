@@ -24,6 +24,35 @@ var block_table_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED
 
 /***/ }),
 
+/***/ "./node_modules/@wordpress/icons/build-module/library/cog.mjs":
+/*!********************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/cog.mjs ***!
+  \********************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ cog_default)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/icons/src/library/cog.tsx
+
+
+var cog_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(
+  _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path,
+  {
+    fillRule: "evenodd",
+    d: "M10.289 4.836A1 1 0 0111.275 4h1.306a1 1 0 01.987.836l.244 1.466c.787.26 1.503.679 2.108 1.218l1.393-.522a1 1 0 011.216.437l.653 1.13a1 1 0 01-.23 1.273l-1.148.944a6.025 6.025 0 010 2.435l1.149.946a1 1 0 01.23 1.272l-.653 1.13a1 1 0 01-1.216.437l-1.394-.522c-.605.54-1.32.958-2.108 1.218l-.244 1.466a1 1 0 01-.987.836h-1.306a1 1 0 01-.986-.836l-.244-1.466a5.995 5.995 0 01-2.108-1.218l-1.394.522a1 1 0 01-1.217-.436l-.653-1.131a1 1 0 01.23-1.272l1.149-.946a6.026 6.026 0 010-2.435l-1.148-.944a1 1 0 01-.23-1.272l.653-1.131a1 1 0 011.217-.437l1.393.522a5.994 5.994 0 012.108-1.218l.244-1.466zM14.929 12a3 3 0 11-6 0 3 3 0 016 0z",
+    clipRule: "evenodd"
+  }
+) });
+
+//# sourceMappingURL=cog.mjs.map
+
+
+/***/ }),
+
 /***/ "./node_modules/@wordpress/icons/build-module/library/search.mjs":
 /*!***********************************************************************!*\
   !*** ./node_modules/@wordpress/icons/build-module/library/search.mjs ***!
@@ -183,21 +212,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-before.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-delete.mjs");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./style.scss */ "./src/components/column-dropdown-menu/style.scss");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/cog.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-before.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-delete.mjs");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./style.scss */ "./src/components/column-dropdown-menu/style.scss");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__);
 /* External dependencies */
 
 
 
-// import { moreVertical, settings, tableColumnBefore, tableColumnDelete } from '@wordpress/icons';
 
 /* Internal dependencies */
-// import { ConfigureColumnWidth } from '../configure-column-width';
 
 
 
@@ -340,12 +368,12 @@ function ColumnMenuImpl(props = {}) {
    * @param {Object} targetColumnId Column ID for update
    */
   const onUpdateColumnDataType = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetColumnId) => {
-    // updatedColumn(event, 'attributes', tableId, targetColumnId, '');
+    updatedColumn(event, 'dataType', tableId, targetColumnId, '');
     close();
   }, [tableId, close]);
   if (!canRender) return null;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
       anchor: anchor,
       ref: menuRootRef,
       className: "menu-col__main",
@@ -359,25 +387,25 @@ function ColumnMenuImpl(props = {}) {
       tabIndex: -1,
       onKeyDown: onKeyDown,
       onClose: handlePopoverClose,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
         className: "components-menu-group",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"],
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
           onClick: e => onUpdateColumnDataType(e, columnId),
           ref: firstItemRef,
           children: "Column Content Type..."
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
           icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"],
           onClick: e => onUpdateColumnWidth(e, columnId),
           children: "Update Column Width..."
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"],
           onClick: e => onInsertColumn(e, columnId),
           children: "Insert Column (Left)"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"],
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
           onClick: e => onDeleteColumn(e, columnId),
           children: "Delete Column"
         })]
@@ -393,6 +421,339 @@ const ColumnMenu = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.memo)(Colu
 /*!********************************************************!*\
   !*** ./src/components/column-dropdown-menu/style.scss ***!
   \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./src/components/configure-column-data-types/index.js":
+/*!*************************************************************!*\
+  !*** ./src/components/configure-column-data-types/index.js ***!
+  \*************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ColumnDataTypeModal: () => (/* binding */ ColumnDataTypeModal)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-column-data-types/style.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
+/* External dependencies */
+
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+/**
+ * React component to configure data types for a column.
+ *
+ * @since    1.1.2
+ *
+ * @param {Object} props
+ * @return {Object} Updated column properties
+ */
+
+function ConfigureColumnDataType(props = {}) {
+  const {
+    tableId,
+    columnId,
+    columnLabel,
+    columnAttributes,
+    updatedColumn,
+    onRequestClose
+  } = props;
+  if (columnAttributes) {
+    console.log('Initial column attributes:');
+    console.log(columnAttributes);
+  }
+
+  // Column data type attributes
+  const defaultDataType = {
+    columnDataType: {
+      type: 'general'
+    }
+  };
+  const [columnName, setColumnName] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnLabel);
+  const [dataType, setDataType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes?.columnDataType ? columnAttributes.columnDataType : defaultDataType);
+  const [dateType, setDateType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('none');
+
+  // Date specific attributes
+  const [dateDefaultTodaysDate, setDateDefaultTodaysDate] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [datePreviewValue, setDatePreviewValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+
+  // Column width attributes
+  const [columnWidthType, setColumnWidthType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.columnWidthType);
+  const [minWidth, setMinWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.minWidth);
+  const [minWidthUnits, setMinWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.minWidthUnits);
+  const [maxWidth, setMaxWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.maxWidth);
+  const [maxWidthUnits, setMaxWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.maxWidthUnits);
+  const [fixedWidth, setFixedWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.fixedWidth);
+  const [fixedWidthUnits, setFixedWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.fixedWidthUnits);
+  const [disableForTablet, setDisableForTablet] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.disableForTablet);
+  const [disableForPhone, setDisableForPhone] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.disableForPhone);
+
+  /**
+   * Stop event processing in favor of custom processing.
+   *
+   * @since    1.1.2
+   *
+   * @param {Object} event Mouse down
+   */
+  function stopProp(event) {
+    event.stopPropagation();
+  }
+
+  /**
+   * Close component modal.
+   *
+   * @since    1.1.2
+   */
+  function close() {
+    onRequestClose?.();
+  }
+
+  /**
+   * Close modal on cancel.
+   *
+   * @since    1.1.2
+   *
+   * @param {Object} event Cancel
+   */
+  function handleCancel() {
+    onRequestClose?.();
+  }
+  function formattedDate(type) {
+    const today = new Date();
+    if (type === 'date') {
+      return today.toISOString().split('T')[0];
+    }
+    if (type === 'time') {
+      return today.toTimeString().split(' ')[0];
+    }
+    if (type === 'datetime-local') {
+      const date = today.toISOString().split('T')[0];
+      const time = today.toTimeString().split(' ')[0];
+      return `${date}T${time}`;
+    }
+    return '';
+  }
+  function onDateTimeType(e, type) {
+    if (!e && dateType === type) {
+      setDateType('date');
+      if (dateDefaultTodaysDate) setDatePreviewValue(formattedDate('date'));
+      return;
+    }
+    setDateType(type);
+    if (dateDefaultTodaysDate) setDatePreviewValue(formattedDate(type));
+    const dataTypeSettings = {
+      dateType: type,
+      dateDefaultTodaysDate: dateDefaultTodaysDate
+    };
+    const updatedDataType = {
+      type: 'date-time',
+      settings: dataTypeSettings
+    };
+    setDataType(updatedDataType);
+  }
+  function onDateDefaultTodaysDate(isChecked, type) {
+    if (!isChecked) {
+      setDatePreviewValue('');
+    } else {
+      setDatePreviewValue(formattedDate(type));
+    }
+    setDateDefaultTodaysDate(isChecked);
+    const dataTypeSettings = {
+      dateType: type,
+      dateDefaultTodaysDate: isChecked
+    };
+    const updatedDataType = {
+      type: 'date-time',
+      settings: dataTypeSettings
+    };
+    setDataType(updatedDataType);
+  }
+  function onUpdateDataType(e) {
+    let updatedDataType = {};
+    switch (e) {
+      case 'date-time':
+        setDateType('date');
+        updatedDataType = {
+          type: 'date-time',
+          settings: {
+            dateType: 'date',
+            dateDefaultTodaysDate: false
+          }
+        };
+        break;
+      default:
+        updatedDataType = {
+          type: e
+        };
+        break;
+    }
+    setDataType(updatedDataType);
+  }
+
+  /**
+   * Process form submit.
+   *
+   * @since    1.0.0
+   *
+   * @param {Object} event Form submit
+   */
+  function onUpdate(event) {
+    const updatedColumnAttributes = {
+      columnWidthType: columnWidthType,
+      minWidth: minWidth,
+      minWidthUnits: minWidthUnits,
+      maxWidth: Number(maxWidth),
+      maxWidthUnits: maxWidthUnits,
+      fixedWidth: fixedWidth,
+      fixedWidthUnits: fixedWidthUnits,
+      disableForTablet: disableForTablet,
+      disableForPhone: disableForPhone,
+      columnDataType: dataType
+    };
+    console.log('updated column attributes:');
+    console.log(updatedColumnAttributes);
+    close();
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {
+      title: "Configure Column Content Type",
+      onRequestClose: handleCancel,
+      focusOnMount: "firstContentElement",
+      isDismissible: "false",
+      shouldCloseOnClickOutside: "false",
+      size: "large",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
+        className: "column-label",
+        children: ["For column ", columnName]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("hr", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
+        className: "configure-data-type--form",
+        onSubmit: onUpdate,
+        onMouseDown: stopProp,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalInputControl, {
+          label: "Column Name",
+          value: columnName,
+          onChange: value => setColumnName(value)
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("hr", {
+          style: {
+            marginTop: '10px'
+          }
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+          className: "column-data-type--select",
+          label: "Content Type",
+          value: dataType.type,
+          onChange: onUpdateDataType,
+          options: [{
+            value: 'general',
+            label: 'General'
+          }, {
+            value: 'date-time',
+            label: 'Data/Time'
+          }, {
+            value: 'checkbox',
+            label: 'Check Box'
+          }, {
+            value: 'rating',
+            label: 'Rating'
+          }],
+          __nextHasNoMarginBottom: true
+        }), dataType.type !== 'general' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Panel, {
+          header: "Content Settings",
+          className: "column-data-type--settings",
+          children: [dataType.type === 'date-time' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+              children: "Select the specific date/time appearance."
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+              className: "configure-column-type--settings-container",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+                className: "configure-column-type--settings-options",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelRow, {
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
+                    label: "Date Only",
+                    checked: dateType === 'date',
+                    onChange: e => onDateTimeType(e, 'date')
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelRow, {
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
+                    label: "Time Only",
+                    checked: dateType === 'time',
+                    onChange: e => onDateTimeType(e, 'time')
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelRow, {
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
+                    label: "Date & Time",
+                    checked: dateType === 'datetime-local',
+                    onChange: e => onDateTimeType(e, 'datetime-local')
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
+                  title: "Other Settings",
+                  initialOpen: false,
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelRow, {
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
+                      label: "Default to today's date",
+                      checked: dateDefaultTodaysDate,
+                      onChange: e => onDateDefaultTodaysDate(e, dateType)
+                    })
+                  })
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+                className: "configure-column-type--settings-preview",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
+                  label: "Preview",
+                  type: dateType,
+                  value: datePreviewValue,
+                  onChange: setDatePreviewValue
+                })
+              })]
+            })]
+          }), dataType.type === 'checkbox' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+              children: "Check Box specific settings will go here."
+            })
+          }), dataType.type === 'rating' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+              children: "Rating specific settings will go here."
+            })
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+          className: "configure-column-modal__button-group",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+            variant: "secondary",
+            onClick: handleCancel,
+            children: "Cancel"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+            variant: "primary",
+            type: "submit",
+            children: "Update"
+          })]
+        })]
+      })]
+    })
+  });
+}
+const ColumnDataTypeModal = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.memo)(ConfigureColumnDataType);
+
+/***/ }),
+
+/***/ "./src/components/configure-column-data-types/style.scss":
+/*!***************************************************************!*\
+  !*** ./src/components/configure-column-data-types/style.scss ***!
+  \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -696,7 +1057,6 @@ function ConfigureColumnWidth(props = {}) {
     };
     updatedColumn(event, 'attributes', tableId, columnId, updatedColumnAttributes);
     close();
-    // openColumnWidth(false, updatedColumnAttributes);
   }
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {
@@ -890,6 +1250,7 @@ function ConfigureColumnWidth(props = {}) {
             onChange: onPhone
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+          className: "configure-column-modal__button-group",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
             variant: "secondary",
             onClick: handleCancel,
@@ -1311,16 +1672,19 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ColumnDataTypeModal: () => (/* reexport safe */ _configure_column_data_types__WEBPACK_IMPORTED_MODULE_2__.ColumnDataTypeModal),
 /* harmony export */   ColumnMenu: () => (/* reexport safe */ _column_dropdown_menu__WEBPACK_IMPORTED_MODULE_0__.ColumnMenu),
 /* harmony export */   ColumnWidthModal: () => (/* reexport safe */ _configure_column_width__WEBPACK_IMPORTED_MODULE_1__.ColumnWidthModal),
-/* harmony export */   RowHeightModal: () => (/* reexport safe */ _configure_row_height__WEBPACK_IMPORTED_MODULE_3__.RowHeightModal),
-/* harmony export */   RowMenu: () => (/* reexport safe */ _row_dropdown_menu__WEBPACK_IMPORTED_MODULE_2__.RowMenu)
+/* harmony export */   RowHeightModal: () => (/* reexport safe */ _configure_row_height__WEBPACK_IMPORTED_MODULE_4__.RowHeightModal),
+/* harmony export */   RowMenu: () => (/* reexport safe */ _row_dropdown_menu__WEBPACK_IMPORTED_MODULE_3__.RowMenu)
 /* harmony export */ });
 /* harmony import */ var _column_dropdown_menu__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./column-dropdown-menu */ "./src/components/column-dropdown-menu/index.js");
 /* harmony import */ var _configure_column_width__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./configure-column-width */ "./src/components/configure-column-width/index.js");
-/* harmony import */ var _row_dropdown_menu__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./row-dropdown-menu */ "./src/components/row-dropdown-menu/index.js");
-/* harmony import */ var _configure_row_height__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./configure-row-height */ "./src/components/configure-row-height/index.js");
+/* harmony import */ var _configure_column_data_types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./configure-column-data-types */ "./src/components/configure-column-data-types/index.js");
+/* harmony import */ var _row_dropdown_menu__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./row-dropdown-menu */ "./src/components/row-dropdown-menu/index.js");
+/* harmony import */ var _configure_row_height__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./configure-row-height */ "./src/components/configure-row-height/index.js");
 /* Export table column react components */
+
 
 
 
@@ -3328,9 +3692,57 @@ function Edit(props) {
     columnLabel: '',
     columnAttributes: null
   });
+  const [columnDataTypeModal, setColumnDataTypeModal] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({
+    isOpen: false,
+    columnId: null,
+    columnLabel: '',
+    columnAttributes: null
+  });
 
   /**
-   * Open column height configuration dialog page.
+   * Open column data type configuration dialog page.
+   *
+   * Description: Responds to clicked column menu item to update the column height configuration.
+   *
+   * @since    1.1.2
+   *
+   * @param {Object} e                Column menu click event
+   * @param {number} columnId         Column number to update
+   * @param {string} columnLabel      Display label at top of dialog
+   * @param {Object} columnAttributes Column attributes that control column height, among other things
+   */
+  const openColumnDataTypeModal = (e, columnId, columnLabel, columnAttributes) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
+
+    // Capture a real element, not the synthetic event
+    const el = e?.currentTarget || null;
+    lastInvokerElRef.current = el;
+    setColumnDataTypeModal({
+      isOpen: true,
+      columnId,
+      columnLabel: columnLabel,
+      columnAttributes
+    });
+  };
+
+  /**
+   * Close column data type configuration dialog page.
+   *
+   * @since    1.1.2
+   */
+  const closeColumnDataTypeModal = () => {
+    setColumnDataTypeModal(prev => ({
+      ...prev,
+      isOpen: false
+    }));
+
+    // restore focus to the invoker (menu trigger)
+    window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+  };
+
+  /**
+   * Open column width configuration dialog page.
    *
    * Description: Responds to clicked column menu item to update the column height configuration.
    *
@@ -3351,13 +3763,13 @@ function Edit(props) {
     setColumnWidthModal({
       isOpen: true,
       columnId,
-      columnLabel,
+      columnLabel: columnLabel,
       columnAttributes
     });
   };
 
   /**
-   * Close row height configuration dialog page.
+   * Close column width configuration dialog page.
    *
    * @since    1.1.2
    */
@@ -4314,21 +4726,32 @@ function Edit(props) {
           if (!updatedColumnAttributes) {
             const clickedColumn = table.columns.find(c => c.column_id === columnId);
             const attrs = clickedColumn?.attributes || {};
-            openColumnWidthModal(e, columnId, String(columnId), attrs);
+            const columnLabel = clickedColumn?.column_name || String(columnId);
+            openColumnWidthModal(e, columnId, columnLabel, attrs);
           } else {
             setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
           }
           break;
         }
+      case 'dataType':
+        {
+          if (!updatedColumnAttributes) {
+            const clickedColumn = table.columns.find(c => c.column_id === columnId);
+            const attrs = clickedColumn?.attributes || {};
+            const columnLabel = clickedColumn?.column_name || String(columnId);
+            openColumnDataTypeModal(e, columnId, columnLabel, attrs);
+          } else {
+            // setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
+          }
+          break;
+        }
       case 'insert':
         {
-          // setOpenColumnRow(0);
           insertColumn(tableId, columnId);
           break;
         }
       case 'delete':
         {
-          // setOpenColumnRow(0);
           deleteColumn(tableId, columnId);
           break;
         }
@@ -4719,6 +5142,17 @@ function Edit(props) {
       onRequestClose: closeColumnMenu
     })
   });
+  const renderColumnDataTypeModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
+    children: columnDataTypeModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.ColumnDataTypeModal, {
+      tableId: table_id,
+      columnId: columnDataTypeModal.columnId,
+      columnLabel: columnDataTypeModal.columnLabel,
+      columnAttributes: columnDataTypeModal.columnAttributes,
+      enableProFeatures: enableProFeatures,
+      updatedColumn: onUpdateColumn,
+      onRequestClose: closeColumnDataTypeModal
+    })
+  });
   const renderColumnWidthModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
     children: columnWidthModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.ColumnWidthModal, {
       tableId: table_id,
@@ -4909,7 +5343,7 @@ function Edit(props) {
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
     ...blockProps,
     children: [!isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-      children: [renderRowMenu, renderRowHeightModal, renderColumnMenu, renderColumnWidthModal, renderControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+      children: [renderRowMenu, renderRowHeightModal, renderColumnMenu, renderColumnDataTypeModal, renderColumnWidthModal, renderControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
         style: {
           display: 'block'
         },
@@ -4955,11 +5389,6 @@ function Edit(props) {
                   classes
                 }) => {
                   const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.setBorderContent)(row_id, column_id, content);
-                  // const isOpenCurrentColumnMenu = openCurrentColumnMenu(
-                  // 	columnMenuVisible,
-                  // 	openColumnRow,
-                  // 	column_id
-                  // );
                   const isFirstColumn = column_id === '1' ? true : false;
                   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
                     children: [isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
@@ -5120,8 +5549,10 @@ function Edit(props) {
                       if (isFocused) {
                         calculatedClasses = calculatedClasses + 'grid-control__body-cells--focused ';
                       }
-                      console.log('Column Data Types');
-                      console.log(columnDataTypes[column_id]);
+
+                      // console.log('Column Data Types')
+                      // console.log(columnDataTypes[column_id])
+
                       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
                         children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
                           className: 'grid-control__border-cells'
@@ -6154,9 +6585,12 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
     verticalAlignment: 'none',
     hideTitle: true
   };
+  updatedDataType = {
+    type: e
+  };
   const columnAttributes = {
     columnDataType: {
-      dataType: 'General'
+      type: 'General'
     },
     columnWidthType: 'Proportional',
     minWidth: 2,

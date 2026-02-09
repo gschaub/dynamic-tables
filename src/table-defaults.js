@@ -207,9 +207,11 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
 		verticalAlignment: 'none',
 		hideTitle: true,
 	};
+			updatedDataType = {
+				type: e}
 
 	const columnAttributes = {
-		columnDataType: { dataType: 'General' },
+		columnDataType: {type: 'General'},
 		columnWidthType: 'Proportional',
 		minWidth: 2,
 		minWidthUnits: 'ch',

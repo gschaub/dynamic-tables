@@ -28,7 +28,7 @@ import {
 	BlockAlignmentToolbar,
 	PanelColorSettings,
 } from '@wordpress/block-editor';
-import { search, blockTable as icon, column } from '@wordpress/icons';
+import { search, blockTable as icon, column, columns } from '@wordpress/icons';
 import { UP, DOWN, RIGHT, LEFT, TAB } from '@wordpress/keycodes';
 
 /* Internal dependencies */
@@ -60,7 +60,7 @@ import {
 	getBorderStyle,
 } from './style';
 
-import { RowMenu, RowHeightModal, ColumnMenu, ColumnWidthModal } from './components';
+import { RowMenu, RowHeightModal, ColumnMenu, ColumnWidthModal, ColumnDataTypeModal } from './components';
 import './editor.scss';
 
 /* Create Dynamic Tables entity in WordPress core-data */
@@ -253,8 +253,55 @@ export default function Edit(props) {
 		columnAttributes: null,
 	});
 
+	const [columnDataTypeModal, setColumnDataTypeModal] = useState({
+		isOpen: false,
+		columnId: null,
+		columnLabel: '',
+		columnAttributes: null,
+	});
+
 	/**
-	 * Open column height configuration dialog page.
+	 * Open column data type configuration dialog page.
+	 *
+	 * Description: Responds to clicked column menu item to update the column height configuration.
+	 *
+	 * @since    1.1.2
+	 *
+	 * @param {Object} e                Column menu click event
+	 * @param {number} columnId         Column number to update
+	 * @param {string} columnLabel      Display label at top of dialog
+	 * @param {Object} columnAttributes Column attributes that control column height, among other things
+	 */
+	const openColumnDataTypeModal = (e, columnId, columnLabel, columnAttributes) => {
+		e?.preventDefault?.();
+		e?.stopPropagation?.();
+
+		// Capture a real element, not the synthetic event
+		const el = e?.currentTarget || null;
+		lastInvokerElRef.current = el;
+
+		setColumnDataTypeModal({
+			isOpen: true,
+			columnId,
+			columnLabel: columnLabel,
+			columnAttributes,
+		});
+	};
+
+	/**
+	 * Close column data type configuration dialog page.
+	 *
+	 * @since    1.1.2
+	 */
+	const closeColumnDataTypeModal = () => {
+		setColumnDataTypeModal(prev => ({ ...prev, isOpen: false }));
+
+		// restore focus to the invoker (menu trigger)
+		window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+	};
+
+	/**
+	 * Open column width configuration dialog page.
 	 *
 	 * Description: Responds to clicked column menu item to update the column height configuration.
 	 *
@@ -276,13 +323,13 @@ export default function Edit(props) {
 		setColumnWidthModal({
 			isOpen: true,
 			columnId,
-			columnLabel,
+			columnLabel: columnLabel,
 			columnAttributes,
 		});
 	};
 
 	/**
-	 * Close row height configuration dialog page.
+	 * Close column width configuration dialog page.
 	 *
 	 * @since    1.1.2
 	 */
@@ -1252,19 +1299,29 @@ export default function Edit(props) {
 				if (!updatedColumnAttributes) {
 					const clickedColumn = table.columns.find(c => c.column_id === columnId);
 					const attrs = clickedColumn?.attributes || {};
-					openColumnWidthModal(e, columnId, String(columnId), attrs);
+					const columnLabel = clickedColumn?.column_name || String(columnId);
+					openColumnWidthModal(e, columnId, columnLabel, attrs);
 				} else {
 					setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
 				}
 				break;
 			}
+			case 'dataType': {
+				if (!updatedColumnAttributes) {
+					const clickedColumn = table.columns.find(c => c.column_id === columnId);
+					const attrs = clickedColumn?.attributes || {};
+					const columnLabel = clickedColumn?.column_name || String(columnId);
+					openColumnDataTypeModal(e, columnId, columnLabel, attrs);
+				} else {
+					// setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
+				}
+				break;
+			}
 			case 'insert': {
-				// setOpenColumnRow(0);
 				insertColumn(tableId, columnId);
 				break;
 			}
 			case 'delete': {
-				// setOpenColumnRow(0);
 				deleteColumn(tableId, columnId);
 				break;
 			}
@@ -1774,6 +1831,22 @@ export default function Edit(props) {
 		</>
 	);
 
+	const renderColumnDataTypeModal = (
+		<>
+			{columnDataTypeModal.isOpen && (
+				<ColumnDataTypeModal
+					tableId={table_id}
+					columnId={columnDataTypeModal.columnId}
+					columnLabel={columnDataTypeModal.columnLabel}
+					columnAttributes={columnDataTypeModal.columnAttributes}
+					enableProFeatures={enableProFeatures}
+					updatedColumn={onUpdateColumn}
+					onRequestClose={closeColumnDataTypeModal}
+				/>
+			)}
+		</>
+	);
+
 	const renderColumnWidthModal = (
 		<>
 			{columnWidthModal.isOpen && (
@@ -1993,6 +2066,7 @@ export default function Edit(props) {
 					{renderRowMenu}
 					{renderRowHeightModal}
 					{renderColumnMenu}
+					{renderColumnDataTypeModal}
 					{renderColumnWidthModal}
 					{renderControls}
 
@@ -2040,11 +2114,6 @@ export default function Edit(props) {
 												.filter(cell => cell.attributes.border && cell.row_id === '0')
 												.map(({ table_id, row_id, column_id, cell_id, content, classes }) => {
 													const borderContent = setBorderContent(row_id, column_id, content);
-													// const isOpenCurrentColumnMenu = openCurrentColumnMenu(
-													// 	columnMenuVisible,
-													// 	openColumnRow,
-													// 	column_id
-													// );
 													const isFirstColumn = column_id === '1' ? true : false;
 													return (
 														<>
@@ -2283,8 +2352,8 @@ export default function Edit(props) {
 																			calculatedClasses + 'grid-control__body-cells--focused ';
 																	}
 
-																	console.log('Column Data Types')
-																	console.log(columnDataTypes[column_id])
+																	// console.log('Column Data Types')
+																	// console.log(columnDataTypes[column_id])
 
 																	return (
 																		<>

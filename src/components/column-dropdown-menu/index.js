@@ -1,11 +1,9 @@
 /* External dependencies */
 import { useEffect, useRef, useCallback, memo } from '@wordpress/element';
 import { Popover, MenuGroup, MenuItem } from '@wordpress/components';
-import { settings, tableColumnBefore, tableColumnDelete } from '@wordpress/icons';
-// import { moreVertical, settings, tableColumnBefore, tableColumnDelete } from '@wordpress/icons';
+import { cog, settings, tableColumnBefore, tableColumnDelete } from '@wordpress/icons';
 
 /* Internal dependencies */
-// import { ConfigureColumnWidth } from '../configure-column-width';
 import './style.scss';
 import '../../editor.scss';
 
@@ -167,7 +165,7 @@ function ColumnMenuImpl(props = {}) {
 	 */
 	const onUpdateColumnDataType = useCallback(
 		(event, targetColumnId) => {
-			// updatedColumn(event, 'attributes', tableId, targetColumnId, '');
+			updatedColumn(event, 'dataType', tableId, targetColumnId, '');
 			close();
 		},
 		[tableId, close]
@@ -202,7 +200,7 @@ function ColumnMenuImpl(props = {}) {
 					</MenuItem>
 
 					<MenuItem
-						icon={settings}
+						icon={cog}
 						onClick={e => onUpdateColumnWidth(e, columnId)}
 					>
 						Update Column Width...

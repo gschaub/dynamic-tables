@@ -1,0 +1,38 @@
+.column-label {
+    text-align: center;
+    font-size: large;
+    font-style: italic;
+    margin: 8px;
+}
+
+.configure-column-modal__button-group {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-top: 16px;
+}
+
+.column-data-type--select {
+	margin-top: 16px;
+}
+
+.column-data-type--select {
+	margin-bottom: 16px;
+}
+
+.configure-column-type--settings-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.configure-column-type--settings-options, .configure-column-type--settings-preview {
+    flex: 1; /* Makes both items grow equally to fill the space */
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+}
+
+.configure-column-type--settings-preview {
+	vertical-align: middle;
+	text-align: center;
+}
