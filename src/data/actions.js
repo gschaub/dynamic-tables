@@ -645,7 +645,28 @@ export const updateRow = (tableId, rowId, attribute, value) => {
 };
 
 /**
- * Signal an update to a row attribute/prop.
+ * Signal an update to a column attributes.
+ *
+ * @since    1.1.2
+ *
+ * @param {number}        tableId   Identifier key for the table
+ * @param {number}        columnId  Identifier for a table column
+ * @param {string}        prop      Type of property
+ * @param {Object|string} value     New value for the prop
+ * @return  {Object} Action object
+ */
+// export const updateColumnProps = (tableId, columnId, prop, value) => {
+// 	return {
+// 		type: UPDATE_COLUMN_PROPS,
+// 		tableId,
+// 		columnId,
+// 		prop,
+// 		value,
+// 	};
+// };
+
+/**
+ * Signal an update to a column attributes.
  *
  * @since    1.0.0
  *

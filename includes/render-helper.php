@@ -186,12 +186,12 @@ function process_rows( $rows, $filter ) {
 	$return_rows           = array();
 	$return_grid_row_style = '';
 
-	foreach ( $rows as $index => $row ) {
+	foreach ( $rows as $row ) {
 		$row_attributes = array_merge( $row_default_attributes, $row['attributes'] );
 
 		switch ( $filter ) {
 			case 'is_header':
-				if ( $row['attributes']['isHeader'] === true ) {
+				if ( $row_attributes['isHeader'] === true ) {
 					$grid_row_style = format_row( $row_attributes );
 					$grid_row       = array(
 						'row_id'       => $row['row_id'],
@@ -202,7 +202,7 @@ function process_rows( $rows, $filter ) {
 				}
 				break;
 			case 'is_body':
-				if ( $row['attributes']['isHeader'] !== true ) {
+				if ( $row_attributes['isHeader'] !== true ) {
 					$grid_row_style = format_row( $row_attributes );
 					$grid_row       = array(
 						'row_id'       => $row['row_id'],
@@ -326,12 +326,14 @@ function process_columns( $columns ) {
  * Updates returned cells with the cell id using letters for the column id.
  *
  * @since 1.0.0
+ * @since 1.2    Update to return cell data type based on column data type attribute.
  *
  * @param  Array $table_cells All cells for the table
  * @param  int   $row_id Current row id
+ * @param  Array $table_columns All columns for the table
  * @return array Transformed cells for the current row
  */
-function process_cells( $table_cells, $row_id ) {
+function process_cells( $table_cells, $row_id, $table_columns ) {
 	$filtered_cells = array_filter(
 		$table_cells,
 		function ( $v ) use( $row_id ) {
@@ -342,13 +344,25 @@ function process_cells( $table_cells, $row_id ) {
 
 	$return_cells = array();
 
-	foreach ( $filtered_cells as $index => $cell ) {
+	foreach ( $filtered_cells as $cell ) {
 		$cell_id = number_to_letter( $cell['column_id'] ) . $cell['row_id'];
 
+		$column_data_type = array(
+			'type' => 'general',
+		);
+
+		if ( isset( $table_columns[ $cell['column_id'] - 1 ]['attributes']['columnDataType'] ) ) {
+			$column_data_type = $table_columns[ $cell['column_id'] - 1 ]['attributes']['columnDataType'];
+		}
+
+		error_log( 'Column attributes for column: ' . $cell['column_id'] . ': ' . print_r( $column_data_type, true ) );
+
 		$grid_cell = array(
-			'cell_id' => $cell_id,
-			'classes' => $cell['classes'],
-			'content' => $cell['content'],
+			'cell_id'    => $cell_id,
+			'data_type'  => $column_data_type,
+			'attributes' => $cell['attributes'],
+			'classes'    => $cell['classes'],
+			'content'    => $cell['content'],
 		);
 		array_push( $return_cells, $grid_cell );
 	}
@@ -420,7 +434,6 @@ function end_grid_row_nbr( $start_grid_line, $row_group, $num_rows, $enable_head
 	}
 
 	return null;
-	// return $end_grid_line;
 }
 
 /**
@@ -490,4 +503,72 @@ function get_border_style( $border, $border_location, $border_attribute, $border
 		case 'width':
 			return '1px';
 	}
+}
+
+/**
+ * Render Date-Time cell data types
+ *
+ * @since 1.2
+ *
+ * @param  array  $cell                   Cell data and attributes to be rendered
+ * @param  string $grid_show_inner_lines  Show inner grid lines for cell?
+ * @param  string $grid_inner_line_width  Width for inner grid lines if present
+ * @return void
+ */
+function render_date_time_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width ) {
+	// Prep for future front end editing.
+	$editable = false;
+
+	if ( $editable ) {
+		// Front End Edit.
+		?>
+		<input id=" <?php echo esc_attr( $cell['cell_id'] ); ?>"
+			type=<?php echo esc_attr( $cell['data_type']['settings']['format'] ); ?>
+			class="grid-control__body-cells"
+			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
+				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
+			value="<?php echo esc_attr( $cell['content'] ); ?>">
+		</input>
+		<?php
+	} else {
+		// Display only.
+		?>
+		<time id=" <?php echo esc_attr( $cell['cell_id'] ); ?>"
+			class="grid-control__body-cells"
+			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
+				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
+			value=<?php echo wp_kses_post( $cell['content'] ); ?>
+		>
+			<?php echo wp_kses_post( format_display_date( $cell ) ); ?>
+		</time>
+		<?php
+	}
+}
+
+/**
+ * Format a cell date for display.
+ *
+ * Description - The cell contains the data type and date format.  Converts ISO date to
+ *               the display format.
+ *
+ * @since 1.2
+ *
+ * @param  array $cell  Cell data
+ * @return string       Formatted date
+ */
+function format_display_date( $cell ) {
+	if ( ! isset( $cell['attributes']['value']['indexText'] ) ) {
+		return '';
+	}
+
+	if ( $cell['data_type']['settings']['format'] === 'date' ) {
+		return gmdate( 'n/j/Y', strtotime( $cell['attributes']['value']['indexText'] ) );
+	}
+	if ( $cell['data_type']['settings']['format'] === 'time' ) {
+		return gmdate( 'g:i a', strtotime( $cell['attributes']['value']['indexText'] ) );
+	}
+	if ( $cell['data_type']['settings']['format'] === 'datetime-local' ) {
+		return gmdate( 'n/j/Y g:i a', strtotime( $cell['attributes']['value']['indexText'] ) );
+	}
+	return '';
 }

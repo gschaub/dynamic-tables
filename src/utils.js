@@ -197,20 +197,3 @@ export function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
 	}
 	return false;
 }
-
-/**
- * Strip any HTML tags.
- *
- * @param {string} str String to evaluate
- * @return  {string} String with any embedded tages removed
- * @since    1.0.0
- */
-export function removeTags(str) {
-	if (str === null || str === '') return false;
-	str = str.toString();
-
-	// Regular expression to identify HTML tags in
-	// the input string. Replacing the identified
-	// HTML tag with a null string.
-	return str.replace(/(<([^>]+)>)/gi, '');
-}

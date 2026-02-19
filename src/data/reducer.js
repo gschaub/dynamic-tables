@@ -399,8 +399,16 @@ const table = (
 			};
 
 		case UPDATE_CELL:
+			let transformedValue_UpdateCell = ' "' + action.value + '"';
+
+			if (action.attribute === 'attributes') {
+				transformedValue_UpdateCell = JSON.stringify(action.value);
+			}
+
 			const newCellsState = { ...state };
-			const updatedCellData = JSON.parse('{ "' + action.attribute + '" : "' + action.value + '"}');
+			const updatedCellData = JSON.parse(
+				'{ "' + action.attribute + '" :' + transformedValue_UpdateCell + '}'
+			);
 			const updatedCells = updateArray(
 				newCellsState.cells,
 				'cell_id',
