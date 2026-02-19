@@ -6,7 +6,7 @@ import {
 	PanelBody,
 	PanelRow,
 	SelectControl,
-	 __experimentalInputControl as InputControl,
+	__experimentalInputControl as InputControl,
 	CheckboxControl,
 	Button,
 	__experimentalNumberControl as NumberControl,
@@ -32,22 +32,28 @@ function ConfigureColumnDataType(props = {}) {
 
 	if (columnAttributes) {
 		console.log('Initial column attributes:');
-		console.log(columnAttributes)
+		console.log(columnAttributes);
 	}
 
 	// Column data type attributes
 	const defaultDataType = {
 		columnDataType: {
 			type: 'general',
-		}
-	}
+		},
+	};
 
 	const [columnName, setColumnName] = useState(columnLabel);
-	const [dataType, setDataType] = useState(columnAttributes?.columnDataType ? columnAttributes.columnDataType : defaultDataType);
-	const [dateType, setDateType] = useState('none');
+	const [dataType, setDataType] = useState(
+		columnAttributes?.columnDataType ? columnAttributes.columnDataType : defaultDataType
+	);
+	const [format, setFormat] = useState(
+		columnAttributes?.columnDataType?.settings?.format || 'date'
+	);
 
 	// Date specific attributes
-	const [dateDefaultTodaysDate, setDateDefaultTodaysDate] = useState(false);
+	const [dateDefaultTodaysDate, setDateDefaultTodaysDate] = useState(
+		columnAttributes?.columnDataType?.settings?.dateDefaultTodaysDate || false
+	);
 	const [datePreviewValue, setDatePreviewValue] = useState('');
 
 	// Column width attributes
@@ -95,9 +101,13 @@ function ConfigureColumnDataType(props = {}) {
 	function formattedDate(type) {
 		const today = new Date();
 
-		if(type === 'date') {return today.toISOString().split('T')[0] }
-		if(type === 'time') {return today.toTimeString().split(' ')[0] }
-		if(type === 'datetime-local') {
+		if (type === 'date') {
+			return today.toISOString().split('T')[0];
+		}
+		if (type === 'time') {
+			return today.toTimeString().split(' ')[0];
+		}
+		if (type === 'datetime-local') {
 			const date = today.toISOString().split('T')[0];
 			const time = today.toTimeString().split(' ')[0];
 			return `${date}T${time}`;
@@ -106,70 +116,71 @@ function ConfigureColumnDataType(props = {}) {
 	}
 
 	function onDateTimeType(e, type) {
-		if(!e && dateType === type) {
-			setDateType('date');
-			if (dateDefaultTodaysDate) setDatePreviewValue(formattedDate('date'))
+		if (!e && format === type) {
+			setFormat('date');
+			if (dateDefaultTodaysDate) setDatePreviewValue(formattedDate('date'));
 			return;
 		}
 
-		setDateType(type);
-		if (dateDefaultTodaysDate) setDatePreviewValue(formattedDate(type))
+		setFormat(type);
+		if (dateDefaultTodaysDate) setDatePreviewValue(formattedDate(type));
 
 		const dataTypeSettings = {
-			dateType: type,
-			dateDefaultTodaysDate: dateDefaultTodaysDate,
-		}
+			format: type,
+			defaultToToday: dateDefaultTodaysDate,
+		};
 
 		const updatedDataType = {
 			type: 'date-time',
-			settings: dataTypeSettings
-		}
-		setDataType(updatedDataType)
+			settings: dataTypeSettings,
+		};
+		setDataType(updatedDataType);
 	}
 
 	function onDateDefaultTodaysDate(isChecked, type) {
-		if(!isChecked) {
+		if (!isChecked) {
 			setDatePreviewValue('');
 		} else {
 			setDatePreviewValue(formattedDate(type));
 		}
 
-		setDateDefaultTodaysDate(isChecked)
+		setDateDefaultTodaysDate(isChecked);
 
 		const dataTypeSettings = {
-			dateType: type,
-			dateDefaultTodaysDate: isChecked,
-		}
+			format: type,
+			defaultToToday: isChecked,
+		};
 
 		const updatedDataType = {
 			type: 'date-time',
-			settings: dataTypeSettings
-		}
+			settings: dataTypeSettings,
+		};
 
-		setDataType(updatedDataType)
+		setDataType(updatedDataType);
 	}
 
 	function onUpdateDataType(e) {
 		let updatedDataType = {};
 
-		switch(e) {
+		switch (e) {
 			case 'date-time':
-			setDateType('date');
-			updatedDataType = {
-				type: 'date-time',
-				settings: {
-					dateType: 'date',
-					dateDefaultTodaysDate: false,
-				}
-			}
-			break;
-		default:
-			updatedDataType = {
-				type: e}
-			break;
+				setFormat('date');
+				updatedDataType = {
+					type: 'date-time',
+					settings: {
+						format: 'date',
+						defaultToToday: false,
+					},
+				};
+				break;
+			default:
+				updatedDataType = {
+					type: e,
+				};
+				break;
 		}
 
-		setDataType(updatedDataType)
+		setDataType(updatedDataType);
 	}
 
 	/**
@@ -190,11 +201,15 @@ function ConfigureColumnDataType(props = {}) {
 			fixedWidthUnits: fixedWidthUnits,
 			disableForTablet: disableForTablet,
 			disableForPhone: disableForPhone,
+			isFixedLeftColumnGroup: false,
+			horizontalAlignment: 'none',
 			columnDataType: dataType,
 		};
 
 		console.log('updated column attributes:');
-		console.log(updatedColumnAttributes)
+		console.log(updatedColumnAttributes);
+		updatedColumn(event, 'dataType', tableId, columnId, updatedColumnAttributes, columnName);
+
 		close();
 	}
 
@@ -212,18 +227,14 @@ function ConfigureColumnDataType(props = {}) {
 
 				<hr />
 
-				<form
-					className="configure-data-type--form"
-					onSubmit={onUpdate}
-					onMouseDown={stopProp}>
-
+				<form className="configure-data-type--form" onSubmit={onUpdate} onMouseDown={stopProp}>
 					<InputControl
 						label="Column Name"
 						value={columnName}
 						onChange={value => setColumnName(value)}
 					/>
 
-					<hr style={{ marginTop: '10px' }}/>
+					<hr style={{ marginTop: '10px' }} />
 
 					<SelectControl
 						className="column-data-type--select"
@@ -239,11 +250,8 @@ function ConfigureColumnDataType(props = {}) {
 						__nextHasNoMarginBottom
 					/>
 
-					{dataType.type !== 'general' &&
-						<Panel
-							header="Content Settings"
-							className="column-data-type--settings"
-						>
+					{dataType.type !== 'general' && (
+						<Panel header="Content Settings" className="column-data-type--settings">
 							{dataType.type === 'date-time' && (
 								<>
 									<p>Select the specific date/time appearance.</p>
@@ -253,7 +261,7 @@ function ConfigureColumnDataType(props = {}) {
 											<PanelRow>
 												<CheckboxControl
 													label="Date Only"
-													checked={dateType === 'date'}
+													checked={format === 'date'}
 													onChange={e => onDateTimeType(e, 'date')}
 												/>
 											</PanelRow>
@@ -261,7 +269,7 @@ function ConfigureColumnDataType(props = {}) {
 											<PanelRow>
 												<CheckboxControl
 													label="Time Only"
-													checked={dateType === 'time'}
+													checked={format === 'time'}
 													onChange={e => onDateTimeType(e, 'time')}
 												/>
 											</PanelRow>
@@ -269,7 +277,7 @@ function ConfigureColumnDataType(props = {}) {
 											<PanelRow>
 												<CheckboxControl
 													label="Date & Time"
-													checked={dateType === 'datetime-local'}
+													checked={format === 'datetime-local'}
 													onChange={e => onDateTimeType(e, 'datetime-local')}
 												/>
 											</PanelRow>
@@ -278,17 +286,16 @@ function ConfigureColumnDataType(props = {}) {
 													<CheckboxControl
 														label="Default to today's date"
 														checked={dateDefaultTodaysDate}
-														onChange={e => onDateDefaultTodaysDate(e, dateType)}
+														onChange={e => onDateDefaultTodaysDate(e, format)}
 													/>
 												</PanelRow>
 											</PanelBody>
-
 										</div>
 
 										<div className="configure-column-type--settings-preview">
 											<TextControl
 												label="Preview"
-												type={dateType}
+												type={format}
 												value={datePreviewValue}
 												onChange={setDatePreviewValue}
 											/>
@@ -308,9 +315,8 @@ function ConfigureColumnDataType(props = {}) {
 									<p>Rating specific settings will go here.</p>
 								</>
 							)}
-
 						</Panel>
-					}
+					)}
 
 					<span className="configure-column-modal__button-group">
 						<Button variant="secondary" onClick={handleCancel}>

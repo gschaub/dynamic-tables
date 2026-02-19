@@ -1,3 +1,6 @@
+/* External dependencies */
+import { dateI18n } from '@wordpress/date';
+
 const LETTER_MAP = {
 	1: 'A',
 	2: 'B',
@@ -196,4 +199,100 @@ export function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
 		return true;
 	}
 	return false;
+}
+
+/**
+ * Test whether a data is formatted as a valid ISO date string
+ *
+ * @since 1.2
+ *
+ * @param {string} value Test date string
+ * @return {boolean}     Passed test?
+ */
+function isValidISODate(value) {
+	if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+
+	const [year, month, day] = value.split('-').map(Number);
+	const test = new Date(Date.UTC(year, month - 1, day));
+
+	return (
+		test.getUTCFullYear() === year && test.getUTCMonth() === month - 1 && test.getUTCDate() === day
+	);
+}
+
+/**
+ * Test whether a data is formatted as a valid ISO date-time string
+ *
+ * @since 1.2
+ *
+ * @param {string} value Test date string
+ * @return {boolean}     Passed test?
+ */
+function isValidISODatetime(value) {
+	const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/;
+
+	if (!isoRegex.test(value)) return false;
+
+	const test = new Date(value);
+	return !Number.isNaN(test.valueOf());
+}
+
+/**
+ * Format Date/Time values for display when focus is not on this cell
+ *
+ * @since 1.2
+ *
+ * @param {Date}   date   ISO Date
+ * @param {string} format Date/Time format
+ * @return {string}       Formatted date for display
+ */
+export function formatedDisplayDate(date, format) {
+	if (!date) return '';
+
+	// Test whether input is a valid ISO date
+	if (!isValidISODate(date) && !isValidISODatetime(date)) {
+		return '';
+	}
+
+	if (format === 'date') {
+		return dateI18n('n/j/Y', date);
+	}
+	if (format === 'time') {
+		return dateI18n('g:i a', date);
+	}
+	if (format === 'datetime-local') {
+		return dateI18n('n/j/Y g:i a', date);
+	}
+	return '';
+}
+
+/**
+ * Format Date/Time values for canonical storage in ISO format
+ *
+ * @since 1.2.0
+ *
+ * @param {string} date   Date string
+ * @param {string} format Date/Time format
+ * @return {Date}         ISO date
+ */
+export function formattedIsoDate(date, format) {
+	const dateToFormat = date ? new Date(date) : new Date();
+
+	// Test whether input is a valid ISO date
+	if (!isValidISODate(date) && !isValidISODatetime(date)) {
+		return '';
+	}
+
+	if (format === 'date') {
+		return dateToFormat.toISOString().split('T')[0];
+	}
+	if (format === 'time') {
+		return dateToFormat.toTimeString().split(' ')[0];
+	}
+	if (format === 'datetime-local') {
+		const date = dateToFormat.toISOString().split('T')[0];
+		const time = dateToFormat.toTimeString().split(' ')[0];
+		return `${date}T${time}`;
+	}
+	return '';
 }

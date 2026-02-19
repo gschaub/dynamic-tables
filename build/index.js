@@ -487,10 +487,10 @@ function ConfigureColumnDataType(props = {}) {
   };
   const [columnName, setColumnName] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnLabel);
   const [dataType, setDataType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes?.columnDataType ? columnAttributes.columnDataType : defaultDataType);
-  const [dateType, setDateType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('none');
+  const [format, setFormat] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes?.columnDataType?.settings?.format || 'date');
 
   // Date specific attributes
-  const [dateDefaultTodaysDate, setDateDefaultTodaysDate] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [dateDefaultTodaysDate, setDateDefaultTodaysDate] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes?.columnDataType?.settings?.dateDefaultTodaysDate || false);
   const [datePreviewValue, setDatePreviewValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
 
   // Column width attributes
@@ -550,16 +550,16 @@ function ConfigureColumnDataType(props = {}) {
     return '';
   }
   function onDateTimeType(e, type) {
-    if (!e && dateType === type) {
-      setDateType('date');
+    if (!e && format === type) {
+      setFormat('date');
       if (dateDefaultTodaysDate) setDatePreviewValue(formattedDate('date'));
       return;
     }
-    setDateType(type);
+    setFormat(type);
     if (dateDefaultTodaysDate) setDatePreviewValue(formattedDate(type));
     const dataTypeSettings = {
-      dateType: type,
-      dateDefaultTodaysDate: dateDefaultTodaysDate
+      format: type,
+      defaultToToday: dateDefaultTodaysDate
     };
     const updatedDataType = {
       type: 'date-time',
@@ -575,8 +575,8 @@ function ConfigureColumnDataType(props = {}) {
     }
     setDateDefaultTodaysDate(isChecked);
     const dataTypeSettings = {
-      dateType: type,
-      dateDefaultTodaysDate: isChecked
+      format: type,
+      defaultToToday: isChecked
     };
     const updatedDataType = {
       type: 'date-time',
@@ -588,12 +588,12 @@ function ConfigureColumnDataType(props = {}) {
     let updatedDataType = {};
     switch (e) {
       case 'date-time':
-        setDateType('date');
+        setFormat('date');
         updatedDataType = {
           type: 'date-time',
           settings: {
-            dateType: 'date',
-            dateDefaultTodaysDate: false
+            format: 'date',
+            defaultToToday: false
           }
         };
         break;
@@ -624,10 +624,13 @@ function ConfigureColumnDataType(props = {}) {
       fixedWidthUnits: fixedWidthUnits,
       disableForTablet: disableForTablet,
       disableForPhone: disableForPhone,
+      isFixedLeftColumnGroup: false,
+      horizontalAlignment: 'none',
       columnDataType: dataType
     };
     console.log('updated column attributes:');
     console.log(updatedColumnAttributes);
+    updatedColumn(event, 'dataType', tableId, columnId, updatedColumnAttributes, columnName);
     close();
   }
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
@@ -685,19 +688,19 @@ function ConfigureColumnDataType(props = {}) {
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelRow, {
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
                     label: "Date Only",
-                    checked: dateType === 'date',
+                    checked: format === 'date',
                     onChange: e => onDateTimeType(e, 'date')
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelRow, {
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
                     label: "Time Only",
-                    checked: dateType === 'time',
+                    checked: format === 'time',
                     onChange: e => onDateTimeType(e, 'time')
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelRow, {
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
                     label: "Date & Time",
-                    checked: dateType === 'datetime-local',
+                    checked: format === 'datetime-local',
                     onChange: e => onDateTimeType(e, 'datetime-local')
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
@@ -707,7 +710,7 @@ function ConfigureColumnDataType(props = {}) {
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
                       label: "Default to today's date",
                       checked: dateDefaultTodaysDate,
-                      onChange: e => onDateDefaultTodaysDate(e, dateType)
+                      onChange: e => onDateDefaultTodaysDate(e, format)
                     })
                   })
                 })]
@@ -715,7 +718,7 @@ function ConfigureColumnDataType(props = {}) {
                 className: "configure-column-type--settings-preview",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
                   label: "Preview",
-                  type: dateType,
+                  type: format,
                   value: datePreviewValue,
                   onChange: setDatePreviewValue
                 })
@@ -807,6 +810,14 @@ function ConfigureColumnWidth(props = {}) {
     updatedColumn,
     onRequestClose
   } = props;
+
+  // Column data type attributes
+  const defaultDataType = {
+    columnDataType: {
+      type: 'general'
+    }
+  };
+  const [dataType, setDataType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes?.columnDataType ? columnAttributes.columnDataType : defaultDataType);
   const [columnWidthType, setColumnWidthType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)();
   const [hideProportional, setHideProportional] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [hideCustom, setHideCustom] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
@@ -873,17 +884,6 @@ function ConfigureColumnWidth(props = {}) {
   }
 
   /**
-   * Close modal on cancel.
-   *
-   * @since    1.0.0
-   *
-   * @param {Object} event Cancel
-   */
-  function handleCancel(event) {
-    openColumnWidth(false);
-  }
-
-  /**
    * Close component modal.
    *
    * @since    1.1.2
@@ -893,22 +893,9 @@ function ConfigureColumnWidth(props = {}) {
   }
 
   /**
-   * Stop event processing in favor of custom processing.
-   *
-   * @since    1.0.0
-   *
-   * @param {Object} event Mouse down
-   */
-  function stopProp(event) {
-    event.stopPropagation();
-  }
-
-  /**
    * Close modal on cancel.
    *
    * @since    1.0.0
-   *
-   * @param {Object} event Cancel
    */
   function handleCancel() {
     onRequestClose?.();
@@ -1053,7 +1040,8 @@ function ConfigureColumnWidth(props = {}) {
       disableForTablet: disableForTablet,
       disableForPhone: disableForPhone,
       isFixedLeftColumnGroup: false,
-      horizontalAlignment: 'none'
+      horizontalAlignment: 'none',
+      columnDataType: dataType
     };
     updatedColumn(event, 'attributes', tableId, columnId, updatedColumnAttributes);
     close();
@@ -1941,7 +1929,6 @@ const TYPES = {
   UPDATE_CELL: 'UPDATE_CELL',
   RECEIVE_HYDRATE: 'RECEIVE_HYDRATE',
   RECEIVE_HYDRATE_TEST: 'RECEIVE_HYDRATE_TEST',
-  PERSIST: 'PERSIST',
   PROCESS_BORDERS: 'PROCESS_BORDERS'
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TYPES);
@@ -2582,7 +2569,28 @@ const updateRow = (tableId, rowId, attribute, value) => {
 };
 
 /**
- * Signal an update to a row attribute/prop.
+ * Signal an update to a column attributes.
+ *
+ * @since    1.1.2
+ *
+ * @param {number}        tableId   Identifier key for the table
+ * @param {number}        columnId  Identifier for a table column
+ * @param {string}        prop      Type of property
+ * @param {Object|string} value     New value for the prop
+ * @return  {Object} Action object
+ */
+// export const updateColumnProps = (tableId, columnId, prop, value) => {
+// 	return {
+// 		type: UPDATE_COLUMN_PROPS,
+// 		tableId,
+// 		columnId,
+// 		prop,
+// 		value,
+// 	};
+// };
+
+/**
+ * Signal an update to a column attributes.
  *
  * @since    1.0.0
  *
@@ -3089,10 +3097,14 @@ const table = (state = {
         table: returnedUpdatedTableColumn
       };
     case UPDATE_CELL:
+      let transformedValue_UpdateCell = ' "' + action.value + '"';
+      if (action.attribute === 'attributes') {
+        transformedValue_UpdateCell = JSON.stringify(action.value);
+      }
       const newCellsState = {
         ...state
       };
-      const updatedCellData = JSON.parse('{ "' + action.attribute + '" : "' + action.value + '"}');
+      const updatedCellData = JSON.parse('{ "' + action.attribute + '" :' + transformedValue_UpdateCell + '}');
       const updatedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newCellsState.cells, 'cell_id', action.cellId, updatedCellData);
       const returnedCellState = {
         ...state,
@@ -3428,20 +3440,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/block-table.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/search.mjs");
-/* harmony import */ var _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/keycodes */ "@wordpress/keycodes");
-/* harmony import */ var _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_wordpress_keycodes__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./data */ "./src/data/index.js");
-/* harmony import */ var _hooks__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./hooks */ "./src/hooks.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
-/* harmony import */ var _table_defaults__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./table-defaults */ "./src/table-defaults.js");
-/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./style */ "./src/style.js");
-/* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./components */ "./src/components/index.js");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__);
+/* harmony import */ var _wordpress_rich_text__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/rich-text */ "@wordpress/rich-text");
+/* harmony import */ var _wordpress_rich_text__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/block-table.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/search.mjs");
+/* harmony import */ var _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @wordpress/keycodes */ "@wordpress/keycodes");
+/* harmony import */ var _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_wordpress_keycodes__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./data */ "./src/data/index.js");
+/* harmony import */ var _hooks__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./hooks */ "./src/hooks.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
+/* harmony import */ var _table_defaults__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./table-defaults */ "./src/table-defaults.js");
+/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./style */ "./src/style.js");
+/* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./components */ "./src/components/index.js");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__);
 /* External dependencies */
+
 
 
 
@@ -3498,52 +3513,52 @@ function Edit(props) {
   /* Table Store Action useDispatch declarations */
   const {
     receiveNewTable
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     cloneTable
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     createTableEntity
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     saveTableEntity
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     addColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     addRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     removeColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     removeRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     updateTableProp
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     updateRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     updateColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     updateCell
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     updateTableEntity
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     updateTableBorder
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     processUnmountedTables
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     processDeletedTables
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_11__.store);
   const {
     createNotice,
     removeNotice
@@ -3551,14 +3566,16 @@ function Edit(props) {
 
   /* Local State declarations */
   const [isTableStale, setTableStale] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
-  // const [openColumnRow, setOpenColumnRow] = useState(0);
-  // const [columnMenuVisible, setColumnMenuVisible] = useState(false);
-  // const [columnAttributes, setColumnAttributes] = useState({});
   const [showBorders, setShowBorders] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const [tableName, setTableName] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
   const [numColumns, setNumColumns] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(1);
   const [numRows, setNumRows] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(1);
   const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+
+  // ToDo: Move to Utils
+  const htmlToText = (html = '') => (0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_7__.getTextContent)((0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_7__.create)({
+    html
+  })).replace(/\s+/g, ' ').trim();
 
   // Location of border cell last clicked
   const lastInvokerElRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
@@ -3601,7 +3618,6 @@ function Edit(props) {
   };
   const [rowHeightModal, setRowHeightModal] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({
     isOpen: false,
-    // anchorEl: null,
     rowId: null,
     rowLabel: '',
     rowAttributes: null
@@ -3612,7 +3628,7 @@ function Edit(props) {
    *
    * Description: Responds to clicked row menu item to update the row height configuration.
    *
-   * @since    1.1.2
+   * @since    1.2.0
    *
    * @param {Object} e             row menu click event
    * @param {number} rowId         Row number to update
@@ -3638,7 +3654,7 @@ function Edit(props) {
   /**
    * Close row height configuration dialog page.
    *
-   * @since    1.1.2
+   * @since    1.2.0
    */
   const closeRowHeightModal = () => {
     setRowHeightModal(prev => ({
@@ -3704,7 +3720,7 @@ function Edit(props) {
    *
    * Description: Responds to clicked column menu item to update the column height configuration.
    *
-   * @since    1.1.2
+   * @since    1.2.0
    *
    * @param {Object} e                Column menu click event
    * @param {number} columnId         Column number to update
@@ -3729,7 +3745,7 @@ function Edit(props) {
   /**
    * Close column data type configuration dialog page.
    *
-   * @since    1.1.2
+   * @since    1.2.0
    */
   const closeColumnDataTypeModal = () => {
     setColumnDataTypeModal(prev => ({
@@ -3746,7 +3762,7 @@ function Edit(props) {
    *
    * Description: Responds to clicked column menu item to update the column height configuration.
    *
-   * @since    1.1.2
+   * @since    1.2.0
    *
    * @param {Object} e                Column menu click event
    * @param {number} columnId         Column number to update
@@ -3771,7 +3787,7 @@ function Edit(props) {
   /**
    * Close column width configuration dialog page.
    *
-   * @since    1.1.2
+   * @since    1.2.0
    */
   const closeColumnWidthModal = () => {
     setColumnWidthModal(prev => ({
@@ -3835,7 +3851,7 @@ function Edit(props) {
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
     const {
       getTableIdByBlock
-    } = select(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_11__.store);
     const currentTableId = getTableIdByBlock(block_table_ref);
     return {
       currentTableId: currentTableId
@@ -3890,7 +3906,7 @@ function Edit(props) {
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
     const {
       getUnmountedTables
-    } = select(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_11__.store);
     return {
       unmountedTables: getUnmountedTables()
     };
@@ -3911,7 +3927,7 @@ function Edit(props) {
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
     const {
       getDeletedTables
-    } = select(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_11__.store);
     return {
       deletedTables: getDeletedTables()
     };
@@ -3925,7 +3941,7 @@ function Edit(props) {
    *
    * @type     {boolean} Post changes have been saved
    */
-  const postChangesAreSaved = (0,_hooks__WEBPACK_IMPORTED_MODULE_11__.usePostChangesSaved)();
+  const postChangesAreSaved = (0,_hooks__WEBPACK_IMPORTED_MODULE_12__.usePostChangesSaved)();
 
   /**
    * Fires when posts have just finished saving and when a change is detected in
@@ -4010,8 +4026,8 @@ function Edit(props) {
   const {
     postId,
     postType
-  } = (0,_hooks__WEBPACK_IMPORTED_MODULE_11__.useEditorIdentity)(props);
-  const inInserterBlock = !(0,_hooks__WEBPACK_IMPORTED_MODULE_11__.useNotInInserterPreview)();
+  } = (0,_hooks__WEBPACK_IMPORTED_MODULE_12__.useEditorIdentity)(props);
+  const inInserterBlock = !(0,_hooks__WEBPACK_IMPORTED_MODULE_12__.useNotInInserterPreview)();
 
   /**
    * Prepare for New Block
@@ -4038,7 +4054,7 @@ function Edit(props) {
       hasStartedResolution,
       hasFinishedResolution,
       isResolving
-    } = select(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_11__.store);
     const selectorArgs = [table_id, isTableStale];
     if (block_table_ref === '') {
       return {
@@ -4191,7 +4207,7 @@ function Edit(props) {
     // Verified that this is a clone operation.  Proceed with clone.
     setSaveLock();
     setTableStale(false);
-    const cloneBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.generateBlockTableRef)();
+    const cloneBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.generateBlockTableRef)();
     props.setAttributes({
       block_table_ref: cloneBlockTableRef
     });
@@ -4313,14 +4329,19 @@ function Edit(props) {
   const horizontalAlignment = getTablePropAttribute(table.attributes, 'horizontalAlignment');
   const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment');
   const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle');
+  const defaultDataType = {
+    type: 'general'
+  };
   const columnDataTypes = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
     const map = {};
     table.columns.forEach(({
       column_id,
       attributes
     }) => {
-      map[column_id] = attributes?.columnDataType ? attributes.columnDataType : 'general';
+      map[column_id] = attributes?.columnDataType ? attributes.columnDataType : defaultDataType;
     });
+    console.log('Column Data Types:');
+    console.log(map);
     return map;
   }, [table.columns]);
 
@@ -4334,14 +4355,14 @@ function Edit(props) {
    * @return {Object} Dynamic Table
    */
   function insertColumn(tableId, columnId) {
-    const newColumn = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultColumn)(tableId, columnId);
+    const newColumn = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultColumn)(tableId, columnId);
     const tableCells = [];
     for (let i = 0; i < numRows; i++) {
       if (i === 0) {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, columnId, i, 'Border');
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultCell)(tableId, columnId, i, 'Border');
         tableCells.push(cell);
       } else {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, columnId, i);
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultCell)(tableId, columnId, i);
         tableCells.push(cell);
       }
     }
@@ -4360,15 +4381,15 @@ function Edit(props) {
    * @return {Object} Dynamic Table
    */
   function insertRow(tableId, rowId) {
-    const newRow = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultRow)(tableId, rowId);
+    const newRow = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultRow)(tableId, rowId);
     const tableCells = [];
     for (let i = 0; i < numColumns; i++) {
       if (i === 0) {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, i, rowId, 'Border');
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultCell)(tableId, i, rowId, 'Border');
         // cell.content =
         tableCells.push(cell);
       } else {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, i, rowId);
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultCell)(tableId, i, rowId);
         tableCells.push(cell);
       }
     }
@@ -4452,12 +4473,16 @@ function Edit(props) {
         }
       case 'PROP':
         {
-          updateTableProp(tableId, attribute, value);
-          if (attribute === 'prior_status') {
-            updateTableEntity(tableId, 'unknown');
+          if (attribute === 'column_name') {
+            updateColumn(tableId, id, attribute, value);
+          } else {
+            updateTableProp(tableId, attribute, value);
+            if (attribute === 'prior_status') {
+              updateTableEntity(tableId, 'unknown');
+            }
           }
+          break;
         }
-        break;
       default:
         console.log('Unrecognized Attibute Type');
     }
@@ -4504,26 +4529,26 @@ function Edit(props) {
 
       /**  Create header row border at top of table */
       const rowBorder = [];
-      rowBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultRow)(table_id, 0, 'Border'));
+      rowBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultRow)(table_id, 0, 'Border'));
       const rowCells = [];
       for (let i = 0; i <= numColumns; i++) {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(table_id, i, 0, 'Border');
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultCell)(table_id, i, 0, 'Border');
         rowCells.push(cell);
       }
 
       /** Create column border down left side of table */
       const columnBorder = [];
-      columnBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultColumn)(table_id, 0, 'Border'));
+      columnBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultColumn)(table_id, 0, 'Border'));
       const columnCells = [];
       for (let i = 1; i <= numRows; i++) {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(table_id, 0, i, 'Border');
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultCell)(table_id, 0, i, 'Border');
         columnCells.push(cell);
       }
 
       /** Sort table parts */
-      updatedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.tableSort)('rows', [...table.rows, ...rowBorder]);
-      updatedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.tableSort)('columns', [...table.columns, ...columnBorder]);
-      updatedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.tableSort)('cells', [...table.cells, ...rowCells, ...columnCells]);
+      updatedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.tableSort)('rows', [...table.rows, ...rowBorder]);
+      updatedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.tableSort)('columns', [...table.columns, ...columnBorder]);
+      updatedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.tableSort)('cells', [...table.cells, ...rowCells, ...columnCells]);
       updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
     }
     setShowBorders(isChecked);
@@ -4541,8 +4566,8 @@ function Edit(props) {
    */
   function createTable(columnCount, rowCount, tableName) {
     setTableStale(false);
-    const newBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.generateBlockTableRef)();
-    const newTable = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.initTable)(newBlockTableRef, columnCount, rowCount, tableName);
+    const newBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.generateBlockTableRef)();
+    const newTable = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.initTable)(newBlockTableRef, columnCount, rowCount, tableName);
     props.setAttributes({
       block_table_ref: newBlockTableRef
     });
@@ -4610,6 +4635,22 @@ function Edit(props) {
   }
 
   /**
+   * Update cell data when changed.
+   *
+   * @since 1.2.0
+   *
+   * @param {number} table_id Current table id
+   * @param {number} cell_id  Updated cell id
+   * @param {Object} patch    Update payload to store
+   */
+  function onChangeCellData(table_id, cell_id, patch) {
+    // console.log('Updating Cell: ' + cell_id + ' with patch: ');
+    // console.log(patch);
+    setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', patch.content);
+    setTableAttributes(table_id, 'cell', cell_id, 'ATTRIBUTES', patch.attributes);
+  }
+
+  /**
    * Sets the focused cell state when a cell in the dynamic table receives focus.
    *
    * @since    1.1.1
@@ -4661,7 +4702,7 @@ function Edit(props) {
    * @return {void}
    */
   function onCellKeyDown(event) {
-    const isActiveKeyEvent = event.keyCode === _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_9__.UP || event.keyCode === _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_9__.DOWN || event.keyCode === _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_9__.LEFT || event.keyCode === _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_9__.RIGHT || event.keyCode === _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_9__.TAB;
+    const isActiveKeyEvent = event.keyCode === _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_10__.UP || event.keyCode === _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_10__.DOWN || event.keyCode === _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_10__.LEFT || event.keyCode === _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_10__.RIGHT || event.keyCode === _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_10__.TAB;
     if (!isActiveKeyEvent) {
       return;
     }
@@ -4671,27 +4712,27 @@ function Edit(props) {
       row
     } = focusedCell;
     switch (event.keyCode) {
-      case _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_9__.UP:
+      case _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_10__.UP:
         {
           row = Math.max(1, row - 1);
           break;
         }
-      case _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_9__.DOWN:
+      case _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_10__.DOWN:
         {
           row = Math.min(numRows, row + 1);
           break;
         }
-      case _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_9__.LEFT:
+      case _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_10__.LEFT:
         {
           col = Math.max(1, col - 1);
           break;
         }
-      case _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_9__.RIGHT:
+      case _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_10__.RIGHT:
         {
           col = Math.min(numColumns, col + 1);
           break;
         }
-      case _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_9__.TAB:
+      case _wordpress_keycodes__WEBPACK_IMPORTED_MODULE_10__.TAB:
         {
           if (col < numColumns) {
             col = col + 1;
@@ -4715,11 +4756,12 @@ function Edit(props) {
    *
    * @param {Object} e                       Table Creation Event
    * @param {string} updateType              attribute (Update), insert, delete
+   * @param {string} columnName              Column name
    * @param {number} tableId                 Identifier key for the table
    * @param {number} columnId                Identifier for the table column
    * @param {Array}  updatedColumnAttributes New column attribute values
    */
-  function onUpdateColumn(e, updateType, tableId, columnId, updatedColumnAttributes) {
+  function onUpdateColumn(e, updateType, tableId, columnId, updatedColumnAttributes, columnName = '') {
     switch (updateType) {
       case 'attributes':
         {
@@ -4741,7 +4783,8 @@ function Edit(props) {
             const columnLabel = clickedColumn?.column_name || String(columnId);
             openColumnDataTypeModal(e, columnId, columnLabel, attrs);
           } else {
-            // setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
+            setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
+            setTableAttributes(tableId, 'column_name', columnId, 'PROP', columnName);
           }
           break;
         }
@@ -5042,74 +5085,74 @@ function Edit(props) {
   /**
    * Set variables used to render the dynamic table
    */
-  const gridColumnStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.processColumns)(isNewBlock, tableIsResolving, enableFutureFeatures, table.columns);
-  const gridHeaderRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.processHeaderRow)(isNewBlock, tableIsResolving, table.rows);
-  const gridBodyRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.processBodyRows)(isNewBlock, tableIsResolving, table.rows);
+  const gridColumnStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.processColumns)(isNewBlock, tableIsResolving, enableFutureFeatures, table.columns);
+  const gridHeaderRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.processHeaderRow)(isNewBlock, tableIsResolving, table.rows);
+  const gridBodyRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.processBodyRows)(isNewBlock, tableIsResolving, table.rows);
   const startGridHeaderRowNbrStyle = showBorders ? 2 : 1;
-  const endGridHeaderRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.endGridRowNbr)(1, 'Header', numRows, enableHeaderRow, showBorders, false);
-  const startGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.startGridRowNbr)(enableHeaderRow, showBorders);
-  const endGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.endGridRowNbr)(startGridBodyRowNbrStyle, 'Body', numRows, enableHeaderRow, showBorders, false);
+  const endGridHeaderRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.endGridRowNbr)(1, 'Header', numRows, enableHeaderRow, showBorders, false);
+  const startGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.startGridRowNbr)(enableHeaderRow, showBorders);
+  const endGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.endGridRowNbr)(startGridBodyRowNbrStyle, 'Body', numRows, enableHeaderRow, showBorders, false);
   const horizontalScrollStyle = allowHorizontalScroll ? 'auto' : 'hidden';
-  const gridBandedRowTextColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.gridBandedRowTextColorStyle)(isNewBlock, tableIsResolving, bandedTextColor);
-  const gridBandedRowBackgroundColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.gridBandedRowBackgroundColorStyle)(isNewBlock, tableIsResolving, bandedRowBackgroundColor);
-  const gridShowInnerLines = (0,_style__WEBPACK_IMPORTED_MODULE_14__.gridInnerBorderStyle)(isNewBlock, tableIsResolving, showGridLines);
-  const gridInnerLineWidth = (0,_style__WEBPACK_IMPORTED_MODULE_14__.gridInnerBorderWidthStyle)(isNewBlock, tableIsResolving, showGridLines, gridLineWidth);
+  const gridBandedRowTextColor = (0,_style__WEBPACK_IMPORTED_MODULE_15__.gridBandedRowTextColorStyle)(isNewBlock, tableIsResolving, bandedTextColor);
+  const gridBandedRowBackgroundColor = (0,_style__WEBPACK_IMPORTED_MODULE_15__.gridBandedRowBackgroundColorStyle)(isNewBlock, tableIsResolving, bandedRowBackgroundColor);
+  const gridShowInnerLines = (0,_style__WEBPACK_IMPORTED_MODULE_15__.gridInnerBorderStyle)(isNewBlock, tableIsResolving, showGridLines);
+  const gridInnerLineWidth = (0,_style__WEBPACK_IMPORTED_MODULE_15__.gridInnerBorderWidthStyle)(isNewBlock, tableIsResolving, showGridLines, gridLineWidth);
   const headerRowStickyStyle = headerRowSticky ? 'auto' : 'hidden';
   const headerRowStickyClass = headerRowSticky ? 'grid-control__header--sticky ' : '';
-  const gridHeaderBackgroundColorStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getGridHeaderBackgroundColorStyle)(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor);
+  const gridHeaderBackgroundColorStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getGridHeaderBackgroundColorStyle)(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor);
 
   /**
    * Header Styling
    */
-  const headerTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, headerAlignment);
-  const headerBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyleType)(headerBorder);
+  const headerTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, headerAlignment);
+  const headerBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyleType)(headerBorder);
 
   // Top header border
-  const headerBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(headerBorder, 'top', 'color', headerBorderStyleType);
-  const headerBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(headerBorder, 'top', 'style', headerBorderStyleType);
-  const headerBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(headerBorder, 'top', 'width', headerBorderStyleType);
+  const headerBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(headerBorder, 'top', 'color', headerBorderStyleType);
+  const headerBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(headerBorder, 'top', 'style', headerBorderStyleType);
+  const headerBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(headerBorder, 'top', 'width', headerBorderStyleType);
 
   // Right header border
-  const headerBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(headerBorder, 'right', 'color', headerBorderStyleType);
-  const headerBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(headerBorder, 'right', 'style', headerBorderStyleType);
-  const headerBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(headerBorder, 'right', 'width', headerBorderStyleType);
+  const headerBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(headerBorder, 'right', 'color', headerBorderStyleType);
+  const headerBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(headerBorder, 'right', 'style', headerBorderStyleType);
+  const headerBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(headerBorder, 'right', 'width', headerBorderStyleType);
 
   // Bottom header border
-  const headerBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(headerBorder, 'bottom', 'color', headerBorderStyleType);
-  const headerBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(headerBorder, 'bottom', 'style', headerBorderStyleType);
-  const headerBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(headerBorder, 'bottom', 'width', headerBorderStyleType);
+  const headerBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(headerBorder, 'bottom', 'color', headerBorderStyleType);
+  const headerBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(headerBorder, 'bottom', 'style', headerBorderStyleType);
+  const headerBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(headerBorder, 'bottom', 'width', headerBorderStyleType);
 
   // Left header border
-  const headerBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(headerBorder, 'left', 'color', headerBorderStyleType);
-  const headerBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(headerBorder, 'left', 'style', headerBorderStyleType);
-  const headerBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(headerBorder, 'left', 'width', headerBorderStyleType);
+  const headerBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(headerBorder, 'left', 'color', headerBorderStyleType);
+  const headerBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(headerBorder, 'left', 'style', headerBorderStyleType);
+  const headerBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(headerBorder, 'left', 'width', headerBorderStyleType);
 
   /**
    * Body Styling
    */
-  const bodyTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, bodyAlignment);
-  const bodyBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyleType)(bodyBorder);
+  const bodyTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, bodyAlignment);
+  const bodyBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyleType)(bodyBorder);
   // Top body border
-  const bodyBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'top', 'color', bodyBorderStyleType);
-  const bodyBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'top', 'style', bodyBorderStyleType);
-  const bodyBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'top', 'width', bodyBorderStyleType);
+  const bodyBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(bodyBorder, 'top', 'color', bodyBorderStyleType);
+  const bodyBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(bodyBorder, 'top', 'style', bodyBorderStyleType);
+  const bodyBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(bodyBorder, 'top', 'width', bodyBorderStyleType);
 
   // Right body border
-  const bodyBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'right', 'color', bodyBorderStyleType);
-  const bodyBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'right', 'style', bodyBorderStyleType);
-  const bodyBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'right', 'width', bodyBorderStyleType);
+  const bodyBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(bodyBorder, 'right', 'color', bodyBorderStyleType);
+  const bodyBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(bodyBorder, 'right', 'style', bodyBorderStyleType);
+  const bodyBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(bodyBorder, 'right', 'width', bodyBorderStyleType);
 
   // Bottom body border
-  const bodyBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'bottom', 'color', bodyBorderStyleType);
-  const bodyBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'bottom', 'style', bodyBorderStyleType);
-  const bodyBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'bottom', 'width', bodyBorderStyleType);
+  const bodyBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(bodyBorder, 'bottom', 'color', bodyBorderStyleType);
+  const bodyBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(bodyBorder, 'bottom', 'style', bodyBorderStyleType);
+  const bodyBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(bodyBorder, 'bottom', 'width', bodyBorderStyleType);
 
   // Left body border
-  const bodyBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'left', 'color', bodyBorderStyleType);
-  const bodyBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'left', 'style', bodyBorderStyleType);
-  const bodyBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'left', 'width', bodyBorderStyleType);
-  const renderRowMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-    children: rowMenu.isOpen && rowMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.RowMenu, {
+  const bodyBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(bodyBorder, 'left', 'color', bodyBorderStyleType);
+  const bodyBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(bodyBorder, 'left', 'style', bodyBorderStyleType);
+  const bodyBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(bodyBorder, 'left', 'width', bodyBorderStyleType);
+  const renderRowMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
+    children: rowMenu.isOpen && rowMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_components__WEBPACK_IMPORTED_MODULE_16__.RowMenu, {
       debugSource: "EDIT_TOP_LEVEL",
       anchor: rowMenu.anchorEl,
       tableId: table_id,
@@ -5120,8 +5163,8 @@ function Edit(props) {
       onRequestClose: closeRowMenu
     })
   });
-  const renderRowHeightModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-    children: rowHeightModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.RowHeightModal, {
+  const renderRowHeightModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
+    children: rowHeightModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_components__WEBPACK_IMPORTED_MODULE_16__.RowHeightModal, {
       tableId: table_id,
       rowId: rowHeightModal.rowId,
       rowLabel: rowHeightModal.rowLabel,
@@ -5130,8 +5173,8 @@ function Edit(props) {
       onRequestClose: closeRowHeightModal
     })
   });
-  const renderColumnMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-    children: columnMenu.isOpen && columnMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.ColumnMenu, {
+  const renderColumnMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
+    children: columnMenu.isOpen && columnMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_components__WEBPACK_IMPORTED_MODULE_16__.ColumnMenu, {
       debugSource: "EDIT_TOP_LEVEL",
       anchor: columnMenu.anchorEl,
       tableId: table_id,
@@ -5142,8 +5185,8 @@ function Edit(props) {
       onRequestClose: closeColumnMenu
     })
   });
-  const renderColumnDataTypeModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-    children: columnDataTypeModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.ColumnDataTypeModal, {
+  const renderColumnDataTypeModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
+    children: columnDataTypeModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_components__WEBPACK_IMPORTED_MODULE_16__.ColumnDataTypeModal, {
       tableId: table_id,
       columnId: columnDataTypeModal.columnId,
       columnLabel: columnDataTypeModal.columnLabel,
@@ -5153,8 +5196,8 @@ function Edit(props) {
       onRequestClose: closeColumnDataTypeModal
     })
   });
-  const renderColumnWidthModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-    children: columnWidthModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.ColumnWidthModal, {
+  const renderColumnWidthModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
+    children: columnWidthModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_components__WEBPACK_IMPORTED_MODULE_16__.ColumnWidthModal, {
       tableId: table_id,
       columnId: columnWidthModal.columnId,
       columnLabel: columnWidthModal.columnLabel,
@@ -5164,83 +5207,83 @@ function Edit(props) {
       onRequestClose: closeColumnWidthModal
     })
   });
-  const renderControls = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockAlignmentToolbar, {
+  const renderControls = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockAlignmentToolbar, {
         value: block_alignment,
         onChange: e => props.setAttributes({
           block_alignment: e
         })
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Panel, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Panel, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
           title: "Definition",
           initialOpen: true,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)("div", {
               className: "grid-control__inspector-controls--read-only",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("span", {
                 className: "grid-control__inspector-controls--read-only-label",
                 children: "Table Name:"
-              }), (0,_utils__WEBPACK_IMPORTED_MODULE_12__.removeTags)(table.table_name)]
+              }), htmlToText(table.table_name)]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)("div", {
               className: "grid-control__inspector-controls--read-only",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("span", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("span", {
                 className: "grid-control__inspector-controls--read-only-label",
                 children: "Table Columns/Rows:"
               }), numColumns, "/", numRows]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
               label: "Show table borders",
               __nextHasNoMarginBottom: true,
               checked: showBorders,
               onChange: e => onToggleBorders(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
               label: "Hide Table Title",
               __nextHasNoMarginBottom: true,
               checked: hideTitle,
               onChange: e => onHideTitle(table, e)
             })
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
           title: "Table Header",
           initialOpen: false,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
               label: "First Row as Header?",
               __nextHasNoMarginBottom: true,
               checked: enableHeaderRow,
               onChange: e => onEnableHeaderRow(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
               label: "Freeze Header Row?",
               __nextHasNoMarginBottom: true,
               disabled: !enableHeaderRow,
               checked: headerRowSticky,
               onChange: e => onHeaderRowSticky(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)("span", {
               className: "inspector-controls-menu__header-alignment--middle",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
                 id: "header-alignment",
                 value: headerAlignment,
                 onChange: e => onAlignHeader(table, e)
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("label", {
                 className: "inspector-controls-nemu__label--left-margin",
                 htmlFor: "header-alignment",
                 children: "Text Alignment"
               })]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.BorderBoxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.BorderBoxControl, {
               className: "border-box-workaround",
               __next40pxDefaultSize: true,
               __experimentalIsRenderedInSidebar: true,
@@ -5253,31 +5296,31 @@ function Edit(props) {
               onChange: e => onHeaderBorder(table, e)
             })
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
           title: "Table Body",
           initialOpen: false,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
               label: "Allow Horizontal Acroll?",
               __nextHasNoMarginBottom: true,
               checked: allowHorizontalScroll,
               onChange: e => onAllowHorizontalScroll(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)("span", {
               className: "inspector-controls-menu__header-alignment--middle",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
                 id: "body-alignment",
                 value: bodyAlignment,
                 onChange: e => onAlignBody(table, e)
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("label", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("label", {
                 className: "inspector-controls-menu__label--left-margin",
                 htmlFor: "body-alignment",
                 children: "Text Alignment"
               })]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.BorderBoxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.BorderBoxControl, {
               className: "border-box-workaround",
               label: "Borders",
               hideLabelFromVision: "false",
@@ -5289,13 +5332,13 @@ function Edit(props) {
           })]
         })]
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
       group: "styles",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
         title: "Banded Table Rows",
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
             label: "Display Banded Rows",
             __nextHasNoMarginBottom: true,
             checked: bandedRows
@@ -5303,7 +5346,7 @@ function Edit(props) {
             ,
             onChange: e => onShowBandedRows(table, e)
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.PanelColorSettings, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.PanelColorSettings, {
           __experimentalIsRenderedInSidebar: true,
           title: 'Banded Row Color',
           colors: themeColors,
@@ -5317,18 +5360,18 @@ function Edit(props) {
             label: 'Background'
           }]
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
         title: "Grid Lines",
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.CheckboxControl, {
             label: "Display Inner Grid Lines",
             __nextHasNoMarginBottom: true,
             checked: showGridLines,
             onChange: e => onShowGridLines(table, e)
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
             label: "Inner Grid Line Width",
             value: gridLineWidth,
             labelPosition: "side",
@@ -5336,18 +5379,18 @@ function Edit(props) {
           })
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.InspectorControls, {
       group: "typography"
     })]
   });
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)("div", {
     ...blockProps,
-    children: [!isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-      children: [renderRowMenu, renderRowHeightModal, renderColumnMenu, renderColumnDataTypeModal, renderColumnWidthModal, renderControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+    children: [!isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
+      children: [renderRowMenu, renderRowHeightModal, renderColumnMenu, renderColumnDataTypeModal, renderColumnWidthModal, renderControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)("div", {
         style: {
           display: 'block'
         },
-        children: [!hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
+        children: [!hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
           id: "tableTitle",
           style: {
             '--gridAlignment': gridAlignment
@@ -5356,19 +5399,19 @@ function Edit(props) {
           allowedFormats: ['core/bold', 'core/italic'],
           onChange: e => setTableAttributes(table_id, 'table_name', '', 'PROP', e),
           value: table.table_name
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
           ref: gridRef,
           onKeyDown: onCellKeyDown,
           onFocusCapture: onGridFocusCapture,
           tabIndex: 0,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
             className: "grid-scroller",
             style: {
               '--headerRowSticky': headerRowStickyStyle
               // "--startGridBodyRowNbr": startGridBodyRowNbrStyle,
               // "--endGridBodyRowNbr": endGridBodyRowNbrStyle
             },
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)("div", {
               className: 'grid-control ' + headerRowStickyClass,
               style: {
                 '--gridTemplateColumns': gridColumnStyle,
@@ -5378,7 +5421,7 @@ function Edit(props) {
                 '--gridNumRows': numRows,
                 '--gridAlignment': gridAlignment
               },
-              children: [showBorders && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+              children: [showBorders && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                 className: 'grid-control__border',
                 children: table.cells.filter(cell => cell.attributes.border && cell.row_id === '0').map(({
                   table_id,
@@ -5386,14 +5429,15 @@ function Edit(props) {
                   column_id,
                   cell_id,
                   content,
+                  attributes,
                   classes
                 }) => {
-                  const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.setBorderContent)(row_id, column_id, content);
+                  const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.setBorderContent)(row_id, column_id, content);
                   const isFirstColumn = column_id === '1' ? true : false;
-                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-                    children: [isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
+                    children: [isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                       className: 'grid-control__border-cells'
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(Cell, {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(Cell, {
                       cellType: "border",
                       cell_id: cell_id,
                       table: table,
@@ -5401,6 +5445,7 @@ function Edit(props) {
                       row_id: row_id,
                       column_id: column_id,
                       content: borderContent,
+                      cellAttributes: attributes,
                       className: classes,
                       onMouseDown: onMouseBorderClick
                     })]
@@ -5410,7 +5455,7 @@ function Edit(props) {
                 row_id
               }) => {
                 const renderedRow = row_id;
-                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                   className: "grid-control__header",
                   style: {
                     '--gridTemplateHeaderRows': gridHeaderRowStyle,
@@ -5442,17 +5487,17 @@ function Edit(props) {
                     let calculatedClasses = '';
                     const isFirstColumn = column_id === '1' ? true : false;
                     const isBorder = attributes.border;
-                    const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.setBorderContent)(row_id, column_id, content);
+                    const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.setBorderContent)(row_id, column_id, content);
                     const showGridLinesCSS = gridShowInnerLines;
                     const gridLineWidthCSS = gridInnerLineWidth;
                     const isFocused = focusedCell.col === Number(column_id) && focusedCell.row === Number(row_id);
                     if (isFocused) {
                       calculatedClasses = calculatedClasses + 'grid-control__body-cells--focused ';
                     }
-                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-                      children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
+                      children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                         className: 'grid-control__border-cells'
-                      }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(Cell, {
+                      }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(Cell, {
                         cellType: "border",
                         cell_id: cell_id,
                         table: table,
@@ -5460,32 +5505,34 @@ function Edit(props) {
                         row_id: row_id,
                         column_id: column_id,
                         content: borderContent,
+                        cellAttributes: attributes,
                         className: classes,
                         onMouseDown: onMouseBorderClick
-                      }), isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                      }), isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                         className: 'grid-control__header-cells',
                         style: {
                           '--showGridLines': showGridLinesCSS,
                           '--gridLineWidth': gridLineWidthCSS
                         }
-                      }), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(Cell, {
+                      }), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(Cell, {
                         cellType: 'body',
-                        dataFormat: 'general',
+                        dataFormat: defaultDataType,
                         cell_id: cell_id,
                         table_id: table_id,
                         row_id: row_id,
                         column_id: column_id,
                         content: content,
+                        attributes: attributes,
                         isFocused: isFocused,
                         className: 'grid-control__header-cells ' + classes + calculatedClasses,
                         showGridLinesCSS: showGridLinesCSS,
                         gridLineWidthCSS: gridLineWidthCSS,
-                        onChange: e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e)
+                        onChange: onChangeCellData
                       })]
                     });
                   })
                 });
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                 className: 'grid-control__body',
                 style: {
                   '--gridTemplateBodyRows': gridBodyRowStyle,
@@ -5521,7 +5568,7 @@ function Edit(props) {
                   if (bandedRows && bandedRowOffset == 1 && Number(row_id) > 1 && (Number(row_id) + bandedRowOffset) % 2 === 0) {
                     calculatedClasses = calculatedClasses + 'grid-control__body-rows--banded-row ';
                   }
-                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                     className: 'grid-control__body-row ' + calculatedClasses,
                     style: {
                       '--bandedRowTextColor': gridBandedRowTextColor,
@@ -5542,7 +5589,7 @@ function Edit(props) {
                       calculatedClasses = '';
                       const isFirstColumn = column_id === '1' ? true : false;
                       const isBorder = attributes.border;
-                      const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.setBorderContent)(row_id, column_id, content);
+                      const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.setBorderContent)(row_id, column_id, content);
                       const showGridLinesCSS = gridShowInnerLines;
                       const gridLineWidthCSS = gridInnerLineWidth;
                       const isFocused = focusedCell.col === Number(column_id) && focusedCell.row === Number(row_id);
@@ -5553,10 +5600,10 @@ function Edit(props) {
                       // console.log('Column Data Types')
                       // console.log(columnDataTypes[column_id])
 
-                      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-                        children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
+                        children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                           className: 'grid-control__border-cells'
-                        }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(Cell, {
+                        }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(Cell, {
                           cellType: "border",
                           cell_id: cell_id,
                           table: table,
@@ -5564,9 +5611,10 @@ function Edit(props) {
                           row_id: row_id,
                           column_id: column_id,
                           content: borderContent,
+                          attributes: attributes,
                           className: classes,
                           onMouseDown: onMouseBorderClick
-                        }), isFirstColumn && !isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                        }), isFirstColumn && !isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                           className: 'grid-control__body-cells grid-control__body-cells--zoom',
                           style: {
                             '--showGridLines': showGridLinesCSS,
@@ -5575,11 +5623,11 @@ function Edit(props) {
                           "data-col": Number(column_id),
                           "data-row": Number(row_id),
                           tabIndex: isFocused ? 0 : -1,
-                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
                             href: "#",
-                            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"]
+                            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_9__["default"]
                           })
-                        }, cell_id), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(Cell, {
+                        }, cell_id), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(Cell, {
                           cellType: 'body',
                           dataFormat: columnDataTypes[column_id],
                           cell_id: cell_id,
@@ -5587,11 +5635,12 @@ function Edit(props) {
                           row_id: row_id,
                           column_id: column_id,
                           content: content,
+                          attributes: attributes,
                           isFocused: isFocused,
                           className: 'grid-control__body-cells ' + classes + calculatedClasses,
                           showGridLinesCSS: showGridLinesCSS,
                           gridLineWidthCSS: gridLineWidthCSS,
-                          onChange: e => setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', e)
+                          onChange: onChangeCellData
                         })]
                       });
                     })
@@ -5602,26 +5651,26 @@ function Edit(props) {
           })
         })]
       })]
-    }), !isNewBlock && tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Spinner, {
+    }), !isNewBlock && tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Spinner, {
       children: "Retrieving Table Data"
-    }), isNewBlock && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Placeholder, {
+    }), isNewBlock && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Placeholder, {
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Dynamic Table', 'dynamic-table'),
-      icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockIcon, {
-        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
+      icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockIcon, {
+        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"],
         showColors: true
       }),
       instructions: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Create a new dynamic table.', 'dynamic-table'),
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("form", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)("form", {
         className: "blocks-table__placeholder-form",
         onSubmit: onCreateTable,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalInputControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalInputControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Table Name', 'dynamic-table'),
           placeholder: "New Table",
           required: "true",
           onChange: e => setTableName(e),
           value: tableName,
           className: "blocks-table__placeholder-input"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
           __nextHasNoMarginBottom: true,
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Table Columns', 'dynamic-table'),
           min: 1,
@@ -5629,7 +5678,7 @@ function Edit(props) {
           value: numColumns,
           onChange: e => onChangeInitialColumnCount(e),
           className: "blocks-table__placeholder-input"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
           __nextHasNoMarginBottom: true,
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Table Rows', 'dynamic-table'),
           required: "true",
@@ -5637,7 +5686,7 @@ function Edit(props) {
           value: numRows,
           onChange: e => onChangeInitialRowCount(e),
           className: "blocks-table__placeholder-input"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.Button, {
           className: "blocks-table__placeholder-button",
           variant: "primary",
           type: "submit",
@@ -5651,7 +5700,59 @@ function Edit(props) {
 /**
  * Component to render and manage cell content editing
  *
+ * Data Shape as follows with date-time as an example
+ *
+ * Type Registry
+ *
+ *   TYPES = {
+ *     general: {
+ *       label: 'Rich Text',
+ * 	   },
+ *
+ *     'date-time': {
+ *       label: 'Date/Time',
+ *       formats: {
+ *         date: { label: 'Date' },
+ *         time: { label: 'Time' },
+ *         datetime-local: { label: 'Date & Time' },
+ *       },
+ *     },
+ *   }
+ *
+ *   Column - attributes.columnDataType:
+ *	  {
+ *        Date/Time Example
+ *
+ *		  type: 'date-time',
+ *		  settings: {
+ *			  format: 'date',
+ *			  defaultToToday: false,
+ *	  },
+ *
+ *   Cell - Content:
+ *     Raw content value (example 10/1/2025)
+ *
+ *   Cell - attributes.value:
+ *   {
+ *        Column columnDataType may be included only if an override is permitted
+ *        for this data type AND an override exists for this particular cell
+ *        overrides: {...}
+ *
+ * 		  meta: {
+ *            label: 'My Date',
+ * 		      size: 'My Size',
+ *        },
+ * 		  // Dependencies on other objects external to Cell. Example for post
+ * 	  	  ref: {
+ * 			  kind: 'post',
+ * 			  id: 45,
+ * 		  },
+ * 		  // search support
+ * 		  indexText: 'optimized for web search, all text only' (example 2025-10-01),
+ *   }
+ *
  * @since 1.1.1
+ * @since 1.2.0  Added column data type logic and Date/Time render
  *
  * @param {Object} props Passed attributes
  * @return {Object} events for cell content editing
@@ -5663,8 +5764,10 @@ function Cell(props) {
     table,
     row_id,
     cell_id,
+    table_id,
     column_id,
     content,
+    attributes,
     isFocused,
     className,
     showGridLinesCSS,
@@ -5672,23 +5775,48 @@ function Cell(props) {
     onChange,
     onMouseDown
   } = props;
+  const {
+    type,
+    settings
+  } = dataFormat || {};
+  const [inputType, setInputType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('text'); // TextControl type (e.g., text, date, etc.)
+  const [cellContent, setCellContent] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)();
+  const initialCellValue = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(content);
+  const [cellAttributes, setCellAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(attributes);
+  const [isCellChanged, setIsCellChanged] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const htmlToText = (html = '') => (0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_7__.getTextContent)((0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_7__.create)({
+    html
+  })).replace(/\s+/g, ' ').trim();
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    let formattedInput = content;
+    if (type === 'date-time' && content) {
+      formattedInput = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.formatedDisplayDate)(content, settings.format);
+    }
+    setCellContent(formattedInput);
+  }, []);
 
   /**
    * Handle onChange event for cell content update
    *
    * @since 1.1.1
+   * @since 1.2.0   Converted input to object to update multiple fields
    *
-   * @param {string} type Type of cell data to update
-   * @param {Object} e    event data
+   * @param {Object} patch event data
    */
-  function updateCellData(type, e) {
-    onChange(e, type);
+  function updateCellData(patch) {
+    console.log('Updating Cell Data:');
+    console.log(patch);
+    setIsCellChanged(true);
+    initialCellValue.current = patch.content;
+    if (patch.content !== undefined) setCellContent(patch.content);
+    if (patch.attributes !== undefined) setCellAttributes(patch.attributes);
+    onChange(table_id, cell_id, patch);
   }
 
   /**
    * Relay mouse down event for border cells
    *
-   * @since 1.1.2
+   * @since 1.2.0
    *
    * @param {number} column_id Clicked table row
    * @param {number} row_id    Clicked table row
@@ -5698,8 +5826,63 @@ function Cell(props) {
   function passMouseBorderClick(column_id, row_id, table, e) {
     onMouseDown(column_id, row_id, table, e);
   }
+
+  /**
+   *
+   * This section supports Data/Time input and display.
+   *
+   * @since 1.2.0
+   */
+
+  /**
+   * Set new input type on TextControl component when a date-time cell loses focus
+   *
+   * @since 1.2.0
+   *
+   * @param {Object} e
+   * @param {Date}   date
+   * @param {string} inputType
+   */
+  function onSetInputType(e, date, inputType) {
+    e.stopPropagation();
+    if (isCellChanged) {
+      setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_13__.formatedDisplayDate)(date, settings.format));
+    } else {
+      setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_13__.formatedDisplayDate)(initialCellValue.current, settings.format));
+    }
+    setInputType(inputType);
+  }
+
+  /**
+   * Set correct date input type on TextControl component when cell gains focus and
+   * optionally poplulate with today's date/time based on format rules
+   *
+   * @since 1.2.0
+   *
+   * @param {Object} e On Focus event
+   * @return {void}
+   */
+  function showTimeInputType(e) {
+    e.stopPropagation();
+    setInputType(settings.format);
+    if (!!content) setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_13__.formattedIsoDate)(content, settings.format));
+    if (!content && settings?.defaultToToday) {
+      const today = new Date();
+      setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_13__.formattedIsoDate)(today, settings.format));
+    }
+  }
+
+  /**
+   * React HTML to render a cell based on its type
+   *
+   * @since 1.1.1
+   * @since 1.2.0    Add DateTime render type
+   *
+   * @param {Object} e On Focus event
+   * @return {void}
+   */
   const renderTypes = {
-    richText: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
+    richText: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
       id: cell_id,
       className: className,
       style: {
@@ -5710,18 +5893,66 @@ function Cell(props) {
       "data-col": Number(column_id),
       "data-row": Number(row_id),
       tabIndex: isFocused ? 0 : -1,
-      onChange: e => updateCellData('CONTENT', e),
-      value: content
+      value: cellContent,
+      onChange: next => {
+        const plainText = htmlToText(next);
+        updateCellData({
+          content: next,
+          attributes: {
+            ...cellAttributes,
+            value: {
+              indexText: plainText
+            }
+          }
+        });
+      }
     }, cell_id),
-    border: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+    border: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
       id: cell_id,
       onMouseDown: e => passMouseBorderClick(column_id, row_id, table, e),
       className: className,
       "data-col": Number(column_id),
       "data-row": Number(row_id),
       tabIndex: -1,
-      children: content
-    }, cell_id)
+      children: cellContent
+    }, cell_id),
+    dateTime: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
+      style: {
+        '--showGridLines': showGridLinesCSS,
+        '--gridLineWidth': gridLineWidthCSS
+      },
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TextControl, {
+        style: {
+          backgroundColor: 'transparent',
+          border: 'none',
+          padding: 0,
+          width: '100%',
+          fontSize: '16.8px',
+          fontFamily: 'Inter, sans-serif'
+        },
+        id: cell_id,
+        className: className,
+        "data-col": Number(column_id),
+        "data-row": Number(row_id),
+        tabIndex: isFocused ? 0 : -1,
+        type: inputType,
+        onFocus: showTimeInputType,
+        onBlur: e => onSetInputType(e, cellContent, 'text'),
+        value: cellContent,
+        onChange: next => {
+          const formattedContent = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.formattedIsoDate)(next, settings.format);
+          updateCellData({
+            content: next,
+            attributes: {
+              ...cellAttributes,
+              value: {
+                indexText: formattedContent
+              }
+            }
+          });
+        }
+      }, cell_id)
+    })
   };
   let renderPipeline = [];
   switch (cellType) {
@@ -5729,23 +5960,25 @@ function Cell(props) {
       renderPipeline = ['border'];
       break;
     case 'body':
-      switch (dataFormat) {
+      switch (type) {
         case 'general':
           renderPipeline = ['richText'];
+          break;
+        case 'date-time':
+          renderPipeline = ['dateTime'];
           break;
       }
       break;
   }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
     children: renderPipeline.map(key => {
       const renderPart = renderTypes[key];
       if (!renderPart) {
-        // Fail-soft: ignore unknown keys (or log in dev)
         return null;
       }
 
       // Stable key in React list:
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
         children: renderPart()
       }, key);
     })
@@ -6585,9 +6818,6 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
     verticalAlignment: 'none',
     hideTitle: true
   };
-  updatedDataType = {
-    type: e
-  };
   const columnAttributes = {
     columnDataType: {
       type: 'General'
@@ -6702,15 +6932,20 @@ function getDefaultTableClasses(tableComponent) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   computeCellIds: () => (/* binding */ computeCellIds),
+/* harmony export */   formatedDisplayDate: () => (/* binding */ formatedDisplayDate),
+/* harmony export */   formattedIsoDate: () => (/* binding */ formattedIsoDate),
 /* harmony export */   generateBlockTableRef: () => (/* binding */ generateBlockTableRef),
 /* harmony export */   numberToLetter: () => (/* binding */ numberToLetter),
 /* harmony export */   openCurrentColumnMenu: () => (/* binding */ openCurrentColumnMenu),
 /* harmony export */   openCurrentRowMenu: () => (/* binding */ openCurrentRowMenu),
-/* harmony export */   removeTags: () => (/* binding */ removeTags),
 /* harmony export */   setBorderContent: () => (/* binding */ setBorderContent),
 /* harmony export */   tableSort: () => (/* binding */ tableSort),
 /* harmony export */   updateArray: () => (/* binding */ updateArray)
 /* harmony export */ });
+/* harmony import */ var _wordpress_date__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/date */ "@wordpress/date");
+/* harmony import */ var _wordpress_date__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_date__WEBPACK_IMPORTED_MODULE_0__);
+/* External dependencies */
+
 const LETTER_MAP = {
   1: 'A',
   2: 'B',
@@ -6910,20 +7145,91 @@ function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
 }
 
 /**
- * Strip any HTML tags.
+ * Test whether a data is formatted as a valid ISO date string
  *
- * @param {string} str String to evaluate
- * @return  {string} String with any embedded tages removed
- * @since    1.0.0
+ * @since 1.2
+ *
+ * @param {string} value Test date string
+ * @return {boolean}     Passed test?
  */
-function removeTags(str) {
-  if (str === null || str === '') return false;
-  str = str.toString();
+function isValidISODate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const [year, month, day] = value.split('-').map(Number);
+  const test = new Date(Date.UTC(year, month - 1, day));
+  return test.getUTCFullYear() === year && test.getUTCMonth() === month - 1 && test.getUTCDate() === day;
+}
 
-  // Regular expression to identify HTML tags in
-  // the input string. Replacing the identified
-  // HTML tag with a null string.
-  return str.replace(/(<([^>]+)>)/gi, '');
+/**
+ * Test whether a data is formatted as a valid ISO date-time string
+ *
+ * @since 1.2
+ *
+ * @param {string} value Test date string
+ * @return {boolean}     Passed test?
+ */
+function isValidISODatetime(value) {
+  const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/;
+  if (!isoRegex.test(value)) return false;
+  const test = new Date(value);
+  return !Number.isNaN(test.valueOf());
+}
+
+/**
+ * Format Date/Time values for display when focus is not on this cell
+ *
+ * @since 1.2
+ *
+ * @param {Date}   date   ISO Date
+ * @param {string} format Date/Time format
+ * @return {string}       Formatted date for display
+ */
+function formatedDisplayDate(date, format) {
+  if (!date) return '';
+
+  // Test whether input is a valid ISO date
+  if (!isValidISODate(date) && !isValidISODatetime(date)) {
+    return '';
+  }
+  if (format === 'date') {
+    return (0,_wordpress_date__WEBPACK_IMPORTED_MODULE_0__.dateI18n)('n/j/Y', date);
+  }
+  if (format === 'time') {
+    return (0,_wordpress_date__WEBPACK_IMPORTED_MODULE_0__.dateI18n)('g:i a', date);
+  }
+  if (format === 'datetime-local') {
+    return (0,_wordpress_date__WEBPACK_IMPORTED_MODULE_0__.dateI18n)('n/j/Y g:i a', date);
+  }
+  return '';
+}
+
+/**
+ * Format Date/Time values for canonical storage in ISO format
+ *
+ * @since 1.2.0
+ *
+ * @param {string} date   Date string
+ * @param {string} format Date/Time format
+ * @return {Date}         ISO date
+ */
+function formattedIsoDate(date, format) {
+  const dateToFormat = date ? new Date(date) : new Date();
+
+  // Test whether input is a valid ISO date
+  if (!isValidISODate(date) && !isValidISODatetime(date)) {
+    return '';
+  }
+  if (format === 'date') {
+    return dateToFormat.toISOString().split('T')[0];
+  }
+  if (format === 'time') {
+    return dateToFormat.toTimeString().split(' ')[0];
+  }
+  if (format === 'datetime-local') {
+    const date = dateToFormat.toISOString().split('T')[0];
+    const time = dateToFormat.toTimeString().split(' ')[0];
+    return `${date}T${time}`;
+  }
+  return '';
 }
 
 /***/ }),
@@ -6988,6 +7294,16 @@ module.exports = window["wp"]["data"];
 
 /***/ }),
 
+/***/ "@wordpress/date":
+/*!******************************!*\
+  !*** external ["wp","date"] ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["date"];
+
+/***/ }),
+
 /***/ "@wordpress/editor":
 /*!********************************!*\
   !*** external ["wp","editor"] ***!
@@ -7045,6 +7361,16 @@ module.exports = window["wp"]["notices"];
 /***/ ((module) => {
 
 module.exports = window["wp"]["primitives"];
+
+/***/ }),
+
+/***/ "@wordpress/rich-text":
+/*!**********************************!*\
+  !*** external ["wp","richText"] ***!
+  \**********************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["richText"];
 
 /***/ }),
 

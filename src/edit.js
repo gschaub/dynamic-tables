@@ -12,6 +12,7 @@ import {
 	Spinner,
 	Placeholder,
 	CheckboxControl,
+	TextControl,
 	__experimentalInputControl as InputControl,
 	BorderBoxControl,
 	__experimentalNumberControl as NumberControl,
@@ -28,7 +29,8 @@ import {
 	BlockAlignmentToolbar,
 	PanelColorSettings,
 } from '@wordpress/block-editor';
-import { search, blockTable as icon, column, columns } from '@wordpress/icons';
+import { create, getTextContent } from '@wordpress/rich-text';
+import { search, blockTable as icon } from '@wordpress/icons';
 import { UP, DOWN, RIGHT, LEFT, TAB } from '@wordpress/keycodes';
 
 /* Internal dependencies */
@@ -39,8 +41,8 @@ import {
 	tableSort,
 	generateBlockTableRef,
 	setBorderContent,
-	openCurrentColumnMenu,
-	removeTags,
+	formatedDisplayDate,
+	formattedIsoDate,
 } from './utils';
 
 import { initTable, getDefaultRow, getDefaultColumn, getDefaultCell } from './table-defaults';
@@ -60,7 +62,13 @@ import {
 	getBorderStyle,
 } from './style';
 
-import { RowMenu, RowHeightModal, ColumnMenu, ColumnWidthModal, ColumnDataTypeModal } from './components';
+import {
+	RowMenu,
+	RowHeightModal,
+	ColumnMenu,
+	ColumnWidthModal,
+	ColumnDataTypeModal,
+} from './components';
 import './editor.scss';
 
 /* Create Dynamic Tables entity in WordPress core-data */
@@ -113,14 +121,14 @@ export default function Edit(props) {
 
 	/* Local State declarations */
 	const [isTableStale, setTableStale] = useState(true);
-	// const [openColumnRow, setOpenColumnRow] = useState(0);
-	// const [columnMenuVisible, setColumnMenuVisible] = useState(false);
-	// const [columnAttributes, setColumnAttributes] = useState({});
 	const [showBorders, setShowBorders] = useState(false);
 	const [tableName, setTableName] = useState('');
 	const [numColumns, setNumColumns] = useState(1);
 	const [numRows, setNumRows] = useState(1);
 	const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = useState(false);
+
+	// ToDo: Move to Utils
+	const htmlToText = (html = '') => getTextContent(create({ html })).replace(/\s+/g, ' ').trim();
 
 	// Location of border cell last clicked
 	const lastInvokerElRef = useRef(null);
@@ -163,7 +171,6 @@ export default function Edit(props) {
 
 	const [rowHeightModal, setRowHeightModal] = useState({
 		isOpen: false,
-		// anchorEl: null,
 		rowId: null,
 		rowLabel: '',
 		rowAttributes: null,
@@ -174,7 +181,7 @@ export default function Edit(props) {
 	 *
 	 * Description: Responds to clicked row menu item to update the row height configuration.
 	 *
-	 * @since    1.1.2
+	 * @since    1.2.0
 	 *
 	 * @param {Object} e             row menu click event
 	 * @param {number} rowId         Row number to update
@@ -201,7 +208,7 @@ export default function Edit(props) {
 	/**
 	 * Close row height configuration dialog page.
 	 *
-	 * @since    1.1.2
+	 * @since    1.2.0
 	 */
 	const closeRowHeightModal = () => {
 		setRowHeightModal(prev => ({ ...prev, isOpen: false }));
@@ -265,7 +272,7 @@ export default function Edit(props) {
 	 *
 	 * Description: Responds to clicked column menu item to update the column height configuration.
 	 *
-	 * @since    1.1.2
+	 * @since    1.2.0
 	 *
 	 * @param {Object} e                Column menu click event
 	 * @param {number} columnId         Column number to update
@@ -291,7 +298,7 @@ export default function Edit(props) {
 	/**
 	 * Close column data type configuration dialog page.
 	 *
-	 * @since    1.1.2
+	 * @since    1.2.0
 	 */
 	const closeColumnDataTypeModal = () => {
 		setColumnDataTypeModal(prev => ({ ...prev, isOpen: false }));
@@ -305,7 +312,7 @@ export default function Edit(props) {
 	 *
 	 * Description: Responds to clicked column menu item to update the column height configuration.
 	 *
-	 * @since    1.1.2
+	 * @since    1.2.0
 	 *
 	 * @param {Object} e                Column menu click event
 	 * @param {number} columnId         Column number to update
@@ -331,7 +338,7 @@ export default function Edit(props) {
 	/**
 	 * Close column width configuration dialog page.
 	 *
-	 * @since    1.1.2
+	 * @since    1.2.0
 	 */
 	const closeColumnWidthModal = () => {
 		setColumnWidthModal(prev => ({ ...prev, isOpen: false }));
@@ -868,14 +875,18 @@ export default function Edit(props) {
 	const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment');
 	const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle');
 
+	const defaultDataType = {
+		type: 'general',
+	};
 
 	const columnDataTypes = useMemo(() => {
 		const map = {};
 
-		table.columns.forEach(({column_id, attributes}) => {
-			map[column_id] = attributes?.columnDataType ? attributes.columnDataType : 'general';
+		table.columns.forEach(({ column_id, attributes }) => {
+			map[column_id] = attributes?.columnDataType ? attributes.columnDataType : defaultDataType;
 		});
-
+		console.log('Column Data Types:');
+		console.log(map);
 		return map;
 	}, [table.columns]);
 
@@ -1006,14 +1017,17 @@ export default function Edit(props) {
 				}
 				break;
 			}
-			case 'PROP':
-				{
+			case 'PROP': {
+				if (attribute === 'column_name') {
+					updateColumn(tableId, id, attribute, value);
+				} else {
 					updateTableProp(tableId, attribute, value);
 					if (attribute === 'prior_status') {
 						updateTableEntity(tableId, 'unknown');
 					}
 				}
 				break;
+			}
 
 			default:
 				console.log('Unrecognized Attibute Type');
@@ -1176,6 +1190,22 @@ export default function Edit(props) {
 	}
 
 	/**
+	 * Update cell data when changed.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param {number} table_id Current table id
+	 * @param {number} cell_id  Updated cell id
+	 * @param {Object} patch    Update payload to store
+	 */
+	function onChangeCellData(table_id, cell_id, patch) {
+		// console.log('Updating Cell: ' + cell_id + ' with patch: ');
+		// console.log(patch);
+		setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', patch.content);
+		setTableAttributes(table_id, 'cell', cell_id, 'ATTRIBUTES', patch.attributes);
+	}
+
+	/**
 	 * Sets the focused cell state when a cell in the dynamic table receives focus.
 	 *
 	 * @since    1.1.1
@@ -1289,11 +1319,19 @@ export default function Edit(props) {
 	 *
 	 * @param {Object} e                       Table Creation Event
 	 * @param {string} updateType              attribute (Update), insert, delete
+	 * @param {string} columnName              Column name
 	 * @param {number} tableId                 Identifier key for the table
 	 * @param {number} columnId                Identifier for the table column
 	 * @param {Array}  updatedColumnAttributes New column attribute values
 	 */
-	function onUpdateColumn(e, updateType, tableId, columnId, updatedColumnAttributes) {
+	function onUpdateColumn(
+		e,
+		updateType,
+		tableId,
+		columnId,
+		updatedColumnAttributes,
+		columnName = ''
+	) {
 		switch (updateType) {
 			case 'attributes': {
 				if (!updatedColumnAttributes) {
@@ -1313,7 +1351,8 @@ export default function Edit(props) {
 					const columnLabel = clickedColumn?.column_name || String(columnId);
 					openColumnDataTypeModal(e, columnId, columnLabel, attrs);
 				} else {
-					// setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
+					setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
+					setTableAttributes(tableId, 'column_name', columnId, 'PROP', columnName);
 				}
 				break;
 			}
@@ -1880,7 +1919,7 @@ export default function Edit(props) {
 								<span className="grid-control__inspector-controls--read-only-label">
 									Table Name:
 								</span>
-								{removeTags(table.table_name)}
+								{htmlToText(table.table_name)}
 							</div>
 						</PanelRow>
 
@@ -2112,30 +2151,41 @@ export default function Edit(props) {
 										<div className={'grid-control__border'}>
 											{table.cells
 												.filter(cell => cell.attributes.border && cell.row_id === '0')
-												.map(({ table_id, row_id, column_id, cell_id, content, classes }) => {
-													const borderContent = setBorderContent(row_id, column_id, content);
-													const isFirstColumn = column_id === '1' ? true : false;
-													return (
-														<>
-															{/* Show zoom to details column */}
-															{isFirstColumn && enableFutureFeatures && (
-																<div className={'grid-control__border-cells'} />
-															)}
+												.map(
+													({
+														table_id,
+														row_id,
+														column_id,
+														cell_id,
+														content,
+														attributes,
+														classes,
+													}) => {
+														const borderContent = setBorderContent(row_id, column_id, content);
+														const isFirstColumn = column_id === '1' ? true : false;
+														return (
+															<>
+																{/* Show zoom to details column */}
+																{isFirstColumn && enableFutureFeatures && (
+																	<div className={'grid-control__border-cells'} />
+																)}
 
-															<Cell
-																cellType="border"
-																cell_id={cell_id}
-																table={table}
-																table_id={table_id}
-																row_id={row_id}
-																column_id={column_id}
-																content={borderContent}
-																className={classes}
-																onMouseDown={onMouseBorderClick}
-															></Cell>
-														</>
-													);
-												})}
+																<Cell
+																	cellType="border"
+																	cell_id={cell_id}
+																	table={table}
+																	table_id={table_id}
+																	row_id={row_id}
+																	column_id={column_id}
+																	content={borderContent}
+																	cellAttributes={attributes}
+																	className={classes}
+																	onMouseDown={onMouseBorderClick}
+																></Cell>
+															</>
+														);
+													}
+												)}
 										</div>
 									)}
 
@@ -2210,6 +2260,7 @@ export default function Edit(props) {
 																				row_id={row_id}
 																				column_id={column_id}
 																				content={borderContent}
+																				cellAttributes={attributes}
 																				className={classes}
 																				onMouseDown={onMouseBorderClick}
 																			></Cell>
@@ -2228,12 +2279,13 @@ export default function Edit(props) {
 																		{!isBorder && (
 																			<Cell
 																				cellType={'body'}
-																				dataFormat={'general'}
+																				dataFormat={defaultDataType}
 																				cell_id={cell_id}
 																				table_id={table_id}
 																				row_id={row_id}
 																				column_id={column_id}
 																				content={content}
+																				attributes={attributes}
 																				isFocused={isFocused}
 																				className={
 																					'grid-control__header-cells ' +
@@ -2242,15 +2294,7 @@ export default function Edit(props) {
 																				}
 																				showGridLinesCSS={showGridLinesCSS}
 																				gridLineWidthCSS={gridLineWidthCSS}
-																				onChange={e =>
-																					setTableAttributes(
-																						table_id,
-																						'cell',
-																						cell_id,
-																						'CONTENT',
-																						e
-																					)
-																				}
+																				onChange={onChangeCellData}
 																			></Cell>
 																		)}
 																	</>
@@ -2371,6 +2415,7 @@ export default function Edit(props) {
 																					row_id={row_id}
 																					column_id={column_id}
 																					content={borderContent}
+																					attributes={attributes}
 																					className={classes}
 																					onMouseDown={onMouseBorderClick}
 																				></Cell>
@@ -2404,6 +2449,7 @@ export default function Edit(props) {
 																					row_id={row_id}
 																					column_id={column_id}
 																					content={content}
+																					attributes={attributes}
 																					isFocused={isFocused}
 																					className={
 																						'grid-control__body-cells ' +
@@ -2412,15 +2458,7 @@ export default function Edit(props) {
 																					}
 																					showGridLinesCSS={showGridLinesCSS}
 																					gridLineWidthCSS={gridLineWidthCSS}
-																					onChange={e =>
-																						setTableAttributes(
-																							table_id,
-																							'cell',
-																							cell_id,
-																							'CONTENT',
-																							e
-																						)
-																					}
+																					onChange={onChangeCellData}
 																				></Cell>
 																			)}
 																		</>
@@ -2490,7 +2528,59 @@ export default function Edit(props) {
 /**
  * Component to render and manage cell content editing
  *
+ * Data Shape as follows with date-time as an example
+ *
+ * Type Registry
+ *
+ *   TYPES = {
+ *     general: {
+ *       label: 'Rich Text',
+ * 	   },
+ *
+ *     'date-time': {
+ *       label: 'Date/Time',
+ *       formats: {
+ *         date: { label: 'Date' },
+ *         time: { label: 'Time' },
+ *         datetime-local: { label: 'Date & Time' },
+ *       },
+ *     },
+ *   }
+ *
+ *   Column - attributes.columnDataType:
+ *	  {
+ *        Date/Time Example
+ *
+ *		  type: 'date-time',
+ *		  settings: {
+ *			  format: 'date',
+ *			  defaultToToday: false,
+ *	  },
+ *
+ *   Cell - Content:
+ *     Raw content value (example 10/1/2025)
+ *
+ *   Cell - attributes.value:
+ *   {
+ *        Column columnDataType may be included only if an override is permitted
+ *        for this data type AND an override exists for this particular cell
+ *        overrides: {...}
+ *
+ * 		  meta: {
+ *            label: 'My Date',
+ * 		      size: 'My Size',
+ *        },
+ * 		  // Dependencies on other objects external to Cell. Example for post
+ * 	  	  ref: {
+ * 			  kind: 'post',
+ * 			  id: 45,
+ * 		  },
+ * 		  // search support
+ * 		  indexText: 'optimized for web search, all text only' (example 2025-10-01),
+ *   }
+ *
  * @since 1.1.1
+ * @since 1.2.0  Added column data type logic and Date/Time render
  *
  * @param {Object} props Passed attributes
  * @return {Object} events for cell content editing
@@ -2502,8 +2592,10 @@ function Cell(props) {
 		table,
 		row_id,
 		cell_id,
+		table_id,
 		column_id,
 		content,
+		attributes,
 		isFocused,
 		className,
 		showGridLinesCSS,
@@ -2512,22 +2604,50 @@ function Cell(props) {
 		onMouseDown,
 	} = props;
 
+	const { type, settings } = dataFormat || {};
+
+	const [inputType, setInputType] = useState('text'); // TextControl type (e.g., text, date, etc.)
+	const [cellContent, setCellContent] = useState();
+	const initialCellValue = useRef(content);
+	const [cellAttributes, setCellAttributes] = useState(attributes);
+	const [isCellChanged, setIsCellChanged] = useState(false);
+
+	const htmlToText = (html = '') => getTextContent(create({ html })).replace(/\s+/g, ' ').trim();
+
+	useEffect(() => {
+		let formattedInput = content;
+
+		if (type === 'date-time' && content) {
+			formattedInput = formatedDisplayDate(content, settings.format);
+		}
+		setCellContent(formattedInput);
+	}, []);
+
 	/**
 	 * Handle onChange event for cell content update
 	 *
 	 * @since 1.1.1
+	 * @since 1.2.0   Converted input to object to update multiple fields
 	 *
-	 * @param {string} type Type of cell data to update
-	 * @param {Object} e    event data
+	 * @param {Object} patch event data
 	 */
-	function updateCellData(type, e) {
-		onChange(e, type);
+	function updateCellData(patch) {
+		console.log('Updating Cell Data:');
+		console.log(patch);
+
+		setIsCellChanged(true);
+		initialCellValue.current = patch.content;
+
+		if (patch.content !== undefined) setCellContent(patch.content);
+		if (patch.attributes !== undefined) setCellAttributes(patch.attributes);
+
+		onChange(table_id, cell_id, patch);
 	}
 
 	/**
 	 * Relay mouse down event for border cells
 	 *
-	 * @since 1.1.2
+	 * @since 1.2.0
 	 *
 	 * @param {number} column_id Clicked table row
 	 * @param {number} row_id    Clicked table row
@@ -2538,6 +2658,64 @@ function Cell(props) {
 		onMouseDown(column_id, row_id, table, e);
 	}
 
+	/**
+	 *
+	 * This section supports Data/Time input and display.
+	 *
+	 * @since 1.2.0
+	 */
+
+	/**
+	 * Set new input type on TextControl component when a date-time cell loses focus
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param {Object} e
+	 * @param {Date}   date
+	 * @param {string} inputType
+	 */
+	function onSetInputType(e, date, inputType) {
+		e.stopPropagation();
+
+		if (isCellChanged) {
+			setCellContent(formatedDisplayDate(date, settings.format));
+		} else {
+			setCellContent(formatedDisplayDate(initialCellValue.current, settings.format));
+		}
+
+		setInputType(inputType);
+	}
+
+	/**
+	 * Set correct date input type on TextControl component when cell gains focus and
+	 * optionally poplulate with today's date/time based on format rules
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param {Object} e On Focus event
+	 * @return {void}
+	 */
+	function showTimeInputType(e) {
+		e.stopPropagation();
+		setInputType(settings.format);
+
+		if (!!content) setCellContent(formattedIsoDate(content, settings.format));
+
+		if (!content && settings?.defaultToToday) {
+			const today = new Date();
+			setCellContent(formattedIsoDate(today, settings.format));
+		}
+	}
+
+	/**
+	 * React HTML to render a cell based on its type
+	 *
+	 * @since 1.1.1
+	 * @since 1.2.0    Add DateTime render type
+	 *
+	 * @param {Object} e On Focus event
+	 * @return {void}
+	 */
 	const renderTypes = {
 		richText: () => (
 			<RichText
@@ -2552,8 +2730,20 @@ function Cell(props) {
 				data-col={Number(column_id)}
 				data-row={Number(row_id)}
 				tabIndex={isFocused ? 0 : -1}
-				onChange={e => updateCellData('CONTENT', e)}
-				value={content}
+				value={cellContent}
+				onChange={next => {
+					const plainText = htmlToText(next);
+					updateCellData({
+						content: next,
+						attributes: {
+							...cellAttributes,
+
+							value: {
+								indexText: plainText,
+							},
+						},
+					});
+				}}
 			></RichText>
 		),
 		border: () => (
@@ -2566,7 +2756,49 @@ function Cell(props) {
 				data-row={Number(row_id)}
 				tabIndex={-1}
 			>
-				{content}
+				{cellContent}
+			</div>
+		),
+		dateTime: () => (
+			<div
+				style={{
+					'--showGridLines': showGridLinesCSS,
+					'--gridLineWidth': gridLineWidthCSS,
+				}}
+			>
+				<TextControl
+					style={{
+						backgroundColor: 'transparent',
+						border: 'none',
+						padding: 0,
+						width: '100%',
+						fontSize: '16.8px',
+						fontFamily: 'Inter, sans-serif',
+					}}
+					id={cell_id}
+					className={className}
+					key={cell_id}
+					data-col={Number(column_id)}
+					data-row={Number(row_id)}
+					tabIndex={isFocused ? 0 : -1}
+					type={inputType}
+					onFocus={showTimeInputType}
+					onBlur={e => onSetInputType(e, cellContent, 'text')}
+					value={cellContent}
+					onChange={next => {
+						const formattedContent = formattedIsoDate(next, settings.format);
+						updateCellData({
+							content: next,
+							attributes: {
+								...cellAttributes,
+
+								value: {
+									indexText: formattedContent,
+								},
+							},
+						});
+					}}
+				/>
 			</div>
 		),
 	};
@@ -2578,9 +2810,12 @@ function Cell(props) {
 			renderPipeline = ['border'];
 			break;
 		case 'body':
-			switch (dataFormat) {
+			switch (type) {
 				case 'general':
 					renderPipeline = ['richText'];
+					break;
+				case 'date-time':
+					renderPipeline = ['dateTime'];
 					break;
 			}
 			break;
@@ -2592,7 +2827,6 @@ function Cell(props) {
 				const renderPart = renderTypes[key];
 
 				if (!renderPart) {
-					// Fail-soft: ignore unknown keys (or log in dev)
 					return null;
 				}
 

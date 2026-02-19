@@ -47,6 +47,9 @@ if ( is_wp_error( $table ) ) {
 	$num_columns   = count( $table_columns );
 	$num_rows      = count( $table_rows );
 
+	error_log( 'Table columns: ' );
+	error_log( print_r( $table_columns, true ) );
+
 	$table_header_attributes = get_table_header_attributes( $table_header );
 
 	list( 'showGridLines' => $show_grid_lines,
@@ -170,16 +173,17 @@ if ( is_wp_error( $table ) ) {
 									--headerBorderLeftWidth: <?php echo esc_attr( $header_border_left_width ); ?>;
 									--headerTextAlignment: <?php echo esc_attr( $header_alignment ); ?>">
 							<?php
-								$header_row_cells = process_cells( $table_cells, $header_row['row_id'] );
+							$header_row_cells = process_cells( $table_cells, $header_row['row_id'], $table_columns );
 							foreach ( $header_row_cells as $index => $header_cell ) {
+								// error_log( 'Header cell: ' . print_r( $header_cell, true ) );
 								?>
 									<div id=" <?php echo esc_attr( $header_cell['cell_id'] ); ?>"
 										class="grid-control__header-cells"
 										style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
 										--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>;">
-										<?php echo wp_kses_post( $header_cell['content'] ); ?>
+									<?php echo wp_kses_post( $header_cell['content'] ); ?>
 									</div>
-									<?php
+								<?php
 							}
 							?>
 							</div>
@@ -220,16 +224,30 @@ if ( is_wp_error( $table ) ) {
 									--bandedRowBackgroundColor: <?php echo esc_attr( $grid_banded_background_color ); ?>">
 
 								<?php
-								$body_row_cells = process_cells( $table_cells, $body_row['row_id'] );
+								$body_row_cells = process_cells( $table_cells, $body_row['row_id'], $table_columns );
 								foreach ( $body_row_cells as $index => $body_cell ) {
-									?>
-									<div id=" <?php echo esc_attr( $body_cell['cell_id'] ); ?>"
-										class="grid-control__body-cells"
-										style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
-											--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>">
-										<?php echo wp_kses_post( $body_cell['content'] ); ?>
-									</div>
-									<?php
+									/**
+									 * Added swith to identify and render each cell according to its data type
+									 *
+									 * @since 1.2
+									 */
+									switch ( $body_cell['data_type']['type'] ) {
+										case 'general':
+											?>
+											<div id=" <?php echo esc_attr( $body_cell['cell_id'] ); ?>"
+												class="grid-control__body-cells"
+												style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
+													--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>">
+												<?php echo wp_kses_post( $body_cell['content'] ); ?>
+											</div>
+											<?php
+											break;
+										case 'date-time':
+											render_date_time_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width );
+											break;
+										default:
+											$cell_text_alignment = 'left';
+									}
 								}
 								?>
 							</div>

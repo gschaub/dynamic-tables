@@ -22,7 +22,26 @@ import './style.scss';
  * @return {Object} Updated column properties
  */
 function ConfigureColumnWidth(props = {}) {
-	const { tableId, columnId, columnLabel, columnAttributes, enableProFeatures, updatedColumn, onRequestClose } = props;
+	const {
+		tableId,
+		columnId,
+		columnLabel,
+		columnAttributes,
+		enableProFeatures,
+		updatedColumn,
+		onRequestClose,
+	} = props;
+
+	// Column data type attributes
+	const defaultDataType = {
+		columnDataType: {
+			type: 'general',
+		},
+	};
+
+	const [dataType, setDataType] = useState(
+		columnAttributes?.columnDataType ? columnAttributes.columnDataType : defaultDataType
+	);
 
 	const [columnWidthType, setColumnWidthType] = useState();
 	const [hideProportional, setHideProportional] = useState(true);
@@ -36,7 +55,6 @@ function ConfigureColumnWidth(props = {}) {
 	const [fixedWidthUnits, setFixedWidthUnits] = useState();
 	const [disableForTablet, setDisableForTablet] = useState(false);
 	const [disableForPhone, setDisableForPhone] = useState(false);
-
 
 	useEffect(() => {
 		switch (columnAttributes.columnWidthType) {
@@ -92,17 +110,6 @@ function ConfigureColumnWidth(props = {}) {
 	}
 
 	/**
-	 * Close modal on cancel.
-	 *
-	 * @since    1.0.0
-	 *
-	 * @param {Object} event Cancel
-	 */
-	function handleCancel(event) {
-		openColumnWidth(false);
-	}
-
-	/**
 	 * Close component modal.
 	 *
 	 * @since    1.1.2
@@ -112,22 +119,9 @@ function ConfigureColumnWidth(props = {}) {
 	}
 
 	/**
-	 * Stop event processing in favor of custom processing.
-	 *
-	 * @since    1.0.0
-	 *
-	 * @param {Object} event Mouse down
-	 */
-	function stopProp(event) {
-		event.stopPropagation();
-	}
-
-	/**
 	 * Close modal on cancel.
 	 *
 	 * @since    1.0.0
-	 *
-	 * @param {Object} event Cancel
 	 */
 	function handleCancel() {
 		onRequestClose?.();
@@ -272,6 +266,7 @@ function ConfigureColumnWidth(props = {}) {
 			disableForPhone: disableForPhone,
 			isFixedLeftColumnGroup: false,
 			horizontalAlignment: 'none',
+			columnDataType: dataType,
 		};
 
 		updatedColumn(event, 'attributes', tableId, columnId, updatedColumnAttributes);
