@@ -667,13 +667,10 @@ function ConfigureColumnDataType(props = {}) {
           }, {
             value: 'date-time',
             label: 'Data/Time'
-          }, {
-            value: 'checkbox',
-            label: 'Check Box'
-          }, {
-            value: 'rating',
-            label: 'Rating'
-          }],
+          }
+          // { value: 'checkbox', label: 'Check Box' },
+          // { value: 'rating', label: 'Rating' },
+          ],
           __nextHasNoMarginBottom: true
         }), dataType.type !== 'general' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Panel, {
           header: "Content Settings",
@@ -1728,6 +1725,7 @@ function RowMenuImpl(props = {}) {
     tableId,
     rowId,
     rowLabel,
+    rowAttributes,
     updatedRow,
     onRequestClose
   } = props;
@@ -1867,7 +1865,7 @@ function RowMenuImpl(props = {}) {
           ref: firstItemRef,
           children: "Update Row Height..."
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+      }), !rowAttributes.isHeader && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
           icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
           onClick: e => onInsertRow(e, rowId),
@@ -4334,12 +4332,14 @@ function Edit(props) {
   };
   const columnDataTypes = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
     const map = {};
-    table.columns.forEach(({
-      column_id,
-      attributes
-    }) => {
-      map[column_id] = attributes?.columnDataType ? attributes.columnDataType : defaultDataType;
-    });
+    if (!isNewBlock) {
+      table.columns.forEach(({
+        column_id,
+        attributes
+      }) => {
+        map[column_id] = attributes?.columnDataType ? attributes.columnDataType : defaultDataType;
+      });
+    }
     console.log('Column Data Types:');
     console.log(map);
     return map;
@@ -4514,8 +4514,8 @@ function Edit(props) {
      * Remove borders if unchecked
      */
     if (isChecked === false) {
-      setNumColumns(numColumns - 1);
-      setNumRows(numRows - 1);
+      setNumColumns(prev => prev - 1);
+      setNumRows(prev => prev - 1);
       updatedRows = table.rows.filter(row => row.row_id !== '0');
       updatedColumns = table.columns.filter(column => column.column_id !== '0');
       updatedCells = table.cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
@@ -4524,8 +4524,8 @@ function Edit(props) {
       /**
        * Create borders if checked
        */
-      setNumColumns(numColumns + 1);
-      setNumRows(numRows + 1);
+      setNumColumns(prev => prev + 1);
+      setNumRows(prev => prev + 1);
 
       /**  Create header row border at top of table */
       const rowBorder = [];
@@ -5434,22 +5434,23 @@ function Edit(props) {
                 }) => {
                   const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.setBorderContent)(row_id, column_id, content);
                   const isFirstColumn = column_id === '1' ? true : false;
-                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
                     children: [isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                       className: 'grid-control__border-cells'
                     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(Cell, {
                       cellType: "border",
+                      dataFormat: columnDataTypes[column_id],
                       cell_id: cell_id,
                       table: table,
                       table_id: table_id,
                       row_id: row_id,
                       column_id: column_id,
                       content: borderContent,
-                      cellAttributes: attributes,
+                      attributes: attributes,
                       className: classes,
                       onMouseDown: onMouseBorderClick
                     })]
-                  });
+                  }, `border-row:${cell_id}`);
                 })
               }), table.rows.filter(row => row.attributes.isHeader === true).map(({
                 row_id
@@ -5494,18 +5495,19 @@ function Edit(props) {
                     if (isFocused) {
                       calculatedClasses = calculatedClasses + 'grid-control__body-cells--focused ';
                     }
-                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
+                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
                       children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                         className: 'grid-control__border-cells'
                       }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(Cell, {
                         cellType: "border",
+                        dataFormat: columnDataTypes[column_id],
                         cell_id: cell_id,
                         table: table,
                         table_id: table_id,
                         row_id: row_id,
                         column_id: column_id,
                         content: borderContent,
-                        cellAttributes: attributes,
+                        attributes: attributes,
                         className: classes,
                         onMouseDown: onMouseBorderClick
                       }), isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
@@ -5516,7 +5518,7 @@ function Edit(props) {
                         }
                       }), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(Cell, {
                         cellType: 'body',
-                        dataFormat: defaultDataType,
+                        dataFormat: columnDataTypes[column_id],
                         cell_id: cell_id,
                         table_id: table_id,
                         row_id: row_id,
@@ -5524,14 +5526,14 @@ function Edit(props) {
                         content: content,
                         attributes: attributes,
                         isFocused: isFocused,
-                        className: 'grid-control__header-cells ' + classes + calculatedClasses,
+                        className: 'grid-control__header-cells ' + 'grid-control__cellEditor ' + classes + calculatedClasses,
                         showGridLinesCSS: showGridLinesCSS,
                         gridLineWidthCSS: gridLineWidthCSS,
                         onChange: onChangeCellData
                       })]
-                    });
+                    }, `header-cell:${cell_id}`);
                   })
-                });
+                }, `header-row:${row_id}`);
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                 className: 'grid-control__body',
                 style: {
@@ -5596,15 +5598,12 @@ function Edit(props) {
                       if (isFocused) {
                         calculatedClasses = calculatedClasses + 'grid-control__body-cells--focused ';
                       }
-
-                      // console.log('Column Data Types')
-                      // console.log(columnDataTypes[column_id])
-
-                      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
+                      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
                         children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                           className: 'grid-control__border-cells'
                         }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(Cell, {
                           cellType: "border",
+                          dataFormat: columnDataTypes[column_id],
                           cell_id: cell_id,
                           table: table,
                           table_id: table_id,
@@ -5637,14 +5636,14 @@ function Edit(props) {
                           content: content,
                           attributes: attributes,
                           isFocused: isFocused,
-                          className: 'grid-control__body-cells ' + classes + calculatedClasses,
+                          className: 'grid-control__body-cells ' + 'grid-control__cellEditor ' + classes + calculatedClasses,
                           showGridLinesCSS: showGridLinesCSS,
                           gridLineWidthCSS: gridLineWidthCSS,
                           onChange: onChangeCellData
                         })]
-                      });
+                      }, `body-cell:${cell_id}`);
                     })
-                  });
+                  }, `body-row:${row_id}`);
                 })
               })]
             })
@@ -5789,7 +5788,7 @@ function Cell(props) {
   })).replace(/\s+/g, ' ').trim();
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     let formattedInput = content;
-    if (type === 'date-time' && content) {
+    if (cellType !== 'border' && type === 'date-time' && content) {
       formattedInput = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.formatedDisplayDate)(content, settings.format);
     }
     setCellContent(formattedInput);
@@ -5804,8 +5803,6 @@ function Cell(props) {
    * @param {Object} patch event data
    */
   function updateCellData(patch) {
-    console.log('Updating Cell Data:');
-    console.log(patch);
     setIsCellChanged(true);
     initialCellValue.current = patch.content;
     if (patch.content !== undefined) setCellContent(patch.content);
@@ -5928,7 +5925,8 @@ function Cell(props) {
           padding: 0,
           width: '100%',
           fontSize: '16.8px',
-          fontFamily: 'Inter, sans-serif'
+          fontFamily: 'Inter, sans-serif',
+          boxShadow: 'inherit'
         },
         id: cell_id,
         className: className,
@@ -5936,6 +5934,7 @@ function Cell(props) {
         "data-row": Number(row_id),
         tabIndex: isFocused ? 0 : -1,
         type: inputType,
+        __next40pxDefaultSize: true,
         onFocus: showTimeInputType,
         onBlur: e => onSetInputType(e, cellContent, 'text'),
         value: cellContent,
@@ -5955,6 +5954,7 @@ function Cell(props) {
     })
   };
   let renderPipeline = [];
+  console.log('Cell ' + cell_id + ' class names = ' + className);
   switch (cellType) {
     case 'border':
       renderPipeline = ['border'];
@@ -5964,10 +5964,17 @@ function Cell(props) {
         case 'general':
           renderPipeline = ['richText'];
           break;
+        case 'border':
+          renderPipeline = ['border'];
+          break;
         case 'date-time':
           renderPipeline = ['dateTime'];
           break;
+        default:
+          break;
       }
+      break;
+    default:
       break;
   }
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
@@ -6764,7 +6771,7 @@ function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') {
       table_id: String(tableId),
       column_id: String(columnId),
       row_id: String(rowId),
-      cell_id: rowId === 0 ? columnLetter + '0' : '0' + String(columnId),
+      cell_id: rowId === 0 ? columnLetter + '0' : '0' + String(rowId),
       attributes: getDefaultTableAttributes('cells', cellLocation),
       classes: 'grid-control__border-cells hover',
       content: borderContent
@@ -6820,7 +6827,7 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
   };
   const columnAttributes = {
     columnDataType: {
-      type: 'General'
+      type: 'general'
     },
     columnWidthType: 'Proportional',
     minWidth: 2,
@@ -6835,6 +6842,9 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
     horizontalAlignment: 'none'
   };
   const columnBorderAttributes = {
+    columnDataType: {
+      type: 'border'
+    },
     columnWidthType: 'Fixed',
     minWidth: 0,
     minWidthUnits: '',
@@ -6870,7 +6880,10 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
     verticalAlignment: 'none'
   };
   const cellAttributes = {
-    border: false
+    border: false,
+    value: {
+      indexText: ''
+    }
   };
   const cellBorderAttributes = {
     border: true

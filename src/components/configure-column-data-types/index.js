@@ -244,8 +244,8 @@ function ConfigureColumnDataType(props = {}) {
 						options={[
 							{ value: 'general', label: 'General' },
 							{ value: 'date-time', label: 'Data/Time' },
-							{ value: 'checkbox', label: 'Check Box' },
-							{ value: 'rating', label: 'Rating' },
+							// { value: 'checkbox', label: 'Check Box' },
+							// { value: 'rating', label: 'Rating' },
 						]}
 						__nextHasNoMarginBottom
 					/>

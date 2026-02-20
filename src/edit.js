@@ -882,9 +882,11 @@ export default function Edit(props) {
 	const columnDataTypes = useMemo(() => {
 		const map = {};
 
-		table.columns.forEach(({ column_id, attributes }) => {
-			map[column_id] = attributes?.columnDataType ? attributes.columnDataType : defaultDataType;
-		});
+		if (!isNewBlock) {
+			table.columns.forEach(({ column_id, attributes }) => {
+				map[column_id] = attributes?.columnDataType ? attributes.columnDataType : defaultDataType;
+			});
+		}
 		console.log('Column Data Types:');
 		console.log(map);
 		return map;
@@ -1060,8 +1062,8 @@ export default function Edit(props) {
 		 * Remove borders if unchecked
 		 */
 		if (isChecked === false) {
-			setNumColumns(numColumns - 1);
-			setNumRows(numRows - 1);
+			setNumColumns(prev => prev - 1);
+			setNumRows(prev => prev - 1);
 
 			updatedRows = table.rows.filter(row => row.row_id !== '0');
 			updatedColumns = table.columns.filter(column => column.column_id !== '0');
@@ -1071,8 +1073,8 @@ export default function Edit(props) {
 			/**
 			 * Create borders if checked
 			 */
-			setNumColumns(numColumns + 1);
-			setNumRows(numRows + 1);
+			setNumColumns(prev => prev + 1);
+			setNumRows(prev => prev + 1);
 
 			/**  Create header row border at top of table */
 			const rowBorder = [];
@@ -2096,7 +2098,6 @@ export default function Edit(props) {
 			<InspectorControls group="typography"></InspectorControls>
 		</>
 	);
-
 	return (
 		<div {...blockProps}>
 			{/* Render an existing table after it has been fetched  */}
@@ -2164,7 +2165,7 @@ export default function Edit(props) {
 														const borderContent = setBorderContent(row_id, column_id, content);
 														const isFirstColumn = column_id === '1' ? true : false;
 														return (
-															<>
+															<Fragment key={`border-row:${cell_id}`}>
 																{/* Show zoom to details column */}
 																{isFirstColumn && enableFutureFeatures && (
 																	<div className={'grid-control__border-cells'} />
@@ -2172,17 +2173,18 @@ export default function Edit(props) {
 
 																<Cell
 																	cellType="border"
+																	dataFormat={columnDataTypes[column_id]}
 																	cell_id={cell_id}
 																	table={table}
 																	table_id={table_id}
 																	row_id={row_id}
 																	column_id={column_id}
 																	content={borderContent}
-																	cellAttributes={attributes}
+																	attributes={attributes}
 																	className={classes}
 																	onMouseDown={onMouseBorderClick}
 																></Cell>
-															</>
+															</Fragment>
 														);
 													}
 												)}
@@ -2196,6 +2198,7 @@ export default function Edit(props) {
 											const renderedRow = row_id;
 											return (
 												<div
+													key={`header-row:${row_id}`}
 													className="grid-control__header"
 													style={{
 														'--gridTemplateHeaderRows': gridHeaderRowStyle,
@@ -2245,7 +2248,7 @@ export default function Edit(props) {
 																}
 
 																return (
-																	<>
+																	<Fragment key={`header-cell:${cell_id}`}>
 																		{/* Show zoom to details column */}
 																		{isFirstColumn && isBorder && enableFutureFeatures && (
 																			<div className={'grid-control__border-cells'} />
@@ -2254,13 +2257,14 @@ export default function Edit(props) {
 																		{isBorder && (
 																			<Cell
 																				cellType="border"
+																				dataFormat={columnDataTypes[column_id]}
 																				cell_id={cell_id}
 																				table={table}
 																				table_id={table_id}
 																				row_id={row_id}
 																				column_id={column_id}
 																				content={borderContent}
-																				cellAttributes={attributes}
+																				attributes={attributes}
 																				className={classes}
 																				onMouseDown={onMouseBorderClick}
 																			></Cell>
@@ -2279,7 +2283,7 @@ export default function Edit(props) {
 																		{!isBorder && (
 																			<Cell
 																				cellType={'body'}
-																				dataFormat={defaultDataType}
+																				dataFormat={columnDataTypes[column_id]}
 																				cell_id={cell_id}
 																				table_id={table_id}
 																				row_id={row_id}
@@ -2289,6 +2293,7 @@ export default function Edit(props) {
 																				isFocused={isFocused}
 																				className={
 																					'grid-control__header-cells ' +
+																					'grid-control__cellEditor ' +
 																					classes +
 																					calculatedClasses
 																				}
@@ -2297,7 +2302,7 @@ export default function Edit(props) {
 																				onChange={onChangeCellData}
 																			></Cell>
 																		)}
-																	</>
+																	</Fragment>
 																);
 															}
 														)}
@@ -2356,6 +2361,7 @@ export default function Edit(props) {
 
 												return (
 													<div
+														key={`body-row:${row_id}`}
 														className={'grid-control__body-row ' + calculatedClasses}
 														style={{
 															'--bandedRowTextColor': gridBandedRowTextColor,
@@ -2396,11 +2402,8 @@ export default function Edit(props) {
 																			calculatedClasses + 'grid-control__body-cells--focused ';
 																	}
 
-																	// console.log('Column Data Types')
-																	// console.log(columnDataTypes[column_id])
-
 																	return (
-																		<>
+																		<Fragment key={`body-cell:${cell_id}`}>
 																			{/* Show zoom to details column */}
 																			{isFirstColumn && isBorder && enableFutureFeatures && (
 																				<div className={'grid-control__border-cells'} />
@@ -2409,6 +2412,7 @@ export default function Edit(props) {
 																			{isBorder && (
 																				<Cell
 																					cellType="border"
+																					dataFormat={columnDataTypes[column_id]}
 																					cell_id={cell_id}
 																					table={table}
 																					table_id={table_id}
@@ -2453,6 +2457,7 @@ export default function Edit(props) {
 																					isFocused={isFocused}
 																					className={
 																						'grid-control__body-cells ' +
+																						'grid-control__cellEditor ' +
 																						classes +
 																						calculatedClasses
 																					}
@@ -2461,7 +2466,7 @@ export default function Edit(props) {
 																					onChange={onChangeCellData}
 																				></Cell>
 																			)}
-																		</>
+																		</Fragment>
 																	);
 																}
 															)}
@@ -2617,7 +2622,7 @@ function Cell(props) {
 	useEffect(() => {
 		let formattedInput = content;
 
-		if (type === 'date-time' && content) {
+		if (cellType !== 'border' && type === 'date-time' && content) {
 			formattedInput = formatedDisplayDate(content, settings.format);
 		}
 		setCellContent(formattedInput);
@@ -2632,9 +2637,6 @@ function Cell(props) {
 	 * @param {Object} patch event data
 	 */
 	function updateCellData(patch) {
-		console.log('Updating Cell Data:');
-		console.log(patch);
-
 		setIsCellChanged(true);
 		initialCellValue.current = patch.content;
 
@@ -2774,6 +2776,7 @@ function Cell(props) {
 						width: '100%',
 						fontSize: '16.8px',
 						fontFamily: 'Inter, sans-serif',
+						boxShadow: 'inherit',
 					}}
 					id={cell_id}
 					className={className}
@@ -2782,6 +2785,7 @@ function Cell(props) {
 					data-row={Number(row_id)}
 					tabIndex={isFocused ? 0 : -1}
 					type={inputType}
+					__next40pxDefaultSize
 					onFocus={showTimeInputType}
 					onBlur={e => onSetInputType(e, cellContent, 'text')}
 					value={cellContent}
@@ -2805,6 +2809,8 @@ function Cell(props) {
 
 	let renderPipeline = [];
 
+	console.log('Cell ' + cell_id + ' class names = ' + className);
+
 	switch (cellType) {
 		case 'border':
 			renderPipeline = ['border'];
@@ -2814,10 +2820,17 @@ function Cell(props) {
 				case 'general':
 					renderPipeline = ['richText'];
 					break;
+				case 'border':
+					renderPipeline = ['border'];
+					break;
 				case 'date-time':
 					renderPipeline = ['dateTime'];
 					break;
+				default:
+					break;
 			}
+			break;
+		default:
 			break;
 	}
 

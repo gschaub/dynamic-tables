@@ -17,7 +17,7 @@ import '../../editor.scss';
  * @return {Object} Updated row
  */
 function RowMenuImpl(props = {}) {
-	const { anchor, tableId, rowId, rowLabel, updatedRow, onRequestClose } = props;
+	const { anchor, tableId, rowId, rowLabel, rowAttributes, updatedRow, onRequestClose } = props;
 
 	// Refs for focus management
 	const menuRootRef = useRef(null);
@@ -183,15 +183,17 @@ function RowMenuImpl(props = {}) {
 					</MenuItem>
 				</MenuGroup>
 
-				<MenuGroup>
-					<MenuItem icon={tableRowBefore} onClick={e => onInsertRow(e, rowId)}>
-						Insert Row (Below)
-					</MenuItem>
+				{!rowAttributes.isHeader && (
+					<MenuGroup>
+						<MenuItem icon={tableRowBefore} onClick={e => onInsertRow(e, rowId)}>
+							Insert Row (Below)
+						</MenuItem>
 
-					<MenuItem icon={tableRowDelete} onClick={e => onDeleteRow(e, rowId)}>
-						Delete Row
-					</MenuItem>
-				</MenuGroup>
+						<MenuItem icon={tableRowDelete} onClick={e => onDeleteRow(e, rowId)}>
+							Delete Row
+						</MenuItem>
+					</MenuGroup>
+				)}
 			</Popover>
 		</>
 	);

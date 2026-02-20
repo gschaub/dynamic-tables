@@ -1,8 +1,8 @@
 # Dynamic Tables #
 **Contributors:** [glschaub](https://profiles.wordpress.org/glschaub/), [myfamilyweb](https://profiles.wordpress.org/myfamilyweb/)  
-**Tags:**              tables, data table, table builder, block editor, responsive tables, editable tables  
+**Tags:**              tables, data table, table builder, responsive tables  
 **Tested up to:**      6.9  
-**Stable tag:**        1.1.1  
+**Stable tag:**        1.2.0  
 **License:**           GPL-2.0-or-later  
 **License URI:**       https://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -107,6 +107,14 @@ If you deactivate, your tables will still appear in posts but may render incorre
 7. Set column width (corresponding configuration is available for rows too)
 
 ## Changelog ##
+
+### 1.2.0 ###
+* Added a Date/Time content type.
+* Added ability to update column names
+* Added a column menu to select content types and related actions
+* Added framework for column driven content types
+* Refactor Column menus to enhance stability and performance
+* Refactor Row menus to enhance stability and performance
 
 ### 1.1.1 ###
 * Add keyboard navigation through table cells via arrow keys

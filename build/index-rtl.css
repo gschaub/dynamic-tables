@@ -76,6 +76,20 @@
 .column-menu {
   visibility: hidden;
 }
+.grid-control__cellEditor {
+  font: inherit; /* shorthand: family/size/weight */
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  background-color: transparent;
+  box-shadow: inherit;
+}
+.grid-control__cellEditor .block-editor-rich-text__editable,
+.grid-control__cellEditor input.components-text-control__input,
+.grid-control__cellEditor textarea.components-text-control__input {
+  font: inherit;
+  line-height: inherit;
+}
 .wp-block-table {
   margin: 0;
 }

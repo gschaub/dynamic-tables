@@ -161,7 +161,7 @@ export function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') 
 			table_id: String(tableId),
 			column_id: String(columnId),
 			row_id: String(rowId),
-			cell_id: rowId === 0 ? columnLetter + '0' : '0' + String(columnId),
+			cell_id: rowId === 0 ? columnLetter + '0' : '0' + String(rowId),
 			attributes: getDefaultTableAttributes('cells', cellLocation),
 			classes: 'grid-control__border-cells hover',
 			content: borderContent,
@@ -209,7 +209,7 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
 	};
 
 	const columnAttributes = {
-		columnDataType: { type: 'General' },
+		columnDataType: { type: 'general' },
 		columnWidthType: 'Proportional',
 		minWidth: 2,
 		minWidthUnits: 'ch',
@@ -224,6 +224,7 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
 	};
 
 	const columnBorderAttributes = {
+		columnDataType: { type: 'border' },
 		columnWidthType: 'Fixed',
 		minWidth: 0,
 		minWidthUnits: '',
@@ -263,6 +264,7 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
 
 	const cellAttributes = {
 		border: false,
+		value: { indexText: '' },
 	};
 
 	const cellBorderAttributes = {
