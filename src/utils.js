@@ -220,6 +220,12 @@ function isValidISODate(value) {
 	);
 }
 
+function isValidTime(value) {
+	// 00:00 to 23:59, optional :ss (00-59)
+	const m = /^([01]\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?$/.exec(value);
+	return !!m;
+}
+
 /**
  * Test whether a data is formatted as a valid ISO date-time string
  *
@@ -250,17 +256,30 @@ export function formatedDisplayDate(date, format) {
 	if (!date) return '';
 
 	// Test whether input is a valid ISO date
-	if (!isValidISODate(date) && !isValidISODatetime(date)) {
+	if (!isValidISODate(date) && !isValidISODatetime(date) && !isValidTime(date)) {
+		// console.log('invalidly formatted date - ' + date);
+		// console.log('Valid Date = ' + isValidISODate(date));
+		// console.log('Valid Datetime = ' + isValidISODatetime(date));
+		// console.log('Valid Time = ' + isValidTime(date));
 		return '';
 	}
 
 	if (format === 'date') {
+		// console.log('Return Date');
 		return dateI18n('n/j/Y', date);
 	}
 	if (format === 'time') {
-		return dateI18n('g:i a', date);
+		console.log('Return Time from ' + date);
+
+		const [hh, mm] = date.split(':').map(Number);
+		if (!Number.isInteger(hh) || !Number.isInteger(mm)) return '';
+
+		const ampm = hh >= 12 ? 'pm' : 'am';
+		const h12 = ((hh + 11) % 12) + 1;
+		return `${h12}:${String(mm).padStart(2, '0')} ${ampm}`;
 	}
 	if (format === 'datetime-local') {
+		// console.log('Return Date/Time');
 		return dateI18n('n/j/Y g:i a', date);
 	}
 	return '';
@@ -276,23 +295,36 @@ export function formatedDisplayDate(date, format) {
  * @return {Date}         ISO date
  */
 export function formattedIsoDate(date, format) {
-	const dateToFormat = date ? new Date(date) : new Date();
-
 	// Test whether input is a valid ISO date
-	if (!isValidISODate(date) && !isValidISODatetime(date)) {
-		return '';
+	if (date) {
+		if (!isValidISODate(date) && !isValidISODatetime(date) && !isValidTime(date)) {
+			return '';
+		}
 	}
+
+	const dateString = date ? new Date(date) : new Date();
 
 	if (format === 'date') {
-		return dateToFormat.toISOString().split('T')[0];
+		return dateString.toISOString().split('T')[0];
 	}
+
 	if (format === 'time') {
-		return dateToFormat.toTimeString().split(' ')[0];
+		if (!!date) {
+			return date;
+		}
+		const hh = String(dateString.getHours()).padStart(2, '0');
+		const mm = String(dateString.getMinutes()).padStart(2, '0');
+		return `${hh}:${mm}`;
 	}
+
 	if (format === 'datetime-local') {
-		const date = dateToFormat.toISOString().split('T')[0];
-		const time = dateToFormat.toTimeString().split(' ')[0];
-		return `${date}T${time}`;
+		const yyyy = dateString.getFullYear();
+		const mo = String(dateString.getMonth() + 1).padStart(2, '0');
+		const dd = String(dateString.getDate()).padStart(2, '0');
+		const hh = String(dateString.getHours()).padStart(2, '0');
+		const mm = String(dateString.getMinutes()).padStart(2, '0');
+		return `${yyyy}-${mo}-${dd}T${hh}:${mm}`;
 	}
+
 	return '';
 }

@@ -105,12 +105,21 @@ function ConfigureColumnDataType(props = {}) {
 			return today.toISOString().split('T')[0];
 		}
 		if (type === 'time') {
-			return today.toTimeString().split(' ')[0];
+			const hh = String(today.getHours()).padStart(2, '0');
+			const mm = String(today.getMinutes()).padStart(2, '0');
+			return `${hh}:${mm}`;
+			// return today.toTimeString().split(' ')[0];
 		}
 		if (type === 'datetime-local') {
-			const date = today.toISOString().split('T')[0];
-			const time = today.toTimeString().split(' ')[0];
-			return `${date}T${time}`;
+			const yyyy = today.getFullYear();
+			const mo = String(today.getMonth() + 1).padStart(2, '0');
+			const dd = String(today.getDate()).padStart(2, '0');
+			const hh = String(today.getHours()).padStart(2, '0');
+			const mm = String(today.getMinutes()).padStart(2, '0');
+			return `${yyyy}-${mo}-${dd}T${hh}:${mm}`;
+			// const date = today.toISOString().split('T')[0];
+			// const time = today.toTimeString().split(' ')[0];
+			// return `${date}T${time}`;
 		}
 		return '';
 	}
@@ -296,6 +305,8 @@ function ConfigureColumnDataType(props = {}) {
 											<TextControl
 												label="Preview"
 												type={format}
+												step={60}
+												__next40pxDefaultSize
 												value={datePreviewValue}
 												onChange={setDatePreviewValue}
 											/>

@@ -31,7 +31,6 @@ import {
 } from '@wordpress/block-editor';
 import { create, getTextContent } from '@wordpress/rich-text';
 import { search, blockTable as icon } from '@wordpress/icons';
-import { UP, DOWN, RIGHT, LEFT, TAB } from '@wordpress/keycodes';
 
 /* Internal dependencies */
 import { store as tableStore } from './data';
@@ -126,6 +125,7 @@ export default function Edit(props) {
 	const [numColumns, setNumColumns] = useState(1);
 	const [numRows, setNumRows] = useState(1);
 	const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = useState(false);
+	const [editingCellId, setEditingCellId] = useState(null);
 
 	// ToDo: Move to Utils
 	const htmlToText = (html = '') => getTextContent(create({ html })).replace(/\s+/g, ' ').trim();
@@ -1216,16 +1216,21 @@ export default function Edit(props) {
 	 * @return {void}
 	 */
 	function onGridFocusCapture(event) {
-		const target = event.target;
+		const el = event.target.closest?.('[data-cell-id]');
+		if (!el) return;
 
-		const col = target?.dataset?.col;
-		const row = target?.dataset?.row;
+		const col = Number(el.dataset.col);
+		const row = Number(el.dataset.row);
+		if (!Number.isFinite(col) || !Number.isFinite(row)) return;
 
-		if (col == null || row == null) return;
+		// Only sync highlight; do not move focus, do not gate with pending flags
+		setFocusedCell(prev => (prev.col === col && prev.row === row ? prev : { col, row }));
 
-		const next = { col: Number(col), row: Number(row) };
-
-		setFocusedCell(prev => (prev.col === next.col && prev.row === next.row ? prev : next));
+		// If focus moved to another cell wrapper, stop editing.
+		const nextCellId = el.getAttribute('data-cell-id');
+		if (editingCellId && String(editingCellId) !== String(nextCellId)) {
+			setEditingCellId(null);
+		}
 	}
 
 	/**
@@ -1238,20 +1243,50 @@ export default function Edit(props) {
 	 * @return {boolean} Was focus successful?
 	 */
 	function focusCell(col, row) {
+		console.log('focusCell called →', col, row);
 		const root = gridRef.current;
 		if (!root) return false;
 
-		const el = root.querySelector(`[data-col="${col}"][data-row="${row}"]`);
+		const el = root.querySelector(`[data-cell-id][data-col="${col}"][data-row="${row}"]`);
 		if (!el) return false;
 
-		// Make sure it's tabbable before focusing (roving tabindex)
+		// roving tabindex
+		root.querySelectorAll('[data-cell-id][tabindex="0"]').forEach(node => {
+			if (node !== el) node.tabIndex = -1;
+		});
 		el.tabIndex = 0;
 
+		// keep highlight in sync with intended focus target
+		setFocusedCell(prev => (prev.col === col && prev.row === row ? prev : { col, row }));
+
 		// Focusing on next frame helps if DOM is mid-rerender
-		window.requestAnimationFrame(() => el.focus());
+		window.requestAnimationFrame(() => {
+			console.log('[DTBK] focusCell applying focus →', {
+				col,
+				row,
+				cellId: el.getAttribute('data-cell-id'),
+			});
+			el.focus();
+		});
 
 		return true;
 	}
+
+	const navMaxCol = useMemo(() => {
+		// exclude border column 0
+		return Math.max(
+			1,
+			...table.columns.map(c => Number(c.column_id)).filter(n => Number.isFinite(n) && n > 0)
+		);
+	}, [table.columns]);
+
+	const navMaxRow = useMemo(() => {
+		// exclude border row 0
+		return Math.max(
+			1,
+			...table.rows.map(r => Number(r.row_id)).filter(n => Number.isFinite(n) && n > 0)
+		);
+	}, [table.rows]);
 
 	/**
 	 * Handle keyboard navigation within the active dynamic table block and updates focus appropriately
@@ -1262,54 +1297,132 @@ export default function Edit(props) {
 	 * @return {void}
 	 */
 	function onCellKeyDown(event) {
-		const isActiveKeyEvent =
-			event.keyCode === UP ||
-			event.keyCode === DOWN ||
-			event.keyCode === LEFT ||
-			event.keyCode === RIGHT ||
-			event.keyCode === TAB;
+		// Only handle if event came from inside a cell wrapper (or a child of it)
+		// const root = gridRef.current;
+		// if (!root) return;
 
-		if (!isActiveKeyEvent) {
+		// If editing, only handle Escape here; let the editor handle arrows, delete, etc.
+		if (editingCellId) {
+			if (event.key === 'Escape') {
+				event.preventDefault();
+				event.stopPropagation();
+				setEditingCellId(null);
+				window.requestAnimationFrame(() => {
+					const wrapper = gridRef.current?.querySelector(`[data-cell-id][tabindex="0"]`);
+					wrapper?.focus?.();
+				});
+			}
 			return;
 		}
 
-		event.preventDefault();
-		let { col, row } = focusedCell;
+		const navKeys = new Set([
+			'ArrowUp',
+			'ArrowDown',
+			'ArrowLeft',
+			'ArrowRight',
+			'Tab',
+			'Enter',
+			'F2',
+			'Escape',
+			'Delete',
+			'Backspace',
+		]);
 
-		switch (event.keyCode) {
-			case UP: {
+		if (!navKeys.has(event.key)) return;
+
+		const root = gridRef.current;
+		if (!root) return;
+
+		const doc = root.ownerDocument || document;
+		const active = doc.activeElement;
+		const activeCellEl = active?.closest?.('[data-cell-id]');
+		if (!activeCellEl || !root.contains(activeCellEl)) return;
+
+		let col = Number(activeCellEl.dataset.col);
+		let row = Number(activeCellEl.dataset.row);
+		if (!Number.isFinite(col) || !Number.isFinite(row)) return;
+
+		// Enter edit mode
+		if (event.key === 'Enter' || event.key === 'F2') {
+			event.preventDefault();
+			event.stopPropagation();
+			const id = activeCellEl.getAttribute('data-cell-id');
+			setEditingCellId(id);
+			window.requestAnimationFrame(() => {
+				activeCellEl?.querySelector?.('[contenteditable="true"], input, textarea')?.focus?.();
+			});
+			return;
+		}
+
+		if (event.key === 'Escape') {
+			event.preventDefault();
+			event.stopPropagation();
+			// no-op when not editing
+			return;
+		}
+
+		// Delete/backspace clears cell
+		if (event.key === 'Delete' || event.key === 'Backspace') {
+			event.preventDefault();
+			event.stopPropagation();
+
+			const cellData = table.cells.find(
+				c => Number(c.column_id) === col && Number(c.row_id) === row
+			);
+			if (cellData) {
+				const attrs = {
+					...(cellData.attributes || {}),
+					value: { ...((cellData.attributes && cellData.attributes.value) || {}) },
+				};
+				setTableAttributes(table_id, 'cell', cellData.cell_id, 'CONTENT', '');
+				setTableAttributes(table_id, 'cell', cellData.cell_id, 'ATTRIBUTES', attrs);
+			}
+			return;
+		}
+
+		console.log('current coordinates: col = ' + col + ', row = ' + row);
+
+		// Intercept navigation
+		event.preventDefault();
+		event.stopPropagation();
+
+		switch (event.key) {
+			case 'ArrowUp':
 				row = Math.max(1, row - 1);
 				break;
-			}
-
-			case DOWN: {
-				row = Math.min(numRows, row + 1);
+			case 'ArrowDown':
+				row = Math.min(navMaxRow, row + 1);
 				break;
-			}
-
-			case LEFT: {
+			case 'ArrowLeft':
 				col = Math.max(1, col - 1);
 				break;
-			}
-
-			case RIGHT: {
-				col = Math.min(numColumns, col + 1);
+			case 'ArrowRight':
+				col = Math.min(navMaxCol, col + 1);
 				break;
-			}
-
-			case TAB: {
-				if (col < numColumns) {
-					col = col + 1;
-				} else if (row < numRows) {
-					row = row + 1;
-					col = 1;
+			case 'Tab':
+				if (event.shiftKey) {
+					if (col > 1) col -= 1;
+					else if (row > 1) {
+						row -= 1;
+						col = navMaxCol;
+					}
+				} else {
+					// eslint-disable-next-line no-lonely-if
+					if (col < navMaxCol) {
+						col = Math.min(navMaxCol, col + 1);
+					} else if (col === navMaxCol && row < navMaxRow) {
+						row += 1;
+						col = 1;
+					}
 				}
 				break;
-			}
 
 			default:
 				console.log('Key Code = ' + event.key);
+				return;
 		}
+
+		console.log('new coordinates: col = ' + col + ', row = ' + row);
 		focusCell(col, row);
 	}
 
@@ -2098,6 +2211,11 @@ export default function Edit(props) {
 			<InspectorControls group="typography"></InspectorControls>
 		</>
 	);
+
+	console.log('');
+	console.log('Start Render: Focused Cell:');
+	console.log(focusedCell);
+
 	return (
 		<div {...blockProps}>
 			{/* Render an existing table after it has been fetched  */}
@@ -2124,7 +2242,7 @@ export default function Edit(props) {
 
 						<div
 							ref={gridRef}
-							onKeyDown={onCellKeyDown}
+							onKeyDownCapture={onCellKeyDown} // <-- capture phase
 							onFocusCapture={onGridFocusCapture}
 							tabIndex={0}
 						>
@@ -2299,6 +2417,34 @@ export default function Edit(props) {
 																				}
 																				showGridLinesCSS={showGridLinesCSS}
 																				gridLineWidthCSS={gridLineWidthCSS}
+																				isEditing={editingCellId === cell_id}
+																				onRequestFocus={(col, row) => {
+																					setFocusedCell(prev =>
+																						prev.col === col && prev.row === row
+																							? prev
+																							: { col, row }
+																					);
+																					focusCell(col, row);
+																				}}
+																				onRequestEdit={id => {
+																					setEditingCellId(id);
+																					window.requestAnimationFrame(() => {
+																						const wrapper = gridRef.current?.querySelector(
+																							`[data-cell-id="${CSS.escape(id)}"]`
+																						);
+																						wrapper
+																							?.querySelector?.(
+																								'[contenteditable="true"], input, textarea'
+																							)
+																							?.focus?.();
+																					});
+																				}}
+																				onRequestStopEdit={() => {
+																					setEditingCellId(null);
+																					window.requestAnimationFrame(() =>
+																						focusCell(Number(column_id), Number(row_id))
+																					);
+																				}}
 																				onChange={onChangeCellData}
 																			></Cell>
 																		)}
@@ -2463,6 +2609,34 @@ export default function Edit(props) {
 																					}
 																					showGridLinesCSS={showGridLinesCSS}
 																					gridLineWidthCSS={gridLineWidthCSS}
+																					isEditing={editingCellId === cell_id}
+																					onRequestFocus={(col, row) => {
+																						setFocusedCell(prev =>
+																							prev.col === col && prev.row === row
+																								? prev
+																								: { col, row }
+																						);
+																						focusCell(col, row);
+																					}}
+																					onRequestEdit={id => {
+																						setEditingCellId(id);
+																						window.requestAnimationFrame(() => {
+																							const wrapper = gridRef.current?.querySelector(
+																								`[data-cell-id="${CSS.escape(id)}"]`
+																							);
+																							wrapper
+																								?.querySelector?.(
+																									'[contenteditable="true"], input, textarea'
+																								)
+																								?.focus?.();
+																						});
+																					}}
+																					onRequestStopEdit={() => {
+																						setEditingCellId(null);
+																						window.requestAnimationFrame(() =>
+																							focusCell(Number(column_id), Number(row_id))
+																						);
+																					}}
 																					onChange={onChangeCellData}
 																				></Cell>
 																			)}
@@ -2607,6 +2781,10 @@ function Cell(props) {
 		gridLineWidthCSS,
 		onChange,
 		onMouseDown,
+		isEditing,
+		onRequestEdit,
+		onRequestStopEdit,
+		onRequestFocus,
 	} = props;
 
 	const { type, settings } = dataFormat || {};
@@ -2626,7 +2804,10 @@ function Cell(props) {
 			formattedInput = formatedDisplayDate(content, settings.format);
 		}
 		setCellContent(formattedInput);
-	}, []);
+		setCellAttributes(attributes);
+		setIsCellChanged(false);
+		initialCellValue.current = content ?? '';
+	}, [content, attributes, cellType, type, settings?.format]);
 
 	/**
 	 * Handle onChange event for cell content update
@@ -2676,8 +2857,9 @@ function Cell(props) {
 	 * @param {Date}   date
 	 * @param {string} inputType
 	 */
-	function onSetInputType(e, date, inputType) {
+	function onBlurDateTimeInputType(e, date, inputType) {
 		e.stopPropagation();
+		console.log('Date format = ' + settings.format);
 
 		if (isCellChanged) {
 			setCellContent(formatedDisplayDate(date, settings.format));
@@ -2697,15 +2879,21 @@ function Cell(props) {
 	 * @param {Object} e On Focus event
 	 * @return {void}
 	 */
-	function showTimeInputType(e) {
+	function onFocusDateTimeInputType(e) {
 		e.stopPropagation();
 		setInputType(settings.format);
+		console.log('In onFocus');
 
 		if (!!content) setCellContent(formattedIsoDate(content, settings.format));
 
+		console.log('content: ' + content);
+		console.log('Default to today?: ' + settings?.defaultToToday);
+
 		if (!content && settings?.defaultToToday) {
+			console.log('Defaulting to today for date/time');
 			const today = new Date();
-			setCellContent(formattedIsoDate(today, settings.format));
+			console.log('Date to return: ' + today + ', ' + formattedIsoDate(today, settings.format));
+			setCellContent(formattedIsoDate('', settings.format));
 		}
 	}
 
@@ -2721,53 +2909,35 @@ function Cell(props) {
 	const renderTypes = {
 		richText: () => (
 			<RichText
-				id={cell_id}
-				className={className}
-				style={{
-					'--showGridLines': showGridLinesCSS,
-					'--gridLineWidth': gridLineWidthCSS,
-				}}
 				tagName="div"
-				key={cell_id}
-				data-col={Number(column_id)}
-				data-row={Number(row_id)}
-				tabIndex={isFocused ? 0 : -1}
 				value={cellContent}
-				onChange={next => {
-					const plainText = htmlToText(next);
-					updateCellData({
-						content: next,
-						attributes: {
-							...cellAttributes,
-
-							value: {
-								indexText: plainText,
-							},
-						},
-					});
-				}}
+				readOnly={!isEditing}
+				onChange={
+					!isEditing
+						? undefined
+						: next => {
+								const plainText = htmlToText(next);
+								updateCellData({
+									content: next,
+									attributes: {
+										...cellAttributes,
+										value: {
+											...(cellAttributes?.value || {}),
+											indexText: plainText,
+										},
+									},
+								});
+							}
+				}
 			></RichText>
 		),
-		border: () => (
-			<div
-				id={cell_id}
-				onMouseDown={e => passMouseBorderClick(column_id, row_id, table, e)}
-				className={className}
-				key={cell_id}
-				data-col={Number(column_id)}
-				data-row={Number(row_id)}
-				tabIndex={-1}
-			>
-				{cellContent}
-			</div>
-		),
-		dateTime: () => (
-			<div
-				style={{
-					'--showGridLines': showGridLinesCSS,
-					'--gridLineWidth': gridLineWidthCSS,
-				}}
-			>
+		border: () => <div>{cellContent}</div>,
+		dateTime: () => {
+			if (!isEditing) {
+				return <div>{cellContent}</div>;
+			}
+
+			return (
 				<TextControl
 					style={{
 						backgroundColor: 'transparent',
@@ -2778,16 +2948,14 @@ function Cell(props) {
 						fontFamily: 'Inter, sans-serif',
 						boxShadow: 'inherit',
 					}}
-					id={cell_id}
-					className={className}
-					key={cell_id}
-					data-col={Number(column_id)}
-					data-row={Number(row_id)}
-					tabIndex={isFocused ? 0 : -1}
 					type={inputType}
+					step={60}
 					__next40pxDefaultSize
-					onFocus={showTimeInputType}
-					onBlur={e => onSetInputType(e, cellContent, 'text')}
+					onFocus={onFocusDateTimeInputType}
+					onBlur={e => {
+						onBlurDateTimeInputType(e, cellContent, 'text');
+						onRequestStopEdit?.();
+					}}
 					value={cellContent}
 					onChange={next => {
 						const formattedContent = formattedIsoDate(next, settings.format);
@@ -2795,21 +2963,21 @@ function Cell(props) {
 							content: next,
 							attributes: {
 								...cellAttributes,
-
 								value: {
+									...(cellAttributes?.value || {}),
 									indexText: formattedContent,
 								},
 							},
 						});
 					}}
 				/>
-			</div>
-		),
+			);
+		},
 	};
 
 	let renderPipeline = [];
 
-	console.log('Cell ' + cell_id + ' class names = ' + className);
+	// console.log('Cell ' + cell_id + ' class names = ' + className);
 
 	switch (cellType) {
 		case 'border':
@@ -2834,8 +3002,41 @@ function Cell(props) {
 			break;
 	}
 
+	const isBorderCell = cellType === 'border';
+	const computedTabIndex = !isBorderCell && isFocused ? 0 : -1;
+
 	return (
-		<>
+		<div
+			data-cell-id={cell_id}
+			data-col={Number(column_id)}
+			data-row={Number(row_id)}
+			tabIndex={computedTabIndex}
+			className={className}
+			style={
+				cellType === 'border'
+					? undefined
+					: {
+							'--showGridLines': showGridLinesCSS,
+							'--gridLineWidth': gridLineWidthCSS,
+						}
+			}
+			onMouseDown={e => {
+				if (cellType === 'border') {
+					passMouseBorderClick(column_id, row_id, table, e);
+					return;
+				}
+
+				if (isEditing) return;
+				e.preventDefault();
+				e.stopPropagation();
+				onRequestFocus?.(Number(column_id), Number(row_id));
+			}}
+			onDoubleClick={e => {
+				if (cellType === 'border') return;
+				e.preventDefault();
+				onRequestEdit?.(cell_id);
+			}}
+		>
 			{renderPipeline.map(key => {
 				const renderPart = renderTypes[key];
 
@@ -2846,6 +3047,6 @@ function Cell(props) {
 				// Stable key in React list:
 				return <Fragment key={key}>{renderPart()}</Fragment>;
 			})}
-		</>
+		</div>
 	);
 }
