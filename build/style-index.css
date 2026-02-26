@@ -270,43 +270,86 @@ fieldset {
 /*!******************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/components/configure-column-data-types/style.scss ***!
   \******************************************************************************************************************************************************************************************************************************************************************************/
-.column-label {
-  text-align: center;
-  font-size: large;
-  font-style: italic;
-  margin: 8px;
+@charset "UTF-8";
+/* Provide a bit more height to the modal */
+.configure-column-modal .components-modal__frame {
+  max-height: calc(100vh - 40px);
 }
-
+/* Make the modal content a body + sticky footer layout */
+.configure-column-modal__form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+/* Scroll only the body area */
+.configure-column-modal__body {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 0;
+}
+/* Inner wrapper holds padding so borders/shadows don't get clipped by the scroller */
+.configure-column-modal__body-inner {
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+/* Sticky footer (no more “scroll to Update”) */
+.configure-column-modal__footer {
+  flex: 0 0 auto;
+  position: sticky;
+  bottom: 0;
+  padding: 12px 16px;
+  background: #fff; /* or var token if you prefer */
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  z-index: 2;
+}
 .configure-column-modal__button-group {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  margin-top: 16px;
 }
-
-.column-data-type--select {
-  margin-top: 16px;
-}
-
-.column-data-type--select {
-  margin-bottom: 16px;
-}
-
-.configure-column-type--settings-container {
+/* True two-column split */
+.configure-column-modal__split {
+  width: 100%;
   display: flex;
-  justify-content: space-between;
+  align-items: stretch; /* ensures equal height children */
 }
-
-.configure-column-type--settings-options, .configure-column-type--settings-preview {
-  flex: 1; /* Makes both items grow equally to fill the space */
-  padding: 20px;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
+.configure-column-modal__right {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
-
-.configure-column-type--settings-preview {
-  vertical-align: middle;
-  text-align: center;
+.configure-column-modal__preview {
+  flex: 1 1 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.configure-column-modal__left,
+.configure-column-modal__right {
+  flex: 1 1 50%;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+}
+.configure-column-modal__advanced {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.configure-column-modal__advanced,
+.configure-column-modal__preview {
+  padding: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.02);
+}
+.configure-column-modal__preview .components-base-control,
+.configure-column-modal__preview .components-base-control__field,
+.configure-column-modal__preview .components-base-control__control {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 /*!********************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/components/row-dropdown-menu/style.scss ***!

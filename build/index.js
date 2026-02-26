@@ -439,14 +439,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   ColumnDataTypeModal: () => (/* binding */ ColumnDataTypeModal)
 /* harmony export */ });
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-column-data-types/style.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-column-data-types/style.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__);
 /* External dependencies */
+
 
 
 
@@ -466,6 +469,8 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 function ConfigureColumnDataType(props = {}) {
+  const instanceId = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_0__.useInstanceId)(ConfigureColumnDataType);
+  const previewId = `dtbk-preview-${instanceId}`;
   const {
     tableId,
     columnId,
@@ -485,27 +490,27 @@ function ConfigureColumnDataType(props = {}) {
       type: 'general'
     }
   };
-  const [columnName, setColumnName] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnLabel);
-  const [dataType, setDataType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes?.columnDataType ? columnAttributes.columnDataType : defaultDataType);
-  const [format, setFormat] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes?.columnDataType?.settings?.format || 'date');
+  const [columnName, setColumnName] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnLabel);
+  const [dataType, setDataType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes?.columnDataType ? columnAttributes.columnDataType : defaultDataType);
+  const [format, setFormat] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes?.columnDataType?.settings?.format || 'date');
 
   // Date specific attributes
   const initDefaultToToday = columnAttributes?.columnDataType?.settings?.defaultToToday === true ? true : false;
   const isDateDataType = columnAttributes.columnDataType?.type === 'date-time' ? true : false;
   const initDatePreviewValue = initDefaultToToday && isDateDataType ? formattedDate(columnAttributes?.columnDataType?.settings?.format) : '';
-  const [dateDefaultToToday, setDateDefaultToToday] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(initDefaultToToday);
-  const [datePreviewValue, setDatePreviewValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(initDatePreviewValue);
+  const [dateDefaultToToday, setDateDefaultToToday] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initDefaultToToday);
+  const [datePreviewValue, setDatePreviewValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initDatePreviewValue);
 
   // Column width attributes
-  const [columnWidthType, setColumnWidthType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.columnWidthType);
-  const [minWidth, setMinWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.minWidth);
-  const [minWidthUnits, setMinWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.minWidthUnits);
-  const [maxWidth, setMaxWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.maxWidth);
-  const [maxWidthUnits, setMaxWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.maxWidthUnits);
-  const [fixedWidth, setFixedWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.fixedWidth);
-  const [fixedWidthUnits, setFixedWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.fixedWidthUnits);
-  const [disableForTablet, setDisableForTablet] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.disableForTablet);
-  const [disableForPhone, setDisableForPhone] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.disableForPhone);
+  const [columnWidthType, setColumnWidthType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes.columnWidthType);
+  const [minWidth, setMinWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes.minWidth);
+  const [minWidthUnits, setMinWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes.minWidthUnits);
+  const [maxWidth, setMaxWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes.maxWidth);
+  const [maxWidthUnits, setMaxWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes.maxWidthUnits);
+  const [fixedWidth, setFixedWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes.fixedWidth);
+  const [fixedWidthUnits, setFixedWidthUnits] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes.fixedWidthUnits);
+  const [disableForTablet, setDisableForTablet] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes.disableForTablet);
+  const [disableForPhone, setDisableForPhone] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes.disableForPhone);
 
   /**
    * Stop event processing in favor of custom processing.
@@ -641,122 +646,147 @@ function ConfigureColumnDataType(props = {}) {
     updatedColumn(event, 'dataType', tableId, columnId, updatedColumnAttributes, columnName);
     close();
   }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Modal, {
-      title: "Configure Column Content Type",
-      onRequestClose: handleCancel,
-      focusOnMount: "firstContentElement",
-      isDismissible: "false",
-      shouldCloseOnClickOutside: "false",
-      size: "large",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
-        className: "column-label",
-        children: ["For column ", columnName]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("hr", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
-        className: "configure-data-type--form",
-        onSubmit: onUpdate,
-        onMouseDown: stopProp,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.__experimentalInputControl, {
-          label: "Column Name",
-          value: columnName,
-          onChange: value => setColumnName(value)
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("hr", {
-          style: {
-            marginTop: '10px'
-          }
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
-          className: "column-data-type--select",
-          label: "Content Type",
-          value: dataType.type,
-          onChange: onUpdateDataType,
-          options: [{
-            value: 'general',
-            label: 'General'
-          }, {
-            value: 'date-time',
-            label: 'Data/Time'
-          }
-          // { value: 'checkbox', label: 'Check Box' },
-          // { value: 'rating', label: 'Rating' },
-          ],
-          __nextHasNoMarginBottom: true
-        }), dataType.type !== 'general' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Panel, {
-          header: "Content Settings",
-          className: "column-data-type--settings",
-          children: [dataType.type === 'date-time' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
-              children: "Select the specific date/time appearance."
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-              className: "configure-column-type--settings-container",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
-                className: "configure-column-type--settings-options",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelRow, {
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
-                    label: "Date Only",
-                    checked: format === 'date',
-                    onChange: e => onDateTimeType(e, 'date')
-                  })
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelRow, {
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
-                    label: "Time Only",
-                    checked: format === 'time',
-                    onChange: e => onDateTimeType(e, 'time')
-                  })
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelRow, {
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
-                    label: "Date & Time",
-                    checked: format === 'datetime-local',
-                    onChange: e => onDateTimeType(e, 'datetime-local')
-                  })
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelBody, {
-                  title: "Other Settings",
-                  initialOpen: false,
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelRow, {
-                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
-                      label: "Default to today's date",
-                      checked: dateDefaultToToday,
-                      onChange: e => onDateDefaultToToday(e, format)
-                    })
-                  })
-                })]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-                className: "configure-column-type--settings-preview",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.TextControl, {
-                  label: "Preview",
-                  type: format,
-                  step: 60,
-                  __next40pxDefaultSize: true,
-                  value: datePreviewValue,
-                  onChange: setDatePreviewValue
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Modal, {
+    title: "Configure Column Content Type",
+    overlayClassName: "configure-column-modal",
+    onRequestClose: handleCancel,
+    focusOnMount: "firstContentElement",
+    isDismissible: "false",
+    shouldCloseOnClickOutside: "false",
+    size: "large",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("form", {
+      className: "configure-data-type--form configure-column-modal__form",
+      onSubmit: onUpdate,
+      onMouseDown: stopProp,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+        className: "configure-column-modal__body",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+          className: "configure-column-modal__body-inner",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalVStack, {
+            spacing: 4,
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("p", {
+              className: "column-label",
+              children: ["For column ", columnName]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("strong", {
+                  children: "Basics"
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalVStack, {
+                  spacing: 3,
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalInputControl, {
+                    label: "Column Name",
+                    value: columnName,
+                    onChange: value => setColumnName(value)
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+                    label: "Content Type",
+                    value: dataType.type,
+                    onChange: onUpdateDataType,
+                    options: [{
+                      value: 'general',
+                      label: 'General'
+                    }, {
+                      value: 'date-time',
+                      label: 'Date/Time'
+                    }
+                    // { value: 'checkbox', label: 'Check Box' },
+                    // { value: 'rating', label: 'Rating' },
+                    ],
+                    __nextHasNoMarginBottom: true
+                  })]
+                })
+              })]
+            }), dataType.type !== 'general' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("strong", {
+                  children: "Content settings"
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalVStack, {
+                  spacing: 3,
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                    children: "Select the specific date/time appearance."
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Flex, {
+                    gap: 24,
+                    align: "stretch",
+                    className: "configure-column-modal__split",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.FlexItem, {
+                      className: "configure-column-modal__left",
+                      isBlock: true,
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.__experimentalVStack, {
+                        spacing: 3,
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.RadioControl, {
+                          label: "Format",
+                          selected: format,
+                          options: [{
+                            label: 'Date only',
+                            value: 'date'
+                          }, {
+                            label: 'Time only',
+                            value: 'time'
+                          }, {
+                            label: 'Date & time',
+                            value: 'datetime-local'
+                          }],
+                          onChange: value => onDateTimeType(true, value)
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+                          className: "configure-column-modal__advanced",
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("strong", {
+                            children: "Advanced"
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
+                            label: "Default to today's date",
+                            checked: dateDefaultToToday,
+                            onChange: e => onDateDefaultToToday(e, format)
+                          })]
+                        })]
+                      })
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.FlexItem, {
+                      className: "configure-column-modal__right",
+                      isBlock: true,
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+                        className: "configure-column-modal__preview",
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.BaseControl, {
+                          id: previewId,
+                          label: "Preview",
+                          help: "This is only a preview; it won\u2019t change saved values.",
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                            type: format,
+                            label: '',
+                            id: previewId,
+                            step: 60,
+                            __next40pxDefaultSize: true,
+                            value: datePreviewValue,
+                            onChange: setDatePreviewValue
+                          })
+                        })
+                      })
+                    })]
+                  })]
                 })
               })]
             })]
-          }), dataType.type === 'checkbox' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
-              children: "Check Box specific settings will go here."
-            })
-          }), dataType.type === 'rating' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
-              children: "Rating specific settings will go here."
-            })
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+          })
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+        className: "configure-column-modal__footer",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
           className: "configure-column-modal__button-group",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
             variant: "secondary",
             onClick: handleCancel,
             children: "Cancel"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
             variant: "primary",
             type: "submit",
             children: "Update"
           })]
-        })]
+        })
       })]
     })
   });
 }
-const ColumnDataTypeModal = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.memo)(ConfigureColumnDataType);
+const ColumnDataTypeModal = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.memo)(ConfigureColumnDataType);
 
 /***/ }),
 

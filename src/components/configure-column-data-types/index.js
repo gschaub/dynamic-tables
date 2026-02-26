@@ -1,16 +1,23 @@
 /* External dependencies */
+import { useInstanceId } from '@wordpress/compose';
 import { useEffect, useState, memo } from '@wordpress/element';
 import {
 	Modal,
-	Panel,
-	PanelBody,
-	PanelRow,
-	SelectControl,
-	__experimentalInputControl as InputControl,
-	CheckboxControl,
+	BaseControl,
 	Button,
-	__experimentalNumberControl as NumberControl,
+	SelectControl,
+	CheckboxControl,
+	RadioControl,
 	TextControl,
+	__experimentalInputControl as InputControl,
+	__experimentalVStack as VStack,
+	__experimentalHStack as HStack,
+	__experimentalSpacer as Spacer,
+	Flex,
+	FlexItem,
+	Card,
+	CardBody,
+	CardHeader,
 } from '@wordpress/components';
 
 /**
@@ -28,6 +35,8 @@ import { settings } from '@wordpress/icons';
  * @return {Object} Updated column properties
  */
 function ConfigureColumnDataType(props = {}) {
+	const instanceId = useInstanceId(ConfigureColumnDataType);
+	const previewId = `dtbk-preview-${instanceId}`;
 	const { tableId, columnId, columnLabel, columnAttributes, updatedColumn, onRequestClose } = props;
 
 	if (columnAttributes) {
@@ -225,124 +234,133 @@ function ConfigureColumnDataType(props = {}) {
 	}
 
 	return (
-		<>
-			<Modal
-				title="Configure Column Content Type"
-				onRequestClose={handleCancel}
-				focusOnMount="firstContentElement"
-				isDismissible="false"
-				shouldCloseOnClickOutside="false"
-				size="large"
+		<Modal
+			title="Configure Column Content Type"
+			overlayClassName="configure-column-modal"
+			onRequestClose={handleCancel}
+			focusOnMount="firstContentElement"
+			isDismissible="false"
+			shouldCloseOnClickOutside="false"
+			size="large"
+		>
+			<form
+				className="configure-data-type--form configure-column-modal__form"
+				onSubmit={onUpdate}
+				onMouseDown={stopProp}
 			>
-				<p className="column-label">For column {columnName}</p>
+				{/* Scrollable body */}
+				<div className="configure-column-modal__body">
+					<div className="configure-column-modal__body-inner">
+						<VStack spacing={4}>
+							<p className="column-label">For column {columnName}</p>
 
-				<hr />
+							<Card>
+								<CardHeader>
+									<strong>Basics</strong>
+								</CardHeader>
+								<CardBody>
+									<VStack spacing={3}>
+										<InputControl
+											label="Column Name"
+											value={columnName}
+											onChange={value => setColumnName(value)}
+										/>
 
-				<form className="configure-data-type--form" onSubmit={onUpdate} onMouseDown={stopProp}>
-					<InputControl
-						label="Column Name"
-						value={columnName}
-						onChange={value => setColumnName(value)}
-					/>
+										<SelectControl
+											label="Content Type"
+											value={dataType.type}
+											onChange={onUpdateDataType}
+											options={[
+												{ value: 'general', label: 'General' },
+												{ value: 'date-time', label: 'Date/Time' },
+												// { value: 'checkbox', label: 'Check Box' },
+												// { value: 'rating', label: 'Rating' },
+											]}
+											__nextHasNoMarginBottom
+										/>
+									</VStack>
+								</CardBody>
+							</Card>
 
-					<hr style={{ marginTop: '10px' }} />
+							{/* Settings */}
+							{dataType.type !== 'general' && (
+								<Card>
+									<CardHeader>
+										<strong>Content settings</strong>
+									</CardHeader>
+									<CardBody>
+										<VStack spacing={3}>
+											<div>Select the specific date/time appearance.</div>
 
-					<SelectControl
-						className="column-data-type--select"
-						label="Content Type"
-						value={dataType.type}
-						onChange={onUpdateDataType}
-						options={[
-							{ value: 'general', label: 'General' },
-							{ value: 'date-time', label: 'Data/Time' },
-							// { value: 'checkbox', label: 'Check Box' },
-							// { value: 'rating', label: 'Rating' },
-						]}
-						__nextHasNoMarginBottom
-					/>
+											{/* True split layout */}
+											<Flex gap={24} align="stretch" className="configure-column-modal__split">
+												{/* Left column */}
+												<FlexItem className="configure-column-modal__left" isBlock>
+													<VStack spacing={3}>
+														<RadioControl
+															label="Format"
+															selected={format}
+															options={[
+																{ label: 'Date only', value: 'date' },
+																{ label: 'Time only', value: 'time' },
+																{ label: 'Date & time', value: 'datetime-local' },
+															]}
+															onChange={value => onDateTimeType(true, value)}
+														/>
 
-					{dataType.type !== 'general' && (
-						<Panel header="Content Settings" className="column-data-type--settings">
-							{dataType.type === 'date-time' && (
-								<>
-									<p>Select the specific date/time appearance.</p>
+														<div className="configure-column-modal__advanced">
+															<strong>Advanced</strong>
+															<CheckboxControl
+																label="Default to today's date"
+																checked={dateDefaultToToday}
+																onChange={e => onDateDefaultToToday(e, format)}
+															/>
+														</div>
+													</VStack>
+												</FlexItem>
 
-									<div className="configure-column-type--settings-container">
-										<div className="configure-column-type--settings-options">
-											<PanelRow>
-												<CheckboxControl
-													label="Date Only"
-													checked={format === 'date'}
-													onChange={e => onDateTimeType(e, 'date')}
-												/>
-											</PanelRow>
-
-											<PanelRow>
-												<CheckboxControl
-													label="Time Only"
-													checked={format === 'time'}
-													onChange={e => onDateTimeType(e, 'time')}
-												/>
-											</PanelRow>
-
-											<PanelRow>
-												<CheckboxControl
-													label="Date & Time"
-													checked={format === 'datetime-local'}
-													onChange={e => onDateTimeType(e, 'datetime-local')}
-												/>
-											</PanelRow>
-											<PanelBody title="Other Settings" initialOpen={false}>
-												<PanelRow>
-													<CheckboxControl
-														label="Default to today's date"
-														checked={dateDefaultToToday}
-														onChange={e => onDateDefaultToToday(e, format)}
-													/>
-												</PanelRow>
-											</PanelBody>
-										</div>
-
-										<div className="configure-column-type--settings-preview">
-											<TextControl
-												label="Preview"
-												type={format}
-												step={60}
-												__next40pxDefaultSize
-												value={datePreviewValue}
-												onChange={setDatePreviewValue}
-											/>
-										</div>
-									</div>
-								</>
+												{/* Right column */}
+												<FlexItem className="configure-column-modal__right" isBlock>
+													<div className="configure-column-modal__preview">
+														<BaseControl
+															id={previewId}
+															label="Preview"
+															help="This is only a preview; it won’t change saved values."
+														>
+															<TextControl
+																type={format}
+																label={''}
+																id={previewId}
+																step={60}
+																__next40pxDefaultSize
+																value={datePreviewValue}
+																onChange={setDatePreviewValue}
+															/>
+														</BaseControl>
+													</div>
+												</FlexItem>
+											</Flex>
+										</VStack>
+									</CardBody>
+								</Card>
 							)}
+						</VStack>
+					</div>
+				</div>
 
-							{dataType.type === 'checkbox' && (
-								<>
-									<p>Check Box specific settings will go here.</p>
-								</>
-							)}
-
-							{dataType.type === 'rating' && (
-								<>
-									<p>Rating specific settings will go here.</p>
-								</>
-							)}
-						</Panel>
-					)}
-
-					<span className="configure-column-modal__button-group">
+				{/* Sticky footer */}
+				<div className="configure-column-modal__footer">
+					<div className="configure-column-modal__button-group">
 						<Button variant="secondary" onClick={handleCancel}>
 							Cancel
 						</Button>
-
 						<Button variant="primary" type="submit">
 							Update
 						</Button>
-					</span>
-				</form>
-			</Modal>
-		</>
+					</div>
+				</div>
+			</form>
+		</Modal>
 	);
 }
 
