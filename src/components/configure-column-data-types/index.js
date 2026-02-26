@@ -51,10 +51,16 @@ function ConfigureColumnDataType(props = {}) {
 	);
 
 	// Date specific attributes
-	const [dateDefaultTodaysDate, setDateDefaultTodaysDate] = useState(
-		columnAttributes?.columnDataType?.settings?.dateDefaultTodaysDate || false
-	);
-	const [datePreviewValue, setDatePreviewValue] = useState('');
+	const initDefaultToToday =
+		columnAttributes?.columnDataType?.settings?.defaultToToday === true ? true : false;
+	const isDateDataType = columnAttributes.columnDataType?.type === 'date-time' ? true : false;
+	const initDatePreviewValue =
+		initDefaultToToday && isDateDataType
+			? formattedDate(columnAttributes?.columnDataType?.settings?.format)
+			: '';
+
+	const [dateDefaultToToday, setDateDefaultToToday] = useState(initDefaultToToday);
+	const [datePreviewValue, setDatePreviewValue] = useState(initDatePreviewValue);
 
 	// Column width attributes
 	const [columnWidthType, setColumnWidthType] = useState(columnAttributes.columnWidthType);
@@ -108,7 +114,6 @@ function ConfigureColumnDataType(props = {}) {
 			const hh = String(today.getHours()).padStart(2, '0');
 			const mm = String(today.getMinutes()).padStart(2, '0');
 			return `${hh}:${mm}`;
-			// return today.toTimeString().split(' ')[0];
 		}
 		if (type === 'datetime-local') {
 			const yyyy = today.getFullYear();
@@ -117,9 +122,6 @@ function ConfigureColumnDataType(props = {}) {
 			const hh = String(today.getHours()).padStart(2, '0');
 			const mm = String(today.getMinutes()).padStart(2, '0');
 			return `${yyyy}-${mo}-${dd}T${hh}:${mm}`;
-			// const date = today.toISOString().split('T')[0];
-			// const time = today.toTimeString().split(' ')[0];
-			// return `${date}T${time}`;
 		}
 		return '';
 	}
@@ -127,16 +129,16 @@ function ConfigureColumnDataType(props = {}) {
 	function onDateTimeType(e, type) {
 		if (!e && format === type) {
 			setFormat('date');
-			if (dateDefaultTodaysDate) setDatePreviewValue(formattedDate('date'));
+			if (dateDefaultToToday) setDatePreviewValue(formattedDate('date'));
 			return;
 		}
 
 		setFormat(type);
-		if (dateDefaultTodaysDate) setDatePreviewValue(formattedDate(type));
+		if (dateDefaultToToday) setDatePreviewValue(formattedDate(type));
 
 		const dataTypeSettings = {
 			format: type,
-			defaultToToday: dateDefaultTodaysDate,
+			defaultToToday: dateDefaultToToday,
 		};
 
 		const updatedDataType = {
@@ -146,14 +148,14 @@ function ConfigureColumnDataType(props = {}) {
 		setDataType(updatedDataType);
 	}
 
-	function onDateDefaultTodaysDate(isChecked, type) {
+	function onDateDefaultToToday(isChecked, type) {
 		if (!isChecked) {
 			setDatePreviewValue('');
 		} else {
 			setDatePreviewValue(formattedDate(type));
 		}
 
-		setDateDefaultTodaysDate(isChecked);
+		setDateDefaultToToday(isChecked);
 
 		const dataTypeSettings = {
 			format: type,
@@ -294,8 +296,8 @@ function ConfigureColumnDataType(props = {}) {
 												<PanelRow>
 													<CheckboxControl
 														label="Default to today's date"
-														checked={dateDefaultTodaysDate}
-														onChange={e => onDateDefaultTodaysDate(e, format)}
+														checked={dateDefaultToToday}
+														onChange={e => onDateDefaultToToday(e, format)}
 													/>
 												</PanelRow>
 											</PanelBody>

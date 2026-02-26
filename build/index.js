@@ -490,8 +490,11 @@ function ConfigureColumnDataType(props = {}) {
   const [format, setFormat] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes?.columnDataType?.settings?.format || 'date');
 
   // Date specific attributes
-  const [dateDefaultTodaysDate, setDateDefaultTodaysDate] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes?.columnDataType?.settings?.dateDefaultTodaysDate || false);
-  const [datePreviewValue, setDatePreviewValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+  const initDefaultToToday = columnAttributes?.columnDataType?.settings?.defaultToToday === true ? true : false;
+  const isDateDataType = columnAttributes.columnDataType?.type === 'date-time' ? true : false;
+  const initDatePreviewValue = initDefaultToToday && isDateDataType ? formattedDate(columnAttributes?.columnDataType?.settings?.format) : '';
+  const [dateDefaultToToday, setDateDefaultToToday] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(initDefaultToToday);
+  const [datePreviewValue, setDatePreviewValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(initDatePreviewValue);
 
   // Column width attributes
   const [columnWidthType, setColumnWidthType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(columnAttributes.columnWidthType);
@@ -543,7 +546,6 @@ function ConfigureColumnDataType(props = {}) {
       const hh = String(today.getHours()).padStart(2, '0');
       const mm = String(today.getMinutes()).padStart(2, '0');
       return `${hh}:${mm}`;
-      // return today.toTimeString().split(' ')[0];
     }
     if (type === 'datetime-local') {
       const yyyy = today.getFullYear();
@@ -552,23 +554,20 @@ function ConfigureColumnDataType(props = {}) {
       const hh = String(today.getHours()).padStart(2, '0');
       const mm = String(today.getMinutes()).padStart(2, '0');
       return `${yyyy}-${mo}-${dd}T${hh}:${mm}`;
-      // const date = today.toISOString().split('T')[0];
-      // const time = today.toTimeString().split(' ')[0];
-      // return `${date}T${time}`;
     }
     return '';
   }
   function onDateTimeType(e, type) {
     if (!e && format === type) {
       setFormat('date');
-      if (dateDefaultTodaysDate) setDatePreviewValue(formattedDate('date'));
+      if (dateDefaultToToday) setDatePreviewValue(formattedDate('date'));
       return;
     }
     setFormat(type);
-    if (dateDefaultTodaysDate) setDatePreviewValue(formattedDate(type));
+    if (dateDefaultToToday) setDatePreviewValue(formattedDate(type));
     const dataTypeSettings = {
       format: type,
-      defaultToToday: dateDefaultTodaysDate
+      defaultToToday: dateDefaultToToday
     };
     const updatedDataType = {
       type: 'date-time',
@@ -576,13 +575,13 @@ function ConfigureColumnDataType(props = {}) {
     };
     setDataType(updatedDataType);
   }
-  function onDateDefaultTodaysDate(isChecked, type) {
+  function onDateDefaultToToday(isChecked, type) {
     if (!isChecked) {
       setDatePreviewValue('');
     } else {
       setDatePreviewValue(formattedDate(type));
     }
-    setDateDefaultTodaysDate(isChecked);
+    setDateDefaultToToday(isChecked);
     const dataTypeSettings = {
       format: type,
       defaultToToday: isChecked
@@ -715,8 +714,8 @@ function ConfigureColumnDataType(props = {}) {
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.PanelRow, {
                     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.CheckboxControl, {
                       label: "Default to today's date",
-                      checked: dateDefaultTodaysDate,
-                      onChange: e => onDateDefaultTodaysDate(e, format)
+                      checked: dateDefaultToToday,
+                      onChange: e => onDateDefaultToToday(e, format)
                     })
                   })
                 })]
@@ -4448,7 +4447,7 @@ function Edit(props) {
    * @param {boolean}                 [persist=true] Update table entity (not just the table store)
    */
   function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
-    console.log(`Setting Table Attribute: ${attribute} Type: ${type} Value: ${value}`);
+    console.log('Setting Table Attribute: ' + attribute + ', Type: ' + type + ', Value: ' + value);
     switch (type) {
       case 'CONTENT':
         {
@@ -4702,6 +4701,9 @@ function Edit(props) {
     if (!root) return false;
     const el = root.querySelector(`[data-cell-id][data-col="${col}"][data-row="${row}"]`);
     if (!el) return false;
+    console.log('Focus el: ', {
+      el
+    });
 
     // roving tabindex
     root.querySelectorAll('[data-cell-id][tabindex="0"]').forEach(node => {
@@ -4744,10 +4746,6 @@ function Edit(props) {
    * @return {void}
    */
   function onCellKeyDown(event) {
-    // Only handle if event came from inside a cell wrapper (or a child of it)
-    // const root = gridRef.current;
-    // if (!root) return;
-
     // If editing, only handle Escape here; let the editor handle arrows, delete, etc.
     if (editingCellId) {
       if (event.key === 'Escape') {
@@ -4761,8 +4759,6 @@ function Edit(props) {
       }
       return;
     }
-    const navKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter', 'F2', 'Escape', 'Delete', 'Backspace']);
-    if (!navKeys.has(event.key)) return;
     const root = gridRef.current;
     if (!root) return;
     const doc = root.ownerDocument || document;
@@ -4772,6 +4768,19 @@ function Edit(props) {
     let col = Number(activeCellEl.dataset.col);
     let row = Number(activeCellEl.dataset.row);
     if (!Number.isFinite(col) || !Number.isFinite(row)) return;
+    const navKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter', 'F2', 'Escape', 'Delete', 'Backspace']);
+    console.log('Column Data Type');
+    const columnDataType = columnDataTypes[col].type;
+
+    // Allow direct edit for printable keys
+    if (!navKeys.has(event.key) && isPrintableKey(event)) {
+      if (columnDataType === 'general') {
+        // Enter edit mode
+        onCellKeyDownEditing(event, activeCellEl, event.key);
+        console.log('Coordinates: col/row = ' + col + '/' + row);
+        return;
+      }
+    }
 
     // Enter edit mode
     if (event.key === 'Enter' || event.key === 'F2') {
@@ -4848,6 +4857,72 @@ function Edit(props) {
     }
     console.log('new coordinates: col = ' + col + ', row = ' + row);
     focusCell(col, row);
+  }
+  function isPrintableKey(event) {
+    // Ignore modifier combos and IME composition
+    if (event.ctrlKey || event.metaKey || event.altKey) return false;
+    if (event.isComposing || event.key === 'Process') return false;
+
+    // Printable characters are usually length 1 (includes space)
+    return typeof event.key === 'string' && event.key.length === 1;
+  }
+  function onCellKeyDownEditing(event, activeCellEl, char) {
+    event.preventDefault();
+    event.stopPropagation();
+    const id = activeCellEl.getAttribute('data-cell-id');
+    setEditingCellId(id);
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        console.log('Processing edit key stroke');
+        const doc = activeCellEl.ownerDocument;
+        const editable = activeCellEl.querySelector('[contenteditable="true"]');
+        const input = activeCellEl.querySelector('input, textarea');
+        console.log('doc');
+        console.log(doc);
+        console.log('input');
+        console.log(input);
+        if (editable) {
+          console.log('Processing Editable');
+          editable.focus();
+
+          // Move caret to END of contenteditable
+          const sel = doc.getSelection();
+          const range = doc.createRange();
+          range.selectNodeContents(editable);
+          range.collapse(false);
+          sel.removeAllRanges();
+          sel.addRange(range);
+
+          // Insert text at caret
+          // execCommand is deprecated but still the most compatible for contenteditable insertion
+          if (doc.queryCommandSupported?.('insertText')) {
+            doc.execCommand('insertText', false, char);
+          } else {
+            range.insertNode(doc.createTextNode(char));
+            range.collapse(false);
+            sel.removeAllRanges();
+            sel.addRange(range);
+          }
+          return;
+        }
+        if (input) {
+          var _input$value;
+          console.log('Input');
+          input.focus();
+          const v = (_input$value = input.value) !== null && _input$value !== void 0 ? _input$value : '';
+          input.value = v + char;
+
+          // Make React/Gutenberg notice the change
+          input.dispatchEvent(new Event('input', {
+            bubbles: true
+          }));
+
+          // Caret to end
+          const end = input.value.length;
+          input.setSelectionRange?.(end, end);
+        }
+      });
+    });
   }
 
   /**
@@ -5488,6 +5563,8 @@ function Edit(props) {
   console.log('');
   console.log('Start Render: Focused Cell:');
   console.log(focusedCell);
+  // console.log(gridRef.current);
+
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
     ...blockProps,
     children: [!isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
@@ -5935,15 +6012,42 @@ function Cell(props) {
     html
   })).replace(/\s+/g, ' ').trim();
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    let formattedInput = content;
-    if (cellType !== 'border' && type === 'date-time' && content) {
-      formattedInput = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formatedDisplayDate)(content, settings.format);
-    }
-    setCellContent(formattedInput);
     setCellAttributes(attributes);
     setIsCellChanged(false);
     initialCellValue.current = content !== null && content !== void 0 ? content : '';
-  }, [content, attributes, cellType, type, settings?.format]);
+
+    // Default behavior: raw content as-is
+    setCellContent(content !== null && content !== void 0 ? content : '');
+  }, [content, attributes]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (cellType === 'border' || type !== 'date-time') return;
+    if (isEditing) {
+      var _ref;
+      // Enter edit mode: force a valid HTML input value FIRST
+      setInputType(settings?.format || 'date');
+      const raw = (_ref = content !== null && content !== void 0 ? content : initialCellValue.current) !== null && _ref !== void 0 ? _ref : '';
+      if (!!raw) setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(content, settings.format));
+
+      // console.log('content: ' + content);
+      // console.log('Default to today?: ' + settings?.defaultToToday);
+
+      if (!raw && settings?.defaultToToday) {
+        console.log('Defaulting to today for date/time');
+        const today = new Date();
+        console.log('Date to return: ' + today + ', ' + (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(today, settings.format));
+        setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)('', settings.format));
+      }
+    } else {
+      // Exit edit mode: go back to display formatting
+      setInputType('text');
+      const raw = content !== null && content !== void 0 ? content : '';
+      console.log('Formatted date = ' + raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formatedDisplayDate)(raw, settings?.format) : 0);
+      setCellContent(raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formatedDisplayDate)(raw, settings?.format) : '');
+    }
+    setCellAttributes(attributes);
+    setIsCellChanged(false);
+    initialCellValue.current = content !== null && content !== void 0 ? content : '';
+  }, [isEditing, content, attributes, cellType, type, settings?.format]);
 
   /**
    * Handle onChange event for cell content update
@@ -5973,57 +6077,6 @@ function Cell(props) {
    */
   function passMouseBorderClick(column_id, row_id, table, e) {
     onMouseDown(column_id, row_id, table, e);
-  }
-
-  /**
-   *
-   * This section supports Data/Time input and display.
-   *
-   * @since 1.2.0
-   */
-
-  /**
-   * Set new input type on TextControl component when a date-time cell loses focus
-   *
-   * @since 1.2.0
-   *
-   * @param {Object} e
-   * @param {Date}   date
-   * @param {string} inputType
-   */
-  function onBlurDateTimeInputType(e, date, inputType) {
-    e.stopPropagation();
-    console.log('Date format = ' + settings.format);
-    if (isCellChanged) {
-      setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formatedDisplayDate)(date, settings.format));
-    } else {
-      setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formatedDisplayDate)(initialCellValue.current, settings.format));
-    }
-    setInputType(inputType);
-  }
-
-  /**
-   * Set correct date input type on TextControl component when cell gains focus and
-   * optionally poplulate with today's date/time based on format rules
-   *
-   * @since 1.2.0
-   *
-   * @param {Object} e On Focus event
-   * @return {void}
-   */
-  function onFocusDateTimeInputType(e) {
-    e.stopPropagation();
-    setInputType(settings.format);
-    console.log('In onFocus');
-    if (!!content) setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(content, settings.format));
-    console.log('content: ' + content);
-    console.log('Default to today?: ' + settings?.defaultToToday);
-    if (!content && settings?.defaultToToday) {
-      console.log('Defaulting to today for date/time');
-      const today = new Date();
-      console.log('Date to return: ' + today + ', ' + (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(today, settings.format));
-      setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)('', settings.format));
-    }
   }
 
   /**
@@ -6074,13 +6127,7 @@ function Cell(props) {
           boxShadow: 'inherit'
         },
         type: inputType,
-        step: 60,
         __next40pxDefaultSize: true,
-        onFocus: onFocusDateTimeInputType,
-        onBlur: e => {
-          onBlurDateTimeInputType(e, cellContent, 'text');
-          onRequestStopEdit?.();
-        },
         value: cellContent,
         onChange: next => {
           const formattedContent = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(next, settings.format);
@@ -6094,6 +6141,7 @@ function Cell(props) {
               }
             }
           });
+          onRequestStopEdit?.();
         }
       });
     }

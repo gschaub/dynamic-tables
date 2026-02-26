@@ -990,7 +990,7 @@ export default function Edit(props) {
 	 * @param {boolean}                 [persist=true] Update table entity (not just the table store)
 	 */
 	function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
-		console.log(`Setting Table Attribute: ${attribute} Type: ${type} Value: ${value}`);
+		console.log('Setting Table Attribute: ' + attribute + ', Type: ' + type + ', Value: ' + value);
 		switch (type) {
 			case 'CONTENT': {
 				if (attribute === 'cell') {
@@ -1249,6 +1249,7 @@ export default function Edit(props) {
 
 		const el = root.querySelector(`[data-cell-id][data-col="${col}"][data-row="${row}"]`);
 		if (!el) return false;
+		console.log('Focus el: ', { el });
 
 		// roving tabindex
 		root.querySelectorAll('[data-cell-id][tabindex="0"]').forEach(node => {
@@ -1297,10 +1298,6 @@ export default function Edit(props) {
 	 * @return {void}
 	 */
 	function onCellKeyDown(event) {
-		// Only handle if event came from inside a cell wrapper (or a child of it)
-		// const root = gridRef.current;
-		// if (!root) return;
-
 		// If editing, only handle Escape here; let the editor handle arrows, delete, etc.
 		if (editingCellId) {
 			if (event.key === 'Escape') {
@@ -1315,6 +1312,19 @@ export default function Edit(props) {
 			return;
 		}
 
+		const root = gridRef.current;
+		if (!root) return;
+
+		const doc = root.ownerDocument || document;
+		const active = doc.activeElement;
+		const activeCellEl = active?.closest?.('[data-cell-id]');
+
+		if (!activeCellEl || !root.contains(activeCellEl)) return;
+
+		let col = Number(activeCellEl.dataset.col);
+		let row = Number(activeCellEl.dataset.row);
+		if (!Number.isFinite(col) || !Number.isFinite(row)) return;
+
 		const navKeys = new Set([
 			'ArrowUp',
 			'ArrowDown',
@@ -1328,19 +1338,18 @@ export default function Edit(props) {
 			'Backspace',
 		]);
 
-		if (!navKeys.has(event.key)) return;
+		console.log('Column Data Type');
+		const columnDataType = columnDataTypes[col].type;
 
-		const root = gridRef.current;
-		if (!root) return;
-
-		const doc = root.ownerDocument || document;
-		const active = doc.activeElement;
-		const activeCellEl = active?.closest?.('[data-cell-id]');
-		if (!activeCellEl || !root.contains(activeCellEl)) return;
-
-		let col = Number(activeCellEl.dataset.col);
-		let row = Number(activeCellEl.dataset.row);
-		if (!Number.isFinite(col) || !Number.isFinite(row)) return;
+		// Allow direct edit for printable keys
+		if (!navKeys.has(event.key) && isPrintableKey(event)) {
+			if (columnDataType === 'general') {
+				// Enter edit mode
+				onCellKeyDownEditing(event, activeCellEl, event.key);
+				console.log('Coordinates: col/row = ' + col + '/' + row);
+				return;
+			}
+		}
 
 		// Enter edit mode
 		if (event.key === 'Enter' || event.key === 'F2') {
@@ -1424,6 +1433,76 @@ export default function Edit(props) {
 
 		console.log('new coordinates: col = ' + col + ', row = ' + row);
 		focusCell(col, row);
+	}
+
+	function isPrintableKey(event) {
+		// Ignore modifier combos and IME composition
+		if (event.ctrlKey || event.metaKey || event.altKey) return false;
+		if (event.isComposing || event.key === 'Process') return false;
+
+		// Printable characters are usually length 1 (includes space)
+		return typeof event.key === 'string' && event.key.length === 1;
+	}
+
+	function onCellKeyDownEditing(event, activeCellEl, char) {
+		event.preventDefault();
+		event.stopPropagation();
+
+		const id = activeCellEl.getAttribute('data-cell-id');
+		setEditingCellId(id);
+
+		window.requestAnimationFrame(() => {
+			window.requestAnimationFrame(() => {
+				console.log('Processing edit key stroke');
+				const doc = activeCellEl.ownerDocument;
+				const editable = activeCellEl.querySelector('[contenteditable="true"]');
+				const input = activeCellEl.querySelector('input, textarea');
+				console.log('doc');
+				console.log(doc);
+				console.log('input');
+				console.log(input);
+
+				if (editable) {
+					console.log('Processing Editable');
+					editable.focus();
+
+					// Move caret to END of contenteditable
+					const sel = doc.getSelection();
+					const range = doc.createRange();
+					range.selectNodeContents(editable);
+					range.collapse(false);
+					sel.removeAllRanges();
+					sel.addRange(range);
+
+					// Insert text at caret
+					// execCommand is deprecated but still the most compatible for contenteditable insertion
+					if (doc.queryCommandSupported?.('insertText')) {
+						doc.execCommand('insertText', false, char);
+					} else {
+						range.insertNode(doc.createTextNode(char));
+						range.collapse(false);
+						sel.removeAllRanges();
+						sel.addRange(range);
+					}
+					return;
+				}
+
+				if (input) {
+					console.log('Input');
+					input.focus();
+
+					const v = input.value ?? '';
+					input.value = v + char;
+
+					// Make React/Gutenberg notice the change
+					input.dispatchEvent(new Event('input', { bubbles: true }));
+
+					// Caret to end
+					const end = input.value.length;
+					input.setSelectionRange?.(end, end);
+				}
+			});
+		});
 	}
 
 	/**
@@ -2215,6 +2294,7 @@ export default function Edit(props) {
 	console.log('');
 	console.log('Start Render: Focused Cell:');
 	console.log(focusedCell);
+	// console.log(gridRef.current);
 
 	return (
 		<div {...blockProps}>
@@ -2798,16 +2878,47 @@ function Cell(props) {
 	const htmlToText = (html = '') => getTextContent(create({ html })).replace(/\s+/g, ' ').trim();
 
 	useEffect(() => {
-		let formattedInput = content;
-
-		if (cellType !== 'border' && type === 'date-time' && content) {
-			formattedInput = formatedDisplayDate(content, settings.format);
-		}
-		setCellContent(formattedInput);
 		setCellAttributes(attributes);
 		setIsCellChanged(false);
 		initialCellValue.current = content ?? '';
-	}, [content, attributes, cellType, type, settings?.format]);
+
+		// Default behavior: raw content as-is
+		setCellContent(content ?? '');
+	}, [content, attributes]);
+
+	useEffect(() => {
+		if (cellType === 'border' || type !== 'date-time') return;
+
+		if (isEditing) {
+			// Enter edit mode: force a valid HTML input value FIRST
+			setInputType(settings?.format || 'date');
+
+			const raw = content ?? initialCellValue.current ?? '';
+
+			if (!!raw) setCellContent(formattedIsoDate(content, settings.format));
+
+			// console.log('content: ' + content);
+			// console.log('Default to today?: ' + settings?.defaultToToday);
+
+			if (!raw && settings?.defaultToToday) {
+				console.log('Defaulting to today for date/time');
+				const today = new Date();
+				console.log('Date to return: ' + today + ', ' + formattedIsoDate(today, settings.format));
+				setCellContent(formattedIsoDate('', settings.format));
+			}
+		} else {
+			// Exit edit mode: go back to display formatting
+			setInputType('text');
+
+			const raw = content ?? '';
+			console.log('Formatted date = ' + raw ? formatedDisplayDate(raw, settings?.format) : '')
+			setCellContent(raw ? formatedDisplayDate(raw, settings?.format) : '');
+		}
+
+		setCellAttributes(attributes);
+		setIsCellChanged(false);
+		initialCellValue.current = content ?? '';
+	}, [isEditing, content, attributes, cellType, type, settings?.format]);
 
 	/**
 	 * Handle onChange event for cell content update
@@ -2839,62 +2950,6 @@ function Cell(props) {
 	 */
 	function passMouseBorderClick(column_id, row_id, table, e) {
 		onMouseDown(column_id, row_id, table, e);
-	}
-
-	/**
-	 *
-	 * This section supports Data/Time input and display.
-	 *
-	 * @since 1.2.0
-	 */
-
-	/**
-	 * Set new input type on TextControl component when a date-time cell loses focus
-	 *
-	 * @since 1.2.0
-	 *
-	 * @param {Object} e
-	 * @param {Date}   date
-	 * @param {string} inputType
-	 */
-	function onBlurDateTimeInputType(e, date, inputType) {
-		e.stopPropagation();
-		console.log('Date format = ' + settings.format);
-
-		if (isCellChanged) {
-			setCellContent(formatedDisplayDate(date, settings.format));
-		} else {
-			setCellContent(formatedDisplayDate(initialCellValue.current, settings.format));
-		}
-
-		setInputType(inputType);
-	}
-
-	/**
-	 * Set correct date input type on TextControl component when cell gains focus and
-	 * optionally poplulate with today's date/time based on format rules
-	 *
-	 * @since 1.2.0
-	 *
-	 * @param {Object} e On Focus event
-	 * @return {void}
-	 */
-	function onFocusDateTimeInputType(e) {
-		e.stopPropagation();
-		setInputType(settings.format);
-		console.log('In onFocus');
-
-		if (!!content) setCellContent(formattedIsoDate(content, settings.format));
-
-		console.log('content: ' + content);
-		console.log('Default to today?: ' + settings?.defaultToToday);
-
-		if (!content && settings?.defaultToToday) {
-			console.log('Defaulting to today for date/time');
-			const today = new Date();
-			console.log('Date to return: ' + today + ', ' + formattedIsoDate(today, settings.format));
-			setCellContent(formattedIsoDate('', settings.format));
-		}
 	}
 
 	/**
@@ -2949,13 +3004,7 @@ function Cell(props) {
 						boxShadow: 'inherit',
 					}}
 					type={inputType}
-					step={60}
 					__next40pxDefaultSize
-					onFocus={onFocusDateTimeInputType}
-					onBlur={e => {
-						onBlurDateTimeInputType(e, cellContent, 'text');
-						onRequestStopEdit?.();
-					}}
 					value={cellContent}
 					onChange={next => {
 						const formattedContent = formattedIsoDate(next, settings.format);
@@ -2969,6 +3018,7 @@ function Cell(props) {
 								},
 							},
 						});
+						onRequestStopEdit?.();
 					}}
 				/>
 			);
