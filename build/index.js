@@ -4477,7 +4477,10 @@ function Edit(props) {
    * @param {boolean}                 [persist=true] Update table entity (not just the table store)
    */
   function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
-    console.log('Setting Table Attribute: ' + attribute + ', Type: ' + type + ', Value: ' + value);
+    console.log('Setting Table Type: ' + type + ', Value: ' + value);
+    console.log('Setting Table Attribute: ', {
+      attribute
+    });
     switch (type) {
       case 'CONTENT':
         {
@@ -4777,6 +4780,7 @@ function Edit(props) {
    */
   function onCellKeyDown(event) {
     // If editing, only handle Escape here; let the editor handle arrows, delete, etc.
+    console.log('ENTERING KEY DOWN');
     if (editingCellId) {
       if (event.key === 'Escape') {
         event.preventDefault();
@@ -4801,13 +4805,16 @@ function Edit(props) {
     const navKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter', 'F2', 'Escape', 'Delete', 'Backspace']);
     console.log('Column Data Type');
     const columnDataType = columnDataTypes[col].type;
+    // const isHeaderRow = table.rows[Number(row)].attributes.isHeader;
+    const isHeaderRow = table.rows.find(r => Number(r.row_id) === row).attributes.isHeader;
+    console.log('Is Header Cell ? ', isHeaderRow);
 
     // Allow direct edit for printable keys
     if (!navKeys.has(event.key) && isPrintableKey(event)) {
-      if (columnDataType === 'general') {
+      if (columnDataType === 'general' || isHeaderRow) {
         // Enter edit mode
-        onCellKeyDownEditing(event, activeCellEl, event.key);
         console.log('Coordinates: col/row = ' + col + '/' + row);
+        onCellKeyDownEditing(event, activeCellEl, event.key);
         return;
       }
     }
@@ -4847,7 +4854,8 @@ function Edit(props) {
       }
       return;
     }
-    console.log('current coordinates: col = ' + col + ', row = ' + row);
+
+    // console.log('current coordinates: col = ' + col + ', row = ' + row);
 
     // Intercept navigation
     event.preventDefault();
@@ -5065,8 +5073,9 @@ function Edit(props) {
    * @param {Object} e         Mouse Click Event
    */
   function onMouseBorderClick(column_id, row_id, table, e) {
-    console.log('onMouseBorderClick Column ID: ' + column_id + ' Row ID: ' + row_id);
-    console.log(e);
+    // console.log('onMouseBorderClick Column ID: ' + column_id + ' Row ID: ' + row_id);
+    // console.log(e);
+
     e?.preventDefault?.();
     e?.stopPropagation?.();
     if (row_id === '0' && column_id !== '0') {
@@ -5730,7 +5739,7 @@ function Edit(props) {
                           '--gridLineWidth': gridLineWidthCSS
                         }
                       }), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(Cell, {
-                        cellType: 'body',
+                        cellType: 'header',
                         dataFormat: columnDataTypes[column_id],
                         cell_id: cell_id,
                         table_id: table_id,
@@ -6052,27 +6061,32 @@ function Cell(props) {
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     if (cellType === 'border' || type !== 'date-time') return;
     if (isEditing) {
-      var _ref;
       // Enter edit mode: force a valid HTML input value FIRST
-      setInputType(settings?.format || 'date');
-      const raw = (_ref = content !== null && content !== void 0 ? content : initialCellValue.current) !== null && _ref !== void 0 ? _ref : '';
-      if (!!raw) setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(content, settings.format));
+      if (cellType === 'body' && type === 'date-time') {
+        var _ref;
+        setInputType(settings?.format || 'date');
+        const raw = (_ref = content !== null && content !== void 0 ? content : initialCellValue.current) !== null && _ref !== void 0 ? _ref : '';
+        if (!!raw) setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(content, settings.format));
 
-      // console.log('content: ' + content);
-      // console.log('Default to today?: ' + settings?.defaultToToday);
+        // console.log('content: ' + content);
+        // console.log('Default to today?: ' + settings?.defaultToToday);
 
-      if (!raw && settings?.defaultToToday) {
-        console.log('Defaulting to today for date/time');
-        const today = new Date();
-        console.log('Date to return: ' + today + ', ' + (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(today, settings.format));
-        setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)('', settings.format));
+        if (!raw && settings?.defaultToToday) {
+          // console.log('Defaulting to today for date/time');
+          const today = new Date();
+          console.log('Date to return: ' + today + ', ' + (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(today, settings.format));
+          setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)('', settings.format));
+        }
       }
     } else {
       // Exit edit mode: go back to display formatting
-      setInputType('text');
-      const raw = content !== null && content !== void 0 ? content : '';
-      console.log('Formatted date = ' + raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formatedDisplayDate)(raw, settings?.format) : 0);
-      setCellContent(raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formatedDisplayDate)(raw, settings?.format) : '');
+      // eslint-disable-next-line no-lonely-if
+      if (cellType === 'body' && type === 'date-time') {
+        setInputType('text');
+        const raw = content !== null && content !== void 0 ? content : '';
+        // console.log('Formatted date = ' + raw ? formatedDisplayDate(raw, settings?.format) : '');
+        setCellContent(raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formatedDisplayDate)(raw, settings?.format) : '');
+      }
     }
     setCellAttributes(attributes);
     setIsCellChanged(false);
@@ -6183,6 +6197,9 @@ function Cell(props) {
   switch (cellType) {
     case 'border':
       renderPipeline = ['border'];
+      break;
+    case 'header':
+      renderPipeline = ['richText'];
       break;
     case 'body':
       switch (type) {

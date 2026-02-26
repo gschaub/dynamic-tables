@@ -990,7 +990,8 @@ export default function Edit(props) {
 	 * @param {boolean}                 [persist=true] Update table entity (not just the table store)
 	 */
 	function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
-		console.log('Setting Table Attribute: ' + attribute + ', Type: ' + type + ', Value: ' + value);
+		console.log('Setting Table Type: ' + type + ', Value: ' + value);
+		console.log('Setting Table Attribute: ', { attribute });
 		switch (type) {
 			case 'CONTENT': {
 				if (attribute === 'cell') {
@@ -1299,6 +1300,7 @@ export default function Edit(props) {
 	 */
 	function onCellKeyDown(event) {
 		// If editing, only handle Escape here; let the editor handle arrows, delete, etc.
+		console.log('ENTERING KEY DOWN');
 		if (editingCellId) {
 			if (event.key === 'Escape') {
 				event.preventDefault();
@@ -1340,13 +1342,16 @@ export default function Edit(props) {
 
 		console.log('Column Data Type');
 		const columnDataType = columnDataTypes[col].type;
+		// const isHeaderRow = table.rows[Number(row)].attributes.isHeader;
+		const isHeaderRow = table.rows.find(r => Number(r.row_id) === row).attributes.isHeader;
+		console.log('Is Header Cell ? ', isHeaderRow);
 
 		// Allow direct edit for printable keys
 		if (!navKeys.has(event.key) && isPrintableKey(event)) {
-			if (columnDataType === 'general') {
+			if (columnDataType === 'general' || isHeaderRow) {
 				// Enter edit mode
-				onCellKeyDownEditing(event, activeCellEl, event.key);
 				console.log('Coordinates: col/row = ' + col + '/' + row);
+				onCellKeyDownEditing(event, activeCellEl, event.key);
 				return;
 			}
 		}
@@ -1389,7 +1394,7 @@ export default function Edit(props) {
 			return;
 		}
 
-		console.log('current coordinates: col = ' + col + ', row = ' + row);
+		// console.log('current coordinates: col = ' + col + ', row = ' + row);
 
 		// Intercept navigation
 		event.preventDefault();
@@ -1615,8 +1620,8 @@ export default function Edit(props) {
 	 * @param {Object} e         Mouse Click Event
 	 */
 	function onMouseBorderClick(column_id, row_id, table, e) {
-		console.log('onMouseBorderClick Column ID: ' + column_id + ' Row ID: ' + row_id);
-		console.log(e);
+		// console.log('onMouseBorderClick Column ID: ' + column_id + ' Row ID: ' + row_id);
+		// console.log(e);
 
 		e?.preventDefault?.();
 		e?.stopPropagation?.();
@@ -2480,7 +2485,7 @@ export default function Edit(props) {
 																		)}
 																		{!isBorder && (
 																			<Cell
-																				cellType={'body'}
+																				cellType={'header'}
 																				dataFormat={columnDataTypes[column_id]}
 																				cell_id={cell_id}
 																				table_id={table_id}
@@ -2891,28 +2896,33 @@ function Cell(props) {
 
 		if (isEditing) {
 			// Enter edit mode: force a valid HTML input value FIRST
-			setInputType(settings?.format || 'date');
+			if (cellType === 'body' && type === 'date-time') {
+				setInputType(settings?.format || 'date');
 
-			const raw = content ?? initialCellValue.current ?? '';
+				const raw = content ?? initialCellValue.current ?? '';
 
-			if (!!raw) setCellContent(formattedIsoDate(content, settings.format));
+				if (!!raw) setCellContent(formattedIsoDate(content, settings.format));
 
-			// console.log('content: ' + content);
-			// console.log('Default to today?: ' + settings?.defaultToToday);
+				// console.log('content: ' + content);
+				// console.log('Default to today?: ' + settings?.defaultToToday);
 
-			if (!raw && settings?.defaultToToday) {
-				console.log('Defaulting to today for date/time');
-				const today = new Date();
-				console.log('Date to return: ' + today + ', ' + formattedIsoDate(today, settings.format));
-				setCellContent(formattedIsoDate('', settings.format));
+				if (!raw && settings?.defaultToToday) {
+					// console.log('Defaulting to today for date/time');
+					const today = new Date();
+					console.log('Date to return: ' + today + ', ' + formattedIsoDate(today, settings.format));
+					setCellContent(formattedIsoDate('', settings.format));
+				}
 			}
 		} else {
 			// Exit edit mode: go back to display formatting
-			setInputType('text');
+			// eslint-disable-next-line no-lonely-if
+			if (cellType === 'body' && type === 'date-time') {
+				setInputType('text');
 
-			const raw = content ?? '';
-			console.log('Formatted date = ' + raw ? formatedDisplayDate(raw, settings?.format) : '')
-			setCellContent(raw ? formatedDisplayDate(raw, settings?.format) : '');
+				const raw = content ?? '';
+				// console.log('Formatted date = ' + raw ? formatedDisplayDate(raw, settings?.format) : '');
+				setCellContent(raw ? formatedDisplayDate(raw, settings?.format) : '');
+			}
 		}
 
 		setCellAttributes(attributes);
@@ -3032,6 +3042,9 @@ function Cell(props) {
 	switch (cellType) {
 		case 'border':
 			renderPipeline = ['border'];
+			break;
+		case 'header':
+			renderPipeline = ['richText'];
 			break;
 		case 'body':
 			switch (type) {
