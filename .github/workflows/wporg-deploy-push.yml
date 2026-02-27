@@ -157,13 +157,13 @@ jobs:
         id: deploy_dry_run
         uses: 10up/action-wordpress-plugin-deploy@stable
         with:
-          slug: ${{ env.PLUGIN_SLUG }}
-          build-dir: .wporg-source
-          assets-dir: .wordpress-org
-          stable-tag: ${{ steps.ver.outputs.version }}
           dry-run: true
           generate-zip: true
-          zip-name: ${{ env.PLUGIN_SLUG }}-${{ steps.ver.outputs.version }}
+        env:
+          SLUG: ${{ env.PLUGIN_SLUG }}
+          BUILD_DIR: .wporg-source
+          ASSETS_DIR: .wordpress-org
+          VERSION: ${{ steps.ver.outputs.version }}
 
       - name: Build deploy manifest from dry-run output
         run: |
@@ -215,10 +215,10 @@ jobs:
       - name: Deploy to WordPress.org SVN
         if: ${{ github.event.inputs.deploy_to_svn == 'true' }}
         uses: 10up/action-wordpress-plugin-deploy@stable
-        with:
-          slug: ${{ env.PLUGIN_SLUG }}
-          svn_username: ${{ secrets.WPORG_SVN_USERNAME }}
-          svn_password: ${{ secrets.WPORG_SVN_PASSWORD }}
-          build-dir: .wporg-source
-          assets-dir: .wordpress-org
-          stable-tag: ${{ steps.ver.outputs.version }}
+        env:
+          SVN_USERNAME: ${{ secrets.WPORG_SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
+          SLUG: ${{ env.PLUGIN_SLUG }}
+          BUILD_DIR: .wporg-source
+          ASSETS_DIR: .wordpress-org
+          VERSION: ${{ steps.ver.outputs.version }}
