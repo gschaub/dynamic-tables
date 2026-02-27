@@ -152,6 +152,22 @@ jobs:
       - name: Set unique TMPDIR
         run: echo "TMPDIR=${RUNNER_TEMP}/wporg_${GITHUB_RUN_ID}_${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_ENV"
 
+      - name: Validate SVN credentials are configured
+        if: ${{ github.event.inputs.deploy_to_svn == 'true' }}
+        env:
+          SVN_USERNAME: ${{ secrets.WPORG_SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SVN_USERNAME:-}" ]; then
+            echo "::error::SVN username is empty. Set secret WPORG_SVN_USERNAME."
+            exit 1
+          fi
+          if [ -z "${SVN_PASSWORD:-}" ]; then
+            echo "::error::SVN password is empty. Set secret WPORG_SVN_PASSWORD."
+            exit 1
+          fi
+
       # ---------- Canonical dry-run (exact deploy process) ----------
       - name: Dry-run WordPress.org deploy and generate exact trunk ZIP
         id: deploy_dry_run
@@ -160,6 +176,8 @@ jobs:
           dry-run: true
           generate-zip: true
         env:
+          SVN_USERNAME: ${{ secrets.WPORG_SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
           SLUG: ${{ env.PLUGIN_SLUG }}
           BUILD_DIR: .wporg-source
           ASSETS_DIR: .wordpress-org
