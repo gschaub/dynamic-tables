@@ -103,7 +103,8 @@ No. This plugin is free to use. However, we are planning for a premium version o
 == Changelog ==
 
 = 1.2.0 =
-* Added a Date/Time content type.
+* Separated table control activity from editing so that navigation, delete key, etc. will work properly when not otherwise editing a cell
+* Added a Date/Time content type
 * Added ability to update column names
 * Added a column menu to select content types and related actions
 * Added framework for column driven content types

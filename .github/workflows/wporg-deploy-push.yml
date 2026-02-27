@@ -20,8 +20,6 @@ jobs:
     env:
       PLUGIN_SLUG: dynamic-table-blocks
       ASSETS_DIR: assets-wordpress-repository
-      SVN_USERNAME: ${{ secrets.WPORG_SVN_USERNAME }}
-      SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
 
     steps:
       # ---------- Checkout plugin code from selected tag ----------
@@ -38,20 +36,14 @@ jobs:
           ref: main
           path: _assets
 
-      - name: Stage WordPress.org assets
+      # ---------- Derive version number from tag ----------
+      - name: Extract version
+        id: ver
         run: |
-          set -e
-          mkdir -p .wordpress-org
-          if [ -d "_assets/${ASSETS_DIR}" ]; then
-            cp -R "_assets/${ASSETS_DIR}/." .wordpress-org/
-            echo "✅ Copied assets from main/${ASSETS_DIR}/ → .wordpress-org/"
-            ls -la .wordpress-org
-          else
-            echo "::error::Assets directory not found in main/${ASSETS_DIR}/"
-            exit 1
-          fi
-
-          rm -rf _assets
+          TAG="${{ github.event.inputs.tag }}"
+          CLEAN="${TAG#v}"
+          echo "version=$CLEAN" >> "$GITHUB_OUTPUT"
+          echo "Detected version: $CLEAN"
 
       # ---------- Build plugin ----------
       - name: Set up Node
@@ -82,71 +74,77 @@ jobs:
             echo "No composer.json; skipping composer install."
           fi
 
-      # ---------- Produce a zip identical to what would be deployed ----------
-      - name: Build plugin zip
-        uses: 10up/action-wordpress-plugin-build-zip@stable
-
-      # ---------- Derive version number from tag ----------
-      - name: Extract version
-        id: ver
+      - name: Remove source maps from build output
         run: |
-          TAG="${{ github.event.inputs.tag }}"
-          CLEAN="${TAG#v}"
-          echo "version=$CLEAN" >> "$GITHUB_OUTPUT"
-          echo "Detected version: $CLEAN"
+          set -euo pipefail
+          for d in build assets; do
+            if [ -d "$d" ]; then
+              find "$d" -type f -name '*.map' -delete
+            fi
+          done
 
-      # ---------- Rename ZIP with version ----------
-      - name: Rename plugin ZIP with version
+      # ---------- Build clean source tree that is safe for trunk/tags ----------
+      - name: Stage deployment source (runtime allowlist)
         run: |
-          set -e
-          COUNT=$(ls -1 ./*.zip 2>/dev/null | wc -l | tr -d ' ')
-          if [ "$COUNT" -eq 0 ]; then
-            echo "::error::No ZIP produced. Check earlier build logs and .distignore."
-            ls -la
+          set -euo pipefail
+          rm -rf .wporg-source
+          mkdir -p .wporg-source
+
+          rsync -av \
+            --include "/*.php" \
+            --include "/readme.txt" \
+            --include "/license/***" \
+            --include "/languages/***" \
+            --include "/includes/***" \
+            --include "/templates/***" \
+            --include "/build/***" \
+            --include "/assets/***" \
+            --include "/vendor/***" \
+            --exclude "*" \
+            ./ .wporg-source/
+
+          if [ ! -f ".wporg-source/${PLUGIN_SLUG}.php" ]; then
+            echo "::error::Expected main plugin file .wporg-source/${PLUGIN_SLUG}.php not found."
+            echo "Staged files:"
+            find .wporg-source -maxdepth 2 -type f | sort
             exit 1
           fi
-          ZIP_FILE=$(ls -1 ./*.zip | head -n 1)
-          NEW_NAME="${{ env.PLUGIN_SLUG }}-${{ steps.ver.outputs.version }}.zip"
-          mv "$ZIP_FILE" "$NEW_NAME"
-          echo "ZIP_PATH=$NEW_NAME" >> "$GITHUB_ENV"
-          echo "Renamed ZIP to: $NEW_NAME"
 
-      - name: Upload versioned ZIP artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.PLUGIN_SLUG }}-${{ steps.ver.outputs.version }}
-          path: ${{ env.ZIP_PATH }}
+          echo "Staged source tree:"
+          find .wporg-source -maxdepth 2 -type f | sort
 
-      # ---------- DRY-RUN SUMMARY: list files that will be deployed ----------
-      - name: Show deploy manifest (dry-run)
+      # ---------- Stage WordPress.org plugin page assets ----------
+      - name: Stage WordPress.org assets
         run: |
-          set -e
-          if [ -z "${ZIP_PATH:-}" ] || [ ! -f "$ZIP_PATH" ]; then
-            echo "::warning::ZIP not found for manifest step. Skipping manifest generation."
-            exit 0
+          set -euo pipefail
+          SRC="_assets/${ASSETS_DIR}"
+
+          if [ ! -d "$SRC" ]; then
+            echo "::error::Assets directory not found in main/${ASSETS_DIR}/"
+            exit 1
           fi
-          echo "Generating deployment manifest from: $ZIP_PATH"
-          unzip -l "$ZIP_PATH" > manifest.txt
-          echo ""
-          echo "---- Manifest summary ----"
-          TOTAL_FILES=$(tail -n 2 manifest.txt | head -n 1 | awk '{print $2}')
-          TOTAL_SIZE=$(tail -n 1 manifest.txt | awk '{print $1}')
-          echo "Files: $TOTAL_FILES"
-          echo "Total (bytes in zip listing): $TOTAL_SIZE"
-          echo ""
-          echo "First 100 entries:"
-          unzip -Z1 "$ZIP_PATH" | head -n 100 || true
-          echo "---------------------------"
-          echo "Full manifest saved as artifact: manifest.txt"
 
-      - name: Upload manifest artifact
-        if: ${{ env.ZIP_PATH != '' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: deploy-manifest
-          path: manifest.txt
+          rm -rf .wordpress-org
+          mkdir -p .wordpress-org
 
-        #--- Clear temp archive dir used by deploy action (prevents mkdir collision) ---
+          # Copy only official WordPress.org plugin page asset filenames.
+          rsync -av \
+            --include "banner-*" \
+            --include "icon*" \
+            --include "screenshot-*" \
+            --exclude "*" \
+            "$SRC/" .wordpress-org/
+
+          if [ -z "$(find .wordpress-org -maxdepth 1 -type f -print -quit)" ]; then
+            echo "::warning::No WordPress.org asset files were staged."
+          fi
+
+          echo "Staged WordPress.org assets:"
+          find .wordpress-org -maxdepth 1 -type f -printf '%f\n' | sort || true
+
+          rm -rf _assets
+
+      #--- Clear temp archive dir used by deploy action (prevents mkdir collision) ---
       - name: Clear 10up temp archive dir
         run: rm -rf /home/runner/archivetmp || true
 
@@ -154,14 +152,73 @@ jobs:
       - name: Set unique TMPDIR
         run: echo "TMPDIR=${RUNNER_TEMP}/wporg_${GITHUB_RUN_ID}_${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_ENV"
 
+      # ---------- Canonical dry-run (exact deploy process) ----------
+      - name: Dry-run WordPress.org deploy and generate exact trunk ZIP
+        id: deploy_dry_run
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        with:
+          slug: ${{ env.PLUGIN_SLUG }}
+          build-dir: .wporg-source
+          assets-dir: .wordpress-org
+          stable-tag: ${{ steps.ver.outputs.version }}
+          dry-run: true
+          generate-zip: true
+          zip-name: ${{ env.PLUGIN_SLUG }}-${{ steps.ver.outputs.version }}
+
+      - name: Build deploy manifest from dry-run output
+        run: |
+          set -euo pipefail
+          ZIP_PATH="${{ steps.deploy_dry_run.outputs['zip-path'] }}"
+
+          if [ -z "$ZIP_PATH" ] || [ ! -f "$ZIP_PATH" ]; then
+            echo "::error::Dry-run ZIP not found."
+            exit 1
+          fi
+
+          unzip -l "$ZIP_PATH" > manifest.txt
+          unzip -Z1 "$ZIP_PATH" | sed 's#^#trunk/#' | sort > trunk-targets.txt
+          find .wordpress-org -maxdepth 1 -type f -printf 'assets/%f\n' | sort > asset-targets.txt
+          cat trunk-targets.txt asset-targets.txt | sort > deploy-targets.txt
+
+          echo "---- Deploy summary ----"
+          echo "Trunk entries: $(wc -l < trunk-targets.txt)"
+          echo "Asset entries: $(wc -l < asset-targets.txt)"
+          echo "Combined entries: $(wc -l < deploy-targets.txt)"
+          echo "Dry-run ZIP: $ZIP_PATH"
+          echo ""
+          echo "First 120 target paths:"
+          head -n 120 deploy-targets.txt || true
+          echo "------------------------"
+
+      - name: Upload deploy dry-run ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PLUGIN_SLUG }}-${{ steps.ver.outputs.version }}-dry-run
+          path: ${{ steps.deploy_dry_run.outputs['zip-path'] }}
+
+      - name: Upload deploy manifest artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-manifest
+          path: |
+            manifest.txt
+            trunk-targets.txt
+            asset-targets.txt
+            deploy-targets.txt
+
+      #--- Clear temp archive dir used by deploy action (prevents mkdir collision) ---
+      - name: Clear 10up temp archive dir (before live deploy)
+        if: ${{ github.event.inputs.deploy_to_svn == 'true' }}
+        run: rm -rf /home/runner/archivetmp || true
+
       # ---------- Deploy to WordPress.org SVN ----------
       - name: Deploy to WordPress.org SVN
         if: ${{ github.event.inputs.deploy_to_svn == 'true' }}
         uses: 10up/action-wordpress-plugin-deploy@stable
-        env:
-          SVN_USERNAME: ${{ env.SVN_USERNAME }}
-          SVN_PASSWORD: ${{ env.SVN_PASSWORD }}
-          SLUG: ${{ env.PLUGIN_SLUG }}
-          SOURCE_DIR: .
-          ASSETS_DIR: .wordpress-org
-          VERSION: ${{ steps.ver.outputs.version }}
+        with:
+          slug: ${{ env.PLUGIN_SLUG }}
+          svn_username: ${{ secrets.WPORG_SVN_USERNAME }}
+          svn_password: ${{ secrets.WPORG_SVN_PASSWORD }}
+          build-dir: .wporg-source
+          assets-dir: .wordpress-org
+          stable-tag: ${{ steps.ver.outputs.version }}

@@ -128,12 +128,16 @@ jobs:
           rsync -av \
             --include "/*.php" \
             --include "/readme.txt" \
+            --include "/.distignore" \
+            --include "/.gitattributes" \
             --include "/license*" \
+            --include "/license/***" \
             --include "/languages/***" \
             --include "/includes/***" \
             --include "/templates/***" \
             --include "/build/***" \
             --include "/assets/***" \
+            --include "/vendor/***" \
             --exclude "*" \
             ./ "dist/${PLUGIN_SLUG}/"
 
