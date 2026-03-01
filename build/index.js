@@ -233,7 +233,7 @@ __webpack_require__.r(__webpack_exports__);
  * React component drop down menu to configure current column properties.
  *
  * @since    1.0.0
- * @since    1.1.2 Refactor component to improve UX and prerformance
+ * @since    1.2.0 Refactor component to improve UX and prerformance
  *
  * @param {Object} props
  * @return {Object} Updated column
@@ -256,7 +256,7 @@ function ColumnMenuImpl(props = {}) {
   /**
    * Close the menu based on event actions
    *
-   * @since    1.1.2
+   * @since    1.2.0
    */
   const close = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(() => {
     onRequestClose?.();
@@ -267,7 +267,7 @@ function ColumnMenuImpl(props = {}) {
    *
    * Description: Escape closes; Up/Down moves among menu items.
    *
-   * @since    1.1.2
+   * @since    1.2.0
    *
    * @param {Object} e Key down event
    *
@@ -297,7 +297,7 @@ function ColumnMenuImpl(props = {}) {
   /**
    * Close the menu when the popover requests to close.
    *
-   * @since    1.1.2
+   * @since    1.2.0
    */
   const handlePopoverClose = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(() => {
     onRequestClose?.();
@@ -320,7 +320,7 @@ function ColumnMenuImpl(props = {}) {
    * Column attributes for inserting new column.
    *
    * @since    1.0.0
-   * @since    1.1.2 Refactor to use useCallback for performance purposes
+   * @since    1.2.0 Refactor to use useCallback for performance purposes
    *
    * @param {Object} event    Menu action
    * @param {number} columnId Column ID for new column
@@ -334,7 +334,7 @@ function ColumnMenuImpl(props = {}) {
    * Column to delete.
    *
    * @since    1.0.0
-   * @since    1.1.2 Refactor to use useCallback for performance purposes
+   * @since    1.2.0 Refactor to use useCallback for performance purposes
    *
    * @param {Object} event    Menu action
    * @param {number} columnId Column ID for column to remove
@@ -348,7 +348,7 @@ function ColumnMenuImpl(props = {}) {
    * Updated column attributes for processing.
    *
    * @since    1.0.0
-   * @since    1.1.2 Refactor to move column width handling up to parent component
+   * @since    1.2.0 Refactor to move column width handling up to parent component
    *
    * @param {Object} event          Menu action
    * @param {Object} targetColumnId Column ID for update
@@ -362,7 +362,7 @@ function ColumnMenuImpl(props = {}) {
    * Updated column attributes for processing.
    *
    * @since    1.0.0
-   * @since    1.1.2 Refactor to move column width handling up to parent component
+   * @since    1.2.0 Refactor to move column width handling up to parent component
    *
    * @param {Object} event          Menu action
    * @param {Object} targetColumnId Column ID for update
@@ -1336,7 +1336,7 @@ __webpack_require__.r(__webpack_exports__);
  * React component to support updates for the current row height.
  *
  * @since    1.0.0
- * @since    1.1.2 REfactored to support updates to the RowMenu component.
+ * @since    1.2.0 REfactored to support updates to the RowMenu component.
  *
  * @param {Object} props
  * @return {Object} Updated column properties
@@ -1393,7 +1393,7 @@ function ConfigureRowHeight(props = {}) {
   /**
    * Close component modal.
    *
-   * @since    1.1.2
+   * @since    1.2.0
    */
   function close() {
     onRequestClose?.();
@@ -4378,8 +4378,6 @@ function Edit(props) {
         map[column_id] = attributes?.columnDataType ? attributes.columnDataType : defaultDataType;
       });
     }
-    console.log('Column Data Types:');
-    console.log(map);
     return map;
   }, [table.columns]);
 
@@ -4477,10 +4475,6 @@ function Edit(props) {
    * @param {boolean}                 [persist=true] Update table entity (not just the table store)
    */
   function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
-    console.log('Setting Table Type: ' + type + ', Value: ' + value);
-    console.log('Setting Table Attribute: ', {
-      attribute
-    });
     switch (type) {
       case 'CONTENT':
         {
@@ -4685,8 +4679,6 @@ function Edit(props) {
    * @param {Object} patch    Update payload to store
    */
   function onChangeCellData(table_id, cell_id, patch) {
-    // console.log('Updating Cell: ' + cell_id + ' with patch: ');
-    // console.log(patch);
     setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', patch.content);
     setTableAttributes(table_id, 'cell', cell_id, 'ATTRIBUTES', patch.attributes);
   }
@@ -4729,14 +4721,10 @@ function Edit(props) {
    * @return {boolean} Was focus successful?
    */
   function focusCell(col, row) {
-    console.log('focusCell called →', col, row);
     const root = gridRef.current;
     if (!root) return false;
     const el = root.querySelector(`[data-cell-id][data-col="${col}"][data-row="${row}"]`);
     if (!el) return false;
-    console.log('Focus el: ', {
-      el
-    });
 
     // roving tabindex
     root.querySelectorAll('[data-cell-id][tabindex="0"]').forEach(node => {
@@ -4752,11 +4740,6 @@ function Edit(props) {
 
     // Focusing on next frame helps if DOM is mid-rerender
     window.requestAnimationFrame(() => {
-      console.log('[DTBK] focusCell applying focus →', {
-        col,
-        row,
-        cellId: el.getAttribute('data-cell-id')
-      });
       el.focus();
     });
     return true;
@@ -4896,6 +4879,15 @@ function Edit(props) {
     console.log('new coordinates: col = ' + col + ', row = ' + row);
     focusCell(col, row);
   }
+
+  /**
+   * Identify if key press was a printable character
+   *
+   * @since    1.2.0
+   *
+   * @param {Object} event onKeyDown event
+   * @return {boolean}     Is Key Press a printable character?
+   */
   function isPrintableKey(event) {
     // Ignore modifier combos and IME composition
     if (event.ctrlKey || event.metaKey || event.altKey) return false;
@@ -4904,6 +4896,16 @@ function Edit(props) {
     // Printable characters are usually length 1 (includes space)
     return typeof event.key === 'string' && event.key.length === 1;
   }
+
+  /**
+   * Handle transition from navigation to editing on grid cell
+   *
+   * @since    1.2.0
+   *
+   * @param {Object} event        onKeyDown event
+   * @param {Object} activeCellEl Current cell element
+   * @param {string} char         Key pressed
+   */
   function onCellKeyDownEditing(event, activeCellEl, char) {
     event.preventDefault();
     event.stopPropagation();
@@ -5073,9 +5075,6 @@ function Edit(props) {
    * @param {Object} e         Mouse Click Event
    */
   function onMouseBorderClick(column_id, row_id, table, e) {
-    // console.log('onMouseBorderClick Column ID: ' + column_id + ' Row ID: ' + row_id);
-    // console.log(e);
-
     e?.preventDefault?.();
     e?.stopPropagation?.();
     if (row_id === '0' && column_id !== '0') {
@@ -5367,6 +5366,12 @@ function Edit(props) {
   const bodyBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'left', 'color', bodyBorderStyleType);
   const bodyBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'left', 'style', bodyBorderStyleType);
   const bodyBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_14__.getBorderStyle)(bodyBorder, 'left', 'width', bodyBorderStyleType);
+
+  /**
+   * Render clickable row menu
+   *
+   * @since 1.2.0
+   */
   const renderRowMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
     children: rowMenu.isOpen && rowMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.RowMenu, {
       debugSource: "EDIT_TOP_LEVEL",
@@ -5379,6 +5384,12 @@ function Edit(props) {
       onRequestClose: closeRowMenu
     })
   });
+
+  /**
+   * Render row height dialog box
+   *
+   * @since 1.2.0
+   */
   const renderRowHeightModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
     children: rowHeightModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.RowHeightModal, {
       tableId: table_id,
@@ -5389,6 +5400,12 @@ function Edit(props) {
       onRequestClose: closeRowHeightModal
     })
   });
+
+  /**
+   * Render clickable column menu
+   *
+   * @since 1.2.0
+   */
   const renderColumnMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
     children: columnMenu.isOpen && columnMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.ColumnMenu, {
       debugSource: "EDIT_TOP_LEVEL",
@@ -5401,6 +5418,12 @@ function Edit(props) {
       onRequestClose: closeColumnMenu
     })
   });
+
+  /**
+   * Render column data content type menu
+   *
+   * @since 1.2.0
+   */
   const renderColumnDataTypeModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
     children: columnDataTypeModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.ColumnDataTypeModal, {
       tableId: table_id,
@@ -5412,6 +5435,12 @@ function Edit(props) {
       onRequestClose: closeColumnDataTypeModal
     })
   });
+
+  /**
+   * Render column width dialog box
+   *
+   * @since 1.2.0
+   */
   const renderColumnWidthModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
     children: columnWidthModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.ColumnWidthModal, {
       tableId: table_id,
@@ -5423,6 +5452,14 @@ function Edit(props) {
       onRequestClose: closeColumnWidthModal
     })
   });
+
+  /**
+   * Render inspector controls side panel
+   *
+   * @since 1.2.0
+   *
+   * @param {Object} e Change event
+   */
   const renderControls = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockControls, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.BlockAlignmentToolbar, {
@@ -5599,11 +5636,6 @@ function Edit(props) {
       group: "typography"
     })]
   });
-  console.log('');
-  console.log('Start Render: Focused Cell:');
-  console.log(focusedCell);
-  // console.log(gridRef.current);
-
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
     ...blockProps,
     children: [!isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
@@ -6067,14 +6099,8 @@ function Cell(props) {
         setInputType(settings?.format || 'date');
         const raw = (_ref = content !== null && content !== void 0 ? content : initialCellValue.current) !== null && _ref !== void 0 ? _ref : '';
         if (!!raw) setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(content, settings.format));
-
-        // console.log('content: ' + content);
-        // console.log('Default to today?: ' + settings?.defaultToToday);
-
         if (!raw && settings?.defaultToToday) {
-          // console.log('Defaulting to today for date/time');
           const today = new Date();
-          console.log('Date to return: ' + today + ', ' + (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(today, settings.format));
           setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)('', settings.format));
         }
       }
@@ -6084,7 +6110,6 @@ function Cell(props) {
       if (cellType === 'body' && type === 'date-time') {
         setInputType('text');
         const raw = content !== null && content !== void 0 ? content : '';
-        // console.log('Formatted date = ' + raw ? formatedDisplayDate(raw, settings?.format) : '');
         setCellContent(raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formatedDisplayDate)(raw, settings?.format) : '');
       }
     }
@@ -6191,9 +6216,6 @@ function Cell(props) {
     }
   };
   let renderPipeline = [];
-
-  // console.log('Cell ' + cell_id + ' class names = ' + className);
-
   switch (cellType) {
     case 'border':
       renderPipeline = ['border'];
@@ -7463,7 +7485,7 @@ function isValidISODatetime(value) {
 /**
  * Format Date/Time values for display when focus is not on this cell
  *
- * @since 1.2
+ * @since 1.2.0
  *
  * @param {Date}   date   ISO Date
  * @param {string} format Date/Time format

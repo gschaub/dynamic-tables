@@ -246,7 +246,7 @@ function isValidISODatetime(value) {
 /**
  * Format Date/Time values for display when focus is not on this cell
  *
- * @since 1.2
+ * @since 1.2.0
  *
  * @param {Date}   date   ISO Date
  * @param {string} format Date/Time format

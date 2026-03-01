@@ -11,7 +11,7 @@ import '../../editor.scss';
  * React component drop down menu to configure current column properties.
  *
  * @since    1.0.0
- * @since    1.1.2 Refactor component to improve UX and prerformance
+ * @since    1.2.0 Refactor component to improve UX and prerformance
  *
  * @param {Object} props
  * @return {Object} Updated column
@@ -26,7 +26,7 @@ function ColumnMenuImpl(props = {}) {
 	/**
 	 * Close the menu based on event actions
 	 *
-	 * @since    1.1.2
+	 * @since    1.2.0
 	 */
 	const close = useCallback(() => {
 		onRequestClose?.();
@@ -37,7 +37,7 @@ function ColumnMenuImpl(props = {}) {
 	 *
 	 * Description: Escape closes; Up/Down moves among menu items.
 	 *
-	 * @since    1.1.2
+	 * @since    1.2.0
 	 *
 	 * @param {Object} e Key down event
 	 *
@@ -81,7 +81,7 @@ function ColumnMenuImpl(props = {}) {
 	/**
 	 * Close the menu when the popover requests to close.
 	 *
-	 * @since    1.1.2
+	 * @since    1.2.0
 	 */
 	const handlePopoverClose = useCallback(() => {
 		onRequestClose?.();
@@ -107,7 +107,7 @@ function ColumnMenuImpl(props = {}) {
 	 * Column attributes for inserting new column.
 	 *
 	 * @since    1.0.0
-	 * @since    1.1.2 Refactor to use useCallback for performance purposes
+	 * @since    1.2.0 Refactor to use useCallback for performance purposes
 	 *
 	 * @param {Object} event    Menu action
 	 * @param {number} columnId Column ID for new column
@@ -124,7 +124,7 @@ function ColumnMenuImpl(props = {}) {
 	 * Column to delete.
 	 *
 	 * @since    1.0.0
-	 * @since    1.1.2 Refactor to use useCallback for performance purposes
+	 * @since    1.2.0 Refactor to use useCallback for performance purposes
 	 *
 	 * @param {Object} event    Menu action
 	 * @param {number} columnId Column ID for column to remove
@@ -141,7 +141,7 @@ function ColumnMenuImpl(props = {}) {
 	 * Updated column attributes for processing.
 	 *
 	 * @since    1.0.0
-	 * @since    1.1.2 Refactor to move column width handling up to parent component
+	 * @since    1.2.0 Refactor to move column width handling up to parent component
 	 *
 	 * @param {Object} event          Menu action
 	 * @param {Object} targetColumnId Column ID for update
@@ -158,7 +158,7 @@ function ColumnMenuImpl(props = {}) {
 	 * Updated column attributes for processing.
 	 *
 	 * @since    1.0.0
-	 * @since    1.1.2 Refactor to move column width handling up to parent component
+	 * @since    1.2.0 Refactor to move column width handling up to parent component
 	 *
 	 * @param {Object} event          Menu action
 	 * @param {Object} targetColumnId Column ID for update
@@ -199,10 +199,7 @@ function ColumnMenuImpl(props = {}) {
 						Column Content Type...
 					</MenuItem>
 
-					<MenuItem
-						icon={cog}
-						onClick={e => onUpdateColumnWidth(e, columnId)}
-					>
+					<MenuItem icon={cog} onClick={e => onUpdateColumnWidth(e, columnId)}>
 						Update Column Width...
 					</MenuItem>
 				</MenuGroup>

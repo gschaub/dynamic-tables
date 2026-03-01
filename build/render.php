@@ -28,9 +28,6 @@ if ( (int) $table_id <= 0 ) {
 	return;
 }
 
-
-// error_log( 'Attributes in render.php: ' . json_encode( $attributes ) );
-
 /**
  * Get Table - Load variables
  */
@@ -46,9 +43,6 @@ if ( is_wp_error( $table ) ) {
 	$table_cells   = $table['cells'];
 	$num_columns   = count( $table_columns );
 	$num_rows      = count( $table_rows );
-
-	error_log( 'Table columns: ' );
-	error_log( print_r( $table_columns, true ) );
 
 	$table_header_attributes = get_table_header_attributes( $table_header );
 
@@ -175,7 +169,6 @@ if ( is_wp_error( $table ) ) {
 							<?php
 							$header_row_cells = process_cells( $table_cells, $header_row['row_id'], $table_columns );
 							foreach ( $header_row_cells as $index => $header_cell ) {
-								// error_log( 'Header cell: ' . print_r( $header_cell, true ) );
 								?>
 									<div id=" <?php echo esc_attr( $header_cell['cell_id'] ); ?>"
 										class="grid-control__header-cells"

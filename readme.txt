@@ -2,7 +2,7 @@
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, table builder, responsive tables
 Tested up to:      6.9
-Stable tag:        1.2.0
+Stable tag:        1.2.1
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,6 +101,9 @@ No. This plugin is free to use. However, we are planning for a premium version o
 7. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+
+= 1.2.1 =
+* Fixed bug that made a date/time render in date/time columns when there was not underlying value
 
 = 1.2.0 =
 * Separated table control activity from editing so that navigation, delete key, etc. will work properly when not otherwise editing a cell

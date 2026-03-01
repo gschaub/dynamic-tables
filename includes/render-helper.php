@@ -326,7 +326,7 @@ function process_columns( $columns ) {
  * Updates returned cells with the cell id using letters for the column id.
  *
  * @since 1.0.0
- * @since 1.2    Update to return cell data type based on column data type attribute.
+ * @since 1.2.0  Update to return cell data type based on column data type attribute.
  *
  * @param  Array $table_cells All cells for the table
  * @param  int   $row_id Current row id
@@ -354,8 +354,6 @@ function process_cells( $table_cells, $row_id, $table_columns ) {
 		if ( isset( $table_columns[ $cell['column_id'] - 1 ]['attributes']['columnDataType'] ) ) {
 			$column_data_type = $table_columns[ $cell['column_id'] - 1 ]['attributes']['columnDataType'];
 		}
-
-		error_log( 'Column attributes for column: ' . $cell['column_id'] . ': ' . print_r( $column_data_type, true ) );
 
 		$grid_cell = array(
 			'cell_id'    => $cell_id,
@@ -508,7 +506,7 @@ function get_border_style( $border, $border_location, $border_attribute, $border
 /**
  * Render Date-Time cell data types
  *
- * @since 1.2
+ * @since 1.2.0
  *
  * @param  array  $cell                   Cell data and attributes to be rendered
  * @param  string $grid_show_inner_lines  Show inner grid lines for cell?
@@ -551,13 +549,14 @@ function render_date_time_cell( $cell, $grid_show_inner_lines, $grid_inner_line_
  * Description - The cell contains the data type and date format.  Converts ISO date to
  *               the display format.
  *
- * @since 1.2
+ * @since 1.2.0
  *
  * @param  array $cell  Cell data
  * @return string       Formatted date
  */
 function format_display_date( $cell ) {
-	if ( ! isset( $cell['attributes']['value']['indexText'] ) ) {
+	if ( ! isset( $cell['attributes']['value']['indexText'] ) ||
+		$cell['attributes']['value']['indexText'] === '' ) {
 		return '';
 	}
 

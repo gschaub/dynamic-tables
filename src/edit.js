@@ -887,8 +887,6 @@ export default function Edit(props) {
 				map[column_id] = attributes?.columnDataType ? attributes.columnDataType : defaultDataType;
 			});
 		}
-		console.log('Column Data Types:');
-		console.log(map);
 		return map;
 	}, [table.columns]);
 
@@ -990,8 +988,6 @@ export default function Edit(props) {
 	 * @param {boolean}                 [persist=true] Update table entity (not just the table store)
 	 */
 	function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
-		console.log('Setting Table Type: ' + type + ', Value: ' + value);
-		console.log('Setting Table Attribute: ', { attribute });
 		switch (type) {
 			case 'CONTENT': {
 				if (attribute === 'cell') {
@@ -1202,8 +1198,6 @@ export default function Edit(props) {
 	 * @param {Object} patch    Update payload to store
 	 */
 	function onChangeCellData(table_id, cell_id, patch) {
-		// console.log('Updating Cell: ' + cell_id + ' with patch: ');
-		// console.log(patch);
 		setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', patch.content);
 		setTableAttributes(table_id, 'cell', cell_id, 'ATTRIBUTES', patch.attributes);
 	}
@@ -1244,13 +1238,11 @@ export default function Edit(props) {
 	 * @return {boolean} Was focus successful?
 	 */
 	function focusCell(col, row) {
-		console.log('focusCell called →', col, row);
 		const root = gridRef.current;
 		if (!root) return false;
 
 		const el = root.querySelector(`[data-cell-id][data-col="${col}"][data-row="${row}"]`);
 		if (!el) return false;
-		console.log('Focus el: ', { el });
 
 		// roving tabindex
 		root.querySelectorAll('[data-cell-id][tabindex="0"]').forEach(node => {
@@ -1263,11 +1255,6 @@ export default function Edit(props) {
 
 		// Focusing on next frame helps if DOM is mid-rerender
 		window.requestAnimationFrame(() => {
-			console.log('[DTBK] focusCell applying focus →', {
-				col,
-				row,
-				cellId: el.getAttribute('data-cell-id'),
-			});
 			el.focus();
 		});
 
@@ -1440,6 +1427,14 @@ export default function Edit(props) {
 		focusCell(col, row);
 	}
 
+	/**
+	 * Identify if key press was a printable character
+	 *
+	 * @since    1.2.0
+	 *
+	 * @param {Object} event onKeyDown event
+	 * @return {boolean}     Is Key Press a printable character?
+	 */
 	function isPrintableKey(event) {
 		// Ignore modifier combos and IME composition
 		if (event.ctrlKey || event.metaKey || event.altKey) return false;
@@ -1449,6 +1444,15 @@ export default function Edit(props) {
 		return typeof event.key === 'string' && event.key.length === 1;
 	}
 
+	/**
+	 * Handle transition from navigation to editing on grid cell
+	 *
+	 * @since    1.2.0
+	 *
+	 * @param {Object} event        onKeyDown event
+	 * @param {Object} activeCellEl Current cell element
+	 * @param {string} char         Key pressed
+	 */
 	function onCellKeyDownEditing(event, activeCellEl, char) {
 		event.preventDefault();
 		event.stopPropagation();
@@ -1620,9 +1624,6 @@ export default function Edit(props) {
 	 * @param {Object} e         Mouse Click Event
 	 */
 	function onMouseBorderClick(column_id, row_id, table, e) {
-		// console.log('onMouseBorderClick Column ID: ' + column_id + ' Row ID: ' + row_id);
-		// console.log(e);
-
 		e?.preventDefault?.();
 		e?.stopPropagation?.();
 
@@ -2020,6 +2021,11 @@ export default function Edit(props) {
 	const bodyBorderLeftStyle = getBorderStyle(bodyBorder, 'left', 'style', bodyBorderStyleType);
 	const bodyBorderLeftWidth = getBorderStyle(bodyBorder, 'left', 'width', bodyBorderStyleType);
 
+	/**
+	 * Render clickable row menu
+	 *
+	 * @since 1.2.0
+	 */
 	const renderRowMenu = (
 		<>
 			{rowMenu.isOpen && rowMenu.anchorEl && (
@@ -2037,6 +2043,11 @@ export default function Edit(props) {
 		</>
 	);
 
+	/**
+	 * Render row height dialog box
+	 *
+	 * @since 1.2.0
+	 */
 	const renderRowHeightModal = (
 		<>
 			{rowHeightModal.isOpen && (
@@ -2052,6 +2063,11 @@ export default function Edit(props) {
 		</>
 	);
 
+	/**
+	 * Render clickable column menu
+	 *
+	 * @since 1.2.0
+	 */
 	const renderColumnMenu = (
 		<>
 			{columnMenu.isOpen && columnMenu.anchorEl && (
@@ -2069,6 +2085,11 @@ export default function Edit(props) {
 		</>
 	);
 
+	/**
+	 * Render column data content type menu
+	 *
+	 * @since 1.2.0
+	 */
 	const renderColumnDataTypeModal = (
 		<>
 			{columnDataTypeModal.isOpen && (
@@ -2085,6 +2106,11 @@ export default function Edit(props) {
 		</>
 	);
 
+	/**
+	 * Render column width dialog box
+	 *
+	 * @since 1.2.0
+	 */
 	const renderColumnWidthModal = (
 		<>
 			{columnWidthModal.isOpen && (
@@ -2101,6 +2127,13 @@ export default function Edit(props) {
 		</>
 	);
 
+	/**
+	 * Render inspector controls side panel
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param {Object} e Change event
+	 */
 	const renderControls = (
 		<>
 			<BlockControls>
@@ -2295,11 +2328,6 @@ export default function Edit(props) {
 			<InspectorControls group="typography"></InspectorControls>
 		</>
 	);
-
-	console.log('');
-	console.log('Start Render: Focused Cell:');
-	console.log(focusedCell);
-	// console.log(gridRef.current);
 
 	return (
 		<div {...blockProps}>
@@ -2903,13 +2931,8 @@ function Cell(props) {
 
 				if (!!raw) setCellContent(formattedIsoDate(content, settings.format));
 
-				// console.log('content: ' + content);
-				// console.log('Default to today?: ' + settings?.defaultToToday);
-
 				if (!raw && settings?.defaultToToday) {
-					// console.log('Defaulting to today for date/time');
 					const today = new Date();
-					console.log('Date to return: ' + today + ', ' + formattedIsoDate(today, settings.format));
 					setCellContent(formattedIsoDate('', settings.format));
 				}
 			}
@@ -2920,7 +2943,6 @@ function Cell(props) {
 				setInputType('text');
 
 				const raw = content ?? '';
-				// console.log('Formatted date = ' + raw ? formatedDisplayDate(raw, settings?.format) : '');
 				setCellContent(raw ? formatedDisplayDate(raw, settings?.format) : '');
 			}
 		}
@@ -3036,8 +3058,6 @@ function Cell(props) {
 	};
 
 	let renderPipeline = [];
-
-	// console.log('Cell ' + cell_id + ' class names = ' + className);
 
 	switch (cellType) {
 		case 'border':

@@ -16,7 +16,7 @@ import './style.scss';
  * React component to support updates for the current row height.
  *
  * @since    1.0.0
- * @since    1.1.2 REfactored to support updates to the RowMenu component.
+ * @since    1.2.0 REfactored to support updates to the RowMenu component.
  *
  * @param {Object} props
  * @return {Object} Updated column properties
@@ -67,7 +67,7 @@ function ConfigureRowHeight(props = {}) {
 	/**
 	 * Close component modal.
 	 *
-	 * @since    1.1.2
+	 * @since    1.2.0
 	 */
 	function close() {
 		onRequestClose?.();
