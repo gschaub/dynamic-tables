@@ -6,7 +6,7 @@ Stable tag:        1.2.1
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
-Create highly responsive custom table blocks that are easily configured.
+Create visually engaging presentation centric custom table blocks that are highly responsive and easily configured.
 
 == Description ==
 Dynamic Tables is a powerful Wordpress table block that gives you a responsive, user friendly, and inline-editable table block that provides content curation rivaling that of a custom coded solution.
@@ -14,16 +14,16 @@ Dynamic Tables is a powerful Wordpress table block that gives you a responsive, 
 === Highlights: ===
 * Create new tables with your own columns & rows from within the block editor
 * Resize and reformat columns and rows, set header rows, define grid-lines
-* Fully responsive — tables won’t break on mobile or misalign in complex layouts
+* Fully responsive - tables won't break on mobile or misalign in complex layouts
 * Editable: Make your table content updates quickly and viewable instantly
-* Lightweight and fast — no bulky page-builders required
+* Lightweight and fast - no bulky page-builders required
 * Built with multisite in mind (enabled on an individual site basis)
-* Built with developers in mind — API architecture supports future external data sources
+* Built with developers in mind - API architecture supports future external data sources
 
-Whether you’re building comparison tables, product listings, directory lookup tables or publishing data-rich content — Dynamic Tables gives you a simple, elegant solution.
+Whether you're building comparison tables, product listings, directory lookup tables or publishing data-rich content - Dynamic Tables gives you a simple, elegant solution.
 
 === Key Features ===
-* Gutenberg native block: “Dynamic Tables”
+* Gutenberg native block: Dynamic Tables
 * Add and delete columns and rows
 * Adjustable column widths and row heights
 * Header row support with formatting independant from the table body
@@ -60,9 +60,9 @@ Dynamic Blocks has an architecture that is somewhat unique to the world of Guten
 * The API architecture will eventually support data stored in external files or web services. We're considering these capabilities in our roadmap.
 
 == Installation ==
-1. In your WordPress dashboard, go to **Plugins → Add New**, search for *Dynamic Tables*, click **Install Now** and then **Activate**.
-2. Alternatively: Download the ZIP file from the WordPress Plugin Directory. Upload it via **Plugins → Add New → Upload Plugin**, install and activate.
-3. After activation, open any post or page, click the **+** button in the block editor and insert the “Dynamic Table” block.
+1. In your WordPress dashboard, go to **Plugins -> Add New**, search for *Dynamic Tables*, click **Install Now** and then **Activate**.
+2. Alternatively: Download the ZIP file from the WordPress Plugin Directory. Upload it via **Plugins -> Add New -> Upload Plugin**, install and activate.
+3. After activation, open any post or page, click the **+** button in the block editor and insert the "Dynamic Tables" block.
 4. Start building your table: add columns and rows, set header options, adjust widths, edit content, enable sorting.
 > **Note:** On multisite installations the plugin must be activated on each site where it is used (network-activation is not supported).
 > **Important:** Deactivating and deleting the plugin does *not* auto-remove stored tables. However, there is an setting to support the removal of stored tables. Re-activating restores existing tables in posts.

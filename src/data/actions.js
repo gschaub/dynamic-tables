@@ -14,6 +14,8 @@ const {
 	DELETE_TABLE,
 	DELETE_COLUMN,
 	DELETE_ROW,
+	MOVE_COLUMN,
+	MOVE_ROW,
 	CHANGE_TABLE_ID,
 	UPDATE_TABLE_PROP,
 	REMOVE_TABLE_PROP,
@@ -568,6 +570,25 @@ export const removeRow = (tableId, rowId) => {
 		type: DELETE_ROW,
 		tableId,
 		rowId,
+	};
+};
+
+/**
+ * Signals the move of a new table row (up or down).
+ *
+ * @since    1.2.2
+ *
+ * @param {number} tableId   Identifier key for the table
+ * @param {number} rowId     Identifier for a table row
+ * @param {string} direction Move row up or down
+ * @return  {Object} Action object
+ */
+export const moveRow = (tableId, rowId, direction) => {
+	return {
+		type: MOVE_ROW,
+		tableId,
+		rowId,
+		direction,
 	};
 };
 

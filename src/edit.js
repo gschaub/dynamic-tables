@@ -108,6 +108,7 @@ export default function Edit(props) {
 	const { addRow } = useDispatch(tableStore);
 	const { removeColumn } = useDispatch(tableStore);
 	const { removeRow } = useDispatch(tableStore);
+	const { moveRow } = useDispatch(tableStore);
 	const { updateTableProp } = useDispatch(tableStore);
 	const { updateRow } = useDispatch(tableStore);
 	const { updateColumn } = useDispatch(tableStore);
@@ -1579,6 +1580,7 @@ export default function Edit(props) {
 	 *
 	 * @since    1.0.0
 	 * @since    1.1.1  Updated to support row menu refactor.
+	 * @since    1.2.2  Added actions to move a row up or down
 	 *
 	 * @param {Object} e                    Table Creation Event
 	 * @param {string} updateType           attribute (Update), insert, delete
@@ -1599,13 +1601,19 @@ export default function Edit(props) {
 				break;
 			}
 			case 'insert': {
-				// setOpenColumnRow(0);
 				insertRow(tableId, rowId);
 				break;
 			}
 			case 'delete': {
-				// setOpenColumnRow(0);
 				deleteRow(tableId, rowId);
+				break;
+			}
+			case 'move-up': {
+				moveRow(tableId, rowId, 'up');
+				break;
+			}
+			case 'move-down': {
+				moveRow(tableId, rowId, 'down');
 				break;
 			}
 			default:
@@ -2030,9 +2038,8 @@ export default function Edit(props) {
 		<>
 			{rowMenu.isOpen && rowMenu.anchorEl && (
 				<RowMenu
-					debugSource="EDIT_TOP_LEVEL"
 					anchor={rowMenu.anchorEl}
-					tableId={table_id}
+					table={table}
 					rowId={rowMenu.rowId}
 					rowLabel={rowMenu.rowLabel}
 					rowAttributes={rowMenu.rowAttributes}

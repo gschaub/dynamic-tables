@@ -1,7 +1,7 @@
 /* External dependencies */
 import { useEffect, useRef, useCallback, useState, memo } from '@wordpress/element';
 import { Popover, MenuGroup, MenuItem } from '@wordpress/components';
-import { settings, tableRowBefore, tableRowDelete } from '@wordpress/icons';
+import { settings, tableRowBefore, tableRowDelete, chevronUp, chevronDown } from '@wordpress/icons';
 
 /* Internal dependencies */
 import './style.scss';
@@ -17,7 +17,17 @@ import '../../editor.scss';
  * @return {Object} Updated row
  */
 function RowMenuImpl(props = {}) {
-	const { anchor, tableId, rowId, rowLabel, rowAttributes, updatedRow, onRequestClose } = props;
+	const { anchor, table, rowId, rowLabel, rowAttributes, updatedRow, onRequestClose } = props;
+
+	const tableId = table?.table_id;
+
+	// Support disabling row movement that would bring out-of-bounds conditions
+	const numTableRows = table?.rows?.length - 1;
+	const lastRowId = table?.rows[numTableRows]?.row_id;
+	const headerRowId = table?.rows?.find(r => r.attributes.isHeader === true)?.row_id;
+	const firstBodyRowId = headerRowId ? Number(headerRowId) + 1 : 1;
+	const disableMoveRowUp = Number(rowId) <= Number(firstBodyRowId) ? true : false;
+	const disableMoveRowDown = Number(lastRowId) === Number(rowId) ? true : false;
 
 	// Refs for focus management
 	const menuRootRef = useRef(null);
@@ -139,6 +149,24 @@ function RowMenuImpl(props = {}) {
 	);
 
 	/**
+	 * Row attributes for moving a row up or down.
+	 *
+	 * @since    1.2.2
+	 *
+	 * @param {Object} event Menu action
+	 * @param {number} rowId Row ID for new row
+	 */
+	const onMoveRow = useCallback(
+		(event, targetRowId, direction) => {
+			const updateType = direction === 'up' ? 'move-up' : 'move-down';
+
+			updatedRow(event, updateType, tableId, targetRowId, '');
+			close();
+		},
+		[updatedRow, tableId, close]
+	);
+
+	/**
 	 * Updated row attributes for processing.
 	 *
 	 * @since    1.0.0
@@ -184,15 +212,35 @@ function RowMenuImpl(props = {}) {
 				</MenuGroup>
 
 				{!rowAttributes.isHeader && (
-					<MenuGroup>
-						<MenuItem icon={tableRowBefore} onClick={e => onInsertRow(e, rowId)}>
-							Insert Row (Below)
-						</MenuItem>
+					<>
+						<MenuGroup>
+							<MenuItem icon={tableRowBefore} onClick={e => onInsertRow(e, rowId)}>
+								Insert Row (Below)
+							</MenuItem>
 
-						<MenuItem icon={tableRowDelete} onClick={e => onDeleteRow(e, rowId)}>
-							Delete Row
-						</MenuItem>
-					</MenuGroup>
+							<MenuItem icon={tableRowDelete} onClick={e => onDeleteRow(e, rowId)}>
+								Delete Row
+							</MenuItem>
+						</MenuGroup>
+
+						<MenuGroup>
+							<MenuItem
+								icon={chevronUp}
+								disabled={disableMoveRowUp}
+								onClick={e => onMoveRow(e, rowId, 'up')}
+							>
+								Move Row Up
+							</MenuItem>
+
+							<MenuItem
+								icon={chevronDown}
+								disabled={disableMoveRowDown}
+								onClick={e => onMoveRow(e, rowId, 'down')}
+							>
+								Move Row Down
+							</MenuItem>
+						</MenuGroup>
+					</>
 				)}
 			</Popover>
 		</>

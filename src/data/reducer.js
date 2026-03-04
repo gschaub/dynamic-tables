@@ -9,6 +9,8 @@ const {
 	DELETE_TABLE,
 	DELETE_COLUMN,
 	DELETE_ROW,
+	MOVE_COLUMN,
+	MOVE_ROW,
 	CHANGE_TABLE_ID,
 	UPDATE_TABLE_PROP,
 	REMOVE_TABLE_PROP,
@@ -345,6 +347,71 @@ const table = (
 
 			return {
 				table: returnedTableNewRow_DeleteRow,
+			};
+
+		/**
+		 * @since 1.2.2
+		 */
+		case MOVE_ROW:
+			const moveRowState = { ...state };
+
+			const targetRowNewId =
+				action.direction === 'up' ? Number(action.rowId) - 1 : Number(action.rowId) + 1;
+
+			// Move rows
+			const movedRows = [];
+
+			moveRowState.rows.map(({ table_id, row_id, attributes, classes }) => {
+				let newRowId = row_id;
+
+				if (Number(row_id) === Number(action.rowId)) newRowId = String(targetRowNewId);
+				if (Number(row_id) === targetRowNewId) newRowId = String(action.rowId);
+
+				return movedRows.push({
+					table_id: table_id,
+					row_id: newRowId,
+					attributes: attributes,
+					classes: classes,
+				});
+			});
+
+			const sortedMovedRows = tableSort('rows', movedRows);
+
+			// Move related row cells
+			const movedRowCells = [];
+
+			moveRowState.cells.map(({ table_id, column_id, row_id, attributes, classes, content }) => {
+				let newRowId = row_id;
+				let borderContent = content;
+
+				if (Number(row_id) === Number(action.rowId)) newRowId = String(targetRowNewId);
+				if (Number(row_id) === targetRowNewId) newRowId = String(action.rowId);
+				if (column_id === '0') borderContent = String(newRowId);
+
+				const columnLetter = column_id == '0' ? '0' : numberToLetter(column_id);
+
+				return movedRowCells.push({
+					table_id: table_id,
+					row_id: newRowId,
+					cell_id: columnLetter + String(newRowId),
+					column_id: column_id,
+					attributes: attributes,
+					classes: classes,
+					content: borderContent,
+				});
+			});
+
+			const sortedMovedRowCells = tableSort('cells', movedRowCells);
+
+			const returnedTableMovedRows = {
+				...moveRowState,
+				rows: [...sortedMovedRows],
+				columns: [...moveRowState.columns],
+				cells: [...sortedMovedRowCells],
+			};
+
+			return {
+				table: returnedTableMovedRows,
 			};
 
 		case UPDATE_ROW:

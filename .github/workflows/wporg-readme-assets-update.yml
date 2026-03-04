@@ -1,0 +1,27 @@
+name: Update WordPress.org Readme and Assets
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'readme.txt'
+      - 'assets-wordpress-repository/**'
+  workflow_dispatch:
+
+jobs:
+  wporg-readme-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Update WordPress.org readme/assets
+        uses: 10up/action-wordpress-plugin-asset-update@stable
+        env:
+          SVN_USERNAME: ${{ secrets.WPORG_SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
+          SLUG: dynamic-table-blocks
+          README_NAME: readme.txt
+          ASSETS_DIR: assets-wordpress-repository
+          IGNORE_OTHER_FILES: true
