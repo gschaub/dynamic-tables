@@ -1,12 +1,6 @@
 name: Update WordPress.org Readme and Assets
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'readme.txt'
-      - 'assets-wordpress-repository/**'
   workflow_dispatch:
 
 jobs:
