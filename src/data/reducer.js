@@ -172,13 +172,15 @@ const table = (
 
 		case INSERT_ROW:
 			const insertRowState = { ...state };
+			const targetInsertRowNewId =
+				action.direction === 'above' ? Number(action.rowId) : Number(action.rowId) + 1;
 
 			/**
 			 * Insert new row and update existing row_id's
 			 */
 			const rowsWithNewId_InsertRow = [];
 			insertRowState.rows.forEach(row => {
-				if (Number(row.row_id) < Number(action.rowId)) {
+				if (Number(row.row_id) < Number(targetInsertRowNewId)) {
 					rowsWithNewId_InsertRow.push(row);
 				} else {
 					const newRow_InsertRow = {
@@ -198,7 +200,7 @@ const table = (
 			 */
 			const cellsWithNewId_InsertRow = [];
 			insertRowState.cells.forEach(cell => {
-				if (Number(cell.row_id) < Number(action.rowId)) {
+				if (Number(cell.row_id) < Number(targetInsertRowNewId)) {
 					cellsWithNewId_InsertRow.push(cell);
 				} else {
 					const newRowId_InsertRow = String(Number(cell.row_id) + 1);
@@ -355,7 +357,7 @@ const table = (
 		case MOVE_ROW:
 			const moveRowState = { ...state };
 
-			const targetRowNewId =
+			const targetMoveRowNewId =
 				action.direction === 'up' ? Number(action.rowId) - 1 : Number(action.rowId) + 1;
 
 			// Move rows
@@ -364,8 +366,8 @@ const table = (
 			moveRowState.rows.map(({ table_id, row_id, attributes, classes }) => {
 				let newRowId = row_id;
 
-				if (Number(row_id) === Number(action.rowId)) newRowId = String(targetRowNewId);
-				if (Number(row_id) === targetRowNewId) newRowId = String(action.rowId);
+				if (Number(row_id) === Number(action.rowId)) newRowId = String(targetMoveRowNewId);
+				if (Number(row_id) === targetMoveRowNewId) newRowId = String(action.rowId);
 
 				return movedRows.push({
 					table_id: table_id,
@@ -384,8 +386,8 @@ const table = (
 				let newRowId = row_id;
 				let borderContent = content;
 
-				if (Number(row_id) === Number(action.rowId)) newRowId = String(targetRowNewId);
-				if (Number(row_id) === targetRowNewId) newRowId = String(action.rowId);
+				if (Number(row_id) === Number(action.rowId)) newRowId = String(targetMoveRowNewId);
+				if (Number(row_id) === targetMoveRowNewId) newRowId = String(action.rowId);
 				if (column_id === '0') borderContent = String(newRowId);
 
 				const columnLetter = column_id == '0' ? '0' : numberToLetter(column_id);

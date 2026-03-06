@@ -1,7 +1,7 @@
 /* External dependencies */
 import { useEffect, useRef, useCallback, useState, memo } from '@wordpress/element';
 import { Popover, MenuGroup, MenuItem } from '@wordpress/components';
-import { settings, tableRowBefore, tableRowDelete, chevronUp, chevronDown } from '@wordpress/icons';
+import { settings, tableRowBefore, tableRowAfter, tableRowDelete, chevronUp, chevronDown } from '@wordpress/icons';
 
 /* Internal dependencies */
 import './style.scss';
@@ -124,8 +124,10 @@ function RowMenuImpl(props = {}) {
 	 * @param {number} rowId Row ID for new row
 	 */
 	const onInsertRow = useCallback(
-		(event, targetRowId) => {
-			updatedRow(event, 'insert', tableId, targetRowId, '');
+		(event, targetRowId, direction) => {
+			const updateType = direction === 'above' ? 'insert-above' : 'insert-below';
+
+			updatedRow(event, updateType, tableId, targetRowId, '');
 			close();
 		},
 		[updatedRow, tableId, close]
@@ -214,13 +216,14 @@ function RowMenuImpl(props = {}) {
 				{!rowAttributes.isHeader && (
 					<>
 						<MenuGroup>
-							<MenuItem icon={tableRowBefore} onClick={e => onInsertRow(e, rowId)}>
+							<MenuItem icon={tableRowBefore} onClick={e => onInsertRow(e, rowId, 'above')}>
+								Insert Row (Above)
+							</MenuItem>
+
+							<MenuItem icon={tableRowAfter} onClick={e => onInsertRow(e, rowId, 'below')}>
 								Insert Row (Below)
 							</MenuItem>
 
-							<MenuItem icon={tableRowDelete} onClick={e => onDeleteRow(e, rowId)}>
-								Delete Row
-							</MenuItem>
 						</MenuGroup>
 
 						<MenuGroup>
@@ -240,6 +243,13 @@ function RowMenuImpl(props = {}) {
 								Move Row Down
 							</MenuItem>
 						</MenuGroup>
+
+						<MenuGroup>
+							<MenuItem icon={tableRowDelete} onClick={e => onDeleteRow(e, rowId)}>
+								Delete Row
+							</MenuItem>
+						</MenuGroup>
+
 					</>
 				)}
 			</Popover>

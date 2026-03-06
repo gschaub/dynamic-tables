@@ -923,27 +923,29 @@ export default function Edit(props) {
 	 * Insert a new row in the table.
 	 *
 	 * @since    1.0.0
+	 * @since    1.2.2  Allow row to be added either above or below the current row
 	 *
-	 * @param {number} tableId Identifier key for the table
-	 * @param {number} rowId   Identifier for the table row
+	 * @param {number} tableId   Identifier key for the table
+	 * @param {number} rowId     Identifier for the table row
+	 * @param {string} direction Insert row above or below current row
 	 * @return {Object} Dynamic Table
 	 */
-	function insertRow(tableId, rowId) {
-		const newRow = getDefaultRow(tableId, rowId);
+	function insertRow(tableId, rowId, direction) {
+		const newRowId = direction === 'below' ? Number(rowId) + 1 : Number(rowId);
+		const newRow = getDefaultRow(tableId, newRowId);
 		const tableCells = [];
 
 		for (let i = 0; i < numColumns; i++) {
 			if (i === 0) {
-				const cell = getDefaultCell(tableId, i, rowId, 'Border');
-				// cell.content =
+				const cell = getDefaultCell(tableId, i, newRowId, 'Border');
 				tableCells.push(cell);
 			} else {
-				const cell = getDefaultCell(tableId, i, rowId);
+				const cell = getDefaultCell(tableId, i, newRowId);
 				tableCells.push(cell);
 			}
 		}
 
-		addRow(tableId, rowId, newRow, tableCells);
+		addRow(tableId, rowId, direction, newRow, tableCells);
 		setTableStale(false);
 		return updateTableEntity(tableId);
 	}
@@ -961,6 +963,7 @@ export default function Edit(props) {
 		return updateTableEntity(tableId);
 	}
 
+
 	/**
 	 * Delete a column from the table
 	 *
@@ -972,6 +975,22 @@ export default function Edit(props) {
 	 */
 	function deleteRow(tableId, rowId) {
 		removeRow(tableId, rowId);
+		setTableStale(false);
+		return updateTableEntity(tableId);
+	}
+
+	/**
+	 * Move a row up or down
+	 *
+	 * @since    1.2.2
+	 *
+	 * @param {number} tableId
+	 * @param {number} rowId
+	 * @param {string} direction Move row up or down
+	 * @return {Object} Dynamic Table
+	 */
+	function reorderRows(tableId, rowId, direction) {
+		moveRow(tableId, rowId, direction);
 		setTableStale(false);
 		return updateTableEntity(tableId);
 	}
@@ -1580,7 +1599,7 @@ export default function Edit(props) {
 	 *
 	 * @since    1.0.0
 	 * @since    1.1.1  Updated to support row menu refactor.
-	 * @since    1.2.2  Added actions to move a row up or down
+	 * @since    1.2.2  Added actions to move a row up or down and insert below
 	 *
 	 * @param {Object} e                    Table Creation Event
 	 * @param {string} updateType           attribute (Update), insert, delete
@@ -1600,8 +1619,12 @@ export default function Edit(props) {
 				}
 				break;
 			}
-			case 'insert': {
-				insertRow(tableId, rowId);
+			case 'insert-above': {
+				insertRow(tableId, rowId, 'above');
+				break;
+			}
+			case 'insert-below': {
+				insertRow(tableId, rowId, 'below');
 				break;
 			}
 			case 'delete': {
@@ -1609,11 +1632,11 @@ export default function Edit(props) {
 				break;
 			}
 			case 'move-up': {
-				moveRow(tableId, rowId, 'up');
+				reorderRows(tableId, rowId, 'up');
 				break;
 			}
 			case 'move-down': {
-				moveRow(tableId, rowId, 'down');
+				reorderRows(tableId, rowId, 'down');
 				break;
 			}
 			default:

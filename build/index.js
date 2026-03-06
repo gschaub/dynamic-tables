@@ -188,6 +188,28 @@ var table_column_delete_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_
 
 /***/ }),
 
+/***/ "./node_modules/@wordpress/icons/build-module/library/table-row-after.mjs":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/table-row-after.mjs ***!
+  \********************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ table_row_after_default)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/icons/src/library/table-row-after.tsx
+
+
+var table_row_after_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M19 3H4.8c-.9.1-1.7.9-1.8 1.8V19.2c.1 1 1 1.8 2 1.8h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2Zm-9 1.5h4v4h-4v-4ZM4.5 5c0-.3.2-.5.5-.5h3.5v4h-4V5Zm15 14c0 .3-.2.5-.5.5H5c-.3 0-.5-.2-.5-.5v-9h15v9Zm0-10.5h-4v-4H19c.3 0 .5.2.5.5v3.5Zm-8.3 10h1.5v-3h3V14h-3v-3h-1.5v3h-3v1.5h3v3Z" }) });
+
+//# sourceMappingURL=table-row-after.mjs.map
+
+
+/***/ }),
+
 /***/ "./node_modules/@wordpress/icons/build-module/library/table-row-before.mjs":
 /*!*********************************************************************************!*\
   !*** ./node_modules/@wordpress/icons/build-module/library/table-row-before.mjs ***!
@@ -1780,12 +1802,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/chevron-down.mjs");
 /* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/chevron-up.mjs");
 /* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-row-before.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-row-delete.mjs");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./style.scss */ "./src/components/row-dropdown-menu/style.scss");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-row-after.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-row-before.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-row-delete.mjs");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./style.scss */ "./src/components/row-dropdown-menu/style.scss");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__);
 /* External dependencies */
 
 
@@ -1902,8 +1925,9 @@ function RowMenuImpl(props = {}) {
    * @param {Object} event Menu action
    * @param {number} rowId Row ID for new row
    */
-  const onInsertRow = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetRowId) => {
-    updatedRow(event, 'insert', tableId, targetRowId, '');
+  const onInsertRow = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetRowId, direction) => {
+    const updateType = direction === 'above' ? 'insert-above' : 'insert-below';
+    updatedRow(event, updateType, tableId, targetRowId, '');
     close();
   }, [updatedRow, tableId, close]);
 
@@ -1951,8 +1975,8 @@ function RowMenuImpl(props = {}) {
     close();
   }, [tableId, close]);
   if (!canRender) return null;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
       anchor: anchor,
       ref: menuRootRef,
       className: "menu-row__main",
@@ -1966,37 +1990,43 @@ function RowMenuImpl(props = {}) {
       tabIndex: -1,
       onKeyDown: onKeyDown,
       onClose: handlePopoverClose,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
         className: "components-menu-group",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
           icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"],
           onClick: e => onUpdateRowHeight(e, rowId),
           ref: firstItemRef,
           children: "Update Row Height..."
         })
-      }), !rowAttributes.isHeader && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
-            onClick: e => onInsertRow(e, rowId),
-            children: "Insert Row (Below)"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+      }), !rowAttributes.isHeader && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
             icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
-            onClick: e => onDeleteRow(e, rowId),
-            children: "Delete Row"
+            onClick: e => onInsertRow(e, rowId, 'above'),
+            children: "Insert Row (Above)"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
+            onClick: e => onInsertRow(e, rowId, 'below'),
+            children: "Insert Row (Below)"
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
             icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
             disabled: disableMoveRowUp,
             onClick: e => onMoveRow(e, rowId, 'up'),
             children: "Move Row Up"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
             icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"],
             disabled: disableMoveRowDown,
             onClick: e => onMoveRow(e, rowId, 'down'),
             children: "Move Row Down"
           })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
+            onClick: e => onDeleteRow(e, rowId),
+            children: "Delete Row"
+          })
         })]
       })]
     })
@@ -2570,18 +2600,21 @@ const addColumn = (tableId, columnId, newColumn, columnCells) => {
  * Signals the addition of a new table row.
  *
  * @since    1.0.0
+ * @since    1.2.2  Added support to insert row either above or below the current row
  *
- * @param {number}       tableId  Identifier key for the table
- * @param {number}       rowId    Identifier for a table row
- * @param {Object}       newRow   Row definition
- * @param {Array|Object} rowCells Cell definitions associated with the row
+ * @param {number}       tableId   Identifier key for the table
+ * @param {number}       rowId     Identifier for a table row
+ * @param {string}       direction Add row above or below current row
+ * @param {Object}       newRow    Row definition
+ * @param {Array|Object} rowCells  Cell definitions associated with the row
  * @return  {Object} Action object
  */
-const addRow = (tableId, rowId, newRow, rowCells) => {
+const addRow = (tableId, rowId, direction, newRow, rowCells) => {
   return {
     type: INSERT_ROW,
     tableId,
     rowId,
+    direction,
     newRow,
     rowCells
   };
@@ -3039,13 +3072,14 @@ const table = (state = {
       const insertRowState = {
         ...state
       };
+      const targetInsertRowNewId = action.direction === 'above' ? Number(action.rowId) : Number(action.rowId) + 1;
 
       /**
        * Insert new row and update existing row_id's
        */
       const rowsWithNewId_InsertRow = [];
       insertRowState.rows.forEach(row => {
-        if (Number(row.row_id) < Number(action.rowId)) {
+        if (Number(row.row_id) < Number(targetInsertRowNewId)) {
           rowsWithNewId_InsertRow.push(row);
         } else {
           const newRow_InsertRow = {
@@ -3065,7 +3099,7 @@ const table = (state = {
        */
       const cellsWithNewId_InsertRow = [];
       insertRowState.cells.forEach(cell => {
-        if (Number(cell.row_id) < Number(action.rowId)) {
+        if (Number(cell.row_id) < Number(targetInsertRowNewId)) {
           cellsWithNewId_InsertRow.push(cell);
         } else {
           const newRowId_InsertRow = String(Number(cell.row_id) + 1);
@@ -3213,7 +3247,7 @@ const table = (state = {
       const moveRowState = {
         ...state
       };
-      const targetRowNewId = action.direction === 'up' ? Number(action.rowId) - 1 : Number(action.rowId) + 1;
+      const targetMoveRowNewId = action.direction === 'up' ? Number(action.rowId) - 1 : Number(action.rowId) + 1;
 
       // Move rows
       const movedRows = [];
@@ -3224,8 +3258,8 @@ const table = (state = {
         classes
       }) => {
         let newRowId = row_id;
-        if (Number(row_id) === Number(action.rowId)) newRowId = String(targetRowNewId);
-        if (Number(row_id) === targetRowNewId) newRowId = String(action.rowId);
+        if (Number(row_id) === Number(action.rowId)) newRowId = String(targetMoveRowNewId);
+        if (Number(row_id) === targetMoveRowNewId) newRowId = String(action.rowId);
         return movedRows.push({
           table_id: table_id,
           row_id: newRowId,
@@ -3247,8 +3281,8 @@ const table = (state = {
       }) => {
         let newRowId = row_id;
         let borderContent = content;
-        if (Number(row_id) === Number(action.rowId)) newRowId = String(targetRowNewId);
-        if (Number(row_id) === targetRowNewId) newRowId = String(action.rowId);
+        if (Number(row_id) === Number(action.rowId)) newRowId = String(targetMoveRowNewId);
+        if (Number(row_id) === targetMoveRowNewId) newRowId = String(action.rowId);
         if (column_id === '0') borderContent = String(newRowId);
         const columnLetter = column_id == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(column_id);
         return movedRowCells.push({
@@ -4589,25 +4623,27 @@ function Edit(props) {
    * Insert a new row in the table.
    *
    * @since    1.0.0
+   * @since    1.2.2  Allow row to be added either above or below the current row
    *
-   * @param {number} tableId Identifier key for the table
-   * @param {number} rowId   Identifier for the table row
+   * @param {number} tableId   Identifier key for the table
+   * @param {number} rowId     Identifier for the table row
+   * @param {string} direction Insert row above or below current row
    * @return {Object} Dynamic Table
    */
-  function insertRow(tableId, rowId) {
-    const newRow = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultRow)(tableId, rowId);
+  function insertRow(tableId, rowId, direction) {
+    const newRowId = direction === 'below' ? Number(rowId) + 1 : Number(rowId);
+    const newRow = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultRow)(tableId, newRowId);
     const tableCells = [];
     for (let i = 0; i < numColumns; i++) {
       if (i === 0) {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, i, rowId, 'Border');
-        // cell.content =
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, i, newRowId, 'Border');
         tableCells.push(cell);
       } else {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, i, rowId);
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, i, newRowId);
         tableCells.push(cell);
       }
     }
-    addRow(tableId, rowId, newRow, tableCells);
+    addRow(tableId, rowId, direction, newRow, tableCells);
     setTableStale(false);
     return updateTableEntity(tableId);
   }
@@ -4636,6 +4672,22 @@ function Edit(props) {
    */
   function deleteRow(tableId, rowId) {
     removeRow(tableId, rowId);
+    setTableStale(false);
+    return updateTableEntity(tableId);
+  }
+
+  /**
+   * Move a row up or down
+   *
+   * @since    1.2.2
+   *
+   * @param {number} tableId
+   * @param {number} rowId
+   * @param {string} direction Move row up or down
+   * @return {Object} Dynamic Table
+   */
+  function reorderRows(tableId, rowId, direction) {
+    moveRow(tableId, rowId, direction);
     setTableStale(false);
     return updateTableEntity(tableId);
   }
@@ -5205,7 +5257,7 @@ function Edit(props) {
    *
    * @since    1.0.0
    * @since    1.1.1  Updated to support row menu refactor.
-   * @since    1.2.2  Added actions to move a row up or down
+   * @since    1.2.2  Added actions to move a row up or down and insert below
    *
    * @param {Object} e                    Table Creation Event
    * @param {string} updateType           attribute (Update), insert, delete
@@ -5226,9 +5278,14 @@ function Edit(props) {
           }
           break;
         }
-      case 'insert':
+      case 'insert-above':
         {
-          insertRow(tableId, rowId);
+          insertRow(tableId, rowId, 'above');
+          break;
+        }
+      case 'insert-below':
+        {
+          insertRow(tableId, rowId, 'below');
           break;
         }
       case 'delete':
@@ -5238,12 +5295,12 @@ function Edit(props) {
         }
       case 'move-up':
         {
-          moveRow(tableId, rowId, 'up');
+          reorderRows(tableId, rowId, 'up');
           break;
         }
       case 'move-down':
         {
-          moveRow(tableId, rowId, 'down');
+          reorderRows(tableId, rowId, 'down');
           break;
         }
       default:

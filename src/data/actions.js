@@ -522,18 +522,21 @@ export const addColumn = (tableId, columnId, newColumn, columnCells) => {
  * Signals the addition of a new table row.
  *
  * @since    1.0.0
+ * @since    1.2.2  Added support to insert row either above or below the current row
  *
- * @param {number}       tableId  Identifier key for the table
- * @param {number}       rowId    Identifier for a table row
- * @param {Object}       newRow   Row definition
- * @param {Array|Object} rowCells Cell definitions associated with the row
+ * @param {number}       tableId   Identifier key for the table
+ * @param {number}       rowId     Identifier for a table row
+ * @param {string}       direction Add row above or below current row
+ * @param {Object}       newRow    Row definition
+ * @param {Array|Object} rowCells  Cell definitions associated with the row
  * @return  {Object} Action object
  */
-export const addRow = (tableId, rowId, newRow, rowCells) => {
+export const addRow = (tableId, rowId, direction, newRow, rowCells) => {
 	return {
 		type: INSERT_ROW,
 		tableId,
 		rowId,
+		direction,
 		newRow,
 		rowCells,
 	};
