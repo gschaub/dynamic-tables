@@ -297,8 +297,18 @@ export function formatedDisplayDate(date, format) {
 export function formattedIsoDate(date, format) {
 	// Test whether input is a valid ISO date
 	if (date) {
-		if (!isValidISODate(date) && !isValidISODatetime(date) && !isValidTime(date)) {
-			return '';
+		switch (format) {
+			case 'date':
+				if (!isValidISODate(date)) return '';
+				break;
+			case 'time':
+				if (!isValidTime(date)) return '';
+				break;
+			case 'datetime-local':
+				if (!isValidISODatetime(date)) return '';
+				break;
+			default:
+				return '';
 		}
 	}
 

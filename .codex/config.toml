@@ -1,0 +1,70 @@
+# Codex project rules for this repository
+# WordPress plugin with CI/CD deployment to WordPress.org SVN
+
+[behavior]
+
+# Default to safe operation
+default_mode = "propose_changes"
+
+# Always show diffs before writing files
+require_diff_review = true
+
+# Require confirmation before multi-file edits
+confirm_multi_file_edits = true
+
+# Always summarize impact before applying changes
+require_impact_summary = true
+
+
+[permissions]
+
+# Codex may read the workspace
+allow_workspace_read = true
+
+# Codex may propose file edits but not apply automatically
+allow_workspace_write = true
+require_write_confirmation = true
+
+# Disallow shell execution by default
+allow_shell_commands = false
+
+# Never allow git push from Codex
+allow_git_push = false
+
+# Never allow git commit automatically
+allow_git_commit = false
+
+
+[restrictions]
+
+# Never modify deployment or repo management files unless explicitly asked
+protected_paths = [
+  ".github/workflows/",
+  ".wordpress-org/",
+  ".codex/",
+]
+
+# Never modify distribution control files automatically
+protected_files = [
+  ".distignore",
+  ".gitattributes",
+]
+
+
+[review]
+
+# When proposing changes Codex should:
+require_file_list = true
+require_reasoning = true
+require_diff_preview = true
+
+
+[project]
+
+name = "Dynamic Tables WordPress Plugin"
+
+description = """
+WordPress Gutenberg block plugin with custom REST API and React-based editor.
+Deployment to WordPress.org SVN via GitHub Actions.
+Changes to build, deploy, or packaging must be reviewed carefully.
+"""
