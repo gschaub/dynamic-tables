@@ -106,13 +106,15 @@ const table = (
 
 		case INSERT_COLUMN:
 			const insertColumnState = { ...state };
+			const targetInsertColumnNewId =
+				action.direction === 'left' ? Number(action.columnId) : Number(action.columnId) + 1;
 
 			/**
 			 * Insert new column and update existing column_id's
 			 */
 			const columnsWithNewId_InsertColumn = [];
 			insertColumnState.columns.forEach(column => {
-				if (Number(column.column_id) < Number(action.columnId)) {
+				if (Number(column.column_id) < Number(targetInsertColumnNewId)) {
 					columnsWithNewId_InsertColumn.push(column);
 				} else {
 					const newColumn_InsertColumn = {
@@ -133,7 +135,7 @@ const table = (
 			 */
 			const cellsWithNewId_InsertColumn = [];
 			insertColumnState.cells.forEach(cell => {
-				if (cell.column_id < action.columnId) {
+				if (Number(cell.column_id) < Number(targetInsertColumnNewId)) {
 					cellsWithNewId_InsertColumn.push(cell);
 				} else {
 					const newColumnId_InsertColumn = String(Number(cell.column_id) + 1);
@@ -349,6 +351,75 @@ const table = (
 
 			return {
 				table: returnedTableNewRow_DeleteRow,
+			};
+
+		/**
+		 * @since 1.2.2
+		 */
+		case MOVE_COLUMN:
+			const moveColumnState = { ...state };
+
+			const targetMoveColumnNewId =
+				action.direction === 'left' ? Number(action.columnId) - 1 : Number(action.columnId) + 1;
+
+			// Move columns
+			const movedColumns = [];
+
+			moveColumnState.columns.map(({ table_id, column_id, column_name, attributes, classes }) => {
+				let newColumnId = column_id;
+
+				if (Number(column_id) === Number(action.columnId))
+					newColumnId = String(targetMoveColumnNewId);
+				if (Number(column_id) === targetMoveColumnNewId) newColumnId = String(action.columnId);
+
+				return movedColumns.push({
+					table_id: table_id,
+					column_id: newColumnId,
+					column_name: column_name,
+					attributes: attributes,
+					classes: classes,
+				});
+			});
+
+			const sortedMovedColumns = tableSort('columns', movedColumns);
+
+			// Move related column cells
+			const movedColumnCells = [];
+
+			moveColumnState.cells.map(({ table_id, column_id, row_id, attributes, classes, content }) => {
+				let newColumnId = column_id;
+				let borderContent = content;
+
+				if (Number(column_id) === Number(action.columnId))
+					newColumnId = String(targetMoveColumnNewId);
+				if (Number(column_id) === targetMoveColumnNewId) newColumnId = String(action.columnId);
+				if (row_id === '0') borderContent = numberToLetter(newColumnId);
+
+				const columnLetter = newColumnId == '0' ? '0' : numberToLetter(newColumnId);
+
+				return movedColumnCells.push({
+					table_id: table_id,
+					row_id: row_id,
+					cell_id: columnLetter + String(row_id),
+					column_id: newColumnId,
+					attributes: attributes,
+					classes: classes,
+					content: borderContent,
+				});
+			});
+
+			const sortedMovedColumnCells = tableSort('cells', movedColumnCells);
+
+			const returnedTableMovedColumns = {
+				...moveColumnState,
+
+				rows: [...moveColumnState.rows],
+				columns: [...sortedMovedColumns],
+				cells: [...sortedMovedColumnCells],
+			};
+
+			return {
+				table: returnedTableMovedColumns,
 			};
 
 		/**

@@ -1,7 +1,14 @@
 /* External dependencies */
-import { useEffect, useRef, useCallback, useState, memo } from '@wordpress/element';
+import { useEffect, useRef, useCallback, memo } from '@wordpress/element';
 import { Popover, MenuGroup, MenuItem } from '@wordpress/components';
-import { settings, tableRowBefore, tableRowAfter, tableRowDelete, chevronUp, chevronDown } from '@wordpress/icons';
+import {
+	settings,
+	tableRowBefore,
+	tableRowAfter,
+	tableRowDelete,
+	chevronUp,
+	chevronDown,
+} from '@wordpress/icons';
 
 /* Internal dependencies */
 import './style.scss';
@@ -12,7 +19,7 @@ import '../../editor.scss';
  *
  * @since    1.0.0
  * @since    1.1.2 Refactor component to improve UX and prerformance
- *
+ * @since    1.2.2 Added support to move rows and add rows both up and down
  * @param {Object} props
  * @return {Object} Updated row
  */
@@ -26,6 +33,7 @@ function RowMenuImpl(props = {}) {
 	const lastRowId = table?.rows[numTableRows]?.row_id;
 	const headerRowId = table?.rows?.find(r => r.attributes.isHeader === true)?.row_id;
 	const firstBodyRowId = headerRowId ? Number(headerRowId) + 1 : 1;
+	const disableInsertRowUp = Number(rowId) === 0 ? true : false;
 	const disableMoveRowUp = Number(rowId) <= Number(firstBodyRowId) ? true : false;
 	const disableMoveRowDown = Number(lastRowId) === Number(rowId) ? true : false;
 
@@ -119,9 +127,11 @@ function RowMenuImpl(props = {}) {
 	 *
 	 * @since    1.0.0
 	 * @since    1.1.2 Refactor to use useCallback for performance purposes
+	 * @since    1.2.2 Allow row to be inserted either above or below the current row
 	 *
-	 * @param {Object} event Menu action
-	 * @param {number} rowId Row ID for new row
+	 * @param {Object} event     Menu action
+	 * @param {number} rowId     Row ID for new row
+	 * @param {string} direction Insert Row either above or below
 	 */
 	const onInsertRow = useCallback(
 		(event, targetRowId, direction) => {
@@ -216,14 +226,17 @@ function RowMenuImpl(props = {}) {
 				{!rowAttributes.isHeader && (
 					<>
 						<MenuGroup>
-							<MenuItem icon={tableRowBefore} onClick={e => onInsertRow(e, rowId, 'above')}>
-								Insert Row (Above)
+							<MenuItem
+								icon={tableRowBefore}
+								disabled={disableInsertRowUp}
+								onClick={e => onInsertRow(e, rowId, 'above')}
+							>
+								Insert Row Above
 							</MenuItem>
 
 							<MenuItem icon={tableRowAfter} onClick={e => onInsertRow(e, rowId, 'below')}>
-								Insert Row (Below)
+								Insert Row Below
 							</MenuItem>
-
 						</MenuGroup>
 
 						<MenuGroup>
@@ -249,7 +262,6 @@ function RowMenuImpl(props = {}) {
 								Delete Row
 							</MenuItem>
 						</MenuGroup>
-
 					</>
 				)}
 			</Popover>

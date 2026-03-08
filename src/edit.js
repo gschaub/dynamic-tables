@@ -108,6 +108,7 @@ export default function Edit(props) {
 	const { addRow } = useDispatch(tableStore);
 	const { removeColumn } = useDispatch(tableStore);
 	const { removeRow } = useDispatch(tableStore);
+	const { moveColumn } = useDispatch(tableStore);
 	const { moveRow } = useDispatch(tableStore);
 	const { updateTableProp } = useDispatch(tableStore);
 	const { updateRow } = useDispatch(tableStore);
@@ -895,26 +896,29 @@ export default function Edit(props) {
 	 * Insert a new column in the table.
 	 *
 	 * @since    1.0.0
+	 * @since    1.2.2  Allow column to be added either left or right the current column
 	 *
-	 * @param {number} tableId  Identifier key for the table
-	 * @param {number} columnId Identifier for the table column
+	 * @param {number} tableId   Identifier key for the table
+	 * @param {number} columnId  Identifier for the table column
+	 * @param {string} direction Insert row above or below current row
 	 * @return {Object} Dynamic Table
 	 */
-	function insertColumn(tableId, columnId) {
-		const newColumn = getDefaultColumn(tableId, columnId);
+	function insertColumn(tableId, columnId, direction) {
+		const newColumnId = direction === 'right' ? Number(columnId) + 1 : Number(columnId);
+		const newColumn = getDefaultColumn(tableId, newColumnId);
 		const tableCells = [];
 
 		for (let i = 0; i < numRows; i++) {
 			if (i === 0) {
-				const cell = getDefaultCell(tableId, columnId, i, 'Border');
+				const cell = getDefaultCell(tableId, newColumnId, i, 'Border');
 				tableCells.push(cell);
 			} else {
-				const cell = getDefaultCell(tableId, columnId, i);
+				const cell = getDefaultCell(tableId, newColumnId, i);
 				tableCells.push(cell);
 			}
 		}
 
-		addColumn(tableId, columnId, newColumn, tableCells);
+		addColumn(tableId, columnId, direction, newColumn, tableCells);
 		setTableStale(false);
 		return updateTableEntity(tableId);
 	}
@@ -975,6 +979,22 @@ export default function Edit(props) {
 	 */
 	function deleteRow(tableId, rowId) {
 		removeRow(tableId, rowId);
+		setTableStale(false);
+		return updateTableEntity(tableId);
+	}
+
+	/**
+	 * Move a column left or right
+	 *
+	 * @since    1.2.2
+	 *
+	 * @param {number} tableId
+	 * @param {number} columnId
+	 * @param {string} direction Move row left or right
+	 * @return {Object} Dynamic Table
+	 */
+	function reorderColumns(tableId, columnId, direction) {
+		moveColumn(tableId, columnId, direction);
 		setTableStale(false);
 		return updateTableEntity(tableId);
 	}
@@ -1538,7 +1558,8 @@ export default function Edit(props) {
 	 * Process updates (insert, update, delete) to a table column.
 	 *
 	 * @since    1.0.0
-	 * @since    1.1.1  Updated to support row menu refactor.
+	 * @since    1.1.1  Updated to support column menu refactor.
+	 * @since    1.2.2  Added actions to move a column up or down and insert to the right
 	 *
 	 * @param {Object} e                       Table Creation Event
 	 * @param {string} updateType              attribute (Update), insert, delete
@@ -1579,12 +1600,24 @@ export default function Edit(props) {
 				}
 				break;
 			}
-			case 'insert': {
-				insertColumn(tableId, columnId);
+			case 'insert-left': {
+				insertColumn(tableId, columnId, 'left');
+				break;
+			}
+			case 'insert-right': {
+				insertColumn(tableId, columnId, 'right');
 				break;
 			}
 			case 'delete': {
 				deleteColumn(tableId, columnId);
+				break;
+			}
+			case 'move-left': {
+				reorderColumns(tableId, columnId, 'left');
+				break;
+			}
+			case 'move-right': {
+				reorderColumns(tableId, columnId, 'right');
 				break;
 			}
 			default:
@@ -2104,7 +2137,7 @@ export default function Edit(props) {
 				<ColumnMenu
 					debugSource="EDIT_TOP_LEVEL"
 					anchor={columnMenu.anchorEl}
-					tableId={table_id}
+					table={table}
 					columnId={columnMenu.columnId}
 					columnLabel={columnMenu.columnLabel}
 					columnAttributes={columnMenu.columnAttributes}
@@ -3056,17 +3089,9 @@ function Cell(props) {
 
 			return (
 				<TextControl
-					style={{
-						backgroundColor: 'transparent',
-						border: 'none',
-						padding: 0,
-						width: '100%',
-						fontSize: '16.8px',
-						fontFamily: 'Inter, sans-serif',
-						boxShadow: 'inherit',
-					}}
+					className="grid-control__cellEditor--dateTimeInput"
 					type={inputType}
-					__next40pxDefaultSize
+					// __next40pxDefaultSize
 					value={cellContent}
 					onChange={next => {
 						const formattedContent = formattedIsoDate(next, settings.format);

@@ -501,18 +501,21 @@ export const removeTableBlock = tableId => {
  * Signals the addition of a new table column.
  *
  * @since    1.0.0
+ * @since    1.2.2  Added support to insert column either left or right of the current column
  *
  * @param {number}       tableId     Identifier key for the table
  * @param {number}       columnId    Identifier for a table column
+ * @param {string}       direction   Add row above or below current row
  * @param {Object}       newColumn   Column definition
  * @param {Array|Object} columnCells Cell definitions associated with the column
  * @return  {Object} Action object
  */
-export const addColumn = (tableId, columnId, newColumn, columnCells) => {
+export const addColumn = (tableId, columnId, direction, newColumn, columnCells) => {
 	return {
 		type: INSERT_COLUMN,
 		tableId,
 		columnId,
+		direction,
 		newColumn,
 		columnCells,
 	};
@@ -573,6 +576,25 @@ export const removeRow = (tableId, rowId) => {
 		type: DELETE_ROW,
 		tableId,
 		rowId,
+	};
+};
+
+/**
+ * Signals the move of a new table row (up or down).
+ *
+ * @since    1.2.2
+ *
+ * @param {number} tableId   Identifier key for the table
+ * @param {number} columnId  Identifier for a table row
+ * @param {string} direction Move row up or down
+ * @return  {Object} Action object
+ */
+export const moveColumn = (tableId, columnId, direction) => {
+	return {
+		type: MOVE_COLUMN,
+		tableId,
+		columnId,
+		direction,
 	};
 };
 

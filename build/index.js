@@ -46,6 +46,50 @@ var chevron_down_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTE
 
 /***/ }),
 
+/***/ "./node_modules/@wordpress/icons/build-module/library/chevron-left.mjs":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/chevron-left.mjs ***!
+  \*****************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ chevron_left_default)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/icons/src/library/chevron-left.tsx
+
+
+var chevron_left_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M14.6 7l-1.2-1L8 12l5.4 6 1.2-1-4.6-5z" }) });
+
+//# sourceMappingURL=chevron-left.mjs.map
+
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/chevron-right.mjs":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/chevron-right.mjs ***!
+  \******************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ chevron_right_default)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/icons/src/library/chevron-right.tsx
+
+
+var chevron_right_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M10.6 6L9.4 7l4.6 5-4.6 5 1.2 1 5.4-6z" }) });
+
+//# sourceMappingURL=chevron-right.mjs.map
+
+
+/***/ }),
+
 /***/ "./node_modules/@wordpress/icons/build-module/library/chevron-up.mjs":
 /*!***************************************************************************!*\
   !*** ./node_modules/@wordpress/icons/build-module/library/chevron-up.mjs ***!
@@ -140,6 +184,28 @@ var settings_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MO
 ] });
 
 //# sourceMappingURL=settings.mjs.map
+
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/table-column-after.mjs":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/table-column-after.mjs ***!
+  \***********************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ table_column_after_default)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/icons/src/library/table-column-after.tsx
+
+
+var table_column_after_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M19 3H5c-1.1 0-2 .9-2 2v14.2c.1.9.9 1.7 1.8 1.8H19.2c1-.1 1.8-1 1.8-2V5c0-1.1-.9-2-2-2ZM8.5 19.5H5c-.3 0-.5-.2-.5-.5v-3.5h4v4Zm0-5.5h-4v-4h4v4Zm0-5.5h-4V5c0-.3.2-.5.5-.5h3.5v4Zm11 10.5c0 .3-.2.5-.5.5h-9v-15h9c.3 0 .5.2.5.5v14Zm-4-10.8H14v3h-3v1.5h3v3h1.5v-3h3v-1.5h-3v-3Z" }) });
+
+//# sourceMappingURL=table-column-after.mjs.map
 
 
 /***/ }),
@@ -278,14 +344,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/cog.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-before.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-delete.mjs");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./style.scss */ "./src/components/column-dropdown-menu/style.scss");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/chevron-left.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/chevron-right.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/cog.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-after.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-before.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-delete.mjs");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./style.scss */ "./src/components/column-dropdown-menu/style.scss");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__);
 /* External dependencies */
 
 
@@ -300,6 +369,7 @@ __webpack_require__.r(__webpack_exports__);
  *
  * @since    1.0.0
  * @since    1.2.0 Refactor component to improve UX and prerformance
+ * @since    1.2.2 Added support to move columns and add columns both left and right
  *
  * @param {Object} props
  * @return {Object} Updated column
@@ -308,12 +378,20 @@ __webpack_require__.r(__webpack_exports__);
 function ColumnMenuImpl(props = {}) {
   const {
     anchor,
-    tableId,
+    table,
     columnId,
     columnLabel,
     updatedColumn,
     onRequestClose
   } = props;
+  const tableId = table?.table_id;
+
+  // Support disabling row movement that would bring out-of-bounds conditions
+  const numTableColumns = table?.columns?.length - 1;
+  const lastColumnId = table?.columns[numTableColumns]?.column_id;
+  const disableInsertColumnLeft = Number(columnId) === 0 ? true : false;
+  const disableMoveColumnLeft = Number(columnId) <= 1 ? true : false;
+  const disableMoveColumnRight = Number(lastColumnId) === Number(columnId) ? true : false;
 
   // Refs for focus management
   const menuRootRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
@@ -387,12 +465,15 @@ function ColumnMenuImpl(props = {}) {
    *
    * @since    1.0.0
    * @since    1.2.0 Refactor to use useCallback for performance purposes
+   * @since    1.2.2 Allow column to be inserted either left or right of the current column
    *
-   * @param {Object} event    Menu action
-   * @param {number} columnId Column ID for new column
+   * @param {Object} event     Menu action
+   * @param {number} columnId  Column ID for new column
+   * @param {string} direction Insert column either left or right
    */
-  const onInsertColumn = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetColumnId) => {
-    updatedColumn(event, 'insert', tableId, targetColumnId, '');
+  const onInsertColumn = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetColumnId, direction) => {
+    const updateType = direction === 'left' ? 'insert-left' : 'insert-right';
+    updatedColumn(event, updateType, tableId, targetColumnId, '');
     close();
   }, [updatedColumn, tableId, close]);
 
@@ -407,6 +488,20 @@ function ColumnMenuImpl(props = {}) {
    */
   const onDeleteColumn = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetColumnId) => {
     updatedColumn(event, 'delete', tableId, targetColumnId, '');
+    close();
+  }, [updatedColumn, tableId, close]);
+
+  /**
+   * Column attributes for moving a column left or right.
+   *
+   * @since    1.2.2
+   *
+   * @param {Object} event    Menu action
+   * @param {number} columnId Column ID for new row
+   */
+  const onMoveColumn = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetRowId, direction) => {
+    const updateType = direction === 'left' ? 'move-left' : 'move-right';
+    updatedColumn(event, updateType, tableId, targetRowId, '');
     close();
   }, [updatedColumn, tableId, close]);
 
@@ -438,8 +533,8 @@ function ColumnMenuImpl(props = {}) {
     close();
   }, [tableId, close]);
   if (!canRender) return null;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.Fragment, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
       anchor: anchor,
       ref: menuRootRef,
       className: "menu-col__main",
@@ -453,28 +548,47 @@ function ColumnMenuImpl(props = {}) {
       tabIndex: -1,
       onKeyDown: onKeyDown,
       onClose: handlePopoverClose,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
         className: "components-menu-group",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
           onClick: e => onUpdateColumnDataType(e, columnId),
           ref: firstItemRef,
           children: "Column Content Type..."
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"],
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"],
           onClick: e => onUpdateColumnWidth(e, columnId),
           children: "Update Column Width..."
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"],
-          onClick: e => onInsertColumn(e, columnId),
-          children: "Insert Column (Left)"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"],
+          disabled: disableInsertColumnLeft,
+          onClick: e => onInsertColumn(e, columnId, 'left'),
+          children: "Insert Column Left"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
+          onClick: e => onInsertColumn(e, columnId, 'right'),
+          children: "Insert Column Right"
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"],
+          disabled: disableMoveColumnLeft,
+          onClick: e => onMoveColumn(e, columnId, 'left'),
+          children: "Move Column Left"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
+          disabled: disableMoveColumnRight,
+          onClick: e => onMoveColumn(e, columnId, 'right'),
+          children: "Move Column Right"
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"],
           onClick: e => onDeleteColumn(e, columnId),
           children: "Delete Column"
-        })]
+        })
       })]
     })
   });
@@ -1823,7 +1937,7 @@ __webpack_require__.r(__webpack_exports__);
  *
  * @since    1.0.0
  * @since    1.1.2 Refactor component to improve UX and prerformance
- *
+ * @since    1.2.2 Added support to move rows and add rows both up and down
  * @param {Object} props
  * @return {Object} Updated row
  */
@@ -1845,6 +1959,7 @@ function RowMenuImpl(props = {}) {
   const lastRowId = table?.rows[numTableRows]?.row_id;
   const headerRowId = table?.rows?.find(r => r.attributes.isHeader === true)?.row_id;
   const firstBodyRowId = headerRowId ? Number(headerRowId) + 1 : 1;
+  const disableInsertRowUp = Number(rowId) === 0 ? true : false;
   const disableMoveRowUp = Number(rowId) <= Number(firstBodyRowId) ? true : false;
   const disableMoveRowDown = Number(lastRowId) === Number(rowId) ? true : false;
 
@@ -1921,9 +2036,11 @@ function RowMenuImpl(props = {}) {
    *
    * @since    1.0.0
    * @since    1.1.2 Refactor to use useCallback for performance purposes
+   * @since    1.2.2 Allow row to be inserted either above or below the current row
    *
-   * @param {Object} event Menu action
-   * @param {number} rowId Row ID for new row
+   * @param {Object} event     Menu action
+   * @param {number} rowId     Row ID for new row
+   * @param {string} direction Insert Row either above or below
    */
   const onInsertRow = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetRowId, direction) => {
     const updateType = direction === 'above' ? 'insert-above' : 'insert-below';
@@ -2002,12 +2119,13 @@ function RowMenuImpl(props = {}) {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
             icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
+            disabled: disableInsertRowUp,
             onClick: e => onInsertRow(e, rowId, 'above'),
-            children: "Insert Row (Above)"
+            children: "Insert Row Above"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
             icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
             onClick: e => onInsertRow(e, rowId, 'below'),
-            children: "Insert Row (Below)"
+            children: "Insert Row Below"
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
@@ -2102,6 +2220,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   cloneTable: () => (/* binding */ cloneTable),
 /* harmony export */   createTableEntity: () => (/* binding */ createTableEntity),
 /* harmony export */   deleteTableEntity: () => (/* binding */ deleteTableEntity),
+/* harmony export */   moveColumn: () => (/* binding */ moveColumn),
 /* harmony export */   moveRow: () => (/* binding */ moveRow),
 /* harmony export */   processDeletedTables: () => (/* binding */ processDeletedTables),
 /* harmony export */   processUnmountedTables: () => (/* binding */ processUnmountedTables),
@@ -2579,18 +2698,21 @@ const removeTableBlock = tableId => {
  * Signals the addition of a new table column.
  *
  * @since    1.0.0
+ * @since    1.2.2  Added support to insert column either left or right of the current column
  *
  * @param {number}       tableId     Identifier key for the table
  * @param {number}       columnId    Identifier for a table column
+ * @param {string}       direction   Add row above or below current row
  * @param {Object}       newColumn   Column definition
  * @param {Array|Object} columnCells Cell definitions associated with the column
  * @return  {Object} Action object
  */
-const addColumn = (tableId, columnId, newColumn, columnCells) => {
+const addColumn = (tableId, columnId, direction, newColumn, columnCells) => {
   return {
     type: INSERT_COLUMN,
     tableId,
     columnId,
+    direction,
     newColumn,
     columnCells
   };
@@ -2651,6 +2773,25 @@ const removeRow = (tableId, rowId) => {
     type: DELETE_ROW,
     tableId,
     rowId
+  };
+};
+
+/**
+ * Signals the move of a new table row (up or down).
+ *
+ * @since    1.2.2
+ *
+ * @param {number} tableId   Identifier key for the table
+ * @param {number} columnId  Identifier for a table row
+ * @param {string} direction Move row up or down
+ * @return  {Object} Action object
+ */
+const moveColumn = (tableId, columnId, direction) => {
+  return {
+    type: MOVE_COLUMN,
+    tableId,
+    columnId,
+    direction
   };
 };
 
@@ -3012,13 +3153,14 @@ const table = (state = {
       const insertColumnState = {
         ...state
       };
+      const targetInsertColumnNewId = action.direction === 'left' ? Number(action.columnId) : Number(action.columnId) + 1;
 
       /**
        * Insert new column and update existing column_id's
        */
       const columnsWithNewId_InsertColumn = [];
       insertColumnState.columns.forEach(column => {
-        if (Number(column.column_id) < Number(action.columnId)) {
+        if (Number(column.column_id) < Number(targetInsertColumnNewId)) {
           columnsWithNewId_InsertColumn.push(column);
         } else {
           const newColumn_InsertColumn = {
@@ -3039,7 +3181,7 @@ const table = (state = {
        */
       const cellsWithNewId_InsertColumn = [];
       insertColumnState.cells.forEach(cell => {
-        if (cell.column_id < action.columnId) {
+        if (Number(cell.column_id) < Number(targetInsertColumnNewId)) {
           cellsWithNewId_InsertColumn.push(cell);
         } else {
           const newColumnId_InsertColumn = String(Number(cell.column_id) + 1);
@@ -3238,6 +3380,74 @@ const table = (state = {
       };
       return {
         table: returnedTableNewRow_DeleteRow
+      };
+
+    /**
+     * @since 1.2.2
+     */
+    case MOVE_COLUMN:
+      const moveColumnState = {
+        ...state
+      };
+      const targetMoveColumnNewId = action.direction === 'left' ? Number(action.columnId) - 1 : Number(action.columnId) + 1;
+
+      // Move columns
+      const movedColumns = [];
+      moveColumnState.columns.map(({
+        table_id,
+        column_id,
+        column_name,
+        attributes,
+        classes
+      }) => {
+        let newColumnId = column_id;
+        if (Number(column_id) === Number(action.columnId)) newColumnId = String(targetMoveColumnNewId);
+        if (Number(column_id) === targetMoveColumnNewId) newColumnId = String(action.columnId);
+        return movedColumns.push({
+          table_id: table_id,
+          column_id: newColumnId,
+          column_name: column_name,
+          attributes: attributes,
+          classes: classes
+        });
+      });
+      const sortedMovedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('columns', movedColumns);
+
+      // Move related column cells
+      const movedColumnCells = [];
+      moveColumnState.cells.map(({
+        table_id,
+        column_id,
+        row_id,
+        attributes,
+        classes,
+        content
+      }) => {
+        let newColumnId = column_id;
+        let borderContent = content;
+        if (Number(column_id) === Number(action.columnId)) newColumnId = String(targetMoveColumnNewId);
+        if (Number(column_id) === targetMoveColumnNewId) newColumnId = String(action.columnId);
+        if (row_id === '0') borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(newColumnId);
+        const columnLetter = newColumnId == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(newColumnId);
+        return movedColumnCells.push({
+          table_id: table_id,
+          row_id: row_id,
+          cell_id: columnLetter + String(row_id),
+          column_id: newColumnId,
+          attributes: attributes,
+          classes: classes,
+          content: borderContent
+        });
+      });
+      const sortedMovedColumnCells = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('cells', movedColumnCells);
+      const returnedTableMovedColumns = {
+        ...moveColumnState,
+        rows: [...moveColumnState.rows],
+        columns: [...sortedMovedColumns],
+        cells: [...sortedMovedColumnCells]
+      };
+      return {
+        table: returnedTableMovedColumns
       };
 
     /**
@@ -3778,6 +3988,9 @@ function Edit(props) {
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
   const {
     removeRow
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
+  const {
+    moveColumn
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_10__.store);
   const {
     moveRow
@@ -4597,24 +4810,27 @@ function Edit(props) {
    * Insert a new column in the table.
    *
    * @since    1.0.0
+   * @since    1.2.2  Allow column to be added either left or right the current column
    *
-   * @param {number} tableId  Identifier key for the table
-   * @param {number} columnId Identifier for the table column
+   * @param {number} tableId   Identifier key for the table
+   * @param {number} columnId  Identifier for the table column
+   * @param {string} direction Insert row above or below current row
    * @return {Object} Dynamic Table
    */
-  function insertColumn(tableId, columnId) {
-    const newColumn = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultColumn)(tableId, columnId);
+  function insertColumn(tableId, columnId, direction) {
+    const newColumnId = direction === 'right' ? Number(columnId) + 1 : Number(columnId);
+    const newColumn = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultColumn)(tableId, newColumnId);
     const tableCells = [];
     for (let i = 0; i < numRows; i++) {
       if (i === 0) {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, columnId, i, 'Border');
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, newColumnId, i, 'Border');
         tableCells.push(cell);
       } else {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, columnId, i);
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_13__.getDefaultCell)(tableId, newColumnId, i);
         tableCells.push(cell);
       }
     }
-    addColumn(tableId, columnId, newColumn, tableCells);
+    addColumn(tableId, columnId, direction, newColumn, tableCells);
     setTableStale(false);
     return updateTableEntity(tableId);
   }
@@ -4672,6 +4888,22 @@ function Edit(props) {
    */
   function deleteRow(tableId, rowId) {
     removeRow(tableId, rowId);
+    setTableStale(false);
+    return updateTableEntity(tableId);
+  }
+
+  /**
+   * Move a column left or right
+   *
+   * @since    1.2.2
+   *
+   * @param {number} tableId
+   * @param {number} columnId
+   * @param {string} direction Move row left or right
+   * @return {Object} Dynamic Table
+   */
+  function reorderColumns(tableId, columnId, direction) {
+    moveColumn(tableId, columnId, direction);
     setTableStale(false);
     return updateTableEntity(tableId);
   }
@@ -5199,7 +5431,8 @@ function Edit(props) {
    * Process updates (insert, update, delete) to a table column.
    *
    * @since    1.0.0
-   * @since    1.1.1  Updated to support row menu refactor.
+   * @since    1.1.1  Updated to support column menu refactor.
+   * @since    1.2.2  Added actions to move a column up or down and insert to the right
    *
    * @param {Object} e                       Table Creation Event
    * @param {string} updateType              attribute (Update), insert, delete
@@ -5235,14 +5468,29 @@ function Edit(props) {
           }
           break;
         }
-      case 'insert':
+      case 'insert-left':
         {
-          insertColumn(tableId, columnId);
+          insertColumn(tableId, columnId, 'left');
+          break;
+        }
+      case 'insert-right':
+        {
+          insertColumn(tableId, columnId, 'right');
           break;
         }
       case 'delete':
         {
           deleteColumn(tableId, columnId);
+          break;
+        }
+      case 'move-left':
+        {
+          reorderColumns(tableId, columnId, 'left');
+          break;
+        }
+      case 'move-right':
+        {
+          reorderColumns(tableId, columnId, 'right');
           break;
         }
       default:
@@ -5653,7 +5901,7 @@ function Edit(props) {
     children: columnMenu.isOpen && columnMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_components__WEBPACK_IMPORTED_MODULE_15__.ColumnMenu, {
       debugSource: "EDIT_TOP_LEVEL",
       anchor: columnMenu.anchorEl,
-      tableId: table_id,
+      table: table,
       columnId: columnMenu.columnId,
       columnLabel: columnMenu.columnLabel,
       columnAttributes: columnMenu.columnAttributes,
@@ -6429,17 +6677,10 @@ function Cell(props) {
         });
       }
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TextControl, {
-        style: {
-          backgroundColor: 'transparent',
-          border: 'none',
-          padding: 0,
-          width: '100%',
-          fontSize: '16.8px',
-          fontFamily: 'Inter, sans-serif',
-          boxShadow: 'inherit'
-        },
-        type: inputType,
-        __next40pxDefaultSize: true,
+        className: "grid-control__cellEditor--dateTimeInput",
+        type: inputType
+        // __next40pxDefaultSize
+        ,
         value: cellContent,
         onChange: next => {
           const formattedContent = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(next, settings.format);

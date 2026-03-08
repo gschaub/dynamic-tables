@@ -1,7 +1,15 @@
 /* External dependencies */
 import { useEffect, useRef, useCallback, memo } from '@wordpress/element';
 import { Popover, MenuGroup, MenuItem } from '@wordpress/components';
-import { cog, settings, tableColumnBefore, tableColumnDelete } from '@wordpress/icons';
+import {
+	cog,
+	settings,
+	tableColumnBefore,
+	tableColumnAfter,
+	tableColumnDelete,
+	chevronLeft,
+	chevronRight,
+} from '@wordpress/icons';
 
 /* Internal dependencies */
 import './style.scss';
@@ -12,12 +20,22 @@ import '../../editor.scss';
  *
  * @since    1.0.0
  * @since    1.2.0 Refactor component to improve UX and prerformance
+ * @since    1.2.2 Added support to move columns and add columns both left and right
  *
  * @param {Object} props
  * @return {Object} Updated column
  */
 function ColumnMenuImpl(props = {}) {
-	const { anchor, tableId, columnId, columnLabel, updatedColumn, onRequestClose } = props;
+	const { anchor, table, columnId, columnLabel, updatedColumn, onRequestClose } = props;
+
+	const tableId = table?.table_id;
+
+	// Support disabling row movement that would bring out-of-bounds conditions
+	const numTableColumns = table?.columns?.length - 1;
+	const lastColumnId = table?.columns[numTableColumns]?.column_id;
+	const disableInsertColumnLeft = Number(columnId) === 0 ? true : false;
+	const disableMoveColumnLeft = Number(columnId) <= 1 ? true : false;
+	const disableMoveColumnRight = Number(lastColumnId) === Number(columnId) ? true : false;
 
 	// Refs for focus management
 	const menuRootRef = useRef(null);
@@ -108,13 +126,17 @@ function ColumnMenuImpl(props = {}) {
 	 *
 	 * @since    1.0.0
 	 * @since    1.2.0 Refactor to use useCallback for performance purposes
+	 * @since    1.2.2 Allow column to be inserted either left or right of the current column
 	 *
-	 * @param {Object} event    Menu action
-	 * @param {number} columnId Column ID for new column
+	 * @param {Object} event     Menu action
+	 * @param {number} columnId  Column ID for new column
+	 * @param {string} direction Insert column either left or right
 	 */
 	const onInsertColumn = useCallback(
-		(event, targetColumnId) => {
-			updatedColumn(event, 'insert', tableId, targetColumnId, '');
+		(event, targetColumnId, direction) => {
+			const updateType = direction === 'left' ? 'insert-left' : 'insert-right';
+
+			updatedColumn(event, updateType, tableId, targetColumnId, '');
 			close();
 		},
 		[updatedColumn, tableId, close]
@@ -132,6 +154,24 @@ function ColumnMenuImpl(props = {}) {
 	const onDeleteColumn = useCallback(
 		(event, targetColumnId) => {
 			updatedColumn(event, 'delete', tableId, targetColumnId, '');
+			close();
+		},
+		[updatedColumn, tableId, close]
+	);
+
+	/**
+	 * Column attributes for moving a column left or right.
+	 *
+	 * @since    1.2.2
+	 *
+	 * @param {Object} event    Menu action
+	 * @param {number} columnId Column ID for new row
+	 */
+	const onMoveColumn = useCallback(
+		(event, targetRowId, direction) => {
+			const updateType = direction === 'left' ? 'move-left' : 'move-right';
+
+			updatedColumn(event, updateType, tableId, targetRowId, '');
 			close();
 		},
 		[updatedColumn, tableId, close]
@@ -205,10 +245,38 @@ function ColumnMenuImpl(props = {}) {
 				</MenuGroup>
 
 				<MenuGroup>
-					<MenuItem icon={tableColumnBefore} onClick={e => onInsertColumn(e, columnId)}>
-						Insert Column (Left)
+					<MenuItem
+						icon={tableColumnBefore}
+						disabled={disableInsertColumnLeft}
+						onClick={e => onInsertColumn(e, columnId, 'left')}
+					>
+						Insert Column Left
 					</MenuItem>
 
+					<MenuItem icon={tableColumnAfter} onClick={e => onInsertColumn(e, columnId, 'right')}>
+						Insert Column Right
+					</MenuItem>
+				</MenuGroup>
+
+				<MenuGroup>
+					<MenuItem
+						icon={chevronLeft}
+						disabled={disableMoveColumnLeft}
+						onClick={e => onMoveColumn(e, columnId, 'left')}
+					>
+						Move Column Left
+					</MenuItem>
+
+					<MenuItem
+						icon={chevronRight}
+						disabled={disableMoveColumnRight}
+						onClick={e => onMoveColumn(e, columnId, 'right')}
+					>
+						Move Column Right
+					</MenuItem>
+				</MenuGroup>
+
+				<MenuGroup>
 					<MenuItem icon={tableColumnDelete} onClick={e => onDeleteColumn(e, columnId)}>
 						Delete Column
 					</MenuItem>

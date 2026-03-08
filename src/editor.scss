@@ -100,21 +100,6 @@
   box-shadow: inherit
 }
 
-.grid-control__cellEditor .block-editor-rich-text__editable,
-.grid-control__cellEditor input.components-text-control__input,
-.grid-control__cellEditor textarea.components-text-control__input {
-  font: inherit;
-  line-height: inherit;
-}
-
-// 	backgroundColor: 'transparent',
-// 	border: 'none',
-// 	padding: 0,
-// 	width: '100%',
-// 	fontSize: '16.8px',
-// 	fontFamily: 'Inter, sans-serif',
-// 	boxShadow: 'inherit',
-
 .wp-block-table {
 	// Remove default <figure> style.
 	margin: 0;
@@ -148,4 +133,43 @@
 
 .blocks-table__placeholder-input {
 	margin-bottom: 0;
+}
+
+/* Date/Time editor input (TextControl) styling in Gutenberg editor */
+.grid-control__cellEditor--dateTimeInput,
+.grid-control__cellEditor--dateTimeInput .components-base-control,
+.grid-control__cellEditor--dateTimeInput .components-base-control__field,
+.grid-control__cellEditor--dateTimeInput .components-input-control,
+.grid-control__cellEditor--dateTimeInput .components-input-control__container,
+.grid-control__cellEditor--dateTimeInput .components-input-control__backdrop {
+	font: inherit !important;
+	font-size: inherit !important;
+	font-family: inherit !important;
+	line-height: inherit !important;
+	letter-spacing: inherit !important;
+	color: inherit !important;
+}
+
+.grid-control__cellEditor--dateTimeInput .components-input-control__container,
+.grid-control__cellEditor--dateTimeInput .components-text-control__input-container,
+.grid-control__cellEditor--dateTimeInput .components-input-control__backdrop {
+	background: transparent !important;
+	border: 0 !important;
+	box-shadow: none !important;
+}
+
+.grid-control__cellEditor--dateTimeInput input.components-input-control__input,
+.grid-control__cellEditor--dateTimeInput input.components-text-control__input {
+	font: inherit !important;
+	font-size: inherit !important;
+	font-family: inherit !important;
+	line-height: inherit !important;
+	letter-spacing: inherit !important;
+	color: inherit !important;
+	background: transparent !important;
+	border: 0 !important;
+	box-shadow: none !important;
+	padding: 0 !important;
+	min-height: 0 !important;
+	height: auto !important;
 }
