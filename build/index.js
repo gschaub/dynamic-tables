@@ -5271,14 +5271,15 @@ function Edit(props) {
     console.log('Column Data Type');
     const columnDataType = columnDataTypes[col]?.type || 'general';
     const isHeaderRow = table.rows.find(r => Number(r.row_id) === row).attributes.isHeader;
-    const canTypeToEdit = isHeaderRow || columnDataType === 'general' || columnDataType === 'date-time';
+    const editDataType = isHeaderRow ? 'general' : columnDataType;
+    const canTypeToEdit = isHeaderRow || editDataType === 'general' || editDataType === 'date-time';
     console.log('Is Header Cell ? ', isHeaderRow);
 
     // Allow direct edit for printable keys
     if (!navKeys.has(event.key) && isPrintableKey(event) && canTypeToEdit) {
       // Enter edit mode
       console.log('Coordinates: col/row = ' + col + '/' + row);
-      onCellKeyDownEditing(event, activeCellEl, event.key, columnDataType);
+      onCellKeyDownEditing(event, activeCellEl, event.key, editDataType);
       return;
     }
 
@@ -5386,9 +5387,31 @@ function Edit(props) {
    * @param {string} columnDataType Data Type for Column
    */
   function onCellKeyDownEditing(event, activeCellEl, char, columnDataType = 'general') {
+    const id = activeCellEl.getAttribute('data-cell-id');
+
+    // For native date/time controls, mount the editor synchronously so the
+    // initiating printable key can be handled by the input.
+    if (columnDataType === 'date-time') {
+      (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.flushSync)(() => {
+        setEditingCellId(id);
+      });
+      const focusDateTimeEditor = () => {
+        const mountedCellEl = gridRef.current?.querySelector(`[data-cell-id="${CSS.escape(id)}"]`);
+        const input = mountedCellEl?.querySelector?.('input, textarea');
+        input?.focus?.();
+        return !!input;
+      };
+
+      // Try immediately (same key event), then fallback next frame.
+      if (!focusDateTimeEditor()) {
+        window.requestAnimationFrame(() => {
+          focusDateTimeEditor();
+        });
+      }
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
-    const id = activeCellEl.getAttribute('data-cell-id');
     setEditingCellId(id);
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
@@ -6601,7 +6624,7 @@ function Cell(props) {
     type,
     settings
   } = dataFormat || {};
-  const [inputType, setInputType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('text'); // TextControl type (e.g., text, date, etc.)
+  const [inputType, setInputType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(() => settings?.format || 'date');
   const [cellContent, setCellContent] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)();
   const initialCellValue = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(content);
   const [cellAttributes, setCellAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(attributes);
@@ -6633,7 +6656,6 @@ function Cell(props) {
         }
       }
     } else {
-      setInputType('text');
       const raw = content !== null && content !== void 0 ? content : '';
       setCellContent(raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formatedDisplayDate)(raw, resolvedFormat) : '');
     }

@@ -1,6 +1,6 @@
 /* External dependencies */
 import { useSelect, useDispatch, dispatch } from '@wordpress/data';
-import { useState, useEffect, useRef, useMemo, Fragment } from '@wordpress/element';
+import { useState, useEffect, useRef, useMemo, Fragment, flushSync } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { store as noticeStore } from '@wordpress/notices';
 import { __ } from '@wordpress/i18n';
@@ -1393,15 +1393,16 @@ export default function Edit(props) {
 		console.log('Column Data Type');
 		const columnDataType = columnDataTypes[col]?.type || 'general';
 		const isHeaderRow = table.rows.find(r => Number(r.row_id) === row).attributes.isHeader;
+		const editDataType = isHeaderRow ? 'general' : columnDataType;
 		const canTypeToEdit =
-			isHeaderRow || columnDataType === 'general' || columnDataType === 'date-time';
+			isHeaderRow || editDataType === 'general' || editDataType === 'date-time';
 		console.log('Is Header Cell ? ', isHeaderRow);
 
 		// Allow direct edit for printable keys
 		if (!navKeys.has(event.key) && isPrintableKey(event) && canTypeToEdit) {
 			// Enter edit mode
 			console.log('Coordinates: col/row = ' + col + '/' + row);
-			onCellKeyDownEditing(event, activeCellEl, event.key, columnDataType);
+			onCellKeyDownEditing(event, activeCellEl, event.key, editDataType);
 			return;
 		}
 
@@ -1515,10 +1516,34 @@ export default function Edit(props) {
 	 * @param {string} columnDataType Data Type for Column
 	 */
 	function onCellKeyDownEditing(event, activeCellEl, char, columnDataType = 'general') {
+		const id = activeCellEl.getAttribute('data-cell-id');
+
+		// For native date/time controls, mount the editor synchronously so the
+		// initiating printable key can be handled by the input.
+		if (columnDataType === 'date-time') {
+			flushSync(() => {
+				setEditingCellId(id);
+			});
+
+			const focusDateTimeEditor = () => {
+				const mountedCellEl = gridRef.current?.querySelector(`[data-cell-id="${CSS.escape(id)}"]`);
+				const input = mountedCellEl?.querySelector?.('input, textarea');
+				input?.focus?.();
+				return !!input;
+			};
+
+			// Try immediately (same key event), then fallback next frame.
+			if (!focusDateTimeEditor()) {
+				window.requestAnimationFrame(() => {
+					focusDateTimeEditor();
+				});
+			}
+			return;
+		}
+
 		event.preventDefault();
 		event.stopPropagation();
 
-		const id = activeCellEl.getAttribute('data-cell-id');
 		setEditingCellId(id);
 
 		window.requestAnimationFrame(() => {
@@ -3016,7 +3041,7 @@ function Cell(props) {
 
 	const { type, settings } = dataFormat || {};
 
-	const [inputType, setInputType] = useState('text'); // TextControl type (e.g., text, date, etc.)
+	const [inputType, setInputType] = useState(() => settings?.format || 'date');
 	const [cellContent, setCellContent] = useState();
 	const initialCellValue = useRef(content);
 	const [cellAttributes, setCellAttributes] = useState(attributes);
@@ -3051,7 +3076,6 @@ function Cell(props) {
 				}
 			}
 		} else {
-			setInputType('text');
 			const raw = content ?? '';
 			setCellContent(raw ? formatedDisplayDate(raw, resolvedFormat) : '');
 		}
