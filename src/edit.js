@@ -967,7 +967,6 @@ export default function Edit(props) {
 		return updateTableEntity(tableId);
 	}
 
-
 	/**
 	 * Delete a column from the table
 	 *
@@ -1368,19 +1367,18 @@ export default function Edit(props) {
 		]);
 
 		console.log('Column Data Type');
-		const columnDataType = columnDataTypes[col].type;
-		// const isHeaderRow = table.rows[Number(row)].attributes.isHeader;
+		const columnDataType = columnDataTypes[col]?.type || 'general';
 		const isHeaderRow = table.rows.find(r => Number(r.row_id) === row).attributes.isHeader;
+		const canTypeToEdit =
+			isHeaderRow || columnDataType === 'general' || columnDataType === 'date-time';
 		console.log('Is Header Cell ? ', isHeaderRow);
 
 		// Allow direct edit for printable keys
-		if (!navKeys.has(event.key) && isPrintableKey(event)) {
-			if (columnDataType === 'general' || isHeaderRow) {
-				// Enter edit mode
-				console.log('Coordinates: col/row = ' + col + '/' + row);
-				onCellKeyDownEditing(event, activeCellEl, event.key);
-				return;
-			}
+		if (!navKeys.has(event.key) && isPrintableKey(event) && canTypeToEdit) {
+			// Enter edit mode
+			console.log('Coordinates: col/row = ' + col + '/' + row);
+			onCellKeyDownEditing(event, activeCellEl, event.key, columnDataType);
+			return;
 		}
 
 		// Enter edit mode
@@ -1420,8 +1418,6 @@ export default function Edit(props) {
 			}
 			return;
 		}
-
-		// console.log('current coordinates: col = ' + col + ', row = ' + row);
 
 		// Intercept navigation
 		event.preventDefault();
@@ -1489,11 +1485,12 @@ export default function Edit(props) {
 	 *
 	 * @since    1.2.0
 	 *
-	 * @param {Object} event        onKeyDown event
-	 * @param {Object} activeCellEl Current cell element
-	 * @param {string} char         Key pressed
+	 * @param {Object} event          onKeyDown event
+	 * @param {Object} activeCellEl   Current cell element
+	 * @param {string} char           Key pressed
+	 * @param {string} columnDataType Data Type for Column
 	 */
-	function onCellKeyDownEditing(event, activeCellEl, char) {
+	function onCellKeyDownEditing(event, activeCellEl, char, columnDataType = 'general') {
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -1540,6 +1537,14 @@ export default function Edit(props) {
 					console.log('Input');
 					input.focus();
 
+					const nativeDateTimeInput =
+						columnDataType === 'date-time' ||
+						['date', 'time', 'datetime-local'].includes(input.type);
+
+					// For native date/time controls, typing should enter edit mode and focus input.
+					// Do not append raw characters (often invalid for these input types).
+					if (nativeDateTimeInput) return;
+
 					const v = input.value ?? '';
 					input.value = v + char;
 
@@ -1547,8 +1552,10 @@ export default function Edit(props) {
 					input.dispatchEvent(new Event('input', { bubbles: true }));
 
 					// Caret to end
-					const end = input.value.length;
-					input.setSelectionRange?.(end, end);
+					if (['text', 'search', 'tel', 'url', 'password'].includes(input.type)) {
+						const end = input.value.length;
+						input.setSelectionRange?.(end, end);
+					}
 				}
 			});
 		});
@@ -2969,13 +2976,11 @@ function Cell(props) {
 	const [cellContent, setCellContent] = useState();
 	const initialCellValue = useRef(content);
 	const [cellAttributes, setCellAttributes] = useState(attributes);
-	const [isCellChanged, setIsCellChanged] = useState(false);
 
 	const htmlToText = (html = '') => getTextContent(create({ html })).replace(/\s+/g, ' ').trim();
 
 	useEffect(() => {
 		setCellAttributes(attributes);
-		setIsCellChanged(false);
 		initialCellValue.current = content ?? '';
 
 		// Default behavior: raw content as-is
@@ -2983,37 +2988,33 @@ function Cell(props) {
 	}, [content, attributes]);
 
 	useEffect(() => {
-		if (cellType === 'border' || type !== 'date-time') return;
+		if (cellType !== 'body' || type !== 'date-time') return;
+
+		const resolvedFormat = settings?.format || 'date';
 
 		if (isEditing) {
 			// Enter edit mode: force a valid HTML input value FIRST
 			if (cellType === 'body' && type === 'date-time') {
-				setInputType(settings?.format || 'date');
-
+				setInputType(resolvedFormat);
 				const raw = content ?? initialCellValue.current ?? '';
 
-				if (!!raw) setCellContent(formattedIsoDate(content, settings.format));
-
-				if (!raw && settings?.defaultToToday) {
-					const today = new Date();
-					setCellContent(formattedIsoDate('', settings.format));
+				if (raw) {
+					setCellContent(formattedIsoDate(raw, resolvedFormat));
+				} else if (settings?.defaultToToday) {
+					setCellContent(formattedIsoDate('', resolvedFormat));
+				} else {
+					setCellContent('');
 				}
 			}
 		} else {
-			// Exit edit mode: go back to display formatting
-			// eslint-disable-next-line no-lonely-if
-			if (cellType === 'body' && type === 'date-time') {
-				setInputType('text');
-
-				const raw = content ?? '';
-				setCellContent(raw ? formatedDisplayDate(raw, settings?.format) : '');
-			}
+			setInputType('text');
+			const raw = content ?? '';
+			setCellContent(raw ? formatedDisplayDate(raw, resolvedFormat) : '');
 		}
 
 		setCellAttributes(attributes);
-		setIsCellChanged(false);
 		initialCellValue.current = content ?? '';
-	}, [isEditing, content, attributes, cellType, type, settings?.format]);
+	}, [isEditing, content, attributes, cellType, type, settings?.format, settings?.defaultToToday]);
 
 	/**
 	 * Handle onChange event for cell content update
@@ -3024,7 +3025,6 @@ function Cell(props) {
 	 * @param {Object} patch event data
 	 */
 	function updateCellData(patch) {
-		setIsCellChanged(true);
 		initialCellValue.current = patch.content;
 
 		if (patch.content !== undefined) setCellContent(patch.content);
@@ -3091,10 +3091,15 @@ function Cell(props) {
 				<TextControl
 					className="grid-control__cellEditor--dateTimeInput"
 					type={inputType}
-					// __next40pxDefaultSize
+					__next40pxDefaultSize
 					value={cellContent}
 					onChange={next => {
-						const formattedContent = formattedIsoDate(next, settings.format);
+						setCellContent(next);
+					}}
+					onBlur={event => {
+						const format = settings?.format || inputType || 'date';
+						const next = event?.target?.value ?? cellContent ?? '';
+						const formattedContent = formattedIsoDate(next, format);
 						updateCellData({
 							content: next,
 							attributes: {

@@ -5249,19 +5249,17 @@ function Edit(props) {
     if (!Number.isFinite(col) || !Number.isFinite(row)) return;
     const navKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter', 'F2', 'Escape', 'Delete', 'Backspace']);
     console.log('Column Data Type');
-    const columnDataType = columnDataTypes[col].type;
-    // const isHeaderRow = table.rows[Number(row)].attributes.isHeader;
+    const columnDataType = columnDataTypes[col]?.type || 'general';
     const isHeaderRow = table.rows.find(r => Number(r.row_id) === row).attributes.isHeader;
+    const canTypeToEdit = isHeaderRow || columnDataType === 'general' || columnDataType === 'date-time';
     console.log('Is Header Cell ? ', isHeaderRow);
 
     // Allow direct edit for printable keys
-    if (!navKeys.has(event.key) && isPrintableKey(event)) {
-      if (columnDataType === 'general' || isHeaderRow) {
-        // Enter edit mode
-        console.log('Coordinates: col/row = ' + col + '/' + row);
-        onCellKeyDownEditing(event, activeCellEl, event.key);
-        return;
-      }
+    if (!navKeys.has(event.key) && isPrintableKey(event) && canTypeToEdit) {
+      // Enter edit mode
+      console.log('Coordinates: col/row = ' + col + '/' + row);
+      onCellKeyDownEditing(event, activeCellEl, event.key, columnDataType);
+      return;
     }
 
     // Enter edit mode
@@ -5299,8 +5297,6 @@ function Edit(props) {
       }
       return;
     }
-
-    // console.log('current coordinates: col = ' + col + ', row = ' + row);
 
     // Intercept navigation
     event.preventDefault();
@@ -5364,11 +5360,12 @@ function Edit(props) {
    *
    * @since    1.2.0
    *
-   * @param {Object} event        onKeyDown event
-   * @param {Object} activeCellEl Current cell element
-   * @param {string} char         Key pressed
+   * @param {Object} event          onKeyDown event
+   * @param {Object} activeCellEl   Current cell element
+   * @param {string} char           Key pressed
+   * @param {string} columnDataType Data Type for Column
    */
-  function onCellKeyDownEditing(event, activeCellEl, char) {
+  function onCellKeyDownEditing(event, activeCellEl, char, columnDataType = 'general') {
     event.preventDefault();
     event.stopPropagation();
     const id = activeCellEl.getAttribute('data-cell-id');
@@ -5411,6 +5408,11 @@ function Edit(props) {
           var _input$value;
           console.log('Input');
           input.focus();
+          const nativeDateTimeInput = columnDataType === 'date-time' || ['date', 'time', 'datetime-local'].includes(input.type);
+
+          // For native date/time controls, typing should enter edit mode and focus input.
+          // Do not append raw characters (often invalid for these input types).
+          if (nativeDateTimeInput) return;
           const v = (_input$value = input.value) !== null && _input$value !== void 0 ? _input$value : '';
           input.value = v + char;
 
@@ -5420,8 +5422,10 @@ function Edit(props) {
           }));
 
           // Caret to end
-          const end = input.value.length;
-          input.setSelectionRange?.(end, end);
+          if (['text', 'search', 'tel', 'url', 'password'].includes(input.type)) {
+            const end = input.value.length;
+            input.setSelectionRange?.(end, end);
+          }
         }
       });
     });
@@ -6569,45 +6573,41 @@ function Cell(props) {
   const [cellContent, setCellContent] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)();
   const initialCellValue = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(content);
   const [cellAttributes, setCellAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(attributes);
-  const [isCellChanged, setIsCellChanged] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const htmlToText = (html = '') => (0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_7__.getTextContent)((0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_7__.create)({
     html
   })).replace(/\s+/g, ' ').trim();
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     setCellAttributes(attributes);
-    setIsCellChanged(false);
     initialCellValue.current = content !== null && content !== void 0 ? content : '';
 
     // Default behavior: raw content as-is
     setCellContent(content !== null && content !== void 0 ? content : '');
   }, [content, attributes]);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    if (cellType === 'border' || type !== 'date-time') return;
+    if (cellType !== 'body' || type !== 'date-time') return;
+    const resolvedFormat = settings?.format || 'date';
     if (isEditing) {
       // Enter edit mode: force a valid HTML input value FIRST
       if (cellType === 'body' && type === 'date-time') {
         var _ref;
-        setInputType(settings?.format || 'date');
+        setInputType(resolvedFormat);
         const raw = (_ref = content !== null && content !== void 0 ? content : initialCellValue.current) !== null && _ref !== void 0 ? _ref : '';
-        if (!!raw) setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(content, settings.format));
-        if (!raw && settings?.defaultToToday) {
-          const today = new Date();
-          setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)('', settings.format));
+        if (raw) {
+          setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(raw, resolvedFormat));
+        } else if (settings?.defaultToToday) {
+          setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)('', resolvedFormat));
+        } else {
+          setCellContent('');
         }
       }
     } else {
-      // Exit edit mode: go back to display formatting
-      // eslint-disable-next-line no-lonely-if
-      if (cellType === 'body' && type === 'date-time') {
-        setInputType('text');
-        const raw = content !== null && content !== void 0 ? content : '';
-        setCellContent(raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formatedDisplayDate)(raw, settings?.format) : '');
-      }
+      setInputType('text');
+      const raw = content !== null && content !== void 0 ? content : '';
+      setCellContent(raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formatedDisplayDate)(raw, resolvedFormat) : '');
     }
     setCellAttributes(attributes);
-    setIsCellChanged(false);
     initialCellValue.current = content !== null && content !== void 0 ? content : '';
-  }, [isEditing, content, attributes, cellType, type, settings?.format]);
+  }, [isEditing, content, attributes, cellType, type, settings?.format, settings?.defaultToToday]);
 
   /**
    * Handle onChange event for cell content update
@@ -6618,7 +6618,6 @@ function Cell(props) {
    * @param {Object} patch event data
    */
   function updateCellData(patch) {
-    setIsCellChanged(true);
     initialCellValue.current = patch.content;
     if (patch.content !== undefined) setCellContent(patch.content);
     if (patch.attributes !== undefined) setCellAttributes(patch.attributes);
@@ -6678,12 +6677,17 @@ function Cell(props) {
       }
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TextControl, {
         className: "grid-control__cellEditor--dateTimeInput",
-        type: inputType
-        // __next40pxDefaultSize
-        ,
+        type: inputType,
+        __next40pxDefaultSize: true,
         value: cellContent,
         onChange: next => {
-          const formattedContent = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(next, settings.format);
+          setCellContent(next);
+        },
+        onBlur: event => {
+          var _ref2, _event$target$value;
+          const format = settings?.format || inputType || 'date';
+          const next = (_ref2 = (_event$target$value = event?.target?.value) !== null && _event$target$value !== void 0 ? _event$target$value : cellContent) !== null && _ref2 !== void 0 ? _ref2 : '';
+          const formattedContent = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(next, format);
           updateCellData({
             content: next,
             attributes: {
