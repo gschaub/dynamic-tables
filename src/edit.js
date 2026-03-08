@@ -1302,6 +1302,8 @@ export default function Edit(props) {
 
 	const navMaxCol = useMemo(() => {
 		// exclude border column 0
+		if (isNewBlock) return;
+
 		return Math.max(
 			1,
 			...table.columns.map(c => Number(c.column_id)).filter(n => Number.isFinite(n) && n > 0)
@@ -1310,6 +1312,8 @@ export default function Edit(props) {
 
 	const navMaxRow = useMemo(() => {
 		// exclude border row 0
+		if (isNewBlock) return;
+
 		return Math.max(
 			1,
 			...table.rows.map(r => Number(r.row_id)).filter(n => Number.isFinite(n) && n > 0)
@@ -1325,9 +1329,15 @@ export default function Edit(props) {
 	 * @return {void}
 	 */
 	function onCellKeyDown(event) {
-		// If editing, only handle Escape here; let the editor handle arrows, delete, etc.
+		// While editing, allow Tab/arrow keys to exit edit mode and continue with grid navigation.
 		console.log('ENTERING KEY DOWN');
 		if (editingCellId) {
+			const editExitNavKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab']);
+			const editTarget = gridRef.current?.ownerDocument?.activeElement;
+			const editTargetInputType =
+				editTarget?.tagName === 'INPUT' ? String(editTarget.type || '').toLowerCase() : '';
+			const isDateTimeEditor = ['date', 'time', 'datetime-local'].includes(editTargetInputType);
+
 			if (event.key === 'Escape') {
 				event.preventDefault();
 				event.stopPropagation();
@@ -1336,8 +1346,22 @@ export default function Edit(props) {
 					const wrapper = gridRef.current?.querySelector(`[data-cell-id][tabindex="0"]`);
 					wrapper?.focus?.();
 				});
+				return;
 			}
-			return;
+
+			// For native date/time editors, Enter should commit via blur and exit edit mode.
+			if (event.key === 'Enter' && isDateTimeEditor) {
+				event.preventDefault();
+				event.stopPropagation();
+				editTarget?.blur?.();
+				return;
+			}
+
+			// Let Tab/arrow keys fall through to navigation.
+			// Do not clear editing state yet; date/time inputs persist on blur.
+			if (!editExitNavKeys.has(event.key)) {
+				return;
+			}
 		}
 
 		const root = gridRef.current;
@@ -2624,9 +2648,19 @@ export default function Edit(props) {
 																				}}
 																				onRequestStopEdit={() => {
 																					setEditingCellId(null);
-																					window.requestAnimationFrame(() =>
-																						focusCell(Number(column_id), Number(row_id))
-																					);
+																					window.requestAnimationFrame(() => {
+																						const activeCellId =
+																							gridRef.current?.ownerDocument?.activeElement
+																								?.closest?.('[data-cell-id]')
+																								?.getAttribute?.('data-cell-id');
+																						if (
+																							activeCellId &&
+																							String(activeCellId) !== String(cell_id)
+																						) {
+																							return;
+																						}
+																						focusCell(Number(column_id), Number(row_id));
+																					});
 																				}}
 																				onChange={onChangeCellData}
 																			></Cell>
@@ -2816,9 +2850,19 @@ export default function Edit(props) {
 																					}}
 																					onRequestStopEdit={() => {
 																						setEditingCellId(null);
-																						window.requestAnimationFrame(() =>
-																							focusCell(Number(column_id), Number(row_id))
-																						);
+																						window.requestAnimationFrame(() => {
+																							const activeCellId =
+																								gridRef.current?.ownerDocument?.activeElement
+																									?.closest?.('[data-cell-id]')
+																									?.getAttribute?.('data-cell-id');
+																							if (
+																								activeCellId &&
+																								String(activeCellId) !== String(cell_id)
+																							) {
+																								return;
+																							}
+																							focusCell(Number(column_id), Number(row_id));
+																						});
 																					}}
 																					onChange={onChangeCellData}
 																				></Cell>
