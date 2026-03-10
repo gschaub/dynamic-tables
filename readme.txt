@@ -2,7 +2,7 @@
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, table builder, responsive tables
 Tested up to:      6.9
-Stable tag:        1.2.1
+Stable tag:        1.2.2
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,6 +101,16 @@ No. This plugin is free to use. However, we are planning for a premium version o
 7. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+
+= 1.2.2 =
+* Fix intermittant issue with arrow key navigation
+* Fix bug that caused error when changing from one date/time type to another when data was already in the cell
+* Allow direct keyboard editing of date/time fields
+* Added ability to move rows up or down via border menu
+* Added ability to move columns left or right via border menu
+* Added ability to insert rows both above and below current row (previouly only insert above was supported)
+* Added ability to insert columns both left and right of current column (previously only insert left was supported)
+
 
 = 1.2.1 =
 * Fixed bug that made a date/time render in date/time columns when there was not underlying value

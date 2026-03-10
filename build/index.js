@@ -6679,6 +6679,60 @@ function Cell(props) {
   }
 
   /**
+   * Support key press overrides for date/time input
+   *
+   * @since 1.2.2
+   *
+   * @param {Object} event Key press event
+   */
+  function onDateTimeKeyDown(event) {
+    const key = String(event.key || '').toLowerCase();
+    if ((inputType === 'time' || inputType === 'datetime-local') && (key === 'a' || key === 'p')) {
+      var _ref2, _event$currentTarget$;
+      const currentValue = (_ref2 = (_event$currentTarget$ = event.currentTarget?.value) !== null && _event$currentTarget$ !== void 0 ? _event$currentTarget$ : cellContent) !== null && _ref2 !== void 0 ? _ref2 : '';
+      const nextValue = applyMeridiemShortcut(currentValue, inputType, key);
+      if (nextValue !== currentValue) {
+        event.preventDefault();
+        event.stopPropagation();
+        setCellContent(nextValue);
+      }
+    }
+  }
+
+  /**
+   * Support key press overrides for date/time input
+   *
+   * @since 1.2.2
+   *
+   * @param {string} currentCellContent Cell contents
+   * @param {string} format             Date/Time format
+   * @param {string} keyValue           Key press value
+   * @return {string} Updated input value
+   */
+  function applyMeridiemShortcut(currentCellContent, format, keyValue) {
+    if (!currentCellContent || format !== 'time' && format !== 'datetime-local') {
+      return currentCellContent;
+    }
+    const isPm = keyValue === 'p';
+    if (format === 'time') {
+      const match = /^(\d{2}):(\d{2})(:\d{2})?$/.exec(currentCellContent);
+      if (!match) return currentCellContent;
+      let hours = Number(match[1]);
+      if (!Number.isFinite(hours)) return currentCellContent;
+      if (isPm && hours < 12) hours += 12;
+      if (!isPm && hours >= 12) hours -= 12;
+      return `${String(hours).padStart(2, '0')}:${match[2]}${match[3] || ''}`;
+    }
+    const match = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})(:\d{2})?$/.exec(currentCellContent);
+    if (!match) return currentCellContent;
+    let hours = Number(match[2]);
+    if (!Number.isFinite(hours)) return currentCellContent;
+    if (isPm && hours < 12) hours += 12;
+    if (!isPm && hours >= 12) hours -= 12;
+    return `${match[1]}T${String(hours).padStart(2, '0')}:${match[3]}${match[4] || ''}`;
+  }
+
+  /**
    * Relay mouse down event for border cells
    *
    * @since 1.2.0
@@ -6734,13 +6788,16 @@ function Cell(props) {
         type: inputType,
         __next40pxDefaultSize: true,
         value: cellContent,
+        onKeyDown: event => {
+          onDateTimeKeyDown(event);
+        },
         onChange: next => {
           setCellContent(next);
         },
         onBlur: event => {
-          var _ref2, _event$target$value;
+          var _ref3, _event$target$value;
           const format = settings?.format || inputType || 'date';
-          const next = (_ref2 = (_event$target$value = event?.target?.value) !== null && _event$target$value !== void 0 ? _event$target$value : cellContent) !== null && _ref2 !== void 0 ? _ref2 : '';
+          const next = (_ref3 = (_event$target$value = event?.target?.value) !== null && _event$target$value !== void 0 ? _event$target$value : cellContent) !== null && _ref3 !== void 0 ? _ref3 : '';
           const formattedContent = (0,_utils__WEBPACK_IMPORTED_MODULE_12__.formattedIsoDate)(next, format);
           updateCellData({
             content: next,

@@ -1394,8 +1394,7 @@ export default function Edit(props) {
 		const columnDataType = columnDataTypes[col]?.type || 'general';
 		const isHeaderRow = table.rows.find(r => Number(r.row_id) === row).attributes.isHeader;
 		const editDataType = isHeaderRow ? 'general' : columnDataType;
-		const canTypeToEdit =
-			isHeaderRow || editDataType === 'general' || editDataType === 'date-time';
+		const canTypeToEdit = isHeaderRow || editDataType === 'general' || editDataType === 'date-time';
 		console.log('Is Header Cell ? ', isHeaderRow);
 
 		// Allow direct edit for printable keys
@@ -3102,6 +3101,69 @@ function Cell(props) {
 	}
 
 	/**
+	 * Support key press overrides for date/time input
+	 *
+	 * @since 1.2.2
+	 *
+	 * @param {Object} event Key press event
+	 */
+	function onDateTimeKeyDown(event) {
+		const key = String(event.key || '').toLowerCase();
+		if ((inputType === 'time' || inputType === 'datetime-local') && (key === 'a' || key === 'p')) {
+			const currentValue = event.currentTarget?.value ?? cellContent ?? '';
+			const nextValue = applyMeridiemShortcut(currentValue, inputType, key);
+
+			if (nextValue !== currentValue) {
+				event.preventDefault();
+				event.stopPropagation();
+				setCellContent(nextValue);
+			}
+		}
+	}
+
+	/**
+	 * Support key press overrides for date/time input
+	 *
+	 * @since 1.2.2
+	 *
+	 * @param {string} currentCellContent Cell contents
+	 * @param {string} format             Date/Time format
+	 * @param {string} keyValue           Key press value
+	 * @return {string} Updated input value
+	 */
+	function applyMeridiemShortcut(currentCellContent, format, keyValue) {
+		if (!currentCellContent || (format !== 'time' && format !== 'datetime-local')) {
+			return currentCellContent;
+		}
+
+		const isPm = keyValue === 'p';
+
+		if (format === 'time') {
+			const match = /^(\d{2}):(\d{2})(:\d{2})?$/.exec(currentCellContent);
+			if (!match) return currentCellContent;
+
+			let hours = Number(match[1]);
+			if (!Number.isFinite(hours)) return currentCellContent;
+
+			if (isPm && hours < 12) hours += 12;
+			if (!isPm && hours >= 12) hours -= 12;
+
+			return `${String(hours).padStart(2, '0')}:${match[2]}${match[3] || ''}`;
+		}
+
+		const match = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})(:\d{2})?$/.exec(currentCellContent);
+		if (!match) return currentCellContent;
+
+		let hours = Number(match[2]);
+		if (!Number.isFinite(hours)) return currentCellContent;
+
+		if (isPm && hours < 12) hours += 12;
+		if (!isPm && hours >= 12) hours -= 12;
+
+		return `${match[1]}T${String(hours).padStart(2, '0')}:${match[3]}${match[4] || ''}`;
+	}
+
+	/**
 	 * Relay mouse down event for border cells
 	 *
 	 * @since 1.2.0
@@ -3161,6 +3223,9 @@ function Cell(props) {
 					type={inputType}
 					__next40pxDefaultSize
 					value={cellContent}
+					onKeyDown={event => {
+						onDateTimeKeyDown(event);
+					}}
 					onChange={next => {
 						setCellContent(next);
 					}}
