@@ -39,11 +39,6 @@ function ConfigureColumnDataType(props = {}) {
 	const previewId = `dtbk-preview-${instanceId}`;
 	const { tableId, columnId, columnLabel, columnAttributes, updatedColumn, onRequestClose } = props;
 
-	if (columnAttributes) {
-		console.log('Initial column attributes:');
-		console.log(columnAttributes);
-	}
-
 	// Column data type attributes
 	const defaultDataType = {
 		columnDataType: {
@@ -226,10 +221,7 @@ function ConfigureColumnDataType(props = {}) {
 			columnDataType: dataType,
 		};
 
-		console.log('updated column attributes:');
-		console.log(updatedColumnAttributes);
 		updatedColumn(event, 'dataType', tableId, columnId, updatedColumnAttributes, columnName);
-
 		close();
 	}
 

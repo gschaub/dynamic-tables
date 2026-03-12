@@ -189,9 +189,6 @@ function RowMenuImpl(props = {}) {
 	 */
 	const onUpdateRowHeight = useCallback(
 		(event, targetRowId) => {
-			console.log('In Dropdown Menu, onUpdateRowHeight selection');
-			console.log(event);
-
 			updatedRow(event, 'attributes', tableId, targetRowId, '');
 			close();
 		},

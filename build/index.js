@@ -659,10 +659,6 @@ function ConfigureColumnDataType(props = {}) {
     updatedColumn,
     onRequestClose
   } = props;
-  if (columnAttributes) {
-    console.log('Initial column attributes:');
-    console.log(columnAttributes);
-  }
 
   // Column data type attributes
   const defaultDataType = {
@@ -821,8 +817,6 @@ function ConfigureColumnDataType(props = {}) {
       horizontalAlignment: 'none',
       columnDataType: dataType
     };
-    console.log('updated column attributes:');
-    console.log(updatedColumnAttributes);
     updatedColumn(event, 'dataType', tableId, columnId, updatedColumnAttributes, columnName);
     close();
   }
@@ -2086,8 +2080,6 @@ function RowMenuImpl(props = {}) {
    * @param {number} targetRowId Row ID for update
    */
   const onUpdateRowHeight = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetRowId) => {
-    console.log('In Dropdown Menu, onUpdateRowHeight selection');
-    console.log(event);
     updatedRow(event, 'attributes', tableId, targetRowId, '');
     close();
   }, [tableId, close]);
@@ -5227,7 +5219,6 @@ function Edit(props) {
    */
   function onCellKeyDown(event) {
     // While editing, allow Tab/arrow keys to exit edit mode and continue with grid navigation.
-    console.log('ENTERING KEY DOWN');
     if (editingCellId) {
       const editExitNavKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab']);
       const editTarget = gridRef.current?.ownerDocument?.activeElement;
@@ -5268,17 +5259,14 @@ function Edit(props) {
     let row = Number(activeCellEl.dataset.row);
     if (!Number.isFinite(col) || !Number.isFinite(row)) return;
     const navKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter', 'F2', 'Escape', 'Delete', 'Backspace']);
-    console.log('Column Data Type');
     const columnDataType = columnDataTypes[col]?.type || 'general';
     const isHeaderRow = table.rows.find(r => Number(r.row_id) === row).attributes.isHeader;
     const editDataType = isHeaderRow ? 'general' : columnDataType;
     const canTypeToEdit = isHeaderRow || editDataType === 'general' || editDataType === 'date-time';
-    console.log('Is Header Cell ? ', isHeaderRow);
 
     // Allow direct edit for printable keys
     if (!navKeys.has(event.key) && isPrintableKey(event) && canTypeToEdit) {
       // Enter edit mode
-      console.log('Coordinates: col/row = ' + col + '/' + row);
       onCellKeyDownEditing(event, activeCellEl, event.key, editDataType);
       return;
     }
@@ -5355,7 +5343,6 @@ function Edit(props) {
         console.log('Key Code = ' + event.key);
         return;
     }
-    console.log('new coordinates: col = ' + col + ', row = ' + row);
     focusCell(col, row);
   }
 
@@ -5415,16 +5402,10 @@ function Edit(props) {
     setEditingCellId(id);
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
-        console.log('Processing edit key stroke');
         const doc = activeCellEl.ownerDocument;
         const editable = activeCellEl.querySelector('[contenteditable="true"]');
         const input = activeCellEl.querySelector('input, textarea');
-        console.log('doc');
-        console.log(doc);
-        console.log('input');
-        console.log(input);
         if (editable) {
-          console.log('Processing Editable');
           editable.focus();
 
           // Move caret to END of contenteditable
@@ -5449,7 +5430,6 @@ function Edit(props) {
         }
         if (input) {
           var _input$value;
-          console.log('Input');
           input.focus();
           const nativeDateTimeInput = columnDataType === 'date-time' || ['date', 'time', 'datetime-local'].includes(input.type);
 

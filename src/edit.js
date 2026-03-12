@@ -1330,7 +1330,6 @@ export default function Edit(props) {
 	 */
 	function onCellKeyDown(event) {
 		// While editing, allow Tab/arrow keys to exit edit mode and continue with grid navigation.
-		console.log('ENTERING KEY DOWN');
 		if (editingCellId) {
 			const editExitNavKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab']);
 			const editTarget = gridRef.current?.ownerDocument?.activeElement;
@@ -1390,17 +1389,14 @@ export default function Edit(props) {
 			'Backspace',
 		]);
 
-		console.log('Column Data Type');
 		const columnDataType = columnDataTypes[col]?.type || 'general';
 		const isHeaderRow = table.rows.find(r => Number(r.row_id) === row).attributes.isHeader;
 		const editDataType = isHeaderRow ? 'general' : columnDataType;
 		const canTypeToEdit = isHeaderRow || editDataType === 'general' || editDataType === 'date-time';
-		console.log('Is Header Cell ? ', isHeaderRow);
 
 		// Allow direct edit for printable keys
 		if (!navKeys.has(event.key) && isPrintableKey(event) && canTypeToEdit) {
 			// Enter edit mode
-			console.log('Coordinates: col/row = ' + col + '/' + row);
 			onCellKeyDownEditing(event, activeCellEl, event.key, editDataType);
 			return;
 		}
@@ -1483,7 +1479,6 @@ export default function Edit(props) {
 				return;
 		}
 
-		console.log('new coordinates: col = ' + col + ', row = ' + row);
 		focusCell(col, row);
 	}
 
@@ -1547,17 +1542,11 @@ export default function Edit(props) {
 
 		window.requestAnimationFrame(() => {
 			window.requestAnimationFrame(() => {
-				console.log('Processing edit key stroke');
 				const doc = activeCellEl.ownerDocument;
 				const editable = activeCellEl.querySelector('[contenteditable="true"]');
 				const input = activeCellEl.querySelector('input, textarea');
-				console.log('doc');
-				console.log(doc);
-				console.log('input');
-				console.log(input);
 
 				if (editable) {
-					console.log('Processing Editable');
 					editable.focus();
 
 					// Move caret to END of contenteditable
@@ -1582,7 +1571,6 @@ export default function Edit(props) {
 				}
 
 				if (input) {
-					console.log('Input');
 					input.focus();
 
 					const nativeDateTimeInput =
