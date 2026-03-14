@@ -1,14 +1,7 @@
 /* External dependencies */
 import { useEffect, useRef, useCallback, memo } from '@wordpress/element';
 import { Popover, MenuGroup, MenuItem } from '@wordpress/components';
-import {
-	settings,
-	tableRowBefore,
-	tableRowAfter,
-	tableRowDelete,
-	chevronUp,
-	chevronDown,
-} from '@wordpress/icons';
+import { settings, tableRowBefore, tableRowAfter, tableRowDelete } from '@wordpress/icons';
 
 /* Internal dependencies */
 import './style.scss';
@@ -238,7 +231,7 @@ function RowMenuImpl(props = {}) {
 
 						<MenuGroup>
 							<MenuItem
-								icon={chevronUp}
+								shortcut={'Alt + ↑'}
 								disabled={disableMoveRowUp}
 								onClick={e => onMoveRow(e, rowId, 'up')}
 							>
@@ -246,7 +239,7 @@ function RowMenuImpl(props = {}) {
 							</MenuItem>
 
 							<MenuItem
-								icon={chevronDown}
+								shortcut={'Alt + ↓'}
 								disabled={disableMoveRowDown}
 								onClick={e => onMoveRow(e, rowId, 'down')}
 							>

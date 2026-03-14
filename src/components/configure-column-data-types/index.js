@@ -25,6 +25,7 @@ import {
  */
 import './style.scss';
 import { settings } from '@wordpress/icons';
+import { normalizeColumnDataType } from '../../utils';
 
 /**
  * React component to configure data types for a column.
@@ -39,28 +40,19 @@ function ConfigureColumnDataType(props = {}) {
 	const previewId = `dtbk-preview-${instanceId}`;
 	const { tableId, columnId, columnLabel, columnAttributes, updatedColumn, onRequestClose } = props;
 
-	// Column data type attributes
-	const defaultDataType = {
-		columnDataType: {
-			type: 'general',
-		},
-	};
+	const normalizedColumnDataType = normalizeColumnDataType(columnAttributes?.columnDataType);
 
 	const [columnName, setColumnName] = useState(columnLabel);
-	const [dataType, setDataType] = useState(
-		columnAttributes?.columnDataType ? columnAttributes.columnDataType : defaultDataType
-	);
-	const [format, setFormat] = useState(
-		columnAttributes?.columnDataType?.settings?.format || 'date'
-	);
+	const [dataType, setDataType] = useState(normalizedColumnDataType);
+	const [format, setFormat] = useState(normalizedColumnDataType?.settings?.format || 'date');
 
 	// Date specific attributes
 	const initDefaultToToday =
-		columnAttributes?.columnDataType?.settings?.defaultToToday === true ? true : false;
-	const isDateDataType = columnAttributes.columnDataType?.type === 'date-time' ? true : false;
+		normalizedColumnDataType?.settings?.defaultToToday === true ? true : false;
+	const isDateDataType = normalizedColumnDataType?.type === 'date-time' ? true : false;
 	const initDatePreviewValue =
 		initDefaultToToday && isDateDataType
-			? formattedDate(columnAttributes?.columnDataType?.settings?.format)
+			? formattedDate(normalizedColumnDataType?.settings?.format)
 			: '';
 
 	const [dateDefaultToToday, setDateDefaultToToday] = useState(initDefaultToToday);

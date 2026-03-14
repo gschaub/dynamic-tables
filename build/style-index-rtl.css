@@ -216,6 +216,12 @@
   line-height: 1.4;
   background-color: #f0f0f0;
 }
+.menu-col__main .components-popover__content {
+  min-width: 220px;
+}
+.menu-col__main .components-menu-item__shortcut {
+  white-space: nowrap;
+}
 .menu-col__main {
   border-width: 5px;
   border-color: #757575;
@@ -405,6 +411,12 @@ fieldset {
   font-size: 13px;
   line-height: 1.4;
   background-color: #f0f0f0;
+}
+.menu-row__main .components-popover__content {
+  min-width: 220px;
+}
+.menu-row__main .components-menu-item__shortcut {
+  white-space: nowrap;
 }
 .menu-row__main {
   border-width: 5px;

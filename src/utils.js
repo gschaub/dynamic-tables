@@ -201,6 +201,31 @@ export function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
 	return false;
 }
 
+/** Fallback detault data type of backward compatibility */
+export const DEFAULT_COLUMN_DATA_TYPE = {
+	type: 'general',
+};
+
+/**
+ * Velidate the existance of a column data type and create a detault if there is not one
+ *
+ * @since 1.2.3
+ *
+ * @param {Object} columnDataType Data Type of the current column
+ * @return {Object} Default data type object
+ */
+export function normalizeColumnDataType(columnDataType) {
+	if (columnDataType?.type) {
+		return columnDataType;
+	}
+
+	if (columnDataType?.columnDataType?.type) {
+		return columnDataType.columnDataType;
+	}
+
+	return DEFAULT_COLUMN_DATA_TYPE;
+}
+
 /**
  * Test whether a data is formatted as a valid ISO date string
  *
@@ -338,3 +363,4 @@ export function formattedIsoDate(date, format) {
 
 	return '';
 }
+

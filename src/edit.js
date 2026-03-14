@@ -42,6 +42,7 @@ import {
 	setBorderContent,
 	formatedDisplayDate,
 	formattedIsoDate,
+	normalizeColumnDataType,
 } from './utils';
 
 import { initTable, getDefaultRow, getDefaultColumn, getDefaultCell } from './table-defaults';
@@ -877,16 +878,12 @@ export default function Edit(props) {
 	const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment');
 	const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle');
 
-	const defaultDataType = {
-		type: 'general',
-	};
-
 	const columnDataTypes = useMemo(() => {
 		const map = {};
 
 		if (!isNewBlock) {
 			table.columns.forEach(({ column_id, attributes }) => {
-				map[column_id] = attributes?.columnDataType ? attributes.columnDataType : defaultDataType;
+				map[column_id] = normalizeColumnDataType(attributes?.columnDataType);
 			});
 		}
 		return map;
@@ -1320,6 +1317,13 @@ export default function Edit(props) {
 		);
 	}, [table.rows]);
 
+	const navHeaderRow = useMemo(() => {
+		// get header row if header exists
+		if (isNewBlock) return;
+
+		return table?.rows?.find(r => r.attributes.isHeader === true)?.row_id;
+	}, [table.rows]);
+
 	/**
 	 * Handle keyboard navigation within the active dynamic table block and updates focus appropriately
 	 *
@@ -1390,7 +1394,8 @@ export default function Edit(props) {
 		]);
 
 		const columnDataType = columnDataTypes[col]?.type || 'general';
-		const isHeaderRow = table.rows.find(r => Number(r.row_id) === row).attributes.isHeader;
+		const activeRow = table.rows.find(r => Number(r.row_id) === row);
+		const isHeaderRow = activeRow?.attributes?.isHeader === true;
 		const editDataType = isHeaderRow ? 'general' : columnDataType;
 		const canTypeToEdit = isHeaderRow || editDataType === 'general' || editDataType === 'date-time';
 
@@ -1445,15 +1450,32 @@ export default function Edit(props) {
 
 		switch (event.key) {
 			case 'ArrowUp':
+				if (event.altKey) {
+					const firstBodyRowId = navHeaderRow ? Number(navHeaderRow) + 1 : 1;
+					if (row <= firstBodyRowId) break;
+					reorderRows(table_id, row, 'up');
+				}
 				row = Math.max(1, row - 1);
 				break;
 			case 'ArrowDown':
+				if (event.altKey) {
+					if (isHeaderRow || row === navMaxRow) break;
+					reorderRows(table_id, row, 'down');
+				}
 				row = Math.min(navMaxRow, row + 1);
 				break;
 			case 'ArrowLeft':
+				if (event.altKey) {
+					if (col === 1) break;
+					reorderColumns(table_id, col, 'left');
+				}
 				col = Math.max(1, col - 1);
 				break;
 			case 'ArrowRight':
+				if (event.altKey) {
+					if (col === navMaxCol) break;
+					reorderColumns(table_id, col, 'right');
+				}
 				col = Math.min(navMaxCol, col + 1);
 				break;
 			case 'Tab':
@@ -3026,7 +3048,7 @@ function Cell(props) {
 		onRequestFocus,
 	} = props;
 
-	const { type, settings } = dataFormat || {};
+	const { type, settings } = normalizeColumnDataType(dataFormat);
 
 	const [inputType, setInputType] = useState(() => settings?.format || 'date');
 	const [cellContent, setCellContent] = useState();

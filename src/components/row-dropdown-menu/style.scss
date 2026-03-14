@@ -9,6 +9,14 @@
 	background-color: $gray-100;
 }
 
+.menu-row__main .components-popover__content {
+    min-width: 220px;
+}
+
+.menu-row__main .components-menu-item__shortcut {
+    white-space: nowrap;
+}
+
 .menu-row__main {
 	border-width: 5px;
 	border-color: $gray-700;
@@ -18,18 +26,3 @@
 .components-menu-group {
 	border-radius: 0px;
 }
-
-	// display: grid;
-	// grid-template-columns: 'minmax( 0, max-content ) 1fr';
-	// grid-template-rows: auto;
-
-	// box-sizing: border-box;
-	// min-width: 160px;
-	// max-width: 320px;
-	// max-height: var( --popover-available-height );
-	// border-radius: $border-radius-100;
-	// margin: 0;
-	// overscroll-behavior: contain;
-	// overflow: auto;
-	// width: 100%;
-	// border: 0 !important;

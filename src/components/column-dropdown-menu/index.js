@@ -7,8 +7,6 @@ import {
 	tableColumnBefore,
 	tableColumnAfter,
 	tableColumnDelete,
-	chevronLeft,
-	chevronRight,
 } from '@wordpress/icons';
 
 /* Internal dependencies */
@@ -260,7 +258,7 @@ function ColumnMenuImpl(props = {}) {
 
 				<MenuGroup>
 					<MenuItem
-						icon={chevronLeft}
+						shortcut={'Alt + ←'}
 						disabled={disableMoveColumnLeft}
 						onClick={e => onMoveColumn(e, columnId, 'left')}
 					>
@@ -268,7 +266,7 @@ function ColumnMenuImpl(props = {}) {
 					</MenuItem>
 
 					<MenuItem
-						icon={chevronRight}
+						shortcut={'Alt + →'}
 						disabled={disableMoveColumnRight}
 						onClick={e => onMoveColumn(e, columnId, 'right')}
 					>

@@ -12,6 +12,7 @@ import {
  * Internal dependencies
  */
 import './style.scss';
+import { normalizeColumnDataType } from '../../utils';
 
 /**
  * React component to support updates for the current column width.
@@ -32,16 +33,8 @@ function ConfigureColumnWidth(props = {}) {
 		onRequestClose,
 	} = props;
 
-	// Column data type attributes
-	const defaultDataType = {
-		columnDataType: {
-			type: 'general',
-		},
-	};
-
-	const [dataType, setDataType] = useState(
-		columnAttributes?.columnDataType ? columnAttributes.columnDataType : defaultDataType
-	);
+	const normalizedColumnDataType = normalizeColumnDataType(columnAttributes?.columnDataType);
+	const [dataType] = useState(normalizedColumnDataType);
 
 	const [columnWidthType, setColumnWidthType] = useState();
 	const [hideProportional, setHideProportional] = useState(true);
