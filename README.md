@@ -2,7 +2,7 @@
 **Contributors:** [glschaub](https://profiles.wordpress.org/glschaub/), [myfamilyweb](https://profiles.wordpress.org/myfamilyweb/)  
 **Tags:**              tables, data table, table builder, responsive tables  
 **Tested up to:**      6.9  
-**Stable tag:**        1.2.2  
+**Stable tag:**        1.2.3  
 **License:**           GPL-2.0-or-later  
 **License URI:**       https://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -101,6 +101,9 @@ No. This plugin is free to use. However, we are planning for a premium version o
 7. Set column width (corresponding configuration is available for rows too)
 
 ## Changelog ##
+### 1.2.3 ###
+* Fix bug that prevents display of general content type
+* Added keyboard shortcuts to move rows and columns up/down left/right, respectively
 
 ### 1.2.2 ###
 * Fix intermittant issue with arrow key navigation
