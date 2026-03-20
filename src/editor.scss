@@ -80,7 +80,6 @@
 	font-weight: 500;
 	text-overflow: ellipsis;
 	text-transform: uppercase;
-
 }
 
 .grid-control__inspector-controls--border-box-control {
@@ -172,4 +171,26 @@
 	padding: 0 !important;
 	min-height: 0 !important;
 	height: auto !important;
+}
+
+.grid-control__body-columns--number-red {
+	color: red !important;
+	-webkit-text-fill-color: red !important;
+}
+
+.grid-control__body-columns--number-red .components-input-control__backdrop,
+.grid-control__body-columns--number-red input.components-input-control__input,
+.grid-control__body-columns--number-red input.components-text-control__input {
+	color: red !important;
+	-webkit-text-fill-color: red !important;
+}
+
+.grid-control__body-columns--number-align-right {
+	text-align: right !important;
+}
+
+.grid-control__body-columns--number-align-right .components-input-control__backdrop,
+.grid-control__body-columns--number-align-right input.components-input-control__input,
+.grid-control__body-columns--number-align-right input.components-text-control__input {
+	text-align: right !important;
 }

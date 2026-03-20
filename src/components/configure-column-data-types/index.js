@@ -19,8 +19,8 @@ import {
 	CardBody,
 	CardHeader,
 } from '@wordpress/components';
-
 import clsx from 'clsx';
+
 /**
  * Internal dependencies
  */

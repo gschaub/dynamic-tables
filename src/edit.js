@@ -31,6 +31,7 @@ import {
 } from '@wordpress/block-editor';
 import { create, getTextContent } from '@wordpress/rich-text';
 import { search, blockTable as icon } from '@wordpress/icons';
+import clsx from 'clsx';
 
 /* Internal dependencies */
 import { store as tableStore } from './data';
@@ -883,12 +884,37 @@ export default function Edit(props) {
 	const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment');
 	const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle');
 
+	/**
+	 * Identify column data types for each column
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return {Object} column data type
+	 */
 	const columnDataTypes = useMemo(() => {
 		const map = {};
 
 		if (!isNewBlock) {
 			table.columns.forEach(({ column_id, attributes }) => {
 				map[column_id] = normalizeColumnDataType(attributes?.columnDataType);
+			});
+		}
+		return map;
+	}, [table.columns]);
+
+	/**
+	 * Identify column css classes for each column
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return {Object} column data type
+	 */
+	const columnClasses = useMemo(() => {
+		const map = {};
+
+		if (!isNewBlock) {
+			table.columns.forEach(({ column_id, classes }) => {
+				map[column_id] = classes;
 			});
 		}
 		return map;
@@ -1646,7 +1672,7 @@ export default function Edit(props) {
 		columnId,
 		columnName = '',
 		updatedColumnAttributes,
-		updatedColumnClasses,
+		updatedColumnClasses
 	) {
 		switch (updateType) {
 			case 'attributes': {
@@ -2550,7 +2576,8 @@ export default function Edit(props) {
 																	column_id={column_id}
 																	content={borderContent}
 																	attributes={attributes}
-																	className={classes}
+																	columnClassNames={columnClasses[column_id]}
+																	cellClassNames={classes}
 																	onMouseDown={onMouseBorderClick}
 																></Cell>
 															</Fragment>
@@ -2634,7 +2661,8 @@ export default function Edit(props) {
 																				column_id={column_id}
 																				content={borderContent}
 																				attributes={attributes}
-																				className={classes}
+																				columnClassNames={columnClasses[column_id]}
+																				cellClassNames={classes}
 																				onMouseDown={onMouseBorderClick}
 																			></Cell>
 																		)}
@@ -2660,7 +2688,8 @@ export default function Edit(props) {
 																				content={content}
 																				attributes={attributes}
 																				isFocused={isFocused}
-																				className={
+																				columnClassNames={columnClasses[column_id]}
+																				cellClassNames={
 																					'grid-control__header-cells ' +
 																					'grid-control__cellEditor ' +
 																					classes +
@@ -2827,7 +2856,8 @@ export default function Edit(props) {
 																					column_id={column_id}
 																					content={borderContent}
 																					attributes={attributes}
-																					className={classes}
+																					columnClassNames={columnClasses[column_id]}
+																					cellClassNames={classes}
 																					onMouseDown={onMouseBorderClick}
 																				></Cell>
 																			)}
@@ -2862,7 +2892,8 @@ export default function Edit(props) {
 																					content={content}
 																					attributes={attributes}
 																					isFocused={isFocused}
-																					className={
+																					columnClassNames={columnClasses[column_id]}
+																					cellClassNames={
 																						'grid-control__body-cells ' +
 																						'grid-control__cellEditor ' +
 																						classes +
@@ -3047,7 +3078,8 @@ function Cell(props) {
 		content,
 		attributes,
 		isFocused,
-		className,
+		columnClassNames,
+		cellClassNames,
 		showGridLinesCSS,
 		gridLineWidthCSS,
 		onChange,
@@ -3075,6 +3107,13 @@ function Cell(props) {
 		settings?.formatOptions?.showCurrencySymbol
 	);
 
+	const sanitizedNumber = sanitizeNumberInput(cellContent, inputType);
+
+	const redNegativeNumber =
+		settings?.formatOptions?.redNegative &&
+		sanitizedNumber !== '' &&
+		sanitizedNumber !== '-' &&
+		Number(sanitizedNumber) < 0;
 
 	useEffect(() => {
 		setCellAttributes(attributes);
@@ -3232,9 +3271,6 @@ function Cell(props) {
 			},
 		});
 
-
-
-
 		// setNumberRawValue(returnedRawValue);
 	}
 
@@ -3294,7 +3330,8 @@ function Cell(props) {
 
 			return (
 				<TextControl
-					className="grid-control__cellEditor--dateTimeInput"
+					// className="grid-control__cellEditor--dateTimeInput"
+					className={renderClasses}
 					type={inputType}
 					__next40pxDefaultSize
 					value={cellContent}
@@ -3330,7 +3367,7 @@ function Cell(props) {
 
 			return (
 				<TextControl
-					// className="grid-control__cellEditor--dateTimeInput"
+					className={renderClassesEdit}
 					type={'text'}
 					inputMode={inputType === 'integer' ? 'numeric' : 'decimal'}
 					__next40pxDefaultSize
@@ -3360,8 +3397,7 @@ function Cell(props) {
 				/>
 			);
 			// return <div>Number Content</div>
-		}
-
+		},
 	};
 
 	let renderPipeline = [];
@@ -3395,6 +3431,17 @@ function Cell(props) {
 			break;
 	}
 
+	console.log('column classes = ', columnClassNames);
+	const renderClassesDisplay = clsx(columnClassNames, cellClassNames, {
+		'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
+		'grid-control__body-columns--number-red': redNegativeNumber,
+	});
+
+	const renderClassesEdit = clsx(columnClassNames, {
+		'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
+		'grid-control__body-columns--number-red': redNegativeNumber,
+	});
+
 	const isBorderCell = cellType === 'border';
 	const computedTabIndex = !isBorderCell && isFocused ? 0 : -1;
 
@@ -3404,7 +3451,7 @@ function Cell(props) {
 			data-col={Number(column_id)}
 			data-row={Number(row_id)}
 			tabIndex={computedTabIndex}
-			className={className}
+			className={renderClassesDisplay}
 			style={
 				cellType === 'border'
 					? undefined

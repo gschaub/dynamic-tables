@@ -143,3 +143,21 @@
   min-height: 0 !important;
   height: auto !important;
 }
+.grid-control__body-columns--number-red {
+  color: red !important;
+  -webkit-text-fill-color: red !important;
+}
+.grid-control__body-columns--number-red .components-input-control__backdrop,
+.grid-control__body-columns--number-red input.components-input-control__input,
+.grid-control__body-columns--number-red input.components-text-control__input {
+  color: red !important;
+  -webkit-text-fill-color: red !important;
+}
+.grid-control__body-columns--number-align-right {
+  text-align: left !important;
+}
+.grid-control__body-columns--number-align-right .components-input-control__backdrop,
+.grid-control__body-columns--number-align-right input.components-input-control__input,
+.grid-control__body-columns--number-align-right input.components-text-control__input {
+  text-align: left !important;
+}
