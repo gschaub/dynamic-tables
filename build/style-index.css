@@ -313,6 +313,40 @@ fieldset {
   justify-content: flex-end;
   gap: 8px;
 }
+.configure-column-modal__checkbox {
+  margin: 4px 0px;
+}
+.configure-column-modal__input .components-base-control__field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.configure-column-modal__input .components-base-control__label {
+  font-size: 13px;
+  text-transform: none;
+  margin-bottom: 0; /* remove default spacing */
+  white-space: nowrap;
+}
+.configure-column-modal__input-preview .components-base-control__field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.configure-column-modal__input-preview .components-base-control__label {
+  font-size: 13px;
+  margin-bottom: 0; /* remove default spacing */
+  white-space: nowrap;
+}
+.configure-column-modal__display-preview .components-base-control__field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.configure-column-modal__display-preview .components-base-control__label {
+  font-size: 13px;
+  margin-bottom: 0; /* remove default spacing */
+  white-space: nowrap;
+}
 /* True two-column split */
 .configure-column-modal__split {
   width: 100%;
@@ -337,13 +371,13 @@ fieldset {
   display: flex;
   flex-direction: column;
 }
-.configure-column-modal__advanced {
+.configure-column-modal__options {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
-.configure-column-modal__advanced,
+.configure-column-modal__options,
 .configure-column-modal__preview {
   padding: 12px;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -356,6 +390,17 @@ fieldset {
   flex: 1;
   display: flex;
   flex-direction: column;
+}
+.grid-control__body-columns--number-red .components-input-control__backdrop,
+.grid-control__body-columns--number-red input.components-input-control__input,
+.grid-control__body-columns--number-red input.components-text-control__input {
+  color: red !important;
+  -webkit-text-fill-color: red !important;
+}
+.grid-control__body-columns--number-align-right .components-input-control__backdrop,
+.grid-control__body-columns--number-align-right input.components-input-control__input,
+.grid-control__body-columns--number-align-right input.components-text-control__input {
+  text-align: right !important;
 }
 /*!********************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/components/row-dropdown-menu/style.scss ***!

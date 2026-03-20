@@ -43,6 +43,8 @@ import {
 	formatedDisplayDate,
 	formattedIsoDate,
 	normalizeColumnDataType,
+	sanitizeNumberInput,
+	formattedNumber,
 } from './utils';
 
 import { initTable, getDefaultRow, getDefaultColumn, getDefaultCell } from './table-defaults';
@@ -268,6 +270,7 @@ export default function Edit(props) {
 		columnId: null,
 		columnLabel: '',
 		columnAttributes: null,
+		columnClasses: '',
 	});
 
 	/**
@@ -281,8 +284,9 @@ export default function Edit(props) {
 	 * @param {number} columnId         Column number to update
 	 * @param {string} columnLabel      Display label at top of dialog
 	 * @param {Object} columnAttributes Column attributes that control column height, among other things
+	 * @param {Object} columnClasses    Column classes to apply column specific styling
 	 */
-	const openColumnDataTypeModal = (e, columnId, columnLabel, columnAttributes) => {
+	const openColumnDataTypeModal = (e, columnId, columnLabel, columnAttributes, columnClasses) => {
 		e?.preventDefault?.();
 		e?.stopPropagation?.();
 
@@ -295,6 +299,7 @@ export default function Edit(props) {
 			columnId,
 			columnLabel: columnLabel,
 			columnAttributes,
+			columnClasses,
 		});
 	};
 
@@ -1628,18 +1633,20 @@ export default function Edit(props) {
 	 *
 	 * @param {Object} e                       Table Creation Event
 	 * @param {string} updateType              attribute (Update), insert, delete
-	 * @param {string} columnName              Column name
 	 * @param {number} tableId                 Identifier key for the table
 	 * @param {number} columnId                Identifier for the table column
+	 * @param {string} columnName              Column name
 	 * @param {Array}  updatedColumnAttributes New column attribute values
+	 * @param {string} updatedColumnClasses    New column class values
 	 */
 	function onUpdateColumn(
 		e,
 		updateType,
 		tableId,
 		columnId,
+		columnName = '',
 		updatedColumnAttributes,
-		columnName = ''
+		updatedColumnClasses,
 	) {
 		switch (updateType) {
 			case 'attributes': {
@@ -1656,12 +1663,14 @@ export default function Edit(props) {
 			case 'dataType': {
 				if (!updatedColumnAttributes) {
 					const clickedColumn = table.columns.find(c => c.column_id === columnId);
-					const attrs = clickedColumn?.attributes || {};
 					const columnLabel = clickedColumn?.column_name || String(columnId);
-					openColumnDataTypeModal(e, columnId, columnLabel, attrs);
+					const attrs = clickedColumn?.attributes || {};
+					const classes = clickedColumn?.classes || '';
+					openColumnDataTypeModal(e, columnId, columnLabel, attrs, classes);
 				} else {
-					setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
 					setTableAttributes(tableId, 'column_name', columnId, 'PROP', columnName);
+					setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
+					setTableAttributes(tableId, 'column', columnId, 'CLASSES', updatedColumnClasses);
 				}
 				break;
 			}
@@ -2226,6 +2235,7 @@ export default function Edit(props) {
 					columnId={columnDataTypeModal.columnId}
 					columnLabel={columnDataTypeModal.columnLabel}
 					columnAttributes={columnDataTypeModal.columnAttributes}
+					columnClasses={columnDataTypeModal.columnClasses}
 					enableProFeatures={enableProFeatures}
 					updatedColumn={onUpdateColumn}
 					onRequestClose={closeColumnDataTypeModal}
@@ -3057,6 +3067,15 @@ function Cell(props) {
 
 	const htmlToText = (html = '') => getTextContent(create({ html })).replace(/\s+/g, ' ').trim();
 
+	const numberDisplayValue = formattedNumber(
+		cellContent,
+		inputType,
+		settings?.formatOptions?.thousandSeparator,
+		settings?.formatOptions?.decimalPlaces,
+		settings?.formatOptions?.showCurrencySymbol
+	);
+
+
 	useEffect(() => {
 		setCellAttributes(attributes);
 		initialCellValue.current = content ?? '';
@@ -3068,7 +3087,8 @@ function Cell(props) {
 	useEffect(() => {
 		if (cellType !== 'body' || type !== 'date-time') return;
 
-		const resolvedFormat = settings?.format || 'date';
+		const resolvedFormat = inputType || 'date';
+		// const resolvedFormat = settings?.format || 'date';
 
 		if (isEditing) {
 			// Enter edit mode: force a valid HTML input value FIRST
@@ -3091,7 +3111,7 @@ function Cell(props) {
 
 		setCellAttributes(attributes);
 		initialCellValue.current = content ?? '';
-	}, [isEditing, content, attributes, cellType, type, settings?.format, settings?.defaultToToday]);
+	}, [isEditing, content, attributes, cellType, type, inputType, settings?.defaultToToday]);
 
 	/**
 	 * Handle onChange event for cell content update
@@ -3171,6 +3191,51 @@ function Cell(props) {
 		if (!isPm && hours >= 12) hours -= 12;
 
 		return `${match[1]}T${String(hours).padStart(2, '0')}:${match[3]}${match[4] || ''}`;
+	}
+
+	/**
+	 * Change number string from entry
+	 *
+	 * @since 1.2.4
+	 *
+	 * @param {Object} event New number string
+	 */
+	function onNumberChange(event) {
+		const nextRawValue = sanitizeNumberInput(event, inputType);
+
+		let returnedRawValue = nextRawValue;
+
+		if (inputType !== 'integer') {
+			const [integerPart, fractionPart = ''] = nextRawValue.split('.');
+			const fractionalExcessLength = fractionPart.length - settings?.formatOptions?.decimalPlaces;
+
+			if (fractionalExcessLength > 0) {
+				returnedRawValue = `${integerPart}.${fractionPart.slice(0, settings?.formatOptions?.decimalPlaces)}`;
+			}
+
+			if (fractionalExcessLength < 0) {
+				const paddedSpaces = fractionalExcessLength * -1;
+				returnedRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
+			}
+		}
+
+		setCellContent(returnedRawValue);
+
+		updateCellData({
+			content: returnedRawValue,
+			attributes: {
+				...cellAttributes,
+				value: {
+					...(cellAttributes?.value || {}),
+					indexText: returnedRawValue,
+				},
+			},
+		});
+
+
+
+
+		// setNumberRawValue(returnedRawValue);
 	}
 
 	/**
@@ -3258,6 +3323,45 @@ function Cell(props) {
 				/>
 			);
 		},
+		number: () => {
+			if (!isEditing) {
+				return <div>{numberDisplayValue}</div>;
+			}
+
+			return (
+				<TextControl
+					// className="grid-control__cellEditor--dateTimeInput"
+					type={'text'}
+					inputMode={inputType === 'integer' ? 'numeric' : 'decimal'}
+					__next40pxDefaultSize
+					value={numberDisplayValue}
+					// onKeyDown={event => {
+					// 	onDateTimeKeyDown(event);
+					// }}
+					onChange={event => {
+						onNumberChange(event);
+					}}
+					// onBlur={event => {
+					// 	const format = settings?.format || inputType || 'date';
+					// 	const next = event?.target?.value ?? cellContent ?? '';
+					// 	const formattedContent = formattedIsoDate(next, format);
+					// 	updateCellData({
+					// 		content: next,
+					// 		attributes: {
+					// 			...cellAttributes,
+					// 			value: {
+					// 				...(cellAttributes?.value || {}),
+					// 				indexText: formattedContent,
+					// 			},
+					// 		},
+					// 	});
+					// 	onRequestStopEdit?.();
+					// }}
+				/>
+			);
+			// return <div>Number Content</div>
+		}
+
 	};
 
 	let renderPipeline = [];
@@ -3279,6 +3383,9 @@ function Cell(props) {
 					break;
 				case 'date-time':
 					renderPipeline = ['dateTime'];
+					break;
+				case 'number':
+					renderPipeline = ['number'];
 					break;
 				default:
 					break;

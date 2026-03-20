@@ -121,6 +121,31 @@ export function tableSort(tablePart, tableArray) {
 }
 
 /**
+ * Create a set of css classes from a space delimited string
+ *
+ * @since 1.2.4
+ *
+ * @param {string} classString String of css class names
+ * @return  {Set}              Set of class names
+ */
+export function stageClassesForEdit(classString) {
+	if (typeof classString !== 'string' || classString === '') return new Set();
+	return new Set(classString.split(/\s+/).filter(Boolean));
+}
+
+/**
+ * Build string of space delimited classes from class set
+ *
+ * @since 1.2.4
+ *
+ * @param {Set} classSet String of css class names
+ * @return  {string}              Set of class names
+ */
+export function prepareClassesForUse(classSet) {
+	return Array.from(classSet).join(' ');
+}
+
+/**
  * Create a random identifier for assignment as a block/table cross reference.
  *
  * @since    1.0.0
@@ -215,6 +240,7 @@ export const DEFAULT_COLUMN_DATA_TYPE = {
  * @return {Object} Default data type object
  */
 export function normalizeColumnDataType(columnDataType) {
+	// console.log('Consolidate to one columnDataType shape')
 	if (columnDataType?.type) {
 		return columnDataType;
 	}
@@ -294,7 +320,7 @@ export function formatedDisplayDate(date, format) {
 		return dateI18n('n/j/Y', date);
 	}
 	if (format === 'time') {
-		console.log('Return Time from ' + date);
+		// console.log('Return Time from ' + date);
 
 		const [hh, mm] = date.split(':').map(Number);
 		if (!Number.isInteger(hh) || !Number.isInteger(mm)) return '';
@@ -364,3 +390,133 @@ export function formattedIsoDate(date, format) {
 	return '';
 }
 
+/**
+ * Strip formatting characters from numeric display string
+ *
+ * @since    1.2.4
+ *
+ * @param {string} value          String representation of number
+ * @param {string} dataTypeFormat Number format type
+ * @return {string} Sanitized numeric string
+ */
+export function sanitizeNumberInput(value, dataTypeFormat) {
+	let next = String(value ?? '');
+
+	// Remove display formatting first.
+	next = next.replace(/,/g, '');
+	next = next.replace(/[^\d.\-]/g, '');
+
+	// console.log('Replace brackets with minus sign');
+
+	// Keep only a single leading minus.
+	next = next.replace(/(?!^)-/g, '');
+
+	// Integers do not allow decimals.
+	if (dataTypeFormat === 'integer') {
+		return next.replace(/\./g, '');
+	}
+
+	// Keep only the first decimal point.
+	const firstDot = next.indexOf('.');
+	if (firstDot !== -1) {
+		next = next.slice(0, firstDot + 1) + next.slice(firstDot + 1).replace(/\./g, '');
+	}
+	return next;
+}
+
+/**
+ * Strip formatting characters from numeric display string
+ *
+ * @since    1.2.4
+ *
+ * @param {string}  rawValue          String representation of canonical number
+ * @param {string}  dataTypeFormat    Number format type
+ * @param {boolean} thousandSeparator Add thousands separator
+ * @param {number}  decimalPlaces     Number of decimal places
+ * @param {boolean} currency          Display currency symbol
+ * @param {boolean} bracketNegative   Display negative numbers with brackets
+ * @return {string}                   Formatted string representation of number
+ */
+export function formattedNumber(
+	rawValue,
+	dataTypeFormat,
+	thousandSeparator,
+	decimalPlaces,
+	currency,
+	bracketNegative
+) {
+	// console.log('In Formatted Number');
+	const sanatizedNumber = sanitizeNumberInput(rawValue);
+	// console.log('  Sanitized number = ' + sanatizedNumber);
+
+	if (sanatizedNumber === '') return '';
+	if (sanatizedNumber === '-') return '-';
+
+	const isNegative = sanatizedNumber.startsWith('-');
+	const unsigned = isNegative ? sanatizedNumber.slice(1) : sanatizedNumber;
+	const hasDecimal = unsigned.includes('.');
+
+	let [integerPart = '', fractionPart = ''] = unsigned.split('.');
+	integerPart = integerPart.replace(/\D/g, '');
+	fractionPart = fractionPart.replace(/\D/g, '');
+
+	let numberStyle = '';
+
+	switch (dataTypeFormat) {
+		case 'number':
+			numberStyle = 'decimal';
+			break;
+		case 'integer':
+			numberStyle = 'decimal';
+			break;
+		case 'currency':
+			numberStyle = 'currency';
+			break;
+		default:
+			numberStyle = 'decimal';
+	}
+
+	// console.log('Thousands Separator = ' + thousandSeparator);
+
+	const formatOptions = {
+		style: numberStyle,
+		currency: 'USD',
+		// Options include code | symbol | narrowSymbol | name
+		currencyDisplay: 'symbol',
+		currencySign: bracketNegative ? 'accounting' : 'standard',
+		// Reserved for future unit of measure adoption
+		// unit:  Per subset of ECMA-402 specification
+		// unitDisplay:
+		minimumIntegerDigits: 1, // provides ability to left pad zeros
+		minimumFractionDigits: decimalPlaces,
+		maximumFractionDigits: decimalPlaces,
+		// Not implemented at this time
+		// minimumSignificantDigits:
+		// maximumSignificantDigits:
+		// roundingPriority:
+		// roundingIncrement:
+		// roundingMode:
+		// trailingZeros:
+		// notation:
+		// compactDisplay:
+		signDisplay: 'auto',
+		useGrouping: thousandSeparator ? true : false,
+	};
+
+	// console.log(formatOptions);
+
+	const limitedFraction = fractionPart.slice(0, Math.max(0, decimalPlaces));
+	// console.log('  Limited fraction =  ' + limitedFraction);
+	const decimalFragment = hasDecimal ? `.${limitedFraction}` : '';
+	// console.log('  Decimal fragment =  ' + decimalFragment);
+	const rawNumberString = `${isNegative ? '-' : ''}${integerPart}${decimalFragment}`;
+	// console.log('  Raw Number =  ' + rawNumberString);
+
+	const previewNumber = new Intl.NumberFormat('en-US', formatOptions).format(
+		Number(rawNumberString)
+	);
+
+	// const previewNumber = Number(value);
+	// console.log('  Formatted Number =  ' + previewNumber);
+	return previewNumber;
+}

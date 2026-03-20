@@ -20,12 +20,20 @@ import {
 	CardHeader,
 } from '@wordpress/components';
 
+import clsx from 'clsx';
 /**
  * Internal dependencies
  */
 import './style.scss';
+import '../../style.scss';
 import { settings } from '@wordpress/icons';
-import { normalizeColumnDataType } from '../../utils';
+import {
+	normalizeColumnDataType,
+	stageClassesForEdit,
+	prepareClassesForUse,
+	sanitizeNumberInput,
+	formattedNumber,
+} from '../../utils';
 
 /**
  * React component to configure data types for a column.
@@ -38,13 +46,26 @@ import { normalizeColumnDataType } from '../../utils';
 function ConfigureColumnDataType(props = {}) {
 	const instanceId = useInstanceId(ConfigureColumnDataType);
 	const previewId = `dtbk-preview-${instanceId}`;
-	const { tableId, columnId, columnLabel, columnAttributes, updatedColumn, onRequestClose } = props;
+	const {
+		tableId,
+		columnId,
+		columnLabel,
+		columnAttributes,
+		columnClasses,
+		updatedColumn,
+		onRequestClose,
+	} = props;
 
 	const normalizedColumnDataType = normalizeColumnDataType(columnAttributes?.columnDataType);
 
 	const [columnName, setColumnName] = useState(columnLabel);
 	const [dataType, setDataType] = useState(normalizedColumnDataType);
-	const [format, setFormat] = useState(normalizedColumnDataType?.settings?.format || 'date');
+	const [dataTypeFormat, setDataTypeFormat] = useState(
+		normalizedColumnDataType?.settings?.format || ''
+	);
+	console.log('Column Classes inbound = ', columnClasses);
+	const [columnClassNames, setColumnClassNames] = useState(stageClassesForEdit(columnClasses));
+	const columnClassNamesRender = prepareClassesForUse(columnClassNames);
 
 	// Date specific attributes
 	const initDefaultToToday =
@@ -57,6 +78,42 @@ function ConfigureColumnDataType(props = {}) {
 
 	const [dateDefaultToToday, setDateDefaultToToday] = useState(initDefaultToToday);
 	const [datePreviewValue, setDatePreviewValue] = useState(initDatePreviewValue);
+
+	// Number specifica attributes
+	const [decimalPlaces, setDecimalPlaces] = useState(
+		normalizedColumnDataType?.settings?.formatOptions?.decimalPlaces || 0
+	);
+	const [thousandSeparator, setThousandSeparator] = useState(
+		normalizedColumnDataType?.settings?.formatOptions?.thousandSeparator || true
+	);
+	const [currency, setCurrency] = useState(
+		normalizedColumnDataType?.settings?.formatOptions?.showCurrencySymbol || false
+	);
+	const [redNegative, setRedNegative] = useState(
+		normalizedColumnDataType?.settings?.formatOptions?.redNegative || false
+	);
+	const [bracketNegative, setBracketNegative] = useState(
+		normalizedColumnDataType?.settings?.formatOptions?.bracketNegative || false
+	);
+	const [updateColumnStyle, setUpdateColumnStyle] = useState(
+		normalizedColumnDataType?.settings?.formatOptions?.updateColumnStyle || true
+	);
+	const [numberRawValue, setNumberRawValue] = useState('');
+	const sanitizedPreviewNumber = sanitizeNumberInput(numberRawValue, dataTypeFormat);
+	const showNegativeNumberPreview =
+		redNegative &&
+		sanitizedPreviewNumber !== '' &&
+		sanitizedPreviewNumber !== '-' &&
+		Number(sanitizedPreviewNumber) < 0;
+
+	const numberPreviewValue = formattedNumber(
+		numberRawValue,
+		dataTypeFormat,
+		thousandSeparator,
+		decimalPlaces,
+		currency,
+		bracketNegative
+	);
 
 	// Column width attributes
 	const [columnWidthType, setColumnWidthType] = useState(columnAttributes.columnWidthType);
@@ -100,18 +157,25 @@ function ConfigureColumnDataType(props = {}) {
 		onRequestClose?.();
 	}
 
-	function formattedDate(type) {
+	/**
+	 * Update date format and set default options
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param {string} dateFormat
+	 */
+	function formattedDate(dateFormat) {
 		const today = new Date();
 
-		if (type === 'date') {
+		if (dateFormat === 'date') {
 			return today.toISOString().split('T')[0];
 		}
-		if (type === 'time') {
+		if (dateFormat === 'time') {
 			const hh = String(today.getHours()).padStart(2, '0');
 			const mm = String(today.getMinutes()).padStart(2, '0');
 			return `${hh}:${mm}`;
 		}
-		if (type === 'datetime-local') {
+		if (dateFormat === 'datetime-local') {
 			const yyyy = today.getFullYear();
 			const mo = String(today.getMonth() + 1).padStart(2, '0');
 			const dd = String(today.getDate()).padStart(2, '0');
@@ -122,18 +186,19 @@ function ConfigureColumnDataType(props = {}) {
 		return '';
 	}
 
-	function onDateTimeType(e, type) {
-		if (!e && format === type) {
-			setFormat('date');
-			if (dateDefaultToToday) setDatePreviewValue(formattedDate('date'));
-			return;
-		}
-
-		setFormat(type);
-		if (dateDefaultToToday) setDatePreviewValue(formattedDate(type));
+	/**
+	 * Update date format and set default options
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param {string} dateFormat Date/Time format to set
+	 */
+	function onDateTimeType(dateFormat) {
+		setDataTypeFormat(dateFormat);
+		if (dateDefaultToToday) setDatePreviewValue(formattedDate(dateFormat));
 
 		const dataTypeSettings = {
-			format: type,
+			format: dateFormat,
 			defaultToToday: dateDefaultToToday,
 		};
 
@@ -144,6 +209,14 @@ function ConfigureColumnDataType(props = {}) {
 		setDataType(updatedDataType);
 	}
 
+	/**
+	 * Update number format and set default options
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param {boolean} isChecked Default today's date
+	 * @param {string}  type      Date/Time Format
+	 */
 	function onDateDefaultToToday(isChecked, type) {
 		if (!isChecked) {
 			setDatePreviewValue('');
@@ -166,12 +239,218 @@ function ConfigureColumnDataType(props = {}) {
 		setDataType(updatedDataType);
 	}
 
-	function onUpdateDataType(e) {
-		let updatedDataType = {};
+	/**
+	 * Update number format and set default options
+	 *
+	 * @since 1.2.4
+	 *
+	 * @param {*} numberFormat Number format to set
+	 */
+	function onNumberFormat(numberFormat) {
+		setDataTypeFormat(numberFormat);
 
-		switch (e) {
+		let dataTypeSettings = '';
+		setUpdateColumnStyle(true);
+
+		switch (numberFormat) {
+			case 'number':
+				setDecimalPlaces(0);
+				setThousandSeparator(true);
+				setCurrency(false);
+				setRedNegative(false);
+				setBracketNegative(false);
+
+				dataTypeSettings = {
+					format: numberFormat,
+					formatOptions: {
+						decimalPlaces: 0,
+						thousandSeparator: true,
+						showCurrencySymbol: false,
+						redNegative: false,
+						bracketNegative: false,
+						updateColumnStyle: true,
+					},
+				};
+
+				break;
+			case 'integer':
+				setDecimalPlaces(0);
+				setThousandSeparator(true);
+				setCurrency(false);
+				setRedNegative(false);
+				setBracketNegative(false);
+
+				dataTypeSettings = {
+					format: numberFormat,
+					formatOptions: {
+						decimalPlaces: 0,
+						thousandSeparator: true,
+						showCurrencySymbol: false,
+						redNegative: false,
+						bracketNegative: false,
+						updateColumnStyle: true,
+					},
+				};
+
+				break;
+			case 'currency':
+				setDecimalPlaces(2);
+				setCurrency(true);
+				setThousandSeparator(true);
+				setRedNegative(false);
+				setBracketNegative(false);
+
+				dataTypeSettings = {
+					format: numberFormat,
+					formatOptions: {
+						decimalPlaces: 2,
+						thousandSeparator: true,
+						showCurrencySymbol: true,
+						redNegative: false,
+						bracketNegative: false,
+						updateColumnStyle: true,
+					},
+				};
+		}
+
+		let newColumnClassNames = columnClassNames;
+		newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--number-align-right');
+		setColumnClassNames(newColumnClassNames);
+
+		const updatedDataType = {
+			type: 'number',
+			settings: dataTypeSettings,
+		};
+
+		console.log('Number Data Type Selection - Updated data type: ', updatedDataType);
+		setDataType(updatedDataType);
+	}
+
+	/**
+	 * Update number formatting options based on configuration input
+	 *
+	 * @since 1.2.4
+	 *
+	 * @param {Object} event  Formatting value to set
+	 * @param {string} option Formatting option
+	 */
+	function onNumberFormatOption(event, option) {
+		// console.log('On Number Format Options - ' + option);
+		// console.log(event);
+
+		let newDecimalPlaces = decimalPlaces;
+		let newThousandSeparator = thousandSeparator;
+		let newCurrency = currency;
+		let newRedNegative = redNegative;
+		let newBracketNegative = bracketNegative;
+		let newUpdateColumnStyle = updateColumnStyle;
+		let newColumnClassNames = columnClassNames;
+
+		switch (option) {
+			case 'decimal':
+				newDecimalPlaces = Math.max(0, event || 0);
+				break;
+			case 'thousand':
+				newThousandSeparator = event;
+				break;
+			case 'currency':
+				newCurrency = event;
+				break;
+			case 'red-negative':
+				newRedNegative = event;
+				break;
+			case 'bracket-negative':
+				newBracketNegative = event;
+				break;
+			case 'format-column':
+				newUpdateColumnStyle = event;
+				if (event) {
+					newColumnClassNames = newColumnClassNames.add(
+						'grid-control__body-columns--number-align-right'
+					);
+				}
+				break;
+		}
+
+		setDecimalPlaces(newDecimalPlaces);
+		setThousandSeparator(newThousandSeparator);
+		setCurrency(newCurrency);
+		setRedNegative(newRedNegative);
+		setBracketNegative(newBracketNegative);
+		setUpdateColumnStyle(newUpdateColumnStyle);
+		setColumnClassNames(newColumnClassNames);
+
+		const updatedDataType = {
+			...dataType,
+			settings: {
+				format: dataType.settings.format,
+				formatOptions: {
+					decimalPlaces: newDecimalPlaces,
+					thousandSeparator: newThousandSeparator,
+					showCurrencySymbol: newCurrency,
+					redNegative: newRedNegative,
+					bracketNegative: newBracketNegative,
+					updateColumnStyle: newUpdateColumnStyle,
+				},
+			},
+		};
+
+		console.log('Number Format Options - Updated data type: ', updatedDataType);
+		setDataType(updatedDataType);
+	}
+
+	/**
+	 * Change number string from entry
+	 *
+	 * @since 1.2.4
+	 *
+	 * @param {Object} event New number string
+	 */
+	function onNumberPreviewChange(event) {
+		const nextRawValue = sanitizeNumberInput(event, dataTypeFormat);
+
+		let returnedRawValue = nextRawValue;
+
+		if (dataTypeFormat !== 'integer') {
+			const [integerPart, fractionPart = ''] = nextRawValue.split('.');
+			const fractionalExcessLength = fractionPart.length - decimalPlaces;
+
+			if (fractionalExcessLength > 0) {
+				returnedRawValue = `${integerPart}.${fractionPart.slice(0, decimalPlaces)}`;
+			}
+
+			if (fractionalExcessLength < 0) {
+				const paddedSpaces = fractionalExcessLength * -1;
+				returnedRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
+			}
+		}
+
+		setNumberRawValue(returnedRawValue);
+	}
+
+	function onNumberPreviewKeyDown(event) {
+		if (event.key === '.' && (dataTypeFormat === 'integer' || numberRawValue.includes('.'))) {
+			event.preventDefault();
+		}
+	}
+
+	/**
+	 * Change column data types and set formatting defaults
+	 *
+	 * @since    1.2.0
+	 * @since    1.2.4  Add number format
+	 *
+	 * @param {Object} event Event object to change data type
+	 * @return {void}
+	 */
+	function onUpdateDataType(event) {
+		// console.log(event);
+		let updatedDataType = {};
+		let newColumnClassNames = columnClassNames;
+
+		switch (event) {
 			case 'date-time':
-				setFormat('date');
+				setDataTypeFormat('date');
 				updatedDataType = {
 					type: 'date-time',
 					settings: {
@@ -179,21 +458,32 @@ function ConfigureColumnDataType(props = {}) {
 						defaultToToday: false,
 					},
 				};
+				newColumnClassNames = newColumnClassNames.delete(
+					'grid-control__body-columns--number-align-right'
+				);
 				break;
+			case 'number':
+				setDataTypeFormat('number');
+				onNumberFormat('number');
+				return;
 			default:
 				updatedDataType = {
-					type: e,
+					type: event,
 				};
+				newColumnClassNames = newColumnClassNames.delete(
+					'grid-control__body-columns--number-align-right'
+				);
 				break;
 		}
-
+		// console.log('updating data tppe');
+		setColumnClassNames(newColumnClassNames);
 		setDataType(updatedDataType);
 	}
 
 	/**
-	 * Process form submit.
+	 * Return new column data type settings.
 	 *
-	 * @since    1.0.0
+	 * @since    1.2.0
 	 *
 	 * @param {Object} event Form submit
 	 */
@@ -213,10 +503,48 @@ function ConfigureColumnDataType(props = {}) {
 			columnDataType: dataType,
 		};
 
-		updatedColumn(event, 'dataType', tableId, columnId, updatedColumnAttributes, columnName);
+		/**
+		 * Ensure column classes are updated if additional classes were added to the
+		 * block subsequent to the prior column configuration
+		 */
+		let newColumnClassNames = columnClassNames;
+
+		console.log('data type = ' + dataType.type);
+		switch (dataType.type) {
+			case 'general':
+				break;
+			case 'date-time':
+				break;
+			case 'number':
+				newColumnClassNames = newColumnClassNames.add(
+					'grid-control__body-columns--number-align-right'
+				);
+				break;
+		}
+
+		setColumnClassNames(newColumnClassNames);
+		const updatedColumnClasses = prepareClassesForUse(newColumnClassNames);
+		console.log('Classes to set: ' + updatedColumnClasses);
+
+		updatedColumn(
+			event,
+			'dataType',
+			tableId,
+			columnId,
+			columnName,
+			updatedColumnAttributes,
+			updatedColumnClasses
+		);
 		close();
 	}
 
+	const renderColumnClasses = clsx(columnClassNamesRender, {
+		'grid-control__body-columns--number-red': showNegativeNumberPreview,
+	});
+
+	// console.log('resolve');
+	// console.log('format = ' + dataTypeFormat);
+	// console.log(dataType);
 	return (
 		<Modal
 			title="Configure Column Content Type"
@@ -257,6 +585,9 @@ function ConfigureColumnDataType(props = {}) {
 											options={[
 												{ value: 'general', label: 'General' },
 												{ value: 'date-time', label: 'Date/Time' },
+												{ value: 'number', label: 'Number' },
+												// { value: 'image', label: 'Image' },
+												// { value: 'link', label: 'Link' },
 												// { value: 'checkbox', label: 'Check Box' },
 												// { value: 'rating', label: 'Rating' },
 											]}
@@ -266,8 +597,8 @@ function ConfigureColumnDataType(props = {}) {
 								</CardBody>
 							</Card>
 
-							{/* Settings */}
-							{dataType.type !== 'general' && (
+							{/* Date/Time Settings */}
+							{dataType.type === 'date-time' && (
 								<Card>
 									<CardHeader>
 										<strong>Content settings</strong>
@@ -283,21 +614,22 @@ function ConfigureColumnDataType(props = {}) {
 													<VStack spacing={3}>
 														<RadioControl
 															label="Format"
-															selected={format}
+															selected={dataTypeFormat}
 															options={[
 																{ label: 'Date only', value: 'date' },
 																{ label: 'Time only', value: 'time' },
 																{ label: 'Date & time', value: 'datetime-local' },
 															]}
-															onChange={value => onDateTimeType(true, value)}
+															onChange={value => onDateTimeType(value)}
 														/>
 
-														<div className="configure-column-modal__advanced">
-															<strong>Advanced</strong>
+														<div className="configure-column-modal__options">
+															<strong>Options</strong>
 															<CheckboxControl
+																className="configure-column-modal__checkbox"
 																label="Default to today's date"
 																checked={dateDefaultToToday}
-																onChange={e => onDateDefaultToToday(e, format)}
+																onChange={e => onDateDefaultToToday(e, dataTypeFormat)}
 															/>
 														</div>
 													</VStack>
@@ -312,13 +644,126 @@ function ConfigureColumnDataType(props = {}) {
 															help="This is only a preview; it won’t change saved values."
 														>
 															<TextControl
-																type={format}
+																type={dataTypeFormat}
 																label={''}
 																id={previewId}
 																step={60}
 																__next40pxDefaultSize
 																value={datePreviewValue}
 																onChange={setDatePreviewValue}
+															/>
+														</BaseControl>
+													</div>
+												</FlexItem>
+											</Flex>
+										</VStack>
+									</CardBody>
+								</Card>
+							)}
+
+							{/* Number Settings */}
+							{dataType.type === 'number' && (
+								<Card>
+									<CardHeader>
+										<strong>Content settings</strong>
+									</CardHeader>
+									<CardBody>
+										<VStack spacing={3}>
+											<div>Select the specific number type.</div>
+
+											{/* True split layout */}
+											<Flex gap={24} align="stretch" className="configure-column-modal__split">
+												{/* Left column */}
+												<FlexItem className="configure-column-modal__left" isBlock>
+													<VStack spacing={3}>
+														<RadioControl
+															label="Number Type"
+															selected={dataTypeFormat}
+															options={[
+																{ label: 'General', value: 'number' },
+																{ label: 'Integer', value: 'integer' },
+																{ label: 'Currency', value: 'currency' },
+															]}
+															onChange={value => onNumberFormat(value)}
+														/>
+
+														<div className="configure-column-modal__options">
+															<strong>Formatting Options</strong>
+															{(dataTypeFormat === 'number' || dataTypeFormat === 'currency') && (
+																<TextControl
+																	className="configure-column-modal__input"
+																	type={dataTypeFormat}
+																	label={'Decimal Places'}
+																	__next40pxDefaultSize
+																	value={decimalPlaces}
+																	onChange={e => onNumberFormatOption(e, 'decimal')}
+																/>
+															)}
+															<CheckboxControl
+																className="configure-column-modal__checkbox"
+																label={'Thousand Separator'}
+																checked={thousandSeparator}
+																onChange={e => onNumberFormatOption(e, 'thousand')}
+															/>
+															{dataTypeFormat === 'currency' && (
+																<CheckboxControl
+																	className="configure-column-modal__checkbox"
+																	label={'Currency'}
+																	checked={currency}
+																	onChange={e => onNumberFormatOption(e, 'currency')}
+																/>
+															)}
+															<CheckboxControl
+																className="configure-column-modal__checkbox"
+																label={'Bracket negative numbers?'}
+																checked={bracketNegative}
+																onChange={e => onNumberFormatOption(e, 'bracket-negative')}
+															/>
+															<CheckboxControl
+																className="configure-column-modal__checkbox"
+																label={'Display negative numbers in red?'}
+																checked={redNegative}
+																onChange={e => onNumberFormatOption(e, 'red-negative')}
+															/>
+															<CheckboxControl
+																className="configure-column-modal__checkbox"
+																label={'Auto format column?'}
+																checked={updateColumnStyle}
+																onChange={e => onNumberFormatOption(e, 'format-column')}
+															/>
+														</div>
+													</VStack>
+												</FlexItem>
+
+												{/* Right column */}
+												<FlexItem className="configure-column-modal__right" isBlock>
+													<div className="configure-column-modal__preview">
+														<BaseControl
+															id={previewId}
+															label="Preview"
+															help="This is only a preview; it won’t change saved values."
+														>
+															<TextControl
+																className={`configure-column-modal__input-preview ${renderColumnClasses}`}
+																type={'text'}
+																inputMode={dataTypeFormat === 'integer' ? 'numeric' : 'decimal'}
+																label={'Entry'}
+																id={previewId}
+																__next40pxDefaultSize
+																value={numberPreviewValue}
+																onChange={onNumberPreviewChange}
+																// onKeyDown={onNumberPreviewKeyDown}
+																// onBlur={onNumberPreviewBlur}
+															/>
+															<TextControl
+																className={`configure-column-modal__display-preview ${renderColumnClasses}`}
+																type={'text'}
+																inputMode={dataTypeFormat === 'integer' ? 'numeric' : 'decimal'}
+																label={'Display'}
+																disabled={true}
+																id={previewId}
+																__next40pxDefaultSize
+																value={numberPreviewValue}
 															/>
 														</BaseControl>
 													</div>
