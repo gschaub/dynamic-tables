@@ -63,7 +63,7 @@ function ConfigureColumnDataType(props = {}) {
 	const [dataTypeFormat, setDataTypeFormat] = useState(
 		normalizedColumnDataType?.settings?.format || ''
 	);
-	console.log('Column Classes inbound = ', columnClasses);
+	// console.log('Column Classes inbound = ', columnClasses);
 	const [columnClassNames, setColumnClassNames] = useState(stageClassesForEdit(columnClasses));
 	const columnClassNamesRender = prepareClassesForUse(columnClassNames);
 
@@ -339,6 +339,20 @@ function ConfigureColumnDataType(props = {}) {
 	 * @param {*} numberFormat Number format to set
 	 */
 	function onNumberFormat(numberFormat) {
+		if (numberFormat === 'percent' && dataTypeFormat !== 'percent') {
+			// divide by 100
+			const revisedNumberValue = !!numberRawValue ? String(Number(numberRawValue) / 100) : '';
+			console.log('Format to percent udpate value = ' + revisedNumberValue)
+			setNumberRawValue(revisedNumberValue);
+		}
+
+		if (numberFormat !== 'percent' && dataTypeFormat === 'percent') {
+			// multiply by 100
+			const revisedNumberValue = !!numberRawValue ? String(Number(numberRawValue) * 100) : '';
+			console.log('Format from percent udpate value = ' + revisedNumberValue)
+			setNumberRawValue(revisedNumberValue);
+		}
+
 		setDataTypeFormat(numberFormat);
 
 		let dataTypeSettings = '';
@@ -366,6 +380,26 @@ function ConfigureColumnDataType(props = {}) {
 
 				break;
 			case 'integer':
+				setDecimalPlaces(0);
+				setThousandSeparator(true);
+				setCurrency(false);
+				setRedNegative(false);
+				setBracketNegative(false);
+
+				dataTypeSettings = {
+					format: numberFormat,
+					formatOptions: {
+						decimalPlaces: 0,
+						thousandSeparator: true,
+						showCurrencySymbol: false,
+						redNegative: false,
+						bracketNegative: false,
+						updateColumnStyle: true,
+					},
+				};
+
+				break;
+			case 'percent':
 				setDecimalPlaces(0);
 				setThousandSeparator(true);
 				setCurrency(false);
@@ -414,7 +448,7 @@ function ConfigureColumnDataType(props = {}) {
 			settings: dataTypeSettings,
 		};
 
-		console.log('Number Data Type Selection - Updated data type: ', updatedDataType);
+		// console.log('Number Data Type Selection - Updated data type: ', updatedDataType);
 		setDataType(updatedDataType);
 	}
 
@@ -499,7 +533,7 @@ function ConfigureColumnDataType(props = {}) {
 	 * @param {Object} event New number string
 	 */
 	function onNumberPreviewChange(event) {
-		// console.log('number change event = ' + event);
+		console.log('number change event = ' + event);
 		const input = numberEntryInputRef.current;
 		const selectionStart = input?.selectionStart ?? event.length;
 		const firstNumericIndex = getFirstNumericIndex(event);
@@ -511,25 +545,33 @@ function ConfigureColumnDataType(props = {}) {
 				firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex,
 		};
 
-		const nextRawValue = sanitizeNumberInput(event, dataTypeFormat);
+		let nextRawValue = sanitizeNumberInput(event, dataTypeFormat);
+		let revisedDecimalPlaces = decimalPlaces;
 
-		let returnedRawValue = nextRawValue;
+		if (dataTypeFormat === 'percent') {
+			console.log(
+				'...Percentage division = ' + Number(nextRawValue) + ', ' + Number(nextRawValue) / 100
+			);
+			revisedDecimalPlaces = decimalPlaces + 2;
+			nextRawValue = String(Number(nextRawValue) / 100);
+		}
 
 		if (dataTypeFormat !== 'integer') {
 			const [integerPart, fractionPart = ''] = nextRawValue.split('.');
-			const fractionalExcessLength = fractionPart.length - decimalPlaces;
+			const fractionalExcessLength = fractionPart.length - revisedDecimalPlaces;
 
 			if (fractionalExcessLength > 0) {
-				returnedRawValue = `${integerPart}.${fractionPart.slice(0, decimalPlaces)}`;
+				nextRawValue = `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}`;
 			}
 
 			if (fractionalExcessLength < 0) {
 				const paddedSpaces = fractionalExcessLength * -1;
-				returnedRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
+				nextRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
 			}
 		}
+		console.log('...Updated Raw number = ' + nextRawValue);
 
-		setNumberRawValue(returnedRawValue);
+		setNumberRawValue(nextRawValue);
 	}
 
 	function onNumberPreviewKeyDown(event) {
@@ -786,6 +828,7 @@ function ConfigureColumnDataType(props = {}) {
 															options={[
 																{ label: 'General', value: 'number' },
 																{ label: 'Integer', value: 'integer' },
+																{ label: 'Percent', value: 'percent' },
 																{ label: 'Currency', value: 'currency' },
 															]}
 															onChange={value => onNumberFormat(value)}
@@ -793,10 +836,12 @@ function ConfigureColumnDataType(props = {}) {
 
 														<div className="configure-column-modal__options">
 															<strong>Formatting Options</strong>
-															{(dataTypeFormat === 'number' || dataTypeFormat === 'currency') && (
+															{(dataTypeFormat === 'number' ||
+																dataTypeFormat === 'percent' ||
+																dataTypeFormat === 'currency') && (
 																<TextControl
 																	className="configure-column-modal__input"
-																	type={dataTypeFormat}
+																	type={'number'}
 																	label={'Decimal Places'}
 																	__next40pxDefaultSize
 																	value={decimalPlaces}
@@ -817,12 +862,16 @@ function ConfigureColumnDataType(props = {}) {
 																	onChange={e => onNumberFormatOption(e, 'currency')}
 																/>
 															)}
-															<CheckboxControl
-																className="configure-column-modal__checkbox"
-																label={'Bracket negative numbers?'}
-																checked={bracketNegative}
-																onChange={e => onNumberFormatOption(e, 'bracket-negative')}
-															/>
+															{(dataTypeFormat === 'number' ||
+																dataTypeFormat === 'integer' ||
+																dataTypeFormat === 'currency') && (
+																<CheckboxControl
+																	className="configure-column-modal__checkbox"
+																	label={'Bracket negative numbers?'}
+																	checked={bracketNegative}
+																	onChange={e => onNumberFormatOption(e, 'bracket-negative')}
+																/>
+															)}
 															<CheckboxControl
 																className="configure-column-modal__checkbox"
 																label={'Display negative numbers in red?'}

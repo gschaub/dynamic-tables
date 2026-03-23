@@ -328,7 +328,7 @@ function ConfigureColumnDataType(props = {}) {
   const [columnName, setColumnName] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnLabel);
   const [dataType, setDataType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType);
   const [dataTypeFormat, setDataTypeFormat] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.format || '');
-  console.log('Column Classes inbound = ', columnClasses);
+  // console.log('Column Classes inbound = ', columnClasses);
   const [columnClassNames, setColumnClassNames] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)((0,_utils__WEBPACK_IMPORTED_MODULE_6__.stageClassesForEdit)(columnClasses));
   const columnClassNamesRender = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.prepareClassesForUse)(columnClassNames);
 
@@ -535,6 +535,18 @@ function ConfigureColumnDataType(props = {}) {
    * @param {*} numberFormat Number format to set
    */
   function onNumberFormat(numberFormat) {
+    if (numberFormat === 'percent' && dataTypeFormat !== 'percent') {
+      // divide by 100
+      const revisedNumberValue = !!numberRawValue ? String(Number(numberRawValue) / 100) : '';
+      console.log('Format to percent udpate value = ' + revisedNumberValue);
+      setNumberRawValue(revisedNumberValue);
+    }
+    if (numberFormat !== 'percent' && dataTypeFormat === 'percent') {
+      // multiply by 100
+      const revisedNumberValue = !!numberRawValue ? String(Number(numberRawValue) * 100) : '';
+      console.log('Format from percent udpate value = ' + revisedNumberValue);
+      setNumberRawValue(revisedNumberValue);
+    }
     setDataTypeFormat(numberFormat);
     let dataTypeSettings = '';
     setUpdateColumnStyle(true);
@@ -558,6 +570,24 @@ function ConfigureColumnDataType(props = {}) {
         };
         break;
       case 'integer':
+        setDecimalPlaces(0);
+        setThousandSeparator(true);
+        setCurrency(false);
+        setRedNegative(false);
+        setBracketNegative(false);
+        dataTypeSettings = {
+          format: numberFormat,
+          formatOptions: {
+            decimalPlaces: 0,
+            thousandSeparator: true,
+            showCurrencySymbol: false,
+            redNegative: false,
+            bracketNegative: false,
+            updateColumnStyle: true
+          }
+        };
+        break;
+      case 'percent':
         setDecimalPlaces(0);
         setThousandSeparator(true);
         setCurrency(false);
@@ -600,7 +630,8 @@ function ConfigureColumnDataType(props = {}) {
       type: 'number',
       settings: dataTypeSettings
     };
-    console.log('Number Data Type Selection - Updated data type: ', updatedDataType);
+
+    // console.log('Number Data Type Selection - Updated data type: ', updatedDataType);
     setDataType(updatedDataType);
   }
 
@@ -679,7 +710,7 @@ function ConfigureColumnDataType(props = {}) {
    * @param {Object} event New number string
    */
   function onNumberPreviewChange(event) {
-    // console.log('number change event = ' + event);
+    console.log('number change event = ' + event);
     const input = numberEntryInputRef.current;
     const selectionStart = input?.selectionStart ?? event.length;
     const firstNumericIndex = getFirstNumericIndex(event);
@@ -688,20 +719,26 @@ function ConfigureColumnDataType(props = {}) {
       wasAtStart: selectionStart === 0,
       wasInPrefixZone: firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex
     };
-    const nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.sanitizeNumberInput)(event, dataTypeFormat);
-    let returnedRawValue = nextRawValue;
+    let nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.sanitizeNumberInput)(event, dataTypeFormat);
+    let revisedDecimalPlaces = decimalPlaces;
+    if (dataTypeFormat === 'percent') {
+      console.log('...Percentage division = ' + Number(nextRawValue) + ', ' + Number(nextRawValue) / 100);
+      revisedDecimalPlaces = decimalPlaces + 2;
+      nextRawValue = String(Number(nextRawValue) / 100);
+    }
     if (dataTypeFormat !== 'integer') {
       const [integerPart, fractionPart = ''] = nextRawValue.split('.');
-      const fractionalExcessLength = fractionPart.length - decimalPlaces;
+      const fractionalExcessLength = fractionPart.length - revisedDecimalPlaces;
       if (fractionalExcessLength > 0) {
-        returnedRawValue = `${integerPart}.${fractionPart.slice(0, decimalPlaces)}`;
+        nextRawValue = `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}`;
       }
       if (fractionalExcessLength < 0) {
         const paddedSpaces = fractionalExcessLength * -1;
-        returnedRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
+        nextRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
       }
     }
-    setNumberRawValue(returnedRawValue);
+    console.log('...Updated Raw number = ' + nextRawValue);
+    setNumberRawValue(nextRawValue);
   }
   function onNumberPreviewKeyDown(event) {
     if (event.key === '.' && (dataTypeFormat === 'integer' || numberRawValue.includes('.'))) {
@@ -955,6 +992,9 @@ function ConfigureColumnDataType(props = {}) {
                             label: 'Integer',
                             value: 'integer'
                           }, {
+                            label: 'Percent',
+                            value: 'percent'
+                          }, {
                             label: 'Currency',
                             value: 'currency'
                           }],
@@ -963,9 +1003,9 @@ function ConfigureColumnDataType(props = {}) {
                           className: "configure-column-modal__options",
                           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("strong", {
                             children: "Formatting Options"
-                          }), (dataTypeFormat === 'number' || dataTypeFormat === 'currency') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                          }), (dataTypeFormat === 'number' || dataTypeFormat === 'percent' || dataTypeFormat === 'currency') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
                             className: "configure-column-modal__input",
-                            type: dataTypeFormat,
+                            type: 'number',
                             label: 'Decimal Places',
                             __next40pxDefaultSize: true,
                             value: decimalPlaces,
@@ -980,7 +1020,7 @@ function ConfigureColumnDataType(props = {}) {
                             label: 'Currency',
                             checked: currency,
                             onChange: e => onNumberFormatOption(e, 'currency')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
+                          }), (dataTypeFormat === 'number' || dataTypeFormat === 'integer' || dataTypeFormat === 'currency') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Bracket negative numbers?',
                             checked: bracketNegative,
@@ -7013,7 +7053,8 @@ function Cell(props) {
     default:
       break;
   }
-  console.log('column classes = ', columnClassNames);
+
+  // console.log('column classes = ', columnClassNames);
   const renderClassesDisplay = (0,clsx__WEBPACK_IMPORTED_MODULE_10__["default"])(columnClassNames, cellClassNames, {
     'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
     'grid-control__body-columns--number-red': redNegativeNumber
@@ -8432,8 +8473,7 @@ function sanitizeNumberInput(value, dataTypeFormat) {
 function formattedNumber(rawValue, dataTypeFormat, thousandSeparator, decimalPlaces, showCurrencySymbol = dataTypeFormat === 'currency', bracketNegative = false) {
   // console.log('In Formatted Number');
   const sanitizedNumber = sanitizeNumberInput(rawValue, dataTypeFormat);
-  // console.log('  Sanitized number = ' + sanatizedNumber);
-
+  console.log('  Sanitized number = ' + sanitizedNumber);
   if (sanitizedNumber === '') return '';
   if (sanitizedNumber === '-') return '-';
   const isNegative = sanitizedNumber.startsWith('-');
@@ -8443,12 +8483,17 @@ function formattedNumber(rawValue, dataTypeFormat, thousandSeparator, decimalPla
   integerPart = integerPart.replace(/\D/g, '');
   fractionPart = fractionPart.replace(/\D/g, '');
   let numberStyle = 'decimal';
+  let revisedDecimalPlaces = decimalPlaces;
   switch (dataTypeFormat) {
     case 'number':
       numberStyle = 'decimal';
       break;
     case 'integer':
       numberStyle = 'decimal';
+      break;
+    case 'percent':
+      numberStyle = 'percent';
+      revisedDecimalPlaces = decimalPlaces + 2;
       break;
     case 'currency':
       numberStyle = showCurrencySymbol ? 'currency' : 'decimal';
@@ -8488,15 +8533,13 @@ function formattedNumber(rawValue, dataTypeFormat, thousandSeparator, decimalPla
     formatOptions.currency = 'USD';
     formatOptions.currencyDisplay = 'symbol';
   }
-
-  // console.log(formatOptions);
-  const limitedFraction = fractionPart.slice(0, Math.max(0, decimalPlaces));
-  // console.log('  Limited fraction =  ' + limitedFraction);
+  console.log(formatOptions);
+  const limitedFraction = fractionPart.slice(0, Math.max(0, revisedDecimalPlaces));
+  console.log('  Limited fraction =  ' + limitedFraction);
   const decimalFragment = hasDecimal ? `.${limitedFraction}` : '';
-  // console.log('  Decimal fragment =  ' + decimalFragment);
+  console.log('  Decimal fragment =  ' + decimalFragment);
   const rawNumberString = `${integerPart}${decimalFragment}`;
-  // console.log('  Raw Number =  ' + rawNumberString);
-
+  console.log('  Raw Number =  ' + rawNumberString);
   const formattedMagnitude = new Intl.NumberFormat('en-US', formatOptions).format(Number(rawNumberString));
   if (!isNegative) {
     return formattedMagnitude;

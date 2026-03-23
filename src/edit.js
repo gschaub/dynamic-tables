@@ -3431,7 +3431,7 @@ function Cell(props) {
 			break;
 	}
 
-	console.log('column classes = ', columnClassNames);
+	// console.log('column classes = ', columnClassNames);
 	const renderClassesDisplay = clsx(columnClassNames, cellClassNames, {
 		'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
 		'grid-control__body-columns--number-red': redNegativeNumber,

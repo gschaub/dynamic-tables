@@ -447,7 +447,7 @@ export function formattedNumber(
 ) {
 	// console.log('In Formatted Number');
 	const sanitizedNumber = sanitizeNumberInput(rawValue, dataTypeFormat);
-	// console.log('  Sanitized number = ' + sanatizedNumber);
+	console.log('  Sanitized number = ' + sanitizedNumber);
 
 	if (sanitizedNumber === '') return '';
 	if (sanitizedNumber === '-') return '-';
@@ -461,6 +461,7 @@ export function formattedNumber(
 	fractionPart = fractionPart.replace(/\D/g, '');
 
 	let numberStyle = 'decimal';
+	let revisedDecimalPlaces = decimalPlaces;
 
 	switch (dataTypeFormat) {
 		case 'number':
@@ -468,6 +469,10 @@ export function formattedNumber(
 			break;
 		case 'integer':
 			numberStyle = 'decimal';
+			break;
+		case 'percent':
+			numberStyle = 'percent';
+			revisedDecimalPlaces = decimalPlaces + 2;
 			break;
 		case 'currency':
 			numberStyle = showCurrencySymbol ? 'currency' : 'decimal';
@@ -508,13 +513,13 @@ export function formattedNumber(
 		formatOptions.currencyDisplay = 'symbol';
 	}
 
-	// console.log(formatOptions);
-	const limitedFraction = fractionPart.slice(0, Math.max(0, decimalPlaces));
-	// console.log('  Limited fraction =  ' + limitedFraction);
+	console.log(formatOptions);
+	const limitedFraction = fractionPart.slice(0, Math.max(0, revisedDecimalPlaces));
+	console.log('  Limited fraction =  ' + limitedFraction);
 	const decimalFragment = hasDecimal ? `.${limitedFraction}` : '';
-	// console.log('  Decimal fragment =  ' + decimalFragment);
+	console.log('  Decimal fragment =  ' + decimalFragment);
 	const rawNumberString = `${integerPart}${decimalFragment}`;
-	// console.log('  Raw Number =  ' + rawNumberString);
+	console.log('  Raw Number =  ' + rawNumberString);
 
 	const formattedMagnitude = new Intl.NumberFormat('en-US', formatOptions).format(
 		Number(rawNumberString)
