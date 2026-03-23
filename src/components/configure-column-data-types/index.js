@@ -111,7 +111,16 @@ function ConfigureColumnDataType(props = {}) {
 		sanitizedPreviewNumber !== '-' &&
 		Number(sanitizedPreviewNumber) < 0;
 
-	const numberPreviewValue = formattedNumber(
+	const numberEntryValue = formattedNumber(
+		numberRawValue,
+		dataTypeFormat,
+		thousandSeparator,
+		decimalPlaces,
+		false,
+		false
+	);
+
+	const numberDisplayValue = formattedNumber(
 		numberRawValue,
 		dataTypeFormat,
 		thousandSeparator,
@@ -162,7 +171,7 @@ function ConfigureColumnDataType(props = {}) {
 		onRequestClose?.();
 	}
 
-	// Support carat location maintenance
+	// Support caret location maintenance
 	const CARET_TOKEN_PATTERN = /[\d.-]/;
 
 	function countCaretTokens(value, caretIndex) {
@@ -189,6 +198,32 @@ function ConfigureColumnDataType(props = {}) {
 		return value.length;
 	}
 
+	function getFirstNumericIndex(value) {
+		return value.search(/\d/);
+	}
+
+	function normalizeCaretForPresentationPrefix(value, caretIndex, caretMeta) {
+		if (!caretMeta) {
+			return caretIndex;
+		}
+
+		const firstNumericIndex = getFirstNumericIndex(value);
+
+		if (firstNumericIndex === -1) {
+			return caretIndex;
+		}
+
+		if (caretMeta.wasAtStart) {
+			return 0;
+		}
+
+		if (caretMeta.wasInPrefixZone) {
+			return firstNumericIndex;
+		}
+
+		return caretIndex;
+	}
+
 	useLayoutEffect(() => {
 		const input = numberEntryWrapperRef.current?.querySelector('input') ?? null;
 		numberEntryInputRef.current = input;
@@ -202,11 +237,17 @@ function ConfigureColumnDataType(props = {}) {
 			return;
 		}
 
-		const nextCaret = getCaretIndexFromTokenCount(input.value, pendingCaretRef.current.tokenCount);
+		let nextCaret = getCaretIndexFromTokenCount(input.value, pendingCaretRef.current.tokenCount);
+
+		nextCaret = normalizeCaretForPresentationPrefix(
+			input.value,
+			nextCaret,
+			pendingCaretRef.current
+		);
 
 		input.setSelectionRange(nextCaret, nextCaret);
 		pendingCaretRef.current = null;
-	}, [numberPreviewValue]);
+	}, [numberEntryValue]);
 
 	/**
 	 * Update date format and set default options
@@ -461,9 +502,13 @@ function ConfigureColumnDataType(props = {}) {
 		// console.log('number change event = ' + event);
 		const input = numberEntryInputRef.current;
 		const selectionStart = input?.selectionStart ?? event.length;
+		const firstNumericIndex = getFirstNumericIndex(event);
 
 		pendingCaretRef.current = {
 			tokenCount: countCaretTokens(event, selectionStart),
+			wasAtStart: selectionStart === 0,
+			wasInPrefixZone:
+				firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex,
 		};
 
 		const nextRawValue = sanitizeNumberInput(event, dataTypeFormat);
@@ -811,11 +856,11 @@ function ConfigureColumnDataType(props = {}) {
 																	// id={previewId}
 																	id={`${previewId}-entry`}
 																	__next40pxDefaultSize
-																	value={numberPreviewValue}
+																	value={numberEntryValue}
 																	onChange={e => onNumberPreviewChange(e)}
 																	onBlur={() => {
 																		pendingCaretRef.current = null;
-																	}} // onKeyDown={onNumberPreviewKeyDown}
+																	}}
 																/>
 															</div>
 															<TextControl
@@ -827,7 +872,8 @@ function ConfigureColumnDataType(props = {}) {
 																// id={previewId}
 																id={`${previewId}-display`}
 																__next40pxDefaultSize
-																value={numberPreviewValue}
+																value={numberDisplayValue}
+																// value={numberPreviewValue}numberDisplayValue
 															/>
 														</BaseControl>
 													</div>

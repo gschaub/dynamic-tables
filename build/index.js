@@ -352,7 +352,8 @@ function ConfigureColumnDataType(props = {}) {
   const [numberRawValue, setNumberRawValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
   const sanitizedPreviewNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.sanitizeNumberInput)(numberRawValue, dataTypeFormat);
   const showNegativeNumberPreview = redNegative && sanitizedPreviewNumber !== '' && sanitizedPreviewNumber !== '-' && Number(sanitizedPreviewNumber) < 0;
-  const numberPreviewValue = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.formattedNumber)(numberRawValue, dataTypeFormat, thousandSeparator, decimalPlaces, currency, bracketNegative);
+  const numberEntryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.formattedNumber)(numberRawValue, dataTypeFormat, thousandSeparator, decimalPlaces, false, false);
+  const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.formattedNumber)(numberRawValue, dataTypeFormat, thousandSeparator, decimalPlaces, currency, bracketNegative);
 
   // Column width attributes
   const [columnWidthType, setColumnWidthType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes.columnWidthType);
@@ -396,7 +397,7 @@ function ConfigureColumnDataType(props = {}) {
     onRequestClose?.();
   }
 
-  // Support carat location maintenance
+  // Support caret location maintenance
   const CARET_TOKEN_PATTERN = /[\d.-]/;
   function countCaretTokens(value, caretIndex) {
     return (value.slice(0, caretIndex).match(/[\d.-]/g) ?? []).length;
@@ -416,6 +417,25 @@ function ConfigureColumnDataType(props = {}) {
     }
     return value.length;
   }
+  function getFirstNumericIndex(value) {
+    return value.search(/\d/);
+  }
+  function normalizeCaretForPresentationPrefix(value, caretIndex, caretMeta) {
+    if (!caretMeta) {
+      return caretIndex;
+    }
+    const firstNumericIndex = getFirstNumericIndex(value);
+    if (firstNumericIndex === -1) {
+      return caretIndex;
+    }
+    if (caretMeta.wasAtStart) {
+      return 0;
+    }
+    if (caretMeta.wasInPrefixZone) {
+      return firstNumericIndex;
+    }
+    return caretIndex;
+  }
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useLayoutEffect)(() => {
     const input = numberEntryWrapperRef.current?.querySelector('input') ?? null;
     numberEntryInputRef.current = input;
@@ -426,10 +446,11 @@ function ConfigureColumnDataType(props = {}) {
       pendingCaretRef.current = null;
       return;
     }
-    const nextCaret = getCaretIndexFromTokenCount(input.value, pendingCaretRef.current.tokenCount);
+    let nextCaret = getCaretIndexFromTokenCount(input.value, pendingCaretRef.current.tokenCount);
+    nextCaret = normalizeCaretForPresentationPrefix(input.value, nextCaret, pendingCaretRef.current);
     input.setSelectionRange(nextCaret, nextCaret);
     pendingCaretRef.current = null;
-  }, [numberPreviewValue]);
+  }, [numberEntryValue]);
 
   /**
    * Update date format and set default options
@@ -661,8 +682,11 @@ function ConfigureColumnDataType(props = {}) {
     // console.log('number change event = ' + event);
     const input = numberEntryInputRef.current;
     const selectionStart = input?.selectionStart ?? event.length;
+    const firstNumericIndex = getFirstNumericIndex(event);
     pendingCaretRef.current = {
-      tokenCount: countCaretTokens(event, selectionStart)
+      tokenCount: countCaretTokens(event, selectionStart),
+      wasAtStart: selectionStart === 0,
+      wasInPrefixZone: firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex
     };
     const nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.sanitizeNumberInput)(event, dataTypeFormat);
     let returnedRawValue = nextRawValue;
@@ -994,11 +1018,11 @@ function ConfigureColumnDataType(props = {}) {
                               ,
                               id: `${previewId}-entry`,
                               __next40pxDefaultSize: true,
-                              value: numberPreviewValue,
+                              value: numberEntryValue,
                               onChange: e => onNumberPreviewChange(e),
                               onBlur: () => {
                                 pendingCaretRef.current = null;
-                              } // onKeyDown={onNumberPreviewKeyDown}
+                              }
                             })
                           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
                             className: `configure-column-modal__display-preview ${renderColumnClasses}`,
@@ -1010,7 +1034,8 @@ function ConfigureColumnDataType(props = {}) {
                             ,
                             id: `${previewId}-display`,
                             __next40pxDefaultSize: true,
-                            value: numberPreviewValue
+                            value: numberDisplayValue
+                            // value={numberPreviewValue}numberDisplayValue
                           })]
                         })
                       })
@@ -8396,28 +8421,28 @@ function sanitizeNumberInput(value, dataTypeFormat) {
  *
  * @since    1.2.4
  *
- * @param {string}  rawValue          String representation of canonical number
- * @param {string}  dataTypeFormat    Number format type
- * @param {boolean} thousandSeparator Add thousands separator
- * @param {number}  decimalPlaces     Number of decimal places
- * @param {boolean} currency          Display currency symbol
- * @param {boolean} bracketNegative   Display negative numbers with brackets
+ * @param {string}  rawValue           String representation of canonical number
+ * @param {string}  dataTypeFormat     Number format type
+ * @param {boolean} thousandSeparator  Add thousands separator
+ * @param {number}  decimalPlaces      Number of decimal places
+ * @param {boolean} showCurrencySymbol Display currency symbol
+ * @param {boolean} bracketNegative    Display negative numbers with brackets
  * @return {string}                   Formatted string representation of number
  */
-function formattedNumber(rawValue, dataTypeFormat, thousandSeparator, decimalPlaces, currency, bracketNegative) {
+function formattedNumber(rawValue, dataTypeFormat, thousandSeparator, decimalPlaces, showCurrencySymbol = dataTypeFormat === 'currency', bracketNegative = false) {
   // console.log('In Formatted Number');
-  const sanatizedNumber = sanitizeNumberInput(rawValue);
+  const sanitizedNumber = sanitizeNumberInput(rawValue, dataTypeFormat);
   // console.log('  Sanitized number = ' + sanatizedNumber);
 
-  if (sanatizedNumber === '') return '';
-  if (sanatizedNumber === '-') return '-';
-  const isNegative = sanatizedNumber.startsWith('-');
-  const unsigned = isNegative ? sanatizedNumber.slice(1) : sanatizedNumber;
+  if (sanitizedNumber === '') return '';
+  if (sanitizedNumber === '-') return '-';
+  const isNegative = sanitizedNumber.startsWith('-');
+  const unsigned = isNegative ? sanitizedNumber.slice(1) : sanitizedNumber;
   const hasDecimal = unsigned.includes('.');
   let [integerPart = '', fractionPart = ''] = unsigned.split('.');
   integerPart = integerPart.replace(/\D/g, '');
   fractionPart = fractionPart.replace(/\D/g, '');
-  let numberStyle = '';
+  let numberStyle = 'decimal';
   switch (dataTypeFormat) {
     case 'number':
       numberStyle = 'decimal';
@@ -8426,7 +8451,7 @@ function formattedNumber(rawValue, dataTypeFormat, thousandSeparator, decimalPla
       numberStyle = 'decimal';
       break;
     case 'currency':
-      numberStyle = 'currency';
+      numberStyle = showCurrencySymbol ? 'currency' : 'decimal';
       break;
     default:
       numberStyle = 'decimal';
@@ -8459,21 +8484,27 @@ function formattedNumber(rawValue, dataTypeFormat, thousandSeparator, decimalPla
     signDisplay: 'auto',
     useGrouping: thousandSeparator ? true : false
   };
+  if (numberStyle === 'currency') {
+    formatOptions.currency = 'USD';
+    formatOptions.currencyDisplay = 'symbol';
+  }
 
   // console.log(formatOptions);
-
   const limitedFraction = fractionPart.slice(0, Math.max(0, decimalPlaces));
   // console.log('  Limited fraction =  ' + limitedFraction);
   const decimalFragment = hasDecimal ? `.${limitedFraction}` : '';
   // console.log('  Decimal fragment =  ' + decimalFragment);
-  const rawNumberString = `${isNegative ? '-' : ''}${integerPart}${decimalFragment}`;
+  const rawNumberString = `${integerPart}${decimalFragment}`;
   // console.log('  Raw Number =  ' + rawNumberString);
 
-  const previewNumber = new Intl.NumberFormat('en-US', formatOptions).format(Number(rawNumberString));
-
-  // const previewNumber = Number(value);
-  // console.log('  Formatted Number =  ' + previewNumber);
-  return previewNumber;
+  const formattedMagnitude = new Intl.NumberFormat('en-US', formatOptions).format(Number(rawNumberString));
+  if (!isNegative) {
+    return formattedMagnitude;
+  }
+  if (bracketNegative) {
+    return `(${formattedMagnitude})`;
+  }
+  return `-${formattedMagnitude}`;
 }
 
 /***/ },

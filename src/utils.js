@@ -429,12 +429,12 @@ export function sanitizeNumberInput(value, dataTypeFormat) {
  *
  * @since    1.2.4
  *
- * @param {string}  rawValue          String representation of canonical number
- * @param {string}  dataTypeFormat    Number format type
- * @param {boolean} thousandSeparator Add thousands separator
- * @param {number}  decimalPlaces     Number of decimal places
- * @param {boolean} currency          Display currency symbol
- * @param {boolean} bracketNegative   Display negative numbers with brackets
+ * @param {string}  rawValue           String representation of canonical number
+ * @param {string}  dataTypeFormat     Number format type
+ * @param {boolean} thousandSeparator  Add thousands separator
+ * @param {number}  decimalPlaces      Number of decimal places
+ * @param {boolean} showCurrencySymbol Display currency symbol
+ * @param {boolean} bracketNegative    Display negative numbers with brackets
  * @return {string}                   Formatted string representation of number
  */
 export function formattedNumber(
@@ -442,25 +442,25 @@ export function formattedNumber(
 	dataTypeFormat,
 	thousandSeparator,
 	decimalPlaces,
-	currency,
-	bracketNegative
+	showCurrencySymbol = dataTypeFormat === 'currency',
+	bracketNegative = false
 ) {
 	// console.log('In Formatted Number');
-	const sanatizedNumber = sanitizeNumberInput(rawValue);
+	const sanitizedNumber = sanitizeNumberInput(rawValue, dataTypeFormat);
 	// console.log('  Sanitized number = ' + sanatizedNumber);
 
-	if (sanatizedNumber === '') return '';
-	if (sanatizedNumber === '-') return '-';
+	if (sanitizedNumber === '') return '';
+	if (sanitizedNumber === '-') return '-';
 
-	const isNegative = sanatizedNumber.startsWith('-');
-	const unsigned = isNegative ? sanatizedNumber.slice(1) : sanatizedNumber;
+	const isNegative = sanitizedNumber.startsWith('-');
+	const unsigned = isNegative ? sanitizedNumber.slice(1) : sanitizedNumber;
 	const hasDecimal = unsigned.includes('.');
 
 	let [integerPart = '', fractionPart = ''] = unsigned.split('.');
 	integerPart = integerPart.replace(/\D/g, '');
 	fractionPart = fractionPart.replace(/\D/g, '');
 
-	let numberStyle = '';
+	let numberStyle = 'decimal';
 
 	switch (dataTypeFormat) {
 		case 'number':
@@ -470,7 +470,7 @@ export function formattedNumber(
 			numberStyle = 'decimal';
 			break;
 		case 'currency':
-			numberStyle = 'currency';
+			numberStyle = showCurrencySymbol ? 'currency' : 'decimal';
 			break;
 		default:
 			numberStyle = 'decimal';
@@ -503,20 +503,30 @@ export function formattedNumber(
 		useGrouping: thousandSeparator ? true : false,
 	};
 
-	// console.log(formatOptions);
+	if (numberStyle === 'currency') {
+		formatOptions.currency = 'USD';
+		formatOptions.currencyDisplay = 'symbol';
+	}
 
+	// console.log(formatOptions);
 	const limitedFraction = fractionPart.slice(0, Math.max(0, decimalPlaces));
 	// console.log('  Limited fraction =  ' + limitedFraction);
 	const decimalFragment = hasDecimal ? `.${limitedFraction}` : '';
 	// console.log('  Decimal fragment =  ' + decimalFragment);
-	const rawNumberString = `${isNegative ? '-' : ''}${integerPart}${decimalFragment}`;
+	const rawNumberString = `${integerPart}${decimalFragment}`;
 	// console.log('  Raw Number =  ' + rawNumberString);
 
-	const previewNumber = new Intl.NumberFormat('en-US', formatOptions).format(
+	const formattedMagnitude = new Intl.NumberFormat('en-US', formatOptions).format(
 		Number(rawNumberString)
 	);
 
-	// const previewNumber = Number(value);
-	// console.log('  Formatted Number =  ' + previewNumber);
-	return previewNumber;
+	if (!isNegative) {
+		return formattedMagnitude;
+	}
+
+	if (bracketNegative) {
+		return `(${formattedMagnitude})`;
+	}
+
+	return `-${formattedMagnitude}`;
 }
