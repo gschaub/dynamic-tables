@@ -2576,7 +2576,7 @@ export default function Edit(props) {
 																	column_id={column_id}
 																	content={borderContent}
 																	attributes={attributes}
-																	columnClassNames={columnClasses[column_id]}
+																	columnClassNames={''}
 																	cellClassNames={classes}
 																	onMouseDown={onMouseBorderClick}
 																></Cell>
@@ -2661,7 +2661,7 @@ export default function Edit(props) {
 																				column_id={column_id}
 																				content={borderContent}
 																				attributes={attributes}
-																				columnClassNames={columnClasses[column_id]}
+																				columnClassNames={''}
 																				cellClassNames={classes}
 																				onMouseDown={onMouseBorderClick}
 																			></Cell>
@@ -2688,7 +2688,7 @@ export default function Edit(props) {
 																				content={content}
 																				attributes={attributes}
 																				isFocused={isFocused}
-																				columnClassNames={columnClasses[column_id]}
+																				columnClassNames={''}
 																				cellClassNames={
 																					'grid-control__header-cells ' +
 																					'grid-control__cellEditor ' +
@@ -2856,7 +2856,7 @@ export default function Edit(props) {
 																					column_id={column_id}
 																					content={borderContent}
 																					attributes={attributes}
-																					columnClassNames={columnClasses[column_id]}
+																					columnClassNames={''}
 																					cellClassNames={classes}
 																					onMouseDown={onMouseBorderClick}
 																				></Cell>

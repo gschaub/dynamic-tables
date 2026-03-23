@@ -1,6 +1,6 @@
 /* External dependencies */
 import { useInstanceId } from '@wordpress/compose';
-import { useEffect, useState, memo } from '@wordpress/element';
+import { useEffect, useLayoutEffect, useRef, useState, memo } from '@wordpress/element';
 import {
 	Modal,
 	BaseControl,
@@ -98,6 +98,11 @@ function ConfigureColumnDataType(props = {}) {
 	const [updateColumnStyle, setUpdateColumnStyle] = useState(
 		normalizedColumnDataType?.settings?.formatOptions?.updateColumnStyle || true
 	);
+
+	const numberEntryWrapperRef = useRef(null);
+	const numberEntryInputRef = useRef(null);
+	const pendingCaretRef = useRef(null);
+
 	const [numberRawValue, setNumberRawValue] = useState('');
 	const sanitizedPreviewNumber = sanitizeNumberInput(numberRawValue, dataTypeFormat);
 	const showNegativeNumberPreview =
@@ -156,6 +161,52 @@ function ConfigureColumnDataType(props = {}) {
 	function handleCancel() {
 		onRequestClose?.();
 	}
+
+	// Support carat location maintenance
+	const CARET_TOKEN_PATTERN = /[\d.-]/;
+
+	function countCaretTokens(value, caretIndex) {
+		return (value.slice(0, caretIndex).match(/[\d.-]/g) ?? []).length;
+	}
+
+	function getCaretIndexFromTokenCount(value, tokenCount) {
+		if (tokenCount <= 0) {
+			return 0;
+		}
+
+		let seen = 0;
+
+		for (let i = 0; i < value.length; i++) {
+			if (CARET_TOKEN_PATTERN.test(value[i])) {
+				seen++;
+
+				if (seen >= tokenCount) {
+					return i + 1;
+				}
+			}
+		}
+
+		return value.length;
+	}
+
+	useLayoutEffect(() => {
+		const input = numberEntryWrapperRef.current?.querySelector('input') ?? null;
+		numberEntryInputRef.current = input;
+
+		if (!input || !pendingCaretRef.current) {
+			return;
+		}
+
+		if (input !== input.ownerDocument.activeElement) {
+			pendingCaretRef.current = null;
+			return;
+		}
+
+		const nextCaret = getCaretIndexFromTokenCount(input.value, pendingCaretRef.current.tokenCount);
+
+		input.setSelectionRange(nextCaret, nextCaret);
+		pendingCaretRef.current = null;
+	}, [numberPreviewValue]);
 
 	/**
 	 * Update date format and set default options
@@ -407,6 +458,14 @@ function ConfigureColumnDataType(props = {}) {
 	 * @param {Object} event New number string
 	 */
 	function onNumberPreviewChange(event) {
+		// console.log('number change event = ' + event);
+		const input = numberEntryInputRef.current;
+		const selectionStart = input?.selectionStart ?? event.length;
+
+		pendingCaretRef.current = {
+			tokenCount: countCaretTokens(event, selectionStart),
+		};
+
 		const nextRawValue = sanitizeNumberInput(event, dataTypeFormat);
 
 		let returnedRawValue = nextRawValue;
@@ -743,25 +802,30 @@ function ConfigureColumnDataType(props = {}) {
 															label="Preview"
 															help="This is only a preview; it won’t change saved values."
 														>
-															<TextControl
-																className={`configure-column-modal__input-preview ${renderColumnClasses}`}
-																type={'text'}
-																inputMode={dataTypeFormat === 'integer' ? 'numeric' : 'decimal'}
-																label={'Entry'}
-																id={previewId}
-																__next40pxDefaultSize
-																value={numberPreviewValue}
-																onChange={onNumberPreviewChange}
-																// onKeyDown={onNumberPreviewKeyDown}
-																// onBlur={onNumberPreviewBlur}
-															/>
+															<div ref={numberEntryWrapperRef}>
+																<TextControl
+																	className={`configure-column-modal__input-preview ${renderColumnClasses}`}
+																	type={'text'}
+																	inputMode={dataTypeFormat === 'integer' ? 'numeric' : 'decimal'}
+																	label={'Entry'}
+																	// id={previewId}
+																	id={`${previewId}-entry`}
+																	__next40pxDefaultSize
+																	value={numberPreviewValue}
+																	onChange={e => onNumberPreviewChange(e)}
+																	onBlur={() => {
+																		pendingCaretRef.current = null;
+																	}} // onKeyDown={onNumberPreviewKeyDown}
+																/>
+															</div>
 															<TextControl
 																className={`configure-column-modal__display-preview ${renderColumnClasses}`}
 																type={'text'}
 																inputMode={dataTypeFormat === 'integer' ? 'numeric' : 'decimal'}
 																label={'Display'}
 																disabled={true}
-																id={previewId}
+																// id={previewId}
+																id={`${previewId}-display`}
 																__next40pxDefaultSize
 																value={numberPreviewValue}
 															/>

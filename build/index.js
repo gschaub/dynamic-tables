@@ -346,6 +346,9 @@ function ConfigureColumnDataType(props = {}) {
   const [redNegative, setRedNegative] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.redNegative || false);
   const [bracketNegative, setBracketNegative] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.bracketNegative || false);
   const [updateColumnStyle, setUpdateColumnStyle] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.updateColumnStyle || true);
+  const numberEntryWrapperRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
+  const numberEntryInputRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
+  const pendingCaretRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const [numberRawValue, setNumberRawValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
   const sanitizedPreviewNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.sanitizeNumberInput)(numberRawValue, dataTypeFormat);
   const showNegativeNumberPreview = redNegative && sanitizedPreviewNumber !== '' && sanitizedPreviewNumber !== '-' && Number(sanitizedPreviewNumber) < 0;
@@ -392,6 +395,41 @@ function ConfigureColumnDataType(props = {}) {
   function handleCancel() {
     onRequestClose?.();
   }
+
+  // Support carat location maintenance
+  const CARET_TOKEN_PATTERN = /[\d.-]/;
+  function countCaretTokens(value, caretIndex) {
+    return (value.slice(0, caretIndex).match(/[\d.-]/g) ?? []).length;
+  }
+  function getCaretIndexFromTokenCount(value, tokenCount) {
+    if (tokenCount <= 0) {
+      return 0;
+    }
+    let seen = 0;
+    for (let i = 0; i < value.length; i++) {
+      if (CARET_TOKEN_PATTERN.test(value[i])) {
+        seen++;
+        if (seen >= tokenCount) {
+          return i + 1;
+        }
+      }
+    }
+    return value.length;
+  }
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useLayoutEffect)(() => {
+    const input = numberEntryWrapperRef.current?.querySelector('input') ?? null;
+    numberEntryInputRef.current = input;
+    if (!input || !pendingCaretRef.current) {
+      return;
+    }
+    if (input !== input.ownerDocument.activeElement) {
+      pendingCaretRef.current = null;
+      return;
+    }
+    const nextCaret = getCaretIndexFromTokenCount(input.value, pendingCaretRef.current.tokenCount);
+    input.setSelectionRange(nextCaret, nextCaret);
+    pendingCaretRef.current = null;
+  }, [numberPreviewValue]);
 
   /**
    * Update date format and set default options
@@ -620,6 +658,12 @@ function ConfigureColumnDataType(props = {}) {
    * @param {Object} event New number string
    */
   function onNumberPreviewChange(event) {
+    // console.log('number change event = ' + event);
+    const input = numberEntryInputRef.current;
+    const selectionStart = input?.selectionStart ?? event.length;
+    pendingCaretRef.current = {
+      tokenCount: countCaretTokens(event, selectionStart)
+    };
     const nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.sanitizeNumberInput)(event, dataTypeFormat);
     let returnedRawValue = nextRawValue;
     if (dataTypeFormat !== 'integer') {
@@ -939,24 +983,32 @@ function ConfigureColumnDataType(props = {}) {
                           id: previewId,
                           label: "Preview",
                           help: "This is only a preview; it won\u2019t change saved values.",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
-                            className: `configure-column-modal__input-preview ${renderColumnClasses}`,
-                            type: 'text',
-                            inputMode: dataTypeFormat === 'integer' ? 'numeric' : 'decimal',
-                            label: 'Entry',
-                            id: previewId,
-                            __next40pxDefaultSize: true,
-                            value: numberPreviewValue,
-                            onChange: onNumberPreviewChange
-                            // onKeyDown={onNumberPreviewKeyDown}
-                            // onBlur={onNumberPreviewBlur}
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                            ref: numberEntryWrapperRef,
+                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                              className: `configure-column-modal__input-preview ${renderColumnClasses}`,
+                              type: 'text',
+                              inputMode: dataTypeFormat === 'integer' ? 'numeric' : 'decimal',
+                              label: 'Entry'
+                              // id={previewId}
+                              ,
+                              id: `${previewId}-entry`,
+                              __next40pxDefaultSize: true,
+                              value: numberPreviewValue,
+                              onChange: e => onNumberPreviewChange(e),
+                              onBlur: () => {
+                                pendingCaretRef.current = null;
+                              } // onKeyDown={onNumberPreviewKeyDown}
+                            })
                           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
                             className: `configure-column-modal__display-preview ${renderColumnClasses}`,
                             type: 'text',
                             inputMode: dataTypeFormat === 'integer' ? 'numeric' : 'decimal',
                             label: 'Display',
-                            disabled: true,
-                            id: previewId,
+                            disabled: true
+                            // id={previewId}
+                            ,
+                            id: `${previewId}-display`,
                             __next40pxDefaultSize: true,
                             value: numberPreviewValue
                           })]
@@ -6248,7 +6300,7 @@ function Edit(props) {
                       column_id: column_id,
                       content: borderContent,
                       attributes: attributes,
-                      columnClassNames: columnClasses[column_id],
+                      columnClassNames: '',
                       cellClassNames: classes,
                       onMouseDown: onMouseBorderClick
                     })]
@@ -6310,7 +6362,7 @@ function Edit(props) {
                         column_id: column_id,
                         content: borderContent,
                         attributes: attributes,
-                        columnClassNames: columnClasses[column_id],
+                        columnClassNames: '',
                         cellClassNames: classes,
                         onMouseDown: onMouseBorderClick
                       }), isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
@@ -6329,7 +6381,7 @@ function Edit(props) {
                         content: content,
                         attributes: attributes,
                         isFocused: isFocused,
-                        columnClassNames: columnClasses[column_id],
+                        columnClassNames: '',
                         cellClassNames: 'grid-control__header-cells ' + 'grid-control__cellEditor ' + classes + calculatedClasses,
                         showGridLinesCSS: showGridLinesCSS,
                         gridLineWidthCSS: gridLineWidthCSS,
@@ -6440,7 +6492,7 @@ function Edit(props) {
                           column_id: column_id,
                           content: borderContent,
                           attributes: attributes,
-                          columnClassNames: columnClasses[column_id],
+                          columnClassNames: '',
                           cellClassNames: classes,
                           onMouseDown: onMouseBorderClick
                         }), isFirstColumn && !isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
