@@ -33,6 +33,10 @@ import {
 	prepareClassesForUse,
 	sanitizeNumberInput,
 	formattedNumber,
+	countCaretTokens,
+	getCaretIndexFromTokenCount,
+	getFirstNumericIndex,
+	normalizeCaretForPresentationPrefix,
 } from '../../utils';
 
 /**
@@ -169,59 +173,6 @@ function ConfigureColumnDataType(props = {}) {
 	 */
 	function handleCancel() {
 		onRequestClose?.();
-	}
-
-	// Support caret location maintenance
-	const CARET_TOKEN_PATTERN = /[\d.-]/;
-
-	function countCaretTokens(value, caretIndex) {
-		return (value.slice(0, caretIndex).match(/[\d.-]/g) ?? []).length;
-	}
-
-	function getCaretIndexFromTokenCount(value, tokenCount) {
-		if (tokenCount <= 0) {
-			return 0;
-		}
-
-		let seen = 0;
-
-		for (let i = 0; i < value.length; i++) {
-			if (CARET_TOKEN_PATTERN.test(value[i])) {
-				seen++;
-
-				if (seen >= tokenCount) {
-					return i + 1;
-				}
-			}
-		}
-
-		return value.length;
-	}
-
-	function getFirstNumericIndex(value) {
-		return value.search(/\d/);
-	}
-
-	function normalizeCaretForPresentationPrefix(value, caretIndex, caretMeta) {
-		if (!caretMeta) {
-			return caretIndex;
-		}
-
-		const firstNumericIndex = getFirstNumericIndex(value);
-
-		if (firstNumericIndex === -1) {
-			return caretIndex;
-		}
-
-		if (caretMeta.wasAtStart) {
-			return 0;
-		}
-
-		if (caretMeta.wasInPrefixZone) {
-			return firstNumericIndex;
-		}
-
-		return caretIndex;
 	}
 
 	useLayoutEffect(() => {

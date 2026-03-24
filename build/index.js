@@ -396,46 +396,6 @@ function ConfigureColumnDataType(props = {}) {
   function handleCancel() {
     onRequestClose?.();
   }
-
-  // Support caret location maintenance
-  const CARET_TOKEN_PATTERN = /[\d.-]/;
-  function countCaretTokens(value, caretIndex) {
-    return (value.slice(0, caretIndex).match(/[\d.-]/g) ?? []).length;
-  }
-  function getCaretIndexFromTokenCount(value, tokenCount) {
-    if (tokenCount <= 0) {
-      return 0;
-    }
-    let seen = 0;
-    for (let i = 0; i < value.length; i++) {
-      if (CARET_TOKEN_PATTERN.test(value[i])) {
-        seen++;
-        if (seen >= tokenCount) {
-          return i + 1;
-        }
-      }
-    }
-    return value.length;
-  }
-  function getFirstNumericIndex(value) {
-    return value.search(/\d/);
-  }
-  function normalizeCaretForPresentationPrefix(value, caretIndex, caretMeta) {
-    if (!caretMeta) {
-      return caretIndex;
-    }
-    const firstNumericIndex = getFirstNumericIndex(value);
-    if (firstNumericIndex === -1) {
-      return caretIndex;
-    }
-    if (caretMeta.wasAtStart) {
-      return 0;
-    }
-    if (caretMeta.wasInPrefixZone) {
-      return firstNumericIndex;
-    }
-    return caretIndex;
-  }
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useLayoutEffect)(() => {
     const input = numberEntryWrapperRef.current?.querySelector('input') ?? null;
     numberEntryInputRef.current = input;
@@ -446,8 +406,8 @@ function ConfigureColumnDataType(props = {}) {
       pendingCaretRef.current = null;
       return;
     }
-    let nextCaret = getCaretIndexFromTokenCount(input.value, pendingCaretRef.current.tokenCount);
-    nextCaret = normalizeCaretForPresentationPrefix(input.value, nextCaret, pendingCaretRef.current);
+    let nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getCaretIndexFromTokenCount)(input.value, pendingCaretRef.current.tokenCount);
+    nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.normalizeCaretForPresentationPrefix)(input.value, nextCaret, pendingCaretRef.current);
     input.setSelectionRange(nextCaret, nextCaret);
     pendingCaretRef.current = null;
   }, [numberEntryValue]);
@@ -713,9 +673,9 @@ function ConfigureColumnDataType(props = {}) {
     console.log('number change event = ' + event);
     const input = numberEntryInputRef.current;
     const selectionStart = input?.selectionStart ?? event.length;
-    const firstNumericIndex = getFirstNumericIndex(event);
+    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getFirstNumericIndex)(event);
     pendingCaretRef.current = {
-      tokenCount: countCaretTokens(event, selectionStart),
+      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_6__.countCaretTokens)(event, selectionStart),
       wasAtStart: selectionStart === 0,
       wasInPrefixZone: firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex
     };
@@ -6725,6 +6685,7 @@ function Edit(props) {
  *
  * @since 1.1.1
  * @since 1.2.0  Added column data type logic and Date/Time render
+ * @since 1.2.4  Added support for number column content type
  *
  * @param {Object} props Passed attributes
  * @return {Object} events for cell content editing
@@ -6756,16 +6717,26 @@ function Cell(props) {
     type,
     settings
   } = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.normalizeColumnDataType)(dataFormat);
-  const [inputType, setInputType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(() => settings?.format || 'date');
+  const [inputType, setInputType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(() => settings?.format || '');
   const [cellContent, setCellContent] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)();
   const initialCellValue = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(content);
   const [cellAttributes, setCellAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(attributes);
   const htmlToText = (html = '') => (0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_7__.getTextContent)((0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_7__.create)({
     html
   })).replace(/\s+/g, ' ').trim();
-  const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.formattedNumber)(cellContent, inputType, settings?.formatOptions?.thousandSeparator, settings?.formatOptions?.decimalPlaces, settings?.formatOptions?.showCurrencySymbol);
+  const numberEntryWrapperRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
+  const numberEntryInputRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
+  const pendingCaretRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
+  const numberEntryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.formattedNumber)(cellContent, inputType, settings?.formatOptions?.thousandSeparator, settings?.formatOptions?.decimalPlaces, false, false);
+  const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.formattedNumber)(cellContent, inputType, settings?.formatOptions?.thousandSeparator, settings?.formatOptions?.decimalPlaces, settings?.formatOptions?.showCurrencySymbol, settings?.formatOptions?.bracketNegative);
   const sanitizedNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.sanitizeNumberInput)(cellContent, inputType);
   const redNegativeNumber = settings?.formatOptions?.redNegative && sanitizedNumber !== '' && sanitizedNumber !== '-' && Number(sanitizedNumber) < 0;
+
+  /**
+   * Process effect of changes to cell level attributes
+   *
+   * @since 1.2.0
+   */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     setCellAttributes(attributes);
     initialCellValue.current = content ?? '';
@@ -6773,15 +6744,18 @@ function Cell(props) {
     // Default behavior: raw content as-is
     setCellContent(content ?? '');
   }, [content, attributes]);
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
-    if (cellType !== 'body' || type !== 'date-time') return;
-    const resolvedFormat = inputType || 'date';
-    // const resolvedFormat = settings?.format || 'date';
 
+  /**
+   * Process effect of changes to column level attributes
+   *
+   * @since 1.2.0
+   */
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (cellType !== 'body' || type !== 'date-time' && type !== 'number') return;
+    const resolvedFormat = settings?.format || '';
     if (isEditing) {
       // Enter edit mode: force a valid HTML input value FIRST
       if (cellType === 'body' && type === 'date-time') {
-        setInputType(resolvedFormat);
         const raw = content ?? initialCellValue.current ?? '';
         if (raw) {
           setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_13__.formattedIsoDate)(raw, resolvedFormat));
@@ -6791,13 +6765,43 @@ function Cell(props) {
           setCellContent('');
         }
       }
+
+      // Enter edit mode: force a valid HTML input value FIRST
+      if (cellType === 'body' && type === 'number') {
+        const raw = content ?? initialCellValue.current ?? '';
+        setCellContent(raw);
+      }
     } else {
       const raw = content ?? '';
-      setCellContent(raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_13__.formatedDisplayDate)(raw, resolvedFormat) : '');
+      if (cellType === 'body' && type === 'date-time') {
+        setCellContent(raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_13__.formatedDisplayDate)(raw, resolvedFormat) : '');
+      }
     }
+    setInputType(resolvedFormat);
     setCellAttributes(attributes);
     initialCellValue.current = content ?? '';
-  }, [isEditing, content, attributes, cellType, type, inputType, settings?.defaultToToday]);
+  }, [isEditing, content, attributes, cellType, type, settings?.format, settings?.defaultToToday]);
+
+  /**
+   * Support caret positioning during entry
+   *
+   * @since 1.2.4
+   */
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useLayoutEffect)(() => {
+    const input = numberEntryWrapperRef.current?.querySelector('input') ?? null;
+    numberEntryInputRef.current = input;
+    if (!input || !pendingCaretRef.current) {
+      return;
+    }
+    if (input !== input.ownerDocument.activeElement) {
+      pendingCaretRef.current = null;
+      return;
+    }
+    let nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.getCaretIndexFromTokenCount)(input.value, pendingCaretRef.current.tokenCount);
+    nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.normalizeCaretForPresentationPrefix)(input.value, nextCaret, pendingCaretRef.current);
+    input.setSelectionRange(nextCaret, nextCaret);
+    pendingCaretRef.current = null;
+  }, [numberEntryValue]);
 
   /**
    * Handle onChange event for cell content update
@@ -6875,32 +6879,43 @@ function Cell(props) {
    * @param {Object} event New number string
    */
   function onNumberChange(event) {
-    const nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.sanitizeNumberInput)(event, inputType);
-    let returnedRawValue = nextRawValue;
+    const input = numberEntryInputRef.current;
+    const selectionStart = input?.selectionStart ?? event.length;
+    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.getFirstNumericIndex)(event);
+    pendingCaretRef.current = {
+      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_13__.countCaretTokens)(event, selectionStart),
+      wasAtStart: selectionStart === 0,
+      wasInPrefixZone: firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex
+    };
+    let nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.sanitizeNumberInput)(event, inputType);
+    let revisedDecimalPlaces = settings?.formatOptions?.decimalPlaces;
+    if (inputType === 'percent') {
+      console.log('...Percentage division = ' + Number(nextRawValue) + ', ' + Number(nextRawValue) / 100);
+      revisedDecimalPlaces = settings?.formatOptions?.decimalPlaces + 2;
+      nextRawValue = String(Number(nextRawValue) / 100);
+    }
     if (inputType !== 'integer') {
       const [integerPart, fractionPart = ''] = nextRawValue.split('.');
-      const fractionalExcessLength = fractionPart.length - settings?.formatOptions?.decimalPlaces;
+      const fractionalExcessLength = fractionPart.length - revisedDecimalPlaces;
       if (fractionalExcessLength > 0) {
-        returnedRawValue = `${integerPart}.${fractionPart.slice(0, settings?.formatOptions?.decimalPlaces)}`;
+        nextRawValue = `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}`;
       }
       if (fractionalExcessLength < 0) {
         const paddedSpaces = fractionalExcessLength * -1;
-        returnedRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
+        nextRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
       }
     }
-    setCellContent(returnedRawValue);
+    setCellContent(nextRawValue);
     updateCellData({
-      content: returnedRawValue,
+      content: nextRawValue,
       attributes: {
         ...cellAttributes,
         value: {
           ...(cellAttributes?.value || {}),
-          indexText: returnedRawValue
+          indexText: nextRawValue
         }
       }
     });
-
-    // setNumberRawValue(returnedRawValue);
   }
 
   /**
@@ -6922,6 +6937,7 @@ function Cell(props) {
    *
    * @since 1.1.1
    * @since 1.2.0    Add DateTime render type
+   * @since 1.2.4    Add Number render type
    *
    * @param {Object} e On Focus event
    * @return {void}
@@ -6957,7 +6973,7 @@ function Cell(props) {
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TextControl
       // className="grid-control__cellEditor--dateTimeInput"
       , {
-        className: renderClasses,
+        className: renderClassesEdit,
         type: inputType,
         __next40pxDefaultSize: true,
         value: cellContent,
@@ -6987,41 +7003,27 @@ function Cell(props) {
     },
     number: () => {
       if (!isEditing) {
+        console.log('Display Numberic Value = ' + numberDisplayValue);
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
           children: numberDisplayValue
         });
       }
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TextControl, {
-        className: renderClassesEdit,
-        type: 'text',
-        inputMode: inputType === 'integer' ? 'numeric' : 'decimal',
-        __next40pxDefaultSize: true,
-        value: numberDisplayValue
-        // onKeyDown={event => {
-        // 	onDateTimeKeyDown(event);
-        // }}
-        ,
-        onChange: event => {
-          onNumberChange(event);
-        }
-        // onBlur={event => {
-        // 	const format = settings?.format || inputType || 'date';
-        // 	const next = event?.target?.value ?? cellContent ?? '';
-        // 	const formattedContent = formattedIsoDate(next, format);
-        // 	updateCellData({
-        // 		content: next,
-        // 		attributes: {
-        // 			...cellAttributes,
-        // 			value: {
-        // 				...(cellAttributes?.value || {}),
-        // 				indexText: formattedContent,
-        // 			},
-        // 		},
-        // 	});
-        // 	onRequestStopEdit?.();
-        // }}
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
+        ref: numberEntryWrapperRef,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TextControl, {
+          className: renderClassesEdit,
+          type: 'text',
+          inputMode: inputType === 'integer' ? 'numeric' : 'decimal',
+          __next40pxDefaultSize: true,
+          value: numberEntryValue,
+          onChange: event => {
+            onNumberChange(event);
+          },
+          onBlur: () => {
+            pendingCaretRef.current = null;
+          }
+        })
       });
-      // return <div>Number Content</div>
     }
   };
   let renderPipeline = [];
@@ -7065,6 +7067,8 @@ function Cell(props) {
   });
   const isBorderCell = cellType === 'border';
   const computedTabIndex = !isBorderCell && isFocused ? 0 : -1;
+
+  // console.log('Rendering Cell ' + cell_id);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
     "data-cell-id": cell_id,
     "data-col": Number(column_id),
@@ -8034,10 +8038,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   DEFAULT_COLUMN_DATA_TYPE: () => (/* binding */ DEFAULT_COLUMN_DATA_TYPE),
 /* harmony export */   computeCellIds: () => (/* binding */ computeCellIds),
+/* harmony export */   countCaretTokens: () => (/* binding */ countCaretTokens),
 /* harmony export */   formatedDisplayDate: () => (/* binding */ formatedDisplayDate),
 /* harmony export */   formattedIsoDate: () => (/* binding */ formattedIsoDate),
 /* harmony export */   formattedNumber: () => (/* binding */ formattedNumber),
 /* harmony export */   generateBlockTableRef: () => (/* binding */ generateBlockTableRef),
+/* harmony export */   getCaretIndexFromTokenCount: () => (/* binding */ getCaretIndexFromTokenCount),
+/* harmony export */   getFirstNumericIndex: () => (/* binding */ getFirstNumericIndex),
+/* harmony export */   normalizeCaretForPresentationPrefix: () => (/* binding */ normalizeCaretForPresentationPrefix),
 /* harmony export */   normalizeColumnDataType: () => (/* binding */ normalizeColumnDataType),
 /* harmony export */   numberToLetter: () => (/* binding */ numberToLetter),
 /* harmony export */   openCurrentColumnMenu: () => (/* binding */ openCurrentColumnMenu),
@@ -8290,6 +8298,7 @@ const DEFAULT_COLUMN_DATA_TYPE = {
  */
 function normalizeColumnDataType(columnDataType) {
   // console.log('Consolidate to one columnDataType shape')
+  // console.log('...Inbound Data Type', columnDataType)
   if (columnDataType?.type) {
     return columnDataType;
   }
@@ -8423,6 +8432,48 @@ function formattedIsoDate(date, format) {
   return '';
 }
 
+/*
+ * Support caret positioning during entry
+ */
+const CARET_TOKEN_PATTERN = /[\d.-]/;
+function countCaretTokens(value, caretIndex) {
+  return (value.slice(0, caretIndex).match(/[\d.-]/g) ?? []).length;
+}
+function getCaretIndexFromTokenCount(value, tokenCount) {
+  if (tokenCount <= 0) {
+    return 0;
+  }
+  let seen = 0;
+  for (let i = 0; i < value.length; i++) {
+    if (CARET_TOKEN_PATTERN.test(value[i])) {
+      seen++;
+      if (seen >= tokenCount) {
+        return i + 1;
+      }
+    }
+  }
+  return value.length;
+}
+function getFirstNumericIndex(value) {
+  return value.search(/\d/);
+}
+function normalizeCaretForPresentationPrefix(value, caretIndex, caretMeta) {
+  if (!caretMeta) {
+    return caretIndex;
+  }
+  const firstNumericIndex = getFirstNumericIndex(value);
+  if (firstNumericIndex === -1) {
+    return caretIndex;
+  }
+  if (caretMeta.wasAtStart) {
+    return 0;
+  }
+  if (caretMeta.wasInPrefixZone) {
+    return firstNumericIndex;
+  }
+  return caretIndex;
+}
+
 /**
  * Strip formatting characters from numeric display string
  *
@@ -8470,10 +8521,14 @@ function sanitizeNumberInput(value, dataTypeFormat) {
  * @param {boolean} bracketNegative    Display negative numbers with brackets
  * @return {string}                   Formatted string representation of number
  */
-function formattedNumber(rawValue, dataTypeFormat, thousandSeparator, decimalPlaces, showCurrencySymbol = dataTypeFormat === 'currency', bracketNegative = false) {
+function formattedNumber(rawValue, dataTypeFormat, thousandSeparator, decimalPlaces, showCurrencySymbol,
+// showCurrencySymbol = dataTypeFormat === 'currency',
+bracketNegative = false) {
   // console.log('In Formatted Number');
+  // console.log('...Number format = ', dataTypeFormat)
   const sanitizedNumber = sanitizeNumberInput(rawValue, dataTypeFormat);
-  console.log('  Sanitized number = ' + sanitizedNumber);
+  // console.log('...Sanitized number = ' + sanitizedNumber);
+
   if (sanitizedNumber === '') return '';
   if (sanitizedNumber === '-') return '-';
   const isNegative = sanitizedNumber.startsWith('-');
@@ -8533,13 +8588,15 @@ function formattedNumber(rawValue, dataTypeFormat, thousandSeparator, decimalPla
     formatOptions.currency = 'USD';
     formatOptions.currencyDisplay = 'symbol';
   }
-  console.log(formatOptions);
+
+  // console.log('Formatted Option = ', formatOptions);
   const limitedFraction = fractionPart.slice(0, Math.max(0, revisedDecimalPlaces));
-  console.log('  Limited fraction =  ' + limitedFraction);
+  // console.log('  Limited fraction =  ' + limitedFraction);
   const decimalFragment = hasDecimal ? `.${limitedFraction}` : '';
-  console.log('  Decimal fragment =  ' + decimalFragment);
+  // console.log('  Decimal fragment =  ' + decimalFragment);
   const rawNumberString = `${integerPart}${decimalFragment}`;
-  console.log('  Raw Number =  ' + rawNumberString);
+  // console.log('  Raw Number =  ' + rawNumberString);
+
   const formattedMagnitude = new Intl.NumberFormat('en-US', formatOptions).format(Number(rawNumberString));
   if (!isNegative) {
     return formattedMagnitude;

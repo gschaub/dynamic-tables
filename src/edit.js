@@ -1,6 +1,14 @@
 /* External dependencies */
 import { useSelect, useDispatch, dispatch } from '@wordpress/data';
-import { useState, useEffect, useRef, useMemo, Fragment, flushSync } from '@wordpress/element';
+import {
+	useState,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useMemo,
+	Fragment,
+	flushSync,
+} from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { store as noticeStore } from '@wordpress/notices';
 import { __ } from '@wordpress/i18n';
@@ -46,6 +54,10 @@ import {
 	normalizeColumnDataType,
 	sanitizeNumberInput,
 	formattedNumber,
+	countCaretTokens,
+	getCaretIndexFromTokenCount,
+	getFirstNumericIndex,
+	normalizeCaretForPresentationPrefix,
 } from './utils';
 
 import { initTable, getDefaultRow, getDefaultColumn, getDefaultCell } from './table-defaults';
@@ -3062,6 +3074,7 @@ export default function Edit(props) {
  *
  * @since 1.1.1
  * @since 1.2.0  Added column data type logic and Date/Time render
+ * @since 1.2.4  Added support for number column content type
  *
  * @param {Object} props Passed attributes
  * @return {Object} events for cell content editing
@@ -3092,29 +3105,46 @@ function Cell(props) {
 
 	const { type, settings } = normalizeColumnDataType(dataFormat);
 
-	const [inputType, setInputType] = useState(() => settings?.format || 'date');
+	const [inputType, setInputType] = useState(() => settings?.format || '');
 	const [cellContent, setCellContent] = useState();
 	const initialCellValue = useRef(content);
 	const [cellAttributes, setCellAttributes] = useState(attributes);
 
 	const htmlToText = (html = '') => getTextContent(create({ html })).replace(/\s+/g, ' ').trim();
 
+	const numberEntryWrapperRef = useRef(null);
+	const numberEntryInputRef = useRef(null);
+	const pendingCaretRef = useRef(null);
+
+	const numberEntryValue = formattedNumber(
+		cellContent,
+		inputType,
+		settings?.formatOptions?.thousandSeparator,
+		settings?.formatOptions?.decimalPlaces,
+		false,
+		false
+	);
+
 	const numberDisplayValue = formattedNumber(
 		cellContent,
 		inputType,
 		settings?.formatOptions?.thousandSeparator,
 		settings?.formatOptions?.decimalPlaces,
-		settings?.formatOptions?.showCurrencySymbol
+		settings?.formatOptions?.showCurrencySymbol,
+		settings?.formatOptions?.bracketNegative
 	);
-
 	const sanitizedNumber = sanitizeNumberInput(cellContent, inputType);
-
 	const redNegativeNumber =
 		settings?.formatOptions?.redNegative &&
 		sanitizedNumber !== '' &&
 		sanitizedNumber !== '-' &&
 		Number(sanitizedNumber) < 0;
 
+	/**
+	 * Process effect of changes to cell level attributes
+	 *
+	 * @since 1.2.0
+	 */
 	useEffect(() => {
 		setCellAttributes(attributes);
 		initialCellValue.current = content ?? '';
@@ -3123,16 +3153,19 @@ function Cell(props) {
 		setCellContent(content ?? '');
 	}, [content, attributes]);
 
+	/**
+	 * Process effect of changes to column level attributes
+	 *
+	 * @since 1.2.0
+	 */
 	useEffect(() => {
-		if (cellType !== 'body' || type !== 'date-time') return;
+		if (cellType !== 'body' || (type !== 'date-time' && type !== 'number')) return;
 
-		const resolvedFormat = inputType || 'date';
-		// const resolvedFormat = settings?.format || 'date';
+		const resolvedFormat = settings?.format || '';
 
 		if (isEditing) {
 			// Enter edit mode: force a valid HTML input value FIRST
 			if (cellType === 'body' && type === 'date-time') {
-				setInputType(resolvedFormat);
 				const raw = content ?? initialCellValue.current ?? '';
 
 				if (raw) {
@@ -3143,14 +3176,53 @@ function Cell(props) {
 					setCellContent('');
 				}
 			}
+
+			// Enter edit mode: force a valid HTML input value FIRST
+			if (cellType === 'body' && type === 'number') {
+				const raw = content ?? initialCellValue.current ?? '';
+				setCellContent(raw);
+			}
 		} else {
 			const raw = content ?? '';
-			setCellContent(raw ? formatedDisplayDate(raw, resolvedFormat) : '');
+			if (cellType === 'body' && type === 'date-time') {
+				setCellContent(raw ? formatedDisplayDate(raw, resolvedFormat) : '');
+			}
 		}
 
+		setInputType(resolvedFormat);
 		setCellAttributes(attributes);
 		initialCellValue.current = content ?? '';
-	}, [isEditing, content, attributes, cellType, type, inputType, settings?.defaultToToday]);
+	}, [isEditing, content, attributes, cellType, type, settings?.format, settings?.defaultToToday]);
+
+	/**
+	 * Support caret positioning during entry
+	 *
+	 * @since 1.2.4
+	 */
+	useLayoutEffect(() => {
+		const input = numberEntryWrapperRef.current?.querySelector('input') ?? null;
+		numberEntryInputRef.current = input;
+
+		if (!input || !pendingCaretRef.current) {
+			return;
+		}
+
+		if (input !== input.ownerDocument.activeElement) {
+			pendingCaretRef.current = null;
+			return;
+		}
+
+		let nextCaret = getCaretIndexFromTokenCount(input.value, pendingCaretRef.current.tokenCount);
+
+		nextCaret = normalizeCaretForPresentationPrefix(
+			input.value,
+			nextCaret,
+			pendingCaretRef.current
+		);
+
+		input.setSelectionRange(nextCaret, nextCaret);
+		pendingCaretRef.current = null;
+	}, [numberEntryValue]);
 
 	/**
 	 * Handle onChange event for cell content update
@@ -3240,38 +3312,53 @@ function Cell(props) {
 	 * @param {Object} event New number string
 	 */
 	function onNumberChange(event) {
-		const nextRawValue = sanitizeNumberInput(event, inputType);
+		const input = numberEntryInputRef.current;
+		const selectionStart = input?.selectionStart ?? event.length;
+		const firstNumericIndex = getFirstNumericIndex(event);
 
-		let returnedRawValue = nextRawValue;
+		pendingCaretRef.current = {
+			tokenCount: countCaretTokens(event, selectionStart),
+			wasAtStart: selectionStart === 0,
+			wasInPrefixZone:
+				firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex,
+		};
+
+		let nextRawValue = sanitizeNumberInput(event, inputType);
+		let revisedDecimalPlaces = settings?.formatOptions?.decimalPlaces;
+
+		if (inputType === 'percent') {
+			console.log(
+				'...Percentage division = ' + Number(nextRawValue) + ', ' + Number(nextRawValue) / 100
+			);
+			revisedDecimalPlaces = settings?.formatOptions?.decimalPlaces + 2;
+			nextRawValue = String(Number(nextRawValue) / 100);
+		}
 
 		if (inputType !== 'integer') {
 			const [integerPart, fractionPart = ''] = nextRawValue.split('.');
-			const fractionalExcessLength = fractionPart.length - settings?.formatOptions?.decimalPlaces;
+			const fractionalExcessLength = fractionPart.length - revisedDecimalPlaces;
 
 			if (fractionalExcessLength > 0) {
-				returnedRawValue = `${integerPart}.${fractionPart.slice(0, settings?.formatOptions?.decimalPlaces)}`;
+				nextRawValue = `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}`;
 			}
 
 			if (fractionalExcessLength < 0) {
 				const paddedSpaces = fractionalExcessLength * -1;
-				returnedRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
+				nextRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
 			}
 		}
 
-		setCellContent(returnedRawValue);
-
+		setCellContent(nextRawValue);
 		updateCellData({
-			content: returnedRawValue,
+			content: nextRawValue,
 			attributes: {
 				...cellAttributes,
 				value: {
 					...(cellAttributes?.value || {}),
-					indexText: returnedRawValue,
+					indexText: nextRawValue,
 				},
 			},
 		});
-
-		// setNumberRawValue(returnedRawValue);
 	}
 
 	/**
@@ -3293,6 +3380,7 @@ function Cell(props) {
 	 *
 	 * @since 1.1.1
 	 * @since 1.2.0    Add DateTime render type
+	 * @since 1.2.4    Add Number render type
 	 *
 	 * @param {Object} e On Focus event
 	 * @return {void}
@@ -3331,7 +3419,7 @@ function Cell(props) {
 			return (
 				<TextControl
 					// className="grid-control__cellEditor--dateTimeInput"
-					className={renderClasses}
+					className={renderClassesEdit}
 					type={inputType}
 					__next40pxDefaultSize
 					value={cellContent}
@@ -3362,41 +3450,27 @@ function Cell(props) {
 		},
 		number: () => {
 			if (!isEditing) {
+				console.log('Display Numberic Value = ' + numberDisplayValue);
 				return <div>{numberDisplayValue}</div>;
 			}
 
 			return (
-				<TextControl
-					className={renderClassesEdit}
-					type={'text'}
-					inputMode={inputType === 'integer' ? 'numeric' : 'decimal'}
-					__next40pxDefaultSize
-					value={numberDisplayValue}
-					// onKeyDown={event => {
-					// 	onDateTimeKeyDown(event);
-					// }}
-					onChange={event => {
-						onNumberChange(event);
-					}}
-					// onBlur={event => {
-					// 	const format = settings?.format || inputType || 'date';
-					// 	const next = event?.target?.value ?? cellContent ?? '';
-					// 	const formattedContent = formattedIsoDate(next, format);
-					// 	updateCellData({
-					// 		content: next,
-					// 		attributes: {
-					// 			...cellAttributes,
-					// 			value: {
-					// 				...(cellAttributes?.value || {}),
-					// 				indexText: formattedContent,
-					// 			},
-					// 		},
-					// 	});
-					// 	onRequestStopEdit?.();
-					// }}
-				/>
+				<div ref={numberEntryWrapperRef}>
+					<TextControl
+						className={renderClassesEdit}
+						type={'text'}
+						inputMode={inputType === 'integer' ? 'numeric' : 'decimal'}
+						__next40pxDefaultSize
+						value={numberEntryValue}
+						onChange={event => {
+							onNumberChange(event);
+						}}
+						onBlur={() => {
+							pendingCaretRef.current = null;
+						}}
+					/>
+				</div>
 			);
-			// return <div>Number Content</div>
 		},
 	};
 
@@ -3445,6 +3519,7 @@ function Cell(props) {
 	const isBorderCell = cellType === 'border';
 	const computedTabIndex = !isBorderCell && isFocused ? 0 : -1;
 
+	// console.log('Rendering Cell ' + cell_id);
 	return (
 		<div
 			data-cell-id={cell_id}

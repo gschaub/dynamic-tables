@@ -241,6 +241,7 @@ export const DEFAULT_COLUMN_DATA_TYPE = {
  */
 export function normalizeColumnDataType(columnDataType) {
 	// console.log('Consolidate to one columnDataType shape')
+	// console.log('...Inbound Data Type', columnDataType)
 	if (columnDataType?.type) {
 		return columnDataType;
 	}
@@ -390,6 +391,61 @@ export function formattedIsoDate(date, format) {
 	return '';
 }
 
+/*
+ * Support caret positioning during entry
+ */
+const CARET_TOKEN_PATTERN = /[\d.-]/;
+
+export function countCaretTokens(value, caretIndex) {
+	return (value.slice(0, caretIndex).match(/[\d.-]/g) ?? []).length;
+}
+
+export function getCaretIndexFromTokenCount(value, tokenCount) {
+	if (tokenCount <= 0) {
+		return 0;
+	}
+
+	let seen = 0;
+
+	for (let i = 0; i < value.length; i++) {
+		if (CARET_TOKEN_PATTERN.test(value[i])) {
+			seen++;
+
+			if (seen >= tokenCount) {
+				return i + 1;
+			}
+		}
+	}
+
+	return value.length;
+}
+
+export function getFirstNumericIndex(value) {
+	return value.search(/\d/);
+}
+
+export function normalizeCaretForPresentationPrefix(value, caretIndex, caretMeta) {
+	if (!caretMeta) {
+		return caretIndex;
+	}
+
+	const firstNumericIndex = getFirstNumericIndex(value);
+
+	if (firstNumericIndex === -1) {
+		return caretIndex;
+	}
+
+	if (caretMeta.wasAtStart) {
+		return 0;
+	}
+
+	if (caretMeta.wasInPrefixZone) {
+		return firstNumericIndex;
+	}
+
+	return caretIndex;
+}
+
 /**
  * Strip formatting characters from numeric display string
  *
@@ -442,12 +498,14 @@ export function formattedNumber(
 	dataTypeFormat,
 	thousandSeparator,
 	decimalPlaces,
-	showCurrencySymbol = dataTypeFormat === 'currency',
+	showCurrencySymbol,
+	// showCurrencySymbol = dataTypeFormat === 'currency',
 	bracketNegative = false
 ) {
 	// console.log('In Formatted Number');
+	// console.log('...Number format = ', dataTypeFormat)
 	const sanitizedNumber = sanitizeNumberInput(rawValue, dataTypeFormat);
-	console.log('  Sanitized number = ' + sanitizedNumber);
+	// console.log('...Sanitized number = ' + sanitizedNumber);
 
 	if (sanitizedNumber === '') return '';
 	if (sanitizedNumber === '-') return '-';
@@ -513,13 +571,13 @@ export function formattedNumber(
 		formatOptions.currencyDisplay = 'symbol';
 	}
 
-	console.log(formatOptions);
+	// console.log('Formatted Option = ', formatOptions);
 	const limitedFraction = fractionPart.slice(0, Math.max(0, revisedDecimalPlaces));
-	console.log('  Limited fraction =  ' + limitedFraction);
+	// console.log('  Limited fraction =  ' + limitedFraction);
 	const decimalFragment = hasDecimal ? `.${limitedFraction}` : '';
-	console.log('  Decimal fragment =  ' + decimalFragment);
+	// console.log('  Decimal fragment =  ' + decimalFragment);
 	const rawNumberString = `${integerPart}${decimalFragment}`;
-	console.log('  Raw Number =  ' + rawNumberString);
+	// console.log('  Raw Number =  ' + rawNumberString);
 
 	const formattedMagnitude = new Intl.NumberFormat('en-US', formatOptions).format(
 		Number(rawNumberString)
