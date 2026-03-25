@@ -238,6 +238,9 @@ if ( is_wp_error( $table ) ) {
 										case 'date-time':
 											render_date_time_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width );
 											break;
+										case 'number':
+											render_number_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width );
+											break;
 										default:
 											$cell_text_alignment = 'left';
 									}

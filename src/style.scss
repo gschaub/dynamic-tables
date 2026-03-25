@@ -189,3 +189,12 @@
 	border-width: var(--gridLineWidth);
 	border-color: black;
 }
+
+.grid-control__body-columns--number-align-right {
+	text-align: right !important;
+	justify-content: flex-end !important;
+}
+
+.grid-control__body-columns--number-red {
+	color: red !important;
+}

@@ -173,11 +173,6 @@
 	height: auto !important;
 }
 
-.grid-control__body-columns--number-red {
-	color: red !important;
-	-webkit-text-fill-color: red !important;
-}
-
 .grid-control__body-columns--number-red .components-input-control__backdrop,
 .grid-control__body-columns--number-red input.components-input-control__input,
 .grid-control__body-columns--number-red input.components-text-control__input {
@@ -187,11 +182,13 @@
 
 // .grid-control__body-columns--number-align-right {
 .grid-control__body-cells.grid-control__body-columns--number-red {
-	text-align: right !important;
+	color: red !important;
+	-webkit-text-fill-color: red !important;
 }
 
 .grid-control__body-columns--number-align-right .components-input-control__backdrop,
 .grid-control__body-columns--number-align-right input.components-input-control__input,
 .grid-control__body-columns--number-align-right input.components-text-control__input {
 	text-align: right !important;
+	justify-content: flex-end !important;
 }

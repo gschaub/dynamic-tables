@@ -10,6 +10,8 @@
  */
 namespace DynamicTableBlocks;
 
+use NumberFormatter;
+
 /**
  * Converts a column id (number) to the column id letter
  *
@@ -351,16 +353,23 @@ function process_cells( $table_cells, $row_id, $table_columns ) {
 			'type' => 'general',
 		);
 
+		$column_classes = '';
+
 		if ( isset( $table_columns[ $cell['column_id'] - 1 ]['attributes']['columnDataType'] ) ) {
 			$column_data_type = $table_columns[ $cell['column_id'] - 1 ]['attributes']['columnDataType'];
 		}
 
+		if ( isset( $table_columns[ $cell['column_id'] - 1 ]['classes'] ) ) {
+			$column_classes = $table_columns[ $cell['column_id'] - 1 ]['classes'];
+		}
+
 		$grid_cell = array(
-			'cell_id'    => $cell_id,
-			'data_type'  => $column_data_type,
-			'attributes' => $cell['attributes'],
-			'classes'    => $cell['classes'],
-			'content'    => $cell['content'],
+			'cell_id'        => $cell_id,
+			'data_type'      => $column_data_type,
+			'column_classes' => $column_classes,
+			'attributes'     => $cell['attributes'],
+			'classes'        => $cell['classes'],
+			'content'        => $cell['content'],
 		);
 		array_push( $return_cells, $grid_cell );
 	}
@@ -504,6 +513,30 @@ function get_border_style( $border, $border_location, $border_attribute, $border
 }
 
 /**
+ * Prepare css classes for html render
+ *
+ * @since 1.2.4
+ *
+ * @param  string $cell_classes         css classes assigned at the cell level
+ * @param  string $column_classes       css classes assigned at the column level
+ * @param  array  $conditional_classes  classes assigned based on condition rules
+ * @return string                       classes to assign for render
+ */
+function get_cell_classes( $cell_classes, $column_classes, $conditional_classes ) {
+
+	$applied_conditional_classes = '';
+
+	foreach ( $conditional_classes as $key => $condition_rule ) {
+		switch ( $key ) {
+			case 'redNegative':
+				$applied_conditional_classes = $condition_rule ? $applied_conditional_classes . ' ' . 'grid-control__body-columns--number-red' : $applied_conditional_classes;
+		}
+	}
+
+	return $cell_classes . ' ' . $column_classes . $applied_conditional_classes;
+}
+
+/**
  * Render Date-Time cell data types
  *
  * @since 1.2.0
@@ -570,4 +603,149 @@ function format_display_date( $cell ) {
 		return gmdate( 'n/j/Y g:i a', strtotime( $cell['attributes']['value']['indexText'] ) );
 	}
 	return '';
+}
+
+/**
+ * Render Date-Time cell data types
+ *
+ * @since 1.2.4
+ *
+ * @param  array  $cell                   Cell data and attributes to be rendered
+ * @param  string $grid_show_inner_lines  Show inner grid lines for cell?
+ * @param  string $grid_inner_line_width  Width for inner grid lines if present
+ * @return void
+ */
+function render_number_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width ) {
+	$conditional_classes = array();
+
+	// Build array conditions
+	$red_negative = false;
+	if ( $cell['data_type']['settings']['formatOptions']['redNegative'] && (float) $cell['content'] < 0 ) {
+		$red_negative = true;
+	}
+	$conditional_classes['redNegative'] = $red_negative;
+
+	// Get CSS classes
+	$cell_classes        = 'grid-control__body-cells ' . $cell['classes'];
+	$cell_render_classes = get_cell_classes( $cell_classes, $cell['column_classes'], $conditional_classes );
+
+	// Prep for future front end editing.
+	$editable = false;
+	if ( $editable ) {
+		// Front End Edit.
+		?>
+		<input id=" <?php echo esc_attr( $cell['cell_id'] ); ?>"
+			type=<?php echo esc_attr( $cell['data_type']['settings']['format'] ); ?>
+			class="grid-control__body-cells"
+			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
+				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
+			value="<?php echo esc_attr( $cell['content'] ); ?>">
+		</input>
+		<?php
+	} else {
+		// Display only.
+		?>
+		<div id=" <?php echo esc_attr( $cell['cell_id'] ); ?>"
+			class=" <?php echo esc_attr( $cell_render_classes ); ?>"
+			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
+				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
+			value=<?php echo wp_kses_post( $cell['content'] ); ?>
+		>
+			<!-- <?php echo wp_kses_post( $cell['content'] ); ?> -->
+			<?php echo wp_kses_post( format_display_number( $cell ) ); ?>
+		</div>
+		<?php
+	}
+}
+
+/**
+ * Format a cell date for display.
+ *
+ * Description - The cell contains the data type and number format.  Applies formatting
+ *               rules and returns a formatted string representation of the number.
+ *
+ * @since 1.2.4
+ *
+ * @param  array $cell  Cell data
+ * @return string       Formatted number
+ */
+function format_display_number( $cell ) {
+	if ( ! isset( $cell['attributes']['value']['indexText'] ) ||
+		$cell['attributes']['value']['indexText'] === '' ) {
+		return '';
+	}
+
+	$number_format         = $cell['data_type']['settings']['format'];
+	$number_format_options = $cell['data_type']['settings']['formatOptions'];
+	$number_value          = $cell['attributes']['value']['indexText'];
+
+	$number_style = '';
+	switch ( $number_format ) {
+		case 'number':
+			$number_style = NumberFormatter::DECIMAL;
+			break;
+		case 'integer':
+			$number_style = NumberFormatter::DECIMAL;
+			break;
+		case 'percent':
+			$number_style = NumberFormatter::PERCENT;
+			break;
+		case 'currency':
+			$number_style = NumberFormatter::CURRENCY;
+			break;
+	}
+
+	$formatted_number  = new NumberFormatter( 'en_US', $number_style );
+	$decimal_pattern   = '';
+	$integer_pattern   = '0';
+	$negative_brackets = false;
+	$currency_format   = false;
+
+	foreach ( $number_format_options as $option => $value ) {
+		switch ( $option ) {
+			case 'decimalPlaces':
+				if ( $value > 0 ) {
+					$decimal_pattern = str_repeat( '0', $value );
+				}
+				break;
+			case 'showCurrencySymbol':
+				$currency_format = $value;
+				break;
+			case 'thousandSeparator':
+				if ( $value ) {
+					$integer_pattern = '#,##0';
+				}
+				break;
+			case 'bracketNegative':
+				if ( $value ) {
+					$negative_brackets = true;
+				}
+				break;
+		}
+	}
+
+	if ( $currency_format ) {
+		$integer_pattern = '¤' . $integer_pattern;
+	}
+
+	$number_positive_pattern = $decimal_pattern ? $integer_pattern . '.' . $decimal_pattern : $integer_pattern;
+
+	if ( $number_format === 'percent' ) {
+		$number_positive_pattern .= '%';
+	}
+
+	if ( $negative_brackets ) {
+		$number_negative_pattern = '(' . $number_positive_pattern . ')';
+	} else {
+		$number_negative_pattern = '-' . $number_positive_pattern;
+	}
+
+	$number_pattern = $number_positive_pattern . ';' . $number_negative_pattern;
+	$formatted_number->setPattern( $number_pattern );
+
+	if ( $currency_format ) {
+		return $formatted_number->formatCurrency( $number_value, 'USD' );
+	} else {
+		return $formatted_number->format( $number_value );
+	}
 }
