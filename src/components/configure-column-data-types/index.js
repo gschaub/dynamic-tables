@@ -67,6 +67,10 @@ function ConfigureColumnDataType(props = {}) {
 	const [dataTypeFormat, setDataTypeFormat] = useState(
 		normalizedColumnDataType?.settings?.format || ''
 	);
+	const [updateColumnStyle, setUpdateColumnStyle] = useState(
+		normalizedColumnDataType?.settings?.formatOptions?.updateColumnStyle || true
+	);
+
 	// console.log('Column Classes inbound = ', columnClasses);
 	const [columnClassNames, setColumnClassNames] = useState(stageClassesForEdit(columnClasses));
 	const columnClassNamesRender = prepareClassesForUse(columnClassNames);
@@ -98,9 +102,6 @@ function ConfigureColumnDataType(props = {}) {
 	);
 	const [bracketNegative, setBracketNegative] = useState(
 		normalizedColumnDataType?.settings?.formatOptions?.bracketNegative || false
-	);
-	const [updateColumnStyle, setUpdateColumnStyle] = useState(
-		normalizedColumnDataType?.settings?.formatOptions?.updateColumnStyle || true
 	);
 
 	const numberEntryWrapperRef = useRef(null);
@@ -243,12 +244,60 @@ function ConfigureColumnDataType(props = {}) {
 		const dataTypeSettings = {
 			format: dateFormat,
 			defaultToToday: dateDefaultToToday,
+			formatOptions: {
+				updateColumnStyle: updateColumnStyle,
+			},
 		};
+
+		let newColumnClassNames = columnClassNames;
+		newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--column-align-right');
+		setColumnClassNames(newColumnClassNames);
 
 		const updatedDataType = {
 			type: 'date-time',
 			settings: dataTypeSettings,
 		};
+		setDataType(updatedDataType);
+	}
+
+	/**
+	 * Update date formatting options based on configuration input
+	 *
+	 * @since 1.2.4
+	 *
+	 * @param {Object} event  Formatting value to set
+	 * @param {string} option Formatting option
+	 */
+	function onDateFormatOption(event, option) {
+		let newUpdateColumnStyle = updateColumnStyle;
+		let newColumnClassNames = columnClassNames;
+
+		switch (option) {
+			case 'format-column':
+				newUpdateColumnStyle = event;
+				if (event) {
+					newColumnClassNames = newColumnClassNames.add(
+						'grid-control__body-columns--date-align-right'
+					);
+				}
+				break;
+		}
+
+		setUpdateColumnStyle(newUpdateColumnStyle);
+		setColumnClassNames(newColumnClassNames);
+
+		const updatedDataType = {
+			...dataType,
+			settings: {
+				format: dataType.settings.format,
+				defaultToToday: dateDefaultToToday,
+				formatOptions: {
+					updateColumnStyle: newUpdateColumnStyle,
+				},
+			},
+		};
+
+		// console.log('Date Format Options - Updated data type: ', updatedDataType);
 		setDataType(updatedDataType);
 	}
 
@@ -272,6 +321,9 @@ function ConfigureColumnDataType(props = {}) {
 		const dataTypeSettings = {
 			format: type,
 			defaultToToday: isChecked,
+			formatOptions: {
+				updateColumnStyle: updateColumnStyle,
+			},
 		};
 
 		const updatedDataType = {
@@ -562,11 +614,17 @@ function ConfigureColumnDataType(props = {}) {
 			case 'number':
 				setDataTypeFormat('number');
 				onNumberFormat('number');
+				newColumnClassNames = newColumnClassNames.delete(
+					'grid-control__body-columns--date-align-right'
+				);
 				return;
 			default:
 				updatedDataType = {
 					type: event,
 				};
+				newColumnClassNames = newColumnClassNames.delete(
+					'grid-control__body-columns--date-align-right'
+				);
 				newColumnClassNames = newColumnClassNames.delete(
 					'grid-control__body-columns--number-align-right'
 				);
@@ -611,6 +669,9 @@ function ConfigureColumnDataType(props = {}) {
 			case 'general':
 				break;
 			case 'date-time':
+				newColumnClassNames = newColumnClassNames.add(
+					'grid-control__body-columns--date-align-right'
+				);
 				break;
 			case 'number':
 				newColumnClassNames = newColumnClassNames.add(
@@ -728,6 +789,12 @@ function ConfigureColumnDataType(props = {}) {
 																checked={dateDefaultToToday}
 																onChange={e => onDateDefaultToToday(e, dataTypeFormat)}
 															/>
+															<CheckboxControl
+																className="configure-column-modal__checkbox"
+																label={'Auto format column?'}
+																checked={updateColumnStyle}
+																onChange={e => onDateFormatOption(e, 'format-column')}
+															/>
 														</div>
 													</VStack>
 												</FlexItem>
@@ -741,6 +808,7 @@ function ConfigureColumnDataType(props = {}) {
 															help="This is only a preview; it won’t change saved values."
 														>
 															<TextControl
+																className={renderColumnClasses}
 																type={dataTypeFormat}
 																label={''}
 																id={previewId}

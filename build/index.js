@@ -328,6 +328,8 @@ function ConfigureColumnDataType(props = {}) {
   const [columnName, setColumnName] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnLabel);
   const [dataType, setDataType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType);
   const [dataTypeFormat, setDataTypeFormat] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.format || '');
+  const [updateColumnStyle, setUpdateColumnStyle] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.updateColumnStyle || true);
+
   // console.log('Column Classes inbound = ', columnClasses);
   const [columnClassNames, setColumnClassNames] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)((0,_utils__WEBPACK_IMPORTED_MODULE_6__.stageClassesForEdit)(columnClasses));
   const columnClassNamesRender = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.prepareClassesForUse)(columnClassNames);
@@ -345,7 +347,6 @@ function ConfigureColumnDataType(props = {}) {
   const [currency, setCurrency] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.showCurrencySymbol || false);
   const [redNegative, setRedNegative] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.redNegative || false);
   const [bracketNegative, setBracketNegative] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.bracketNegative || false);
-  const [updateColumnStyle, setUpdateColumnStyle] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.updateColumnStyle || true);
   const numberEntryWrapperRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const numberEntryInputRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const pendingCaretRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
@@ -452,12 +453,54 @@ function ConfigureColumnDataType(props = {}) {
     if (dateDefaultToToday) setDatePreviewValue(formattedDate(dateFormat));
     const dataTypeSettings = {
       format: dateFormat,
-      defaultToToday: dateDefaultToToday
+      defaultToToday: dateDefaultToToday,
+      formatOptions: {
+        updateColumnStyle: updateColumnStyle
+      }
     };
+    let newColumnClassNames = columnClassNames;
+    newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--column-align-right');
+    setColumnClassNames(newColumnClassNames);
     const updatedDataType = {
       type: 'date-time',
       settings: dataTypeSettings
     };
+    setDataType(updatedDataType);
+  }
+
+  /**
+   * Update date formatting options based on configuration input
+   *
+   * @since 1.2.4
+   *
+   * @param {Object} event  Formatting value to set
+   * @param {string} option Formatting option
+   */
+  function onDateFormatOption(event, option) {
+    let newUpdateColumnStyle = updateColumnStyle;
+    let newColumnClassNames = columnClassNames;
+    switch (option) {
+      case 'format-column':
+        newUpdateColumnStyle = event;
+        if (event) {
+          newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--date-align-right');
+        }
+        break;
+    }
+    setUpdateColumnStyle(newUpdateColumnStyle);
+    setColumnClassNames(newColumnClassNames);
+    const updatedDataType = {
+      ...dataType,
+      settings: {
+        format: dataType.settings.format,
+        defaultToToday: dateDefaultToToday,
+        formatOptions: {
+          updateColumnStyle: newUpdateColumnStyle
+        }
+      }
+    };
+
+    // console.log('Date Format Options - Updated data type: ', updatedDataType);
     setDataType(updatedDataType);
   }
 
@@ -478,7 +521,10 @@ function ConfigureColumnDataType(props = {}) {
     setDateDefaultToToday(isChecked);
     const dataTypeSettings = {
       format: type,
-      defaultToToday: isChecked
+      defaultToToday: isChecked,
+      formatOptions: {
+        updateColumnStyle: updateColumnStyle
+      }
     };
     const updatedDataType = {
       type: 'date-time',
@@ -734,11 +780,13 @@ function ConfigureColumnDataType(props = {}) {
       case 'number':
         setDataTypeFormat('number');
         onNumberFormat('number');
+        newColumnClassNames = newColumnClassNames.delete('grid-control__body-columns--date-align-right');
         return;
       default:
         updatedDataType = {
           type: event
         };
+        newColumnClassNames = newColumnClassNames.delete('grid-control__body-columns--date-align-right');
         newColumnClassNames = newColumnClassNames.delete('grid-control__body-columns--number-align-right');
         break;
     }
@@ -780,6 +828,7 @@ function ConfigureColumnDataType(props = {}) {
       case 'general':
         break;
       case 'date-time':
+        newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--date-align-right');
         break;
       case 'number':
         newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--number-align-right');
@@ -896,6 +945,11 @@ function ConfigureColumnDataType(props = {}) {
                             label: "Default to today's date",
                             checked: dateDefaultToToday,
                             onChange: e => onDateDefaultToToday(e, dataTypeFormat)
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
+                            className: "configure-column-modal__checkbox",
+                            label: 'Auto format column?',
+                            checked: updateColumnStyle,
+                            onChange: e => onDateFormatOption(e, 'format-column')
                           })]
                         })]
                       })
@@ -909,6 +963,7 @@ function ConfigureColumnDataType(props = {}) {
                           label: "Preview",
                           help: "This is only a preview; it won\u2019t change saved values.",
                           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+                            className: renderColumnClasses,
                             type: dataTypeFormat,
                             label: '',
                             id: previewId,
@@ -5308,10 +5363,17 @@ function Edit(props) {
       const editExitNavKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab']);
       const editTarget = gridRef.current?.ownerDocument?.activeElement;
       const editTargetInputType = editTarget?.tagName === 'INPUT' ? String(editTarget.type || '').toLowerCase() : '';
+      const editTargetInputMode = editTarget?.tagName === 'INPUT' ? String(editTarget.inputMode || '').toLowerCase() : '';
+      const isNumberEditor = ['number', 'integer', 'percent', 'currency'].includes(editTargetInputType) || ['numeric', 'decimal'].includes(editTargetInputMode);
       const isDateTimeEditor = ['date', 'time', 'datetime-local'].includes(editTargetInputType);
       if (event.key === 'Escape') {
         event.preventDefault();
         event.stopPropagation();
+        if (editTarget?.tagName === 'INPUT' || editTarget?.tagName === 'TEXTAREA') {
+          editTarget.dataset.cancelEdit = 'true';
+          editTarget.blur?.();
+          return;
+        }
         setEditingCellId(null);
         window.requestAnimationFrame(() => {
           const wrapper = gridRef.current?.querySelector(`[data-cell-id][tabindex="0"]`);
@@ -5321,7 +5383,7 @@ function Edit(props) {
       }
 
       // For native date/time editors, Enter should commit via blur and exit edit mode.
-      if (event.key === 'Enter' && isDateTimeEditor) {
+      if (event.key === 'Enter' && (isDateTimeEditor || isNumberEditor)) {
         event.preventDefault();
         event.stopPropagation();
         editTarget?.blur?.();
@@ -5348,7 +5410,7 @@ function Edit(props) {
     const activeRow = table.rows.find(r => Number(r.row_id) === row);
     const isHeaderRow = activeRow?.attributes?.isHeader === true;
     const editDataType = isHeaderRow ? 'general' : columnDataType;
-    const canTypeToEdit = isHeaderRow || editDataType === 'general' || editDataType === 'date-time';
+    const canTypeToEdit = isHeaderRow || editDataType === 'general' || editDataType === 'date-time' || editDataType === 'number';
 
     // Allow direct edit for printable keys
     if (!navKeys.has(event.key) && isPrintableKey(event) && canTypeToEdit) {
@@ -5479,23 +5541,27 @@ function Edit(props) {
   function onCellKeyDownEditing(event, activeCellEl, char, columnDataType = 'general') {
     const id = activeCellEl.getAttribute('data-cell-id');
 
-    // For native date/time controls, mount the editor synchronously so the
-    // initiating printable key can be handled by the input.
-    if (columnDataType === 'date-time') {
+    // For input-backed editors, mount synchronously so the initiating
+    // printable key can be handled by the input itself.
+    if (columnDataType === 'date-time' || columnDataType === 'number') {
       (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.flushSync)(() => {
         setEditingCellId(id);
       });
-      const focusDateTimeEditor = () => {
+      const focusInputEditor = () => {
         const mountedCellEl = gridRef.current?.querySelector(`[data-cell-id="${CSS.escape(id)}"]`);
         const input = mountedCellEl?.querySelector?.('input, textarea');
         input?.focus?.();
+        // if (input) {
+        if (columnDataType === 'number' && input) {
+          input.setSelectionRange?.(0, input.value.length);
+        }
         return !!input;
       };
 
       // Try immediately (same key event), then fallback next frame.
-      if (!focusDateTimeEditor()) {
+      if (!focusInputEditor()) {
         window.requestAnimationFrame(() => {
-          focusDateTimeEditor();
+          focusInputEditor();
         });
       }
       return;
@@ -6776,6 +6842,9 @@ function Cell(props) {
       if (cellType === 'body' && type === 'date-time') {
         setCellContent(raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_13__.formatedDisplayDate)(raw, resolvedFormat) : '');
       }
+      if (cellType === 'body' && type === 'number') {
+        setCellContent(raw);
+      }
     }
     setInputType(resolvedFormat);
     setCellAttributes(attributes);
@@ -6906,13 +6975,15 @@ function Cell(props) {
       }
     }
     setCellContent(nextRawValue);
+  }
+  function persistCellEdit(nextContent, nextIndexText) {
     updateCellData({
-      content: nextRawValue,
+      content: nextContent,
       attributes: {
         ...cellAttributes,
         value: {
           ...(cellAttributes?.value || {}),
-          indexText: nextRawValue
+          indexText: nextIndexText
         }
       }
     });
@@ -6949,16 +7020,7 @@ function Cell(props) {
       readOnly: !isEditing,
       onChange: !isEditing ? undefined : next => {
         const plainText = htmlToText(next);
-        updateCellData({
-          content: next,
-          attributes: {
-            ...cellAttributes,
-            value: {
-              ...(cellAttributes?.value || {}),
-              indexText: plainText
-            }
-          }
-        });
+        persistCellEdit(next, plainText);
       }
     }),
     border: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
@@ -6984,19 +7046,15 @@ function Cell(props) {
           setCellContent(next);
         },
         onBlur: event => {
+          if (event?.target?.dataset?.cancelEdit === 'true') {
+            delete event.target.dataset.cancelEdit;
+            onRequestStopEdit?.();
+            return;
+          }
           const format = settings?.format || inputType || 'date';
           const next = event?.target?.value ?? cellContent ?? '';
           const formattedContent = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.formattedIsoDate)(next, format);
-          updateCellData({
-            content: next,
-            attributes: {
-              ...cellAttributes,
-              value: {
-                ...(cellAttributes?.value || {}),
-                indexText: formattedContent
-              }
-            }
-          });
+          persistCellEdit(next, formattedContent);
           onRequestStopEdit?.();
         }
       });
@@ -7019,8 +7077,16 @@ function Cell(props) {
           onChange: event => {
             onNumberChange(event);
           },
-          onBlur: () => {
+          onBlur: event => {
             pendingCaretRef.current = null;
+            if (event?.target?.dataset?.cancelEdit === 'true') {
+              delete event.target.dataset.cancelEdit;
+              onRequestStopEdit?.();
+              return;
+            }
+            const next = cellContent ?? '';
+            persistCellEdit(next, next);
+            onRequestStopEdit?.();
           }
         })
       });

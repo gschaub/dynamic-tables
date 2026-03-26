@@ -127,6 +127,12 @@
 
 }
 
+.grid-control__body-columns--date-align-right .components-input-control__backdrop,
+.grid-control__body-columns--date-align-right input.components-input-control__input,
+.grid-control__body-columns--date-align-right input.components-text-control__input {
+	text-align: right !important;
+}
+
 .configure-column-modal__preview .components-base-control,
 .configure-column-modal__preview .components-base-control__field,
 .configure-column-modal__preview .components-base-control__control {

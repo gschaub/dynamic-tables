@@ -190,6 +190,11 @@
 	border-color: black;
 }
 
+.grid-control__body-columns--date-align-right {
+	text-align: right !important;
+	justify-content: flex-end !important;
+}
+
 .grid-control__body-columns--number-align-right {
 	text-align: right !important;
 	justify-content: flex-end !important;

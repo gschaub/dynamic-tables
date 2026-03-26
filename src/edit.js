@@ -1382,11 +1382,23 @@ export default function Edit(props) {
 			const editTarget = gridRef.current?.ownerDocument?.activeElement;
 			const editTargetInputType =
 				editTarget?.tagName === 'INPUT' ? String(editTarget.type || '').toLowerCase() : '';
+			const editTargetInputMode =
+				editTarget?.tagName === 'INPUT' ? String(editTarget.inputMode || '').toLowerCase() : '';
+			const isNumberEditor =
+				['number', 'integer', 'percent', 'currency'].includes(editTargetInputType) ||
+				['numeric', 'decimal'].includes(editTargetInputMode);
 			const isDateTimeEditor = ['date', 'time', 'datetime-local'].includes(editTargetInputType);
 
 			if (event.key === 'Escape') {
 				event.preventDefault();
 				event.stopPropagation();
+
+				if (editTarget?.tagName === 'INPUT' || editTarget?.tagName === 'TEXTAREA') {
+					editTarget.dataset.cancelEdit = 'true';
+					editTarget.blur?.();
+					return;
+				}
+
 				setEditingCellId(null);
 				window.requestAnimationFrame(() => {
 					const wrapper = gridRef.current?.querySelector(`[data-cell-id][tabindex="0"]`);
@@ -1396,7 +1408,7 @@ export default function Edit(props) {
 			}
 
 			// For native date/time editors, Enter should commit via blur and exit edit mode.
-			if (event.key === 'Enter' && isDateTimeEditor) {
+			if (event.key === 'Enter' && (isDateTimeEditor || isNumberEditor)) {
 				event.preventDefault();
 				event.stopPropagation();
 				editTarget?.blur?.();
@@ -1440,7 +1452,11 @@ export default function Edit(props) {
 		const activeRow = table.rows.find(r => Number(r.row_id) === row);
 		const isHeaderRow = activeRow?.attributes?.isHeader === true;
 		const editDataType = isHeaderRow ? 'general' : columnDataType;
-		const canTypeToEdit = isHeaderRow || editDataType === 'general' || editDataType === 'date-time';
+		const canTypeToEdit =
+			isHeaderRow ||
+			editDataType === 'general' ||
+			editDataType === 'date-time' ||
+			editDataType === 'number';
 
 		// Allow direct edit for printable keys
 		if (!navKeys.has(event.key) && isPrintableKey(event) && canTypeToEdit) {
@@ -1577,24 +1593,28 @@ export default function Edit(props) {
 	function onCellKeyDownEditing(event, activeCellEl, char, columnDataType = 'general') {
 		const id = activeCellEl.getAttribute('data-cell-id');
 
-		// For native date/time controls, mount the editor synchronously so the
-		// initiating printable key can be handled by the input.
-		if (columnDataType === 'date-time') {
+		// For input-backed editors, mount synchronously so the initiating
+		// printable key can be handled by the input itself.
+		if (columnDataType === 'date-time' || columnDataType === 'number') {
 			flushSync(() => {
 				setEditingCellId(id);
 			});
 
-			const focusDateTimeEditor = () => {
+			const focusInputEditor = () => {
 				const mountedCellEl = gridRef.current?.querySelector(`[data-cell-id="${CSS.escape(id)}"]`);
 				const input = mountedCellEl?.querySelector?.('input, textarea');
 				input?.focus?.();
+				// if (input) {
+				if (columnDataType === 'number' && input) {
+					input.setSelectionRange?.(0, input.value.length);
+				}
 				return !!input;
 			};
 
 			// Try immediately (same key event), then fallback next frame.
-			if (!focusDateTimeEditor()) {
+			if (!focusInputEditor()) {
 				window.requestAnimationFrame(() => {
-					focusDateTimeEditor();
+					focusInputEditor();
 				});
 			}
 			return;
@@ -3187,6 +3207,9 @@ function Cell(props) {
 			if (cellType === 'body' && type === 'date-time') {
 				setCellContent(raw ? formatedDisplayDate(raw, resolvedFormat) : '');
 			}
+			if (cellType === 'body' && type === 'number') {
+				setCellContent(raw);
+			}
 		}
 
 		setInputType(resolvedFormat);
@@ -3349,13 +3372,16 @@ function Cell(props) {
 		}
 
 		setCellContent(nextRawValue);
+	}
+
+	function persistCellEdit(nextContent, nextIndexText) {
 		updateCellData({
-			content: nextRawValue,
+			content: nextContent,
 			attributes: {
 				...cellAttributes,
 				value: {
 					...(cellAttributes?.value || {}),
-					indexText: nextRawValue,
+					indexText: nextIndexText,
 				},
 			},
 		});
@@ -3396,16 +3422,7 @@ function Cell(props) {
 						? undefined
 						: next => {
 								const plainText = htmlToText(next);
-								updateCellData({
-									content: next,
-									attributes: {
-										...cellAttributes,
-										value: {
-											...(cellAttributes?.value || {}),
-											indexText: plainText,
-										},
-									},
-								});
+								persistCellEdit(next, plainText);
 							}
 				}
 			></RichText>
@@ -3430,19 +3447,16 @@ function Cell(props) {
 						setCellContent(next);
 					}}
 					onBlur={event => {
+						if (event?.target?.dataset?.cancelEdit === 'true') {
+							delete event.target.dataset.cancelEdit;
+							onRequestStopEdit?.();
+							return;
+						}
+
 						const format = settings?.format || inputType || 'date';
 						const next = event?.target?.value ?? cellContent ?? '';
 						const formattedContent = formattedIsoDate(next, format);
-						updateCellData({
-							content: next,
-							attributes: {
-								...cellAttributes,
-								value: {
-									...(cellAttributes?.value || {}),
-									indexText: formattedContent,
-								},
-							},
-						});
+						persistCellEdit(next, formattedContent);
 						onRequestStopEdit?.();
 					}}
 				/>
@@ -3465,8 +3479,18 @@ function Cell(props) {
 						onChange={event => {
 							onNumberChange(event);
 						}}
-						onBlur={() => {
+						onBlur={event => {
 							pendingCaretRef.current = null;
+
+							if (event?.target?.dataset?.cancelEdit === 'true') {
+								delete event.target.dataset.cancelEdit;
+								onRequestStopEdit?.();
+								return;
+							}
+
+							const next = cellContent ?? '';
+							persistCellEdit(next, next);
+							onRequestStopEdit?.();
 						}}
 					/>
 				</div>

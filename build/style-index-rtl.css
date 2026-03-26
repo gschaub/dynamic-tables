@@ -161,6 +161,10 @@
   border-width: var(--gridLineWidth);
   border-color: black;
 }
+.grid-control__body-columns--date-align-right {
+  text-align: left !important;
+  justify-content: flex-end !important;
+}
 .grid-control__body-columns--number-align-right {
   text-align: left !important;
   justify-content: flex-end !important;
@@ -390,6 +394,11 @@ fieldset {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 6px;
   background: rgba(0, 0, 0, 0.02);
+}
+.grid-control__body-columns--date-align-right .components-input-control__backdrop,
+.grid-control__body-columns--date-align-right input.components-input-control__input,
+.grid-control__body-columns--date-align-right input.components-text-control__input {
+  text-align: left !important;
 }
 .configure-column-modal__preview .components-base-control,
 .configure-column-modal__preview .components-base-control__field,
