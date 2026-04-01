@@ -25,7 +25,7 @@ import clsx from 'clsx';
  * Internal dependencies
  */
 import './style.scss';
-import '../../style.scss';
+// import '../../style.scss';
 import { settings } from '@wordpress/icons';
 import {
 	normalizeColumnDataType,

@@ -358,6 +358,11 @@ fieldset {
   margin-bottom: 0; /* remove default spacing */
   white-space: nowrap;
 }
+.configure-column-modal__input-preview .components-base-control__label,
+.configure-column-modal__display-preview .components-base-control__label {
+  color: var(--wp-components-color-foreground, #1e1e1e) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
 /* True two-column split */
 .configure-column-modal__split {
   width: 100%;
