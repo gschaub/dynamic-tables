@@ -353,7 +353,16 @@ function ConfigureColumnDataType(props = {}) {
   const [numberRawValue, setNumberRawValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
   const sanitizedPreviewNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.sanitizeNumberInput)(numberRawValue, dataTypeFormat);
   const showNegativeNumberPreview = redNegative && sanitizedPreviewNumber !== '' && sanitizedPreviewNumber !== '-' && Number(sanitizedPreviewNumber) < 0;
-  const numberEntryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.formattedNumber)(numberRawValue, dataTypeFormat, thousandSeparator, decimalPlaces, false, false);
+
+  // const numberEntryValue = formattedNumber(
+  // 	numberRawValue,
+  // 	dataTypeFormat,
+  // 	thousandSeparator,
+  // 	decimalPlaces,
+  // 	false,
+  // 	false
+  // );
+  const numberEntryValue = numberRawValue;
   const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.formattedNumber)(numberRawValue, dataTypeFormat, thousandSeparator, decimalPlaces, currency, bracketNegative);
 
   // Column width attributes
@@ -738,10 +747,11 @@ function ConfigureColumnDataType(props = {}) {
       if (fractionalExcessLength > 0) {
         nextRawValue = `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}`;
       }
-      if (fractionalExcessLength < 0) {
-        const paddedSpaces = fractionalExcessLength * -1;
-        nextRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
-      }
+
+      // if (fractionalExcessLength < 0) {
+      // 	const paddedSpaces = fractionalExcessLength * -1;
+      // 	nextRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
+      // }
     }
     console.log('...Updated Raw number = ' + nextRawValue);
     setNumberRawValue(nextRawValue);
@@ -5389,6 +5399,9 @@ function Edit(props) {
         editTarget?.blur?.();
         return;
       }
+      if ((isDateTimeEditor || isNumberEditor) && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+        return;
+      }
 
       // Let Tab/arrow keys fall through to navigation.
       // Do not clear editing state yet; date/time inputs persist on blur.
@@ -5550,8 +5563,22 @@ function Edit(props) {
       const focusInputEditor = () => {
         const mountedCellEl = gridRef.current?.querySelector(`[data-cell-id="${CSS.escape(id)}"]`);
         const input = mountedCellEl?.querySelector?.('input, textarea');
+
+        // Clear existing date-time value when entering edit mode
+        if (columnDataType === 'date-time' && input) {
+          const valueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
+          if (valueSetter) {
+            valueSetter.call(input, '');
+          } else {
+            input.value = '';
+          }
+        }
         input?.focus?.();
-        // if (input) {
+        if (columnDataType === 'date-time' && input) {
+          input.dispatchEvent(new Event('input', {
+            bubbles: true
+          }));
+        }
         if (columnDataType === 'number' && input) {
           input.setSelectionRange?.(0, input.value.length);
         }
@@ -6793,7 +6820,16 @@ function Cell(props) {
   const numberEntryWrapperRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const numberEntryInputRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const pendingCaretRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
-  const numberEntryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.formattedNumber)(cellContent, inputType, settings?.formatOptions?.thousandSeparator, settings?.formatOptions?.decimalPlaces, false, false);
+
+  // const numberEntryValue = formattedNumber(
+  // 	cellContent,
+  // 	inputType,
+  // 	settings?.formatOptions?.thousandSeparator,
+  // 	settings?.formatOptions?.decimalPlaces,
+  // 	false,
+  // 	false
+  // );
+  const numberEntryValue = cellContent ?? '';
   const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.formattedNumber)(cellContent, inputType, settings?.formatOptions?.thousandSeparator, settings?.formatOptions?.decimalPlaces, settings?.formatOptions?.showCurrencySymbol, settings?.formatOptions?.bracketNegative);
   const sanitizedNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.sanitizeNumberInput)(cellContent, inputType);
   const redNegativeNumber = settings?.formatOptions?.redNegative && sanitizedNumber !== '' && sanitizedNumber !== '-' && Number(sanitizedNumber) < 0;
@@ -6969,10 +7005,11 @@ function Cell(props) {
       if (fractionalExcessLength > 0) {
         nextRawValue = `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}`;
       }
-      if (fractionalExcessLength < 0) {
-        const paddedSpaces = fractionalExcessLength * -1;
-        nextRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
-      }
+
+      // if (fractionalExcessLength < 0) {
+      // 	const paddedSpaces = fractionalExcessLength * -1;
+      // 	nextRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
+      // }
     }
     setCellContent(nextRawValue);
   }

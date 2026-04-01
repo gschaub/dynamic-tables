@@ -116,14 +116,15 @@ function ConfigureColumnDataType(props = {}) {
 		sanitizedPreviewNumber !== '-' &&
 		Number(sanitizedPreviewNumber) < 0;
 
-	const numberEntryValue = formattedNumber(
-		numberRawValue,
-		dataTypeFormat,
-		thousandSeparator,
-		decimalPlaces,
-		false,
-		false
-	);
+	// const numberEntryValue = formattedNumber(
+	// 	numberRawValue,
+	// 	dataTypeFormat,
+	// 	thousandSeparator,
+	// 	decimalPlaces,
+	// 	false,
+	// 	false
+	// );
+	const numberEntryValue = numberRawValue;
 
 	const numberDisplayValue = formattedNumber(
 		numberRawValue,
@@ -567,10 +568,10 @@ function ConfigureColumnDataType(props = {}) {
 				nextRawValue = `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}`;
 			}
 
-			if (fractionalExcessLength < 0) {
-				const paddedSpaces = fractionalExcessLength * -1;
-				nextRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
-			}
+			// if (fractionalExcessLength < 0) {
+			// 	const paddedSpaces = fractionalExcessLength * -1;
+			// 	nextRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
+			// }
 		}
 		console.log('...Updated Raw number = ' + nextRawValue);
 

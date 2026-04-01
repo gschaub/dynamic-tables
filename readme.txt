@@ -2,11 +2,11 @@
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, table builder, responsive tables
 Tested up to:      6.9
-Stable tag:        1.2.3
+Stable tag:        1.2.4
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
-Create visually engaging presentation centric custom table blocks that are highly responsive and easily configured.
+Create visually engaging2 presentation centric custom table blocks that are highly responsive and easily configured.
 
 == Description ==
 Dynamic Tables is a powerful Wordpress table block that gives you a responsive, user friendly, and inline-editable table block that provides content curation rivaling that of a custom coded solution.
@@ -24,10 +24,10 @@ Whether you're building comparison tables, product listings, directory lookup ta
 
 === Key Features ===
 * Gutenberg native block: Dynamic Tables
-* Add and delete columns and rows
+* Add, move and delete columns and rows
 * Adjustable column widths and row heights
+* Support for column specific content types (e.g., rich text, date, time, number, etc.)
 * Header row support with formatting independant from the table body
-* Support for column specific content types
 * Inline editing of cell content
 * Fully responsive: tables scale, wrap and adapt to mobile screens
 * Clean semantic HTML output for SEO and accessibility
@@ -40,11 +40,13 @@ Dynamic Tables is designed specifically for tables that require ongoing updates,
 === Roadmap ===
 Some roadmap highlights include:
 
-* Integrating Dynamic Tables with WordPress search
-* Adding more content types and formats for all rows in a column (e.g, images, links, buttons, numeric formats, etc.) without the need to format each cell
-* Support for front end interactivity to sort and filter tables
 * Importing in common formats (e.g., csv, xlsx)
+* Support copy/paste
+* Support undo/redo
+* Adding more content types and formats for all rows in a column (e.g, checkboxes, images, links, buttons, etc.) without the need to format each cell
 * Enhanced responsive formatting for mobile devices
+* Integrating Dynamic Tables with WordPress search
+* Support for front end interactivity to sort and filter tables
 * Front end editing
 
 === For Wordpress Developers ===
@@ -101,6 +103,11 @@ No. This plugin is free to use. However, we are planning for a premium version o
 7. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+= 1.2.4 =
+* Add support for numeric input that may be formatted as whole numbers, integers, percent, or currency
+* Added a css class engine to support more granular formatting capabilities
+* Added support for auto formatting of dates, currently to right justify dates
+
 = 1.2.3 =
 * Fix bug that prevents display of general content type
 * Added keyboard shortcuts to move rows and columns up/down left/right, respectively

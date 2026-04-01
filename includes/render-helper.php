@@ -547,6 +547,13 @@ function get_cell_classes( $cell_classes, $column_classes, $conditional_classes 
  * @return void
  */
 function render_date_time_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width ) {
+	$conditional_classes = array();
+	// No conditional classes currently exist for date-time
+
+	// Get CSS classes
+	$cell_classes        = 'grid-control__body-cells ' . $cell['classes'];
+	$cell_render_classes = get_cell_classes( $cell_classes, $cell['column_classes'], $conditional_classes );
+
 	// Prep for future front end editing.
 	$editable = false;
 
@@ -565,12 +572,12 @@ function render_date_time_cell( $cell, $grid_show_inner_lines, $grid_inner_line_
 		// Display only.
 		?>
 		<time id=" <?php echo esc_attr( $cell['cell_id'] ); ?>"
-			class="grid-control__body-cells"
+			class=" <?php echo esc_attr( $cell_render_classes ); ?>"
 			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
 				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
-			value=<?php echo wp_kses_post( $cell['content'] ); ?>
+			value=<?php echo esc_attr( $cell['content'] ); ?>
 		>
-			<?php echo wp_kses_post( format_display_date( $cell ) ); ?>
+			<?php echo esc_html( format_display_date( $cell ) ); ?>
 		</time>
 		<?php
 	}
@@ -645,15 +652,14 @@ function render_number_cell( $cell, $grid_show_inner_lines, $grid_inner_line_wid
 	} else {
 		// Display only.
 		?>
-		<div id=" <?php echo esc_attr( $cell['cell_id'] ); ?>"
+		<data id=" <?php echo esc_attr( $cell['cell_id'] ); ?>"
 			class=" <?php echo esc_attr( $cell_render_classes ); ?>"
 			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
 				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
-			value=<?php echo wp_kses_post( $cell['content'] ); ?>
+			value=<?php echo esc_attr( $cell['content'] ); ?>
 		>
-			<!-- <?php echo wp_kses_post( $cell['content'] ); ?> -->
-			<?php echo wp_kses_post( format_display_number( $cell ) ); ?>
-		</div>
+			<?php echo esc_html( format_display_number( $cell ) ); ?>
+		</data>
 		<?php
 	}
 }
