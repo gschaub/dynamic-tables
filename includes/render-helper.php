@@ -421,7 +421,6 @@ function start_grid_row_nbr( $enable_header ) {
 	$start_grid_line = $enable_header ? $start_grid_line + 1 : $start_grid_line;
 
 	return null;
-	// return $start_grid_line;
 }
 
 function end_grid_row_nbr( $start_grid_line, $row_group, $num_rows, $enable_header, $enable_footer ) {

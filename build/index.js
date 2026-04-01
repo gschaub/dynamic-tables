@@ -328,8 +328,6 @@ function ConfigureColumnDataType(props = {}) {
   const [dataType, setDataType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType);
   const [dataTypeFormat, setDataTypeFormat] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.format || '');
   const [updateColumnStyle, setUpdateColumnStyle] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.updateColumnStyle || true);
-
-  // console.log('Column Classes inbound = ', columnClasses);
   const [columnClassNames, setColumnClassNames] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)((0,_utils__WEBPACK_IMPORTED_MODULE_5__.stageClassesForEdit)(columnClasses));
   const columnClassNamesRender = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.prepareClassesForUse)(columnClassNames);
 
@@ -458,7 +456,7 @@ function ConfigureColumnDataType(props = {}) {
         updateColumnStyle: updateColumnStyle
       }
     };
-    let newColumnClassNames = columnClassNames;
+    let newColumnClassNames = new Set(columnClassNames);
     newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--column-align-right');
     setColumnClassNames(newColumnClassNames);
     const updatedDataType = {
@@ -478,7 +476,7 @@ function ConfigureColumnDataType(props = {}) {
    */
   function onDateFormatOption(event, option) {
     let newUpdateColumnStyle = updateColumnStyle;
-    let newColumnClassNames = columnClassNames;
+    let newColumnClassNames = new Set(columnClassNames);
     switch (option) {
       case 'format-column':
         newUpdateColumnStyle = event;
@@ -499,8 +497,6 @@ function ConfigureColumnDataType(props = {}) {
         }
       }
     };
-
-    // console.log('Date Format Options - Updated data type: ', updatedDataType);
     setDataType(updatedDataType);
   }
 
@@ -545,13 +541,11 @@ function ConfigureColumnDataType(props = {}) {
     if (numberFormat === 'percent' && dataTypeFormat !== 'percent') {
       // divide by 100
       const revisedNumberValue = !!numberRawValue ? String(Number(numberRawValue) / 100) : '';
-      console.log('Format to percent udpate value = ' + revisedNumberValue);
       setNumberRawValue(revisedNumberValue);
     }
     if (numberFormat !== 'percent' && dataTypeFormat === 'percent') {
       // multiply by 100
       const revisedNumberValue = !!numberRawValue ? String(Number(numberRawValue) * 100) : '';
-      console.log('Format from percent udpate value = ' + revisedNumberValue);
       setNumberRawValue(revisedNumberValue);
     }
     setDataTypeFormat(numberFormat);
@@ -630,15 +624,13 @@ function ConfigureColumnDataType(props = {}) {
           }
         };
     }
-    let newColumnClassNames = columnClassNames;
+    let newColumnClassNames = new Set(columnClassNames);
     newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--number-align-right');
     setColumnClassNames(newColumnClassNames);
     const updatedDataType = {
       type: 'number',
       settings: dataTypeSettings
     };
-
-    // console.log('Number Data Type Selection - Updated data type: ', updatedDataType);
     setDataType(updatedDataType);
   }
 
@@ -651,16 +643,13 @@ function ConfigureColumnDataType(props = {}) {
    * @param {string} option Formatting option
    */
   function onNumberFormatOption(event, option) {
-    // console.log('On Number Format Options - ' + option);
-    // console.log(event);
-
     let newDecimalPlaces = decimalPlaces;
     let newThousandSeparator = thousandSeparator;
     let newCurrency = currency;
     let newRedNegative = redNegative;
     let newBracketNegative = bracketNegative;
     let newUpdateColumnStyle = updateColumnStyle;
-    let newColumnClassNames = columnClassNames;
+    let newColumnClassNames = new Set(columnClassNames);
     switch (option) {
       case 'decimal':
         newDecimalPlaces = Math.max(0, event || 0);
@@ -705,7 +694,6 @@ function ConfigureColumnDataType(props = {}) {
         }
       }
     };
-    console.log('Number Format Options - Updated data type: ', updatedDataType);
     setDataType(updatedDataType);
   }
 
@@ -717,7 +705,6 @@ function ConfigureColumnDataType(props = {}) {
    * @param {Object} event New number string
    */
   function onNumberPreviewChange(event) {
-    console.log('number change event = ' + event);
     const input = numberEntryInputRef.current;
     const entryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.sanitizeNumberInput)(event, dataTypeFormat === 'percent' ? 'number' : dataTypeFormat);
     const selectionStart = input?.selectionStart ?? entryValue.length;
@@ -730,7 +717,6 @@ function ConfigureColumnDataType(props = {}) {
     let nextRawValue = entryValue;
     let revisedDecimalPlaces = decimalPlaces ?? 0;
     if (dataTypeFormat === 'percent') {
-      console.log('...Percentage division = ' + Number(nextRawValue) + ', ' + Number(nextRawValue) / 100);
       const [integerPart, fractionPart = ''] = entryValue.split('.');
       const nextEntryValue = fractionPart.length > revisedDecimalPlaces ? `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}` : entryValue;
       setPercentEntryValue(nextEntryValue);
@@ -745,13 +731,7 @@ function ConfigureColumnDataType(props = {}) {
       if (fractionalExcessLength > 0) {
         nextRawValue = `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}`;
       }
-
-      // if (fractionalExcessLength < 0) {
-      // 	const paddedSpaces = fractionalExcessLength * -1;
-      // 	nextRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
-      // }
     }
-    console.log('...Updated Raw number = ' + nextRawValue);
     setNumberRawValue(nextRawValue);
   }
   function onNumberPreviewKeyDown(event) {
@@ -770,9 +750,8 @@ function ConfigureColumnDataType(props = {}) {
    * @return {void}
    */
   function onUpdateDataType(event) {
-    // console.log(event);
     let updatedDataType = {};
-    let newColumnClassNames = columnClassNames;
+    let newColumnClassNames = new Set(columnClassNames);
     switch (event) {
       case 'date-time':
         setDataTypeFormat('date');
@@ -783,22 +762,21 @@ function ConfigureColumnDataType(props = {}) {
             defaultToToday: false
           }
         };
-        newColumnClassNames = newColumnClassNames.delete('grid-control__body-columns--number-align-right');
+        newColumnClassNames.delete('grid-control__body-columns--number-align-right');
         break;
       case 'number':
         setDataTypeFormat('number');
         onNumberFormat('number');
-        newColumnClassNames = newColumnClassNames.delete('grid-control__body-columns--date-align-right');
+        newColumnClassNames.delete('grid-control__body-columns--date-align-right');
         return;
       default:
         updatedDataType = {
           type: event
         };
-        newColumnClassNames = newColumnClassNames.delete('grid-control__body-columns--date-align-right');
-        newColumnClassNames = newColumnClassNames.delete('grid-control__body-columns--number-align-right');
+        newColumnClassNames.delete('grid-control__body-columns--date-align-right');
+        newColumnClassNames.delete('grid-control__body-columns--number-align-right');
         break;
     }
-    // console.log('updating data tppe');
     setColumnClassNames(newColumnClassNames);
     setDataType(updatedDataType);
   }
@@ -830,8 +808,7 @@ function ConfigureColumnDataType(props = {}) {
      * Ensure column classes are updated if additional classes were added to the
      * block subsequent to the prior column configuration
      */
-    let newColumnClassNames = columnClassNames;
-    console.log('data type = ' + dataType.type);
+    let newColumnClassNames = new Set(columnClassNames);
     switch (dataType.type) {
       case 'general':
         break;
@@ -844,17 +821,12 @@ function ConfigureColumnDataType(props = {}) {
     }
     setColumnClassNames(newColumnClassNames);
     const updatedColumnClasses = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.prepareClassesForUse)(newColumnClassNames);
-    console.log('Classes to set: ' + updatedColumnClasses);
     updatedColumn(event, 'dataType', tableId, columnId, columnName, updatedColumnAttributes, updatedColumnClasses);
     close();
   }
   const renderColumnClasses = (0,clsx__WEBPACK_IMPORTED_MODULE_3__["default"])(columnClassNamesRender, {
     'grid-control__body-columns--number-red': showNegativeNumberPreview
   });
-
-  // console.log('resolve');
-  // console.log('format = ' + dataTypeFormat);
-  // console.log(dataType);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Modal, {
     title: "Configure Column Content Type",
     overlayClassName: "configure-column-modal",
@@ -4055,7 +4027,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Exports main logic for Dynamic Tables block.
  *
- * @since    1.0.0
+ * @since 1.0.0
  *
  * @param {Object} props
  */
@@ -4197,7 +4169,7 @@ function Edit(props) {
    *
    * Description: Responds to clicked row menu item to update the row height configuration.
    *
-   * @since    1.2.0
+   * @since 1.2.0
    *
    * @param {Object} e             row menu click event
    * @param {number} rowId         Row number to update
@@ -4223,7 +4195,7 @@ function Edit(props) {
   /**
    * Close row height configuration dialog page.
    *
-   * @since    1.2.0
+   * @since 1.2.0
    */
   const closeRowHeightModal = () => {
     setRowHeightModal(prev => ({
@@ -4290,7 +4262,7 @@ function Edit(props) {
    *
    * Description: Responds to clicked column menu item to update the column height configuration.
    *
-   * @since    1.2.0
+   * @since 1.2.0
    *
    * @param {Object} e                Column menu click event
    * @param {number} columnId         Column number to update
@@ -4317,7 +4289,7 @@ function Edit(props) {
   /**
    * Close column data type configuration dialog page.
    *
-   * @since    1.2.0
+   * @since 1.2.0
    */
   const closeColumnDataTypeModal = () => {
     setColumnDataTypeModal(prev => ({
@@ -4334,7 +4306,7 @@ function Edit(props) {
    *
    * Description: Responds to clicked column menu item to update the column height configuration.
    *
-   * @since    1.2.0
+   * @since 1.2.0
    *
    * @param {Object} e                Column menu click event
    * @param {number} columnId         Column number to update
@@ -4359,7 +4331,7 @@ function Edit(props) {
   /**
    * Close column width configuration dialog page.
    *
-   * @since    1.2.0
+   * @since 1.2.0
    */
   const closeColumnWidthModal = () => {
     setColumnWidthModal(prev => ({
@@ -4403,15 +4375,6 @@ function Edit(props) {
   });
 
   /**
-   * Get Current Table Id.
-   *
-   * @type     {*}
-   * @since    1.0.0
-   *
-   * @return Table Id
-   */
-
-  /**
    * Identify current table id by its block table reference
    *
    * @since 1.1.0
@@ -4433,7 +4396,7 @@ function Edit(props) {
   /**
    * Set Table ID for newly created tables
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @return {boolean} Was Table Changed?
    */
@@ -4448,7 +4411,7 @@ function Edit(props) {
   /**
    * Lookup table attribute value.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {Array}  tableAttributes
    * @param {string} attributeName
@@ -4490,7 +4453,7 @@ function Edit(props) {
   /**
    * Retrive table id's of all tables in a status of deleted.
    *
-   * @since  1.0.0
+   * @since 1.0.0
    *
    * @type   {Object} Object of all table id's for tables with a 'deleted' status
    */
@@ -4509,9 +4472,9 @@ function Edit(props) {
    * Identifies when the post which was being saved has completed the
    * save.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
-   * @type     {boolean} Post changes have been saved
+   * @type {boolean} Post changes have been saved
    */
   const postChangesAreSaved = (0,_hooks__WEBPACK_IMPORTED_MODULE_12__.usePostChangesSaved)();
 
@@ -4543,7 +4506,7 @@ function Edit(props) {
   /**
    * Set Block Table Status
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @return  {("None" | "New" | "Stale" | "Saved")}  Table Status
    */
@@ -4563,9 +4526,9 @@ function Edit(props) {
   /**
    * Summary. (use period). <break> Description. (use period).
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
-   * @return  {boolean} Is this a new dybamic table block?
+   * @return {boolean} Is this a new dybamic table block?
    */
   const setNewBlock = () => {
     if (block_table_ref === '') {
@@ -4577,7 +4540,7 @@ function Edit(props) {
   /**
    * Set lock for saving.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    */
   const setSaveLock = () => {
     lockPostSaving(SAVE_LOCK_KEY);
@@ -4587,7 +4550,7 @@ function Edit(props) {
   /**
    * Remove lock for saving.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    */
   const setClearSaveLock = () => {
     unlockPostSaving(SAVE_LOCK_KEY);
@@ -4611,7 +4574,7 @@ function Edit(props) {
   /**
    * Retrieve table entity from table webservice and load table store.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    */
   const {
     table,
@@ -4680,7 +4643,7 @@ function Edit(props) {
   /**
    * Determine if table has been loaded.
    *
-   * @since    1.1.0
+   * @since 1.1.0
    *
    * @return {boolean}  Table loaded?
    */
@@ -4694,7 +4657,7 @@ function Edit(props) {
    * Create a latch key before clone to identify the specific block being cloned. The block
    * will not be cloned if it is currently locked for cloning.
    *
-   * @since    1.1.0
+   * @since 1.1.0
    *
    * @param {string} clientId - Current Block Identifier to be cloned
    * @param {string} postId   - Current post id of post in which the block appears
@@ -4726,7 +4689,7 @@ function Edit(props) {
    * Determine Dynamic Tables block originated from a non-sync pattern, and if so,
    * clone the block and its related table
    *
-   * @since    1.1.0
+   * @since 1.1.0
    *
    * @param {boolean} tableLoaded
    * @param {Object}  table
@@ -4809,7 +4772,7 @@ function Edit(props) {
    * Post ID is assigned a value of '0' upon table creation and can change over the life of a post.
    * props.context is authoritative for Post ID so we ensure the table is sync'd to that.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    */
   if (tableHasStartedResolving && tableHasFinishedResolving && !awaitingTableEntityCreation && Number(props.context.postId) !== 0 && Number(table.post_id) === 0) {
     setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId));
@@ -4853,7 +4816,7 @@ function Edit(props) {
   /**
    * Set the initial focus cell when the dynamic table receives focus
    *
-   * @since    1.1.1
+   * @since 1.1.1
    */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     // Only initial focus when table is loaded and nothing focused yet
@@ -4945,8 +4908,8 @@ function Edit(props) {
   /**
    * Insert a new column in the table.
    *
-   * @since    1.0.0
-   * @since    1.2.2  Allow column to be added either left or right the current column
+   * @since 1.0.0
+   * @since 1.2.2  Allow column to be added either left or right the current column
    *
    * @param {number} tableId   Identifier key for the table
    * @param {number} columnId  Identifier for the table column
@@ -4974,8 +4937,8 @@ function Edit(props) {
   /**
    * Insert a new row in the table.
    *
-   * @since    1.0.0
-   * @since    1.2.2  Allow row to be added either above or below the current row
+   * @since 1.0.0
+   * @since 1.2.2  Allow row to be added either above or below the current row
    *
    * @param {number} tableId   Identifier key for the table
    * @param {number} rowId     Identifier for the table row
@@ -5016,7 +4979,7 @@ function Edit(props) {
   /**
    * Delete a column from the table
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {*} tableId
    * @param {*} rowId
@@ -5031,7 +4994,7 @@ function Edit(props) {
   /**
    * Move a column left or right
    *
-   * @since    1.2.2
+   * @since 1.2.2
    *
    * @param {number} tableId
    * @param {number} columnId
@@ -5047,7 +5010,7 @@ function Edit(props) {
   /**
    * Move a row up or down
    *
-   * @since    1.2.2
+   * @since 1.2.2
    *
    * @param {number} tableId
    * @param {number} rowId
@@ -5063,7 +5026,7 @@ function Edit(props) {
   /**
    * Update table store to reflect changes made to EXISTING table attributes.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {number}                  tableId        Identifier key for the table
    * @param {string}                  attribute      (table, column, row, cell)
@@ -5133,7 +5096,7 @@ function Edit(props) {
   /**
    * Show or hide column and row borders to support updates to them.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {Object}  table     Dynamic Table
    * @param {boolean} isChecked Are borders being toggled on?
@@ -5191,7 +5154,7 @@ function Edit(props) {
   /**
    * Create new table and related table entity.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {number} columnCount Number of columns in table
    * @param {number} rowCount    Number of rows in table
@@ -5212,7 +5175,7 @@ function Edit(props) {
   /**
    * Process event to create new table.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {Object} event Table Creation Event
    */
@@ -5224,7 +5187,7 @@ function Edit(props) {
   /**
    * Process changes for the column count when defining a new table creation.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {number} num_columns Number of columns entered in form
    */
@@ -5247,7 +5210,7 @@ function Edit(props) {
   /**
    * Process changes for the row count when defining a new table creation.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {number} num_rows Number of rows entered in form
    */
@@ -5284,7 +5247,7 @@ function Edit(props) {
   /**
    * Sets the focused cell state when a cell in the dynamic table receives focus.
    *
-   * @since    1.1.1
+   * @since 1.1.1
    *
    * @param {Object} event onFocusCapture event
    * @return {void}
@@ -5312,7 +5275,7 @@ function Edit(props) {
   /**
    * Set focus to specified cell coordinates in the dynamic table.
    *
-   * @since    1.1.1
+   * @since 1.1.1
    *
    * @param {number} col Column number of the cell in which the focus action occured
    * @param {number} row Row number of the cell in which the focus action occured
@@ -5361,7 +5324,7 @@ function Edit(props) {
   /**
    * Handle keyboard navigation within the active dynamic table block and updates focus appropriately
    *
-   * @since    1.1.1
+   * @since 1.1.1
    *
    * @param {Object} event onKeyDown event
    * @return {void}
@@ -5526,7 +5489,7 @@ function Edit(props) {
   /**
    * Identify if key press was a printable character
    *
-   * @since    1.2.0
+   * @since 1.2.0
    *
    * @param {Object} event onKeyDown event
    * @return {boolean}     Is Key Press a printable character?
@@ -5543,7 +5506,7 @@ function Edit(props) {
   /**
    * Handle transition from navigation to editing on grid cell
    *
-   * @since    1.2.0
+   * @since 1.2.0
    *
    * @param {Object} event          onKeyDown event
    * @param {Object} activeCellEl   Current cell element
@@ -5651,9 +5614,9 @@ function Edit(props) {
   /**
    * Process updates (insert, update, delete) to a table column.
    *
-   * @since    1.0.0
-   * @since    1.1.1  Updated to support column menu refactor.
-   * @since    1.2.2  Added actions to move a column up or down and insert to the right
+   * @since 1.0.0
+   * @since 1.1.1  Updated to support column menu refactor.
+   * @since 1.2.2  Added actions to move a column up or down and insert to the right
    *
    * @param {Object} e                       Table Creation Event
    * @param {string} updateType              attribute (Update), insert, delete
@@ -5727,9 +5690,9 @@ function Edit(props) {
    *
    * Descrption: Current actions include row insert, delete, update height.
    *
-   * @since    1.0.0
-   * @since    1.1.1  Updated to support row menu refactor.
-   * @since    1.2.2  Added actions to move a row up or down and insert below
+   * @since 1.0.0
+   * @since 1.1.1  Updated to support row menu refactor.
+   * @since 1.2.2  Added actions to move a row up or down and insert below
    *
    * @param {Object} e                    Table Creation Event
    * @param {string} updateType           attribute (Update), insert, delete
@@ -5783,7 +5746,7 @@ function Edit(props) {
   /**
    * Process mouse clicks on the table borders.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {number} column_id Identifier for the table column
    * @param {number} row_id    Identifier for the table row
@@ -5809,7 +5772,7 @@ function Edit(props) {
   /**
    * Process request to prevent the table title from displaying
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {Object}  table     Dynamic Table
    * @param {boolean} isChecked Is the table title being hidden?
@@ -5825,7 +5788,7 @@ function Edit(props) {
   /**
    * Process request to allow the table to scroll horizontally
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {Object}  table     Dynamic Table
    * @param {boolean} isChecked Show horizontal scroll bar if appropriate?
@@ -5841,7 +5804,7 @@ function Edit(props) {
   /**
    * Process request to show banded even numbered table rows
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {Object}  table     Dynamic Table
    * @param {boolean} isChecked Show banded table rows?
@@ -5882,7 +5845,7 @@ function Edit(props) {
   /**
    * Process request create a header row from the first table row.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {Object}  table     Dynamic Table
    * @param {boolean} isChecked Create a header row
@@ -5904,7 +5867,7 @@ function Edit(props) {
   /**
    * Process request to align header column content horizontally.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {Object} table     Dynamic Table
    * @param {string} alignment The alignment position (left, center, right)
@@ -5920,7 +5883,7 @@ function Edit(props) {
   /**
    * Process request to syle header row borders.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {Object} table  Dynamic Table
    * @param {Array}  border Outside header border color, width, style
@@ -5936,7 +5899,7 @@ function Edit(props) {
   /**
    * Process request to make the header row sticky with vertical scroll.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {Object}  table     Dynamic Table
    * @param {boolean} isChecked Make header row sticky
@@ -5952,7 +5915,7 @@ function Edit(props) {
   /**
    * Process request to align body column content horizontally.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {Object} table     Dynamic Table
    * @param {string} alignment The alignment position (left, center, right)
@@ -5968,7 +5931,7 @@ function Edit(props) {
   /**
    * Process request to syle body row borders.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {Object} table  Dynamic Table
    * @param {Array}  border Outside body border color, width, style
@@ -5984,7 +5947,7 @@ function Edit(props) {
   /**
    * Process request to show inner body row grid lines.
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {Object}  table     Dynamic Table
    * @param {boolean} isChecked Show inner body row grid lines
@@ -6000,7 +5963,7 @@ function Edit(props) {
   /**
    * Process request to set grid line width
    *
-   * @since    1.0.0
+   * @since 1.0.0
    *
    * @param {Object} table         Dynamic Table
    * @param {string} gridLineWidth Width of grid lines in pixels
@@ -6987,7 +6950,6 @@ function Cell(props) {
     let nextRawValue = entryValue;
     let revisedDecimalPlaces = settings?.formatOptions?.decimalPlaces ?? 0;
     if (inputType === 'percent') {
-      console.log('...Percentage division = ' + Number(nextRawValue) + ', ' + Number(nextRawValue) / 100);
       const [integerPart, fractionPart = ''] = entryValue.split('.');
       const nextEntryValue = fractionPart.length > revisedDecimalPlaces ? `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}` : entryValue;
       setPercentEntryValue(nextEntryValue);
@@ -7095,7 +7057,6 @@ function Cell(props) {
     },
     number: () => {
       if (!isEditing) {
-        console.log('Display Numberic Value = ' + numberDisplayValue);
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
           children: numberDisplayValue
         });
@@ -7156,8 +7117,6 @@ function Cell(props) {
     default:
       break;
   }
-
-  // console.log('column classes = ', columnClassNames);
   const renderClassesDisplay = (0,clsx__WEBPACK_IMPORTED_MODULE_10__["default"])(columnClassNames, cellClassNames, {
     'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
     'grid-control__body-columns--number-red': redNegativeNumber
@@ -7168,8 +7127,6 @@ function Cell(props) {
   });
   const isBorderCell = cellType === 'border';
   const computedTabIndex = !isBorderCell && isFocused ? 0 : -1;
-
-  // console.log('Rendering Cell ' + cell_id);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
     "data-cell-id": cell_id,
     "data-col": Number(column_id),
@@ -8196,8 +8153,8 @@ const LETTER_MAP = {
 /**
  * Convert a column number to a string of letters.
  *
- * @since    1.0.0
- * @since    1.1.0 Refactored
+ * @since 1.0.0
+ * @since 1.1.0 Refactored
  *
  * @param {number} letterNumber Integer
  * @return  {string} Column letter
@@ -8217,7 +8174,7 @@ function numberToLetter(letterNumber) {
 /**
  * Update one attribute value inside the array.
  *
- * @since    1.0.0
+ * @since 1.0.0
  *
  * @param {Array|Object} arrayIn     current state with nested arrays and objects
  * @param {string}       key         State array type
@@ -8235,11 +8192,10 @@ function updateArray(arrayIn, key, id, updatedData) {
 /**
  * Sort table part array by the natural identifier assigned at design time.
  *
- * @since    1.0.0
+ * @since 1.0.0
  *
  * @param {string} tablePart  Table part to be sorted (columns | rows | cells)
  * @param {Array}  tableArray Array of all attributes of the table part being sorted
- * @return Sorted tableArray based on the ID of each object in the array
  */
 function tableSort(tablePart, tableArray) {
   if (tablePart === 'rows') {
@@ -8308,7 +8264,7 @@ function prepareClassesForUse(classSet) {
 /**
  * Create a random identifier for assignment as a block/table cross reference.
  *
- * @since    1.0.0
+ * @since 1.0.0
  *
  * @return  {string} New block_table_ref
  */
@@ -8320,8 +8276,8 @@ function generateBlockTableRef() {
 /**
  * Calculate the cell id for each cell in the Summary.
  *
- * @since    1.0.0
- * @since	 1.1.0 Moved from resolvers.js to utils.js
+ * @since 1.0.0
+ * @since 1.1.0 Moved from resolvers.js to utils.js
  *
  * @param {*} fetchedCells cell array retrieved the REST api
  * @return  {Array|Object} Cells with the added cell id attribute
@@ -8338,7 +8294,7 @@ function computeCellIds(fetchedCells) {
 /**
  * Set content for borders occuring in rows (integers) and columns (letters).
  *
- * @since    1.0.0
+ * @since 1.0.0
  *
  * @param {*} row     current row_id
  * @param {*} column  current column_id
@@ -8355,12 +8311,12 @@ function setBorderContent(row, column, content) {
 /**
  * Identify whether to display the column menu component for the current column
  *
- * @since    1.0.0
+ * @since 1.0.0
  *
  * @param {boolean} columnMenuVisible Whether the column menu should be visible based on current state of processing
  * @param {number}  openColumnRow     The column id or row id that should be open
  * @param {number}  column_id         Current column id
- * @return  {boolean} Show the current column menu?
+ * @return {boolean}                  Show the current column menu?
  */
 function openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id) {
   if (columnMenuVisible && openColumnRow === column_id) {
@@ -8372,12 +8328,12 @@ function openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id) {
 /**
  * Identify whether to display the row menu component for the current column
  *
- * @since    1.0.0
+ * @since 1.0.0
  *
  * @param {boolean} rowMenuVisible Whether the row menu should be visible based on current state of processing
  * @param {number}  openColumnRow  The column id or row id that should be open
  * @param {number}  row_id         Current row id
- * @return  {boolean} Show the current row menu?
+ * @return {boolean}               Show the current row menu?
  */
 function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
   if (rowMenuVisible && openColumnRow === row_id) {
@@ -8400,8 +8356,6 @@ const DEFAULT_COLUMN_DATA_TYPE = {
  * @return {Object} Default data type object
  */
 function normalizeColumnDataType(columnDataType) {
-  // console.log('Consolidate to one columnDataType shape')
-  // console.log('...Inbound Data Type', columnDataType)
   if (columnDataType?.type) {
     return columnDataType;
   }
@@ -8414,7 +8368,7 @@ function normalizeColumnDataType(columnDataType) {
 /**
  * Test whether a data is formatted as a valid ISO date string
  *
- * @since 1.2
+ * @since 1.2.0
  *
  * @param {string} value Test date string
  * @return {boolean}     Passed test?
@@ -8425,8 +8379,16 @@ function isValidISODate(value) {
   const test = new Date(Date.UTC(year, month - 1, day));
   return test.getUTCFullYear() === year && test.getUTCMonth() === month - 1 && test.getUTCDate() === day;
 }
+
+/**
+ * Test whether a data is formatted as a valid time string
+ *
+ * @since 1.2.2
+ *
+ * @param {string} value Test date string
+ * @return {boolean}     Passed test?
+ */
 function isValidTime(value) {
-  // 00:00 to 23:59, optional :ss (00-59)
   const m = /^([01]\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?$/.exec(value);
   return !!m;
 }
@@ -8434,7 +8396,7 @@ function isValidTime(value) {
 /**
  * Test whether a data is formatted as a valid ISO date-time string
  *
- * @since 1.2
+ * @since 1.2.0
  *
  * @param {string} value Test date string
  * @return {boolean}     Passed test?
@@ -8460,19 +8422,12 @@ function formatedDisplayDate(date, format) {
 
   // Test whether input is a valid ISO date
   if (!isValidISODate(date) && !isValidISODatetime(date) && !isValidTime(date)) {
-    // console.log('invalidly formatted date - ' + date);
-    // console.log('Valid Date = ' + isValidISODate(date));
-    // console.log('Valid Datetime = ' + isValidISODatetime(date));
-    // console.log('Valid Time = ' + isValidTime(date));
     return '';
   }
   if (format === 'date') {
-    // console.log('Return Date');
     return (0,_wordpress_date__WEBPACK_IMPORTED_MODULE_0__.dateI18n)('n/j/Y', date);
   }
   if (format === 'time') {
-    // console.log('Return Time from ' + date);
-
     const [hh, mm] = date.split(':').map(Number);
     if (!Number.isInteger(hh) || !Number.isInteger(mm)) return '';
     const ampm = hh >= 12 ? 'pm' : 'am';
@@ -8480,7 +8435,6 @@ function formatedDisplayDate(date, format) {
     return `${h12}:${String(mm).padStart(2, '0')} ${ampm}`;
   }
   if (format === 'datetime-local') {
-    // console.log('Return Date/Time');
     return (0,_wordpress_date__WEBPACK_IMPORTED_MODULE_0__.dateI18n)('n/j/Y g:i a', date);
   }
   return '';
@@ -8539,9 +8493,29 @@ function formattedIsoDate(date, format) {
  * Support caret positioning during entry
  */
 const CARET_TOKEN_PATTERN = /[\d.-]/;
+
+/**
+ * Number of numeric input characters (caret tokens) that appear before the caret location
+ *
+ * @since 1.2.4
+ *
+ * @param {string} value      Edit input value
+ * @param {number} caretIndex Initial caret position
+ * @return {number}           Number of caret tokens before the caret
+ */
 function countCaretTokens(value, caretIndex) {
   return (value.slice(0, caretIndex).match(/[\d.-]/g) ?? []).length;
 }
+
+/**
+ * Identify caret insertion point for a number string
+ *
+ * @since 1.2.4
+ *
+ * @param {string} value      Edit input value
+ * @param {number} tokenCount Number of caret tokens
+ * @return {number}           Caret insertion point computed from input value
+ */
 function getCaretIndexFromTokenCount(value, tokenCount) {
   if (tokenCount <= 0) {
     return 0;
@@ -8557,9 +8531,30 @@ function getCaretIndexFromTokenCount(value, tokenCount) {
   }
   return value.length;
 }
+
+/**
+ * Identify the location of the first numeric value in a string
+ *
+ * @since 1.2.4
+ *
+ * @param {string} value Edit input value
+ * @return {number}           First number location index
+ */
 function getFirstNumericIndex(value) {
   return value.search(/\d/);
 }
+
+/**
+ * Adjusts next caret location if the prior location was at the start of the string
+ * or in the prefix zone (e.g., currency symbol, etc.)
+ *
+ * @since 1.2.4
+ *
+ * @param {string} value      Edit input value
+ * @param {number} caretIndex Caret location in the rendered input value
+ * @param {Object} caretMeta  Information about the current caret location
+ * @return {number}           Next caret location adjusted for prefx
+ */
 function normalizeCaretForPresentationPrefix(value, caretIndex, caretMeta) {
   if (!caretMeta) {
     return caretIndex;
@@ -8580,7 +8575,7 @@ function normalizeCaretForPresentationPrefix(value, caretIndex, caretMeta) {
 /**
  * Strip formatting characters from numeric display string
  *
- * @since    1.2.4
+ * @since 1.2.4
  *
  * @param {string} value          String representation of number
  * @param {string} dataTypeFormat Number format type
@@ -8592,8 +8587,6 @@ function sanitizeNumberInput(value, dataTypeFormat) {
   // Remove display formatting first.
   next = next.replace(/,/g, '');
   next = next.replace(/[^\d.\-]/g, '');
-
-  // console.log('Replace brackets with minus sign');
 
   // Keep only a single leading minus.
   next = next.replace(/(?!^)-/g, '');
@@ -8610,6 +8603,16 @@ function sanitizeNumberInput(value, dataTypeFormat) {
   }
   return next;
 }
+
+/**
+ * Adjust decimal position for percentage formatted numbers
+ *
+ * @since 1.2.4
+ *
+ * @param {string} rawValue String representation of number
+ * @param {string} places   Number decimal
+ * @return {string}           Number with revised decimal locations
+ */
 function shiftDecimalString(rawValue, places) {
   const next = sanitizeNumberInput(rawValue, 'number');
   if (next === '' || next === '-') {
@@ -8638,9 +8641,27 @@ function shiftDecimalString(rawValue, places) {
   const fraction = digits.slice(splitIndex).replace(/0+$/, '');
   return `${isNegative ? '-' : ''}${whole}${fraction ? `.${fraction}` : ''}`;
 }
+
+/**
+ * Move two decimal position to the left for entry
+ *
+ * @since 1.2.4
+ *
+ * @param {string} rawValue Number percentage string before formatting update
+ * @return {string}         Number percentage string after formatting update
+ */
 function toPercentEntryValue(rawValue) {
   return shiftDecimalString(rawValue, 2);
 }
+
+/**
+ * Move two decimal position to the right after entry
+ *
+ * @since 1.2.4
+ *
+ * @param {string} rawValue Number percentage string before formatting update
+ * @return {string}         Number percentage string after formatting update
+ */
 function fromPercentEntryValue(rawValue) {
   return shiftDecimalString(rawValue, -2);
 }
@@ -8648,7 +8669,7 @@ function fromPercentEntryValue(rawValue) {
 /**
  * Strip formatting characters from numeric display string
  *
- * @since    1.2.4
+ * @since 1.2.4
  *
  * @param {string}  rawValue           String representation of canonical number
  * @param {string}  dataTypeFormat     Number format type
@@ -8658,14 +8679,8 @@ function fromPercentEntryValue(rawValue) {
  * @param {boolean} bracketNegative    Display negative numbers with brackets
  * @return {string}                   Formatted string representation of number
  */
-function formattedNumber(rawValue, dataTypeFormat, thousandSeparator, decimalPlaces, showCurrencySymbol,
-// showCurrencySymbol = dataTypeFormat === 'currency',
-bracketNegative = false) {
-  // console.log('In Formatted Number');
-  // console.log('...Number format = ', dataTypeFormat)
+function formattedNumber(rawValue, dataTypeFormat, thousandSeparator, decimalPlaces, showCurrencySymbol, bracketNegative = false) {
   const sanitizedNumber = sanitizeNumberInput(rawValue, dataTypeFormat);
-  // console.log('...Sanitized number = ' + sanitizedNumber);
-
   if (sanitizedNumber === '') return '';
   if (sanitizedNumber === '-') return '-';
   const isNegative = sanitizedNumber.startsWith('-');
@@ -8693,9 +8708,6 @@ bracketNegative = false) {
     default:
       numberStyle = 'decimal';
   }
-
-  // console.log('Thousands Separator = ' + thousandSeparator);
-
   const formatOptions = {
     style: numberStyle,
     currency: 'USD',
@@ -8725,15 +8737,9 @@ bracketNegative = false) {
     formatOptions.currency = 'USD';
     formatOptions.currencyDisplay = 'symbol';
   }
-
-  // console.log('Formatted Option = ', formatOptions);
   const limitedFraction = fractionPart.slice(0, Math.max(0, revisedDecimalPlaces));
-  // console.log('  Limited fraction =  ' + limitedFraction);
   const decimalFragment = hasDecimal ? `.${limitedFraction}` : '';
-  // console.log('  Decimal fragment =  ' + decimalFragment);
   const rawNumberString = `${integerPart}${decimalFragment}`;
-  // console.log('  Raw Number =  ' + rawNumberString);
-
   const formattedMagnitude = new Intl.NumberFormat('en-US', formatOptions).format(Number(rawNumberString));
   if (!isNegative) {
     return formattedMagnitude;

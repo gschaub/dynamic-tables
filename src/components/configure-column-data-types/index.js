@@ -73,7 +73,6 @@ function ConfigureColumnDataType(props = {}) {
 		normalizedColumnDataType?.settings?.formatOptions?.updateColumnStyle || true
 	);
 
-	// console.log('Column Classes inbound = ', columnClasses);
 	const [columnClassNames, setColumnClassNames] = useState(stageClassesForEdit(columnClasses));
 	const columnClassNamesRender = prepareClassesForUse(columnClassNames);
 
@@ -248,7 +247,7 @@ function ConfigureColumnDataType(props = {}) {
 			},
 		};
 
-		let newColumnClassNames = columnClassNames;
+		let newColumnClassNames = new Set(columnClassNames);
 		newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--column-align-right');
 		setColumnClassNames(newColumnClassNames);
 
@@ -269,7 +268,7 @@ function ConfigureColumnDataType(props = {}) {
 	 */
 	function onDateFormatOption(event, option) {
 		let newUpdateColumnStyle = updateColumnStyle;
-		let newColumnClassNames = columnClassNames;
+		let newColumnClassNames = new Set(columnClassNames);
 
 		switch (option) {
 			case 'format-column':
@@ -296,7 +295,6 @@ function ConfigureColumnDataType(props = {}) {
 			},
 		};
 
-		// console.log('Date Format Options - Updated data type: ', updatedDataType);
 		setDataType(updatedDataType);
 	}
 
@@ -346,14 +344,12 @@ function ConfigureColumnDataType(props = {}) {
 		if (numberFormat === 'percent' && dataTypeFormat !== 'percent') {
 			// divide by 100
 			const revisedNumberValue = !!numberRawValue ? String(Number(numberRawValue) / 100) : '';
-			console.log('Format to percent udpate value = ' + revisedNumberValue)
 			setNumberRawValue(revisedNumberValue);
 		}
 
 		if (numberFormat !== 'percent' && dataTypeFormat === 'percent') {
 			// multiply by 100
 			const revisedNumberValue = !!numberRawValue ? String(Number(numberRawValue) * 100) : '';
-			console.log('Format from percent udpate value = ' + revisedNumberValue)
 			setNumberRawValue(revisedNumberValue);
 		}
 
@@ -443,7 +439,7 @@ function ConfigureColumnDataType(props = {}) {
 				};
 		}
 
-		let newColumnClassNames = columnClassNames;
+		let newColumnClassNames = new Set(columnClassNames);
 		newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--number-align-right');
 		setColumnClassNames(newColumnClassNames);
 
@@ -452,7 +448,6 @@ function ConfigureColumnDataType(props = {}) {
 			settings: dataTypeSettings,
 		};
 
-		// console.log('Number Data Type Selection - Updated data type: ', updatedDataType);
 		setDataType(updatedDataType);
 	}
 
@@ -465,16 +460,13 @@ function ConfigureColumnDataType(props = {}) {
 	 * @param {string} option Formatting option
 	 */
 	function onNumberFormatOption(event, option) {
-		// console.log('On Number Format Options - ' + option);
-		// console.log(event);
-
 		let newDecimalPlaces = decimalPlaces;
 		let newThousandSeparator = thousandSeparator;
 		let newCurrency = currency;
 		let newRedNegative = redNegative;
 		let newBracketNegative = bracketNegative;
 		let newUpdateColumnStyle = updateColumnStyle;
-		let newColumnClassNames = columnClassNames;
+		let newColumnClassNames = new Set(columnClassNames);
 
 		switch (option) {
 			case 'decimal':
@@ -525,7 +517,6 @@ function ConfigureColumnDataType(props = {}) {
 			},
 		};
 
-		console.log('Number Format Options - Updated data type: ', updatedDataType);
 		setDataType(updatedDataType);
 	}
 
@@ -537,7 +528,6 @@ function ConfigureColumnDataType(props = {}) {
 	 * @param {Object} event New number string
 	 */
 	function onNumberPreviewChange(event) {
-		console.log('number change event = ' + event);
 		const input = numberEntryInputRef.current;
 
 		const entryValue = sanitizeNumberInput(
@@ -558,9 +548,6 @@ function ConfigureColumnDataType(props = {}) {
 		let revisedDecimalPlaces = decimalPlaces ?? 0;
 
 		if (dataTypeFormat === 'percent') {
-			console.log(
-				'...Percentage division = ' + Number(nextRawValue) + ', ' + Number(nextRawValue) / 100
-			);
 			const [integerPart, fractionPart = ''] = entryValue.split('.');
 			const nextEntryValue =
 				fractionPart.length > revisedDecimalPlaces
@@ -581,13 +568,7 @@ function ConfigureColumnDataType(props = {}) {
 			if (fractionalExcessLength > 0) {
 				nextRawValue = `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}`;
 			}
-
-			// if (fractionalExcessLength < 0) {
-			// 	const paddedSpaces = fractionalExcessLength * -1;
-			// 	nextRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
-			// }
 		}
-		console.log('...Updated Raw number = ' + nextRawValue);
 
 		setNumberRawValue(nextRawValue);
 	}
@@ -608,9 +589,8 @@ function ConfigureColumnDataType(props = {}) {
 	 * @return {void}
 	 */
 	function onUpdateDataType(event) {
-		// console.log(event);
 		let updatedDataType = {};
-		let newColumnClassNames = columnClassNames;
+		let newColumnClassNames = new Set(columnClassNames);
 
 		switch (event) {
 			case 'date-time':
@@ -622,30 +602,21 @@ function ConfigureColumnDataType(props = {}) {
 						defaultToToday: false,
 					},
 				};
-				newColumnClassNames = newColumnClassNames.delete(
-					'grid-control__body-columns--number-align-right'
-				);
+				newColumnClassNames.delete('grid-control__body-columns--number-align-right');
 				break;
 			case 'number':
 				setDataTypeFormat('number');
 				onNumberFormat('number');
-				newColumnClassNames = newColumnClassNames.delete(
-					'grid-control__body-columns--date-align-right'
-				);
+				newColumnClassNames.delete('grid-control__body-columns--date-align-right');
 				return;
 			default:
 				updatedDataType = {
 					type: event,
 				};
-				newColumnClassNames = newColumnClassNames.delete(
-					'grid-control__body-columns--date-align-right'
-				);
-				newColumnClassNames = newColumnClassNames.delete(
-					'grid-control__body-columns--number-align-right'
-				);
+				newColumnClassNames.delete('grid-control__body-columns--date-align-right');
+				newColumnClassNames.delete('grid-control__body-columns--number-align-right');
 				break;
 		}
-		// console.log('updating data tppe');
 		setColumnClassNames(newColumnClassNames);
 		setDataType(updatedDataType);
 	}
@@ -677,9 +648,8 @@ function ConfigureColumnDataType(props = {}) {
 		 * Ensure column classes are updated if additional classes were added to the
 		 * block subsequent to the prior column configuration
 		 */
-		let newColumnClassNames = columnClassNames;
+		let newColumnClassNames = new Set(columnClassNames);
 
-		console.log('data type = ' + dataType.type);
 		switch (dataType.type) {
 			case 'general':
 				break;
@@ -697,7 +667,6 @@ function ConfigureColumnDataType(props = {}) {
 
 		setColumnClassNames(newColumnClassNames);
 		const updatedColumnClasses = prepareClassesForUse(newColumnClassNames);
-		console.log('Classes to set: ' + updatedColumnClasses);
 
 		updatedColumn(
 			event,
@@ -715,9 +684,6 @@ function ConfigureColumnDataType(props = {}) {
 		'grid-control__body-columns--number-red': showNegativeNumberPreview,
 	});
 
-	// console.log('resolve');
-	// console.log('format = ' + dataTypeFormat);
-	// console.log(dataType);
 	return (
 		<Modal
 			title="Configure Column Content Type"

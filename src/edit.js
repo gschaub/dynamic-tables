@@ -104,7 +104,7 @@ dispatch('core').addEntities([
 /**
  * Exports main logic for Dynamic Tables block.
  *
- * @since    1.0.0
+ * @since 1.0.0
  *
  * @param {Object} props
  */
@@ -201,7 +201,7 @@ export default function Edit(props) {
 	 *
 	 * Description: Responds to clicked row menu item to update the row height configuration.
 	 *
-	 * @since    1.2.0
+	 * @since 1.2.0
 	 *
 	 * @param {Object} e             row menu click event
 	 * @param {number} rowId         Row number to update
@@ -228,7 +228,7 @@ export default function Edit(props) {
 	/**
 	 * Close row height configuration dialog page.
 	 *
-	 * @since    1.2.0
+	 * @since 1.2.0
 	 */
 	const closeRowHeightModal = () => {
 		setRowHeightModal(prev => ({ ...prev, isOpen: false }));
@@ -293,7 +293,7 @@ export default function Edit(props) {
 	 *
 	 * Description: Responds to clicked column menu item to update the column height configuration.
 	 *
-	 * @since    1.2.0
+	 * @since 1.2.0
 	 *
 	 * @param {Object} e                Column menu click event
 	 * @param {number} columnId         Column number to update
@@ -321,7 +321,7 @@ export default function Edit(props) {
 	/**
 	 * Close column data type configuration dialog page.
 	 *
-	 * @since    1.2.0
+	 * @since 1.2.0
 	 */
 	const closeColumnDataTypeModal = () => {
 		setColumnDataTypeModal(prev => ({ ...prev, isOpen: false }));
@@ -335,7 +335,7 @@ export default function Edit(props) {
 	 *
 	 * Description: Responds to clicked column menu item to update the column height configuration.
 	 *
-	 * @since    1.2.0
+	 * @since 1.2.0
 	 *
 	 * @param {Object} e                Column menu click event
 	 * @param {number} columnId         Column number to update
@@ -361,7 +361,7 @@ export default function Edit(props) {
 	/**
 	 * Close column width configuration dialog page.
 	 *
-	 * @since    1.2.0
+	 * @since 1.2.0
 	 */
 	const closeColumnWidthModal = () => {
 		setColumnWidthModal(prev => ({ ...prev, isOpen: false }));
@@ -389,15 +389,6 @@ export default function Edit(props) {
 	});
 
 	/**
-	 * Get Current Table Id.
-	 *
-	 * @type     {*}
-	 * @since    1.0.0
-	 *
-	 * @return Table Id
-	 */
-
-	/**
 	 * Identify current table id by its block table reference
 	 *
 	 * @since 1.1.0
@@ -416,7 +407,7 @@ export default function Edit(props) {
 	/**
 	 * Set Table ID for newly created tables
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @return {boolean} Was Table Changed?
 	 */
@@ -432,7 +423,7 @@ export default function Edit(props) {
 	/**
 	 * Lookup table attribute value.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {Array}  tableAttributes
 	 * @param {string} attributeName
@@ -471,7 +462,7 @@ export default function Edit(props) {
 	/**
 	 * Retrive table id's of all tables in a status of deleted.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 *
 	 * @type   {Object} Object of all table id's for tables with a 'deleted' status
 	 */
@@ -486,9 +477,9 @@ export default function Edit(props) {
 	 * Identifies when the post which was being saved has completed the
 	 * save.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
-	 * @type     {boolean} Post changes have been saved
+	 * @type {boolean} Post changes have been saved
 	 */
 	const postChangesAreSaved = usePostChangesSaved();
 
@@ -520,7 +511,7 @@ export default function Edit(props) {
 	/**
 	 * Set Block Table Status
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @return  {("None" | "New" | "Stale" | "Saved")}  Table Status
 	 */
@@ -543,9 +534,9 @@ export default function Edit(props) {
 	/**
 	 * Summary. (use period). <break> Description. (use period).
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
-	 * @return  {boolean} Is this a new dybamic table block?
+	 * @return {boolean} Is this a new dybamic table block?
 	 */
 	const setNewBlock = () => {
 		if (block_table_ref === '') {
@@ -557,7 +548,7 @@ export default function Edit(props) {
 	/**
 	 * Set lock for saving.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 */
 	const setSaveLock = () => {
 		lockPostSaving(SAVE_LOCK_KEY);
@@ -567,7 +558,7 @@ export default function Edit(props) {
 	/**
 	 * Remove lock for saving.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 */
 	const setClearSaveLock = () => {
 		unlockPostSaving(SAVE_LOCK_KEY);
@@ -589,7 +580,7 @@ export default function Edit(props) {
 	/**
 	 * Retrieve table entity from table webservice and load table store.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 */
 	const {
 		table,
@@ -667,7 +658,7 @@ export default function Edit(props) {
 	/**
 	 * Determine if table has been loaded.
 	 *
-	 * @since    1.1.0
+	 * @since 1.1.0
 	 *
 	 * @return {boolean}  Table loaded?
 	 */
@@ -682,7 +673,7 @@ export default function Edit(props) {
 	 * Create a latch key before clone to identify the specific block being cloned. The block
 	 * will not be cloned if it is currently locked for cloning.
 	 *
-	 * @since    1.1.0
+	 * @since 1.1.0
 	 *
 	 * @param {string} clientId - Current Block Identifier to be cloned
 	 * @param {string} postId   - Current post id of post in which the block appears
@@ -706,7 +697,7 @@ export default function Edit(props) {
 	 * Determine Dynamic Tables block originated from a non-sync pattern, and if so,
 	 * clone the block and its related table
 	 *
-	 * @since    1.1.0
+	 * @since 1.1.0
 	 *
 	 * @param {boolean} tableLoaded
 	 * @param {Object}  table
@@ -788,7 +779,7 @@ export default function Edit(props) {
 	 * Post ID is assigned a value of '0' upon table creation and can change over the life of a post.
 	 * props.context is authoritative for Post ID so we ensure the table is sync'd to that.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 */
 	if (
 		tableHasStartedResolving &&
@@ -842,7 +833,7 @@ export default function Edit(props) {
 	/**
 	 * Set the initial focus cell when the dynamic table receives focus
 	 *
-	 * @since    1.1.1
+	 * @since 1.1.1
 	 */
 	useEffect(() => {
 		// Only initial focus when table is loaded and nothing focused yet
@@ -937,8 +928,8 @@ export default function Edit(props) {
 	/**
 	 * Insert a new column in the table.
 	 *
-	 * @since    1.0.0
-	 * @since    1.2.2  Allow column to be added either left or right the current column
+	 * @since 1.0.0
+	 * @since 1.2.2  Allow column to be added either left or right the current column
 	 *
 	 * @param {number} tableId   Identifier key for the table
 	 * @param {number} columnId  Identifier for the table column
@@ -968,8 +959,8 @@ export default function Edit(props) {
 	/**
 	 * Insert a new row in the table.
 	 *
-	 * @since    1.0.0
-	 * @since    1.2.2  Allow row to be added either above or below the current row
+	 * @since 1.0.0
+	 * @since 1.2.2  Allow row to be added either above or below the current row
 	 *
 	 * @param {number} tableId   Identifier key for the table
 	 * @param {number} rowId     Identifier for the table row
@@ -1012,7 +1003,7 @@ export default function Edit(props) {
 	/**
 	 * Delete a column from the table
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {*} tableId
 	 * @param {*} rowId
@@ -1027,7 +1018,7 @@ export default function Edit(props) {
 	/**
 	 * Move a column left or right
 	 *
-	 * @since    1.2.2
+	 * @since 1.2.2
 	 *
 	 * @param {number} tableId
 	 * @param {number} columnId
@@ -1043,7 +1034,7 @@ export default function Edit(props) {
 	/**
 	 * Move a row up or down
 	 *
-	 * @since    1.2.2
+	 * @since 1.2.2
 	 *
 	 * @param {number} tableId
 	 * @param {number} rowId
@@ -1059,7 +1050,7 @@ export default function Edit(props) {
 	/**
 	 * Update table store to reflect changes made to EXISTING table attributes.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {number}                  tableId        Identifier key for the table
 	 * @param {string}                  attribute      (table, column, row, cell)
@@ -1126,7 +1117,7 @@ export default function Edit(props) {
 	/**
 	 * Show or hide column and row borders to support updates to them.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {Object}  table     Dynamic Table
 	 * @param {boolean} isChecked Are borders being toggled on?
@@ -1188,7 +1179,7 @@ export default function Edit(props) {
 	/**
 	 * Create new table and related table entity.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {number} columnCount Number of columns in table
 	 * @param {number} rowCount    Number of rows in table
@@ -1208,7 +1199,7 @@ export default function Edit(props) {
 	/**
 	 * Process event to create new table.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {Object} event Table Creation Event
 	 */
@@ -1220,7 +1211,7 @@ export default function Edit(props) {
 	/**
 	 * Process changes for the column count when defining a new table creation.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {number} num_columns Number of columns entered in form
 	 */
@@ -1247,7 +1238,7 @@ export default function Edit(props) {
 	/**
 	 * Process changes for the row count when defining a new table creation.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {number} num_rows Number of rows entered in form
 	 */
@@ -1286,7 +1277,7 @@ export default function Edit(props) {
 	/**
 	 * Sets the focused cell state when a cell in the dynamic table receives focus.
 	 *
-	 * @since    1.1.1
+	 * @since 1.1.1
 	 *
 	 * @param {Object} event onFocusCapture event
 	 * @return {void}
@@ -1312,7 +1303,7 @@ export default function Edit(props) {
 	/**
 	 * Set focus to specified cell coordinates in the dynamic table.
 	 *
-	 * @since    1.1.1
+	 * @since 1.1.1
 	 *
 	 * @param {number} col Column number of the cell in which the focus action occured
 	 * @param {number} row Row number of the cell in which the focus action occured
@@ -1372,7 +1363,7 @@ export default function Edit(props) {
 	/**
 	 * Handle keyboard navigation within the active dynamic table block and updates focus appropriately
 	 *
-	 * @since    1.1.1
+	 * @since 1.1.1
 	 *
 	 * @param {Object} event onKeyDown event
 	 * @return {void}
@@ -1575,7 +1566,7 @@ export default function Edit(props) {
 	/**
 	 * Identify if key press was a printable character
 	 *
-	 * @since    1.2.0
+	 * @since 1.2.0
 	 *
 	 * @param {Object} event onKeyDown event
 	 * @return {boolean}     Is Key Press a printable character?
@@ -1592,7 +1583,7 @@ export default function Edit(props) {
 	/**
 	 * Handle transition from navigation to editing on grid cell
 	 *
-	 * @since    1.2.0
+	 * @since 1.2.0
 	 *
 	 * @param {Object} event          onKeyDown event
 	 * @param {Object} activeCellEl   Current cell element
@@ -1713,9 +1704,9 @@ export default function Edit(props) {
 	/**
 	 * Process updates (insert, update, delete) to a table column.
 	 *
-	 * @since    1.0.0
-	 * @since    1.1.1  Updated to support column menu refactor.
-	 * @since    1.2.2  Added actions to move a column up or down and insert to the right
+	 * @since 1.0.0
+	 * @since 1.1.1  Updated to support column menu refactor.
+	 * @since 1.2.2  Added actions to move a column up or down and insert to the right
 	 *
 	 * @param {Object} e                       Table Creation Event
 	 * @param {string} updateType              attribute (Update), insert, delete
@@ -1790,9 +1781,9 @@ export default function Edit(props) {
 	 *
 	 * Descrption: Current actions include row insert, delete, update height.
 	 *
-	 * @since    1.0.0
-	 * @since    1.1.1  Updated to support row menu refactor.
-	 * @since    1.2.2  Added actions to move a row up or down and insert below
+	 * @since 1.0.0
+	 * @since 1.1.1  Updated to support row menu refactor.
+	 * @since 1.2.2  Added actions to move a row up or down and insert below
 	 *
 	 * @param {Object} e                    Table Creation Event
 	 * @param {string} updateType           attribute (Update), insert, delete
@@ -1840,7 +1831,7 @@ export default function Edit(props) {
 	/**
 	 * Process mouse clicks on the table borders.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {number} column_id Identifier for the table column
 	 * @param {number} row_id    Identifier for the table row
@@ -1868,7 +1859,7 @@ export default function Edit(props) {
 	/**
 	 * Process request to prevent the table title from displaying
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {Object}  table     Dynamic Table
 	 * @param {boolean} isChecked Is the table title being hidden?
@@ -1884,7 +1875,7 @@ export default function Edit(props) {
 	/**
 	 * Process request to allow the table to scroll horizontally
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {Object}  table     Dynamic Table
 	 * @param {boolean} isChecked Show horizontal scroll bar if appropriate?
@@ -1900,7 +1891,7 @@ export default function Edit(props) {
 	/**
 	 * Process request to show banded even numbered table rows
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {Object}  table     Dynamic Table
 	 * @param {boolean} isChecked Show banded table rows?
@@ -1942,7 +1933,7 @@ export default function Edit(props) {
 	/**
 	 * Process request create a header row from the first table row.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {Object}  table     Dynamic Table
 	 * @param {boolean} isChecked Create a header row
@@ -1965,7 +1956,7 @@ export default function Edit(props) {
 	/**
 	 * Process request to align header column content horizontally.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {Object} table     Dynamic Table
 	 * @param {string} alignment The alignment position (left, center, right)
@@ -1981,7 +1972,7 @@ export default function Edit(props) {
 	/**
 	 * Process request to syle header row borders.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {Object} table  Dynamic Table
 	 * @param {Array}  border Outside header border color, width, style
@@ -1997,7 +1988,7 @@ export default function Edit(props) {
 	/**
 	 * Process request to make the header row sticky with vertical scroll.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {Object}  table     Dynamic Table
 	 * @param {boolean} isChecked Make header row sticky
@@ -2013,7 +2004,7 @@ export default function Edit(props) {
 	/**
 	 * Process request to align body column content horizontally.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {Object} table     Dynamic Table
 	 * @param {string} alignment The alignment position (left, center, right)
@@ -2029,7 +2020,7 @@ export default function Edit(props) {
 	/**
 	 * Process request to syle body row borders.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {Object} table  Dynamic Table
 	 * @param {Array}  border Outside body border color, width, style
@@ -2045,7 +2036,7 @@ export default function Edit(props) {
 	/**
 	 * Process request to show inner body row grid lines.
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {Object}  table     Dynamic Table
 	 * @param {boolean} isChecked Show inner body row grid lines
@@ -2061,7 +2052,7 @@ export default function Edit(props) {
 	/**
 	 * Process request to set grid line width
 	 *
-	 * @since    1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param {Object} table         Dynamic Table
 	 * @param {string} gridLineWidth Width of grid lines in pixels
@@ -3376,9 +3367,6 @@ function Cell(props) {
 		let revisedDecimalPlaces = settings?.formatOptions?.decimalPlaces ?? 0;
 
 		if (inputType === 'percent') {
-			console.log(
-				'...Percentage division = ' + Number(nextRawValue) + ', ' + Number(nextRawValue) / 100
-			);
 			const [integerPart, fractionPart = ''] = entryValue.split('.');
 			const nextEntryValue =
 				fractionPart.length > revisedDecimalPlaces
@@ -3499,7 +3487,6 @@ function Cell(props) {
 		},
 		number: () => {
 			if (!isEditing) {
-				console.log('Display Numberic Value = ' + numberDisplayValue);
 				return <div>{numberDisplayValue}</div>;
 			}
 
@@ -3565,7 +3552,6 @@ function Cell(props) {
 			break;
 	}
 
-	// console.log('column classes = ', columnClassNames);
 	const renderClassesDisplay = clsx(columnClassNames, cellClassNames, {
 		'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
 		'grid-control__body-columns--number-red': redNegativeNumber,
@@ -3579,7 +3565,6 @@ function Cell(props) {
 	const isBorderCell = cellType === 'border';
 	const computedTabIndex = !isBorderCell && isFocused ? 0 : -1;
 
-	// console.log('Rendering Cell ' + cell_id);
 	return (
 		<div
 			data-cell-id={cell_id}

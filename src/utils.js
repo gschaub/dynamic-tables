@@ -33,8 +33,8 @@ const LETTER_MAP = {
 /**
  * Convert a column number to a string of letters.
  *
- * @since    1.0.0
- * @since    1.1.0 Refactored
+ * @since 1.0.0
+ * @since 1.1.0 Refactored
  *
  * @param {number} letterNumber Integer
  * @return  {string} Column letter
@@ -57,7 +57,7 @@ export function numberToLetter(letterNumber) {
 /**
  * Update one attribute value inside the array.
  *
- * @since    1.0.0
+ * @since 1.0.0
  *
  * @param {Array|Object} arrayIn     current state with nested arrays and objects
  * @param {string}       key         State array type
@@ -72,11 +72,10 @@ export function updateArray(arrayIn, key, id, updatedData) {
 /**
  * Sort table part array by the natural identifier assigned at design time.
  *
- * @since    1.0.0
+ * @since 1.0.0
  *
  * @param {string} tablePart  Table part to be sorted (columns | rows | cells)
  * @param {Array}  tableArray Array of all attributes of the table part being sorted
- * @return Sorted tableArray based on the ID of each object in the array
  */
 export function tableSort(tablePart, tableArray) {
 	if (tablePart === 'rows') {
@@ -148,7 +147,7 @@ export function prepareClassesForUse(classSet) {
 /**
  * Create a random identifier for assignment as a block/table cross reference.
  *
- * @since    1.0.0
+ * @since 1.0.0
  *
  * @return  {string} New block_table_ref
  */
@@ -160,8 +159,8 @@ export function generateBlockTableRef() {
 /**
  * Calculate the cell id for each cell in the Summary.
  *
- * @since    1.0.0
- * @since	 1.1.0 Moved from resolvers.js to utils.js
+ * @since 1.0.0
+ * @since 1.1.0 Moved from resolvers.js to utils.js
  *
  * @param {*} fetchedCells cell array retrieved the REST api
  * @return  {Array|Object} Cells with the added cell id attribute
@@ -178,7 +177,7 @@ export function computeCellIds(fetchedCells) {
 /**
  * Set content for borders occuring in rows (integers) and columns (letters).
  *
- * @since    1.0.0
+ * @since 1.0.0
  *
  * @param {*} row     current row_id
  * @param {*} column  current column_id
@@ -195,12 +194,12 @@ export function setBorderContent(row, column, content) {
 /**
  * Identify whether to display the column menu component for the current column
  *
- * @since    1.0.0
+ * @since 1.0.0
  *
  * @param {boolean} columnMenuVisible Whether the column menu should be visible based on current state of processing
  * @param {number}  openColumnRow     The column id or row id that should be open
  * @param {number}  column_id         Current column id
- * @return  {boolean} Show the current column menu?
+ * @return {boolean}                  Show the current column menu?
  */
 export function openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_id) {
 	if (columnMenuVisible && openColumnRow === column_id) {
@@ -212,12 +211,12 @@ export function openCurrentColumnMenu(columnMenuVisible, openColumnRow, column_i
 /**
  * Identify whether to display the row menu component for the current column
  *
- * @since    1.0.0
+ * @since 1.0.0
  *
  * @param {boolean} rowMenuVisible Whether the row menu should be visible based on current state of processing
  * @param {number}  openColumnRow  The column id or row id that should be open
  * @param {number}  row_id         Current row id
- * @return  {boolean} Show the current row menu?
+ * @return {boolean}               Show the current row menu?
  */
 export function openCurrentRowMenu(rowMenuVisible, openColumnRow, row_id) {
 	if (rowMenuVisible && openColumnRow === row_id) {
@@ -240,8 +239,6 @@ export const DEFAULT_COLUMN_DATA_TYPE = {
  * @return {Object} Default data type object
  */
 export function normalizeColumnDataType(columnDataType) {
-	// console.log('Consolidate to one columnDataType shape')
-	// console.log('...Inbound Data Type', columnDataType)
 	if (columnDataType?.type) {
 		return columnDataType;
 	}
@@ -256,7 +253,7 @@ export function normalizeColumnDataType(columnDataType) {
 /**
  * Test whether a data is formatted as a valid ISO date string
  *
- * @since 1.2
+ * @since 1.2.0
  *
  * @param {string} value Test date string
  * @return {boolean}     Passed test?
@@ -272,8 +269,15 @@ function isValidISODate(value) {
 	);
 }
 
+/**
+ * Test whether a data is formatted as a valid time string
+ *
+ * @since 1.2.2
+ *
+ * @param {string} value Test date string
+ * @return {boolean}     Passed test?
+ */
 function isValidTime(value) {
-	// 00:00 to 23:59, optional :ss (00-59)
 	const m = /^([01]\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?$/.exec(value);
 	return !!m;
 }
@@ -281,7 +285,7 @@ function isValidTime(value) {
 /**
  * Test whether a data is formatted as a valid ISO date-time string
  *
- * @since 1.2
+ * @since 1.2.0
  *
  * @param {string} value Test date string
  * @return {boolean}     Passed test?
@@ -309,20 +313,13 @@ export function formatedDisplayDate(date, format) {
 
 	// Test whether input is a valid ISO date
 	if (!isValidISODate(date) && !isValidISODatetime(date) && !isValidTime(date)) {
-		// console.log('invalidly formatted date - ' + date);
-		// console.log('Valid Date = ' + isValidISODate(date));
-		// console.log('Valid Datetime = ' + isValidISODatetime(date));
-		// console.log('Valid Time = ' + isValidTime(date));
 		return '';
 	}
 
 	if (format === 'date') {
-		// console.log('Return Date');
 		return dateI18n('n/j/Y', date);
 	}
 	if (format === 'time') {
-		// console.log('Return Time from ' + date);
-
 		const [hh, mm] = date.split(':').map(Number);
 		if (!Number.isInteger(hh) || !Number.isInteger(mm)) return '';
 
@@ -331,7 +328,6 @@ export function formatedDisplayDate(date, format) {
 		return `${h12}:${String(mm).padStart(2, '0')} ${ampm}`;
 	}
 	if (format === 'datetime-local') {
-		// console.log('Return Date/Time');
 		return dateI18n('n/j/Y g:i a', date);
 	}
 	return '';
@@ -396,10 +392,28 @@ export function formattedIsoDate(date, format) {
  */
 const CARET_TOKEN_PATTERN = /[\d.-]/;
 
+/**
+ * Number of numeric input characters (caret tokens) that appear before the caret location
+ *
+ * @since 1.2.4
+ *
+ * @param {string} value      Edit input value
+ * @param {number} caretIndex Initial caret position
+ * @return {number}           Number of caret tokens before the caret
+ */
 export function countCaretTokens(value, caretIndex) {
 	return (value.slice(0, caretIndex).match(/[\d.-]/g) ?? []).length;
 }
 
+/**
+ * Identify caret insertion point for a number string
+ *
+ * @since 1.2.4
+ *
+ * @param {string} value      Edit input value
+ * @param {number} tokenCount Number of caret tokens
+ * @return {number}           Caret insertion point computed from input value
+ */
 export function getCaretIndexFromTokenCount(value, tokenCount) {
 	if (tokenCount <= 0) {
 		return 0;
@@ -420,10 +434,29 @@ export function getCaretIndexFromTokenCount(value, tokenCount) {
 	return value.length;
 }
 
+/**
+ * Identify the location of the first numeric value in a string
+ *
+ * @since 1.2.4
+ *
+ * @param {string} value Edit input value
+ * @return {number}           First number location index
+ */
 export function getFirstNumericIndex(value) {
 	return value.search(/\d/);
 }
 
+/**
+ * Adjusts next caret location if the prior location was at the start of the string
+ * or in the prefix zone (e.g., currency symbol, etc.)
+ *
+ * @since 1.2.4
+ *
+ * @param {string} value      Edit input value
+ * @param {number} caretIndex Caret location in the rendered input value
+ * @param {Object} caretMeta  Information about the current caret location
+ * @return {number}           Next caret location adjusted for prefx
+ */
 export function normalizeCaretForPresentationPrefix(value, caretIndex, caretMeta) {
 	if (!caretMeta) {
 		return caretIndex;
@@ -449,7 +482,7 @@ export function normalizeCaretForPresentationPrefix(value, caretIndex, caretMeta
 /**
  * Strip formatting characters from numeric display string
  *
- * @since    1.2.4
+ * @since 1.2.4
  *
  * @param {string} value          String representation of number
  * @param {string} dataTypeFormat Number format type
@@ -461,8 +494,6 @@ export function sanitizeNumberInput(value, dataTypeFormat) {
 	// Remove display formatting first.
 	next = next.replace(/,/g, '');
 	next = next.replace(/[^\d.\-]/g, '');
-
-	// console.log('Replace brackets with minus sign');
 
 	// Keep only a single leading minus.
 	next = next.replace(/(?!^)-/g, '');
@@ -480,6 +511,15 @@ export function sanitizeNumberInput(value, dataTypeFormat) {
 	return next;
 }
 
+/**
+ * Adjust decimal position for percentage formatted numbers
+ *
+ * @since 1.2.4
+ *
+ * @param {string} rawValue String representation of number
+ * @param {string} places   Number decimal
+ * @return {string}           Number with revised decimal locations
+ */
 function shiftDecimalString(rawValue, places) {
 	const next = sanitizeNumberInput(rawValue, 'number');
 
@@ -518,10 +558,26 @@ function shiftDecimalString(rawValue, places) {
 	return `${isNegative ? '-' : ''}${whole}${fraction ? `.${fraction}` : ''}`;
 }
 
+/**
+ * Move two decimal position to the left for entry
+ *
+ * @since 1.2.4
+ *
+ * @param {string} rawValue Number percentage string before formatting update
+ * @return {string}         Number percentage string after formatting update
+ */
 export function toPercentEntryValue(rawValue) {
 	return shiftDecimalString(rawValue, 2);
 }
 
+/**
+ * Move two decimal position to the right after entry
+ *
+ * @since 1.2.4
+ *
+ * @param {string} rawValue Number percentage string before formatting update
+ * @return {string}         Number percentage string after formatting update
+ */
 export function fromPercentEntryValue(rawValue) {
 	return shiftDecimalString(rawValue, -2);
 }
@@ -529,7 +585,7 @@ export function fromPercentEntryValue(rawValue) {
 /**
  * Strip formatting characters from numeric display string
  *
- * @since    1.2.4
+ * @since 1.2.4
  *
  * @param {string}  rawValue           String representation of canonical number
  * @param {string}  dataTypeFormat     Number format type
@@ -545,13 +601,9 @@ export function formattedNumber(
 	thousandSeparator,
 	decimalPlaces,
 	showCurrencySymbol,
-	// showCurrencySymbol = dataTypeFormat === 'currency',
 	bracketNegative = false
 ) {
-	// console.log('In Formatted Number');
-	// console.log('...Number format = ', dataTypeFormat)
 	const sanitizedNumber = sanitizeNumberInput(rawValue, dataTypeFormat);
-	// console.log('...Sanitized number = ' + sanitizedNumber);
 
 	if (sanitizedNumber === '') return '';
 	if (sanitizedNumber === '-') return '-';
@@ -585,8 +637,6 @@ export function formattedNumber(
 			numberStyle = 'decimal';
 	}
 
-	// console.log('Thousands Separator = ' + thousandSeparator);
-
 	const formatOptions = {
 		style: numberStyle,
 		currency: 'USD',
@@ -617,13 +667,9 @@ export function formattedNumber(
 		formatOptions.currencyDisplay = 'symbol';
 	}
 
-	// console.log('Formatted Option = ', formatOptions);
 	const limitedFraction = fractionPart.slice(0, Math.max(0, revisedDecimalPlaces));
-	// console.log('  Limited fraction =  ' + limitedFraction);
 	const decimalFragment = hasDecimal ? `.${limitedFraction}` : '';
-	// console.log('  Decimal fragment =  ' + decimalFragment);
 	const rawNumberString = `${integerPart}${decimalFragment}`;
-	// console.log('  Raw Number =  ' + rawNumberString);
 
 	const formattedMagnitude = new Intl.NumberFormat('en-US', formatOptions).format(
 		Number(rawNumberString)
