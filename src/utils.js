@@ -480,6 +480,52 @@ export function sanitizeNumberInput(value, dataTypeFormat) {
 	return next;
 }
 
+function shiftDecimalString(rawValue, places) {
+	const next = sanitizeNumberInput(rawValue, 'number');
+
+	if (next === '' || next === '-') {
+		return next;
+	}
+
+	const isNegative = next.startsWith('-');
+	const unsigned = isNegative ? next.slice(1) : next;
+	const [integerPart = '', fractionPart = ''] = unsigned.split('.');
+	let digits = `${integerPart.replace(/\D/g, '')}${fractionPart.replace(/\D/g, '')}`;
+
+	if (digits === '') {
+		return isNegative ? '-' : '';
+	}
+
+	const scale = fractionPart.replace(/\D/g, '').length - places;
+
+	digits = digits.replace(/^0+(?=\d)/, '');
+	if (digits === '') {
+		digits = '0';
+	}
+
+	if (scale <= 0) {
+		return `${isNegative ? '-' : ''}${digits}${'0'.repeat(scale * -1)}`;
+	}
+
+	if (digits.length <= scale) {
+		digits = digits.padStart(scale + 1, '0');
+	}
+
+	const splitIndex = digits.length - scale;
+	const whole = digits.slice(0, splitIndex).replace(/^0+(?=\d)/, '') || '0';
+	const fraction = digits.slice(splitIndex).replace(/0+$/, '');
+
+	return `${isNegative ? '-' : ''}${whole}${fraction ? `.${fraction}` : ''}`;
+}
+
+export function toPercentEntryValue(rawValue) {
+	return shiftDecimalString(rawValue, 2);
+}
+
+export function fromPercentEntryValue(rawValue) {
+	return shiftDecimalString(rawValue, -2);
+}
+
 /**
  * Strip formatting characters from numeric display string
  *

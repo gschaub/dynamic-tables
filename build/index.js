@@ -350,19 +350,11 @@ function ConfigureColumnDataType(props = {}) {
   const numberEntryWrapperRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const numberEntryInputRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const pendingCaretRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
+  const [percentEntryValue, setPercentEntryValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
   const [numberRawValue, setNumberRawValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
   const sanitizedPreviewNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.sanitizeNumberInput)(numberRawValue, dataTypeFormat);
   const showNegativeNumberPreview = redNegative && sanitizedPreviewNumber !== '' && sanitizedPreviewNumber !== '-' && Number(sanitizedPreviewNumber) < 0;
-
-  // const numberEntryValue = formattedNumber(
-  // 	numberRawValue,
-  // 	dataTypeFormat,
-  // 	thousandSeparator,
-  // 	decimalPlaces,
-  // 	false,
-  // 	false
-  // );
-  const numberEntryValue = numberRawValue;
+  const numberEntryValue = dataTypeFormat === 'percent' ? percentEntryValue ?? (0,_utils__WEBPACK_IMPORTED_MODULE_6__.toPercentEntryValue)(numberRawValue) : numberRawValue;
   const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.formattedNumber)(numberRawValue, dataTypeFormat, thousandSeparator, decimalPlaces, currency, bracketNegative);
 
   // Column width attributes
@@ -550,6 +542,7 @@ function ConfigureColumnDataType(props = {}) {
    * @param {*} numberFormat Number format to set
    */
   function onNumberFormat(numberFormat) {
+    setPercentEntryValue(null);
     if (numberFormat === 'percent' && dataTypeFormat !== 'percent') {
       // divide by 100
       const revisedNumberValue = !!numberRawValue ? String(Number(numberRawValue) / 100) : '';
@@ -727,19 +720,25 @@ function ConfigureColumnDataType(props = {}) {
   function onNumberPreviewChange(event) {
     console.log('number change event = ' + event);
     const input = numberEntryInputRef.current;
-    const selectionStart = input?.selectionStart ?? event.length;
-    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getFirstNumericIndex)(event);
+    const entryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.sanitizeNumberInput)(event, dataTypeFormat === 'percent' ? 'number' : dataTypeFormat);
+    const selectionStart = input?.selectionStart ?? entryValue.length;
+    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getFirstNumericIndex)(entryValue);
     pendingCaretRef.current = {
-      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_6__.countCaretTokens)(event, selectionStart),
+      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_6__.countCaretTokens)(entryValue, selectionStart),
       wasAtStart: selectionStart === 0,
       wasInPrefixZone: firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex
     };
-    let nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.sanitizeNumberInput)(event, dataTypeFormat);
-    let revisedDecimalPlaces = decimalPlaces;
+    let nextRawValue = entryValue;
+    let revisedDecimalPlaces = decimalPlaces ?? 0;
     if (dataTypeFormat === 'percent') {
       console.log('...Percentage division = ' + Number(nextRawValue) + ', ' + Number(nextRawValue) / 100);
-      revisedDecimalPlaces = decimalPlaces + 2;
-      nextRawValue = String(Number(nextRawValue) / 100);
+      const [integerPart, fractionPart = ''] = entryValue.split('.');
+      const nextEntryValue = fractionPart.length > revisedDecimalPlaces ? `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}` : entryValue;
+      setPercentEntryValue(nextEntryValue);
+      revisedDecimalPlaces += 2;
+      nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.fromPercentEntryValue)(nextEntryValue);
+    } else {
+      setPercentEntryValue(null);
     }
     if (dataTypeFormat !== 'integer') {
       const [integerPart, fractionPart = ''] = nextRawValue.split('.');
@@ -1087,6 +1086,7 @@ function ConfigureColumnDataType(props = {}) {
                               onChange: e => onNumberPreviewChange(e),
                               onBlur: () => {
                                 pendingCaretRef.current = null;
+                                setPercentEntryValue(null);
                               }
                             })
                           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
@@ -6820,16 +6820,8 @@ function Cell(props) {
   const numberEntryWrapperRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const numberEntryInputRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const pendingCaretRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
-
-  // const numberEntryValue = formattedNumber(
-  // 	cellContent,
-  // 	inputType,
-  // 	settings?.formatOptions?.thousandSeparator,
-  // 	settings?.formatOptions?.decimalPlaces,
-  // 	false,
-  // 	false
-  // );
-  const numberEntryValue = cellContent ?? '';
+  const [percentEntryValue, setPercentEntryValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
+  const numberEntryValue = inputType === 'percent' ? percentEntryValue ?? (0,_utils__WEBPACK_IMPORTED_MODULE_13__.toPercentEntryValue)(cellContent) : cellContent ?? '';
   const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.formattedNumber)(cellContent, inputType, settings?.formatOptions?.thousandSeparator, settings?.formatOptions?.decimalPlaces, settings?.formatOptions?.showCurrencySymbol, settings?.formatOptions?.bracketNegative);
   const sanitizedNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.sanitizeNumberInput)(cellContent, inputType);
   const redNegativeNumber = settings?.formatOptions?.redNegative && sanitizedNumber !== '' && sanitizedNumber !== '-' && Number(sanitizedNumber) < 0;
@@ -6985,19 +6977,25 @@ function Cell(props) {
    */
   function onNumberChange(event) {
     const input = numberEntryInputRef.current;
-    const selectionStart = input?.selectionStart ?? event.length;
-    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.getFirstNumericIndex)(event);
+    const entryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.sanitizeNumberInput)(event, inputType === 'percent' ? 'number' : inputType);
+    const selectionStart = input?.selectionStart ?? entryValue.length;
+    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.getFirstNumericIndex)(entryValue);
     pendingCaretRef.current = {
-      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_13__.countCaretTokens)(event, selectionStart),
+      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_13__.countCaretTokens)(entryValue, selectionStart),
       wasAtStart: selectionStart === 0,
       wasInPrefixZone: firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex
     };
-    let nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.sanitizeNumberInput)(event, inputType);
-    let revisedDecimalPlaces = settings?.formatOptions?.decimalPlaces;
+    let nextRawValue = entryValue;
+    let revisedDecimalPlaces = settings?.formatOptions?.decimalPlaces ?? 0;
     if (inputType === 'percent') {
       console.log('...Percentage division = ' + Number(nextRawValue) + ', ' + Number(nextRawValue) / 100);
-      revisedDecimalPlaces = settings?.formatOptions?.decimalPlaces + 2;
-      nextRawValue = String(Number(nextRawValue) / 100);
+      const [integerPart, fractionPart = ''] = entryValue.split('.');
+      const nextEntryValue = fractionPart.length > revisedDecimalPlaces ? `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}` : entryValue;
+      setPercentEntryValue(nextEntryValue);
+      revisedDecimalPlaces += 2;
+      nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.fromPercentEntryValue)(nextEntryValue);
+    } else {
+      setPercentEntryValue(null);
     }
     if (inputType !== 'integer') {
       const [integerPart, fractionPart = ''] = nextRawValue.split('.');
@@ -7116,6 +7114,7 @@ function Cell(props) {
           },
           onBlur: event => {
             pendingCaretRef.current = null;
+            setPercentEntryValue(null);
             if (event?.target?.dataset?.cancelEdit === 'true') {
               delete event.target.dataset.cancelEdit;
               onRequestStopEdit?.();
@@ -8145,6 +8144,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   formatedDisplayDate: () => (/* binding */ formatedDisplayDate),
 /* harmony export */   formattedIsoDate: () => (/* binding */ formattedIsoDate),
 /* harmony export */   formattedNumber: () => (/* binding */ formattedNumber),
+/* harmony export */   fromPercentEntryValue: () => (/* binding */ fromPercentEntryValue),
 /* harmony export */   generateBlockTableRef: () => (/* binding */ generateBlockTableRef),
 /* harmony export */   getCaretIndexFromTokenCount: () => (/* binding */ getCaretIndexFromTokenCount),
 /* harmony export */   getFirstNumericIndex: () => (/* binding */ getFirstNumericIndex),
@@ -8158,6 +8158,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   setBorderContent: () => (/* binding */ setBorderContent),
 /* harmony export */   stageClassesForEdit: () => (/* binding */ stageClassesForEdit),
 /* harmony export */   tableSort: () => (/* binding */ tableSort),
+/* harmony export */   toPercentEntryValue: () => (/* binding */ toPercentEntryValue),
 /* harmony export */   updateArray: () => (/* binding */ updateArray)
 /* harmony export */ });
 /* harmony import */ var _wordpress_date__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/date */ "@wordpress/date");
@@ -8609,6 +8610,40 @@ function sanitizeNumberInput(value, dataTypeFormat) {
     next = next.slice(0, firstDot + 1) + next.slice(firstDot + 1).replace(/\./g, '');
   }
   return next;
+}
+function shiftDecimalString(rawValue, places) {
+  const next = sanitizeNumberInput(rawValue, 'number');
+  if (next === '' || next === '-') {
+    return next;
+  }
+  const isNegative = next.startsWith('-');
+  const unsigned = isNegative ? next.slice(1) : next;
+  const [integerPart = '', fractionPart = ''] = unsigned.split('.');
+  let digits = `${integerPart.replace(/\D/g, '')}${fractionPart.replace(/\D/g, '')}`;
+  if (digits === '') {
+    return isNegative ? '-' : '';
+  }
+  const scale = fractionPart.replace(/\D/g, '').length - places;
+  digits = digits.replace(/^0+(?=\d)/, '');
+  if (digits === '') {
+    digits = '0';
+  }
+  if (scale <= 0) {
+    return `${isNegative ? '-' : ''}${digits}${'0'.repeat(scale * -1)}`;
+  }
+  if (digits.length <= scale) {
+    digits = digits.padStart(scale + 1, '0');
+  }
+  const splitIndex = digits.length - scale;
+  const whole = digits.slice(0, splitIndex).replace(/^0+(?=\d)/, '') || '0';
+  const fraction = digits.slice(splitIndex).replace(/0+$/, '');
+  return `${isNegative ? '-' : ''}${whole}${fraction ? `.${fraction}` : ''}`;
+}
+function toPercentEntryValue(rawValue) {
+  return shiftDecimalString(rawValue, 2);
+}
+function fromPercentEntryValue(rawValue) {
+  return shiftDecimalString(rawValue, -2);
 }
 
 /**

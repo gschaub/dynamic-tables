@@ -54,6 +54,8 @@ import {
 	normalizeColumnDataType,
 	sanitizeNumberInput,
 	formattedNumber,
+	toPercentEntryValue,
+	fromPercentEntryValue,
 	countCaretTokens,
 	getCaretIndexFromTokenCount,
 	getFirstNumericIndex,
@@ -3161,16 +3163,12 @@ function Cell(props) {
 	const numberEntryWrapperRef = useRef(null);
 	const numberEntryInputRef = useRef(null);
 	const pendingCaretRef = useRef(null);
+	const [percentEntryValue, setPercentEntryValue] = useState(null);
 
-	// const numberEntryValue = formattedNumber(
-	// 	cellContent,
-	// 	inputType,
-	// 	settings?.formatOptions?.thousandSeparator,
-	// 	settings?.formatOptions?.decimalPlaces,
-	// 	false,
-	// 	false
-	// );
-	const numberEntryValue = cellContent ?? '';
+	const numberEntryValue =
+		inputType === 'percent'
+			? (percentEntryValue ?? toPercentEntryValue(cellContent))
+			: (cellContent ?? '');
 
 	const numberDisplayValue = formattedNumber(
 		cellContent,
@@ -3363,25 +3361,35 @@ function Cell(props) {
 	 */
 	function onNumberChange(event) {
 		const input = numberEntryInputRef.current;
-		const selectionStart = input?.selectionStart ?? event.length;
-		const firstNumericIndex = getFirstNumericIndex(event);
+		const entryValue = sanitizeNumberInput(event, inputType === 'percent' ? 'number' : inputType);
+		const selectionStart = input?.selectionStart ?? entryValue.length;
+		const firstNumericIndex = getFirstNumericIndex(entryValue);
 
 		pendingCaretRef.current = {
-			tokenCount: countCaretTokens(event, selectionStart),
+			tokenCount: countCaretTokens(entryValue, selectionStart),
 			wasAtStart: selectionStart === 0,
 			wasInPrefixZone:
 				firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex,
 		};
 
-		let nextRawValue = sanitizeNumberInput(event, inputType);
-		let revisedDecimalPlaces = settings?.formatOptions?.decimalPlaces;
+		let nextRawValue = entryValue;
+		let revisedDecimalPlaces = settings?.formatOptions?.decimalPlaces ?? 0;
 
 		if (inputType === 'percent') {
 			console.log(
 				'...Percentage division = ' + Number(nextRawValue) + ', ' + Number(nextRawValue) / 100
 			);
-			revisedDecimalPlaces = settings?.formatOptions?.decimalPlaces + 2;
-			nextRawValue = String(Number(nextRawValue) / 100);
+			const [integerPart, fractionPart = ''] = entryValue.split('.');
+			const nextEntryValue =
+				fractionPart.length > revisedDecimalPlaces
+					? `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}`
+					: entryValue;
+
+			setPercentEntryValue(nextEntryValue);
+			revisedDecimalPlaces += 2;
+			nextRawValue = fromPercentEntryValue(nextEntryValue);
+		} else {
+			setPercentEntryValue(null);
 		}
 
 		if (inputType !== 'integer') {
@@ -3508,6 +3516,7 @@ function Cell(props) {
 						}}
 						onBlur={event => {
 							pendingCaretRef.current = null;
+							setPercentEntryValue(null);
 
 							if (event?.target?.dataset?.cancelEdit === 'true') {
 								delete event.target.dataset.cancelEdit;

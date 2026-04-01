@@ -33,6 +33,8 @@ import {
 	prepareClassesForUse,
 	sanitizeNumberInput,
 	formattedNumber,
+	toPercentEntryValue,
+	fromPercentEntryValue,
 	countCaretTokens,
 	getCaretIndexFromTokenCount,
 	getFirstNumericIndex,
@@ -107,6 +109,7 @@ function ConfigureColumnDataType(props = {}) {
 	const numberEntryWrapperRef = useRef(null);
 	const numberEntryInputRef = useRef(null);
 	const pendingCaretRef = useRef(null);
+	const [percentEntryValue, setPercentEntryValue] = useState(null);
 
 	const [numberRawValue, setNumberRawValue] = useState('');
 	const sanitizedPreviewNumber = sanitizeNumberInput(numberRawValue, dataTypeFormat);
@@ -116,15 +119,10 @@ function ConfigureColumnDataType(props = {}) {
 		sanitizedPreviewNumber !== '-' &&
 		Number(sanitizedPreviewNumber) < 0;
 
-	// const numberEntryValue = formattedNumber(
-	// 	numberRawValue,
-	// 	dataTypeFormat,
-	// 	thousandSeparator,
-	// 	decimalPlaces,
-	// 	false,
-	// 	false
-	// );
-	const numberEntryValue = numberRawValue;
+	const numberEntryValue =
+		dataTypeFormat === 'percent'
+			? (percentEntryValue ?? toPercentEntryValue(numberRawValue))
+			: numberRawValue;
 
 	const numberDisplayValue = formattedNumber(
 		numberRawValue,
@@ -343,6 +341,8 @@ function ConfigureColumnDataType(props = {}) {
 	 * @param {*} numberFormat Number format to set
 	 */
 	function onNumberFormat(numberFormat) {
+		setPercentEntryValue(null);
+
 		if (numberFormat === 'percent' && dataTypeFormat !== 'percent') {
 			// divide by 100
 			const revisedNumberValue = !!numberRawValue ? String(Number(numberRawValue) / 100) : '';
@@ -539,25 +539,39 @@ function ConfigureColumnDataType(props = {}) {
 	function onNumberPreviewChange(event) {
 		console.log('number change event = ' + event);
 		const input = numberEntryInputRef.current;
-		const selectionStart = input?.selectionStart ?? event.length;
-		const firstNumericIndex = getFirstNumericIndex(event);
+
+		const entryValue = sanitizeNumberInput(
+			event,
+			dataTypeFormat === 'percent' ? 'number' : dataTypeFormat
+		);
+		const selectionStart = input?.selectionStart ?? entryValue.length;
+		const firstNumericIndex = getFirstNumericIndex(entryValue);
 
 		pendingCaretRef.current = {
-			tokenCount: countCaretTokens(event, selectionStart),
+			tokenCount: countCaretTokens(entryValue, selectionStart),
 			wasAtStart: selectionStart === 0,
 			wasInPrefixZone:
 				firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex,
 		};
 
-		let nextRawValue = sanitizeNumberInput(event, dataTypeFormat);
-		let revisedDecimalPlaces = decimalPlaces;
+		let nextRawValue = entryValue;
+		let revisedDecimalPlaces = decimalPlaces ?? 0;
 
 		if (dataTypeFormat === 'percent') {
 			console.log(
 				'...Percentage division = ' + Number(nextRawValue) + ', ' + Number(nextRawValue) / 100
 			);
-			revisedDecimalPlaces = decimalPlaces + 2;
-			nextRawValue = String(Number(nextRawValue) / 100);
+			const [integerPart, fractionPart = ''] = entryValue.split('.');
+			const nextEntryValue =
+				fractionPart.length > revisedDecimalPlaces
+					? `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}`
+					: entryValue;
+
+			setPercentEntryValue(nextEntryValue);
+			revisedDecimalPlaces += 2;
+			nextRawValue = fromPercentEntryValue(nextEntryValue);
+		} else {
+			setPercentEntryValue(null);
 		}
 
 		if (dataTypeFormat !== 'integer') {
@@ -929,6 +943,7 @@ function ConfigureColumnDataType(props = {}) {
 																	onChange={e => onNumberPreviewChange(e)}
 																	onBlur={() => {
 																		pendingCaretRef.current = null;
+																		setPercentEntryValue(null);
 																	}}
 																/>
 															</div>
