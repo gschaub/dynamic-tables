@@ -939,17 +939,16 @@ export default function Edit(props) {
 	function insertColumn(tableId, columnId, direction) {
 		const newColumnId = direction === 'right' ? Number(columnId) + 1 : Number(columnId);
 		const newColumn = getDefaultColumn(tableId, newColumnId);
-		const tableCells = [];
 
-		for (let i = 0; i < numRows; i++) {
-			if (i === 0) {
-				const cell = getDefaultCell(tableId, newColumnId, i, 'Border');
-				tableCells.push(cell);
-			} else {
-				const cell = getDefaultCell(tableId, newColumnId, i);
-				tableCells.push(cell);
-			}
-		}
+		const tableCells = table.rows
+			.map(({ row_id }) => Number(row_id))
+			.filter(rowId => Number.isFinite(rowId))
+			.sort((a, b) => a - b)
+			.map(rowId =>
+				rowId === 0
+					? getDefaultCell(tableId, newColumnId, rowId, 'Border')
+					: getDefaultCell(tableId, newColumnId, rowId)
+			);
 
 		addColumn(tableId, columnId, direction, newColumn, tableCells);
 		setTableStale(false);
@@ -970,17 +969,16 @@ export default function Edit(props) {
 	function insertRow(tableId, rowId, direction) {
 		const newRowId = direction === 'below' ? Number(rowId) + 1 : Number(rowId);
 		const newRow = getDefaultRow(tableId, newRowId);
-		const tableCells = [];
 
-		for (let i = 0; i < numColumns; i++) {
-			if (i === 0) {
-				const cell = getDefaultCell(tableId, i, newRowId, 'Border');
-				tableCells.push(cell);
-			} else {
-				const cell = getDefaultCell(tableId, i, newRowId);
-				tableCells.push(cell);
-			}
-		}
+		const tableCells = table.columns
+			.map(({ column_id }) => Number(column_id))
+			.filter(columnId => Number.isFinite(columnId))
+			.sort((a, b) => a - b)
+			.map(columnId =>
+				columnId === 0
+					? getDefaultCell(tableId, columnId, newRowId, 'Border')
+					: getDefaultCell(tableId, columnId, newRowId)
+			);
 
 		addRow(tableId, rowId, direction, newRow, tableCells);
 		setTableStale(false);
@@ -1364,6 +1362,8 @@ export default function Edit(props) {
 	 * Handle keyboard navigation within the active dynamic table block and updates focus appropriately
 	 *
 	 * @since 1.1.1
+	 * @since 1.2.3 - Add keyboard support for moving columns and rows
+	 * @since 1.2.5 - Add keyboard support for insert/delete columns and rows
 	 *
 	 * @param {Object} event onKeyDown event
 	 * @return {void}
@@ -1477,31 +1477,10 @@ export default function Edit(props) {
 			return;
 		}
 
-		if (event.key === 'Escape') {
-			event.preventDefault();
-			event.stopPropagation();
-			// no-op when not editing
-			return;
-		}
-
-		// Delete/backspace clears cell
-		if (event.key === 'Delete' || event.key === 'Backspace') {
-			event.preventDefault();
-			event.stopPropagation();
-
-			const cellData = table.cells.find(
-				c => Number(c.column_id) === col && Number(c.row_id) === row
-			);
-			if (cellData) {
-				const attrs = {
-					...(cellData.attributes || {}),
-					value: { ...((cellData.attributes && cellData.attributes.value) || {}) },
-				};
-				setTableAttributes(table_id, 'cell', cellData.cell_id, 'CONTENT', '');
-				setTableAttributes(table_id, 'cell', cellData.cell_id, 'ATTRIBUTES', attrs);
-			}
-			return;
-		}
+		const isAltOnly = event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
+		const isShiftOnly = !event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
+		const isAltShiftOnly = event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
+		const isPrimaryKeyOnly = !event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
 
 		// Intercept navigation
 		event.preventDefault();
@@ -1509,42 +1488,110 @@ export default function Edit(props) {
 
 		switch (event.key) {
 			case 'ArrowUp':
-				if (event.altKey) {
+				// Insert row above the current row
+				if (isAltShiftOnly && !isHeaderRow) {
+					console.log('Inserting')
+					insertRow(table_id, row, 'above');
+					break;
+				}
+
+				// Move row above the current row
+				if (isAltOnly) {
+					console.log('Moving')
 					const firstBodyRowId = navHeaderRow ? Number(navHeaderRow) + 1 : 1;
 					if (row <= firstBodyRowId) break;
 					reorderRows(table_id, row, 'up');
+					break;
 				}
-				row = Math.max(1, row - 1);
+
+				// Navigate to cell above the current cell
+				if (isPrimaryKeyOnly) {
+					console.log('Navigating')
+					row = Math.max(1, row - 1);
+					break;
+				}
 				break;
 			case 'ArrowDown':
-				if (event.altKey) {
+				// Insert row below the current row
+				if (isAltShiftOnly && !isHeaderRow) {
+					console.log('Inserting')
+					insertRow(table_id, row, 'below');
+					break;
+				}
+
+				// Move row below the current row
+				if (isAltOnly) {
+					console.log('Moving')
 					if (isHeaderRow || row === navMaxRow) break;
 					reorderRows(table_id, row, 'down');
+					break;
 				}
-				row = Math.min(navMaxRow, row + 1);
+
+				// Navigate to cell below the current cell
+				if (isPrimaryKeyOnly) {
+					console.log('Navigating')
+					row = Math.min(navMaxRow, row + 1);
+					break;
+				}
 				break;
 			case 'ArrowLeft':
-				if (event.altKey) {
+				// Insert column left of the current column
+				if (isAltShiftOnly) {
+					console.log('Inserting')
+					insertColumn(table_id, col, 'left');
+					break;
+				}
+
+				// Move column left of the current column
+				if (isAltOnly) {
+					console.log('Moving')
 					if (col === 1) break;
 					reorderColumns(table_id, col, 'left');
+					break;
 				}
-				col = Math.max(1, col - 1);
+
+				// Navigate to cell left of the current cell
+				if (isPrimaryKeyOnly) {
+					console.log('Navigating')
+					col = Math.max(1, col - 1);
+					break;
+				}
 				break;
 			case 'ArrowRight':
-				if (event.altKey) {
+				// Insert column right of the current column
+				if (isAltShiftOnly) {
+					console.log('Inserting')
+					insertColumn(table_id, col, 'right');
+					break;
+				}
+
+				// Move column right of the current column
+				if (isAltOnly) {
+					console.log('Moving')
 					if (col === navMaxCol) break;
 					reorderColumns(table_id, col, 'right');
+					break;
 				}
-				col = Math.min(navMaxCol, col + 1);
+
+				// Navigate to cell right of the current cell
+				if (isPrimaryKeyOnly) {
+					console.log('Navigating')
+					col = Math.min(navMaxCol, col + 1);
+					break;
+				}
 				break;
 			case 'Tab':
-				if (event.shiftKey) {
+				// Navigate to cell left of the current cell
+				if (isShiftOnly) {
 					if (col > 1) col -= 1;
 					else if (row > 1) {
 						row -= 1;
 						col = navMaxCol;
 					}
-				} else {
+				}
+
+				if (isPrimaryKeyOnly) {
+					// Navigate to cell right of the current cell
 					// eslint-disable-next-line no-lonely-if
 					if (col < navMaxCol) {
 						col = Math.min(navMaxCol, col + 1);
@@ -1552,15 +1599,62 @@ export default function Edit(props) {
 						row += 1;
 						col = 1;
 					}
+					break;
 				}
 				break;
+			case 'Delete':
+			case 'Backspace':
+				if (isPrimaryKeyOnly) {
+					console.log('Delete Key Hit');
+					processCellDelete(col, row);
+					return;
+				}
 
+				// Delete the current column
+				if (event.key === 'Delete' && isAltShiftOnly) {
+					console.log('Deleting Column');
+					deleteColumn(table_id, col);
+					break;
+				}
+
+				// Delete the current row
+				if (event.key === 'Delete' && isAltOnly && !isHeaderRow) {
+					console.log('Deleting Row');
+					deleteRow(table_id, row);
+					break;
+				}
+				break;
+			case 'Escape':
+				// no-op when not editing
+				return;
 			default:
 				console.log('Key Code = ' + event.key);
 				return;
 		}
-
 		focusCell(col, row);
+	}
+
+	/**
+	 * Remove all data from a specific cell reference
+	 *
+	 * @since 1.2.5
+	 *
+	 * @param {number} columnId Column ID of cell to delete data
+	 * @param {number} rowId    Row ID of cell to delete data
+	 */
+	function processCellDelete(columnId, rowId) {
+		const cellData = table.cells.find(
+			c => Number(c.column_id) === columnId && Number(c.row_id) === rowId
+		);
+
+		if (cellData) {
+			const attrs = {
+				...(cellData.attributes || {}),
+				value: { ...((cellData.attributes && cellData.attributes.value) || {}) },
+			};
+			setTableAttributes(table_id, 'cell', cellData.cell_id, 'CONTENT', '');
+			setTableAttributes(table_id, 'cell', cellData.cell_id, 'ATTRIBUTES', attrs);
+		}
 	}
 
 	/**

@@ -18,13 +18,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/cog.mjs");
 /* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-after.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-before.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-column-delete.mjs");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./style.scss */ "./src/components/column-dropdown-menu/style.scss");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./style.scss */ "./src/components/column-dropdown-menu/style.scss");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
 /* External dependencies */
 
 
@@ -203,8 +200,8 @@ function ColumnMenuImpl(props = {}) {
     close();
   }, [tableId, close]);
   if (!canRender) return null;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.Fragment, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
       anchor: anchor,
       ref: menuRootRef,
       className: "menu-col__main",
@@ -218,44 +215,44 @@ function ColumnMenuImpl(props = {}) {
       tabIndex: -1,
       onKeyDown: onKeyDown,
       onClose: handlePopoverClose,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
         className: "components-menu-group",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
           icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
           onClick: e => onUpdateColumnDataType(e, columnId),
           ref: firstItemRef,
           children: "Column Content Type..."
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
           icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"],
           onClick: e => onUpdateColumnWidth(e, columnId),
           children: "Update Column Width..."
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+          shortcut: 'Alt + Shift + ←',
           disabled: disableInsertColumnLeft,
           onClick: e => onInsertColumn(e, columnId, 'left'),
           children: "Insert Column Left"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"],
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+          shortcut: 'Alt + Shift + →',
           onClick: e => onInsertColumn(e, columnId, 'right'),
           children: "Insert Column Right"
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
           shortcut: 'Alt + ←',
           disabled: disableMoveColumnLeft,
           onClick: e => onMoveColumn(e, columnId, 'left'),
           children: "Move Column Left"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
           shortcut: 'Alt + →',
           disabled: disableMoveColumnRight,
           onClick: e => onMoveColumn(e, columnId, 'right'),
           children: "Move Column Right"
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+          shortcut: 'Alt + Shift + Delete',
           onClick: e => onDeleteColumn(e, columnId),
           children: "Delete Column"
         })
@@ -2008,13 +2005,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-row-after.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-row-before.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/table-row-delete.mjs");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./style.scss */ "./src/components/row-dropdown-menu/style.scss");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./style.scss */ "./src/components/row-dropdown-menu/style.scss");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
 /* External dependencies */
 
 
@@ -2182,8 +2176,8 @@ function RowMenuImpl(props = {}) {
     close();
   }, [tableId, close]);
   if (!canRender) return null;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
       anchor: anchor,
       ref: menuRootRef,
       className: "menu-row__main",
@@ -2197,41 +2191,41 @@ function RowMenuImpl(props = {}) {
       tabIndex: -1,
       onKeyDown: onKeyDown,
       onClose: handlePopoverClose,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
         className: "components-menu-group",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
           icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"],
           onClick: e => onUpdateRowHeight(e, rowId),
           ref: firstItemRef,
           children: "Update Row Height..."
         })
-      }), !rowAttributes.isHeader && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"],
+      }), !rowAttributes.isHeader && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            shortcut: 'Alt + Shift + ↑',
             disabled: disableInsertRowUp,
             onClick: e => onInsertRow(e, rowId, 'above'),
             children: "Insert Row Above"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            shortcut: 'Alt + Shift + ↓',
             onClick: e => onInsertRow(e, rowId, 'below'),
             children: "Insert Row Below"
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
             shortcut: 'Alt + ↑',
             disabled: disableMoveRowUp,
             onClick: e => onMoveRow(e, rowId, 'up'),
             children: "Move Row Up"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
             shortcut: 'Alt + ↓',
             disabled: disableMoveRowDown,
             onClick: e => onMoveRow(e, rowId, 'down'),
             children: "Move Row Down"
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            shortcut: 'Alt + Delete',
             onClick: e => onDeleteRow(e, rowId),
             children: "Delete Row"
           })
@@ -4919,16 +4913,9 @@ function Edit(props) {
   function insertColumn(tableId, columnId, direction) {
     const newColumnId = direction === 'right' ? Number(columnId) + 1 : Number(columnId);
     const newColumn = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultColumn)(tableId, newColumnId);
-    const tableCells = [];
-    for (let i = 0; i < numRows; i++) {
-      if (i === 0) {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultCell)(tableId, newColumnId, i, 'Border');
-        tableCells.push(cell);
-      } else {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultCell)(tableId, newColumnId, i);
-        tableCells.push(cell);
-      }
-    }
+    const tableCells = table.rows.map(({
+      row_id
+    }) => Number(row_id)).filter(rowId => Number.isFinite(rowId)).sort((a, b) => a - b).map(rowId => rowId === 0 ? (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultCell)(tableId, newColumnId, rowId, 'Border') : (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultCell)(tableId, newColumnId, rowId));
     addColumn(tableId, columnId, direction, newColumn, tableCells);
     setTableStale(false);
     return updateTableEntity(tableId);
@@ -4948,16 +4935,9 @@ function Edit(props) {
   function insertRow(tableId, rowId, direction) {
     const newRowId = direction === 'below' ? Number(rowId) + 1 : Number(rowId);
     const newRow = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultRow)(tableId, newRowId);
-    const tableCells = [];
-    for (let i = 0; i < numColumns; i++) {
-      if (i === 0) {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultCell)(tableId, i, newRowId, 'Border');
-        tableCells.push(cell);
-      } else {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultCell)(tableId, i, newRowId);
-        tableCells.push(cell);
-      }
-    }
+    const tableCells = table.columns.map(({
+      column_id
+    }) => Number(column_id)).filter(columnId => Number.isFinite(columnId)).sort((a, b) => a - b).map(columnId => columnId === 0 ? (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultCell)(tableId, columnId, newRowId, 'Border') : (0,_table_defaults__WEBPACK_IMPORTED_MODULE_14__.getDefaultCell)(tableId, columnId, newRowId));
     addRow(tableId, rowId, direction, newRow, tableCells);
     setTableStale(false);
     return updateTableEntity(tableId);
@@ -5325,6 +5305,8 @@ function Edit(props) {
    * Handle keyboard navigation within the active dynamic table block and updates focus appropriately
    *
    * @since 1.1.1
+   * @since 1.2.3 - Add keyboard support for moving columns and rows
+   * @since 1.2.5 - Add keyboard support for insert/delete columns and rows
    *
    * @param {Object} event onKeyDown event
    * @return {void}
@@ -5405,71 +5387,118 @@ function Edit(props) {
       });
       return;
     }
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      event.stopPropagation();
-      // no-op when not editing
-      return;
-    }
-
-    // Delete/backspace clears cell
-    if (event.key === 'Delete' || event.key === 'Backspace') {
-      event.preventDefault();
-      event.stopPropagation();
-      const cellData = table.cells.find(c => Number(c.column_id) === col && Number(c.row_id) === row);
-      if (cellData) {
-        const attrs = {
-          ...(cellData.attributes || {}),
-          value: {
-            ...(cellData.attributes && cellData.attributes.value || {})
-          }
-        };
-        setTableAttributes(table_id, 'cell', cellData.cell_id, 'CONTENT', '');
-        setTableAttributes(table_id, 'cell', cellData.cell_id, 'ATTRIBUTES', attrs);
-      }
-      return;
-    }
+    const isAltOnly = event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
+    const isShiftOnly = !event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
+    const isAltShiftOnly = event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
+    const isPrimaryKeyOnly = !event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
 
     // Intercept navigation
     event.preventDefault();
     event.stopPropagation();
     switch (event.key) {
       case 'ArrowUp':
-        if (event.altKey) {
+        // Insert row above the current row
+        if (isAltShiftOnly && !isHeaderRow) {
+          console.log('Inserting');
+          insertRow(table_id, row, 'above');
+          break;
+        }
+
+        // Move row above the current row
+        if (isAltOnly) {
+          console.log('Moving');
           const firstBodyRowId = navHeaderRow ? Number(navHeaderRow) + 1 : 1;
           if (row <= firstBodyRowId) break;
           reorderRows(table_id, row, 'up');
+          break;
         }
-        row = Math.max(1, row - 1);
+
+        // Navigate to cell above the current cell
+        if (isPrimaryKeyOnly) {
+          console.log('Navigating');
+          row = Math.max(1, row - 1);
+          break;
+        }
         break;
       case 'ArrowDown':
-        if (event.altKey) {
+        // Insert row below the current row
+        if (isAltShiftOnly && !isHeaderRow) {
+          console.log('Inserting');
+          insertRow(table_id, row, 'below');
+          break;
+        }
+
+        // Move row below the current row
+        if (isAltOnly) {
+          console.log('Moving');
           if (isHeaderRow || row === navMaxRow) break;
           reorderRows(table_id, row, 'down');
+          break;
         }
-        row = Math.min(navMaxRow, row + 1);
+
+        // Navigate to cell below the current cell
+        if (isPrimaryKeyOnly) {
+          console.log('Navigating');
+          row = Math.min(navMaxRow, row + 1);
+          break;
+        }
         break;
       case 'ArrowLeft':
-        if (event.altKey) {
+        // Insert column left of the current column
+        if (isAltShiftOnly) {
+          console.log('Inserting');
+          insertColumn(table_id, col, 'left');
+          break;
+        }
+
+        // Move column left of the current column
+        if (isAltOnly) {
+          console.log('Moving');
           if (col === 1) break;
           reorderColumns(table_id, col, 'left');
+          break;
         }
-        col = Math.max(1, col - 1);
+
+        // Navigate to cell left of the current cell
+        if (isPrimaryKeyOnly) {
+          console.log('Navigating');
+          col = Math.max(1, col - 1);
+          break;
+        }
         break;
       case 'ArrowRight':
-        if (event.altKey) {
+        // Insert column right of the current column
+        if (isAltShiftOnly) {
+          console.log('Inserting');
+          insertColumn(table_id, col, 'right');
+          break;
+        }
+
+        // Move column right of the current column
+        if (isAltOnly) {
+          console.log('Moving');
           if (col === navMaxCol) break;
           reorderColumns(table_id, col, 'right');
+          break;
         }
-        col = Math.min(navMaxCol, col + 1);
+
+        // Navigate to cell right of the current cell
+        if (isPrimaryKeyOnly) {
+          console.log('Navigating');
+          col = Math.min(navMaxCol, col + 1);
+          break;
+        }
         break;
       case 'Tab':
-        if (event.shiftKey) {
+        // Navigate to cell left of the current cell
+        if (isShiftOnly) {
           if (col > 1) col -= 1;else if (row > 1) {
             row -= 1;
             col = navMaxCol;
           }
-        } else {
+        }
+        if (isPrimaryKeyOnly) {
+          // Navigate to cell right of the current cell
           // eslint-disable-next-line no-lonely-if
           if (col < navMaxCol) {
             col = Math.min(navMaxCol, col + 1);
@@ -5477,13 +5506,61 @@ function Edit(props) {
             row += 1;
             col = 1;
           }
+          break;
         }
         break;
+      case 'Delete':
+      case 'Backspace':
+        if (isPrimaryKeyOnly) {
+          console.log('Delete Key Hit');
+          processCellDelete(col, row);
+          return;
+        }
+
+        // Delete the current column
+        if (event.key === 'Delete' && isAltShiftOnly) {
+          console.log('Deleting Column');
+          deleteColumn(table_id, col);
+          break;
+        }
+
+        // Delete the current row
+        if (event.key === 'Delete' && isAltOnly && !isHeaderRow) {
+          console.log('Deleting Row');
+          deleteRow(table_id, row);
+          break;
+        }
+        break;
+      case 'Escape':
+        // no-op when not editing
+        return;
       default:
         console.log('Key Code = ' + event.key);
         return;
     }
     focusCell(col, row);
+  }
+
+  /**
+   * Remove all data from a specific cell reference
+   *
+   * @since 1.2.5
+   *
+   * @param {number} columnId Column ID of cell to delete data
+   * @param {number} rowId    Row ID of cell to delete data
+   */
+  function processCellDelete(columnId, rowId) {
+    const cellData = table.cells.find(c => Number(c.column_id) === columnId && Number(c.row_id) === rowId);
+    if (cellData) {
+      const attrs = {
+        ...(cellData.attributes || {}),
+        value: {
+          ...(cellData.attributes && cellData.attributes.value || {})
+        }
+      };
+      setTableAttributes(table_id, 'cell', cellData.cell_id, 'CONTENT', '');
+      setTableAttributes(table_id, 'cell', cellData.cell_id, 'ATTRIBUTES', attrs);
+    }
   }
 
   /**
@@ -9070,138 +9147,6 @@ var settings_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MO
 ] });
 
 //# sourceMappingURL=settings.mjs.map
-
-
-/***/ },
-
-/***/ "./node_modules/@wordpress/icons/build-module/library/table-column-after.mjs"
-/*!***********************************************************************************!*\
-  !*** ./node_modules/@wordpress/icons/build-module/library/table-column-after.mjs ***!
-  \***********************************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ table_column_after_default)
-/* harmony export */ });
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-// packages/icons/src/library/table-column-after.tsx
-
-
-var table_column_after_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M19 3H5c-1.1 0-2 .9-2 2v14.2c.1.9.9 1.7 1.8 1.8H19.2c1-.1 1.8-1 1.8-2V5c0-1.1-.9-2-2-2ZM8.5 19.5H5c-.3 0-.5-.2-.5-.5v-3.5h4v4Zm0-5.5h-4v-4h4v4Zm0-5.5h-4V5c0-.3.2-.5.5-.5h3.5v4Zm11 10.5c0 .3-.2.5-.5.5h-9v-15h9c.3 0 .5.2.5.5v14Zm-4-10.8H14v3h-3v1.5h3v3h1.5v-3h3v-1.5h-3v-3Z" }) });
-
-//# sourceMappingURL=table-column-after.mjs.map
-
-
-/***/ },
-
-/***/ "./node_modules/@wordpress/icons/build-module/library/table-column-before.mjs"
-/*!************************************************************************************!*\
-  !*** ./node_modules/@wordpress/icons/build-module/library/table-column-before.mjs ***!
-  \************************************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ table_column_before_default)
-/* harmony export */ });
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-// packages/icons/src/library/table-column-before.tsx
-
-
-var table_column_before_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1 .8 1.9 1.8 2H19.2c.9-.1 1.7-.9 1.8-1.8V5c0-1.1-.9-2-2-2Zm-5 16.5H5c-.3 0-.5-.2-.5-.5V5c0-.3.2-.5.5-.5h9v15Zm5.5-.5c0 .3-.2.5-.5.5h-3.5v-4h4V19Zm0-5h-4v-4h4v4Zm0-5.5h-4v-4H19c.3 0 .5.2.5.5v3.5Zm-11 7.3H10v-3h3v-1.5h-3v-3H8.5v3h-3v1.5h3v3Z" }) });
-
-//# sourceMappingURL=table-column-before.mjs.map
-
-
-/***/ },
-
-/***/ "./node_modules/@wordpress/icons/build-module/library/table-column-delete.mjs"
-/*!************************************************************************************!*\
-  !*** ./node_modules/@wordpress/icons/build-module/library/table-column-delete.mjs ***!
-  \************************************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ table_column_delete_default)
-/* harmony export */ });
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-// packages/icons/src/library/table-column-delete.tsx
-
-
-var table_column_delete_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M19 3H5c-1.1 0-2 .9-2 2v14.2c.1.9.9 1.7 1.8 1.8H19.2c1-.1 1.8-1 1.8-2V5c0-1.1-.9-2-2-2ZM8.5 19.5H5c-.3 0-.5-.2-.5-.5V5c0-.3.2-.5.5-.5h3.5v15Zm11-.5c0 .3-.2.5-.5.5h-9v-15h9c.3 0 .5.2.5.5v14ZM16.9 8.8l-2.1 2.1-2.1-2.1-1.1 1.1 2.1 2.1-2.1 2.1 1.1 1.1 2.1-2.1 2.1 2.1 1.1-1.1-2.1-2.1L18 9.9l-1.1-1.1Z" }) });
-
-//# sourceMappingURL=table-column-delete.mjs.map
-
-
-/***/ },
-
-/***/ "./node_modules/@wordpress/icons/build-module/library/table-row-after.mjs"
-/*!********************************************************************************!*\
-  !*** ./node_modules/@wordpress/icons/build-module/library/table-row-after.mjs ***!
-  \********************************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ table_row_after_default)
-/* harmony export */ });
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-// packages/icons/src/library/table-row-after.tsx
-
-
-var table_row_after_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M19 3H4.8c-.9.1-1.7.9-1.8 1.8V19.2c.1 1 1 1.8 2 1.8h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2Zm-9 1.5h4v4h-4v-4ZM4.5 5c0-.3.2-.5.5-.5h3.5v4h-4V5Zm15 14c0 .3-.2.5-.5.5H5c-.3 0-.5-.2-.5-.5v-9h15v9Zm0-10.5h-4v-4H19c.3 0 .5.2.5.5v3.5Zm-8.3 10h1.5v-3h3V14h-3v-3h-1.5v3h-3v1.5h3v3Z" }) });
-
-//# sourceMappingURL=table-row-after.mjs.map
-
-
-/***/ },
-
-/***/ "./node_modules/@wordpress/icons/build-module/library/table-row-before.mjs"
-/*!*********************************************************************************!*\
-  !*** ./node_modules/@wordpress/icons/build-module/library/table-row-before.mjs ***!
-  \*********************************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ table_row_before_default)
-/* harmony export */ });
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-// packages/icons/src/library/table-row-before.tsx
-
-
-var table_row_before_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M21 5c0-1.1-.9-2-2-2H5c-1 0-1.9.8-2 1.8V19.2c.1.9.9 1.7 1.8 1.8H19c1.1 0 2-.9 2-2V5ZM4.5 14V5c0-.3.2-.5.5-.5h14c.3 0 .5.2.5.5v9h-15Zm4 5.5H5c-.3 0-.5-.2-.5-.5v-3.5h4v4Zm5.5 0h-4v-4h4v4Zm5.5-.5c0 .3-.2.5-.5.5h-3.5v-4h4V19ZM11.2 10h-3V8.5h3v-3h1.5v3h3V10h-3v3h-1.5v-3Z" }) });
-
-//# sourceMappingURL=table-row-before.mjs.map
-
-
-/***/ },
-
-/***/ "./node_modules/@wordpress/icons/build-module/library/table-row-delete.mjs"
-/*!*********************************************************************************!*\
-  !*** ./node_modules/@wordpress/icons/build-module/library/table-row-delete.mjs ***!
-  \*********************************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ table_row_delete_default)
-/* harmony export */ });
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-// packages/icons/src/library/table-row-delete.tsx
-
-
-var table_row_delete_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M19 3H4.8c-.9.1-1.7.9-1.8 1.8V19.2c.1 1 1 1.8 2 1.8h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2Zm.5 16c0 .3-.2.5-.5.5H5c-.3 0-.5-.2-.5-.5v-9h15v9Zm0-10.5h-15V5c0-.3.2-.5.5-.5h14c.3 0 .5.2.5.5v3.5Zm-9.6 9.4 2.1-2.1 2.1 2.1 1.1-1.1-2.1-2.1 2.1-2.1-1.1-1.1-2.1 2.1-2.1-2.1-1.1 1.1 2.1 2.1-2.1 2.1 1.1 1.1Z" }) });
-
-//# sourceMappingURL=table-row-delete.mjs.map
 
 
 /***/ },

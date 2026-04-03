@@ -1,13 +1,7 @@
 /* External dependencies */
 import { useEffect, useRef, useCallback, memo } from '@wordpress/element';
 import { Popover, MenuGroup, MenuItem } from '@wordpress/components';
-import {
-	cog,
-	settings,
-	tableColumnBefore,
-	tableColumnAfter,
-	tableColumnDelete,
-} from '@wordpress/icons';
+import { cog, settings } from '@wordpress/icons';
 
 /* Internal dependencies */
 import './style.scss';
@@ -244,14 +238,17 @@ function ColumnMenuImpl(props = {}) {
 
 				<MenuGroup>
 					<MenuItem
-						icon={tableColumnBefore}
+						shortcut={'Alt + Shift + ←'}
 						disabled={disableInsertColumnLeft}
 						onClick={e => onInsertColumn(e, columnId, 'left')}
 					>
 						Insert Column Left
 					</MenuItem>
 
-					<MenuItem icon={tableColumnAfter} onClick={e => onInsertColumn(e, columnId, 'right')}>
+					<MenuItem
+						shortcut={'Alt + Shift + →'}
+						onClick={e => onInsertColumn(e, columnId, 'right')}
+					>
 						Insert Column Right
 					</MenuItem>
 				</MenuGroup>
@@ -275,7 +272,7 @@ function ColumnMenuImpl(props = {}) {
 				</MenuGroup>
 
 				<MenuGroup>
-					<MenuItem icon={tableColumnDelete} onClick={e => onDeleteColumn(e, columnId)}>
+					<MenuItem shortcut={'Alt + Shift + Delete'} onClick={e => onDeleteColumn(e, columnId)}>
 						Delete Column
 					</MenuItem>
 				</MenuGroup>

@@ -1,7 +1,7 @@
 /* External dependencies */
 import { useEffect, useRef, useCallback, memo } from '@wordpress/element';
 import { Popover, MenuGroup, MenuItem } from '@wordpress/components';
-import { settings, tableRowBefore, tableRowAfter, tableRowDelete } from '@wordpress/icons';
+import { settings } from '@wordpress/icons';
 
 /* Internal dependencies */
 import './style.scss';
@@ -217,14 +217,14 @@ function RowMenuImpl(props = {}) {
 					<>
 						<MenuGroup>
 							<MenuItem
-								icon={tableRowBefore}
+								shortcut={'Alt + Shift + ↑'}
 								disabled={disableInsertRowUp}
 								onClick={e => onInsertRow(e, rowId, 'above')}
 							>
 								Insert Row Above
 							</MenuItem>
 
-							<MenuItem icon={tableRowAfter} onClick={e => onInsertRow(e, rowId, 'below')}>
+							<MenuItem shortcut={'Alt + Shift + ↓'} onClick={e => onInsertRow(e, rowId, 'below')}>
 								Insert Row Below
 							</MenuItem>
 						</MenuGroup>
@@ -248,7 +248,7 @@ function RowMenuImpl(props = {}) {
 						</MenuGroup>
 
 						<MenuGroup>
-							<MenuItem icon={tableRowDelete} onClick={e => onDeleteRow(e, rowId)}>
+							<MenuItem shortcut={'Alt + Delete'} onClick={e => onDeleteRow(e, rowId)}>
 								Delete Row
 							</MenuItem>
 						</MenuGroup>
