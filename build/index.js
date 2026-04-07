@@ -44,6 +44,7 @@ __webpack_require__.r(__webpack_exports__);
 
 function ColumnMenuImpl(props = {}) {
   const {
+    menuId,
     anchor,
     table,
     columnId,
@@ -201,62 +202,65 @@ function ColumnMenuImpl(props = {}) {
   }, [tableId, close]);
   if (!canRender) return null;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
       anchor: anchor,
-      ref: menuRootRef,
       className: "menu-col__main",
-      role: "menu",
-      "aria-label": `Column ${columnLabel} menu`,
       placement: "bottom",
       focusOnMount: false,
       offset: 8,
       noArrow: false,
       flip: true,
-      tabIndex: -1,
-      onKeyDown: onKeyDown,
       onClose: handlePopoverClose,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-        className: "components-menu-group",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
-          onClick: e => onUpdateColumnDataType(e, columnId),
-          ref: firstItemRef,
-          children: "Column Content Type..."
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"],
-          onClick: e => onUpdateColumnWidth(e, columnId),
-          children: "Update Column Width..."
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+        id: menuId,
+        ref: menuRootRef,
+        role: "menu",
+        "aria-label": `Column ${columnLabel} menu`,
+        tabIndex: -1,
+        onKeyDown: onKeyDown,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          className: "components-menu-group",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
+            onClick: e => onUpdateColumnDataType(e, columnId),
+            ref: firstItemRef,
+            children: "Column Content Type..."
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"],
+            onClick: e => onUpdateColumnWidth(e, columnId),
+            children: "Update Column Width..."
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            shortcut: 'Alt + Shift + ←',
+            disabled: disableInsertColumnLeft,
+            onClick: e => onInsertColumn(e, columnId, 'left'),
+            children: "Insert Column Left"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            shortcut: 'Alt + Shift + →',
+            onClick: e => onInsertColumn(e, columnId, 'right'),
+            children: "Insert Column Right"
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            shortcut: 'Alt + ←',
+            disabled: disableMoveColumnLeft,
+            onClick: e => onMoveColumn(e, columnId, 'left'),
+            children: "Move Column Left"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            shortcut: 'Alt + →',
+            disabled: disableMoveColumnRight,
+            onClick: e => onMoveColumn(e, columnId, 'right'),
+            children: "Move Column Right"
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            shortcut: 'Alt + Shift + Delete',
+            onClick: e => onDeleteColumn(e, columnId),
+            children: "Delete Column"
+          })
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          shortcut: 'Alt + Shift + ←',
-          disabled: disableInsertColumnLeft,
-          onClick: e => onInsertColumn(e, columnId, 'left'),
-          children: "Insert Column Left"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          shortcut: 'Alt + Shift + →',
-          onClick: e => onInsertColumn(e, columnId, 'right'),
-          children: "Insert Column Right"
-        })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          shortcut: 'Alt + ←',
-          disabled: disableMoveColumnLeft,
-          onClick: e => onMoveColumn(e, columnId, 'left'),
-          children: "Move Column Left"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          shortcut: 'Alt + →',
-          disabled: disableMoveColumnRight,
-          onClick: e => onMoveColumn(e, columnId, 'right'),
-          children: "Move Column Right"
-        })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          shortcut: 'Alt + Shift + Delete',
-          onClick: e => onDeleteColumn(e, columnId),
-          children: "Delete Column"
-        })
-      })]
+      })
     })
   });
 }
@@ -2030,6 +2034,7 @@ __webpack_require__.r(__webpack_exports__);
 
 function RowMenuImpl(props = {}) {
   const {
+    menuId,
     anchor,
     table,
     rowId,
@@ -2177,60 +2182,63 @@ function RowMenuImpl(props = {}) {
   }, [tableId, close]);
   if (!canRender) return null;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Popover, {
       anchor: anchor,
-      ref: menuRootRef,
       className: "menu-row__main",
-      role: "menu",
-      "aria-label": `Row ${rowLabel} menu`,
       placement: "right-start",
       focusOnMount: false,
       offset: 8,
       noArrow: false,
       flip: true,
-      tabIndex: -1,
-      onKeyDown: onKeyDown,
       onClose: handlePopoverClose,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-        className: "components-menu-group",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"],
-          onClick: e => onUpdateRowHeight(e, rowId),
-          ref: firstItemRef,
-          children: "Update Row Height..."
-        })
-      }), !rowAttributes.isHeader && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            shortcut: 'Alt + Shift + ↑',
-            disabled: disableInsertRowUp,
-            onClick: e => onInsertRow(e, rowId, 'above'),
-            children: "Insert Row Above"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            shortcut: 'Alt + Shift + ↓',
-            onClick: e => onInsertRow(e, rowId, 'below'),
-            children: "Insert Row Below"
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            shortcut: 'Alt + ↑',
-            disabled: disableMoveRowUp,
-            onClick: e => onMoveRow(e, rowId, 'up'),
-            children: "Move Row Up"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            shortcut: 'Alt + ↓',
-            disabled: disableMoveRowDown,
-            onClick: e => onMoveRow(e, rowId, 'down'),
-            children: "Move Row Down"
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+        id: menuId,
+        ref: menuRootRef,
+        role: "menu",
+        "aria-label": `Row ${rowLabel} menu`,
+        tabIndex: -1,
+        onKeyDown: onKeyDown,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          className: "components-menu-group",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-            shortcut: 'Alt + Delete',
-            onClick: e => onDeleteRow(e, rowId),
-            children: "Delete Row"
+            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"],
+            onClick: e => onUpdateRowHeight(e, rowId),
+            ref: firstItemRef,
+            children: "Update Row Height..."
           })
+        }), !rowAttributes.isHeader && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+              shortcut: 'Alt + Shift + ↑',
+              disabled: disableInsertRowUp,
+              onClick: e => onInsertRow(e, rowId, 'above'),
+              children: "Insert Row Above"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+              shortcut: 'Alt + Shift + ↓',
+              onClick: e => onInsertRow(e, rowId, 'below'),
+              children: "Insert Row Below"
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+              shortcut: 'Alt + ↑',
+              disabled: disableMoveRowUp,
+              onClick: e => onMoveRow(e, rowId, 'up'),
+              children: "Move Row Up"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+              shortcut: 'Alt + ↓',
+              disabled: disableMoveRowDown,
+              onClick: e => onMoveRow(e, rowId, 'down'),
+              children: "Move Row Down"
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+              shortcut: 'Alt + Delete',
+              onClick: e => onDeleteRow(e, rowId),
+              children: "Delete Row"
+            })
+          })]
         })]
-      })]
+      })
     })
   });
 }
@@ -4362,6 +4370,8 @@ function Edit(props) {
   const editorBodyAlignmentTagId = `${editorTableTagIdBase}-body-alignment`;
   const editorGridTagId = `${editorTableTagIdBase}-grid`;
   const editorTitleTagId = `${editorTableTagIdBase}-title`;
+  const editorRowMenuTagId = `${editorTableTagIdBase}-row-menu`;
+  const editorColumnMenuTagId = `${editorTableTagIdBase}-column-menu`;
   const themeColors = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.useSettings)('color.palette');
   const borderBoxColors = themeColors[0].map(({
     color,
@@ -5243,12 +5253,15 @@ function Edit(props) {
     const col = Number(el.dataset.col);
     const row = Number(el.dataset.row);
     if (!Number.isFinite(col) || !Number.isFinite(row)) return;
+    const isBorderCell = col === 0 || row === 0;
 
     // Only sync highlight; do not move focus, do not gate with pending flags
-    setFocusedCell(prev => prev.col === col && prev.row === row ? prev : {
-      col,
-      row
-    });
+    if (!isBorderCell) {
+      setFocusedCell(prev => prev.col === col && prev.row === row ? prev : {
+        col,
+        row
+      });
+    }
 
     // If focus moved to another cell wrapper, stop editing.
     const nextCellId = el.getAttribute('data-cell-id');
@@ -5362,6 +5375,10 @@ function Edit(props) {
     if (!root) return;
     const doc = root.ownerDocument || document;
     const active = doc.activeElement;
+    const activeBorderHandle = active?.closest?.('.grid-control__border-button');
+    if (activeBorderHandle && root.contains(activeBorderHandle)) {
+      return;
+    }
     const activeCellEl = active?.closest?.('[data-cell-id]');
     if (!activeCellEl || !root.contains(activeCellEl)) return;
     let col = Number(activeCellEl.dataset.col);
@@ -5841,7 +5858,8 @@ function Edit(props) {
     if (row_id === '0' && column_id !== '0') {
       const clickedColumn = table.columns.find(c => c.column_id === column_id);
       const attrs = clickedColumn?.attributes || {};
-      openColumnMenu(e, column_id, String(column_id), attrs);
+      const columnLabel = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.numberToLetter)(Number(column_id));
+      openColumnMenu(e, column_id, columnLabel, attrs);
     }
     if (row_id !== '0' && column_id === '0') {
       const clickedRow = table.rows.find(r => r.row_id === row_id);
@@ -6135,6 +6153,7 @@ function Edit(props) {
    */
   const renderRowMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
     children: rowMenu.isOpen && rowMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_components__WEBPACK_IMPORTED_MODULE_16__.RowMenu, {
+      menuId: editorRowMenuTagId,
       anchor: rowMenu.anchorEl,
       table: table,
       rowId: rowMenu.rowId,
@@ -6168,7 +6187,7 @@ function Edit(props) {
    */
   const renderColumnMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.Fragment, {
     children: columnMenu.isOpen && columnMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_components__WEBPACK_IMPORTED_MODULE_16__.ColumnMenu, {
-      debugSource: "EDIT_TOP_LEVEL",
+      menuId: editorColumnMenuTagId,
       anchor: columnMenu.anchorEl,
       table: table,
       columnId: columnMenu.columnId,
@@ -6468,6 +6487,11 @@ function Edit(props) {
                       attributes: attributes,
                       columnClassNames: '',
                       cellClassNames: classes,
+                      borderHandleProps: {
+                        ariaLabel: `Column ${(0,_utils__WEBPACK_IMPORTED_MODULE_13__.numberToLetter)(Number(column_id))} options`,
+                        controls: editorColumnMenuTagId,
+                        expanded: columnMenu.isOpen && String(columnMenu.columnId) === String(column_id)
+                      },
                       onMouseDown: onMouseBorderClick
                     })]
                   }, `border-row:${cell_id}`);
@@ -6530,6 +6554,11 @@ function Edit(props) {
                         attributes: attributes,
                         columnClassNames: '',
                         cellClassNames: classes,
+                        borderHandleProps: {
+                          ariaLabel: `Row ${String(row_id)} options`,
+                          controls: editorRowMenuTagId,
+                          expanded: rowMenu.isOpen && String(rowMenu.rowId) === String(row_id)
+                        },
                         onMouseDown: onMouseBorderClick
                       }), isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                         className: 'grid-control__header-cells',
@@ -6660,6 +6689,11 @@ function Edit(props) {
                           attributes: attributes,
                           columnClassNames: '',
                           cellClassNames: classes,
+                          borderHandleProps: {
+                            ariaLabel: `Row ${String(row_id)} options`,
+                            controls: editorRowMenuTagId,
+                            expanded: rowMenu.isOpen && String(rowMenu.rowId) === String(row_id)
+                          },
                           onMouseDown: onMouseBorderClick
                         }), isFirstColumn && !isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                           className: 'grid-control__body-cells grid-control__body-cells--zoom',
@@ -6849,6 +6883,7 @@ function Cell(props) {
     gridLineWidthCSS,
     onChange,
     onMouseDown,
+    borderHandleProps = {},
     isEditing,
     onRequestEdit,
     onRequestStopEdit,
@@ -7105,9 +7140,31 @@ function Cell(props) {
         persistCellEdit(next, plainText);
       }
     }),
-    border: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
-      children: cellContent
-    }),
+    border: () => {
+      const isCornerBorderCell = String(row_id) === '0' && String(column_id) === '0';
+      const isBorderHandle = !isCornerBorderCell && (String(row_id) === '0' || String(column_id) === '0');
+      if (!isBorderHandle) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
+          "aria-hidden": "true",
+          children: cellContent
+        });
+      }
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("button", {
+        type: "button",
+        className: "grid-control__border-button",
+        "aria-label": borderHandleProps.ariaLabel,
+        "aria-haspopup": "menu",
+        "aria-expanded": borderHandleProps.expanded,
+        "aria-controls": borderHandleProps.expanded ? borderHandleProps.controls : undefined,
+        onClick: e => {
+          passMouseBorderClick(column_id, row_id, table, e);
+        },
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("span", {
+          "aria-hidden": "true",
+          children: cellContent
+        })
+      });
+    },
     dateTime: () => {
       if (!isEditing) {
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
@@ -7224,10 +7281,7 @@ function Cell(props) {
       '--gridLineWidth': gridLineWidthCSS
     },
     onMouseDown: e => {
-      if (cellType === 'border') {
-        passMouseBorderClick(column_id, row_id, table, e);
-        return;
-      }
+      if (cellType === 'border') return;
       if (isEditing) return;
       e.preventDefault();
       e.stopPropagation();

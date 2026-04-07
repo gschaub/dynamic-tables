@@ -18,7 +18,7 @@ import '../../editor.scss';
  * @return {Object} Updated column
  */
 function ColumnMenuImpl(props = {}) {
-	const { anchor, table, columnId, columnLabel, updatedColumn, onRequestClose } = props;
+	const { menuId, anchor, table, columnId, columnLabel, updatedColumn, onRequestClose } = props;
 
 	const tableId = table?.table_id;
 
@@ -209,73 +209,77 @@ function ColumnMenuImpl(props = {}) {
 		<>
 			<Popover
 				anchor={anchor}
-				ref={menuRootRef}
 				className="menu-col__main"
-				role="menu"
-				aria-label={`Column ${columnLabel} menu`}
 				placement="bottom"
 				focusOnMount={false}
 				offset={8}
 				noArrow={false}
 				flip
-				tabIndex={-1}
-				onKeyDown={onKeyDown}
 				onClose={handlePopoverClose}
 			>
-				<MenuGroup className="components-menu-group">
-					<MenuItem
-						icon={settings}
-						onClick={e => onUpdateColumnDataType(e, columnId)}
-						ref={firstItemRef}
-					>
-						Column Content Type...
-					</MenuItem>
+				<div
+					id={menuId}
+					ref={menuRootRef}
+					role="menu"
+					aria-label={`Column ${columnLabel} menu`}
+					tabIndex={-1}
+					onKeyDown={onKeyDown}
+				>
+					<MenuGroup className="components-menu-group">
+						<MenuItem
+							icon={settings}
+							onClick={e => onUpdateColumnDataType(e, columnId)}
+							ref={firstItemRef}
+						>
+							Column Content Type...
+						</MenuItem>
 
-					<MenuItem icon={cog} onClick={e => onUpdateColumnWidth(e, columnId)}>
-						Update Column Width...
-					</MenuItem>
-				</MenuGroup>
+						<MenuItem icon={cog} onClick={e => onUpdateColumnWidth(e, columnId)}>
+							Update Column Width...
+						</MenuItem>
+					</MenuGroup>
 
-				<MenuGroup>
-					<MenuItem
-						shortcut={'Alt + Shift + ←'}
-						disabled={disableInsertColumnLeft}
-						onClick={e => onInsertColumn(e, columnId, 'left')}
-					>
-						Insert Column Left
-					</MenuItem>
+					<MenuGroup>
+						<MenuItem
+							shortcut={'Alt + Shift + ←'}
+							disabled={disableInsertColumnLeft}
+							onClick={e => onInsertColumn(e, columnId, 'left')}
+						>
+							Insert Column Left
+						</MenuItem>
 
-					<MenuItem
-						shortcut={'Alt + Shift + →'}
-						onClick={e => onInsertColumn(e, columnId, 'right')}
-					>
-						Insert Column Right
-					</MenuItem>
-				</MenuGroup>
+						<MenuItem
+							shortcut={'Alt + Shift + →'}
+							onClick={e => onInsertColumn(e, columnId, 'right')}
+						>
+							Insert Column Right
+						</MenuItem>
+					</MenuGroup>
 
-				<MenuGroup>
-					<MenuItem
-						shortcut={'Alt + ←'}
-						disabled={disableMoveColumnLeft}
-						onClick={e => onMoveColumn(e, columnId, 'left')}
-					>
-						Move Column Left
-					</MenuItem>
+					<MenuGroup>
+						<MenuItem
+							shortcut={'Alt + ←'}
+							disabled={disableMoveColumnLeft}
+							onClick={e => onMoveColumn(e, columnId, 'left')}
+						>
+							Move Column Left
+						</MenuItem>
 
-					<MenuItem
-						shortcut={'Alt + →'}
-						disabled={disableMoveColumnRight}
-						onClick={e => onMoveColumn(e, columnId, 'right')}
-					>
-						Move Column Right
-					</MenuItem>
-				</MenuGroup>
+						<MenuItem
+							shortcut={'Alt + →'}
+							disabled={disableMoveColumnRight}
+							onClick={e => onMoveColumn(e, columnId, 'right')}
+						>
+							Move Column Right
+						</MenuItem>
+					</MenuGroup>
 
-				<MenuGroup>
-					<MenuItem shortcut={'Alt + Shift + Delete'} onClick={e => onDeleteColumn(e, columnId)}>
-						Delete Column
-					</MenuItem>
-				</MenuGroup>
+					<MenuGroup>
+						<MenuItem shortcut={'Alt + Shift + Delete'} onClick={e => onDeleteColumn(e, columnId)}>
+							Delete Column
+						</MenuItem>
+					</MenuGroup>
+				</div>
 			</Popover>
 		</>
 	);

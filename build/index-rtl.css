@@ -58,6 +58,29 @@
 .grid-control__border-cells:hover {
   cursor: pointer;
 }
+.grid-control__border-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  cursor: pointer;
+}
+.grid-control__border-button:focus-visible {
+  outline: 2px solid #3858e9;
+  outline-offset: -2px;
+}
 .grid-control__inspector-controls--read-only {
   display: flex;
   align-items: center;

@@ -48,6 +48,7 @@ import { usePostChangesSaved, useEditorIdentity, useNotInInserterPreview } from 
 import {
 	tableSort,
 	generateBlockTableRef,
+	numberToLetter,
 	setBorderContent,
 	formatedDisplayDate,
 	formattedIsoDate,
@@ -383,11 +384,14 @@ export default function Edit(props) {
 
 	const { table_id, block_table_ref, original_post_type, original_post_id, block_alignment } =
 		props.attributes;
+
 	const editorTableTagIdBase = `dtbk-table-${String(table_id).trim()}`;
 	const editorHeaderAlignmentTagId = `${editorTableTagIdBase}-header-alignment`;
 	const editorBodyAlignmentTagId = `${editorTableTagIdBase}-body-alignment`;
 	const editorGridTagId = `${editorTableTagIdBase}-grid`;
 	const editorTitleTagId = `${editorTableTagIdBase}-title`;
+	const editorRowMenuTagId = `${editorTableTagIdBase}-row-menu`;
+	const editorColumnMenuTagId = `${editorTableTagIdBase}-column-menu`;
 
 	const themeColors = useSettings('color.palette');
 	const borderBoxColors = themeColors[0].map(({ color, name }) => {
@@ -1293,9 +1297,12 @@ export default function Edit(props) {
 		const col = Number(el.dataset.col);
 		const row = Number(el.dataset.row);
 		if (!Number.isFinite(col) || !Number.isFinite(row)) return;
+		const isBorderCell = col === 0 || row === 0;
 
 		// Only sync highlight; do not move focus, do not gate with pending flags
-		setFocusedCell(prev => (prev.col === col && prev.row === row ? prev : { col, row }));
+		if (!isBorderCell) {
+			setFocusedCell(prev => (prev.col === col && prev.row === row ? prev : { col, row }));
+		}
 
 		// If focus moved to another cell wrapper, stop editing.
 		const nextCellId = el.getAttribute('data-cell-id');
@@ -1433,6 +1440,12 @@ export default function Edit(props) {
 
 		const doc = root.ownerDocument || document;
 		const active = doc.activeElement;
+		const activeBorderHandle = active?.closest?.('.grid-control__border-button');
+
+		if (activeBorderHandle && root.contains(activeBorderHandle)) {
+			return;
+		}
+
 		const activeCellEl = active?.closest?.('[data-cell-id]');
 
 		if (!activeCellEl || !root.contains(activeCellEl)) return;
@@ -1496,14 +1509,14 @@ export default function Edit(props) {
 			case 'ArrowUp':
 				// Insert row above the current row
 				if (isAltShiftOnly && !isHeaderRow) {
-					console.log('Inserting')
+					console.log('Inserting');
 					insertRow(table_id, row, 'above');
 					break;
 				}
 
 				// Move row above the current row
 				if (isAltOnly) {
-					console.log('Moving')
+					console.log('Moving');
 					const firstBodyRowId = navHeaderRow ? Number(navHeaderRow) + 1 : 1;
 					if (row <= firstBodyRowId) break;
 					reorderRows(table_id, row, 'up');
@@ -1512,7 +1525,7 @@ export default function Edit(props) {
 
 				// Navigate to cell above the current cell
 				if (isPrimaryKeyOnly) {
-					console.log('Navigating')
+					console.log('Navigating');
 					row = Math.max(1, row - 1);
 					break;
 				}
@@ -1520,14 +1533,14 @@ export default function Edit(props) {
 			case 'ArrowDown':
 				// Insert row below the current row
 				if (isAltShiftOnly && !isHeaderRow) {
-					console.log('Inserting')
+					console.log('Inserting');
 					insertRow(table_id, row, 'below');
 					break;
 				}
 
 				// Move row below the current row
 				if (isAltOnly) {
-					console.log('Moving')
+					console.log('Moving');
 					if (isHeaderRow || row === navMaxRow) break;
 					reorderRows(table_id, row, 'down');
 					break;
@@ -1535,7 +1548,7 @@ export default function Edit(props) {
 
 				// Navigate to cell below the current cell
 				if (isPrimaryKeyOnly) {
-					console.log('Navigating')
+					console.log('Navigating');
 					row = Math.min(navMaxRow, row + 1);
 					break;
 				}
@@ -1543,14 +1556,14 @@ export default function Edit(props) {
 			case 'ArrowLeft':
 				// Insert column left of the current column
 				if (isAltShiftOnly) {
-					console.log('Inserting')
+					console.log('Inserting');
 					insertColumn(table_id, col, 'left');
 					break;
 				}
 
 				// Move column left of the current column
 				if (isAltOnly) {
-					console.log('Moving')
+					console.log('Moving');
 					if (col === 1) break;
 					reorderColumns(table_id, col, 'left');
 					break;
@@ -1558,7 +1571,7 @@ export default function Edit(props) {
 
 				// Navigate to cell left of the current cell
 				if (isPrimaryKeyOnly) {
-					console.log('Navigating')
+					console.log('Navigating');
 					col = Math.max(1, col - 1);
 					break;
 				}
@@ -1566,14 +1579,14 @@ export default function Edit(props) {
 			case 'ArrowRight':
 				// Insert column right of the current column
 				if (isAltShiftOnly) {
-					console.log('Inserting')
+					console.log('Inserting');
 					insertColumn(table_id, col, 'right');
 					break;
 				}
 
 				// Move column right of the current column
 				if (isAltOnly) {
-					console.log('Moving')
+					console.log('Moving');
 					if (col === navMaxCol) break;
 					reorderColumns(table_id, col, 'right');
 					break;
@@ -1581,7 +1594,7 @@ export default function Edit(props) {
 
 				// Navigate to cell right of the current cell
 				if (isPrimaryKeyOnly) {
-					console.log('Navigating')
+					console.log('Navigating');
 					col = Math.min(navMaxCol, col + 1);
 					break;
 				}
@@ -1945,7 +1958,8 @@ export default function Edit(props) {
 		if (row_id === '0' && column_id !== '0') {
 			const clickedColumn = table.columns.find(c => c.column_id === column_id);
 			const attrs = clickedColumn?.attributes || {};
-			openColumnMenu(e, column_id, String(column_id), attrs);
+			const columnLabel = numberToLetter(Number(column_id));
+			openColumnMenu(e, column_id, columnLabel, attrs);
 		}
 
 		if (row_id !== '0' && column_id === '0') {
@@ -2345,6 +2359,7 @@ export default function Edit(props) {
 		<>
 			{rowMenu.isOpen && rowMenu.anchorEl && (
 				<RowMenu
+					menuId={editorRowMenuTagId}
 					anchor={rowMenu.anchorEl}
 					table={table}
 					rowId={rowMenu.rowId}
@@ -2386,7 +2401,7 @@ export default function Edit(props) {
 		<>
 			{columnMenu.isOpen && columnMenu.anchorEl && (
 				<ColumnMenu
-					debugSource="EDIT_TOP_LEVEL"
+					menuId={editorColumnMenuTagId}
 					anchor={columnMenu.anchorEl}
 					table={table}
 					columnId={columnMenu.columnId}
@@ -2732,6 +2747,13 @@ export default function Edit(props) {
 																	attributes={attributes}
 																	columnClassNames={''}
 																	cellClassNames={classes}
+																	borderHandleProps={{
+																		ariaLabel: `Column ${numberToLetter(Number(column_id))} options`,
+																		controls: editorColumnMenuTagId,
+																		expanded:
+																			columnMenu.isOpen &&
+																			String(columnMenu.columnId) === String(column_id),
+																	}}
 																	onMouseDown={onMouseBorderClick}
 																></Cell>
 															</Fragment>
@@ -2817,6 +2839,13 @@ export default function Edit(props) {
 																				attributes={attributes}
 																				columnClassNames={''}
 																				cellClassNames={classes}
+																				borderHandleProps={{
+																					ariaLabel: `Row ${String(row_id)} options`,
+																					controls: editorRowMenuTagId,
+																					expanded:
+																						rowMenu.isOpen &&
+																						String(rowMenu.rowId) === String(row_id),
+																				}}
 																				onMouseDown={onMouseBorderClick}
 																			></Cell>
 																		)}
@@ -3012,6 +3041,13 @@ export default function Edit(props) {
 																					attributes={attributes}
 																					columnClassNames={''}
 																					cellClassNames={classes}
+																					borderHandleProps={{
+																						ariaLabel: `Row ${String(row_id)} options`,
+																						controls: editorRowMenuTagId,
+																						expanded:
+																							rowMenu.isOpen &&
+																							String(rowMenu.rowId) === String(row_id),
+																					}}
 																					onMouseDown={onMouseBorderClick}
 																				></Cell>
 																			)}
@@ -3239,6 +3275,7 @@ function Cell(props) {
 		gridLineWidthCSS,
 		onChange,
 		onMouseDown,
+		borderHandleProps = {},
 		isEditing,
 		onRequestEdit,
 		onRequestStopEdit,
@@ -3553,7 +3590,32 @@ function Cell(props) {
 				}
 			></RichText>
 		),
-		border: () => <div>{cellContent}</div>,
+		border: () => {
+			const isCornerBorderCell = String(row_id) === '0' && String(column_id) === '0';
+			const isBorderHandle =
+				!isCornerBorderCell && (String(row_id) === '0' || String(column_id) === '0');
+
+			if (!isBorderHandle) {
+				return <div aria-hidden="true">{cellContent}</div>;
+			}
+
+			return (
+				<button
+					type="button"
+					className="grid-control__border-button"
+					aria-label={borderHandleProps.ariaLabel}
+					aria-haspopup="menu"
+					aria-expanded={borderHandleProps.expanded}
+					aria-controls={borderHandleProps.expanded ? borderHandleProps.controls : undefined}
+					onClick={e => {
+						passMouseBorderClick(column_id, row_id, table, e);
+					}}
+				>
+					<span aria-hidden="true">{cellContent}</span>
+				</button>
+			);
+		},
+
 		dateTime: () => {
 			if (!isEditing) {
 				return <div>{cellContent}</div>;
@@ -3684,11 +3746,7 @@ function Cell(props) {
 						}
 			}
 			onMouseDown={e => {
-				if (cellType === 'border') {
-					passMouseBorderClick(column_id, row_id, table, e);
-					return;
-				}
-
+				if (cellType === 'border') return;
 				if (isEditing) return;
 				e.preventDefault();
 				e.stopPropagation();

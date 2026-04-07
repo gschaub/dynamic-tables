@@ -17,7 +17,8 @@ import '../../editor.scss';
  * @return {Object} Updated row
  */
 function RowMenuImpl(props = {}) {
-	const { anchor, table, rowId, rowLabel, rowAttributes, updatedRow, onRequestClose } = props;
+	const { menuId, anchor, table, rowId, rowLabel, rowAttributes, updatedRow, onRequestClose } =
+		props;
 
 	const tableId = table?.table_id;
 
@@ -194,66 +195,73 @@ function RowMenuImpl(props = {}) {
 		<>
 			<Popover
 				anchor={anchor}
-				ref={menuRootRef}
 				className="menu-row__main"
-				role="menu"
-				aria-label={`Row ${rowLabel} menu`}
 				placement="right-start"
 				focusOnMount={false}
 				offset={8}
 				noArrow={false}
 				flip
-				tabIndex={-1}
-				onKeyDown={onKeyDown}
 				onClose={handlePopoverClose}
 			>
-				<MenuGroup className="components-menu-group">
-					<MenuItem icon={settings} onClick={e => onUpdateRowHeight(e, rowId)} ref={firstItemRef}>
-						Update Row Height...
-					</MenuItem>
-				</MenuGroup>
+				<div
+					id={menuId}
+					ref={menuRootRef}
+					role="menu"
+					aria-label={`Row ${rowLabel} menu`}
+					tabIndex={-1}
+					onKeyDown={onKeyDown}
+				>
+					<MenuGroup className="components-menu-group">
+						<MenuItem icon={settings} onClick={e => onUpdateRowHeight(e, rowId)} ref={firstItemRef}>
+							Update Row Height...
+						</MenuItem>
+					</MenuGroup>
 
-				{!rowAttributes.isHeader && (
-					<>
-						<MenuGroup>
-							<MenuItem
-								shortcut={'Alt + Shift + ↑'}
-								disabled={disableInsertRowUp}
-								onClick={e => onInsertRow(e, rowId, 'above')}
-							>
-								Insert Row Above
-							</MenuItem>
+					{!rowAttributes.isHeader && (
+						<>
+							<MenuGroup>
+								<MenuItem
+									shortcut={'Alt + Shift + ↑'}
+									disabled={disableInsertRowUp}
+									onClick={e => onInsertRow(e, rowId, 'above')}
+								>
+									Insert Row Above
+								</MenuItem>
 
-							<MenuItem shortcut={'Alt + Shift + ↓'} onClick={e => onInsertRow(e, rowId, 'below')}>
-								Insert Row Below
-							</MenuItem>
-						</MenuGroup>
+								<MenuItem
+									shortcut={'Alt + Shift + ↓'}
+									onClick={e => onInsertRow(e, rowId, 'below')}
+								>
+									Insert Row Below
+								</MenuItem>
+							</MenuGroup>
 
-						<MenuGroup>
-							<MenuItem
-								shortcut={'Alt + ↑'}
-								disabled={disableMoveRowUp}
-								onClick={e => onMoveRow(e, rowId, 'up')}
-							>
-								Move Row Up
-							</MenuItem>
+							<MenuGroup>
+								<MenuItem
+									shortcut={'Alt + ↑'}
+									disabled={disableMoveRowUp}
+									onClick={e => onMoveRow(e, rowId, 'up')}
+								>
+									Move Row Up
+								</MenuItem>
 
-							<MenuItem
-								shortcut={'Alt + ↓'}
-								disabled={disableMoveRowDown}
-								onClick={e => onMoveRow(e, rowId, 'down')}
-							>
-								Move Row Down
-							</MenuItem>
-						</MenuGroup>
+								<MenuItem
+									shortcut={'Alt + ↓'}
+									disabled={disableMoveRowDown}
+									onClick={e => onMoveRow(e, rowId, 'down')}
+								>
+									Move Row Down
+								</MenuItem>
+							</MenuGroup>
 
-						<MenuGroup>
-							<MenuItem shortcut={'Alt + Delete'} onClick={e => onDeleteRow(e, rowId)}>
-								Delete Row
-							</MenuItem>
-						</MenuGroup>
-					</>
-				)}
+							<MenuGroup>
+								<MenuItem shortcut={'Alt + Delete'} onClick={e => onDeleteRow(e, rowId)}>
+									Delete Row
+								</MenuItem>
+							</MenuGroup>
+						</>
+					)}
+				</div>
 			</Popover>
 		</>
 	);
