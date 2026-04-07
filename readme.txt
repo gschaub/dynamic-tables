@@ -2,7 +2,7 @@
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, responsive tables, table block, gutenberg table
 Tested up to:      6.9
-Stable tag:        1.2.4
+Stable tag:        1.2.5
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,6 +104,9 @@ No. This plugin is free to use. However, we are planning for a premium version o
 7. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+= 1.2.5 =
+* Added keyboard shortcuts to insert and delete rows and columns
+
 = 1.2.4 =
 * Added support for numeric input that may be formatted as whole numbers, integers, percent, or currency
 * Added a css class engine to support more granular formatting capabilities

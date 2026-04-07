@@ -10,7 +10,7 @@
 .wp-block-dynamic-table-blocks-dynamic-table-blocks {
   padding: 2px;
 }
-#tableTitle {
+.dtbk-table-title {
   --gridAlignment: center;
   text-align: var(--gridAlignment);
 }

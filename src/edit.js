@@ -383,6 +383,12 @@ export default function Edit(props) {
 
 	const { table_id, block_table_ref, original_post_type, original_post_id, block_alignment } =
 		props.attributes;
+	const editorTableTagIdBase = `dtbk-table-${String(table_id).trim()}`;
+	const editorHeaderAlignmentTagId = `${editorTableTagIdBase}-header-alignment`;
+	const editorBodyAlignmentTagId = `${editorTableTagIdBase}-body-alignment`;
+	const editorGridTagId = `${editorTableTagIdBase}-grid`;
+	const editorTitleTagId = `${editorTableTagIdBase}-title`;
+
 	const themeColors = useSettings('color.palette');
 	const borderBoxColors = themeColors[0].map(({ color, name }) => {
 		return { color, name };
@@ -2515,13 +2521,13 @@ export default function Edit(props) {
 						<PanelRow>
 							<span className="inspector-controls-menu__header-alignment--middle">
 								<AlignmentControl
-									id="header-alignment"
+									id={editorHeaderAlignmentTagId}
 									value={headerAlignment}
 									onChange={e => onAlignHeader(table, e)}
 								/>
 								<label
 									className="inspector-controls-nemu__label--left-margin"
-									htmlFor="header-alignment"
+									htmlFor={editorHeaderAlignmentTagId}
 								>
 									Text Alignment
 								</label>
@@ -2556,13 +2562,13 @@ export default function Edit(props) {
 						<PanelRow>
 							<span className="inspector-controls-menu__header-alignment--middle">
 								<AlignmentControl
-									id="body-alignment"
+									id={editorBodyAlignmentTagId}
 									value={bodyAlignment}
 									onChange={e => onAlignBody(table, e)}
 								/>
 								<label
 									className="inspector-controls-menu__label--left-margin"
-									htmlFor="body-alignment"
+									htmlFor={editorBodyAlignmentTagId}
 								>
 									Text Alignment
 								</label>
@@ -2653,7 +2659,9 @@ export default function Edit(props) {
 					<div style={{ display: 'block' }}>
 						{!hideTitle && (
 							<RichText
-								id="tableTitle"
+								// id="tableTitle"
+								id={editorTitleTagId}
+								className="dtbk-table-title"
 								style={{ '--gridAlignment': gridAlignment }}
 								tagName="p"
 								allowedFormats={['core/bold', 'core/italic']}
@@ -2663,6 +2671,7 @@ export default function Edit(props) {
 						)}
 
 						<div
+							id={editorGridTagId}
 							ref={gridRef}
 							onKeyDownCapture={onCellKeyDown} // <-- capture phase
 							onFocusCapture={onGridFocusCapture}

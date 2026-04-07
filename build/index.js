@@ -4357,6 +4357,11 @@ function Edit(props) {
     original_post_id,
     block_alignment
   } = props.attributes;
+  const editorTableTagIdBase = `dtbk-table-${String(table_id).trim()}`;
+  const editorHeaderAlignmentTagId = `${editorTableTagIdBase}-header-alignment`;
+  const editorBodyAlignmentTagId = `${editorTableTagIdBase}-body-alignment`;
+  const editorGridTagId = `${editorTableTagIdBase}-grid`;
+  const editorTitleTagId = `${editorTableTagIdBase}-title`;
   const themeColors = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.useSettings)('color.palette');
   const borderBoxColors = themeColors[0].map(({
     color,
@@ -6282,12 +6287,12 @@ function Edit(props) {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)("span", {
               className: "inspector-controls-menu__header-alignment--middle",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
-                id: "header-alignment",
+                id: editorHeaderAlignmentTagId,
                 value: headerAlignment,
                 onChange: e => onAlignHeader(table, e)
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("label", {
                 className: "inspector-controls-nemu__label--left-margin",
-                htmlFor: "header-alignment",
+                htmlFor: editorHeaderAlignmentTagId,
                 children: "Text Alignment"
               })]
             })
@@ -6319,12 +6324,12 @@ function Edit(props) {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)("span", {
               className: "inspector-controls-menu__header-alignment--middle",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.AlignmentControl, {
-                id: "body-alignment",
+                id: editorBodyAlignmentTagId,
                 value: bodyAlignment,
                 onChange: e => onAlignBody(table, e)
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("label", {
                 className: "inspector-controls-menu__label--left-margin",
-                htmlFor: "body-alignment",
+                htmlFor: editorBodyAlignmentTagId,
                 children: "Text Alignment"
               })]
             })
@@ -6399,8 +6404,11 @@ function Edit(props) {
         style: {
           display: 'block'
         },
-        children: [!hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText, {
-          id: "tableTitle",
+        children: [!hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.RichText
+        // id="tableTitle"
+        , {
+          id: editorTitleTagId,
+          className: "dtbk-table-title",
           style: {
             '--gridAlignment': gridAlignment
           },
@@ -6409,6 +6417,7 @@ function Edit(props) {
           onChange: e => setTableAttributes(table_id, 'table_name', '', 'PROP', e),
           value: table.table_name
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
+          id: editorGridTagId,
           ref: gridRef,
           onKeyDownCapture: onCellKeyDown // <-- capture phase
           ,

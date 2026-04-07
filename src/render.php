@@ -70,6 +70,8 @@ if ( is_wp_error( $table ) ) {
 	$grid_column_style     = process_columns( $table_columns );
 	$grid_show_inner_lines = $show_grid_lines ? 'solid' : 'hidden';
 	$grid_inner_line_width = $show_grid_lines ? strval( $grid_line_width ) . 'px' : '0px';
+	$table_grid_tag_id     = get_table_grid_tag_id( $table_id );
+	$table_title_tag_id    = get_table_title_tag_id( $table_id );
 
 	$block_wrapper               = get_block_wrapper_attributes();
 	$block_wrapper_sticky_header = str_replace( '"', '', str_replace( 'class=', '', $block_wrapper ) ) . ' ';
@@ -126,7 +128,8 @@ if ( is_wp_error( $table ) ) {
 	<section <?php echo $block_wrapper; ?>>  <!-- Escaping WordPress defined variable breaks the page. -->
 		<div style="display:block";>
 			<?php if ( ! $hide_title ) { ?>
-			<p id="tableTitle"
+			<p id="<?php echo esc_attr( $table_title_tag_id ); ?>"
+				class="dtbk-table-title"
 				style="--gridAlignment: <?php echo esc_attr( $grid_alignment ); ?>;
 					white-space:pre-wrap">
 				<?php echo wp_kses_post( $table_name ); ?>
@@ -136,7 +139,8 @@ if ( is_wp_error( $table ) ) {
 			<div class="grid-scroller"
 				style="--headerRowSticky: <?php echo esc_attr( $header_row_sticky_style ); ?>">
 
-				<div class="<?php echo esc_attr( $header_row_sticky_class ); ?>"
+				<div id="<?php echo esc_attr( $table_grid_tag_id ); ?>"
+					class="<?php echo esc_attr( $header_row_sticky_class ); ?>"
 					style="--gridTemplateColumns: <?php echo esc_attr( $grid_column_style ); ?>;
 						--horizontalScroll: <?php echo esc_attr( $horizontal_scroll_style ); ?>;
 						--headerRowSticky: <?php echo esc_attr( $header_row_sticky_style ); ?>;
@@ -170,7 +174,7 @@ if ( is_wp_error( $table ) ) {
 							$header_row_cells = process_cells( $table_cells, $header_row['row_id'], $table_columns );
 							foreach ( $header_row_cells as $index => $header_cell ) {
 								?>
-									<div id=" <?php echo esc_attr( $header_cell['cell_id'] ); ?>"
+									<div id="<?php echo esc_attr( $header_cell['cell_tag_id'] ); ?>"
 										class="grid-control__header-cells"
 										style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
 										--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>;">
@@ -227,7 +231,7 @@ if ( is_wp_error( $table ) ) {
 									switch ( $body_cell['data_type']['type'] ) {
 										case 'general':
 											?>
-											<div id=" <?php echo esc_attr( $body_cell['cell_id'] ); ?>"
+											<div id="<?php echo esc_attr( $body_cell['cell_tag_id'] ); ?>"
 												class="grid-control__body-cells"
 												style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
 													--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>">

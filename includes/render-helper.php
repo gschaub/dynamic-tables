@@ -114,6 +114,79 @@ function dtbk_is_editor_preview_request() {
 
 
 /**
+ * Build a stable DOM id base for a rendered table instance.
+ *
+ * Stored logical cell ids remain spreadsheet coordinates such as C2. This helper
+ * scopes DOM ids by table id so multiple tables can coexist on the same page.
+ *
+ * @since 1.2.6
+ *
+ * @param  int|string $table_id Persisted table id
+ * @return string               DOM id base
+ */
+function get_table_tag_id_base( $table_id ) {
+	$base_tag_id = absint( $table_id );
+	return 'dtbk-table-' . strval( $base_tag_id );
+}
+
+/**
+ * Return the DOM id for the rendered table title.
+ *
+ * @since 1.2.6
+ *
+ * @param  int|string $table_id Persisted table id
+ * @return string               Title DOM id
+ */
+function get_table_title_tag_id( $table_id ) {
+	return get_table_tag_id_base( $table_id ) . '-title';
+}
+
+/**
+ * Return the DOM id for the rendered grid wrapper.
+ *
+ * @since 1.2.6
+ *
+ * @param  int|string $table_id Persisted table id
+ * @return string               Grid DOM id
+ */
+function get_table_grid_tag_id( $table_id ) {
+	return get_table_tag_id_base( $table_id ) . '-grid';
+}
+
+/**
+ * Return a unique DOM id for a rendered cell.
+ *
+ * Stored logical cell ids remain unchanged and may still be used as C2, D14, etc.
+ * This helper only scopes the DOM id used in rendered markup.
+ *
+ * @since 1.2.6
+ *
+ * @param  int|string $table_id Persisted table id
+ * @param  string     $cell_id  Logical cell id
+ * @return string               Cell DOM id
+ */
+function get_table_cell_tag_id( $table_id, $cell_id ) {
+	$normalized_cell_id = preg_replace( '/[^A-Za-z0-9_-]+/', '-', trim( (string) $cell_id ) );
+	$normalized_cell_id = trim( $normalized_cell_id, '-' );
+
+	if ( '' === $normalized_cell_id ) {
+		$normalized_cell_id = 'cell';
+	}
+
+	return get_table_tag_id_base( $table_id ) . '-cell-' . $normalized_cell_id;
+}
+
+
+
+
+
+
+
+
+
+
+
+/**
  * Retrieve attribute values for the table header.
  *
  * Ensure all current table attributes are available for rendering even if the
@@ -364,7 +437,7 @@ function process_cells( $table_cells, $row_id, $table_columns ) {
 		}
 
 		$grid_cell = array(
-			'cell_id'        => $cell_id,
+			'cell_tag_id'    => get_table_cell_tag_id( $cell['table_id'], $cell_id ),
 			'data_type'      => $column_data_type,
 			'column_classes' => $column_classes,
 			'attributes'     => $cell['attributes'],
@@ -559,7 +632,7 @@ function render_date_time_cell( $cell, $grid_show_inner_lines, $grid_inner_line_
 	if ( $editable ) {
 		// Front End Edit.
 		?>
-		<input id=" <?php echo esc_attr( $cell['cell_id'] ); ?>"
+		<input id="<?php echo esc_attr( $cell['cell_tag_id'] ); ?>"
 			type=<?php echo esc_attr( $cell['data_type']['settings']['format'] ); ?>
 			class="grid-control__body-cells"
 			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
@@ -570,8 +643,8 @@ function render_date_time_cell( $cell, $grid_show_inner_lines, $grid_inner_line_
 	} else {
 		// Display only.
 		?>
-		<time id=" <?php echo esc_attr( $cell['cell_id'] ); ?>"
-			class=" <?php echo esc_attr( $cell_render_classes ); ?>"
+		<time id="<?php echo esc_attr( $cell['cell_tag_id'] ); ?>"
+			class="<?php echo esc_attr( $cell_render_classes ); ?>"
 			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
 				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
 			value=<?php echo esc_attr( $cell['content'] ); ?>
@@ -640,7 +713,7 @@ function render_number_cell( $cell, $grid_show_inner_lines, $grid_inner_line_wid
 	if ( $editable ) {
 		// Front End Edit.
 		?>
-		<input id=" <?php echo esc_attr( $cell['cell_id'] ); ?>"
+		<input id="<?php echo esc_attr( $cell['cell_tag_id'] ); ?>"
 			type=<?php echo esc_attr( $cell['data_type']['settings']['format'] ); ?>
 			class="grid-control__body-cells"
 			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
@@ -651,7 +724,7 @@ function render_number_cell( $cell, $grid_show_inner_lines, $grid_inner_line_wid
 	} else {
 		// Display only.
 		?>
-		<data id=" <?php echo esc_attr( $cell['cell_id'] ); ?>"
+		<data id="<?php echo esc_attr( $cell['cell_tag_id'] ); ?>"
 			class=" <?php echo esc_attr( $cell_render_classes ); ?>"
 			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
 				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
