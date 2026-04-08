@@ -2036,6 +2036,7 @@ function RowMenuImpl(props = {}) {
     menuId,
     anchor,
     table,
+    isContentOnlyMode = false,
     rowId,
     rowLabel,
     rowAttributes,
@@ -2105,9 +2106,14 @@ function RowMenuImpl(props = {}) {
   const handlePopoverClose = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(() => {
     onRequestClose?.();
   }, [onRequestClose]);
+  const canShowRowHeight = !isContentOnlyMode;
+  const canShowRowInsertDelete = !rowAttributes?.isHeader;
+  const canShowRowMove = !isContentOnlyMode && !rowAttributes?.isHeader;
+  const hasAnyActions = canShowRowHeight || canShowRowInsertDelete;
   const hasTableId = tableId !== null && tableId !== undefined;
   const hasRowId = rowId !== null && rowId !== undefined;
-  const canRender = !!anchor && typeof updatedRow === 'function' && hasTableId && hasRowId;
+  // const canRender = !!anchor && typeof updatedRow === 'function' && hasTableId && hasRowId;
+  const canRender = !!anchor && typeof updatedRow === 'function' && hasTableId && hasRowId && hasAnyActions;
 
   // Focus first item on open (next frame so Popover has mounted)
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -2196,7 +2202,7 @@ function RowMenuImpl(props = {}) {
         "aria-label": `Row ${rowLabel} menu`,
         tabIndex: -1,
         onKeyDown: onKeyDown,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+        children: [canShowRowHeight && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
           className: "components-menu-group",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
             icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_2__["default"],
@@ -2204,19 +2210,21 @@ function RowMenuImpl(props = {}) {
             ref: firstItemRef,
             children: "Update Row Height..."
           })
-        }), !rowAttributes.isHeader && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+        }), canShowRowInsertDelete && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+              ref: !canShowRowHeight && !disableInsertRowUp ? firstItemRef : undefined,
               shortcut: 'Alt + Shift + ↑',
               disabled: disableInsertRowUp,
               onClick: e => onInsertRow(e, rowId, 'above'),
               children: "Insert Row Above"
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+              ref: !canShowRowHeight && disableInsertRowUp ? firstItemRef : undefined,
               shortcut: 'Alt + Shift + ↓',
               onClick: e => onInsertRow(e, rowId, 'below'),
               children: "Insert Row Below"
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
+          }), canShowRowMove && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
               shortcut: 'Alt + ↑',
               disabled: disableMoveRowUp,
@@ -4642,6 +4650,41 @@ function Edit(props) {
     postType
   } = (0,_hooks__WEBPACK_IMPORTED_MODULE_13__.useEditorIdentity)(props);
   const inInserterBlock = !(0,_hooks__WEBPACK_IMPORTED_MODULE_13__.useNotInInserterPreview)();
+  const blockEditingMode = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => select('core/block-editor')?.getBlockEditingMode?.(props.clientId) ?? 'default', [props.clientId]);
+  const isContentOnlyMode = blockEditingMode === 'contentOnly';
+
+  /**
+   * Identify actions that are available in contentOnly mode
+   *
+   * @since 1.2.5
+   *
+   * @type  {number} Object of all table id's that are currently unmounted
+   */
+  function isContentOnlyRowAction(updateType) {
+    return updateType === 'insert-above' || updateType === 'insert-below' || updateType === 'delete';
+  }
+
+  // Ensure structural changes are unavailable when block editor is in contentOnly mode
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (!isContentOnlyMode) return;
+    setRowHeightModal(prev => ({
+      ...prev,
+      isOpen: false
+    }));
+    setColumnMenu(prev => ({
+      ...prev,
+      isOpen: false,
+      anchorEl: null
+    }));
+    setColumnWidthModal(prev => ({
+      ...prev,
+      isOpen: false
+    }));
+    setColumnDataTypeModal(prev => ({
+      ...prev,
+      isOpen: false
+    }));
+  }, [isContentOnlyMode]);
 
   /**
    * Prepare for New Block
@@ -5506,6 +5549,8 @@ function Edit(props) {
     const isShiftOnly = !event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
     const isAltShiftOnly = event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
     const isPrimaryKeyOnly = !event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
+    const canUseRowInsertDeleteShortcuts = !isHeaderRow;
+    const canUseStructureShortcuts = !isContentOnlyMode;
 
     // Intercept navigation
     event.preventDefault();
@@ -5513,14 +5558,14 @@ function Edit(props) {
     switch (event.key) {
       case 'ArrowUp':
         // Insert row above the current row
-        if (isAltShiftOnly && !isHeaderRow) {
+        if (isAltShiftOnly && canUseRowInsertDeleteShortcuts) {
           console.log('Inserting');
           insertRow(table_id, row, 'above');
           break;
         }
 
         // Move row above the current row
-        if (isAltOnly) {
+        if (isAltOnly && canUseStructureShortcuts) {
           console.log('Moving');
           const firstBodyRowId = navHeaderRow ? Number(navHeaderRow) + 1 : 1;
           if (row <= firstBodyRowId) break;
@@ -5537,14 +5582,14 @@ function Edit(props) {
         break;
       case 'ArrowDown':
         // Insert row below the current row
-        if (isAltShiftOnly && !isHeaderRow) {
+        if (isAltShiftOnly && canUseRowInsertDeleteShortcuts) {
           console.log('Inserting');
           insertRow(table_id, row, 'below');
           break;
         }
 
         // Move row below the current row
-        if (isAltOnly) {
+        if (isAltOnly && canUseStructureShortcuts) {
           console.log('Moving');
           if (isHeaderRow || row === navMaxRow) break;
           reorderRows(table_id, row, 'down');
@@ -5560,14 +5605,14 @@ function Edit(props) {
         break;
       case 'ArrowLeft':
         // Insert column left of the current column
-        if (isAltShiftOnly) {
+        if (isAltShiftOnly && canUseStructureShortcuts) {
           console.log('Inserting');
           insertColumn(table_id, col, 'left');
           break;
         }
 
         // Move column left of the current column
-        if (isAltOnly) {
+        if (isAltOnly && canUseStructureShortcuts) {
           console.log('Moving');
           if (col === 1) break;
           reorderColumns(table_id, col, 'left');
@@ -5583,14 +5628,14 @@ function Edit(props) {
         break;
       case 'ArrowRight':
         // Insert column right of the current column
-        if (isAltShiftOnly) {
+        if (isAltShiftOnly && canUseStructureShortcuts) {
           console.log('Inserting');
           insertColumn(table_id, col, 'right');
           break;
         }
 
         // Move column right of the current column
-        if (isAltOnly) {
+        if (isAltOnly && canUseStructureShortcuts) {
           console.log('Moving');
           if (col === navMaxCol) break;
           reorderColumns(table_id, col, 'right');
@@ -5633,14 +5678,14 @@ function Edit(props) {
         }
 
         // Delete the current column
-        if (event.key === 'Delete' && isAltShiftOnly) {
+        if (event.key === 'Delete' && isAltShiftOnly && canUseStructureShortcuts) {
           console.log('Deleting Column');
           deleteColumn(table_id, col);
           break;
         }
 
         // Delete the current row
-        if (event.key === 'Delete' && isAltOnly && !isHeaderRow) {
+        if (event.key === 'Delete' && isAltOnly && canUseRowInsertDeleteShortcuts) {
           console.log('Deleting Row');
           deleteRow(table_id, row);
           break;
@@ -5819,6 +5864,9 @@ function Edit(props) {
    * @param {string} updatedColumnClasses    New column class values
    */
   function onUpdateColumn(e, updateType, tableId, columnId, columnName = '', updatedColumnAttributes, updatedColumnClasses) {
+    if (isContentOnlyMode) {
+      return;
+    }
     switch (updateType) {
       case 'attributes':
         {
@@ -5893,6 +5941,9 @@ function Edit(props) {
    * @param {Array}  updatedRowAttributes New row attribute values
    */
   function onUpdateRow(e, updateType, tableId, rowId, updatedRowAttributes) {
+    if (isContentOnlyMode && !isContentOnlyRowAction(updateType)) {
+      return;
+    }
     switch (updateType) {
       case 'attributes':
         {
@@ -5949,6 +6000,9 @@ function Edit(props) {
     e?.preventDefault?.();
     e?.stopPropagation?.();
     if (row_id === '0' && column_id !== '0') {
+      if (isContentOnlyMode) {
+        return;
+      }
       const clickedColumn = table.columns.find(c => c.column_id === column_id);
       const attrs = clickedColumn?.attributes || {};
       const columnLabel = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.numberToLetter)(Number(column_id));
@@ -5956,6 +6010,9 @@ function Edit(props) {
     }
     if (row_id !== '0' && column_id === '0') {
       const clickedRow = table.rows.find(r => r.row_id === row_id);
+      if (isContentOnlyMode && clickedRow?.attributes?.isHeader) {
+        return;
+      }
       const attrs = clickedRow?.attributes || {};
       openRowMenu(e, row_id, String(row_id), attrs);
     }
@@ -6258,6 +6315,7 @@ function Edit(props) {
       menuId: editorRowMenuTagId,
       anchor: rowMenu.anchorEl,
       table: table,
+      isContentOnlyMode: isContentOnlyMode,
       rowId: rowMenu.rowId,
       rowLabel: rowMenu.rowLabel,
       rowAttributes: rowMenu.rowAttributes,
@@ -6272,7 +6330,7 @@ function Edit(props) {
    * @since 1.2.0
    */
   const renderRowHeightModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.Fragment, {
-    children: rowHeightModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_components__WEBPACK_IMPORTED_MODULE_17__.RowHeightModal, {
+    children: !isContentOnlyMode && rowHeightModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_components__WEBPACK_IMPORTED_MODULE_17__.RowHeightModal, {
       tableId: table_id,
       rowId: rowHeightModal.rowId,
       rowLabel: rowHeightModal.rowLabel,
@@ -6288,7 +6346,7 @@ function Edit(props) {
    * @since 1.2.0
    */
   const renderColumnMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.Fragment, {
-    children: columnMenu.isOpen && columnMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_components__WEBPACK_IMPORTED_MODULE_17__.ColumnMenu, {
+    children: !isContentOnlyMode && columnMenu.isOpen && columnMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_components__WEBPACK_IMPORTED_MODULE_17__.ColumnMenu, {
       menuId: editorColumnMenuTagId,
       anchor: columnMenu.anchorEl,
       table: table,
@@ -6306,7 +6364,7 @@ function Edit(props) {
    * @since 1.2.0
    */
   const renderColumnDataTypeModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.Fragment, {
-    children: columnDataTypeModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_components__WEBPACK_IMPORTED_MODULE_17__.ColumnDataTypeModal, {
+    children: !isContentOnlyMode && columnDataTypeModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_components__WEBPACK_IMPORTED_MODULE_17__.ColumnDataTypeModal, {
       tableId: table_id,
       columnId: columnDataTypeModal.columnId,
       columnLabel: columnDataTypeModal.columnLabel,
@@ -6324,7 +6382,7 @@ function Edit(props) {
    * @since 1.2.0
    */
   const renderColumnWidthModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.Fragment, {
-    children: columnWidthModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_components__WEBPACK_IMPORTED_MODULE_17__.ColumnWidthModal, {
+    children: !isContentOnlyMode && columnWidthModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_components__WEBPACK_IMPORTED_MODULE_17__.ColumnWidthModal, {
       tableId: table_id,
       columnId: columnWidthModal.columnId,
       columnLabel: columnWidthModal.columnLabel,
@@ -6342,7 +6400,7 @@ function Edit(props) {
    *
    * @param {Object} e Change event
    */
-  const renderControls = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.Fragment, {
+  const renderControls = !isContentOnlyMode && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.BlockControls, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.BlockAlignmentToolbar, {
         value: block_alignment,
@@ -6590,6 +6648,7 @@ function Edit(props) {
                       className: 'grid-control__border-cells'
                     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(Cell, {
                       cellType: "border",
+                      isContentOnlyMode: isContentOnlyMode,
                       dataFormat: columnDataTypes[column_id],
                       cell_id: cell_id,
                       table: table,
@@ -6659,6 +6718,7 @@ function Edit(props) {
                         className: 'grid-control__border-cells'
                       }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(Cell, {
                         cellType: "border",
+                        isContentOnlyMode: isContentOnlyMode,
                         dataFormat: columnDataTypes[column_id],
                         cell_id: cell_id,
                         table: table,
@@ -6798,6 +6858,7 @@ function Edit(props) {
                           className: 'grid-control__border-cells'
                         }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)(Cell, {
                           cellType: "border",
+                          isContentOnlyMode: isContentOnlyMode,
                           dataFormat: columnDataTypes[column_id],
                           cell_id: cell_id,
                           table: table,
@@ -6987,6 +7048,7 @@ function Edit(props) {
 function Cell(props) {
   const {
     cellType,
+    isContentOnlyMode = false,
     dataFormat,
     table,
     row_id,
@@ -7263,7 +7325,11 @@ function Cell(props) {
     border: () => {
       const isCornerBorderCell = String(row_id) === '0' && String(column_id) === '0';
       const isBorderHandle = !isCornerBorderCell && (String(row_id) === '0' || String(column_id) === '0');
-      if (!isBorderHandle) {
+      const isRowHandle = String(column_id) === '0' && String(row_id) !== '0';
+      const currentRow = isRowHandle ? table?.rows?.find(r => String(r.row_id) === String(row_id)) : null;
+      const isHeaderRowHandle = currentRow?.attributes?.isHeader === true;
+      const canOpenBorderMenu = !isContentOnlyMode || isRowHandle && !isHeaderRowHandle;
+      if (!isBorderHandle || !canOpenBorderMenu) {
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_19__.jsx)("div", {
           "aria-hidden": "true",
           children: cellContent
@@ -9373,7 +9439,7 @@ function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else i
   \************************/
 (module) {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"dynamic-table-blocks/dynamic-table-blocks","version":"0.1.0","title":"Dynamic Tables","category":"design","icon":"editor-table","description":"Create custom table blocks with highly customizable and responsive formats","example":{},"textdomain":"dynamic-table-blocks","attributes":{"table_id":{"type":"integer","default":"0"},"block_table_ref":{"type":"string","default":""},"original_post_type":{"type":"string","default":""},"original_post_id":{"type":"integer","default":"0"},"block_alignment":{"type":"string","default":"undefined"}},"usesContext":["postId","postType"],"supports":{"html":false,"className":false,"color":{"button":true,"gradients":true,"heading":true,"link":true},"typography":{"fontSize":true,"__experimentalFontFamily":true,"__experimentalTextDecoration":true,"__experimentalFontStyle":true,"__experimentalFontWeight":true,"__experimentalLetterSpacing":true,"__experimentalWritingMode":true,"__experimentalDefaultControls":{"fontSize":true}},"interactivity":{"clientNavigation":true}},"editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"dynamic-table-blocks/dynamic-table-blocks","version":"0.1.0","title":"Dynamic Tables","category":"design","icon":"editor-table","description":"Create custom table blocks with highly customizable and responsive formats","example":{},"textdomain":"dynamic-table-blocks","attributes":{"table_id":{"type":"integer","default":"0"},"block_table_ref":{"type":"string","default":""},"original_post_type":{"type":"string","default":""},"original_post_id":{"type":"integer","default":"0"},"block_alignment":{"type":"string","default":"undefined"}},"usesContext":["postId","postType"],"supports":{"contentRole":true,"html":false,"className":false,"color":{"button":true,"gradients":true,"heading":true,"link":true},"typography":{"fontSize":true,"__experimentalFontFamily":true,"__experimentalTextDecoration":true,"__experimentalFontStyle":true,"__experimentalFontWeight":true,"__experimentalLetterSpacing":true,"__experimentalWritingMode":true,"__experimentalDefaultControls":{"fontSize":true}},"interactivity":{"clientNavigation":true}},"editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ }
 

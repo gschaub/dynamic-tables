@@ -17,8 +17,17 @@ import '../../editor.scss';
  * @return {Object} Updated row
  */
 function RowMenuImpl(props = {}) {
-	const { menuId, anchor, table, rowId, rowLabel, rowAttributes, updatedRow, onRequestClose } =
-		props;
+	const {
+		menuId,
+		anchor,
+		table,
+		isContentOnlyMode = false,
+		rowId,
+		rowLabel,
+		rowAttributes,
+		updatedRow,
+		onRequestClose,
+	} = props;
 
 	const tableId = table?.table_id;
 
@@ -97,9 +106,16 @@ function RowMenuImpl(props = {}) {
 		onRequestClose?.();
 	}, [onRequestClose]);
 
+	const canShowRowHeight = !isContentOnlyMode;
+	const canShowRowInsertDelete = !rowAttributes?.isHeader;
+	const canShowRowMove = !isContentOnlyMode && !rowAttributes?.isHeader;
+	const hasAnyActions = canShowRowHeight || canShowRowInsertDelete;
+
 	const hasTableId = tableId !== null && tableId !== undefined;
 	const hasRowId = rowId !== null && rowId !== undefined;
-	const canRender = !!anchor && typeof updatedRow === 'function' && hasTableId && hasRowId;
+	// const canRender = !!anchor && typeof updatedRow === 'function' && hasTableId && hasRowId;
+	const canRender =
+		!!anchor && typeof updatedRow === 'function' && hasTableId && hasRowId && hasAnyActions;
 
 	// Focus first item on open (next frame so Popover has mounted)
 	useEffect(() => {
@@ -209,16 +225,23 @@ function RowMenuImpl(props = {}) {
 					tabIndex={-1}
 					onKeyDown={onKeyDown}
 				>
-					<MenuGroup className="components-menu-group">
-						<MenuItem icon={settings} onClick={e => onUpdateRowHeight(e, rowId)} ref={firstItemRef}>
-							Update Row Height...
-						</MenuItem>
-					</MenuGroup>
+					{canShowRowHeight && (
+						<MenuGroup className="components-menu-group">
+							<MenuItem
+								icon={settings}
+								onClick={e => onUpdateRowHeight(e, rowId)}
+								ref={firstItemRef}
+							>
+								Update Row Height...
+							</MenuItem>
+						</MenuGroup>
+					)}
 
-					{!rowAttributes.isHeader && (
+					{canShowRowInsertDelete && (
 						<>
 							<MenuGroup>
 								<MenuItem
+									ref={!canShowRowHeight && !disableInsertRowUp ? firstItemRef : undefined}
 									shortcut={'Alt + Shift + ↑'}
 									disabled={disableInsertRowUp}
 									onClick={e => onInsertRow(e, rowId, 'above')}
@@ -227,6 +250,7 @@ function RowMenuImpl(props = {}) {
 								</MenuItem>
 
 								<MenuItem
+									ref={!canShowRowHeight && disableInsertRowUp ? firstItemRef : undefined}
 									shortcut={'Alt + Shift + ↓'}
 									onClick={e => onInsertRow(e, rowId, 'below')}
 								>
@@ -234,23 +258,25 @@ function RowMenuImpl(props = {}) {
 								</MenuItem>
 							</MenuGroup>
 
-							<MenuGroup>
-								<MenuItem
-									shortcut={'Alt + ↑'}
-									disabled={disableMoveRowUp}
-									onClick={e => onMoveRow(e, rowId, 'up')}
-								>
-									Move Row Up
-								</MenuItem>
+							{canShowRowMove && (
+								<MenuGroup>
+									<MenuItem
+										shortcut={'Alt + ↑'}
+										disabled={disableMoveRowUp}
+										onClick={e => onMoveRow(e, rowId, 'up')}
+									>
+										Move Row Up
+									</MenuItem>
 
-								<MenuItem
-									shortcut={'Alt + ↓'}
-									disabled={disableMoveRowDown}
-									onClick={e => onMoveRow(e, rowId, 'down')}
-								>
-									Move Row Down
-								</MenuItem>
-							</MenuGroup>
+									<MenuItem
+										shortcut={'Alt + ↓'}
+										disabled={disableMoveRowDown}
+										onClick={e => onMoveRow(e, rowId, 'down')}
+									>
+										Move Row Down
+									</MenuItem>
+								</MenuGroup>
+							)}
 
 							<MenuGroup>
 								<MenuItem shortcut={'Alt + Delete'} onClick={e => onDeleteRow(e, rowId)}>

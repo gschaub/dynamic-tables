@@ -36,6 +36,7 @@
 		"postType"
 	],
 	"supports": {
+		"contentRole": true,
 		"html": false,
 		"className": false,
 		"color": {

@@ -662,6 +662,34 @@ export default function Edit(props) {
 	const blockTableStatus = setBlockTableStatus();
 	const { postId, postType } = useEditorIdentity(props);
 	const inInserterBlock = !useNotInInserterPreview();
+	const blockEditingMode = useSelect(
+		select => select('core/block-editor')?.getBlockEditingMode?.(props.clientId) ?? 'default',
+		[props.clientId]
+	);
+	const isContentOnlyMode = blockEditingMode === 'contentOnly';
+
+	/**
+	 * Identify actions that are available in contentOnly mode
+	 *
+	 * @since 1.2.5
+	 *
+	 * @type  {number} Object of all table id's that are currently unmounted
+	 */
+	function isContentOnlyRowAction(updateType) {
+		return (
+			updateType === 'insert-above' || updateType === 'insert-below' || updateType === 'delete'
+		);
+	}
+
+	// Ensure structural changes are unavailable when block editor is in contentOnly mode
+	useEffect(() => {
+		if (!isContentOnlyMode) return;
+
+		setRowHeightModal(prev => ({ ...prev, isOpen: false }));
+		setColumnMenu(prev => ({ ...prev, isOpen: false, anchorEl: null }));
+		setColumnWidthModal(prev => ({ ...prev, isOpen: false }));
+		setColumnDataTypeModal(prev => ({ ...prev, isOpen: false }));
+	}, [isContentOnlyMode]);
 
 	/**
 	 * Prepare for New Block
@@ -1636,6 +1664,8 @@ export default function Edit(props) {
 		const isShiftOnly = !event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
 		const isAltShiftOnly = event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
 		const isPrimaryKeyOnly = !event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
+		const canUseRowInsertDeleteShortcuts = !isHeaderRow;
+		const canUseStructureShortcuts = !isContentOnlyMode;
 
 		// Intercept navigation
 		event.preventDefault();
@@ -1644,14 +1674,14 @@ export default function Edit(props) {
 		switch (event.key) {
 			case 'ArrowUp':
 				// Insert row above the current row
-				if (isAltShiftOnly && !isHeaderRow) {
+				if (isAltShiftOnly && canUseRowInsertDeleteShortcuts) {
 					console.log('Inserting');
 					insertRow(table_id, row, 'above');
 					break;
 				}
 
 				// Move row above the current row
-				if (isAltOnly) {
+				if (isAltOnly && canUseStructureShortcuts) {
 					console.log('Moving');
 					const firstBodyRowId = navHeaderRow ? Number(navHeaderRow) + 1 : 1;
 					if (row <= firstBodyRowId) break;
@@ -1668,14 +1698,14 @@ export default function Edit(props) {
 				break;
 			case 'ArrowDown':
 				// Insert row below the current row
-				if (isAltShiftOnly && !isHeaderRow) {
+				if (isAltShiftOnly && canUseRowInsertDeleteShortcuts) {
 					console.log('Inserting');
 					insertRow(table_id, row, 'below');
 					break;
 				}
 
 				// Move row below the current row
-				if (isAltOnly) {
+				if (isAltOnly && canUseStructureShortcuts) {
 					console.log('Moving');
 					if (isHeaderRow || row === navMaxRow) break;
 					reorderRows(table_id, row, 'down');
@@ -1691,14 +1721,14 @@ export default function Edit(props) {
 				break;
 			case 'ArrowLeft':
 				// Insert column left of the current column
-				if (isAltShiftOnly) {
+				if (isAltShiftOnly && canUseStructureShortcuts) {
 					console.log('Inserting');
 					insertColumn(table_id, col, 'left');
 					break;
 				}
 
 				// Move column left of the current column
-				if (isAltOnly) {
+				if (isAltOnly && canUseStructureShortcuts) {
 					console.log('Moving');
 					if (col === 1) break;
 					reorderColumns(table_id, col, 'left');
@@ -1714,14 +1744,14 @@ export default function Edit(props) {
 				break;
 			case 'ArrowRight':
 				// Insert column right of the current column
-				if (isAltShiftOnly) {
+				if (isAltShiftOnly && canUseStructureShortcuts) {
 					console.log('Inserting');
 					insertColumn(table_id, col, 'right');
 					break;
 				}
 
 				// Move column right of the current column
-				if (isAltOnly) {
+				if (isAltOnly && canUseStructureShortcuts) {
 					console.log('Moving');
 					if (col === navMaxCol) break;
 					reorderColumns(table_id, col, 'right');
@@ -1766,14 +1796,14 @@ export default function Edit(props) {
 				}
 
 				// Delete the current column
-				if (event.key === 'Delete' && isAltShiftOnly) {
+				if (event.key === 'Delete' && isAltShiftOnly && canUseStructureShortcuts) {
 					console.log('Deleting Column');
 					deleteColumn(table_id, col);
 					break;
 				}
 
 				// Delete the current row
-				if (event.key === 'Delete' && isAltOnly && !isHeaderRow) {
+				if (event.key === 'Delete' && isAltOnly && canUseRowInsertDeleteShortcuts) {
 					console.log('Deleting Row');
 					deleteRow(table_id, row);
 					break;
@@ -1974,6 +2004,10 @@ export default function Edit(props) {
 		updatedColumnAttributes,
 		updatedColumnClasses
 	) {
+		if (isContentOnlyMode) {
+			return;
+		}
+
 		switch (updateType) {
 			case 'attributes': {
 				if (!updatedColumnAttributes) {
@@ -2041,6 +2075,10 @@ export default function Edit(props) {
 	 * @param {Array}  updatedRowAttributes New row attribute values
 	 */
 	function onUpdateRow(e, updateType, tableId, rowId, updatedRowAttributes) {
+		if (isContentOnlyMode && !isContentOnlyRowAction(updateType)) {
+			return;
+		}
+
 		switch (updateType) {
 			case 'attributes': {
 				if (!updatedRowAttributes) {
@@ -2092,6 +2130,10 @@ export default function Edit(props) {
 		e?.stopPropagation?.();
 
 		if (row_id === '0' && column_id !== '0') {
+			if (isContentOnlyMode) {
+				return;
+			}
+
 			const clickedColumn = table.columns.find(c => c.column_id === column_id);
 			const attrs = clickedColumn?.attributes || {};
 			const columnLabel = numberToLetter(Number(column_id));
@@ -2100,6 +2142,9 @@ export default function Edit(props) {
 
 		if (row_id !== '0' && column_id === '0') {
 			const clickedRow = table.rows.find(r => r.row_id === row_id);
+			if (isContentOnlyMode && clickedRow?.attributes?.isHeader) {
+				return;
+			}
 			const attrs = clickedRow?.attributes || {};
 			openRowMenu(e, row_id, String(row_id), attrs);
 		}
@@ -2517,6 +2562,7 @@ export default function Edit(props) {
 					menuId={editorRowMenuTagId}
 					anchor={rowMenu.anchorEl}
 					table={table}
+					isContentOnlyMode={isContentOnlyMode}
 					rowId={rowMenu.rowId}
 					rowLabel={rowMenu.rowLabel}
 					rowAttributes={rowMenu.rowAttributes}
@@ -2534,7 +2580,7 @@ export default function Edit(props) {
 	 */
 	const renderRowHeightModal = (
 		<>
-			{rowHeightModal.isOpen && (
+			{!isContentOnlyMode && rowHeightModal.isOpen && (
 				<RowHeightModal
 					tableId={table_id}
 					rowId={rowHeightModal.rowId}
@@ -2554,7 +2600,7 @@ export default function Edit(props) {
 	 */
 	const renderColumnMenu = (
 		<>
-			{columnMenu.isOpen && columnMenu.anchorEl && (
+			{!isContentOnlyMode && columnMenu.isOpen && columnMenu.anchorEl && (
 				<ColumnMenu
 					menuId={editorColumnMenuTagId}
 					anchor={columnMenu.anchorEl}
@@ -2576,7 +2622,7 @@ export default function Edit(props) {
 	 */
 	const renderColumnDataTypeModal = (
 		<>
-			{columnDataTypeModal.isOpen && (
+			{!isContentOnlyMode && columnDataTypeModal.isOpen && (
 				<ColumnDataTypeModal
 					tableId={table_id}
 					columnId={columnDataTypeModal.columnId}
@@ -2598,7 +2644,7 @@ export default function Edit(props) {
 	 */
 	const renderColumnWidthModal = (
 		<>
-			{columnWidthModal.isOpen && (
+			{!isContentOnlyMode && columnWidthModal.isOpen && (
 				<ColumnWidthModal
 					tableId={table_id}
 					columnId={columnWidthModal.columnId}
@@ -2619,7 +2665,7 @@ export default function Edit(props) {
 	 *
 	 * @param {Object} e Change event
 	 */
-	const renderControls = (
+	const renderControls = !isContentOnlyMode && (
 		<>
 			<BlockControls>
 				<BlockAlignmentToolbar
@@ -2902,6 +2948,7 @@ export default function Edit(props) {
 
 																<Cell
 																	cellType="border"
+																	isContentOnlyMode={isContentOnlyMode}
 																	dataFormat={columnDataTypes[column_id]}
 																	cell_id={cell_id}
 																	table={table}
@@ -2996,6 +3043,7 @@ export default function Edit(props) {
 																		{isBorder && (
 																			<Cell
 																				cellType="border"
+																				isContentOnlyMode={isContentOnlyMode}
 																				dataFormat={columnDataTypes[column_id]}
 																				cell_id={cell_id}
 																				table={table}
@@ -3202,6 +3250,7 @@ export default function Edit(props) {
 																			{isBorder && (
 																				<Cell
 																					cellType="border"
+																					isContentOnlyMode={isContentOnlyMode}
 																					dataFormat={columnDataTypes[column_id]}
 																					cell_id={cell_id}
 																					table={table}
@@ -3431,6 +3480,7 @@ export default function Edit(props) {
 function Cell(props) {
 	const {
 		cellType,
+		isContentOnlyMode = false,
 		dataFormat,
 		table,
 		row_id,
@@ -3766,8 +3816,14 @@ function Cell(props) {
 			const isCornerBorderCell = String(row_id) === '0' && String(column_id) === '0';
 			const isBorderHandle =
 				!isCornerBorderCell && (String(row_id) === '0' || String(column_id) === '0');
+			const isRowHandle = String(column_id) === '0' && String(row_id) !== '0';
+			const currentRow = isRowHandle
+				? table?.rows?.find(r => String(r.row_id) === String(row_id))
+				: null;
+			const isHeaderRowHandle = currentRow?.attributes?.isHeader === true;
+			const canOpenBorderMenu = !isContentOnlyMode || (isRowHandle && !isHeaderRowHandle);
 
-			if (!isBorderHandle) {
+			if (!isBorderHandle || !canOpenBorderMenu) {
 				return <div aria-hidden="true">{cellContent}</div>;
 			}
 

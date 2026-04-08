@@ -108,6 +108,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 * Added keyboard shortcuts to insert and delete rows and columns
 * Enhance HTML semantics and accessibility support
 * Fix bug that prevented selection of existing theme colors on color pickers
+* Add support for contentOnly mode in non-sync patterns
 * Bump support for WordPress 7.0
 
 = 1.2.4 =
