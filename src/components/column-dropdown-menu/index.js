@@ -58,8 +58,6 @@ function ColumnMenuImpl(props = {}) {
 				e.preventDefault();
 				e.stopPropagation();
 				close();
-
-				onRequestClose?.();
 				return;
 			}
 

@@ -89,7 +89,6 @@ function ColumnMenuImpl(props = {}) {
       e.preventDefault();
       e.stopPropagation();
       close();
-      onRequestClose?.();
       return;
     }
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
@@ -2082,7 +2081,6 @@ function RowMenuImpl(props = {}) {
       e.preventDefault();
       e.stopPropagation();
       close();
-      onRequestClose?.();
       return;
     }
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
@@ -4122,6 +4120,19 @@ function Edit(props) {
 
   // Location of border cell last clicked
   const lastInvokerElRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
+  const lastInvokerWasKeyboardRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(false);
+  const suppressNextInvokerRestoreRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(false);
+  function restoreFocusAfterOverlayClose() {
+    window.requestAnimationFrame(() => {
+      if (lastInvokerWasKeyboardRef.current && lastInvokerElRef.current?.isConnected) {
+        lastInvokerElRef.current.focus?.();
+        return;
+      }
+      if (focusedCell.col > 0 && focusedCell.row > 0) {
+        focusCell(focusedCell.col, focusedCell.row);
+      }
+    });
+  }
 
   /**
    * Support column border drop down menu and settings
@@ -4141,6 +4152,8 @@ function Edit(props) {
     // Capture a real element, not the synthetic event
     const el = e?.currentTarget || null;
     lastInvokerElRef.current = el;
+    lastInvokerWasKeyboardRef.current = Number(e?.detail) === 0;
+    suppressNextInvokerRestoreRef.current = false;
     setRowMenu({
       isOpen: true,
       anchorEl: el,
@@ -4150,14 +4163,16 @@ function Edit(props) {
     });
   };
   const closeRowMenu = () => {
+    const shouldRestoreFocus = !suppressNextInvokerRestoreRef.current;
+    suppressNextInvokerRestoreRef.current = false;
     setRowMenu(prev => ({
       ...prev,
       isOpen: false,
       anchorEl: null
     }));
-
-    // restore focus to the invoker (menu trigger)
-    window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+    if (shouldRestoreFocus) {
+      restoreFocusAfterOverlayClose();
+    }
   };
   const [rowHeightModal, setRowHeightModal] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({
     isOpen: false,
@@ -4181,13 +4196,9 @@ function Edit(props) {
   const openRowHeightModal = (e, rowId, rowLabel, rowAttributes) => {
     e?.preventDefault?.();
     e?.stopPropagation?.();
-
-    // Capture a real element, not the synthetic event
-    const el = e?.currentTarget || null;
-    lastInvokerElRef.current = el;
+    suppressNextInvokerRestoreRef.current = true;
     setRowHeightModal({
       isOpen: true,
-      // anchorEl: el,
       rowId,
       rowLabel,
       rowAttributes
@@ -4204,9 +4215,7 @@ function Edit(props) {
       ...prev,
       isOpen: false
     }));
-
-    // restore focus to the invoker (menu trigger)
-    window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+    restoreFocusAfterOverlayClose();
   };
 
   /**
@@ -4227,6 +4236,8 @@ function Edit(props) {
     // Capture a real element, not the synthetic event
     const el = e?.currentTarget || null;
     lastInvokerElRef.current = el;
+    lastInvokerWasKeyboardRef.current = Number(e?.detail) === 0;
+    suppressNextInvokerRestoreRef.current = false;
     setColumnMenu({
       isOpen: true,
       anchorEl: el,
@@ -4241,9 +4252,11 @@ function Edit(props) {
       isOpen: false,
       anchorEl: null
     }));
-
-    // restore focus to the invoker (menu trigger)
-    window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+    const shouldRestoreFocus = !suppressNextInvokerRestoreRef.current;
+    suppressNextInvokerRestoreRef.current = false;
+    if (shouldRestoreFocus) {
+      restoreFocusAfterOverlayClose();
+    }
   };
   const [columnWidthModal, setColumnWidthModal] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({
     isOpen: false,
@@ -4275,10 +4288,7 @@ function Edit(props) {
   const openColumnDataTypeModal = (e, columnId, columnLabel, columnAttributes, columnClasses) => {
     e?.preventDefault?.();
     e?.stopPropagation?.();
-
-    // Capture a real element, not the synthetic event
-    const el = e?.currentTarget || null;
-    lastInvokerElRef.current = el;
+    suppressNextInvokerRestoreRef.current = true;
     setColumnDataTypeModal({
       isOpen: true,
       columnId,
@@ -4298,9 +4308,7 @@ function Edit(props) {
       ...prev,
       isOpen: false
     }));
-
-    // restore focus to the invoker (menu trigger)
-    window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+    restoreFocusAfterOverlayClose();
   };
 
   /**
@@ -4318,10 +4326,7 @@ function Edit(props) {
   const openColumnWidthModal = (e, columnId, columnLabel, columnAttributes) => {
     e?.preventDefault?.();
     e?.stopPropagation?.();
-
-    // Capture a real element, not the synthetic event
-    const el = e?.currentTarget || null;
-    lastInvokerElRef.current = el;
+    suppressNextInvokerRestoreRef.current = true;
     setColumnWidthModal({
       isOpen: true,
       columnId,
@@ -4340,9 +4345,7 @@ function Edit(props) {
       ...prev,
       isOpen: false
     }));
-
-    // restore focus to the invoker (menu trigger)
-    window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+    restoreFocusAfterOverlayClose();
   };
 
   // Support table creation and cloning
@@ -4369,9 +4372,11 @@ function Edit(props) {
   const editorHeaderAlignmentTagId = `${editorTableTagIdBase}-header-alignment`;
   const editorBodyAlignmentTagId = `${editorTableTagIdBase}-body-alignment`;
   const editorGridTagId = `${editorTableTagIdBase}-grid`;
+  const editorGridHelpTagId = `${editorTableTagIdBase}-grid-help`;
   const editorTitleTagId = `${editorTableTagIdBase}-title`;
   const editorRowMenuTagId = `${editorTableTagIdBase}-row-menu`;
   const editorColumnMenuTagId = `${editorTableTagIdBase}-column-menu`;
+  const getEditorColumnHeaderTagId = columnId => `${editorTableTagIdBase}-column-${String(columnId).trim()}-header`;
   const themeColors = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_6__.useSettings)('color.palette');
   const borderBoxColors = themeColors[0].map(({
     color,
@@ -6146,6 +6151,11 @@ function Edit(props) {
   const bodyBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(bodyBorder, 'left', 'style', bodyBorderStyleType);
   const bodyBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_15__.getBorderStyle)(bodyBorder, 'left', 'width', bodyBorderStyleType);
 
+  // Accessibility support
+  const editorGridTitleText = htmlToText(table?.table_name || '').trim();
+  const editorGridAccessibleName = editorGridTitleText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Dynamic table');
+  const editorGridLabelledBy = !hideTitle && editorGridTitleText ? editorTitleTagId : undefined;
+
   /**
    * Render clickable row menu
    *
@@ -6435,8 +6445,18 @@ function Edit(props) {
           allowedFormats: ['core/bold', 'core/italic'],
           onChange: e => setTableAttributes(table_id, 'table_name', '', 'PROP', e),
           value: table.table_name
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("p", {
+          id: editorGridHelpTagId,
+          className: "screen-reader-text",
+          children: "Use arrow keys to move between cells. Press Enter or F2 to edit the selected cell. Use the row and column option buttons to manage table structure."
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
           id: editorGridTagId,
+          role: "grid",
+          "aria-rowcount": Number(navMaxRow),
+          "aria-colcount": Number(navMaxCol),
+          "aria-labelledby": editorGridLabelledBy,
+          "aria-label": editorGridLabelledBy ? undefined : editorGridAccessibleName,
+          "aria-describedby": editorGridHelpTagId,
           ref: gridRef,
           onKeyDownCapture: onCellKeyDown // <-- capture phase
           ,
@@ -6461,6 +6481,7 @@ function Edit(props) {
               },
               children: [showBorders && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                 className: 'grid-control__border',
+                role: "presentation",
                 children: table.cells.filter(cell => cell.attributes.border && cell.row_id === '0').map(({
                   table_id,
                   row_id,
@@ -6502,6 +6523,8 @@ function Edit(props) {
                 const renderedRow = row_id;
                 return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                   className: "grid-control__header",
+                  role: "row",
+                  "aria-rowindex": Number(row_id),
                   style: {
                     '--gridTemplateHeaderRows': gridHeaderRowStyle,
                     '--startGridHeaderRowNbr': startGridHeaderRowNbrStyle,
@@ -6570,6 +6593,7 @@ function Edit(props) {
                         cellType: 'header',
                         dataFormat: columnDataTypes[column_id],
                         cell_id: cell_id,
+                        cellTagId: getEditorColumnHeaderTagId(column_id),
                         table_id: table_id,
                         row_id: row_id,
                         column_id: column_id,
@@ -6612,6 +6636,7 @@ function Edit(props) {
                 }, `header-row:${row_id}`);
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                 className: 'grid-control__body',
+                role: "rowgroup",
                 style: {
                   '--gridTemplateBodyRows': gridBodyRowStyle,
                   '--startGridBodyRowNbr': startGridBodyRowNbrStyle,
@@ -6648,6 +6673,8 @@ function Edit(props) {
                   }
                   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
                     className: 'grid-control__body-row ' + calculatedClasses,
+                    role: "row",
+                    "aria-rowindex": Number(row_id),
                     style: {
                       '--bandedRowTextColor': gridBandedRowTextColor,
                       '--bandedRowBackgroundColor': gridBandedRowBackgroundColor
@@ -6884,6 +6911,7 @@ function Cell(props) {
     onChange,
     onMouseDown,
     borderHandleProps = {},
+    cellTagId,
     isEditing,
     onRequestEdit,
     onRequestStopEdit,
@@ -7156,6 +7184,9 @@ function Cell(props) {
         "aria-haspopup": "menu",
         "aria-expanded": borderHandleProps.expanded,
         "aria-controls": borderHandleProps.expanded ? borderHandleProps.controls : undefined,
+        onMouseDown: e => {
+          e.preventDefault();
+        },
         onClick: e => {
           passMouseBorderClick(column_id, row_id, table, e);
         },
@@ -7269,8 +7300,13 @@ function Cell(props) {
     'grid-control__body-columns--number-red': redNegativeNumber
   });
   const isBorderCell = cellType === 'border';
+  const cellRole = cellType === 'header' ? 'columnheader' : cellType === 'body' ? 'gridcell' : 'presentation';
+  const ariaColIndex = !isBorderCell ? Number(column_id) : undefined;
   const computedTabIndex = !isBorderCell && isFocused ? 0 : -1;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)("div", {
+    id: cellTagId,
+    role: cellRole,
+    "aria-colindex": ariaColIndex,
     "data-cell-id": cell_id,
     "data-col": Number(column_id),
     "data-row": Number(row_id),

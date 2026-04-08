@@ -153,6 +153,21 @@ export default function Edit(props) {
 
 	// Location of border cell last clicked
 	const lastInvokerElRef = useRef(null);
+	const lastInvokerWasKeyboardRef = useRef(false);
+	const suppressNextInvokerRestoreRef = useRef(false);
+
+	function restoreFocusAfterOverlayClose() {
+		window.requestAnimationFrame(() => {
+			if (lastInvokerWasKeyboardRef.current && lastInvokerElRef.current?.isConnected) {
+				lastInvokerElRef.current.focus?.();
+				return;
+			}
+
+			if (focusedCell.col > 0 && focusedCell.row > 0) {
+				focusCell(focusedCell.col, focusedCell.row);
+			}
+		});
+	}
 
 	/**
 	 * Support column border drop down menu and settings
@@ -173,6 +188,8 @@ export default function Edit(props) {
 		// Capture a real element, not the synthetic event
 		const el = e?.currentTarget || null;
 		lastInvokerElRef.current = el;
+		lastInvokerWasKeyboardRef.current = Number(e?.detail) === 0;
+		suppressNextInvokerRestoreRef.current = false;
 
 		setRowMenu({
 			isOpen: true,
@@ -184,10 +201,14 @@ export default function Edit(props) {
 	};
 
 	const closeRowMenu = () => {
+		const shouldRestoreFocus = !suppressNextInvokerRestoreRef.current;
+		suppressNextInvokerRestoreRef.current = false;
+
 		setRowMenu(prev => ({ ...prev, isOpen: false, anchorEl: null }));
 
-		// restore focus to the invoker (menu trigger)
-		window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+		if (shouldRestoreFocus) {
+			restoreFocusAfterOverlayClose();
+		}
 	};
 
 	const [rowHeightModal, setRowHeightModal] = useState({
@@ -213,13 +234,9 @@ export default function Edit(props) {
 		e?.preventDefault?.();
 		e?.stopPropagation?.();
 
-		// Capture a real element, not the synthetic event
-		const el = e?.currentTarget || null;
-		lastInvokerElRef.current = el;
-
+		suppressNextInvokerRestoreRef.current = true;
 		setRowHeightModal({
 			isOpen: true,
-			// anchorEl: el,
 			rowId,
 			rowLabel,
 			rowAttributes,
@@ -233,9 +250,7 @@ export default function Edit(props) {
 	 */
 	const closeRowHeightModal = () => {
 		setRowHeightModal(prev => ({ ...prev, isOpen: false }));
-
-		// restore focus to the invoker (menu trigger)
-		window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+		restoreFocusAfterOverlayClose();
 	};
 
 	/**
@@ -257,6 +272,8 @@ export default function Edit(props) {
 		// Capture a real element, not the synthetic event
 		const el = e?.currentTarget || null;
 		lastInvokerElRef.current = el;
+		lastInvokerWasKeyboardRef.current = Number(e?.detail) === 0;
+		suppressNextInvokerRestoreRef.current = false;
 
 		setColumnMenu({
 			isOpen: true,
@@ -269,9 +286,12 @@ export default function Edit(props) {
 
 	const closeColumnMenu = () => {
 		setColumnMenu(prev => ({ ...prev, isOpen: false, anchorEl: null }));
+		const shouldRestoreFocus = !suppressNextInvokerRestoreRef.current;
+		suppressNextInvokerRestoreRef.current = false;
 
-		// restore focus to the invoker (menu trigger)
-		window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+		if (shouldRestoreFocus) {
+			restoreFocusAfterOverlayClose();
+		}
 	};
 
 	const [columnWidthModal, setColumnWidthModal] = useState({
@@ -306,9 +326,7 @@ export default function Edit(props) {
 		e?.preventDefault?.();
 		e?.stopPropagation?.();
 
-		// Capture a real element, not the synthetic event
-		const el = e?.currentTarget || null;
-		lastInvokerElRef.current = el;
+		suppressNextInvokerRestoreRef.current = true;
 
 		setColumnDataTypeModal({
 			isOpen: true,
@@ -326,9 +344,7 @@ export default function Edit(props) {
 	 */
 	const closeColumnDataTypeModal = () => {
 		setColumnDataTypeModal(prev => ({ ...prev, isOpen: false }));
-
-		// restore focus to the invoker (menu trigger)
-		window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+		restoreFocusAfterOverlayClose();
 	};
 
 	/**
@@ -347,9 +363,7 @@ export default function Edit(props) {
 		e?.preventDefault?.();
 		e?.stopPropagation?.();
 
-		// Capture a real element, not the synthetic event
-		const el = e?.currentTarget || null;
-		lastInvokerElRef.current = el;
+		suppressNextInvokerRestoreRef.current = true;
 
 		setColumnWidthModal({
 			isOpen: true,
@@ -366,9 +380,7 @@ export default function Edit(props) {
 	 */
 	const closeColumnWidthModal = () => {
 		setColumnWidthModal(prev => ({ ...prev, isOpen: false }));
-
-		// restore focus to the invoker (menu trigger)
-		window.requestAnimationFrame(() => lastInvokerElRef.current?.focus?.());
+		restoreFocusAfterOverlayClose();
 	};
 
 	// Support table creation and cloning
@@ -389,9 +401,12 @@ export default function Edit(props) {
 	const editorHeaderAlignmentTagId = `${editorTableTagIdBase}-header-alignment`;
 	const editorBodyAlignmentTagId = `${editorTableTagIdBase}-body-alignment`;
 	const editorGridTagId = `${editorTableTagIdBase}-grid`;
+	const editorGridHelpTagId = `${editorTableTagIdBase}-grid-help`;
 	const editorTitleTagId = `${editorTableTagIdBase}-title`;
 	const editorRowMenuTagId = `${editorTableTagIdBase}-row-menu`;
 	const editorColumnMenuTagId = `${editorTableTagIdBase}-column-menu`;
+	const getEditorColumnHeaderTagId = columnId =>
+		`${editorTableTagIdBase}-column-${String(columnId).trim()}-header`;
 
 	const themeColors = useSettings('color.palette');
 	const borderBoxColors = themeColors[0].map(({ color, name }) => {
@@ -2350,6 +2365,11 @@ export default function Edit(props) {
 	const bodyBorderLeftStyle = getBorderStyle(bodyBorder, 'left', 'style', bodyBorderStyleType);
 	const bodyBorderLeftWidth = getBorderStyle(bodyBorder, 'left', 'width', bodyBorderStyleType);
 
+	// Accessibility support
+	const editorGridTitleText = htmlToText(table?.table_name || '').trim();
+	const editorGridAccessibleName = editorGridTitleText || __('Dynamic table');
+	const editorGridLabelledBy = !hideTitle && editorGridTitleText ? editorTitleTagId : undefined;
+
 	/**
 	 * Render clickable row menu
 	 *
@@ -2685,8 +2705,19 @@ export default function Edit(props) {
 							></RichText>
 						)}
 
+						<p id={editorGridHelpTagId} className="screen-reader-text">
+							Use arrow keys to move between cells. Press Enter or F2 to edit the selected cell. Use
+							the row and column option buttons to manage table structure.
+						</p>
+
 						<div
 							id={editorGridTagId}
+							role="grid"
+							aria-rowcount={Number(navMaxRow)}
+							aria-colcount={Number(navMaxCol)}
+							aria-labelledby={editorGridLabelledBy}
+							aria-label={editorGridLabelledBy ? undefined : editorGridAccessibleName}
+							aria-describedby={editorGridHelpTagId}
 							ref={gridRef}
 							onKeyDownCapture={onCellKeyDown} // <-- capture phase
 							onFocusCapture={onGridFocusCapture}
@@ -2713,7 +2744,7 @@ export default function Edit(props) {
 								>
 									{/* Render Table Border Row if present */}
 									{showBorders && (
-										<div className={'grid-control__border'}>
+										<div className={'grid-control__border'} role="presentation">
 											{table.cells
 												.filter(cell => cell.attributes.border && cell.row_id === '0')
 												.map(
@@ -2772,6 +2803,8 @@ export default function Edit(props) {
 												<div
 													key={`header-row:${row_id}`}
 													className="grid-control__header"
+													role="row"
+													aria-rowindex={Number(row_id)}
 													style={{
 														'--gridTemplateHeaderRows': gridHeaderRowStyle,
 														'--startGridHeaderRowNbr': startGridHeaderRowNbrStyle,
@@ -2865,6 +2898,7 @@ export default function Edit(props) {
 																				cellType={'header'}
 																				dataFormat={columnDataTypes[column_id]}
 																				cell_id={cell_id}
+																				cellTagId={getEditorColumnHeaderTagId(column_id)}
 																				table_id={table_id}
 																				row_id={row_id}
 																				column_id={column_id}
@@ -2932,6 +2966,7 @@ export default function Edit(props) {
 									{/* Render Table Body */}
 									<div
 										className={'grid-control__body'}
+										role="rowgroup"
 										style={{
 											'--gridTemplateBodyRows': gridBodyRowStyle,
 											'--startGridBodyRowNbr': startGridBodyRowNbrStyle,
@@ -2982,6 +3017,8 @@ export default function Edit(props) {
 													<div
 														key={`body-row:${row_id}`}
 														className={'grid-control__body-row ' + calculatedClasses}
+														role="row"
+														aria-rowindex={Number(row_id)}
 														style={{
 															'--bandedRowTextColor': gridBandedRowTextColor,
 															'--bandedRowBackgroundColor': gridBandedRowBackgroundColor,
@@ -3276,6 +3313,7 @@ function Cell(props) {
 		onChange,
 		onMouseDown,
 		borderHandleProps = {},
+		cellTagId,
 		isEditing,
 		onRequestEdit,
 		onRequestStopEdit,
@@ -3607,6 +3645,9 @@ function Cell(props) {
 					aria-haspopup="menu"
 					aria-expanded={borderHandleProps.expanded}
 					aria-controls={borderHandleProps.expanded ? borderHandleProps.controls : undefined}
+					onMouseDown={e => {
+						e.preventDefault();
+					}}
 					onClick={e => {
 						passMouseBorderClick(column_id, row_id, table, e);
 					}}
@@ -3728,10 +3769,16 @@ function Cell(props) {
 	});
 
 	const isBorderCell = cellType === 'border';
+	const cellRole =
+		cellType === 'header' ? 'columnheader' : cellType === 'body' ? 'gridcell' : 'presentation';
+	const ariaColIndex = !isBorderCell ? Number(column_id) : undefined;
 	const computedTabIndex = !isBorderCell && isFocused ? 0 : -1;
 
 	return (
 		<div
+			id={cellTagId}
+			role={cellRole}
+			aria-colindex={ariaColIndex}
 			data-cell-id={cell_id}
 			data-col={Number(column_id)}
 			data-row={Number(row_id)}
