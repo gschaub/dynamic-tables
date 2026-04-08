@@ -644,6 +644,7 @@ function render_date_time_cell( $cell, $grid_show_inner_lines, $grid_inner_line_
 		// Display only.
 		?>
 		<time id="<?php echo esc_attr( $cell['cell_tag_id'] ); ?>"
+			role="cell"
 			class="<?php echo esc_attr( $cell_render_classes ); ?>"
 			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
 				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
@@ -725,6 +726,7 @@ function render_number_cell( $cell, $grid_show_inner_lines, $grid_inner_line_wid
 		// Display only.
 		?>
 		<data id="<?php echo esc_attr( $cell['cell_tag_id'] ); ?>"
+			role="cell"
 			class=" <?php echo esc_attr( $cell_render_classes ); ?>"
 			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
 				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"

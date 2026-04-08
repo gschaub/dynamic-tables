@@ -72,6 +72,14 @@ if ( is_wp_error( $table ) ) {
 	$grid_inner_line_width = $show_grid_lines ? strval( $grid_line_width ) . 'px' : '0px';
 	$table_grid_tag_id     = get_table_grid_tag_id( $table_id );
 	$table_title_tag_id    = get_table_title_tag_id( $table_id );
+	$table_title_text      = trim( wp_strip_all_tags( $table_name, true ) );
+	$table_accessible_name = $table_title_text !== '' ? $table_title_text : __( 'Dynamic table', 'dynamic-table-blocks' );
+	$table_labelledby      = ( ! $hide_title && '' !== $table_title_text ) ? $table_title_tag_id : '';
+	$header_rows           = process_rows( $table_rows, 'is_header' );
+	$body_rows             = process_rows( $table_rows, 'is_body' );
+	$rendered_row_count    = count( $body_rows['rows'] ) + ( $enable_header_row ? count( $header_rows['rows'] ) : 0 );
+
+
 
 	$block_wrapper               = get_block_wrapper_attributes();
 	$block_wrapper_sticky_header = str_replace( '"', '', str_replace( 'class=', '', $block_wrapper ) ) . ' ';
@@ -140,6 +148,14 @@ if ( is_wp_error( $table ) ) {
 				style="--headerRowSticky: <?php echo esc_attr( $header_row_sticky_style ); ?>">
 
 				<div id="<?php echo esc_attr( $table_grid_tag_id ); ?>"
+					role="table"
+					aria-rowcount="<?php echo esc_attr( $rendered_row_count ); ?>"
+					aria-colcount="<?php echo esc_attr( $num_columns ); ?>"
+					<?php if ( $table_labelledby ) { ?>
+						aria-labelledby="<?php echo esc_attr( $table_labelledby ); ?>"
+					<?php } else { ?>
+						aria-label="<?php echo esc_attr( $table_accessible_name ); ?>"
+					<?php } ?>
 					class="<?php echo esc_attr( $header_row_sticky_class ); ?>"
 					style="--gridTemplateColumns: <?php echo esc_attr( $grid_column_style ); ?>;
 						--horizontalScroll: <?php echo esc_attr( $horizontal_scroll_style ); ?>;
@@ -149,11 +165,11 @@ if ( is_wp_error( $table ) ) {
 						--gridAlignment: <?php echo esc_attr( $grid_alignment ); ?>">
 
 					<?php
-					$header_rows = process_rows( $table_rows, 'is_header' );
 					if ( $enable_header_row ) {
 						foreach ( $header_rows['rows'] as $index => $header_row ) {
 							?>
 							<div class="grid-control__header"
+								role="row"
 								style="--gridTemplateHeaderRows: <?php echo esc_attr( $header_row['gridRowStyle'] ); ?>;
 									--startGridHeaderRowNbr: 1;
 									--endGridHeaderRowNbr: 2;
@@ -175,6 +191,7 @@ if ( is_wp_error( $table ) ) {
 							foreach ( $header_row_cells as $index => $header_cell ) {
 								?>
 									<div id="<?php echo esc_attr( $header_cell['cell_tag_id'] ); ?>"
+										role="columnheader"
 										class="grid-control__header-cells"
 										style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
 										--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>;">
@@ -187,7 +204,6 @@ if ( is_wp_error( $table ) ) {
 							<?php
 						}
 					}
-					$body_rows            = process_rows( $table_rows, 'is_body' );
 					$body_start_grid_line = $enable_header_row ? 1 + count( $header_rows['rows'] ) : 1;
 					$body_end_grid_line   = $enable_header_row ?
 						$body_start_grid_line + $num_rows - 1 :
@@ -195,6 +211,7 @@ if ( is_wp_error( $table ) ) {
 					?>
 
 					<div class="grid-control__body"
+						role="rowgroup"
 						style="--gridTemplateBodyRows: <?php echo esc_attr( $body_rows['grid_row_style'] ); ?>;
 							--startGridBodyRowNbr: <?php echo esc_attr( $body_start_grid_line ); ?>;
 							--endGridBodyRowNbr: <?php echo esc_attr( $body_end_grid_line ); ?>;
@@ -217,6 +234,7 @@ if ( is_wp_error( $table ) ) {
 							$calculated_classes = get_calculated_classes( $body_row['row_id'], $banded_rows, $enable_header_row );
 							?>
 							<div class="grid-control__body-row <?php echo esc_attr( $calculated_classes ); ?>"
+								role="row"
 								style="--bandedRowTextColor: <?php echo esc_attr( $grid_banded_text_color ); ?>;
 									--bandedRowBackgroundColor: <?php echo esc_attr( $grid_banded_background_color ); ?>">
 
@@ -232,6 +250,7 @@ if ( is_wp_error( $table ) ) {
 										case 'general':
 											?>
 											<div id="<?php echo esc_attr( $body_cell['cell_tag_id'] ); ?>"
+												role="cell"
 												class="grid-control__body-cells"
 												style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
 													--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>">
