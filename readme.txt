@@ -106,6 +106,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 == Changelog ==
 = 1.2.5 =
 * Added keyboard shortcuts to insert and delete rows and columns
+* Enhance HTML semantics and accessibility support
 
 = 1.2.4 =
 * Added support for numeric input that may be formatted as whole numbers, integers, percent, or currency

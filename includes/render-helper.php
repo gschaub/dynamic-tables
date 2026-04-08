@@ -626,6 +626,11 @@ function render_date_time_cell( $cell, $grid_show_inner_lines, $grid_inner_line_
 	$cell_classes        = 'grid-control__body-cells ' . $cell['classes'];
 	$cell_render_classes = get_cell_classes( $cell_classes, $cell['column_classes'], $conditional_classes );
 
+	$cell_datetime = '';
+	if ( isset( $cell['attributes']['value']['indexText'] ) && '' !== $cell['attributes']['value']['indexText'] ) {
+		$cell_datetime = $cell['attributes']['value']['indexText'];
+	}
+
 	// Prep for future front end editing.
 	$editable = false;
 
@@ -637,7 +642,10 @@ function render_date_time_cell( $cell, $grid_show_inner_lines, $grid_inner_line_
 			class="grid-control__body-cells"
 			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
 				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
-			value="<?php echo esc_attr( $cell['content'] ); ?>">
+			<?php if ( $cell_datetime !== '' ) { ?>
+				datetime="<?php echo esc_attr( $cell_datetime ); ?>"
+			<?php } ?>
+		>
 		</input>
 		<?php
 	} else {
@@ -648,7 +656,9 @@ function render_date_time_cell( $cell, $grid_show_inner_lines, $grid_inner_line_
 			class="<?php echo esc_attr( $cell_render_classes ); ?>"
 			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
 				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
-			value=<?php echo esc_attr( $cell['content'] ); ?>
+			<?php if ( $cell_datetime !== '' ) { ?>
+				datetime="<?php echo esc_attr( $cell_datetime ); ?>"
+			<?php } ?>
 		>
 			<?php echo esc_html( format_display_date( $cell ) ); ?>
 		</time>

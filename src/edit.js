@@ -11,7 +11,8 @@ import {
 } from '@wordpress/element';
 import { store as editorStore } from '@wordpress/editor';
 import { store as noticeStore } from '@wordpress/notices';
-import { __ } from '@wordpress/i18n';
+import { speak } from '@wordpress/a11y';
+import { __, sprintf } from '@wordpress/i18n';
 import {
 	Panel,
 	PanelBody,
@@ -147,6 +148,8 @@ export default function Edit(props) {
 	const [numRows, setNumRows] = useState(1);
 	const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = useState(false);
 	const [editingCellId, setEditingCellId] = useState(null);
+	const editingCellIdRef = useRef(null);
+	const hasAnnouncedGridHelpRef = useRef(false);
 
 	// ToDo: Move to Utils
 	const htmlToText = (html = '') => getTextContent(create({ html })).replace(/\s+/g, ' ').trim();
@@ -156,6 +159,71 @@ export default function Edit(props) {
 	const lastInvokerWasKeyboardRef = useRef(false);
 	const suppressNextInvokerRestoreRef = useRef(false);
 
+	/**
+	 * Speak accessibility message audibly.
+	 *
+	 * @since 1.2.5
+	 *
+	 * @param {string} message    Text to speak
+	 * @param {string} politeness How and when to interject the message
+	 */
+	function announceEditorMessage(message, politeness = 'polite') {
+		speak(message, politeness);
+	}
+
+	/**
+	 * Identifies the current cell being edited
+	 *
+	 * @since 1.2.5
+	 *
+	 * @param {string} cellId Cell being edited
+	 */
+	function setCurrentEditingCellId(cellId) {
+		editingCellIdRef.current = cellId;
+		setEditingCellId(cellId);
+	}
+
+	/**
+	 * Identify and announce that a cell is being edited when entering edit mode
+	 *
+	 * @since 1.2.5
+	 *
+	 * @param {string} id Cell being edited
+	 */
+	function startEditingCell(id) {
+		const nextId = String(id);
+
+		if (String(editingCellIdRef.current ?? '') !== nextId) {
+			announceEditorMessage(sprintf(__('Editing cell %s.', 'dynamic-table-blocks'), nextId));
+		}
+
+		setCurrentEditingCellId(nextId);
+	}
+
+	/**
+	 * Identify and optionally announce that we are leaving edit mode
+	 *
+	 * @since 1.2.5
+	 *
+	 * @param {boolean} announce Whether exiting edit mode should be announced
+	 */
+	function stopEditingCell(announce = true) {
+		const currentId = editingCellIdRef.current;
+
+		if (announce && currentId) {
+			announceEditorMessage(
+				sprintf(__('Stopped editing cell %s.', 'dynamic-table-blocks'), currentId)
+			);
+		}
+
+		setCurrentEditingCellId(null);
+	}
+
+	/**
+	 * Restores cell navigation focus after leaving edit mode
+	 *
+	 * @since 1.2.5
+	 */
 	function restoreFocusAfterOverlayClose() {
 		window.requestAnimationFrame(() => {
 			if (lastInvokerWasKeyboardRef.current && lastInvokerElRef.current?.isConnected) {
@@ -964,6 +1032,7 @@ export default function Edit(props) {
 	function insertColumn(tableId, columnId, direction) {
 		const newColumnId = direction === 'right' ? Number(columnId) + 1 : Number(columnId);
 		const newColumn = getDefaultColumn(tableId, newColumnId);
+		const newColumnLabel = numberToLetter(newColumnId);
 
 		const tableCells = table.rows
 			.map(({ row_id }) => Number(row_id))
@@ -977,6 +1046,14 @@ export default function Edit(props) {
 
 		addColumn(tableId, columnId, direction, newColumn, tableCells);
 		setTableStale(false);
+
+		// Accessibility announcement
+		announceEditorMessage(
+			direction === 'right'
+				? sprintf(__('Inserted column %s to the right.', 'dynamic-table-blocks'), newColumnLabel)
+				: sprintf(__('Inserted column %s to the left.', 'dynamic-table-blocks'), newColumnLabel)
+		);
+
 		return updateTableEntity(tableId);
 	}
 
@@ -1007,6 +1084,14 @@ export default function Edit(props) {
 
 		addRow(tableId, rowId, direction, newRow, tableCells);
 		setTableStale(false);
+
+		// Accessibility announcement
+		announceEditorMessage(
+			direction === 'below'
+				? sprintf(__('Inserted row %d below.', 'dynamic-table-blocks'), newRowId)
+				: sprintf(__('Inserted row %d above.', 'dynamic-table-blocks'), newRowId)
+		);
+
 		return updateTableEntity(tableId);
 	}
 
@@ -1020,6 +1105,12 @@ export default function Edit(props) {
 	function deleteColumn(tableId, columnId) {
 		removeColumn(tableId, columnId);
 		setTableStale(false);
+
+		// Accessibility announcement
+		announceEditorMessage(
+			sprintf(__('Deleted column %s.', 'dynamic-table-blocks'), numberToLetter(Number(columnId)))
+		);
+
 		return updateTableEntity(tableId);
 	}
 
@@ -1035,6 +1126,9 @@ export default function Edit(props) {
 	function deleteRow(tableId, rowId) {
 		removeRow(tableId, rowId);
 		setTableStale(false);
+
+		// Accessibility announcement
+		announceEditorMessage(sprintf(__('Deleted row %d.', 'dynamic-table-blocks'), Number(rowId)));
 		return updateTableEntity(tableId);
 	}
 
@@ -1051,6 +1145,20 @@ export default function Edit(props) {
 	function reorderColumns(tableId, columnId, direction) {
 		moveColumn(tableId, columnId, direction);
 		setTableStale(false);
+
+		// Accessibility announcement
+		announceEditorMessage(
+			direction === 'right'
+				? sprintf(
+						__('Moved column %s right.', 'dynamic-table-blocks'),
+						numberToLetter(Number(columnId))
+					)
+				: sprintf(
+						__('Moved column %s left.', 'dynamic-table-blocks'),
+						numberToLetter(Number(columnId))
+					)
+		);
+
 		return updateTableEntity(tableId);
 	}
 
@@ -1067,6 +1175,14 @@ export default function Edit(props) {
 	function reorderRows(tableId, rowId, direction) {
 		moveRow(tableId, rowId, direction);
 		setTableStale(false);
+
+		// Accessibility announcement
+		announceEditorMessage(
+			direction === 'down'
+				? sprintf(__('Moved row %d down.', 'dynamic-table-blocks'), Number(rowId))
+				: sprintf(__('Moved row %d up.', 'dynamic-table-blocks'), Number(rowId))
+		);
+
 		return updateTableEntity(tableId);
 	}
 
@@ -1306,6 +1422,11 @@ export default function Edit(props) {
 	 * @return {void}
 	 */
 	function onGridFocusCapture(event) {
+		if (!hasAnnouncedGridHelpRef.current) {
+			hasAnnouncedGridHelpRef.current = true;
+			announceEditorMessage(editorGridHelpText);
+		}
+
 		const el = event.target.closest?.('[data-cell-id]');
 		if (!el) return;
 
@@ -1322,7 +1443,7 @@ export default function Edit(props) {
 		// If focus moved to another cell wrapper, stop editing.
 		const nextCellId = el.getAttribute('data-cell-id');
 		if (editingCellId && String(editingCellId) !== String(nextCellId)) {
-			setEditingCellId(null);
+			stopEditingCell(false);
 		}
 	}
 
@@ -1420,7 +1541,7 @@ export default function Edit(props) {
 					return;
 				}
 
-				setEditingCellId(null);
+				stopEditingCell();
 				window.requestAnimationFrame(() => {
 					const wrapper = gridRef.current?.querySelector(`[data-cell-id][tabindex="0"]`);
 					wrapper?.focus?.();
@@ -1504,7 +1625,7 @@ export default function Edit(props) {
 			event.preventDefault();
 			event.stopPropagation();
 			const id = activeCellEl.getAttribute('data-cell-id');
-			setEditingCellId(id);
+			startEditingCell(id);
 			window.requestAnimationFrame(() => {
 				activeCellEl?.querySelector?.('[contenteditable="true"], input, textarea')?.focus?.();
 			});
@@ -1725,7 +1846,7 @@ export default function Edit(props) {
 		// printable key can be handled by the input itself.
 		if (columnDataType === 'date-time' || columnDataType === 'number') {
 			flushSync(() => {
-				setEditingCellId(id);
+				startEditingCell(id);
 			});
 
 			const focusInputEditor = () => {
@@ -1770,7 +1891,7 @@ export default function Edit(props) {
 		event.preventDefault();
 		event.stopPropagation();
 
-		setEditingCellId(id);
+		startEditingCell(id);
 
 		window.requestAnimationFrame(() => {
 			window.requestAnimationFrame(() => {
@@ -1999,6 +2120,16 @@ export default function Edit(props) {
 			hideTitle: isChecked,
 		};
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+
+		// Accessibility announcement
+		announceEditorMessage(
+			isChecked
+				? __(
+						'Table title hidden. The table remains labeled for assistive technology.',
+						'dynamic-table-blocks'
+					)
+				: __('Table title shown.', 'dynamic-table-blocks')
+		);
 	}
 
 	/**
@@ -2369,6 +2500,10 @@ export default function Edit(props) {
 	const editorGridTitleText = htmlToText(table?.table_name || '').trim();
 	const editorGridAccessibleName = editorGridTitleText || __('Dynamic table');
 	const editorGridLabelledBy = !hideTitle && editorGridTitleText ? editorTitleTagId : undefined;
+	const editorGridHelpText = __(
+		'Use arrow keys to move between cells. Press Enter or F2 to edit the selected cell. Use the row and column option buttons to manage table structure. If your screen reader is using browse or scan mode, switch to focus or forms mode to interact with the grid.',
+		'dynamic-table-blocks'
+	);
 
 	/**
 	 * Render clickable row menu
@@ -2706,8 +2841,7 @@ export default function Edit(props) {
 						)}
 
 						<p id={editorGridHelpTagId} className="screen-reader-text">
-							Use arrow keys to move between cells. Press Enter or F2 to edit the selected cell. Use
-							the row and column option buttons to manage table structure.
+							{editorGridHelpText}
 						</p>
 
 						<div
@@ -2924,7 +3058,7 @@ export default function Edit(props) {
 																					focusCell(col, row);
 																				}}
 																				onRequestEdit={id => {
-																					setEditingCellId(id);
+																					startEditingCell(id);
 																					window.requestAnimationFrame(() => {
 																						const wrapper = gridRef.current?.querySelector(
 																							`[data-cell-id="${CSS.escape(id)}"]`
@@ -2937,7 +3071,7 @@ export default function Edit(props) {
 																					});
 																				}}
 																				onRequestStopEdit={() => {
-																					setEditingCellId(null);
+																					stopEditingCell();
 																					window.requestAnimationFrame(() => {
 																						const activeCellId =
 																							gridRef.current?.ownerDocument?.activeElement
@@ -3138,7 +3272,7 @@ export default function Edit(props) {
 																						focusCell(col, row);
 																					}}
 																					onRequestEdit={id => {
-																						setEditingCellId(id);
+																						startEditingCell(id);
 																						window.requestAnimationFrame(() => {
 																							const wrapper = gridRef.current?.querySelector(
 																								`[data-cell-id="${CSS.escape(id)}"]`
@@ -3151,7 +3285,7 @@ export default function Edit(props) {
 																						});
 																					}}
 																					onRequestStopEdit={() => {
-																						setEditingCellId(null);
+																						stopEditingCell();
 																						window.requestAnimationFrame(() => {
 																							const activeCellId =
 																								gridRef.current?.ownerDocument?.activeElement
