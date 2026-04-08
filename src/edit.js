@@ -476,8 +476,8 @@ export default function Edit(props) {
 	const getEditorColumnHeaderTagId = columnId =>
 		`${editorTableTagIdBase}-column-${String(columnId).trim()}-header`;
 
-	const themeColors = useSettings('color.palette');
-	const borderBoxColors = themeColors[0].map(({ color, name }) => {
+	const [themeColors = []] = useSettings('color.palette');
+	const borderBoxColors = themeColors.map(({ color, name }) => {
 		return { color, name };
 	});
 

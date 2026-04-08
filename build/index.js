@@ -4442,8 +4442,8 @@ function Edit(props) {
   const editorRowMenuTagId = `${editorTableTagIdBase}-row-menu`;
   const editorColumnMenuTagId = `${editorTableTagIdBase}-column-menu`;
   const getEditorColumnHeaderTagId = columnId => `${editorTableTagIdBase}-column-${String(columnId).trim()}-header`;
-  const themeColors = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.useSettings)('color.palette');
-  const borderBoxColors = themeColors[0].map(({
+  const [themeColors = []] = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.useSettings)('color.palette');
+  const borderBoxColors = themeColors.map(({
     color,
     name
   }) => {
