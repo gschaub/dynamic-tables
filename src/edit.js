@@ -959,9 +959,10 @@ export default function Edit(props) {
 	useEffect(() => {
 		// Only initial focus when table is loaded and nothing focused yet
 		if (!gridRef.current) return;
+		const doc = gridRef.current.ownerDocument || document;
 
 		// If editor already focused something inside, don't steal focus
-		if (gridRef.current.contains(document.activeElement)) return;
+		if (gridRef.current.contains(doc.activeElement)) return;
 
 		focusCell(1, 1);
 		// eslint-disable-next-line react-hooks/exhaustive-deps

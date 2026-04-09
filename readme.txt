@@ -1,7 +1,7 @@
 === Dynamic Tables ===
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, responsive tables, table block, gutenberg table
-Tested up to:      7.0
+Tested up to:      6.9
 Stable tag:        1.2.5
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -108,8 +108,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 * Added keyboard shortcuts to insert and delete rows and columns
 * Enhance HTML semantics and accessibility support
 * Fix bug that prevented selection of existing theme colors on color pickers
-* Add support for contentOnly mode in non-sync patterns
-* Bump support for WordPress 7.0
+* Add support for WordPress contentOnly editing mode
 
 = 1.2.4 =
 * Added support for numeric input that may be formatted as whole numbers, integers, percent, or currency
