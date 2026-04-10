@@ -1,12 +1,17 @@
 <?php
 namespace DynamicTableBlocks;
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // Globals.
 global $dtbk_instances;
 
 // Initialize plaeholders.
-$dtbk_stores    = [];
-$dtbk_instances = [];
+$dtbk_stores    = array();
+$dtbk_instances = array();
 
 /**
  * dtbk_new_instance
@@ -18,11 +23,11 @@ $dtbk_instances = [];
  * @param   string $class The class name.
  * @return  object The instance.
  */
-function dtbk_new_instance($class = '', $namespace = '') {
+function dtbk_new_instance( $class = '', $namespace = '' ) {
 	if ( ! $namespace ) {
 		$namespace = 'DynamicTableBlocks';
 	}
-	$class = $namespace . "\\" . $class;
+	$class = $namespace . '\\' . $class;
 
 	global $dtbk_instances;
 	return $dtbk_instances[ $class ] = new $class();

@@ -10,6 +10,11 @@
  */
 namespace DynamicTableBlocks;
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use NumberFormatter;
 
 /**
