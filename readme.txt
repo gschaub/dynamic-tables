@@ -2,7 +2,7 @@
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, responsive tables, table block, gutenberg table
 Tested up to:      6.9
-Stable tag:        1.2.5
+Stable tag:        1.3.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,6 +104,10 @@ No. This plugin is free to use. However, we are planning for a premium version o
 7. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+= 1.3.0 =
+* Added support for collaborative editing features targeted for the next major WordPress release
+* Smoother handling when tables are added, edited, saved, or removed
+
 = 1.2.5 =
 * Added keyboard shortcuts to insert and delete rows and columns
 * Enhance HTML semantics and accessibility support

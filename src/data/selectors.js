@@ -46,23 +46,34 @@ export function getTables(state) {
  *
  * @param {Object} state           Current state of tables
  * @param {string} block_table_ref Cross refernece from block to identify table
- * @return {number} Table id of requested table
+ * @return {(number|false)}        Table id of requested table
  */
 export function getTableIdByBlock(state, block_table_ref) {
-	const newTable = Object.keys(state.tables).reduce((acc, key) => {
-		if (
+	// const newTable = Object.keys(state.tables).reduce((acc, key) => {
+	// 	if (
+	// 		state.tables[key]?.block_table_ref === block_table_ref &&
+	// 		state.tables[key].table_status !== 'pending-entity'
+	// 	) {
+	// 		acc[key] = { ...state.tables[key] };
+	// 	}
+	// 	return acc;
+	// }, {});
+
+	// if (newTable.length === 0) {
+	// 	return false;
+	// }
+	// return Object.keys(newTable);
+	const matchingTableId = Object.keys(state.tables).find(
+		key =>
 			state.tables[key]?.block_table_ref === block_table_ref &&
 			state.tables[key].table_status !== 'pending-entity'
-		) {
-			acc[key] = { ...state.tables[key] };
-		}
-		return acc;
-	}, {});
+	);
 
-	if (newTable.length === 0) {
+	if (!matchingTableId) {
 		return false;
 	}
-	return Object.keys(newTable);
+
+	return Number(matchingTableId);
 }
 
 /**

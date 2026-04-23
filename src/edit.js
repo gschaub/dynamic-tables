@@ -114,7 +114,7 @@ export default function Edit(props) {
 	const blockProps = useBlockProps({
 		className: 'dynamic-table-edit-block',
 	});
-	/* Esternal Store Action useDispatch declarations */
+	/* External Store Action useDispatch declarations */
 	const { lockPostSaving, unlockPostSaving, lockPostAutosaving, unlockPostAutosaving } =
 		useDispatch(editorStore);
 	const SAVE_LOCK_KEY = 'dtbk-save-lock';
@@ -143,15 +143,35 @@ export default function Edit(props) {
 	/* Local State declarations */
 	const [isTableStale, setTableStale] = useState(true);
 	const [showBorders, setShowBorders] = useState(false);
-	const [tableName, setTableName] = useState('');
-	const [numColumns, setNumColumns] = useState(1);
-	const [numRows, setNumRows] = useState(1);
-	const [awaitingTableEntityCreation, setAwaitingTableEntityCreation] = useState(false);
+	const [createDraftTable, setCreateDraftTable] = useState({
+		tableName: '',
+		numColumns: 1,
+		numRows: 1,
+	});
+	const [tableOperation, setTableOperation] = useState({
+		kind: 'idle', // idle | creating | cloning | attaching | ready | error
+		blockTableRef: '',
+		sourceTableId: 0,
+		error: null,
+	});
+	const isAwaitingTableAttachment =
+		tableOperation.kind === 'creating' ||
+		tableOperation.kind === 'cloning' ||
+		tableOperation.kind === 'attaching';
+
 	const [editingCellId, setEditingCellId] = useState(null);
 	const editingCellIdRef = useRef(null);
 	const hasAnnouncedGridHelpRef = useRef(false);
 
-	// ToDo: Move to Utils
+	const unmountSnapshotRef = useRef({
+		tableLoaded: false,
+		isNewBlock: true,
+		inInserterBlock: false,
+		originalPostType: '',
+		tableId: 0,
+		tableStatus: '',
+	});
+
 	const htmlToText = (html = '') => getTextContent(create({ html })).replace(/\s+/g, ' ').trim();
 
 	// Location of border cell last clicked
@@ -169,6 +189,22 @@ export default function Edit(props) {
 	 */
 	function announceEditorMessage(message, politeness = 'polite') {
 		speak(message, politeness);
+	}
+
+	/**
+	 * Display Error when trying to save blocks.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param {string} message  Error Text
+	 * @param {string} noticeId Identifier of error message
+	 */
+	function showTablePersistenceNotice(message, noticeId) {
+		createNotice('error', message, {
+			id: noticeId,
+			isDismissible: true,
+			politeness: 'assertive',
+		});
 	}
 
 	/**
@@ -238,7 +274,7 @@ export default function Edit(props) {
 	}
 
 	/**
-	 * Support column border drop down menu and settings
+	 * Support row border drop down menu and settings
 	 * dialog boxes
 	 */
 	const [rowMenu, setRowMenu] = useState({
@@ -249,6 +285,16 @@ export default function Edit(props) {
 		rowAttributes: null,
 	});
 
+	/**
+	 * Open row dropdown menu and settings dialog boxes.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param {Object} e             row menu click event
+	 * @param {number} rowId         Row number to update
+	 * @param {string} rowLabel      Display label at top of dialog
+	 * @param {Object} rowAttributes Row attributes that control row height, among other things
+	 */
 	const openRowMenu = (e, rowId, rowLabel, rowAttributes) => {
 		e?.preventDefault?.();
 		e?.stopPropagation?.();
@@ -268,6 +314,11 @@ export default function Edit(props) {
 		});
 	};
 
+	/**
+	 * Close row dropdown menu and settings dialog boxes.
+	 *
+	 * @since 1.2.0
+	 */
 	const closeRowMenu = () => {
 		const shouldRestoreFocus = !suppressNextInvokerRestoreRef.current;
 		suppressNextInvokerRestoreRef.current = false;
@@ -279,6 +330,9 @@ export default function Edit(props) {
 		}
 	};
 
+	/**
+	 * Support row height menu and settings
+	 */
 	const [rowHeightModal, setRowHeightModal] = useState({
 		isOpen: false,
 		rowId: null,
@@ -333,6 +387,16 @@ export default function Edit(props) {
 		columnAttributes: null,
 	});
 
+	/**
+	 * Open column dropdown menu and settings dialog boxes.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param {Object} e                column menu click event
+	 * @param {number} columnId         Column number to update
+	 * @param {string} columnLabel      Display label at top of dialog
+	 * @param {Object} columnAttributes Column attributes that control column width, among other things
+	 */
 	const openColumnMenu = (e, columnId, columnLabel, columnAttributes) => {
 		e?.preventDefault?.();
 		e?.stopPropagation?.();
@@ -352,6 +416,11 @@ export default function Edit(props) {
 		});
 	};
 
+	/**
+	 * Close column dropdown menu and settings dialog boxes.
+	 *
+	 * @since 1.2.0
+	 */
 	const closeColumnMenu = () => {
 		setColumnMenu(prev => ({ ...prev, isOpen: false, anchorEl: null }));
 		const shouldRestoreFocus = !suppressNextInvokerRestoreRef.current;
@@ -362,6 +431,9 @@ export default function Edit(props) {
 		}
 	};
 
+	/**
+	 * Support column width menu and settings
+	 */
 	const [columnWidthModal, setColumnWidthModal] = useState({
 		isOpen: false,
 		columnId: null,
@@ -369,6 +441,9 @@ export default function Edit(props) {
 		columnAttributes: null,
 	});
 
+	/**
+	 * Support column content menu and settings
+	 */
 	const [columnDataTypeModal, setColumnDataTypeModal] = useState({
 		isOpen: false,
 		columnId: null,
@@ -380,14 +455,14 @@ export default function Edit(props) {
 	/**
 	 * Open column data type configuration dialog page.
 	 *
-	 * Description: Responds to clicked column menu item to update the column height configuration.
+	 * Description: Responds to clicked column menu item.
 	 *
 	 * @since 1.2.0
 	 *
 	 * @param {Object} e                Column menu click event
 	 * @param {number} columnId         Column number to update
 	 * @param {string} columnLabel      Display label at top of dialog
-	 * @param {Object} columnAttributes Column attributes that control column height, among other things
+	 * @param {Object} columnAttributes Column attributes
 	 * @param {Object} columnClasses    Column classes to apply column specific styling
 	 */
 	const openColumnDataTypeModal = (e, columnId, columnLabel, columnAttributes, columnClasses) => {
@@ -418,14 +493,14 @@ export default function Edit(props) {
 	/**
 	 * Open column width configuration dialog page.
 	 *
-	 * Description: Responds to clicked column menu item to update the column height configuration.
+	 * Description: Responds to clicked column menu item to update the column width configuration.
 	 *
 	 * @since 1.2.0
 	 *
 	 * @param {Object} e                Column menu click event
 	 * @param {number} columnId         Column number to update
 	 * @param {string} columnLabel      Display label at top of dialog
-	 * @param {Object} columnAttributes Column attributes that control column height, among other things
+	 * @param {Object} columnAttributes Column attributes that control column width, among other things
 	 */
 	const openColumnWidthModal = (e, columnId, columnLabel, columnAttributes) => {
 		e?.preventDefault?.();
@@ -485,33 +560,63 @@ export default function Edit(props) {
 	 * Identify current table id by its block table reference
 	 *
 	 * @since 1.1.0
-	 *
-	 * @type  {number} Object of all table id's that are currently unmounted
+	 * @since 1.3.0 Refactored
 	 */
-	const { currentTableId } = useSelect(select => {
-		const { getTableIdByBlock } = select(tableStore);
-		const currentTableId = getTableIdByBlock(block_table_ref);
-
-		return {
-			currentTableId: currentTableId,
-		};
-	});
+	const currentTableId = useSelect(
+		select => {
+			const { getTableIdByBlock } = select(tableStore);
+			return getTableIdByBlock(block_table_ref);
+		},
+		[block_table_ref]
+	);
 
 	/**
-	 * Set Table ID for newly created tables
+	 * Identify blocks with the same block table reference and table id in the post editor.
 	 *
-	 * @since 1.0.0
-	 *
-	 * @return {boolean} Was Table Changed?
+	 * @since 1.1.0
 	 */
-	const setTableIdChanged = () => {
-		if (awaitingTableEntityCreation && Number(currentTableId) !== Number(table_id)) {
-			return true;
-		}
-		return false;
-	};
+	const sharedTableBlockClientIds = useSelect(
+		select => {
+			const blockEditor = select('core/block-editor');
+			const rootBlocks = blockEditor?.getBlocks?.() || [];
 
-	const isTableIdChanged = setTableIdChanged();
+			if (!block_table_ref || Number(table_id) <= 0 || rootBlocks.length === 0) {
+				return [];
+			}
+
+			const matchingClientIds = [];
+			const findMatchingTableBlocks = blocks => {
+				blocks.forEach(block => {
+					if (!block) {
+						return;
+					}
+
+					if (
+						block.name === 'dynamic-table-blocks/dynamic-table-blocks' &&
+						block.attributes?.block_table_ref === block_table_ref &&
+						Number(block.attributes?.table_id) === Number(table_id)
+					) {
+						matchingClientIds.push(block.clientId);
+					}
+
+					if (block.innerBlocks?.length) {
+						findMatchingTableBlocks(block.innerBlocks);
+					}
+				});
+			};
+
+			findMatchingTableBlocks(rootBlocks);
+			return matchingClientIds;
+		},
+		[block_table_ref, table_id]
+	);
+
+	const duplicateBlockIndex = sharedTableBlockClientIds.findIndex(
+		clientId => clientId === props.clientId
+	);
+	const isDuplicatedBlockInstance = duplicateBlockIndex > 0;
+
+	const attachedTableId = Number(currentTableId || 0);
 
 	/**
 	 * Lookup table attribute value.
@@ -548,12 +653,24 @@ export default function Edit(props) {
 		};
 	});
 
-	if (Object.keys(unmountedTables).length > 0) {
-		processUnmountedTables(unmountedTables);
-	}
+	/**
+	 * Identify blocks unmounted tables and re-attach to blocks if they are not deleted
+	 *
+	 * @since 1.3.0
+	 */
+	useEffect(() => {
+		if (!Object.keys(unmountedTables).length) return;
+		void processUnmountedTables(unmountedTables).catch(error => {
+			console.error('Error reconciling unmounted Dynamic Tables', error);
+			showTablePersistenceNotice(
+				__('Dynamic Tables could not reconcile unmounted tables.', 'dynamic-table-blocks'),
+				'dtbk-unmounted-reconcile-error'
+			);
+		});
+	}, [unmountedTables]);
 
 	/**
-	 * Retrive table id's of all tables in a status of deleted.
+	 * Retrieve table id's of all tables in a status of deleted.
 	 *
 	 * @since 1.0.0
 	 *
@@ -582,22 +699,35 @@ export default function Edit(props) {
 	 */
 	useEffect(() => {
 		if (postChangesAreSaved) {
-			/**
-			 * Remove deleted tables from persisted store
-			 */
-			if (Object.keys(deletedTables).length > 0) {
-				processDeletedTables(deletedTables);
-			}
+			const finalizePostSaveTableChanges = async () => {
+				/**
+				 * Remove deleted tables from persisted store
+				 */
+				if (Object.keys(deletedTables).length > 0) {
+					await processDeletedTables(deletedTables);
+				}
 
-			/**
-			 * Tables are persisted when they are created, but should only remain
-			 * if the underlying post is saved.  Here we update the status of new
-			 * tables from "new" to "saved" once the post is saved.
-			 */
-			if (table.table_status == 'new') {
-				setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
-				saveTableEntity(table.table_id);
-			}
+				/**
+				 * Tables are persisted when they are created, but should only remain
+				 * if the underlying post is saved.  Here we update the status of new
+				 * tables from "new" to "saved" once the post is saved.
+				 */
+				if (table.table_status == 'new') {
+					setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
+					await saveTableEntity(table.table_id);
+				}
+			};
+
+			void finalizePostSaveTableChanges().catch(error => {
+				console.error('Error processing Dynamic Tables after post save', error);
+				showTablePersistenceNotice(
+					__(
+						'Dynamic Tables could not finish table cleanup after the post was saved.',
+						'dynamic-table-blocks'
+					),
+					'dtbk-post-save-sync-error'
+				);
+			});
 		}
 	}, [postChangesAreSaved, unmountedTables]);
 
@@ -625,11 +755,11 @@ export default function Edit(props) {
 	};
 
 	/**
-	 * Summary. (use period). <break> Description. (use period).
+	 * Identify the block as new if it does not contain a block table ref identifier
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return {boolean} Is this a new dybamic table block?
+	 * @return {boolean} Is this a new dynamic table block?
 	 */
 	const setNewBlock = () => {
 		if (block_table_ref === '') {
@@ -673,7 +803,7 @@ export default function Edit(props) {
 	 *
 	 * @since 1.2.5
 	 *
-	 * @type  {number} Object of all table id's that are currently unmounted
+	 * @param {string} updateType The type of row update action being evaluated
 	 */
 	function isContentOnlyRowAction(updateType) {
 		return (
@@ -694,14 +824,23 @@ export default function Edit(props) {
 	/**
 	 * Prepare for New Block
 	 */
-	if (isNewBlock) {
-		setSaveLock();
-	}
+	useEffect(() => {
+		if (isAwaitingTableAttachment) {
+			setSaveLock();
+		} else {
+			setClearSaveLock();
+		}
+
+		return () => {
+			setClearSaveLock();
+		};
+	}, [isAwaitingTableAttachment]);
 
 	/**
 	 * Retrieve table entity from table webservice and load table store.
 	 *
 	 * @since 1.0.0
+	 * @since 1.3.0 Refactored
 	 */
 	const {
 		table,
@@ -711,13 +850,9 @@ export default function Edit(props) {
 		tableIsResolving,
 	} = useSelect(
 		select => {
-			const {
-				getTable,
-				getTableIdByBlock,
-				hasStartedResolution,
-				hasFinishedResolution,
-				isResolving,
-			} = select(tableStore);
+			const { getTable, hasStartedResolution, hasFinishedResolution, isResolving } =
+				select(tableStore);
+
 			const selectorArgs = [table_id, isTableStale];
 
 			if (block_table_ref === '') {
@@ -730,40 +865,10 @@ export default function Edit(props) {
 				};
 			}
 
-			const getBlockTable = (table_id, isTableStale, block_table_ref) => {
-				let selectedTable = getTable(table_id, isTableStale);
-
-				if (
-					(selectedTable.block_table_ref === '' ||
-						(selectedTable.block_table_ref !== block_table_ref &&
-							Number(getTableIdByBlock(block_table_ref)) > 0)) &&
-					awaitingTableEntityCreation
-				) {
-					const newTableId = getTableIdByBlock(block_table_ref);
-					selectedTable = getTable(newTableId, isTableStale);
-
-					// Must sync post_id here for new table because "resolving" attributes are not available
-					if (String(postId) !== selectedTable.post_id && String(postId) !== '0') {
-						setTableAttributes(selectedTable.table_id, 'post_id', '', 'PROP', String(postId));
-					}
-
-					setAwaitingTableEntityCreation(false);
-					setClearSaveLock();
-					props.setAttributes({ original_post_type: postType });
-					props.setAttributes({ original_post_id: Number(postId) });
-					props.setAttributes({ table_id: Number(selectedTable.table_id) });
-				}
-				return selectedTable;
-			};
-
-			const blockTable = getBlockTable(table_id, isTableStale, block_table_ref);
+			const blockTable = getTable(table_id, isTableStale);
 			const tableHasStartedResolving = hasStartedResolution('getTable', selectorArgs);
 			const tableHasFinishedResolving = hasFinishedResolution('getTable', selectorArgs);
 			const tableIsResolving = isResolving('getTable', selectorArgs);
-
-			if (tableHasFinishedResolving) {
-				setTableStale(() => false);
-			}
 
 			return {
 				table: blockTable,
@@ -773,22 +878,42 @@ export default function Edit(props) {
 				tableIsResolving: tableIsResolving,
 			};
 		},
-		[table_id, isTableIdChanged, isTableStale, block_table_ref, awaitingTableEntityCreation]
+		[table_id, isTableStale, block_table_ref]
 	);
 
-	/**
-	 * Determine if table has been loaded.
-	 *
-	 * @since 1.1.0
-	 *
-	 * @return {boolean}  Table loaded?
-	 */
-	const setTableLoaded = () => {
-		if (!!table.block_table_ref && blockTableStatus !== 'None') return true;
-		return false;
-	};
+	// Table is no longer stale once it has finished resolving
+	useEffect(() => {
+		if (!tableHasFinishedResolving) return;
+		setTableStale(false);
+	}, [tableHasFinishedResolving]);
 
-	const tableLoaded = setTableLoaded();
+	/**
+	 * Set table attributes and attach table to block when table is created or
+	 * cloned and ready for attachment
+	 *
+	 * @since 1.3.0
+	 */
+	useEffect(() => {
+		if (!isAwaitingTableAttachment) return;
+		if (!block_table_ref) return;
+		if (!attachedTableId) return;
+
+		if (Number(attachedTableId) !== Number(table_id)) {
+			props.setAttributes({
+				original_post_type: postType,
+				original_post_id: Number(postId),
+				table_id: attachedTableId,
+			});
+			return;
+		}
+
+		setTableOperation(prev =>
+			prev.kind === 'ready' ? prev : { ...prev, kind: 'ready', error: null }
+		);
+	}, [isAwaitingTableAttachment, block_table_ref, attachedTableId, table_id, postType, postId]);
+
+	//Determine if table has been loaded.
+	const tableLoaded = !!table.block_table_ref && blockTableStatus !== 'None';
 
 	/**
 	 * Create a latch key before clone to identify the specific block being cloned. The block
@@ -815,17 +940,18 @@ export default function Edit(props) {
 	}
 
 	/**
-	 * Determine Dynamic Tables block originated from a non-sync pattern, and if so,
-	 * clone the block and its related table
+	 * Determine if this block shares the same table reference identifiers as another block or
+	 * originated from a non-sync pattern. If so, mark it for cloning
 	 *
 	 * @since 1.1.0
+	 * @since 1.3.0  Made WordPress RTC safe and renamed from checkDuplicateTable
 	 *
 	 * @param {boolean} tableLoaded
 	 * @param {Object}  table
 	 * @param {string}  postId
 	 * @param {boolean} inInserterBlock
 	 */
-	function checkDuplicateTable(tableLoaded, table, postId, inInserterBlock) {
+	function shouldCloneTable(tableLoaded, table, postId, inInserterBlock) {
 		const patternName = props.attributes?.metadata?.patternName;
 		const isBlockFromPattern = !!patternName;
 
@@ -837,6 +963,19 @@ export default function Edit(props) {
 		// Exit if table is being created manually
 		if (isNewBlock) {
 			return false;
+		}
+
+		if (inInserterBlock) {
+			return false;
+		}
+
+		if (Number(table.table_id) <= 0) {
+			return false;
+		}
+
+		// Duplicated blocks inherit the original table reference and need their own clone.
+		if (isDuplicatedBlockInstance) {
+			return true;
 		}
 
 		// Inserted post type is not a pattern
@@ -853,12 +992,46 @@ export default function Edit(props) {
 			return false;
 		}
 
-		if (inInserterBlock) {
+		if (Number(table.post_id) === Number(postId)) {
 			return false;
 		}
 
-		if (Number(table.post_id) === Number(postId)) {
-			return false;
+		return true;
+	}
+
+	/**
+	 * Set original post type and post id attributes for new blocks where those attributes are not
+	 * already set.  This supports proper identification of pattern blocks and cloning when inserted
+	 * from a pattern.
+	 *
+	 * @since 1.3.0
+	 */
+	useEffect(() => {
+		const nextAttributes = {};
+
+		if (original_post_type === '') {
+			nextAttributes.original_post_type = postType;
+		}
+
+		if (Number(original_post_id) === 0) {
+			nextAttributes.original_post_id = Number(postId);
+		}
+
+		if (Object.keys(nextAttributes).length > 0) {
+			props.setAttributes(nextAttributes);
+		}
+	}, [original_post_type, original_post_id, postType, postId]);
+
+	/**
+	 * Clone table if the block's block_table_ref and table_id match another block
+	 * in the editor or inserted from a pattern. The table needs to be cloned to
+	 * avoid conflicts between blocks sharing the same table.
+	 *
+	 * @since 1.3.0
+	 */
+	useEffect(() => {
+		if (!shouldCloneTable(tableLoaded, table, postId, inInserterBlock)) {
+			return;
 		}
 
 		const { locked } = acquireCloneLatch({
@@ -868,87 +1041,147 @@ export default function Edit(props) {
 		});
 
 		if (locked) {
-			return false;
+			return;
 		}
 
-		// Verified that this is a clone operation.  Proceed with clone.
-		setSaveLock();
-		setTableStale(false);
 		const cloneBlockTableRef = generateBlockTableRef();
 		props.setAttributes({ block_table_ref: cloneBlockTableRef });
+		setTableStale(false);
+		setTableOperation({
+			kind: 'cloning',
+			blockTableRef: cloneBlockTableRef,
+			sourceTableId: table.table_id,
+			error: null,
+		});
 
-		cloneTable(table.table_id, postId, cloneBlockTableRef);
-		setAwaitingTableEntityCreation(true);
-		return true;
-	}
-
-	// Set block original post type if not populated
-	if (original_post_type === '') {
-		props.setAttributes({ original_post_type: postType });
-	}
-
-	// Set block original post id if not populated
-	if (Number(original_post_id) === 0) {
-		props.setAttributes({ original_post_id: postId });
-	}
-
-	const newClonedTableId = checkDuplicateTable(tableLoaded, table, postId, inInserterBlock);
+		cloneTable(table.table_id, postId, cloneBlockTableRef)
+			.then(() => {
+				setTableOperation(prev => ({ ...prev, kind: 'attaching' }));
+			})
+			.catch(error => {
+				setTableOperation({
+					kind: 'error',
+					blockTableRef: cloneBlockTableRef,
+					sourceTableId: table.table_id,
+					error,
+				});
+			});
+	}, [
+		tableLoaded,
+		table.table_id,
+		table.post_id,
+		postId,
+		inInserterBlock,
+		isDuplicatedBlockInstance,
+		original_post_type,
+		original_post_id,
+		props.attributes?.metadata?.patternName,
+		props.clientId,
+	]);
 
 	/**
-	 * Synchronize PostId
+	 * Set table post_id attribute and persist the updated table entity when a new table is created
+	 * and attached to the block
 	 *
-	 * Post ID is assigned a value of '0' upon table creation and can change over the life of a post.
-	 * props.context is authoritative for Post ID so we ensure the table is sync'd to that.
-	 *
-	 * @since 1.0.0
+	 * @since 1.3.0
 	 */
-	if (
-		tableHasStartedResolving &&
-		tableHasFinishedResolving &&
-		!awaitingTableEntityCreation &&
-		Number(props.context.postId) !== 0 &&
-		Number(table.post_id) === 0
-	) {
+	useEffect(() => {
+		if (!tableHasStartedResolving || !tableHasFinishedResolving) return;
+		if (isAwaitingTableAttachment) return;
+		if (Number(props.context.postId) === 0) return;
+		if (Number(table.post_id) !== 0) return;
+
 		setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId));
-		saveTableEntity(table.table_id);
-	}
+		void saveTableEntity(table.table_id).catch(error => {
+			console.error('Error synchronizing Dynamic Table post_id', error);
+			showTablePersistenceNotice(
+				__(
+					'Dynamic Tables could not synchronize the table post relationship.',
+					'dynamic-table-blocks'
+				),
+				'dtbk-post-id-sync-error'
+			);
+		});
+	}, [
+		tableHasStartedResolving,
+		tableHasFinishedResolving,
+		isAwaitingTableAttachment,
+		props.context.postId,
+		table.table_id,
+		table.post_id,
+	]);
+
+	/**
+	 * Identify table block attributes required to reattach the block after it is unmounted
+	 *
+	 * @since 1.3.0
+	 */
+	useEffect(() => {
+		unmountSnapshotRef.current = {
+			tableLoaded,
+			isNewBlock,
+			inInserterBlock,
+			originalPostType: original_post_type,
+			tableId: Number(table.table_id || 0),
+			tableStatus,
+		};
+	}, [tableLoaded, isNewBlock, inInserterBlock, original_post_type, table.table_id, tableStatus]);
 
 	/**
 	 * Perform clean-up when the block unmounts so that we can reattach it based on the block's
-	 * client ID.  We can also determine if the block was deleted if the client no longer exists
-	 * when the block is re-mounted.
+	 * table id and block table ref.  We can also determine if the block was deleted if the reference
+	 * attributes are no longer present when the block is re-mounted.
 	 *
 	 * This all occurs immediately prior to unmounting the block.
 	 */
-	const currentStatus = useRef(tableStatus);
-	currentStatus.current = tableStatus;
-
 	useEffect(() => {
 		return () => {
-			// Process table clean-up only if table was loaded
-			if (tableLoaded && !isNewBlock && Number(table.table_id) > 0) {
-				if (inInserterBlock || original_post_type === 'wp_block') {
-					// Set table's prior status to the current status before unmounting
-					setTableAttributes(table.table_id, 'isPattern', '', 'PROP', true);
-				} else {
-					// Set table's prior status to the current status before unmounting
-					setTableAttributes(table.table_id, 'prior_status', '', 'PROP', currentStatus.current);
+			const {
+				tableLoaded: wasTableLoaded,
+				isNewBlock: wasNewBlock,
+				inInserterBlock: wasInserterPreview,
+				originalPostType,
+				tableId,
+				tableStatus: lastTableStatus,
+			} = unmountSnapshotRef.current;
 
-					// Set the table's block identifier so that we can reattach it on remount and update
-					// its status to unknown to signify that we won't know what is happening during the
-					// time the block is unmounted
-					setTableAttributes(table.table_id, 'unmounted_block', '', 'PROP', true);
-
-					// Persist the table with its "unknown" status
-					saveTableEntity(table.table_id);
-				}
+			// No cleanup is needed for blocks that never finished loading, are still new,
+			// or do not yet have a persisted table ID.
+			if (!wasTableLoaded || wasNewBlock || tableId <= 0) {
+				return;
 			}
-		};
-	}, [tableLoaded, inInserterBlock, isNewBlock, original_post_type]);
 
-	const tableColumnLength =
+			// Mark table as a pattern block type
+			if (wasInserterPreview || originalPostType === 'wp_block') {
+				updateTableProp(tableId, 'isPattern', true);
+				updateTableEntity(tableId);
+				return;
+			}
+
+			// Set table's prior status to the current status before unmounting
+			updateTableProp(tableId, 'prior_status', lastTableStatus);
+			updateTableProp(tableId, 'table_status', 'unknown');
+
+			// Set the table's block identifier so that we can reattach it on remount and update
+			// its status to unknown to signify that we won't know what is happening during the
+			// time the block is unmounted
+			updateTableProp(tableId, 'unmounted_block', true);
+			updateTableEntity(tableId, 'unknown');
+
+			// Persist the table with its "unknown" status
+			void saveTableEntity(tableId).catch(error => {
+				console.error('Error saving Dynamic Table state during unmount cleanup', error);
+				showTablePersistenceNotice(
+					__('Dynamic Tables could not save table cleanup state.', 'dynamic-table-blocks'),
+					'dtbk-unmount-save-error'
+				);
+			});
+		};
+	}, []);
+
+	const liveNumColumns =
 		JSON.stringify(table.table) === '{}' || blockTableStatus == 'None' ? 0 : table.columns.length;
-	const tableRowLength =
+	const liveNumRows =
 		JSON.stringify(table.table) === '{}' || blockTableStatus == 'None' ? 0 : table.rows.length;
 
 	/**
@@ -967,22 +1200,6 @@ export default function Edit(props) {
 		focusCell(1, 1);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [tableLoaded]);
-
-	/**
-	 * Set state for number of columns and rows when the number of table rows has changes
-	 *
-	 * TODO: Verify this is still needed following update to table store to track all tables in editor
-	 */
-	useEffect(() => {
-		if (!isNewBlock) {
-			if (tableColumnLength != numColumns) {
-				setNumColumns(tableColumnLength);
-			}
-			if (tableRowLength != numRows) {
-				setNumRows(tableRowLength);
-			}
-		}
-	}, [tableColumnLength, tableRowLength]);
 
 	/**
 	 * Extract and unpack table attributes
@@ -1055,7 +1272,7 @@ export default function Edit(props) {
 	 *
 	 * @param {number} tableId   Identifier key for the table
 	 * @param {number} columnId  Identifier for the table column
-	 * @param {string} direction Insert row above or below current row
+	 * @param {string} direction Insert column left or right of current column
 	 * @return {Object} Dynamic Table
 	 */
 	function insertColumn(tableId, columnId, direction) {
@@ -1144,7 +1361,7 @@ export default function Edit(props) {
 	}
 
 	/**
-	 * Delete a column from the table
+	 * Delete a row from the table
 	 *
 	 * @since 1.0.0
 	 *
@@ -1166,9 +1383,9 @@ export default function Edit(props) {
 	 *
 	 * @since 1.2.2
 	 *
-	 * @param {number} tableId
-	 * @param {number} columnId
-	 * @param {string} direction Move row left or right
+	 * @param {number} tableId   Identifier key for the table
+	 * @param {number} columnId  Identifier key for the column to be moved
+	 * @param {string} direction Move column left or right
 	 * @return {Object} Dynamic Table
 	 */
 	function reorderColumns(tableId, columnId, direction) {
@@ -1299,26 +1516,17 @@ export default function Edit(props) {
 		 * Remove borders if unchecked
 		 */
 		if (isChecked === false) {
-			setNumColumns(prev => prev - 1);
-			setNumRows(prev => prev - 1);
-
 			updatedRows = table.rows.filter(row => row.row_id !== '0');
 			updatedColumns = table.columns.filter(column => column.column_id !== '0');
 			updatedCells = table.cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
 			updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
 		} else {
-			/**
-			 * Create borders if checked
-			 */
-			setNumColumns(prev => prev + 1);
-			setNumRows(prev => prev + 1);
-
 			/**  Create header row border at top of table */
 			const rowBorder = [];
 			rowBorder.push(getDefaultRow(table_id, 0, 'Border'));
 
 			const rowCells = [];
-			for (let i = 0; i <= numColumns; i++) {
+			for (let i = 0; i <= liveNumColumns; i++) {
 				const cell = getDefaultCell(table_id, i, 0, 'Border');
 				rowCells.push(cell);
 			}
@@ -1328,7 +1536,7 @@ export default function Edit(props) {
 			columnBorder.push(getDefaultColumn(table_id, 0, 'Border'));
 
 			const columnCells = [];
-			for (let i = 1; i <= numRows; i++) {
+			for (let i = 1; i <= liveNumRows; i++) {
 				const cell = getDefaultCell(table_id, 0, i, 'Border');
 				columnCells.push(cell);
 			}
@@ -1348,6 +1556,7 @@ export default function Edit(props) {
 	 * Create new table and related table entity.
 	 *
 	 * @since 1.0.0
+	 * @since 1.3.0  Refactor to support WordPress RTC
 	 *
 	 * @param {number} columnCount Number of columns in table
 	 * @param {number} rowCount    Number of rows in table
@@ -1360,8 +1569,24 @@ export default function Edit(props) {
 
 		props.setAttributes({ block_table_ref: newBlockTableRef });
 		receiveNewTable(newTable);
-		setAwaitingTableEntityCreation(true);
-		createTableEntity();
+		setTableOperation({
+			kind: 'creating',
+			blockTableRef: newBlockTableRef,
+			sourceTableId: 0,
+			error: null,
+		});
+		createTableEntity()
+			.then(() => {
+				setTableOperation(prev => ({ ...prev, kind: 'attaching' }));
+			})
+			.catch(error => {
+				setTableOperation({
+					kind: 'error',
+					blockTableRef: newBlockTableRef,
+					sourceTableId: 0,
+					error,
+				});
+			});
 	}
 
 	/**
@@ -1373,7 +1598,7 @@ export default function Edit(props) {
 	 */
 	function onCreateTable(event) {
 		event.preventDefault();
-		createTable(numColumns, numRows, tableName);
+		createTable(createDraftTable.numColumns, createDraftTable.numRows, createDraftTable.tableName);
 	}
 
 	/**
@@ -1396,11 +1621,14 @@ export default function Edit(props) {
 				politeness: 'assertive',
 			});
 
-			newNumColumns = Number(numColumns);
+			newNumColumns = Number(createDraftTable.numColumns);
 		} else {
 			removeNotice('invalidNumColumns');
 		}
-		setNumColumns(newNumColumns);
+		setCreateDraftTable(prev => ({
+			...prev,
+			numColumns: newNumColumns,
+		}));
 	}
 
 	/**
@@ -1421,11 +1649,14 @@ export default function Edit(props) {
 				politeness: 'assertive',
 			});
 
-			newNumRows = Number(numRows);
+			newNumRows = Number(createDraftTable.numRows);
 		} else {
 			removeNotice('invalidNumRows');
 		}
-		setNumRows(newNumRows);
+		setCreateDraftTable(prev => ({
+			...prev,
+			numRows: newNumRows,
+		}));
 	}
 
 	/**
@@ -1481,8 +1712,8 @@ export default function Edit(props) {
 	 *
 	 * @since 1.1.1
 	 *
-	 * @param {number} col Column number of the cell in which the focus action occured
-	 * @param {number} row Row number of the cell in which the focus action occured
+	 * @param {number} col Column number of the cell in which the focus action occurred
+	 * @param {number} row Row number of the cell in which the focus action occurred
 	 * @return {boolean} Was focus successful?
 	 */
 	function focusCell(col, row) {
@@ -1986,7 +2217,7 @@ export default function Edit(props) {
 	 *
 	 * @since 1.0.0
 	 * @since 1.1.1  Updated to support column menu refactor.
-	 * @since 1.2.2  Added actions to move a column up or down and insert to the right
+	 * @since 1.2.2  Added actions to move a column left or right and insert to the right
 	 *
 	 * @param {Object} e                       Table Creation Event
 	 * @param {string} updateType              attribute (Update), insert, delete
@@ -2063,7 +2294,7 @@ export default function Edit(props) {
 	/**
 	 * Update table row based on row menu actions.
 	 *
-	 * Descrption: Current actions include row insert, delete, update height.
+	 * Description: Current actions include row insert, delete, update height.
 	 *
 	 * @since 1.0.0
 	 * @since 1.1.1  Updated to support row menu refactor.
@@ -2388,7 +2619,7 @@ export default function Edit(props) {
 	const endGridHeaderRowNbrStyle = endGridRowNbr(
 		1,
 		'Header',
-		numRows,
+		liveNumRows,
 		enableHeaderRow,
 		showBorders,
 		false
@@ -2399,7 +2630,7 @@ export default function Edit(props) {
 	const endGridBodyRowNbrStyle = endGridRowNbr(
 		startGridBodyRowNbrStyle,
 		'Body',
-		numRows,
+		liveNumRows,
 		enableHeaderRow,
 		showBorders,
 		false
@@ -2692,7 +2923,7 @@ export default function Edit(props) {
 								<span className="grid-control__inspector-controls--read-only-label">
 									Table Columns/Rows:
 								</span>
-								{numColumns}/{numRows}
+								{liveNumColumns}/{liveNumRows}
 							</div>
 						</PanelRow>
 
@@ -2757,7 +2988,6 @@ export default function Edit(props) {
 								__next40pxDefaultSize
 								__experimentalIsRenderedInSidebar
 								label="Borders"
-								// hideLabelFromVision="false"
 								isCompact="true"
 								colors={borderBoxColors}
 								value={headerBorder}
@@ -2769,7 +2999,7 @@ export default function Edit(props) {
 					<PanelBody title="Table Body" initialOpen={false}>
 						<PanelRow>
 							<CheckboxControl
-								label="Allow Horizontal Acroll?"
+								label="Allow Horizontal Scroll?"
 								__nextHasNoMarginBottom
 								checked={allowHorizontalScroll}
 								onChange={e => onAllowHorizontalScroll(table, e)}
@@ -2814,7 +3044,6 @@ export default function Edit(props) {
 							label="Display Banded Rows"
 							__nextHasNoMarginBottom
 							checked={bandedRows}
-							// checked={true}
 							onChange={e => onShowBandedRows(table, e)}
 						/>
 					</PanelRow>
@@ -2876,7 +3105,6 @@ export default function Edit(props) {
 					<div style={{ display: 'block' }}>
 						{!hideTitle && (
 							<RichText
-								// id="tableTitle"
 								id={editorTitleTagId}
 								className="dtbk-table-title"
 								style={{ '--gridAlignment': gridAlignment }}
@@ -2908,8 +3136,6 @@ export default function Edit(props) {
 								className="grid-scroller"
 								style={{
 									'--headerRowSticky': headerRowStickyStyle,
-									// "--startGridBodyRowNbr": startGridBodyRowNbrStyle,
-									// "--endGridBodyRowNbr": endGridBodyRowNbrStyle
 								}}
 							>
 								<div
@@ -2918,8 +3144,8 @@ export default function Edit(props) {
 										'--gridTemplateColumns': gridColumnStyle,
 										'--horizontalScroll': horizontalScrollStyle,
 										'--headerRowSticky': headerRowStickyStyle,
-										'--gridNumColumns': numColumns,
-										'--gridNumRows': numRows,
+										'--gridNumColumns': liveNumColumns,
+										'--gridNumRows': liveNumRows,
 										'--gridAlignment': gridAlignment,
 									}}
 								>
@@ -3383,8 +3609,13 @@ export default function Edit(props) {
 							label={__('Table Name', 'dynamic-table')}
 							placeholder="New Table"
 							required="true"
-							onChange={e => setTableName(e)}
-							value={tableName}
+							onChange={value =>
+								setCreateDraftTable(prev => ({
+									...prev,
+									tableName: value,
+								}))
+							}
+							value={createDraftTable.tableName}
 							className="blocks-table__placeholder-input"
 						/>
 
@@ -3393,7 +3624,7 @@ export default function Edit(props) {
 							label={__('Table Columns', 'dynamic-table')}
 							min={1}
 							required="true"
-							value={numColumns}
+							value={createDraftTable.numColumns}
 							onChange={e => onChangeInitialColumnCount(e)}
 							className="blocks-table__placeholder-input"
 						/>
@@ -3403,7 +3634,8 @@ export default function Edit(props) {
 							label={__('Table Rows', 'dynamic-table')}
 							required="true"
 							min={1}
-							value={numRows}
+							// value={numRows}
+							value={createDraftTable.numRows}
 							onChange={e => onChangeInitialRowCount(e)}
 							className="blocks-table__placeholder-input"
 						/>
@@ -3750,11 +3982,6 @@ function Cell(props) {
 			if (fractionalExcessLength > 0) {
 				nextRawValue = `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}`;
 			}
-
-			// if (fractionalExcessLength < 0) {
-			// 	const paddedSpaces = fractionalExcessLength * -1;
-			// 	nextRawValue = `${integerPart}.${fractionPart.padEnd(paddedSpaces, '0')}`;
-			// }
 		}
 
 		setCellContent(nextRawValue);
@@ -3778,7 +4005,7 @@ function Cell(props) {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param {number} column_id Clicked table row
+	 * @param {number} column_id Clicked table column
 	 * @param {number} row_id    Clicked table row
 	 * @param {Object} table     Current Dynamic Table
 	 * @param {Object} e         Border click event object
@@ -3794,7 +4021,6 @@ function Cell(props) {
 	 * @since 1.2.0    Add DateTime render type
 	 * @since 1.2.4    Add Number render type
 	 *
-	 * @param {Object} e On Focus event
 	 * @return {void}
 	 */
 	const renderTypes = {
@@ -3855,7 +4081,6 @@ function Cell(props) {
 
 			return (
 				<TextControl
-					// className="grid-control__cellEditor--dateTimeInput"
 					className={renderClassesEdit}
 					type={inputType}
 					__next40pxDefaultSize

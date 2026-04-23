@@ -1,6 +1,8 @@
 /* External dependencies */
 import { store as coreStore } from '@wordpress/core-data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
+import { store as noticeStore } from '@wordpress/notices';
+import { __ } from '@wordpress/i18n';
 
 /* Internal dependencies */
 import TYPES from './action-types.js';
@@ -186,14 +188,8 @@ export const cloneTable =
 			);
 			return tableEntity.id;
 		} catch (error) {
-			console.log('Error details: ' + error);
-			console.log(newTable);
-			console.log(
-				'Error in createTableEntity -  Block table ref = ' +
-					newTable.header.block_table_ref +
-					', Post Id = ' +
-					newTable.header.post_id
-			);
+			console.error('Error in cloneTable', error);
+			throw error;
 		}
 	};
 
@@ -243,16 +239,8 @@ export const createTableEntity =
 			dispatch.assignTableId(tableEntity.id);
 			return tableEntity.id;
 		} catch (error) {
-			console.log('Error details: ' + error);
-			console.log(newTable);
-			console.log(
-				'Error in createTableEntity -  Table ID - ' +
-					table_id +
-					', block table ref = ' +
-					block_table_ref +
-					', Post Id = ' +
-					post_id
-			);
+			console.error('Error in createTableEntity', error);
+			throw error;
 		}
 	};
 
@@ -267,12 +255,17 @@ export const createTableEntity =
  */
 export const saveTableEntity =
 	tableId =>
-	({ registry }) => {
+	async ({ registry }) => {
 		try {
-			registry.dispatch(coreStore).saveEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
+			// registry.dispatch(coreStore).saveEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
+			return await registry
+				.dispatch(coreStore)
+				.saveEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
 		} catch (error) {
-			console.log('Error in saveTableEntity - Table ID - ' + tableId);
-			alert('            ...Save Table Entity - async error - ' + error);
+			// console.log('Error in saveTableEntity - Table ID - ' + tableId);
+			// alert('            ...Save Table Entity - async error - ' + error);
+			console.error('Error in saveTableEntity - Table ID - ' + tableId, error);
+			throw error;
 		}
 	};
 
@@ -352,12 +345,26 @@ export const updateTableEntity =
 		 *          undoIgnore: Bool
 		 */
 		try {
-			registry
+			return registry
 				.dispatch(coreStore)
 				.editEntityRecord('dynamic-table-blocks', 'table', table_id, updatedTable);
 		} catch (error) {
-			console.log('Error in updateTableEntity - Table ID - ' + tableId);
-			alert('            ...Update Table Entity - async error - ' + error);
+			console.error('Error in updateTableEntity - Table ID - ' + tableId, error);
+			registry
+				.dispatch(noticeStore)
+				.createNotice(
+					'error',
+					__(
+						'Dynamic Tables could not queue the latest table changes for save.',
+						'dynamic-table-blocks'
+					),
+					{
+						id: 'dtbk-update-entity-error',
+						isDismissible: true,
+						politeness: 'assertive',
+					}
+				);
+			return false;
 		}
 	};
 
@@ -373,9 +380,9 @@ export const updateTableEntity =
  */
 export const deleteTableEntity =
 	tableId =>
-	async ({ select, dispatch, registry }) => {
+	async ({ dispatch, registry }) => {
 		try {
-			const deletedTableEntity = await registry
+			await registry
 				.dispatch(coreStore)
 				.deleteEntityRecord('dynamic-table-blocks', 'table', tableId);
 
@@ -384,8 +391,8 @@ export const deleteTableEntity =
 				tableId,
 			});
 		} catch (error) {
-			console.log('Error in deleteTableEntity - Table ID - ' + tableId);
-			alert('            ...Resolver - async error - ' + error);
+			console.error('Error in deleteTableEntity - Table ID - ' + tableId, error);
+			throw error;
 		}
 	};
 
@@ -399,10 +406,16 @@ export const deleteTableEntity =
  */
 export const processDeletedTables =
 	deletedTables =>
-	({ dispatch }) => {
-		Object.keys(deletedTables).forEach(key => {
-			dispatch.deleteTableEntity(deletedTables[key].table_id);
-		});
+	async ({ dispatch }) => {
+		const deleteResults = await Promise.allSettled(
+			Object.keys(deletedTables).map(key => dispatch.deleteTableEntity(deletedTables[key].table_id))
+		);
+
+		const failedDeletes = deleteResults.filter(result => result.status === 'rejected');
+
+		if (failedDeletes.length > 0) {
+			throw failedDeletes[0].reason;
+		}
 	};
 
 /**
@@ -417,26 +430,37 @@ export const processDeletedTables =
  */
 export const processUnmountedTables =
 	unmountedTables =>
-	({ dispatch, registry }) => {
-		Object.keys(unmountedTables).forEach(key => {
-			const priorStatus = unmountedTables[key].prior_status;
-			const isBlockPattern = unmountedTables[key].isPattern ? true : false;
+	async ({ dispatch, registry }) => {
+		const results = await Promise.allSettled(
+			Object.keys(unmountedTables).map(async key => {
+				const priorStatus = unmountedTables[key].prior_status;
+				const isBlockPattern = unmountedTables[key].isPattern ? true : false;
 
-			// Search all blocks to find a match for this unmounted table block.
-			const tableBlock = hasDynamicTableBlock(registry, unmountedTables[key]);
+				// Search all blocks to find a match for this unmounted table block.
+				const tableBlock = hasDynamicTableBlock(registry, unmountedTables[key]);
 
-			if (tableBlock) {
-				dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', priorStatus);
-				dispatch.removeTableProp(unmountedTables[key].table_id, 'prior_status');
-				dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_block');
-				dispatch.updateTableEntity(unmountedTables[key].table_id);
-			} else if (isBlockPattern) {
-				dispatch.removeTableProp(unmountedTables[key].table_id, 'isPattern');
-			} else {
-				dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', 'deleted');
-				dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_block');
-			}
-		});
+				if (tableBlock) {
+					dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', priorStatus);
+					dispatch.removeTableProp(unmountedTables[key].table_id, 'prior_status');
+					dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_block');
+					dispatch.updateTableEntity(unmountedTables[key].table_id);
+					await dispatch.saveTableEntity(unmountedTables[key].table_id);
+				} else if (isBlockPattern) {
+					dispatch.removeTableProp(unmountedTables[key].table_id, 'isPattern');
+					dispatch.updateTableEntity(unmountedTables[key].table_id);
+					await dispatch.saveTableEntity(unmountedTables[key].table_id);
+				} else {
+					dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', 'deleted');
+					dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_block');
+					dispatch.updateTableEntity(unmountedTables[key].table_id, 'deleted');
+					await dispatch.saveTableEntity(unmountedTables[key].table_id);
+				}
+			})
+		);
+		const failed = results.filter(result => result.status === 'rejected');
+		if (failed.length > 0) {
+			throw failed[0].reason;
+		}
 	};
 
 /**
