@@ -49,6 +49,67 @@
 	caret-color: auto;
 }
 
+.grid-control__cell--copied {
+	--copied-ants-color: #2563eb;
+	--copied-ants-thickness: 2px;
+	--copied-ants-dash: 6px;
+	--copied-ants-gap: 6px;
+	--copied-ants-speed: 450ms;
+	--copied-ants-inset: 0;
+}
+
+.grid-control__cell--copied::after {
+	content: '';
+	position: absolute;
+	inset: var(--copied-ants-inset);
+	pointer-events: none;
+	z-index: 2;
+
+	background:
+		repeating-linear-gradient(
+			90deg,
+			var(--copied-ants-color) 0 var(--copied-ants-dash),
+			transparent var(--copied-ants-dash) calc(var(--copied-ants-dash) + var(--copied-ants-gap))
+		) top / 100% var(--copied-ants-thickness) no-repeat,
+		repeating-linear-gradient(
+			180deg,
+			var(--copied-ants-color) 0 var(--copied-ants-dash),
+			transparent var(--copied-ants-dash) calc(var(--copied-ants-dash) + var(--copied-ants-gap))
+		) right / var(--copied-ants-thickness) 100% no-repeat,
+		repeating-linear-gradient(
+			90deg,
+			var(--copied-ants-color) 0 var(--copied-ants-dash),
+			transparent var(--copied-ants-dash) calc(var(--copied-ants-dash) + var(--copied-ants-gap))
+		) bottom / 100% var(--copied-ants-thickness) no-repeat,
+		repeating-linear-gradient(
+			180deg,
+			var(--copied-ants-color) 0 var(--copied-ants-dash),
+			transparent var(--copied-ants-dash) calc(var(--copied-ants-dash) + var(--copied-ants-gap))
+		) left / var(--copied-ants-thickness) 100% no-repeat;
+
+	animation: grid-control-marching-ants var(--copied-ants-speed) linear infinite;
+}
+
+/* When copied and focused at the same time, move the ants inward so the focus border still shows */
+.grid-control__cell--copied.grid-control__body-cells--focused {
+	--copied-ants-inset: 4px;
+}
+
+@keyframes grid-control-marching-ants {
+	from {
+		background-position: 0 0, 100% 0, 0 100%, 0 0;
+	}
+	to {
+		background-position: 12px 0, 100% 12px, -12px 100%, 0 -12px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.grid-control__cell--copied::after {
+		animation: none;
+	}
+}
+
 .grid-control__border-cells {
 	font-size: small;
 	font-weight: bold;

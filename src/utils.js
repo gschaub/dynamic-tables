@@ -55,6 +55,22 @@ export function numberToLetter(letterNumber) {
 }
 
 /**
+ * Convert a column letter number to a number.
+ *
+ * @since 1.3.1
+ *
+ * @param {string} numberLetter Column letter
+ * @return {number}             Column number
+ */
+export function letterToNumber(numberLetter) {
+	let result = 0;
+	for (const ch of numberLetter.toUpperCase()) {
+		result = result * 26 + (ch.charCodeAt(0) - 64);
+	}
+	return result;
+}
+
+/**
  * Update one attribute value inside the array.
  *
  * @since 1.0.0
@@ -172,6 +188,27 @@ export function computeCellIds(fetchedCells) {
 	return {
 		fetchedCells,
 	};
+}
+
+/**
+ * Extract the column id and row id given cell id.
+ *
+ * @since 1.3.1
+ *
+ * @param {string} cellId Cell id to be transformed
+ * @return {Object}       Row and column id extracted from the cell id
+ */
+export function getCellIdCoordinates(cellId) {
+	const match = cellId.match(/^([A-Z]+)(\d+)$/i);
+	if (!match) {
+		throw new Error("Invalid cell id");
+	}
+
+	const [, colLetters, rowString] = match;
+	const rowId = Number(rowString);
+	const colId = letterToNumber(colLetters);
+
+	return { column_id: colId, row_id: rowId };
 }
 
 /**

@@ -52,6 +52,7 @@ import {
 	tableSort,
 	generateBlockTableRef,
 	numberToLetter,
+	getCellIdCoordinates,
 	setBorderContent,
 	formatedDisplayDate,
 	formattedIsoDate,
@@ -89,6 +90,7 @@ import {
 	ColumnMenu,
 	ColumnWidthModal,
 	ColumnDataTypeModal,
+	CellMenu,
 } from './components';
 import './editor.scss';
 
@@ -176,6 +178,16 @@ export default function Edit(props) {
 
 	const [editingCellId, setEditingCellId] = useState(null);
 	const editingCellIdRef = useRef(null);
+	const [cellClipboard, setCellClipboard] = useState({
+		inUse: false,
+		clipboardAction: null,
+		columnId: null,
+		rowId: null,
+		columnDataType: '',
+		cellContent: '',
+		cellValueAttr: {},
+	});
+
 	const hasAnnouncedGridHelpRef = useRef(false);
 
 	const unmountSnapshotRef = useRef({
@@ -544,6 +556,71 @@ export default function Edit(props) {
 		restoreFocusAfterOverlayClose();
 	};
 
+	/**
+	 * Support cell drop down menu and settings
+	 * dialog boxes
+	 */
+	const [cellMenu, setCellMenu] = useState({
+		isOpen: false,
+		anchorEl: null,
+		cellId: null,
+		cellAttributes: null,
+	});
+
+	/**
+	 * Open cell dropdown menu and settings dialog boxes.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @param {Object} e               Cell menu click event
+	 * @param {string} cellId          Cell number to update
+	 * @param {Object} cellAttributes  Cell attributes
+	 */
+	const openCellMenu = (e, cellId, cellAttributes) => {
+		e?.preventDefault?.();
+		e?.stopPropagation?.();
+
+		// Capture a real element, not the synthetic event
+		const el = e?.currentTarget || null;
+		lastInvokerElRef.current = el;
+		lastInvokerWasKeyboardRef.current = Number(e?.detail) === 0;
+		suppressNextInvokerRestoreRef.current = false;
+
+		setCellMenu({
+			isOpen: true,
+			anchorEl: el,
+			cellId,
+			cellAttributes,
+		});
+	};
+
+	/**
+	 * Close cell dropdown menu and settings dialog boxes.
+	 *
+	 * @since 1.3.1
+	 */
+	const closeCellMenu = () => {
+		setCellMenu(prev => ({ ...prev, isOpen: false, anchorEl: null }));
+		const shouldRestoreFocus = !suppressNextInvokerRestoreRef.current;
+		suppressNextInvokerRestoreRef.current = false;
+
+		if (shouldRestoreFocus) {
+			restoreFocusAfterOverlayClose();
+		}
+	};
+
+	function resetCellClipboard() {
+		setCellClipboard({
+			inUse: false,
+			clipboardAction: null,
+			columnId: null,
+			rowId: null,
+			columnDataType: '',
+			cellContent: '',
+			cellValueAttr: {},
+		});
+	}
+
 	// Support table creation and cloning
 	const cloneLatchRef = useRef(new Set());
 
@@ -568,6 +645,7 @@ export default function Edit(props) {
 	const editorColumnMenuTagId = `${editorTableTagIdBase}-column-menu`;
 	const getEditorColumnHeaderTagId = columnId =>
 		`${editorTableTagIdBase}-column-${String(columnId).trim()}-header`;
+	const editorCellMenuTagId = `${editorTableTagIdBase}-cell-menu`;
 
 	const [themeColors = []] = useSettings('color.palette');
 	const borderBoxColors = themeColors.map(({ color, name }) => {
@@ -1875,6 +1953,7 @@ export default function Edit(props) {
 	 * @since 1.1.1
 	 * @since 1.2.3 - Add keyboard support for moving columns and rows
 	 * @since 1.2.5 - Add keyboard support for insert/delete columns and rows
+	 * @since 1.3.1 - Add keyboard support for cell copy/cut/paste
 	 *
 	 * @param {Object} event onKeyDown event
 	 * @return {void}
@@ -1892,6 +1971,7 @@ export default function Edit(props) {
 				['number', 'integer', 'percent', 'currency'].includes(editTargetInputType) ||
 				['numeric', 'decimal'].includes(editTargetInputMode);
 			const isDateTimeEditor = ['date', 'time', 'datetime-local'].includes(editTargetInputType);
+			if (cellClipboard.inUse) resetCellClipboard();
 
 			if (event.key === 'Escape') {
 				event.preventDefault();
@@ -1974,9 +2054,18 @@ export default function Edit(props) {
 			editDataType === 'general' ||
 			editDataType === 'date-time' ||
 			editDataType === 'number';
+		const isAltOnly = event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
+		const isShiftOnly = !event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
+		const isAltShiftOnly = event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
+		const isCtlOnly = !event.altKey && !event.shiftKey && event.ctrlKey && !event.metaKey;
+		const isAnyModifierKey = event.altKey || event.shiftKey || event.ctrlKey || event.metaKey;
+		const isPrimaryKeyOnly = !event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
+		const canUseRowInsertDeleteShortcuts = !isHeaderRow;
+		const canUseStructureShortcuts = !isContentOnlyMode;
+		const cellId = activeCellEl.getAttribute('data-cell-id');
 
-		// Allow direct edit for printable keys
-		if (!navKeys.has(event.key) && isPrintableKey(event) && canTypeToEdit) {
+		// Allow direct edit for printable keys that do not include a modifier
+		if (!navKeys.has(event.key) && !isAnyModifierKey && isPrintableKey(event) && canTypeToEdit) {
 			// Enter edit mode
 			onCellKeyDownEditing(event, activeCellEl, event.key, editDataType);
 			return;
@@ -1986,20 +2075,12 @@ export default function Edit(props) {
 		if (event.key === 'Enter' || event.key === 'F2') {
 			event.preventDefault();
 			event.stopPropagation();
-			const id = activeCellEl.getAttribute('data-cell-id');
-			startEditingCell(id);
+			startEditingCell(cellId);
 			window.requestAnimationFrame(() => {
 				activeCellEl?.querySelector?.('[contenteditable="true"], input, textarea')?.focus?.();
 			});
 			return;
 		}
-
-		const isAltOnly = event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
-		const isShiftOnly = !event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
-		const isAltShiftOnly = event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
-		const isPrimaryKeyOnly = !event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
-		const canUseRowInsertDeleteShortcuts = !isHeaderRow;
-		const canUseStructureShortcuts = !isContentOnlyMode;
 
 		// Intercept navigation
 		event.preventDefault();
@@ -2009,14 +2090,14 @@ export default function Edit(props) {
 			case 'ArrowUp':
 				// Insert row above the current row
 				if (isAltShiftOnly && canUseRowInsertDeleteShortcuts) {
-					console.log('Inserting');
+					// console.log('Inserting');
 					insertRow(table_id, row, 'above');
 					break;
 				}
 
 				// Move row above the current row
 				if (isAltOnly && canUseStructureShortcuts) {
-					console.log('Moving');
+					// console.log('Moving');
 					const firstBodyRowId = navHeaderRow ? Number(navHeaderRow) + 1 : 1;
 					if (row <= firstBodyRowId) break;
 					reorderRows(table_id, row, 'up');
@@ -2025,7 +2106,7 @@ export default function Edit(props) {
 
 				// Navigate to cell above the current cell
 				if (isPrimaryKeyOnly) {
-					console.log('Navigating');
+					// console.log('Navigating');
 					row = Math.max(1, row - 1);
 					break;
 				}
@@ -2033,14 +2114,14 @@ export default function Edit(props) {
 			case 'ArrowDown':
 				// Insert row below the current row
 				if (isAltShiftOnly && canUseRowInsertDeleteShortcuts) {
-					console.log('Inserting');
+					// console.log('Inserting');
 					insertRow(table_id, row, 'below');
 					break;
 				}
 
 				// Move row below the current row
 				if (isAltOnly && canUseStructureShortcuts) {
-					console.log('Moving');
+					// console.log('Moving');
 					if (isHeaderRow || row === navMaxRow) break;
 					reorderRows(table_id, row, 'down');
 					break;
@@ -2048,7 +2129,7 @@ export default function Edit(props) {
 
 				// Navigate to cell below the current cell
 				if (isPrimaryKeyOnly) {
-					console.log('Navigating');
+					// console.log('Navigating');
 					row = Math.min(navMaxRow, row + 1);
 					break;
 				}
@@ -2056,14 +2137,14 @@ export default function Edit(props) {
 			case 'ArrowLeft':
 				// Insert column left of the current column
 				if (isAltShiftOnly && canUseStructureShortcuts) {
-					console.log('Inserting');
+					// console.log('Inserting');
 					insertColumn(table_id, col, 'left');
 					break;
 				}
 
 				// Move column left of the current column
 				if (isAltOnly && canUseStructureShortcuts) {
-					console.log('Moving');
+					// console.log('Moving');
 					if (col === 1) break;
 					reorderColumns(table_id, col, 'left');
 					break;
@@ -2071,7 +2152,7 @@ export default function Edit(props) {
 
 				// Navigate to cell left of the current cell
 				if (isPrimaryKeyOnly) {
-					console.log('Navigating');
+					// console.log('Navigating');
 					col = Math.max(1, col - 1);
 					break;
 				}
@@ -2079,14 +2160,14 @@ export default function Edit(props) {
 			case 'ArrowRight':
 				// Insert column right of the current column
 				if (isAltShiftOnly && canUseStructureShortcuts) {
-					console.log('Inserting');
+					// console.log('Inserting');
 					insertColumn(table_id, col, 'right');
 					break;
 				}
 
 				// Move column right of the current column
 				if (isAltOnly && canUseStructureShortcuts) {
-					console.log('Moving');
+					// console.log('Moving');
 					if (col === navMaxCol) break;
 					reorderColumns(table_id, col, 'right');
 					break;
@@ -2094,7 +2175,7 @@ export default function Edit(props) {
 
 				// Navigate to cell right of the current cell
 				if (isPrimaryKeyOnly) {
-					console.log('Navigating');
+					// console.log('Navigating');
 					col = Math.min(navMaxCol, col + 1);
 					break;
 				}
@@ -2124,28 +2205,50 @@ export default function Edit(props) {
 			case 'Delete':
 			case 'Backspace':
 				if (isPrimaryKeyOnly) {
-					console.log('Delete Key Hit');
+					// console.log('Delete Key Hit');
 					processCellDelete(col, row);
 					return;
 				}
 
 				// Delete the current column
 				if (event.key === 'Delete' && isAltShiftOnly && canUseStructureShortcuts) {
-					console.log('Deleting Column');
+					// console.log('Deleting Column');
 					deleteColumn(table_id, col);
 					break;
 				}
 
 				// Delete the current row
 				if (event.key === 'Delete' && isAltOnly && canUseRowInsertDeleteShortcuts) {
-					console.log('Deleting Row');
+					// console.log('Deleting Row');
 					deleteRow(table_id, row);
 					break;
 				}
 				break;
 			case 'Escape':
-				// no-op when not editing
-				return;
+				if (cellClipboard.inUse) resetCellClipboard();
+				break;
+			case 'C':
+			case 'c':
+				// Copy selected cell content
+				console.log('Active Cell', activeCellEl);
+				if(isCtlOnly) {
+					copyCellData(cellId, 'copyCell');
+				}
+				break;
+			case 'V':
+			case 'v':
+				// Paste to selected cell
+				if(isCtlOnly) {
+					pasteCellData(cellId);
+				}
+				break;
+			case 'X':
+			case 'x':
+				// Cut selected cell content
+				if(isCtlOnly) {
+					copyCellData(cellId, 'cutCell');
+				}
+				break;
 			default:
 				console.log('Key Code = ' + event.key);
 				return;
@@ -2453,6 +2556,202 @@ export default function Edit(props) {
 	}
 
 	/**
+	 * Update table based on cell menu actions.
+	 *
+	 * Description: Current actions include copy, cut, paste.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @param {Object} e                     Table Creation Event
+	 * @param {string} updateType            Action to perform
+	 * @param {number} tableId               Identifier key for the table
+	 * @param {number} cellId                Identifier for the table cell
+	 * @param {Array}  updatedCellAttributes Cell attribute values
+	 */
+	function onUpdateCell(e, updateType, tableId, cellId, updatedCellAttributes) {
+		if (isContentOnlyMode && !isContentOnlyRowAction(updateType)) {
+			return;
+		}
+		switch (updateType) {
+			case 'copyCell':
+			case 'cutCell': {
+				copyCellData(cellId, updateType);
+				break;
+			}
+			case 'pasteCell': {
+				pasteCellData (cellId);
+				break;
+			}
+			// case 'insert-above': {
+			// 	insertRow(tableId, rowId, 'above');
+			// 	break;
+			// }
+			// case 'insert-below': {
+			// 	insertRow(tableId, rowId, 'below');
+			// 	break;
+			// }
+			// case 'delete': {
+			// 	deleteRow(tableId, rowId);
+			// 	break;
+			// }
+			// case 'move-up': {
+			// 	reorderRows(tableId, rowId, 'up');
+			// 	break;
+			// }
+			// case 'move-down': {
+			// 	reorderRows(tableId, rowId, 'down');
+			// 	break;
+			// }
+			default:
+				console.log('Unrecognized Row Update Type');
+		}
+	}
+
+	/**
+	 * Copy cell data to clipboard.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @param {number} cellId      Identifier for the table cell
+	 * @param {string} updateType  Action to perform
+	 */
+	function copyCellData (cellId, updateType) {
+		const { column_id, row_id } = getCellIdCoordinates(cellId);
+		const cellData = table.cells.find(
+			c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id)
+		);
+		if (cellData) {
+			// ToDo: Update columnDataType so that if copying from the header row, this is 'general' data type
+			const columnDataType = table.columns.find(
+				c => Number(c.column_id) === Number(column_id))?.
+				attributes?.
+				columnDataType?.
+				type;
+			const cellContent = cellData?.content || '';
+			const cellValueAttr = cellData?.attributes?.value || {};
+			const clipboardPayload = {
+				inUse: true,
+				clipboardAction: updateType === 'copyCell' ? 'copy' : 'cut',
+				columnId: column_id,
+				rowId: row_id,
+				columnDataType: columnDataType,
+				cellContent: cellContent,
+				cellValueAttr: cellValueAttr
+			};
+
+			// Copy to the block's internal clipboard
+			setCellClipboard({...clipboardPayload});
+
+			/**
+			 * Note on system clipboard handling:
+			 *   - Only text content is currently supported in the plugin
+			 *   - Other content types can be added later, but only for the modern navigator method
+			 *   - The fallback is only capable of supporting text
+			 */
+
+			// Copy to the system clipboard
+			const clipboardText = cellContent;
+
+			if (navigator?.clipboard?.writeText) {
+				console.log('Can write to clipboard');
+				navigator.clipboard
+					.writeText(clipboardText)
+					.catch(() => {
+						legacySystemClipboardFallback(clipboardText);
+					});
+			} else {
+				legacySystemClipboardFallback(clipboardText);
+			}
+		}
+	}
+
+	/**
+	 * Paste data to the current cell from clipboard.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @param {number} cellId  Identifier for the table cell
+	 */
+	function pasteCellData (cellId) {
+		const { column_id, row_id } = getCellIdCoordinates(cellId);
+		const {inUse, clipboardAction, columnId, rowId, columnDataType, cellContent, cellValueAttr} = cellClipboard;
+		const currentCellData = table.cells.find(
+			c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id)
+		);
+		const currentColumnDataType = table.columns.find(
+			c => Number(c.column_id) === Number(column_id))?.
+			attributes?.
+			columnDataType?.
+			type;
+
+		if (!inUse) return;
+		if(columnDataType !== currentColumnDataType) {
+			announceEditorMessage(__('Cannot paste cell content. The clipboards column content type does not match the that of the current cell.'),
+				'assertive');
+			createNotice('error', 'Cannot paste cell content. The clipboards column content type does not match the that of the current cell.', {
+				id: 'dataTypeMismatch',
+				isDismissible: true,
+				politeness: 'assertive',
+			});
+			return;
+		}
+
+		const currentCellValueAttr = currentCellData?.attributes || {};
+		const updatedCellAttrs = {
+			...currentCellValueAttr,
+			value: cellValueAttr,
+		};
+
+		setTableAttributes(table_id, 'cell', cellId, 'CONTENT', cellContent);
+		setTableAttributes(table_id, 'cell', cellId, 'ATTRIBUTES', updatedCellAttrs);
+
+		if (clipboardAction === 'cut') {
+			processCellDelete(columnId, rowId);
+			resetCellClipboard();
+		}
+	}
+
+	/**
+	 * Copy cell data to legacy system clipboard.
+	 *
+	 * Desrciption: This is a fallback method for copying text to the clipboard for browsers
+	 * 				that do not support the modern asynchronous clipboard API or where browser
+	 * 				security settings prevent its use.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @param {number} cellId                Identifier for the table cell
+	 * @param {string} updateType            Action to perform
+	 */
+	function legacySystemClipboardFallback(clipboardContent) {
+		const tempTextArea = document.createElement('textarea');
+
+		tempTextArea.value = clipboardContent;
+		tempTextArea.setAttribute('readonly', '');
+
+		// Keep it off-screen so it does not affect layout.
+		tempTextArea.style.position = 'absolute';
+		tempTextArea.style.left = '-9999px';
+		tempTextArea.style.top = '0';
+
+		document.body.appendChild(tempTextArea);
+
+		// Select the text so document.execCommand('copy') has an active selection.
+		tempTextArea.focus();
+		tempTextArea.select();
+		tempTextArea.setSelectionRange(0, tempTextArea.value.length);
+
+		try {
+			// execCommand is deprecated but still widely supported
+			// The use is as a legacy backup
+			document.execCommand('copy');
+		} finally {
+			document.body.removeChild(tempTextArea);
+		}
+
+	}
+
+	/**
 	 * Process mouse clicks on the table borders.
 	 *
 	 * @since 1.0.0
@@ -2462,7 +2761,8 @@ export default function Edit(props) {
 	 * @param {Object} table     Dynamic Table
 	 * @param {Object} e         Mouse Click Event
 	 */
-	function onMouseBorderClick(column_id, row_id, table, e) {
+	function onMouseMenuClick(column_id, row_id, table, e) {
+		// console.log('Handling Menu Click');
 		e?.preventDefault?.();
 		e?.stopPropagation?.();
 
@@ -2484,6 +2784,19 @@ export default function Edit(props) {
 			}
 			const attrs = clickedRow?.attributes || {};
 			openRowMenu(e, row_id, String(row_id), attrs);
+		}
+
+		if (row_id !== '0' && column_id !== '0') {
+			// console.log('row_id = ' + row_id + ' column_id = ' + column_id);
+			const clickedCell = table?.cells?.find(c => c.row_id === row_id && c.column_id === column_id);
+			const cellId = numberToLetter(Number(column_id)) + row_id;
+			// if (isContentOnlyMode && clickedRow?.attributes?.isHeader) {
+			// 	return;
+			// }
+			const attrs = clickedCell?.attributes || {};
+			// console.log('Cell Attributes = ' + JSON.stringify(attrs));
+			// console.log('Opening Cell Menu for cell ' + cellId);
+			openCellMenu(e, cellId, attrs);
 		}
 		setTableStale(false);
 	}
@@ -2996,6 +3309,27 @@ export default function Edit(props) {
 	);
 
 	/**
+	 * Render clickable cell menu
+	 *
+	 * @since 1.3.1
+	 */
+	const renderCellMenu = (
+		<>
+			{!isContentOnlyMode && cellMenu.isOpen && cellMenu.anchorEl && (
+				<CellMenu
+					menuId={editorCellMenuTagId}
+					anchor={cellMenu.anchorEl}
+					table={table}
+					cellId={cellMenu.cellId}
+					cellAttributes={cellMenu.cellAttributes}
+					updatedCell={onUpdateCell}
+					onRequestClose={closeCellMenu}
+				/>
+			)}
+		</>
+	);
+
+	/**
 	 * Render inspector controls side panel
 	 *
 	 * @since 1.2.0
@@ -3205,6 +3539,7 @@ export default function Edit(props) {
 					{renderColumnMenu}
 					{renderColumnDataTypeModal}
 					{renderColumnWidthModal}
+					{renderCellMenu}
 					{renderControls}
 
 					<div style={{ display: 'block' }}>
@@ -3298,7 +3633,7 @@ export default function Edit(props) {
 																			columnMenu.isOpen &&
 																			String(columnMenu.columnId) === String(column_id),
 																	}}
-																	onMouseDown={onMouseBorderClick}
+																	onMouseDown={onMouseMenuClick}
 																></Cell>
 															</Fragment>
 														);
@@ -3356,11 +3691,21 @@ export default function Edit(props) {
 																const showGridLinesCSS = gridShowInnerLines;
 																const gridLineWidthCSS = gridInnerLineWidth;
 
+																const isClipboard =
+																	cellClipboard.inUse &&
+																	cellClipboard.columnId ===Number(column_id) &&
+																	cellClipboard.rowId === Number(row_id);
+																if (isClipboard) {
+																	// Animate cell when it is the clipboard source
+																	calculatedClasses =
+																		calculatedClasses + 'grid-control__cell--copied ';
+																}
+
 																const isFocused =
 																	focusedCell.col === Number(column_id) &&
 																	focusedCell.row === Number(row_id);
-
 																if (isFocused) {
+																	// Show distinct border when cell has focus
 																	calculatedClasses =
 																		calculatedClasses + 'grid-control__body-cells--focused ';
 																}
@@ -3393,7 +3738,7 @@ export default function Edit(props) {
 																						rowMenu.isOpen &&
 																						String(rowMenu.rowId) === String(row_id),
 																				}}
-																				onMouseDown={onMouseBorderClick}
+																				onMouseDown={onMouseMenuClick}
 																			></Cell>
 																		)}
 
@@ -3467,6 +3812,7 @@ export default function Edit(props) {
 																					});
 																				}}
 																				onChange={onChangeCellData}
+																				onMouseDown={onMouseMenuClick}
 																			></Cell>
 																		)}
 																	</Fragment>
@@ -3564,10 +3910,22 @@ export default function Edit(props) {
 																	);
 																	const showGridLinesCSS = gridShowInnerLines;
 																	const gridLineWidthCSS = gridInnerLineWidth;
+
+																	const isClipboard =
+																		cellClipboard.inUse &&
+																		cellClipboard.columnId ===Number(column_id) &&
+																		cellClipboard.rowId === Number(row_id);
+																	if (isClipboard) {
+																		// Animate cell when it is the clipboard source
+																		calculatedClasses =
+																			calculatedClasses + 'grid-control__cell--copied ';
+																	}
+
 																	const isFocused =
 																		focusedCell.col === Number(column_id) &&
 																		focusedCell.row === Number(row_id);
 																	if (isFocused) {
+																		// Show distinct border when cell has focus
 																		calculatedClasses =
 																			calculatedClasses + 'grid-control__body-cells--focused ';
 																	}
@@ -3600,7 +3958,7 @@ export default function Edit(props) {
 																							rowMenu.isOpen &&
 																							String(rowMenu.rowId) === String(row_id),
 																					}}
-																					onMouseDown={onMouseBorderClick}
+																					onMouseDown={onMouseMenuClick}
 																				></Cell>
 																			)}
 
@@ -3682,6 +4040,7 @@ export default function Edit(props) {
 																						});
 																					}}
 																					onChange={onChangeCellData}
+																					onMouseDown={onMouseMenuClick}
 																				></Cell>
 																			)}
 																		</Fragment>
@@ -4106,7 +4465,7 @@ function Cell(props) {
 	}
 
 	/**
-	 * Relay mouse down event for border cells
+	 * Relay mouse down event for menu cells
 	 *
 	 * @since 1.2.0
 	 *
@@ -4115,7 +4474,7 @@ function Cell(props) {
 	 * @param {Object} table     Current Dynamic Table
 	 * @param {Object} e         Border click event object
 	 */
-	function passMouseBorderClick(column_id, row_id, table, e) {
+	function passMouseMenuClick(column_id, row_id, table, e) {
 		onMouseDown(column_id, row_id, table, e);
 	}
 
@@ -4171,7 +4530,7 @@ function Cell(props) {
 						e.preventDefault();
 					}}
 					onClick={e => {
-						passMouseBorderClick(column_id, row_id, table, e);
+						passMouseMenuClick(column_id, row_id, table, e);
 					}}
 				>
 					<span aria-hidden="true">{cellContent}</span>
@@ -4324,6 +4683,13 @@ function Cell(props) {
 				if (cellType === 'border') return;
 				e.preventDefault();
 				onRequestEdit?.(cell_id);
+			}}
+			onContextMenu={e => {
+				if (cellType === 'border') return;
+				e.preventDefault();
+				// console.log('Processing right click on cell');
+				passMouseMenuClick(column_id, row_id, table, e);
+				onRequestFocus?.(Number(column_id), Number(row_id));
 			}}
 		>
 			{renderPipeline.map(key => {

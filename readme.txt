@@ -31,6 +31,7 @@ Whether you're building comparison tables, product listings, directory lookup ta
 * Support for column specific content types (e.g., rich text, date, time, number, etc.)
 * Header row support with formatting independent from the table body
 * Inline editing of cell content
+* Copy/cut/paste support for individual cells
 * Fully responsive: tables scale, wrap and adapt to mobile screens
 * Clean semantic HTML output for SEO and accessibility
 * Lightweight footprint and compatible with modern themes
@@ -115,6 +116,11 @@ No. This plugin is free to use. However, we are planning for a premium version o
 7. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+= 1.3.1 =
+* Added support for copy/cut/paste a single cell's content to other sells with the same content type
+* Created right-click cell menu
+
+
 = 1.3.0 =
 * Added support for collaborative editing features targeted for the next major WordPress release
 * Smoother handling when tables are added, edited, saved, or removed
