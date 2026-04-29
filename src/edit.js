@@ -1,5 +1,6 @@
 /* External dependencies */
 import { useSelect, useDispatch, dispatch } from '@wordpress/data';
+import { usePrevious } from '@wordpress/compose';
 import {
 	useState,
 	useEffect,
@@ -9,6 +10,7 @@ import {
 	Fragment,
 	flushSync,
 } from '@wordpress/element';
+import { store as coreStore } from '@wordpress/core-data';
 import { store as editorStore } from '@wordpress/editor';
 import { store as noticeStore } from '@wordpress/notices';
 import { speak } from '@wordpress/a11y';
@@ -119,6 +121,19 @@ export default function Edit(props) {
 		useDispatch(editorStore);
 	const SAVE_LOCK_KEY = 'dtbk-save-lock';
 
+	const { isSavingPost, isAutosavingPost } = useSelect(
+		select => {
+			const editor = select(editorStore);
+			return {
+				isSavingPost: editor?.isSavingPost?.() ?? false,
+				isAutosavingPost: editor?.isAutosavingPost?.() ?? false,
+			};
+		},
+		[]
+	);
+
+	const isSavingEditorChanges = isSavingPost || isAutosavingPost;
+
 	/* Table Store Action useDispatch declarations */
 	const { receiveNewTable } = useDispatch(tableStore);
 	const { cloneTable } = useDispatch(tableStore);
@@ -170,7 +185,10 @@ export default function Edit(props) {
 		originalPostType: '',
 		tableId: 0,
 		tableStatus: '',
+		isSavingEditorChanges: false,
 	});
+
+	const isPageUnloadRef = useRef(false);
 
 	const htmlToText = (html = '') => getTextContent(create({ html })).replace(/\s+/g, ' ').trim();
 
@@ -692,44 +710,8 @@ export default function Edit(props) {
 	 * @type {boolean} Post changes have been saved
 	 */
 	const postChangesAreSaved = usePostChangesSaved();
-
-	/**
-	 * Fires when posts have just finished saving and when a change is detected in
-	 * unmounted tables.
-	 */
-	useEffect(() => {
-		if (postChangesAreSaved) {
-			const finalizePostSaveTableChanges = async () => {
-				/**
-				 * Remove deleted tables from persisted store
-				 */
-				if (Object.keys(deletedTables).length > 0) {
-					await processDeletedTables(deletedTables);
-				}
-
-				/**
-				 * Tables are persisted when they are created, but should only remain
-				 * if the underlying post is saved.  Here we update the status of new
-				 * tables from "new" to "saved" once the post is saved.
-				 */
-				if (table.table_status == 'new') {
-					setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
-					await saveTableEntity(table.table_id);
-				}
-			};
-
-			void finalizePostSaveTableChanges().catch(error => {
-				console.error('Error processing Dynamic Tables after post save', error);
-				showTablePersistenceNotice(
-					__(
-						'Dynamic Tables could not finish table cleanup after the post was saved.',
-						'dynamic-table-blocks'
-					),
-					'dtbk-post-save-sync-error'
-				);
-			});
-		}
-	}, [postChangesAreSaved, unmountedTables]);
+	const previousPostChangesAreSaved = usePrevious(postChangesAreSaved);
+	const didJustFinishPostSave = postChangesAreSaved && !previousPostChangesAreSaved;
 
 	/**
 	 * Set Block Table Status
@@ -837,6 +819,45 @@ export default function Edit(props) {
 	}, [isAwaitingTableAttachment]);
 
 	/**
+	 * Ensure that a browser refresh will always load data from the persisted data
+	 * in the database/REST API
+	 *
+	 * @since 1.3.0
+	 */
+	useLayoutEffect(() => {
+		const markPageUnload = event => {
+			if (event?.type === 'pagehide' && event.persisted) {
+				return;
+			}
+			isPageUnloadRef.current = true;
+		};
+
+		const clearPageUnload = event => {
+			// Do not clear during a real unload when the document becomes hidden.
+			if (event?.type === 'visibilitychange' && document.visibilityState !== 'visible') {
+				return;
+			}
+
+			isPageUnloadRef.current = false;
+		};
+
+		clearPageUnload();
+
+		window.addEventListener('beforeunload', markPageUnload);
+		window.addEventListener('pagehide', markPageUnload);
+		window.addEventListener('pageshow', clearPageUnload);
+		window.addEventListener('focus', clearPageUnload);
+		document.addEventListener('visibilitychange', clearPageUnload);
+		return () => {
+			window.removeEventListener('beforeunload', markPageUnload);
+			window.removeEventListener('pagehide', markPageUnload);
+			window.removeEventListener('pageshow', clearPageUnload);
+			window.removeEventListener('focus', clearPageUnload);
+			document.removeEventListener('visibilitychange', clearPageUnload);
+		};
+	}, []);
+
+	/**
 	 * Retrieve table entity from table webservice and load table store.
 	 *
 	 * @since 1.0.0
@@ -914,6 +935,75 @@ export default function Edit(props) {
 
 	//Determine if table has been loaded.
 	const tableLoaded = !!table.block_table_ref && blockTableStatus !== 'None';
+
+	const tableHasPendingEntityEdits = useSelect(
+		select => {
+			if (!table?.block_table_ref || Number(table.table_id) <= 0) {
+				return false;
+			}
+
+			return (
+				select(coreStore)?.hasEditsForEntityRecord?.(
+					'dynamic-table-blocks',
+					'table',
+					Number(table.table_id)
+				) ?? false
+			);
+		},
+		[table?.block_table_ref, table.table_id]
+	);
+
+	/**
+	 * Fires when posts have just finished saving and when a change is detected in
+	 * unmounted tables.
+	 */
+	useEffect(() => {
+		if (!didJustFinishPostSave) return;
+		const finalizePostSaveTableChanges = async () => {
+			/**
+			 * Remove deleted tables from persisted store
+			 */
+			if (Object.keys(deletedTables).length > 0) {
+				await processDeletedTables(deletedTables);
+			}
+
+			const shouldPersistTableChanges =
+				tableLoaded &&
+				Number(table.table_id) > 0 &&
+				(table.table_status == 'new' || tableHasPendingEntityEdits);
+
+			if (shouldPersistTableChanges) {
+				/**
+				 * Tables are persisted when they are created, but should only remain
+				 * if the underlying post is saved. Here we update the status of new
+				 * tables from "new" to "saved" once the post is saved.
+				 */
+				if (table.table_status == 'new') {
+					setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
+				}
+
+				await saveTableEntity(table.table_id);
+			}
+		};
+
+		void finalizePostSaveTableChanges().catch(error => {
+			console.error('Error processing Dynamic Tables after post save', error);
+			showTablePersistenceNotice(
+				__(
+					'Dynamic Tables could not finish table cleanup after the post was saved.',
+					'dynamic-table-blocks'
+				),
+				'dtbk-post-save-sync-error'
+			);
+		});
+	}, [
+		didJustFinishPostSave,
+		deletedTables,
+		tableLoaded,
+		table.table_id,
+		table.table_status,
+		tableHasPendingEntityEdits,
+	]);
 
 	/**
 	 * Create a latch key before clone to identify the specific block being cloned. The block
@@ -1116,7 +1206,7 @@ export default function Edit(props) {
 	 *
 	 * @since 1.3.0
 	 */
-	useEffect(() => {
+	useLayoutEffect(() => {
 		unmountSnapshotRef.current = {
 			tableLoaded,
 			isNewBlock,
@@ -1124,8 +1214,9 @@ export default function Edit(props) {
 			originalPostType: original_post_type,
 			tableId: Number(table.table_id || 0),
 			tableStatus,
+			isSavingEditorChanges,
 		};
-	}, [tableLoaded, isNewBlock, inInserterBlock, original_post_type, table.table_id, tableStatus]);
+	}, [tableLoaded, isNewBlock, inInserterBlock, original_post_type, table.table_id, tableStatus, isSavingEditorChanges]);
 
 	/**
 	 * Perform clean-up when the block unmounts so that we can reattach it based on the block's
@@ -1143,11 +1234,22 @@ export default function Edit(props) {
 				originalPostType,
 				tableId,
 				tableStatus: lastTableStatus,
+				isSavingEditorChanges: wasSavingEditorChanges,
 			} = unmountSnapshotRef.current;
 
 			// No cleanup is needed for blocks that never finished loading, are still new,
 			// or do not yet have a persisted table ID.
 			if (!wasTableLoaded || wasNewBlock || tableId <= 0) {
+				return;
+			}
+
+			// Abandon cleanup if the page is refreshed
+			if (isPageUnloadRef.current) {
+				return;
+			}
+
+			// Abandon cleanup if the page was being saved
+			if (wasSavingEditorChanges) {
 				return;
 			}
 
@@ -2067,7 +2169,10 @@ export default function Edit(props) {
 		if (cellData) {
 			const attrs = {
 				...(cellData.attributes || {}),
-				value: { ...((cellData.attributes && cellData.attributes.value) || {}) },
+				value: {
+					...((cellData.attributes && cellData.attributes.value) || {}),
+					indexText: '',
+				},
 			};
 			setTableAttributes(table_id, 'cell', cellData.cell_id, 'CONTENT', '');
 			setTableAttributes(table_id, 'cell', cellData.cell_id, 'ATTRIBUTES', attrs);

@@ -774,6 +774,11 @@ function format_display_number( $cell ) {
 	$number_format_options = $cell['data_type']['settings']['formatOptions'];
 	$number_value          = $cell['attributes']['value']['indexText'];
 
+	// Bail early if cell value is not numeric.
+	if ( ! is_numeric( $number_value ) ) {
+		return $number_value;
+	}
+
 	$number_style = '';
 	switch ( $number_format ) {
 		case 'number':
@@ -838,6 +843,7 @@ function format_display_number( $cell ) {
 	$number_pattern = $number_positive_pattern . ';' . $number_negative_pattern;
 	$formatted_number->setPattern( $number_pattern );
 
+	error_log( 'currency amount = ' . $number_value . ' in cell ' . $cell['cell_tag_id'] );
 	if ( $currency_format ) {
 		return $formatted_number->formatCurrency( $number_value, 'USD' );
 	} else {

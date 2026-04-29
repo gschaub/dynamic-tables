@@ -1,31 +1,51 @@
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { usePrevious } from '@wordpress/compose';
 import { useSelect } from '@wordpress/data';
 
 /**
- * Returns `true` if post changes are saved, otherwise `false`.
+ * Returns `true` after an editor save cycle completes.
  *
  * @since    1.0.0
  *
- * @return {boolean} Are post changes saved
+ * @return {boolean} Has the current editor save cycle completed
  */
 export const usePostChangesSaved = () => {
 	const [areChangesSaved, setAreChangesSaved] = useState(false);
-	const { hasUnsavedChanges } = useSelect(select => {
+	const { isSavingPost, isAutosavingPost, didPostSaveRequestSucceed } = useSelect(select => {
+		const editor = select('core/editor');
 		return {
-			hasUnsavedChanges: select('core/editor').isEditedPostDirty(),
+			isSavingPost: editor?.isSavingPost?.() ?? false,
+			isAutosavingPost: editor?.isAutosavingPost?.() ?? false,
+			didPostSaveRequestSucceed: editor?.didPostSaveRequestSucceed?.() ?? false,
 		};
 	});
-	const hadUnsavedChanges = usePrevious(hasUnsavedChanges);
+	const wasSavingPost = usePrevious(isSavingPost);
+
+	const saveCycleRef = useRef({
+		wasAutosave: false,
+	});
 
 	useEffect(() => {
-		if (!hasUnsavedChanges && hadUnsavedChanges) {
-			setAreChangesSaved(true);
+		if (isSavingPost) {
+			saveCycleRef.current.wasAutosave = saveCycleRef.current.wasAutosave || isAutosavingPost;
+ 			setAreChangesSaved(false);
+			return;
 		}
-		if (hasUnsavedChanges) {
-			setAreChangesSaved(false);
+
+		if (wasSavingPost) {
+			const didCompleteManualSave =
+				!saveCycleRef.current.wasAutosave && didPostSaveRequestSucceed;
+			setAreChangesSaved(didCompleteManualSave);
+			saveCycleRef.current = {
+				wasAutosave: false,
+			};
 		}
-	}, [hasUnsavedChanges, hadUnsavedChanges]);
+	}, [
+		isSavingPost,
+		isAutosavingPost,
+		didPostSaveRequestSucceed,
+		wasSavingPost,
+	]);
 
 	return areChangesSaved;
 };

@@ -79,6 +79,17 @@ Not yet in this version. The architecture for external data sources is in the ro
 
 Yes. Dynamic Tables outputs semantic HTML and relies on standard CSS. It should be compatible with virtually all well-coded themes.
 
+= Does this plugin work with WordPress Real-Time Collaboration? =
+
+Yes, but Real-Time Collaboration behavior is controlled by WordPress/Gutenberg, not this plugin.
+
+Known WordPress RTC constraints may affect the editor experience:
+- Collaboration is disabled when classic meta boxes are present on the edit screen.
+- Current WordPress/Gutenberg RTC defaults may limit the number of simultaneous collaborators.
+- If you see RTC session-limit or reconnect issues, close extra editor tabs or windows for the same content and retry with fewer active editors.
+
+If your site needs broader RTC support, check your WordPress/Gutenberg version and hosting configuration, and review the current WordPress RTC developer notes.
+
 = Does this work on mobile devices? =
 
 Yes. The responsive behavior ensures tables resize, wrap or scroll appropriately to maintain readability on smaller screens.
