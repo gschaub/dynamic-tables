@@ -349,7 +349,7 @@ export const updateTableEntity =
 				.dispatch(coreStore)
 				.editEntityRecord('dynamic-table-blocks', 'table', table_id, updatedTable);
 		} catch (error) {
-			console.error('Error in updateTableEntity - Table ID - ' + tableId, error);
+			console.error('Error in updateTableEntity - Table ID - ' + table_id, error);
 			registry
 				.dispatch(noticeStore)
 				.createNotice(

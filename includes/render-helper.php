@@ -843,7 +843,6 @@ function format_display_number( $cell ) {
 	$number_pattern = $number_positive_pattern . ';' . $number_negative_pattern;
 	$formatted_number->setPattern( $number_pattern );
 
-	error_log( 'currency amount = ' . $number_value . ' in cell ' . $cell['cell_tag_id'] );
 	if ( $currency_format ) {
 		return $formatted_number->formatCurrency( $number_value, 'USD' );
 	} else {

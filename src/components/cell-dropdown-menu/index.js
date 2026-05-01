@@ -1,7 +1,8 @@
 /* External dependencies */
 import { useEffect, useRef, useCallback, memo } from '@wordpress/element';
 import { Popover, MenuGroup, MenuItem } from '@wordpress/components';
-import { copySmall, scissors, paste } from '@wordpress/icons';
+// import { copySmall, scissors, paste } from '@wordpress/icons';
+import { CopyIcon, ScissorsIcon, ClipboardIcon } from '@phosphor-icons/react';
 
 /* Internal dependencies */
 import './style.scss';
@@ -24,11 +25,12 @@ function CellMenuImpl(props = {}) {
 		cellId,
 		cellAttributes,
 		updatedCell,
+		canPaste = false,
 		onRequestClose,
 	} = props;
 
 	const tableId = table?.table_id;
-	const {column_id, row_id} = getCellIdCoordinates(cellId);
+	const { column_id, row_id } = getCellIdCoordinates(cellId);
 
 	// Refs for focus management
 	const menuRootRef = useRef(null);
@@ -118,6 +120,59 @@ function CellMenuImpl(props = {}) {
 	);
 
 	/**
+	 * Row attributes for inserting new row.
+	 *
+	 * @since    1.3.1
+	 *
+	 * @param {Object} event     Menu action
+	 * @param {number} rowId     Row ID for new row
+	 * @param {string} direction Insert Row either above or below
+	 */
+	const onInsertRow = useCallback(
+		(event, targetRowId, direction) => {
+			const updateType = direction === 'above' ? 'insert-above' : 'insert-below';
+
+			updatedCell(event, updateType, tableId, targetRowId, '');
+			close();
+		},
+		[updatedCell, tableId, close]
+	);
+
+	/**
+	 * Row to delete.
+	 *
+	 * @since    1.3.1
+	 *
+	 * @param {Object} event Menu action
+	 * @param {number} rowId Row ID for row to remove
+	 */
+	const onDeleteRow = useCallback(
+		(event, targetRowId) => {
+			updatedCell(event, 'delete', tableId, targetRowId, '');
+			close();
+		},
+		[updatedCell, tableId, close]
+	);
+
+	/**
+	 * Row attributes for moving a row up or down.
+	 *
+	 * @since    1.3.1
+	 *
+	 * @param {Object} event Menu action
+	 * @param {number} rowId Row ID for new row
+	 */
+	const onMoveRow = useCallback(
+		(event, targetRowId, direction) => {
+			const updateType = direction === 'up' ? 'move-up' : 'move-down';
+
+			updatedCell(event, updateType, tableId, targetRowId, '');
+			close();
+		},
+		[updatedCell, tableId, close]
+	);
+
+	/**
 	 * Close the menu when the popover requests to close.
 	 *
 	 * @since    1.3.1
@@ -126,11 +181,13 @@ function CellMenuImpl(props = {}) {
 		onRequestClose?.();
 	}, [onRequestClose]);
 
+	const canShowRowInsertDelete = !rowAttributes?.isHeader;
+	const canShowRowMove = !isContentOnlyMode && !rowAttributes?.isHeader;
+
 	const hasTableId = tableId !== null && tableId !== undefined;
 	const hasCellId = cellId !== null && cellId !== undefined;
 
-	const canRender =
-		!!anchor && hasTableId && hasCellId;
+	const canRender = !!anchor && typeof updatedCell === 'function' && hasTableId && hasCellId;
 
 	// Focus first item on open (next frame so Popover has mounted)
 	useEffect(() => {
@@ -146,6 +203,22 @@ function CellMenuImpl(props = {}) {
 	}, [canRender, anchor, cellId]);
 
 	if (!canRender) return null;
+	const menuBuildNonce = 'cell-menu-v2';
+
+	const copyIcon = (
+		<CopyIcon size={16} style={{ color: 'steelblue' }} weight="regular" aria-hidden="true" />
+	);
+	const cutIcon = (
+		<ScissorsIcon size={16} style={{ color: 'steelblue' }} weight="regular" aria-hidden="true" />
+	);
+	const pasteIcon = (
+		<ClipboardIcon
+			size={16}
+			style={{ color: canPaste ? 'steelblue' : 'lightblue' }}
+			weight="regular"
+			aria-hidden="true"
+		 />
+	);
 
 	return (
 		<>
@@ -162,22 +235,72 @@ function CellMenuImpl(props = {}) {
 				<div
 					id={menuId}
 					ref={menuRootRef}
+					data-dtbk-build={menuBuildNonce}
 					role="menu"
 					aria-label={`Cell ${cellId} menu`}
 					tabIndex={-1}
 					onKeyDown={onKeyDown}
 				>
 					<MenuGroup>
-						<MenuItem icon={copySmall} onClick={e => onCopyCell(e, cellId)}>
+						<MenuItem ref={firstItemRef} icon={copyIcon} onClick={e => onCopyCell(e, cellId)}>
 							Copy
 						</MenuItem>
-						<MenuItem icon={scissors} onClick={e => onCutCell(e, cellId)}>
+						<MenuItem icon={cutIcon} onClick={e => onCutCell(e, cellId)}>
 							Cut
 						</MenuItem>
-						<MenuItem icon={paste} onClick={e => onPasteCell(e, cellId)}>
+						<MenuItem icon={pasteIcon} disabled={!canPaste} onClick={e => onPasteCell(e, cellId)}>
 							Paste
 						</MenuItem>
 					</MenuGroup>
+
+					{canShowRowInsertDelete && (
+						<>
+							<MenuGroup>
+								<MenuItem
+									ref={!canShowRowHeight && !disableInsertRowUp ? firstItemRef : undefined}
+									shortcut={'Alt + Shift + ↑'}
+									disabled={disableInsertRowUp}
+									onClick={e => onInsertRow(e, rowId, 'above')}
+								>
+									Insert Row Above
+								</MenuItem>
+
+								<MenuItem
+									ref={!canShowRowHeight && disableInsertRowUp ? firstItemRef : undefined}
+									shortcut={'Alt + Shift + ↓'}
+									onClick={e => onInsertRow(e, rowId, 'below')}
+								>
+									Insert Row Below
+								</MenuItem>
+							</MenuGroup>
+
+							{canShowRowMove && (
+								<MenuGroup>
+									<MenuItem
+										shortcut={'Alt + ↑'}
+										disabled={disableMoveRowUp}
+										onClick={e => onMoveRow(e, rowId, 'up')}
+									>
+										Move Row Up
+									</MenuItem>
+
+									<MenuItem
+										shortcut={'Alt + ↓'}
+										disabled={disableMoveRowDown}
+										onClick={e => onMoveRow(e, rowId, 'down')}
+									>
+										Move Row Down
+									</MenuItem>
+								</MenuGroup>
+							)}
+
+							<MenuGroup>
+								<MenuItem shortcut={'Alt + Delete'} onClick={e => onDeleteRow(e, rowId)}>
+									Delete Row
+								</MenuItem>
+							</MenuGroup>
+						</>
+					)}
 				</div>
 			</Popover>
 		</>

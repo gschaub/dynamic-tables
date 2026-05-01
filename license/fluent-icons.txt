@@ -1,4 +1,5 @@
-icrosoft Fluent UI System Icons
+Microsoft Fluent UI System Icons
+
 Copyright (c) Microsoft Corporation
 
 Licensed under the MIT License.
