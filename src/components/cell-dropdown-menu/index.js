@@ -22,6 +22,7 @@ function CellMenuImpl(props = {}) {
 		menuId,
 		anchor,
 		table,
+		isContentOnlyMode = false,
 		cellId,
 		cellAttributes,
 		updatedCell,
@@ -30,7 +31,16 @@ function CellMenuImpl(props = {}) {
 	} = props;
 
 	const tableId = table?.table_id;
-	const { column_id, row_id } = getCellIdCoordinates(cellId);
+	const { row_id } = getCellIdCoordinates(cellId);
+
+	// Support disabling row movement that would bring out-of-bounds conditions
+	const numTableRows = table?.rows?.length - 1;
+	const lastRowId = table?.rows[numTableRows]?.row_id;
+	const headerRowId = table?.rows?.find(r => r.attributes.isRowHeader === true)?.row_id;
+	const firstBodyRowId = headerRowId ? Number(headerRowId) + 1 : 1;
+	const disableInsertRowUp = Number(row_id) === 0 ? true : false;
+	const disableMoveRowUp = Number(row_id) <= Number(firstBodyRowId) ? true : false;
+	const disableMoveRowDown = Number(lastRowId) === Number(row_id) ? true : false;
 
 	// Refs for focus management
 	const menuRootRef = useRef(null);
@@ -119,20 +129,30 @@ function CellMenuImpl(props = {}) {
 		[updatedCell, tableId, close]
 	);
 
+	const onClearCellContent = useCallback(
+		(event, cellId) => {
+			const updateType = 'clearCellContent';
+
+			updatedCell(event, updateType, tableId, cellId, '');
+			close();
+		},
+		[updatedCell, tableId, close]
+	);
+
 	/**
 	 * Row attributes for inserting new row.
 	 *
 	 * @since    1.3.1
 	 *
-	 * @param {Object} event     Menu action
-	 * @param {number} rowId     Row ID for new row
-	 * @param {string} direction Insert Row either above or below
+	 * @param {Object} event        Menu action
+	 * @param {string} targetCellId Reference cellID for insert
+	 * @param {string} direction    Direction to insert row
 	 */
 	const onInsertRow = useCallback(
-		(event, targetRowId, direction) => {
+		(event, targetCellId, direction) => {
 			const updateType = direction === 'above' ? 'insert-above' : 'insert-below';
 
-			updatedCell(event, updateType, tableId, targetRowId, '');
+			updatedCell(event, updateType, tableId, targetCellId, '');
 			close();
 		},
 		[updatedCell, tableId, close]
@@ -143,12 +163,12 @@ function CellMenuImpl(props = {}) {
 	 *
 	 * @since    1.3.1
 	 *
-	 * @param {Object} event Menu action
-	 * @param {number} rowId Row ID for row to remove
+	 * @param {Object} event        Menu action
+	 * @param {string} targetCellId Reference cellID for delete
 	 */
 	const onDeleteRow = useCallback(
-		(event, targetRowId) => {
-			updatedCell(event, 'delete', tableId, targetRowId, '');
+		(event, targetCellId) => {
+			updatedCell(event, 'delete', tableId, targetCellId, '');
 			close();
 		},
 		[updatedCell, tableId, close]
@@ -159,14 +179,15 @@ function CellMenuImpl(props = {}) {
 	 *
 	 * @since    1.3.1
 	 *
-	 * @param {Object} event Menu action
-	 * @param {number} rowId Row ID for new row
+	 * @param {Object} event        Menu action
+	 * @param {string} targetCellId Reference cellID for move
+	 * @param {string} direction    Direction to move row
 	 */
 	const onMoveRow = useCallback(
-		(event, targetRowId, direction) => {
+		(event, targetCellId, direction) => {
 			const updateType = direction === 'up' ? 'move-up' : 'move-down';
 
-			updatedCell(event, updateType, tableId, targetRowId, '');
+			updatedCell(event, updateType, tableId, targetCellId, '');
 			close();
 		},
 		[updatedCell, tableId, close]
@@ -181,8 +202,9 @@ function CellMenuImpl(props = {}) {
 		onRequestClose?.();
 	}, [onRequestClose]);
 
-	const canShowRowInsertDelete = !rowAttributes?.isHeader;
-	const canShowRowMove = !isContentOnlyMode && !rowAttributes?.isHeader;
+	console.log('Cell attributes', cellAttributes);
+	const canShowRowInsertDelete = !cellAttributes?.isRowHeader;
+	const canShowRowMove = !isContentOnlyMode && !cellAttributes?.isRowHeader;
 
 	const hasTableId = tableId !== null && tableId !== undefined;
 	const hasCellId = cellId !== null && cellId !== undefined;
@@ -217,7 +239,7 @@ function CellMenuImpl(props = {}) {
 			style={{ color: canPaste ? 'steelblue' : 'lightblue' }}
 			weight="regular"
 			aria-hidden="true"
-		 />
+		/>
 	);
 
 	return (
@@ -251,24 +273,25 @@ function CellMenuImpl(props = {}) {
 						<MenuItem icon={pasteIcon} disabled={!canPaste} onClick={e => onPasteCell(e, cellId)}>
 							Paste
 						</MenuItem>
+						<MenuItem shortcut={'Delete'} onClick={e => onClearCellContent(e, cellId)}>
+							Clear Content
+						</MenuItem>
 					</MenuGroup>
 
 					{canShowRowInsertDelete && (
 						<>
 							<MenuGroup>
 								<MenuItem
-									ref={!canShowRowHeight && !disableInsertRowUp ? firstItemRef : undefined}
 									shortcut={'Alt + Shift + ↑'}
 									disabled={disableInsertRowUp}
-									onClick={e => onInsertRow(e, rowId, 'above')}
+									onClick={e => onInsertRow(e, cellId, 'above')}
 								>
 									Insert Row Above
 								</MenuItem>
 
 								<MenuItem
-									ref={!canShowRowHeight && disableInsertRowUp ? firstItemRef : undefined}
 									shortcut={'Alt + Shift + ↓'}
-									onClick={e => onInsertRow(e, rowId, 'below')}
+									onClick={e => onInsertRow(e, cellId, 'below')}
 								>
 									Insert Row Below
 								</MenuItem>
@@ -279,7 +302,7 @@ function CellMenuImpl(props = {}) {
 									<MenuItem
 										shortcut={'Alt + ↑'}
 										disabled={disableMoveRowUp}
-										onClick={e => onMoveRow(e, rowId, 'up')}
+										onClick={e => onMoveRow(e, cellId, 'up')}
 									>
 										Move Row Up
 									</MenuItem>
@@ -287,7 +310,7 @@ function CellMenuImpl(props = {}) {
 									<MenuItem
 										shortcut={'Alt + ↓'}
 										disabled={disableMoveRowDown}
-										onClick={e => onMoveRow(e, rowId, 'down')}
+										onClick={e => onMoveRow(e, cellId, 'down')}
 									>
 										Move Row Down
 									</MenuItem>
@@ -295,7 +318,7 @@ function CellMenuImpl(props = {}) {
 							)}
 
 							<MenuGroup>
-								<MenuItem shortcut={'Alt + Delete'} onClick={e => onDeleteRow(e, rowId)}>
+								<MenuItem shortcut={'Alt + Delete'} onClick={e => onDeleteRow(e, cellId)}>
 									Delete Row
 								</MenuItem>
 							</MenuGroup>

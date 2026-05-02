@@ -49,6 +49,7 @@ function CellMenuImpl(props = {}) {
     menuId,
     anchor,
     table,
+    isContentOnlyMode = false,
     cellId,
     cellAttributes,
     updatedCell,
@@ -57,9 +58,17 @@ function CellMenuImpl(props = {}) {
   } = props;
   const tableId = table?.table_id;
   const {
-    column_id,
     row_id
   } = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.getCellIdCoordinates)(cellId);
+
+  // Support disabling row movement that would bring out-of-bounds conditions
+  const numTableRows = table?.rows?.length - 1;
+  const lastRowId = table?.rows[numTableRows]?.row_id;
+  const headerRowId = table?.rows?.find(r => r.attributes.isRowHeader === true)?.row_id;
+  const firstBodyRowId = headerRowId ? Number(headerRowId) + 1 : 1;
+  const disableInsertRowUp = Number(row_id) === 0 ? true : false;
+  const disableMoveRowUp = Number(row_id) <= Number(firstBodyRowId) ? true : false;
+  const disableMoveRowDown = Number(lastRowId) === Number(row_id) ? true : false;
 
   // Refs for focus management
   const menuRootRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
@@ -119,19 +128,24 @@ function CellMenuImpl(props = {}) {
     updatedCell(event, updateType, tableId, cellId, '');
     close();
   }, [updatedCell, tableId, close]);
+  const onClearCellContent = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, cellId) => {
+    const updateType = 'clearCellContent';
+    updatedCell(event, updateType, tableId, cellId, '');
+    close();
+  }, [updatedCell, tableId, close]);
 
   /**
    * Row attributes for inserting new row.
    *
    * @since    1.3.1
    *
-   * @param {Object} event     Menu action
-   * @param {number} rowId     Row ID for new row
-   * @param {string} direction Insert Row either above or below
+   * @param {Object} event        Menu action
+   * @param {string} targetCellId Reference cellID for insert
+   * @param {string} direction    Direction to insert row
    */
-  const onInsertRow = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetRowId, direction) => {
+  const onInsertRow = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetCellId, direction) => {
     const updateType = direction === 'above' ? 'insert-above' : 'insert-below';
-    updatedCell(event, updateType, tableId, targetRowId, '');
+    updatedCell(event, updateType, tableId, targetCellId, '');
     close();
   }, [updatedCell, tableId, close]);
 
@@ -140,11 +154,11 @@ function CellMenuImpl(props = {}) {
    *
    * @since    1.3.1
    *
-   * @param {Object} event Menu action
-   * @param {number} rowId Row ID for row to remove
+   * @param {Object} event        Menu action
+   * @param {string} targetCellId Reference cellID for delete
    */
-  const onDeleteRow = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetRowId) => {
-    updatedCell(event, 'delete', tableId, targetRowId, '');
+  const onDeleteRow = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetCellId) => {
+    updatedCell(event, 'delete', tableId, targetCellId, '');
     close();
   }, [updatedCell, tableId, close]);
 
@@ -153,12 +167,13 @@ function CellMenuImpl(props = {}) {
    *
    * @since    1.3.1
    *
-   * @param {Object} event Menu action
-   * @param {number} rowId Row ID for new row
+   * @param {Object} event        Menu action
+   * @param {string} targetCellId Reference cellID for move
+   * @param {string} direction    Direction to move row
    */
-  const onMoveRow = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetRowId, direction) => {
+  const onMoveRow = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetCellId, direction) => {
     const updateType = direction === 'up' ? 'move-up' : 'move-down';
-    updatedCell(event, updateType, tableId, targetRowId, '');
+    updatedCell(event, updateType, tableId, targetCellId, '');
     close();
   }, [updatedCell, tableId, close]);
 
@@ -170,8 +185,9 @@ function CellMenuImpl(props = {}) {
   const handlePopoverClose = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(() => {
     onRequestClose?.();
   }, [onRequestClose]);
-  const canShowRowInsertDelete = !rowAttributes?.isHeader;
-  const canShowRowMove = !isContentOnlyMode && !rowAttributes?.isHeader;
+  console.log('Cell attributes', cellAttributes);
+  const canShowRowInsertDelete = !cellAttributes?.isRowHeader;
+  const canShowRowMove = !isContentOnlyMode && !cellAttributes?.isRowHeader;
   const hasTableId = tableId !== null && tableId !== undefined;
   const hasCellId = cellId !== null && cellId !== undefined;
   const canRender = !!anchor && typeof updatedCell === 'function' && hasTableId && hasCellId;
@@ -245,37 +261,39 @@ function CellMenuImpl(props = {}) {
             disabled: !canPaste,
             onClick: e => onPasteCell(e, cellId),
             children: "Paste"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
+            shortcut: 'Delete',
+            onClick: e => onClearCellContent(e, cellId),
+            children: "Clear Content"
           })]
         }), canShowRowInsertDelete && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-              ref: !canShowRowHeight && !disableInsertRowUp ? firstItemRef : undefined,
               shortcut: 'Alt + Shift + ↑',
               disabled: disableInsertRowUp,
-              onClick: e => onInsertRow(e, rowId, 'above'),
+              onClick: e => onInsertRow(e, cellId, 'above'),
               children: "Insert Row Above"
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
-              ref: !canShowRowHeight && disableInsertRowUp ? firstItemRef : undefined,
               shortcut: 'Alt + Shift + ↓',
-              onClick: e => onInsertRow(e, rowId, 'below'),
+              onClick: e => onInsertRow(e, cellId, 'below'),
               children: "Insert Row Below"
             })]
           }), canShowRowMove && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
               shortcut: 'Alt + ↑',
               disabled: disableMoveRowUp,
-              onClick: e => onMoveRow(e, rowId, 'up'),
+              onClick: e => onMoveRow(e, cellId, 'up'),
               children: "Move Row Up"
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
               shortcut: 'Alt + ↓',
               disabled: disableMoveRowDown,
-              onClick: e => onMoveRow(e, rowId, 'down'),
+              onClick: e => onMoveRow(e, cellId, 'down'),
               children: "Move Row Down"
             })]
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuGroup, {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.MenuItem, {
               shortcut: 'Alt + Delete',
-              onClick: e => onDeleteRow(e, rowId),
+              onClick: e => onDeleteRow(e, cellId),
               children: "Delete Row"
             })
           })]
@@ -4863,9 +4881,9 @@ function Edit(props) {
    *
    * @since 1.3.1
    *
-   * @param {Object} e               Cell menu click event
-   * @param {string} cellId          Cell number to update
-   * @param {Object} cellAttributes  Cell attributes
+   * @param {Object} e              Cell menu click event
+   * @param {string} cellId         Cell number to update
+   * @param {Object} cellAttributes Cell attributes
    */
   const openCellMenu = (e, cellId, cellAttributes) => {
     e?.preventDefault?.();
@@ -6374,7 +6392,6 @@ function Edit(props) {
       case 'C':
       case 'c':
         // Copy selected cell content
-        console.log('Active Cell', activeCellEl);
         if (isCtlOnly) {
           copyCellData(cellId, 'copyCell');
         }
@@ -6703,6 +6720,10 @@ function Edit(props) {
     if (isContentOnlyMode && !isContentOnlyRowAction(updateType)) {
       return;
     }
+    const {
+      column_id,
+      row_id
+    } = (0,_utils__WEBPACK_IMPORTED_MODULE_16__.getCellIdCoordinates)(cellId);
     switch (updateType) {
       case 'copyCell':
       case 'cutCell':
@@ -6715,26 +6736,36 @@ function Edit(props) {
           pasteCellData(cellId);
           break;
         }
-      // case 'insert-above': {
-      // 	insertRow(tableId, rowId, 'above');
-      // 	break;
-      // }
-      // case 'insert-below': {
-      // 	insertRow(tableId, rowId, 'below');
-      // 	break;
-      // }
-      // case 'delete': {
-      // 	deleteRow(tableId, rowId);
-      // 	break;
-      // }
-      // case 'move-up': {
-      // 	reorderRows(tableId, rowId, 'up');
-      // 	break;
-      // }
-      // case 'move-down': {
-      // 	reorderRows(tableId, rowId, 'down');
-      // 	break;
-      // }
+      case 'clearCellContent':
+        {
+          processCellDelete(column_id, row_id);
+          break;
+        }
+      case 'insert-above':
+        {
+          insertRow(tableId, row_id, 'above');
+          break;
+        }
+      case 'insert-below':
+        {
+          insertRow(tableId, row_id, 'below');
+          break;
+        }
+      case 'delete':
+        {
+          deleteRow(tableId, row_id);
+          break;
+        }
+      case 'move-up':
+        {
+          reorderRows(tableId, row_id, 'up');
+          break;
+        }
+      case 'move-down':
+        {
+          reorderRows(tableId, row_id, 'down');
+          break;
+        }
       default:
         console.log('Unrecognized Row Update Type');
     }
@@ -6745,8 +6776,8 @@ function Edit(props) {
    *
    * @since 1.3.1
    *
-   * @param {number} cellId      Identifier for the table cell
-   * @param {string} updateType  Action to perform
+   * @param {number} cellId     Identifier for the table cell
+   * @param {string} updateType Action to perform
    */
   function copyCellData(cellId, updateType) {
     const {
@@ -6785,7 +6816,6 @@ function Edit(props) {
       // Copy to the system clipboard
       const clipboardText = cellContent;
       if (navigator?.clipboard?.writeText) {
-        console.log('Can write to clipboard');
         navigator.clipboard.writeText(clipboardText).catch(() => {
           legacySystemClipboardFallback(clipboardText);
         });
@@ -6800,7 +6830,7 @@ function Edit(props) {
    *
    * @since 1.3.1
    *
-   * @param {number} cellId  Identifier for the table cell
+   * @param {number} cellId Identifier for the table cell
    */
   function pasteCellData(cellId) {
     const {
@@ -6817,14 +6847,13 @@ function Edit(props) {
       cellContent,
       cellValueAttr
     } = cellClipboard;
-    const currentCellData = table.cells.find(c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id));
-    const currentColumnDataType = getClipboardDataType(column_id, row_id);
-    const mismatchMessage = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Cannot paste cell content because the source and target cell content types do not match.', 'dynamic-table-blocks');
     if (!inUse) return;
     if (clipboardAction === 'cut' && sourceCellId === cellId) {
       resetCellClipboard();
       return;
     }
+    const currentColumnDataType = getClipboardDataType(column_id, row_id);
+    const mismatchMessage = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Cannot paste cell content because the source and target cell content types do not match.', 'dynamic-table-blocks');
     if (columnDataType !== currentColumnDataType) {
       announceEditorMessage(mismatchMessage, 'assertive');
       createNotice('error', mismatchMessage, {
@@ -6834,6 +6863,7 @@ function Edit(props) {
       });
       return;
     }
+    const currentCellData = table.cells.find(c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id));
     const currentCellValueAttr = currentCellData?.attributes || {};
     const updatedCellAttrs = {
       ...currentCellValueAttr,
@@ -6864,8 +6894,7 @@ function Edit(props) {
    *
    * @since 1.3.1
    *
-   * @param {number} cellId                Identifier for the table cell
-   * @param {string} updateType            Action to perform
+   * @param {string} clipboardContent Text to copy to the clipboard
    */
   function legacySystemClipboardFallback(clipboardContent) {
     const tempTextArea = document.createElement('textarea');
@@ -6905,7 +6934,7 @@ function Edit(props) {
     // console.log('Handling Menu Click');
     e?.preventDefault?.();
     e?.stopPropagation?.();
-    if (row_id === '0' && column_id !== '0') {
+    if (Number(row_id) === 0 && Number(column_id) !== 0) {
       if (isContentOnlyMode) {
         return;
       }
@@ -6914,18 +6943,17 @@ function Edit(props) {
       const columnLabel = (0,_utils__WEBPACK_IMPORTED_MODULE_16__.numberToLetter)(Number(column_id));
       openColumnMenu(e, column_id, columnLabel, attrs);
     }
-    if (row_id !== '0' && column_id === '0') {
-      const clickedRow = table.rows.find(r => r.row_id === row_id);
+    if (Number(row_id) !== 0 && Number(column_id) === 0) {
+      const clickedRow = table?.rows?.find(r => Number(r.row_id) === Number(row_id));
       if (isContentOnlyMode && clickedRow?.attributes?.isHeader) {
         return;
       }
       const attrs = clickedRow?.attributes || {};
       openRowMenu(e, row_id, String(row_id), attrs);
     }
-    if (row_id !== '0' && column_id !== '0') {
-      // console.log('row_id = ' + row_id + ' column_id = ' + column_id);
-      const clickedCell = table?.cells?.find(c => c.row_id === row_id && c.column_id === column_id);
-      const relatedRow = table.rows.find(r => r.row_id === row_id);
+    if (Number(row_id) !== 0 && Number(column_id) !== 0) {
+      const clickedCell = table?.cells?.find(c => Number(c.row_id) === Number(row_id) && Number(c.column_id) === Number(column_id));
+      const relatedRow = table?.rows?.find(r => Number(r.row_id) === Number(row_id));
       const cellId = (0,_utils__WEBPACK_IMPORTED_MODULE_16__.numberToLetter)(Number(column_id)) + row_id;
       if (isContentOnlyMode) {
         return;
@@ -6934,8 +6962,6 @@ function Edit(props) {
         isRowHeader: relatedRow?.attributes?.isHeader === true ? true : false,
         cellAttributes: clickedCell?.attributes || {}
       };
-      // console.log('Cell Attributes = ' + JSON.stringify(attrs));
-      // console.log('Opening Cell Menu for cell ' + cellId);
       openCellMenu(e, cellId, attrs);
     }
     setTableStale(false);
@@ -7325,6 +7351,7 @@ function Edit(props) {
       menuId: editorCellMenuTagId,
       anchor: cellMenu.anchorEl,
       table: table,
+      isContentOnlyMode: isContentOnlyMode,
       cellId: cellMenu.cellId,
       cellAttributes: cellMenu.cellAttributes,
       canPaste: cellClipboard.inUse,
@@ -7583,10 +7610,11 @@ function Edit(props) {
                       isContentOnlyMode: isContentOnlyMode,
                       dataFormat: columnDataTypes[column_id],
                       cell_id: cell_id,
-                      table: table,
-                      table_id: table_id,
-                      row_id: row_id,
-                      column_id: column_id,
+                      table: table
+                      // table_id={table_id}
+                      // row_id={row_id}
+                      // column_id={column_id}
+                      ,
                       content: borderContent,
                       attributes: attributes,
                       columnClassNames: '',
@@ -7659,10 +7687,11 @@ function Edit(props) {
                         isContentOnlyMode: isContentOnlyMode,
                         dataFormat: columnDataTypes[column_id],
                         cell_id: cell_id,
-                        table: table,
-                        table_id: table_id,
-                        row_id: row_id,
-                        column_id: column_id,
+                        table: table
+                        // table_id={table_id}
+                        // row_id={row_id}
+                        // column_id={column_id}
+                        ,
                         content: borderContent,
                         attributes: attributes,
                         columnClassNames: '',
@@ -7683,10 +7712,12 @@ function Edit(props) {
                         cellType: 'header',
                         dataFormat: columnDataTypes[column_id],
                         cell_id: cell_id,
-                        cellTagId: getEditorColumnHeaderTagId(column_id),
-                        table_id: table_id,
-                        row_id: row_id,
-                        column_id: column_id,
+                        table: table,
+                        cellTagId: getEditorColumnHeaderTagId(column_id)
+                        // table_id={table_id}
+                        // row_id={row_id}
+                        // column_id={column_id}
+                        ,
                         content: content,
                         attributes: attributes,
                         isFocused: isFocused,
@@ -7811,10 +7842,11 @@ function Edit(props) {
                           isContentOnlyMode: isContentOnlyMode,
                           dataFormat: columnDataTypes[column_id],
                           cell_id: cell_id,
-                          table: table,
-                          table_id: table_id,
-                          row_id: row_id,
-                          column_id: column_id,
+                          table: table
+                          // table_id={table_id}
+                          // row_id={row_id}
+                          // column_id={column_id}
+                          ,
                           content: borderContent,
                           attributes: attributes,
                           columnClassNames: '',
@@ -7842,9 +7874,11 @@ function Edit(props) {
                           cellType: 'body',
                           dataFormat: columnDataTypes[column_id],
                           cell_id: cell_id,
-                          table_id: table_id,
-                          row_id: row_id,
-                          column_id: column_id,
+                          table: table
+                          // table_id={table_id}
+                          // row_id={row_id}
+                          // column_id={column_id}
+                          ,
                           content: content,
                           attributes: attributes,
                           isFocused: isFocused,
@@ -8012,10 +8046,10 @@ function Cell(props) {
     isContentOnlyMode = false,
     dataFormat,
     table,
-    row_id,
+    // row_id,
     cell_id,
-    table_id,
-    column_id,
+    // table_id,
+    // column_id,
     content,
     attributes,
     isFocused,
@@ -8034,6 +8068,11 @@ function Cell(props) {
     canOpenContextMenu = false,
     contextMenuProps = {}
   } = props;
+  const {
+    column_id,
+    row_id
+  } = (0,_utils__WEBPACK_IMPORTED_MODULE_16__.getCellIdCoordinates)(cell_id);
+  const table_id = table?.table_id;
   const {
     type,
     settings
@@ -8447,7 +8486,6 @@ function Cell(props) {
     onContextMenu: e => {
       if (cellType === 'border' || !canOpenContextMenu) return;
       e.preventDefault();
-      // console.log('Processing right click on cell');
       passMouseMenuClick(column_id, row_id, table, e);
       onRequestFocus?.(Number(column_id), Number(row_id));
     },
