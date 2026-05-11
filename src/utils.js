@@ -85,6 +85,15 @@ export function updateArray(arrayIn, key, id, updatedData) {
 	return arrayIn.map(item => (item[key] === id ? { ...item, ...updatedData } : item));
 }
 
+function escapeHtml(value) {
+	return String(value)
+		.replaceAll('&', '&amp;')
+		.replaceAll('<', '&lt;')
+		.replaceAll('>', '&gt;')
+		.replaceAll('"', '&quot;')
+		.replaceAll("'", '&#039;');
+}
+
 /**
  * Sort table part array by the natural identifier assigned at design time.
  *
@@ -199,14 +208,17 @@ export function computeCellIds(fetchedCells) {
  * @return {Object}       Row and column id extracted from the cell id
  */
 export function getCellIdCoordinates(cellId) {
-	const match = cellId.match(/^([A-Z]+)(\d+)$/i);
+	// console.log('Received cellId', cellId);
+	const match = cellId.match(/^(0|[A-Z]+)(\d+)$/i);
+	// const match = cellId.match(/^([A-Z]+)(\d+)$/i);
 	if (!match) {
-		throw new Error("Invalid cell id");
+		throw new Error('Invalid cell id (' + cellId + ')');
 	}
 
 	const [, colLetters, rowString] = match;
 	const rowId = Number(rowString);
-	const colId = letterToNumber(colLetters);
+	const colId = colLetters === '0' ? 0 : letterToNumber(colLetters);
+	// const colId = letterToNumber(colLetters);
 
 	return { column_id: colId, row_id: rowId };
 }
@@ -721,4 +733,59 @@ export function formattedNumber(
 	}
 
 	return `-${formattedMagnitude}`;
+}
+
+export function formatClipboardContent(
+	cellContent,
+	cellValueAttr,
+	columnDataType = DEFAULT_COLUMN_DATA_TYPE
+) {
+	const dataType = columnDataType?.type || 'general';
+	const typeFormat = columnDataType?.settings;
+	let formattedText = '';
+	let plainText = '';
+
+	switch (dataType) {
+		case 'general': {
+			formattedText = cellContent;
+			plainText = cellValueAttr;
+			break;
+		}
+		case 'date-time': {
+			console.log('Date/Time format = ' + typeFormat?.format);
+			formattedText = formatedDisplayDate(cellContent, typeFormat?.format);
+			plainText = formattedText;
+			break;
+		}
+		case 'number':
+			{
+				const numberDisplayValue = formattedNumber(
+					cellContent,
+					typeFormat?.format,
+					typeFormat?.formatOptions?.thousandSeparator,
+					typeFormat?.formatOptions?.decimalPlaces,
+					typeFormat?.formatOptions?.showCurrencySymbol,
+					typeFormat?.formatOptions?.bracketNegative
+				);
+				if (typeFormat?.formatOptions?.redNegative) {
+					const isNegativeNumber = Number(cellContent) < 0;
+					const htmlFormatted = `<span style="color: red;">${escapeHtml(numberDisplayValue)}</span>`;
+
+					formattedText = isNegativeNumber ? htmlFormatted : numberDisplayValue;
+				} else {
+					formattedText = numberDisplayValue;
+				}
+				plainText = numberDisplayValue;
+			}
+			break;
+		default: {
+			formattedText = cellContent;
+			plainText = cellValueAttr;
+		}
+	}
+	console.log('Formatted clipboard content', { formattedText, plainText });
+	return {
+		formattedText,
+		plainText,
+	};
 }

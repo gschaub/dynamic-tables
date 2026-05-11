@@ -13,7 +13,6 @@ import {
 import { store as coreStore } from '@wordpress/core-data';
 import { store as editorStore } from '@wordpress/editor';
 import { store as noticeStore } from '@wordpress/notices';
-import { speak } from '@wordpress/a11y';
 import { __, sprintf } from '@wordpress/i18n';
 import {
 	Panel,
@@ -41,12 +40,20 @@ import {
 	PanelColorSettings,
 } from '@wordpress/block-editor';
 import { create, getTextContent } from '@wordpress/rich-text';
-import { search, blockTable as icon } from '@wordpress/icons';
+import { search, blockTable as icon, column } from '@wordpress/icons';
 import clsx from 'clsx';
 
 /* Internal dependencies */
 import { store as tableStore } from './data';
 import { usePostChangesSaved, useEditorIdentity, useNotInInserterPreview } from './hooks';
+
+import {
+	getMessageText,
+	publishMessage,
+	removeMessageNotice,
+	showMessageNotice,
+	speakMessage,
+} from './messages';
 
 import {
 	tableSort,
@@ -65,6 +72,7 @@ import {
 	getCaretIndexFromTokenCount,
 	getFirstNumericIndex,
 	normalizeCaretForPresentationPrefix,
+	formatClipboardContent,
 } from './utils';
 
 import { initTable, getDefaultRow, getDefaultColumn, getDefaultCell } from './table-defaults';
@@ -184,6 +192,8 @@ export default function Edit(props) {
 		columnDataType: '',
 		cellContent: '',
 		cellValueAttr: {},
+		cellFormattedText: '',
+		cellPlainText: '',
 	});
 
 	const hasAnnouncedGridHelpRef = useRef(false);
@@ -208,34 +218,6 @@ export default function Edit(props) {
 	const suppressNextInvokerRestoreRef = useRef(false);
 
 	/**
-	 * Speak accessibility message audibly.
-	 *
-	 * @since 1.2.5
-	 *
-	 * @param {string} message    Text to speak
-	 * @param {string} politeness How and when to interject the message
-	 */
-	function announceEditorMessage(message, politeness = 'polite') {
-		speak(message, politeness);
-	}
-
-	/**
-	 * Display Error when trying to save blocks.
-	 *
-	 * @since 1.3.0
-	 *
-	 * @param {string} message  Error Text
-	 * @param {string} noticeId Identifier of error message
-	 */
-	function showTablePersistenceNotice(message, noticeId) {
-		createNotice('error', message, {
-			id: noticeId,
-			isDismissible: true,
-			politeness: 'assertive',
-		});
-	}
-
-	/**
 	 * Identifies the current cell being edited
 	 *
 	 * @since 1.2.5
@@ -258,7 +240,9 @@ export default function Edit(props) {
 		const nextId = String(id);
 
 		if (String(editingCellIdRef.current ?? '') !== nextId) {
-			announceEditorMessage(sprintf(__('Editing cell %s.', 'dynamic-table-blocks'), nextId));
+			speakMessage('editing-cell', {
+				args: { cellId: nextId },
+			});
 		}
 
 		setCurrentEditingCellId(nextId);
@@ -275,11 +259,10 @@ export default function Edit(props) {
 		const currentId = editingCellIdRef.current;
 
 		if (announce && currentId) {
-			announceEditorMessage(
-				sprintf(__('Stopped editing cell %s.', 'dynamic-table-blocks'), currentId)
-			);
+			speakMessage('stopped-editing-cell', {
+				args: { cellId: currentId },
+			});
 		}
-
 		setCurrentEditingCellId(null);
 	}
 
@@ -617,6 +600,8 @@ export default function Edit(props) {
 			columnDataType: '',
 			cellContent: '',
 			cellValueAttr: {},
+			cellFormattedText: '',
+			cellPlainText: '',
 		});
 	}
 
@@ -757,10 +742,11 @@ export default function Edit(props) {
 		if (!Object.keys(unmountedTables).length) return;
 		void processUnmountedTables(unmountedTables).catch(error => {
 			console.error('Error reconciling unmounted Dynamic Tables', error);
-			showTablePersistenceNotice(
-				__('Dynamic Tables could not reconcile unmounted tables.', 'dynamic-table-blocks'),
-				'dtbk-unmounted-reconcile-error'
-			);
+			// showTablePersistenceNotice(
+			// 	__('Dynamic Tables could not reconcile unmounted tables.', 'dynamic-table-blocks'),
+			// 	'dtbk-unmounted-reconcile-error'
+			// );
+			showMessageNotice(createNotice, 'unmounted-reconcile-error');
 		});
 	}, [unmountedTables]);
 
@@ -1065,13 +1051,14 @@ export default function Edit(props) {
 
 		void finalizePostSaveTableChanges().catch(error => {
 			console.error('Error processing Dynamic Tables after post save', error);
-			showTablePersistenceNotice(
-				__(
-					'Dynamic Tables could not finish table cleanup after the post was saved.',
-					'dynamic-table-blocks'
-				),
-				'dtbk-post-save-sync-error'
-			);
+			// showTablePersistenceNotice(
+			// 	__(
+			// 		'Dynamic Tables could not finish table cleanup after the post was saved.',
+			// 		'dynamic-table-blocks'
+			// 	),
+			// 	'dtbk-post-save-sync-error'
+			// );
+			showMessageNotice(createNotice, 'post-save-sync-error');
 		});
 	}, [
 		didJustFinishPostSave,
@@ -1261,13 +1248,14 @@ export default function Edit(props) {
 		setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId));
 		void saveTableEntity(table.table_id).catch(error => {
 			console.error('Error synchronizing Dynamic Table post_id', error);
-			showTablePersistenceNotice(
-				__(
-					'Dynamic Tables could not synchronize the table post relationship.',
-					'dynamic-table-blocks'
-				),
-				'dtbk-post-id-sync-error'
-			);
+			// showTablePersistenceNotice(
+			// 	__(
+			// 		'Dynamic Tables could not synchronize the table post relationship.',
+			// 		'dynamic-table-blocks'
+			// 	),
+			// 	'dtbk-post-id-sync-error'
+			// );
+			showMessageNotice(createNotice, 'post-id-sync-error');
 		});
 	}, [
 		tableHasStartedResolving,
@@ -1358,10 +1346,11 @@ export default function Edit(props) {
 			// Persist the table with its "unknown" status
 			void saveTableEntity(tableId).catch(error => {
 				console.error('Error saving Dynamic Table state during unmount cleanup', error);
-				showTablePersistenceNotice(
-					__('Dynamic Tables could not save table cleanup state.', 'dynamic-table-blocks'),
-					'dtbk-unmount-save-error'
-				);
+				// showTablePersistenceNotice(
+				// 	__('Dynamic Tables could not save table cleanup state.', 'dynamic-table-blocks'),
+				// 	'dtbk-unmount-save-error'
+				// );
+				showMessageNotice(createNotice, 'unmount-save-error');
 			});
 		};
 	}, []);
@@ -1481,10 +1470,11 @@ export default function Edit(props) {
 		setTableStale(false);
 
 		// Accessibility announcement
-		announceEditorMessage(
-			direction === 'right'
-				? sprintf(__('Inserted column %s to the right.', 'dynamic-table-blocks'), newColumnLabel)
-				: sprintf(__('Inserted column %s to the left.', 'dynamic-table-blocks'), newColumnLabel)
+		speakMessage(
+			direction === 'right' ? 'column-inserted-right' : 'column-inserted-left',
+			{
+				args: { columnLabel: newColumnLabel },
+			}
 		);
 
 		return updateTableEntity(tableId);
@@ -1519,10 +1509,11 @@ export default function Edit(props) {
 		setTableStale(false);
 
 		// Accessibility announcement
-		announceEditorMessage(
-			direction === 'below'
-				? sprintf(__('Inserted row %d below.', 'dynamic-table-blocks'), newRowId)
-				: sprintf(__('Inserted row %d above.', 'dynamic-table-blocks'), newRowId)
+		speakMessage(
+			direction === 'below' ? 'row-inserted-below' : 'row-inserted-above',
+			{
+				args: { rowNumber: newRowId },
+			}
 		);
 
 		return updateTableEntity(tableId);
@@ -1540,9 +1531,9 @@ export default function Edit(props) {
 		setTableStale(false);
 
 		// Accessibility announcement
-		announceEditorMessage(
-			sprintf(__('Deleted column %s.', 'dynamic-table-blocks'), numberToLetter(Number(columnId)))
-		);
+		speakMessage('column-deleted', {
+			args: { columnLabel: numberToLetter(Number(columnId)) },
+		});
 
 		return updateTableEntity(tableId);
 	}
@@ -1561,7 +1552,10 @@ export default function Edit(props) {
 		setTableStale(false);
 
 		// Accessibility announcement
-		announceEditorMessage(sprintf(__('Deleted row %d.', 'dynamic-table-blocks'), Number(rowId)));
+		speakMessage('row-deleted', {
+			args: { rowNumber: Number(rowId) },
+		});
+
 		return updateTableEntity(tableId);
 	}
 
@@ -1580,16 +1574,11 @@ export default function Edit(props) {
 		setTableStale(false);
 
 		// Accessibility announcement
-		announceEditorMessage(
-			direction === 'right'
-				? sprintf(
-						__('Moved column %s right.', 'dynamic-table-blocks'),
-						numberToLetter(Number(columnId))
-					)
-				: sprintf(
-						__('Moved column %s left.', 'dynamic-table-blocks'),
-						numberToLetter(Number(columnId))
-					)
+		speakMessage(
+			direction === 'right' ? 'column-moved-right' : 'column-moved-left',
+			{
+				args: { columnLabel: numberToLetter(Number(columnId)) },
+			}
 		);
 
 		return updateTableEntity(tableId);
@@ -1610,10 +1599,11 @@ export default function Edit(props) {
 		setTableStale(false);
 
 		// Accessibility announcement
-		announceEditorMessage(
-			direction === 'down'
-				? sprintf(__('Moved row %d down.', 'dynamic-table-blocks'), Number(rowId))
-				: sprintf(__('Moved row %d up.', 'dynamic-table-blocks'), Number(rowId))
+		speakMessage(
+			direction === 'down' ? 'row-moved-down' : 'row-moved-up',
+			{
+				args: { rowNumber: Number(rowId) },
+			}
 		);
 
 		return updateTableEntity(tableId);
@@ -1798,19 +1788,14 @@ export default function Edit(props) {
 	function onChangeInitialColumnCount(num_columns) {
 		let newNumColumns = num_columns;
 		if (num_columns < 1 || num_columns > 50) {
-			const errorText =
-				'Cannot have ' +
-				num_columns +
-				' columns.  You must have at least 1 and no more than 50 columns.';
-			createNotice('error', errorText, {
-				id: 'invalidNumColumns',
-				isDismissible: true,
-				politeness: 'assertive',
+			showMessageNotice(createNotice, 'invalid-num-columns', {
+				args: { count: num_columns },
 			});
 
 			newNumColumns = Number(createDraftTable.numColumns);
 		} else {
-			removeNotice('invalidNumColumns');
+			// removeNotice('invalidNumColumns');
+			removeMessageNotice(removeNotice, 'invalid-num-columns');
 		}
 		setCreateDraftTable(prev => ({
 			...prev,
@@ -1828,17 +1813,14 @@ export default function Edit(props) {
 	function onChangeInitialRowCount(num_rows) {
 		let newNumRows = num_rows;
 		if (num_rows < 1 || num_rows > 1000) {
-			const errorText =
-				'Cannot have ' + num_rows + ' rows.  You must have at least 1 and no more than 1,000 rows.';
-			createNotice('error', errorText, {
-				id: 'invalidNumRows',
-				isDismissible: true,
-				politeness: 'assertive',
+			showMessageNotice(createNotice, 'invalid-num-rows', {
+				args: { count: num_rows },
 			});
 
 			newNumRows = Number(createDraftTable.numRows);
 		} else {
-			removeNotice('invalidNumRows');
+			// removeNotice('invalidNumRows');
+			removeMessageNotice(removeNotice, 'invalid-num-rows');
 		}
 		setCreateDraftTable(prev => ({
 			...prev,
@@ -1871,7 +1853,7 @@ export default function Edit(props) {
 	function onGridFocusCapture(event) {
 		if (!hasAnnouncedGridHelpRef.current) {
 			hasAnnouncedGridHelpRef.current = true;
-			announceEditorMessage(editorGridHelpText);
+			speakMessage('editor-grid-help');
 		}
 
 		const el = event.target.closest?.('[data-cell-id]');
@@ -2661,8 +2643,15 @@ export default function Edit(props) {
 		);
 		if (cellData) {
 			const columnDataType = getClipboardDataType(column_id, row_id);
+			const columnDataTypeSettings =
+				columnDataType === 'general' ? { type: 'general' } : columnDataTypes[column_id];
 			const cellContent = cellData?.content || '';
 			const cellValueAttr = cellData?.attributes?.value || {};
+			const { formattedText, plainText } = formatClipboardContent(
+				cellContent,
+				cellValueAttr,
+				columnDataTypeSettings
+			);
 			const clipboardPayload = {
 				inUse: true,
 				clipboardAction: updateType === 'copyCell' ? 'copy' : 'cut',
@@ -2672,15 +2661,13 @@ export default function Edit(props) {
 				columnDataType: columnDataType,
 				cellContent: cellContent,
 				cellValueAttr: cellValueAttr,
+				cellFormattedText: formattedText,
+				cellPlainText: plainText,
 			};
 
 			// Copy to the block's internal clipboard
 			setCellClipboard({ ...clipboardPayload });
-			announceEditorMessage(
-				updateType === 'cutCell'
-					? __('Cell cut. Paste into another cell to move the content.', 'dynamic-table-blocks')
-					: __('Cell copied.', 'dynamic-table-blocks')
-			);
+			speakMessage(updateType === 'cutCell' ? 'cell-cut' : 'cell-copied');
 
 			/**
 			 * Note on system clipboard handling:
@@ -2690,14 +2677,14 @@ export default function Edit(props) {
 			 */
 
 			// Copy to the system clipboard
-			const clipboardText = cellContent;
+			// const clipboardText = cellContent;
 
 			if (navigator?.clipboard?.writeText) {
-				navigator.clipboard.writeText(clipboardText).catch(() => {
-					legacySystemClipboardFallback(clipboardText);
+				navigator.clipboard.writeText(formattedText).catch(() => {
+					legacySystemClipboardFallback(formattedText);
 				});
 			} else {
-				legacySystemClipboardFallback(clipboardText);
+				legacySystemClipboardFallback(formattedText);
 			}
 		}
 	}
@@ -2729,19 +2716,13 @@ export default function Edit(props) {
 		}
 
 		const currentColumnDataType = getClipboardDataType(column_id, row_id);
-		const mismatchMessage = __(
-			'Cannot paste cell content because the source and target cell content types do not match.',
-			'dynamic-table-blocks'
-		);
+		// const mismatchMessage = __(
+		// 	'Cannot paste cell content because the source and target cell content types do not match.',
+		// 	'dynamic-table-blocks'
+		// );
 
 		if (columnDataType !== currentColumnDataType) {
-			announceEditorMessage(mismatchMessage, 'assertive');
-			createNotice('error', mismatchMessage, {
-				id: 'dataTypeMismatch',
-				isDismissible: true,
-				politeness: 'assertive',
-			});
-
+			publishMessage(createNotice, 'data-type-mismatch');
 			return;
 		}
 
@@ -2762,7 +2743,8 @@ export default function Edit(props) {
 			processCellDelete(columnId, rowId);
 			resetCellClipboard();
 		}
-		announceEditorMessage(__('Cell pasted.', 'dynamic-table-blocks'));
+		// announceEditorMessage(__('Cell pasted.', 'dynamic-table-blocks'));
+		speakMessage('cell-pasted');
 	}
 
 	function getClipboardDataType(columnId, rowId) {
@@ -2886,14 +2868,7 @@ export default function Edit(props) {
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 
 		// Accessibility announcement
-		announceEditorMessage(
-			isChecked
-				? __(
-						'Table title hidden. The table remains labeled for assistive technology.',
-						'dynamic-table-blocks'
-					)
-				: __('Table title shown.', 'dynamic-table-blocks')
-		);
+		speakMessage(isChecked ? 'table-title-hidden' : 'table-title-shown');
 	}
 
 	/**
@@ -3264,10 +3239,7 @@ export default function Edit(props) {
 	const editorGridTitleText = htmlToText(table?.table_name || '').trim();
 	const editorGridAccessibleName = editorGridTitleText || __('Dynamic table');
 	const editorGridLabelledBy = !hideTitle && editorGridTitleText ? editorTitleTagId : undefined;
-	const editorGridHelpText = __(
-		'Use arrow keys to move between cells. Press Enter or F2 to edit the selected cell. Use the row and column option buttons to manage table structure. If your screen reader is using browse or scan mode, switch to focus or forms mode to interact with the grid.',
-		'dynamic-table-blocks'
-	);
+	const editorGridHelpText = getMessageText('editor-grid-help');
 
 	/**
 	 * Render clickable row menu
@@ -3690,9 +3662,6 @@ export default function Edit(props) {
 																	dataFormat={columnDataTypes[column_id]}
 																	cell_id={cell_id}
 																	table={table}
-																	// table_id={table_id}
-																	// row_id={row_id}
-																	// column_id={column_id}
 																	content={borderContent}
 																	attributes={attributes}
 																	columnClassNames={''}
@@ -3795,9 +3764,6 @@ export default function Edit(props) {
 																				dataFormat={columnDataTypes[column_id]}
 																				cell_id={cell_id}
 																				table={table}
-																				// table_id={table_id}
-																				// row_id={row_id}
-																				// column_id={column_id}
 																				content={borderContent}
 																				attributes={attributes}
 																				columnClassNames={''}
@@ -3830,9 +3796,6 @@ export default function Edit(props) {
 																				cell_id={cell_id}
 																				table={table}
 																				cellTagId={getEditorColumnHeaderTagId(column_id)}
-																				// table_id={table_id}
-																				// row_id={row_id}
-																				// column_id={column_id}
 																				content={content}
 																				attributes={attributes}
 																				isFocused={isFocused}
@@ -4023,9 +3986,6 @@ export default function Edit(props) {
 																					dataFormat={columnDataTypes[column_id]}
 																					cell_id={cell_id}
 																					table={table}
-																					// table_id={table_id}
-																					// row_id={row_id}
-																					// column_id={column_id}
 																					content={borderContent}
 																					attributes={attributes}
 																					columnClassNames={''}
@@ -4066,9 +4026,6 @@ export default function Edit(props) {
 																					dataFormat={columnDataTypes[column_id]}
 																					cell_id={cell_id}
 																					table={table}
-																					// table_id={table_id}
-																					// row_id={row_id}
-																					// column_id={column_id}
 																					content={content}
 																					attributes={attributes}
 																					isFocused={isFocused}
@@ -4185,7 +4142,6 @@ export default function Edit(props) {
 							label={__('Table Rows', 'dynamic-table')}
 							required="true"
 							min={1}
-							// value={numRows}
 							value={createDraftTable.numRows}
 							onChange={e => onChangeInitialRowCount(e)}
 							className="blocks-table__placeholder-input"
@@ -4267,10 +4223,7 @@ function Cell(props) {
 		isContentOnlyMode = false,
 		dataFormat,
 		table,
-		// row_id,
 		cell_id,
-		// table_id,
-		// column_id,
 		content,
 		attributes,
 		isFocused,

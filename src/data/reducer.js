@@ -333,7 +333,7 @@ const table = (
 						table_id: cell.table_id,
 						column_id: cell.column_id,
 						row_id: newRowId_DeleteRow,
-						cell_id: columnLetter_DeleteRow + cell.row_id,
+						cell_id: columnLetter_DeleteRow + newRowId_DeleteRow,
 						attributes: cell.attributes,
 						classes: cell.classes,
 						content: cellContent_DeleteRow,
@@ -539,32 +539,17 @@ const table = (
 			};
 
 		case UPDATE_CELL:
-			let transformedValue_UpdateCell = ' "' + action.value + '"';
-
-			if (action.attribute === 'attributes') {
-				transformedValue_UpdateCell = JSON.stringify(action.value);
-			}
-
-			const newCellsState = { ...state };
-			const updatedCellData = JSON.parse(
-				'{ "' + action.attribute + '" :' + transformedValue_UpdateCell + '}'
-			);
-			const updatedCells = updateArray(
-				newCellsState.cells,
-				'cell_id',
-				action.cellId,
-				updatedCellData
-			);
-
-			const returnedCellState = {
-				...state,
-				rows: [...newCellsState.rows],
-				columns: [...newCellsState.columns],
-				cells: [...updatedCells],
+			const updatedCellData = {
+				[action.attribute]: action.value,
 			};
 
+			const updatedCells = updateArray(state.cells, 'cell_id', action.cellId, updatedCellData);
+
 			return {
-				table: returnedCellState,
+				table: {
+					...state,
+					cells: updatedCells,
+				},
 			};
 
 		case PROCESS_BORDERS:

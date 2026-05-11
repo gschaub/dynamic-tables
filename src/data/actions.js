@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
 
 /* Internal dependencies */
 import TYPES from './action-types.js';
+import { showMessageNotice } from '../messages';
 import { computeCellIds } from '../utils';
 
 /* Load constants */
@@ -350,20 +351,24 @@ export const updateTableEntity =
 				.editEntityRecord('dynamic-table-blocks', 'table', table_id, updatedTable);
 		} catch (error) {
 			console.error('Error in updateTableEntity - Table ID - ' + table_id, error);
-			registry
-				.dispatch(noticeStore)
-				.createNotice(
-					'error',
-					__(
-						'Dynamic Tables could not queue the latest table changes for save.',
-						'dynamic-table-blocks'
-					),
-					{
-						id: 'dtbk-update-entity-error',
-						isDismissible: true,
-						politeness: 'assertive',
-					}
-				);
+			// registry
+			// 	.dispatch(noticeStore)
+			// 	.createNotice(
+			// 		'error',
+			// 		__(
+			// 			'Dynamic Tables could not queue the latest table changes for save.',
+			// 			'dynamic-table-blocks'
+			// 		),
+			// 		{
+			// 			id: 'dtbk-update-entity-error',
+			// 			isDismissible: true,
+			// 			politeness: 'assertive',
+			// 		}
+			// 	);
+			showMessageNotice(
+				registry.dispatch(noticeStore).createNotice,
+				'update-entity-error'
+			);
 			return false;
 		}
 	};

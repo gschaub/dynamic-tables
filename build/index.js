@@ -2642,7 +2642,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _action_types_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./action-types.js */ "./src/data/action-types.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _messages__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../messages */ "./src/messages.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
 /* External dependencies */
 
 
@@ -2650,6 +2651,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* Internal dependencies */
+
 
 
 
@@ -2802,7 +2804,7 @@ const cloneTable = (tableId, postId, blockTableRef) => async ({
     const classes = table.header.classes;
     const rows = table.rows;
     const columns = table.columns;
-    (0,_utils__WEBPACK_IMPORTED_MODULE_5__.computeCellIds)(table.cells);
+    (0,_utils__WEBPACK_IMPORTED_MODULE_6__.computeCellIds)(table.cells);
     const cells = table.cells;
     dispatch.receiveTable(table_id, block_table_ref, table_status, post_id, table_name, attributes, classes, rows, columns, cells);
     return tableEntity.id;
@@ -2967,11 +2969,21 @@ const updateTableEntity = (tableId, overrideTableStatus = '') => ({
     return registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).editEntityRecord('dynamic-table-blocks', 'table', table_id, updatedTable);
   } catch (error) {
     console.error('Error in updateTableEntity - Table ID - ' + table_id, error);
-    registry.dispatch(_wordpress_notices__WEBPACK_IMPORTED_MODULE_2__.store).createNotice('error', (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Dynamic Tables could not queue the latest table changes for save.', 'dynamic-table-blocks'), {
-      id: 'dtbk-update-entity-error',
-      isDismissible: true,
-      politeness: 'assertive'
-    });
+    // registry
+    // 	.dispatch(noticeStore)
+    // 	.createNotice(
+    // 		'error',
+    // 		__(
+    // 			'Dynamic Tables could not queue the latest table changes for save.',
+    // 			'dynamic-table-blocks'
+    // 		),
+    // 		{
+    // 			id: 'dtbk-update-entity-error',
+    // 			isDismissible: true,
+    // 			politeness: 'assertive',
+    // 		}
+    // 	);
+    (0,_messages__WEBPACK_IMPORTED_MODULE_5__.showMessageNotice)(registry.dispatch(_wordpress_notices__WEBPACK_IMPORTED_MODULE_2__.store).createNotice, 'update-entity-error');
     return false;
   }
 };
@@ -3781,7 +3793,7 @@ const table = (state = {
             table_id: cell.table_id,
             column_id: cell.column_id,
             row_id: newRowId_DeleteRow,
-            cell_id: columnLetter_DeleteRow + cell.row_id,
+            cell_id: columnLetter_DeleteRow + newRowId_DeleteRow,
             attributes: cell.attributes,
             classes: cell.classes,
             content: cellContent_DeleteRow
@@ -3971,23 +3983,15 @@ const table = (state = {
         table: returnedUpdatedTableColumn
       };
     case UPDATE_CELL:
-      let transformedValue_UpdateCell = ' "' + action.value + '"';
-      if (action.attribute === 'attributes') {
-        transformedValue_UpdateCell = JSON.stringify(action.value);
-      }
-      const newCellsState = {
-        ...state
+      const updatedCellData = {
+        [action.attribute]: action.value
       };
-      const updatedCellData = JSON.parse('{ "' + action.attribute + '" :' + transformedValue_UpdateCell + '}');
-      const updatedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newCellsState.cells, 'cell_id', action.cellId, updatedCellData);
-      const returnedCellState = {
-        ...state,
-        rows: [...newCellsState.rows],
-        columns: [...newCellsState.columns],
-        cells: [...updatedCells]
-      };
+      const updatedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(state.cells, 'cell_id', action.cellId, updatedCellData);
       return {
-        table: returnedCellState
+        table: {
+          ...state,
+          cells: updatedCells
+        }
       };
     case PROCESS_BORDERS:
       const newBaseTableState = {
@@ -4319,21 +4323,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_editor__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _wordpress_notices__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/notices */ "@wordpress/notices");
 /* harmony import */ var _wordpress_notices__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_notices__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _wordpress_a11y__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/a11y */ "@wordpress/a11y");
-/* harmony import */ var _wordpress_a11y__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_a11y__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _wordpress_rich_text__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @wordpress/rich-text */ "@wordpress/rich-text");
-/* harmony import */ var _wordpress_rich_text__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/block-table.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/search.mjs");
-/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
-/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./data */ "./src/data/index.js");
-/* harmony import */ var _hooks__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./hooks */ "./src/hooks.js");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _wordpress_rich_text__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/rich-text */ "@wordpress/rich-text");
+/* harmony import */ var _wordpress_rich_text__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/block-table.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/search.mjs");
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./data */ "./src/data/index.js");
+/* harmony import */ var _hooks__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./hooks */ "./src/hooks.js");
+/* harmony import */ var _messages__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./messages */ "./src/messages.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
 /* harmony import */ var _table_defaults__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./table-defaults */ "./src/table-defaults.js");
 /* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./style */ "./src/style.js");
@@ -4342,7 +4345,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__);
 /* External dependencies */
-
 
 
 
@@ -4365,6 +4367,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 /* Create Dynamic Tables entity in WordPress core-data */
 
 (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.dispatch)('core').addEntities([{
@@ -4375,8 +4378,8 @@ __webpack_require__.r(__webpack_exports__);
     context: 'edit'
   },
   plural: 'tables',
-  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Table'),
-  getTitle: record => record?.title || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Unnamed Table')
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table'),
+  getTitle: record => record?.title || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Unnamed Table')
 }]);
 
 /**
@@ -4387,7 +4390,7 @@ __webpack_require__.r(__webpack_exports__);
  * @param {Object} props
  */
 function Edit(props) {
-  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.useBlockProps)({
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__.useBlockProps)({
     className: 'dynamic-table-edit-block'
   });
   /* External Store Action useDispatch declarations */
@@ -4413,58 +4416,58 @@ function Edit(props) {
   /* Table Store Action useDispatch declarations */
   const {
     receiveNewTable
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     cloneTable
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     createTableEntity
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     saveTableEntity
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     addColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     addRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     removeColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     removeRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     moveColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     moveRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     updateTableProp
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     updateRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     updateColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     updateCell
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     updateTableEntity
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     updateTableBorder
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     processUnmountedTables
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     processDeletedTables
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     createNotice,
     removeNotice
@@ -4496,7 +4499,9 @@ function Edit(props) {
     rowId: null,
     columnDataType: '',
     cellContent: '',
-    cellValueAttr: {}
+    cellValueAttr: {},
+    cellFormattedText: '',
+    cellPlainText: ''
   });
   const hasAnnouncedGridHelpRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(false);
   const unmountSnapshotRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)({
@@ -4509,7 +4514,7 @@ function Edit(props) {
     isSavingEditorChanges: false
   });
   const isPageUnloadRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(false);
-  const htmlToText = (html = '') => (0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_10__.getTextContent)((0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_10__.create)({
+  const htmlToText = (html = '') => (0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_9__.getTextContent)((0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_9__.create)({
     html
   })).replace(/\s+/g, ' ').trim();
 
@@ -4517,34 +4522,6 @@ function Edit(props) {
   const lastInvokerElRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
   const lastInvokerWasKeyboardRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(false);
   const suppressNextInvokerRestoreRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(false);
-
-  /**
-   * Speak accessibility message audibly.
-   *
-   * @since 1.2.5
-   *
-   * @param {string} message    Text to speak
-   * @param {string} politeness How and when to interject the message
-   */
-  function announceEditorMessage(message, politeness = 'polite') {
-    (0,_wordpress_a11y__WEBPACK_IMPORTED_MODULE_6__.speak)(message, politeness);
-  }
-
-  /**
-   * Display Error when trying to save blocks.
-   *
-   * @since 1.3.0
-   *
-   * @param {string} message  Error Text
-   * @param {string} noticeId Identifier of error message
-   */
-  function showTablePersistenceNotice(message, noticeId) {
-    createNotice('error', message, {
-      id: noticeId,
-      isDismissible: true,
-      politeness: 'assertive'
-    });
-  }
 
   /**
    * Identifies the current cell being edited
@@ -4568,7 +4545,11 @@ function Edit(props) {
   function startEditingCell(id) {
     const nextId = String(id);
     if (String(editingCellIdRef.current ?? '') !== nextId) {
-      announceEditorMessage((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Editing cell %s.', 'dynamic-table-blocks'), nextId));
+      (0,_messages__WEBPACK_IMPORTED_MODULE_15__.speakMessage)('editing-cell', {
+        args: {
+          cellId: nextId
+        }
+      });
     }
     setCurrentEditingCellId(nextId);
   }
@@ -4583,7 +4564,11 @@ function Edit(props) {
   function stopEditingCell(announce = true) {
     const currentId = editingCellIdRef.current;
     if (announce && currentId) {
-      announceEditorMessage((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Stopped editing cell %s.', 'dynamic-table-blocks'), currentId));
+      (0,_messages__WEBPACK_IMPORTED_MODULE_15__.speakMessage)('stopped-editing-cell', {
+        args: {
+          cellId: currentId
+        }
+      });
     }
     setCurrentEditingCellId(null);
   }
@@ -4928,7 +4913,9 @@ function Edit(props) {
       rowId: null,
       columnDataType: '',
       cellContent: '',
-      cellValueAttr: {}
+      cellValueAttr: {},
+      cellFormattedText: '',
+      cellPlainText: ''
     });
   }
 
@@ -4962,7 +4949,7 @@ function Edit(props) {
   const editorColumnMenuTagId = `${editorTableTagIdBase}-column-menu`;
   const getEditorColumnHeaderTagId = columnId => `${editorTableTagIdBase}-column-${String(columnId).trim()}-header`;
   const editorCellMenuTagId = `${editorTableTagIdBase}-cell-menu`;
-  const [themeColors = []] = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.useSettings)('color.palette');
+  const [themeColors = []] = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__.useSettings)('color.palette');
   const borderBoxColors = themeColors.map(({
     color,
     name
@@ -4982,7 +4969,7 @@ function Edit(props) {
   const currentTableId = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
     const {
       getTableIdByBlock
-    } = select(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_13__.store);
     return getTableIdByBlock(block_table_ref);
   }, [block_table_ref]);
 
@@ -5051,7 +5038,7 @@ function Edit(props) {
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
     const {
       getUnmountedTables
-    } = select(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_13__.store);
     return {
       unmountedTables: getUnmountedTables()
     };
@@ -5066,7 +5053,11 @@ function Edit(props) {
     if (!Object.keys(unmountedTables).length) return;
     void processUnmountedTables(unmountedTables).catch(error => {
       console.error('Error reconciling unmounted Dynamic Tables', error);
-      showTablePersistenceNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Dynamic Tables could not reconcile unmounted tables.', 'dynamic-table-blocks'), 'dtbk-unmounted-reconcile-error');
+      // showTablePersistenceNotice(
+      // 	__('Dynamic Tables could not reconcile unmounted tables.', 'dynamic-table-blocks'),
+      // 	'dtbk-unmounted-reconcile-error'
+      // );
+      (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'unmounted-reconcile-error');
     });
   }, [unmountedTables]);
 
@@ -5082,7 +5073,7 @@ function Edit(props) {
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
     const {
       getDeletedTables
-    } = select(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_13__.store);
     return {
       deletedTables: getDeletedTables()
     };
@@ -5096,7 +5087,7 @@ function Edit(props) {
    *
    * @type {boolean} Post changes have been saved
    */
-  const postChangesAreSaved = (0,_hooks__WEBPACK_IMPORTED_MODULE_15__.usePostChangesSaved)();
+  const postChangesAreSaved = (0,_hooks__WEBPACK_IMPORTED_MODULE_14__.usePostChangesSaved)();
   const previousPostChangesAreSaved = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__.usePrevious)(postChangesAreSaved);
   const didJustFinishPostSave = postChangesAreSaved && !previousPostChangesAreSaved;
 
@@ -5158,8 +5149,8 @@ function Edit(props) {
   const {
     postId,
     postType
-  } = (0,_hooks__WEBPACK_IMPORTED_MODULE_15__.useEditorIdentity)(props);
-  const inInserterBlock = !(0,_hooks__WEBPACK_IMPORTED_MODULE_15__.useNotInInserterPreview)();
+  } = (0,_hooks__WEBPACK_IMPORTED_MODULE_14__.useEditorIdentity)(props);
+  const inInserterBlock = !(0,_hooks__WEBPACK_IMPORTED_MODULE_14__.useNotInInserterPreview)();
   const blockEditingMode = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => select('core/block-editor')?.getBlockEditingMode?.(props.clientId) ?? 'default', [props.clientId]);
   const isContentOnlyMode = blockEditingMode === 'contentOnly';
 
@@ -5263,7 +5254,7 @@ function Edit(props) {
       hasStartedResolution,
       hasFinishedResolution,
       isResolving
-    } = select(_data__WEBPACK_IMPORTED_MODULE_14__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_13__.store);
     const selectorArgs = [table_id, isTableStale];
     if (block_table_ref === '') {
       return {
@@ -5355,7 +5346,14 @@ function Edit(props) {
     };
     void finalizePostSaveTableChanges().catch(error => {
       console.error('Error processing Dynamic Tables after post save', error);
-      showTablePersistenceNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Dynamic Tables could not finish table cleanup after the post was saved.', 'dynamic-table-blocks'), 'dtbk-post-save-sync-error');
+      // showTablePersistenceNotice(
+      // 	__(
+      // 		'Dynamic Tables could not finish table cleanup after the post was saved.',
+      // 		'dynamic-table-blocks'
+      // 	),
+      // 	'dtbk-post-save-sync-error'
+      // );
+      (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'post-save-sync-error');
     });
   }, [didJustFinishPostSave, deletedTables, tableLoaded, table.table_id, table.table_status, tableHasPendingEntityEdits]);
 
@@ -5527,7 +5525,14 @@ function Edit(props) {
     setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId));
     void saveTableEntity(table.table_id).catch(error => {
       console.error('Error synchronizing Dynamic Table post_id', error);
-      showTablePersistenceNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Dynamic Tables could not synchronize the table post relationship.', 'dynamic-table-blocks'), 'dtbk-post-id-sync-error');
+      // showTablePersistenceNotice(
+      // 	__(
+      // 		'Dynamic Tables could not synchronize the table post relationship.',
+      // 		'dynamic-table-blocks'
+      // 	),
+      // 	'dtbk-post-id-sync-error'
+      // );
+      (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'post-id-sync-error');
     });
   }, [tableHasStartedResolving, tableHasFinishedResolving, isAwaitingTableAttachment, props.context.postId, table.table_id, table.post_id]);
 
@@ -5603,7 +5608,11 @@ function Edit(props) {
       // Persist the table with its "unknown" status
       void saveTableEntity(tableId).catch(error => {
         console.error('Error saving Dynamic Table state during unmount cleanup', error);
-        showTablePersistenceNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Dynamic Tables could not save table cleanup state.', 'dynamic-table-blocks'), 'dtbk-unmount-save-error');
+        // showTablePersistenceNotice(
+        // 	__('Dynamic Tables could not save table cleanup state.', 'dynamic-table-blocks'),
+        // 	'dtbk-unmount-save-error'
+        // );
+        (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'unmount-save-error');
       });
     };
   }, []);
@@ -5709,7 +5718,11 @@ function Edit(props) {
     setTableStale(false);
 
     // Accessibility announcement
-    announceEditorMessage(direction === 'right' ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Inserted column %s to the right.', 'dynamic-table-blocks'), newColumnLabel) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Inserted column %s to the left.', 'dynamic-table-blocks'), newColumnLabel));
+    (0,_messages__WEBPACK_IMPORTED_MODULE_15__.speakMessage)(direction === 'right' ? 'column-inserted-right' : 'column-inserted-left', {
+      args: {
+        columnLabel: newColumnLabel
+      }
+    });
     return updateTableEntity(tableId);
   }
 
@@ -5734,7 +5747,11 @@ function Edit(props) {
     setTableStale(false);
 
     // Accessibility announcement
-    announceEditorMessage(direction === 'below' ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Inserted row %d below.', 'dynamic-table-blocks'), newRowId) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Inserted row %d above.', 'dynamic-table-blocks'), newRowId));
+    (0,_messages__WEBPACK_IMPORTED_MODULE_15__.speakMessage)(direction === 'below' ? 'row-inserted-below' : 'row-inserted-above', {
+      args: {
+        rowNumber: newRowId
+      }
+    });
     return updateTableEntity(tableId);
   }
 
@@ -5750,7 +5767,11 @@ function Edit(props) {
     setTableStale(false);
 
     // Accessibility announcement
-    announceEditorMessage((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Deleted column %s.', 'dynamic-table-blocks'), (0,_utils__WEBPACK_IMPORTED_MODULE_16__.numberToLetter)(Number(columnId))));
+    (0,_messages__WEBPACK_IMPORTED_MODULE_15__.speakMessage)('column-deleted', {
+      args: {
+        columnLabel: (0,_utils__WEBPACK_IMPORTED_MODULE_16__.numberToLetter)(Number(columnId))
+      }
+    });
     return updateTableEntity(tableId);
   }
 
@@ -5768,7 +5789,11 @@ function Edit(props) {
     setTableStale(false);
 
     // Accessibility announcement
-    announceEditorMessage((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Deleted row %d.', 'dynamic-table-blocks'), Number(rowId)));
+    (0,_messages__WEBPACK_IMPORTED_MODULE_15__.speakMessage)('row-deleted', {
+      args: {
+        rowNumber: Number(rowId)
+      }
+    });
     return updateTableEntity(tableId);
   }
 
@@ -5787,7 +5812,11 @@ function Edit(props) {
     setTableStale(false);
 
     // Accessibility announcement
-    announceEditorMessage(direction === 'right' ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Moved column %s right.', 'dynamic-table-blocks'), (0,_utils__WEBPACK_IMPORTED_MODULE_16__.numberToLetter)(Number(columnId))) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Moved column %s left.', 'dynamic-table-blocks'), (0,_utils__WEBPACK_IMPORTED_MODULE_16__.numberToLetter)(Number(columnId))));
+    (0,_messages__WEBPACK_IMPORTED_MODULE_15__.speakMessage)(direction === 'right' ? 'column-moved-right' : 'column-moved-left', {
+      args: {
+        columnLabel: (0,_utils__WEBPACK_IMPORTED_MODULE_16__.numberToLetter)(Number(columnId))
+      }
+    });
     return updateTableEntity(tableId);
   }
 
@@ -5806,7 +5835,11 @@ function Edit(props) {
     setTableStale(false);
 
     // Accessibility announcement
-    announceEditorMessage(direction === 'down' ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Moved row %d down.', 'dynamic-table-blocks'), Number(rowId)) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Moved row %d up.', 'dynamic-table-blocks'), Number(rowId)));
+    (0,_messages__WEBPACK_IMPORTED_MODULE_15__.speakMessage)(direction === 'down' ? 'row-moved-down' : 'row-moved-up', {
+      args: {
+        rowNumber: Number(rowId)
+      }
+    });
     return updateTableEntity(tableId);
   }
 
@@ -5991,15 +6024,15 @@ function Edit(props) {
   function onChangeInitialColumnCount(num_columns) {
     let newNumColumns = num_columns;
     if (num_columns < 1 || num_columns > 50) {
-      const errorText = 'Cannot have ' + num_columns + ' columns.  You must have at least 1 and no more than 50 columns.';
-      createNotice('error', errorText, {
-        id: 'invalidNumColumns',
-        isDismissible: true,
-        politeness: 'assertive'
+      (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'invalid-num-columns', {
+        args: {
+          count: num_columns
+        }
       });
       newNumColumns = Number(createDraftTable.numColumns);
     } else {
-      removeNotice('invalidNumColumns');
+      // removeNotice('invalidNumColumns');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_15__.removeMessageNotice)(removeNotice, 'invalid-num-columns');
     }
     setCreateDraftTable(prev => ({
       ...prev,
@@ -6017,15 +6050,15 @@ function Edit(props) {
   function onChangeInitialRowCount(num_rows) {
     let newNumRows = num_rows;
     if (num_rows < 1 || num_rows > 1000) {
-      const errorText = 'Cannot have ' + num_rows + ' rows.  You must have at least 1 and no more than 1,000 rows.';
-      createNotice('error', errorText, {
-        id: 'invalidNumRows',
-        isDismissible: true,
-        politeness: 'assertive'
+      (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'invalid-num-rows', {
+        args: {
+          count: num_rows
+        }
       });
       newNumRows = Number(createDraftTable.numRows);
     } else {
-      removeNotice('invalidNumRows');
+      // removeNotice('invalidNumRows');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_15__.removeMessageNotice)(removeNotice, 'invalid-num-rows');
     }
     setCreateDraftTable(prev => ({
       ...prev,
@@ -6058,7 +6091,7 @@ function Edit(props) {
   function onGridFocusCapture(event) {
     if (!hasAnnouncedGridHelpRef.current) {
       hasAnnouncedGridHelpRef.current = true;
-      announceEditorMessage(editorGridHelpText);
+      (0,_messages__WEBPACK_IMPORTED_MODULE_15__.speakMessage)('editor-grid-help');
     }
     const el = event.target.closest?.('[data-cell-id]');
     if (!el) return;
@@ -6787,8 +6820,15 @@ function Edit(props) {
     const cellData = table.cells.find(c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id));
     if (cellData) {
       const columnDataType = getClipboardDataType(column_id, row_id);
+      const columnDataTypeSettings = columnDataType === 'general' ? {
+        type: 'general'
+      } : columnDataTypes[column_id];
       const cellContent = cellData?.content || '';
       const cellValueAttr = cellData?.attributes?.value || {};
+      const {
+        formattedText,
+        plainText
+      } = (0,_utils__WEBPACK_IMPORTED_MODULE_16__.formatClipboardContent)(cellContent, cellValueAttr, columnDataTypeSettings);
       const clipboardPayload = {
         inUse: true,
         clipboardAction: updateType === 'copyCell' ? 'copy' : 'cut',
@@ -6797,14 +6837,16 @@ function Edit(props) {
         rowId: row_id,
         columnDataType: columnDataType,
         cellContent: cellContent,
-        cellValueAttr: cellValueAttr
+        cellValueAttr: cellValueAttr,
+        cellFormattedText: formattedText,
+        cellPlainText: plainText
       };
 
       // Copy to the block's internal clipboard
       setCellClipboard({
         ...clipboardPayload
       });
-      announceEditorMessage(updateType === 'cutCell' ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Cell cut. Paste into another cell to move the content.', 'dynamic-table-blocks') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Cell copied.', 'dynamic-table-blocks'));
+      (0,_messages__WEBPACK_IMPORTED_MODULE_15__.speakMessage)(updateType === 'cutCell' ? 'cell-cut' : 'cell-copied');
 
       /**
        * Note on system clipboard handling:
@@ -6814,13 +6856,14 @@ function Edit(props) {
        */
 
       // Copy to the system clipboard
-      const clipboardText = cellContent;
+      // const clipboardText = cellContent;
+
       if (navigator?.clipboard?.writeText) {
-        navigator.clipboard.writeText(clipboardText).catch(() => {
-          legacySystemClipboardFallback(clipboardText);
+        navigator.clipboard.writeText(formattedText).catch(() => {
+          legacySystemClipboardFallback(formattedText);
         });
       } else {
-        legacySystemClipboardFallback(clipboardText);
+        legacySystemClipboardFallback(formattedText);
       }
     }
   }
@@ -6853,14 +6896,13 @@ function Edit(props) {
       return;
     }
     const currentColumnDataType = getClipboardDataType(column_id, row_id);
-    const mismatchMessage = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Cannot paste cell content because the source and target cell content types do not match.', 'dynamic-table-blocks');
+    // const mismatchMessage = __(
+    // 	'Cannot paste cell content because the source and target cell content types do not match.',
+    // 	'dynamic-table-blocks'
+    // );
+
     if (columnDataType !== currentColumnDataType) {
-      announceEditorMessage(mismatchMessage, 'assertive');
-      createNotice('error', mismatchMessage, {
-        id: 'dataTypeMismatch',
-        isDismissible: true,
-        politeness: 'assertive'
-      });
+      (0,_messages__WEBPACK_IMPORTED_MODULE_15__.publishMessage)(createNotice, 'data-type-mismatch');
       return;
     }
     const currentCellData = table.cells.find(c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id));
@@ -6875,7 +6917,8 @@ function Edit(props) {
       processCellDelete(columnId, rowId);
       resetCellClipboard();
     }
-    announceEditorMessage((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Cell pasted.', 'dynamic-table-blocks'));
+    // announceEditorMessage(__('Cell pasted.', 'dynamic-table-blocks'));
+    (0,_messages__WEBPACK_IMPORTED_MODULE_15__.speakMessage)('cell-pasted');
   }
   function getClipboardDataType(columnId, rowId) {
     const isHeaderRow = table?.rows?.find(r => Number(r.row_id) === Number(rowId))?.attributes?.isHeader === true;
@@ -6983,7 +7026,7 @@ function Edit(props) {
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 
     // Accessibility announcement
-    announceEditorMessage(isChecked ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Table title hidden. The table remains labeled for assistive technology.', 'dynamic-table-blocks') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Table title shown.', 'dynamic-table-blocks'));
+    (0,_messages__WEBPACK_IMPORTED_MODULE_15__.speakMessage)(isChecked ? 'table-title-hidden' : 'table-title-shown');
   }
 
   /**
@@ -7249,9 +7292,9 @@ function Edit(props) {
 
   // Accessibility support
   const editorGridTitleText = htmlToText(table?.table_name || '').trim();
-  const editorGridAccessibleName = editorGridTitleText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Dynamic table');
+  const editorGridAccessibleName = editorGridTitleText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Dynamic table');
   const editorGridLabelledBy = !hideTitle && editorGridTitleText ? editorTitleTagId : undefined;
-  const editorGridHelpText = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Use arrow keys to move between cells. Press Enter or F2 to edit the selected cell. Use the row and column option buttons to manage table structure. If your screen reader is using browse or scan mode, switch to focus or forms mode to interact with the grid.', 'dynamic-table-blocks');
+  const editorGridHelpText = (0,_messages__WEBPACK_IMPORTED_MODULE_15__.getMessageText)('editor-grid-help');
 
   /**
    * Render clickable row menu
@@ -7368,19 +7411,19 @@ function Edit(props) {
    * @param {Object} e Change event
    */
   const renderControls = !isContentOnlyMode && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.BlockControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.BlockAlignmentToolbar, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__.BlockControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__.BlockAlignmentToolbar, {
         value: block_alignment,
         onChange: e => props.setAttributes({
           block_alignment: e
         })
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.InspectorControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.Panel, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelBody, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__.InspectorControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Panel, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
           title: "Definition",
           initialOpen: true,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelRow, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
               className: "grid-control__inspector-controls--read-only",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
@@ -7388,7 +7431,7 @@ function Edit(props) {
                 children: "Table Name:"
               }), htmlToText(table.table_name)]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelRow, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
               className: "grid-control__inspector-controls--read-only",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
@@ -7396,43 +7439,43 @@ function Edit(props) {
                 children: "Table Columns/Rows:"
               }), liveNumColumns, "/", liveNumRows]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.CheckboxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
               label: "Show table borders",
               __nextHasNoMarginBottom: true,
               checked: showBorders,
               onChange: e => onToggleBorders(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.CheckboxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
               label: "Hide Table Title",
               __nextHasNoMarginBottom: true,
               checked: hideTitle,
               onChange: e => onHideTitle(table, e)
             })
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelBody, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
           title: "Table Header",
           initialOpen: false,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.CheckboxControl, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
               label: "First Row as Header?",
               __nextHasNoMarginBottom: true,
               checked: enableHeaderRow,
               onChange: e => onEnableHeaderRow(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.CheckboxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
               label: "Freeze Header Row?",
               __nextHasNoMarginBottom: true,
               disabled: !enableHeaderRow,
               checked: headerRowSticky,
               onChange: e => onHeaderRowSticky(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelRow, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("span", {
               className: "inspector-controls-menu__header-alignment--middle",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.AlignmentControl, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__.AlignmentControl, {
                 id: editorHeaderAlignmentTagId,
                 value: headerAlignment,
                 onChange: e => onAlignHeader(table, e)
@@ -7442,8 +7485,8 @@ function Edit(props) {
                 children: "Text Alignment"
               })]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.BorderBoxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.BorderBoxControl, {
               className: "border-box-workaround",
               __next40pxDefaultSize: true,
               __experimentalIsRenderedInSidebar: true,
@@ -7454,20 +7497,20 @@ function Edit(props) {
               onChange: e => onHeaderBorder(table, e)
             })
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelBody, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
           title: "Table Body",
           initialOpen: false,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.CheckboxControl, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
               label: "Allow Horizontal Scroll?",
               __nextHasNoMarginBottom: true,
               checked: allowHorizontalScroll,
               onChange: e => onAllowHorizontalScroll(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelRow, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("span", {
               className: "inspector-controls-menu__header-alignment--middle",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.AlignmentControl, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__.AlignmentControl, {
                 id: editorBodyAlignmentTagId,
                 value: bodyAlignment,
                 onChange: e => onAlignBody(table, e)
@@ -7477,8 +7520,8 @@ function Edit(props) {
                 children: "Text Alignment"
               })]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.BorderBoxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.BorderBoxControl, {
               className: "border-box-workaround",
               label: "Borders",
               hideLabelFromVision: "false",
@@ -7490,19 +7533,19 @@ function Edit(props) {
           })]
         })]
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.InspectorControls, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__.InspectorControls, {
       group: "styles",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelBody, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
         title: "Banded Table Rows",
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.CheckboxControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
             label: "Display Banded Rows",
             __nextHasNoMarginBottom: true,
             checked: bandedRows,
             onChange: e => onShowBandedRows(table, e)
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.PanelColorSettings, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__.PanelColorSettings, {
           __experimentalIsRenderedInSidebar: true,
           title: 'Banded Row Color',
           colors: themeColors,
@@ -7516,18 +7559,18 @@ function Edit(props) {
             label: 'Background'
           }]
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelBody, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
         title: "Grid Lines",
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.CheckboxControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
             label: "Display Inner Grid Lines",
             __nextHasNoMarginBottom: true,
             checked: showGridLines,
             onChange: e => onShowGridLines(table, e)
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.__experimentalNumberControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalNumberControl, {
             label: "Inner Grid Line Width",
             value: gridLineWidth,
             labelPosition: "side",
@@ -7535,7 +7578,7 @@ function Edit(props) {
           })
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.InspectorControls, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__.InspectorControls, {
       group: "typography"
     })]
   });
@@ -7546,7 +7589,7 @@ function Edit(props) {
         style: {
           display: 'block'
         },
-        children: [!hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.RichText, {
+        children: [!hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__.RichText, {
           id: editorTitleTagId,
           className: "dtbk-table-title",
           style: {
@@ -7610,11 +7653,7 @@ function Edit(props) {
                       isContentOnlyMode: isContentOnlyMode,
                       dataFormat: columnDataTypes[column_id],
                       cell_id: cell_id,
-                      table: table
-                      // table_id={table_id}
-                      // row_id={row_id}
-                      // column_id={column_id}
-                      ,
+                      table: table,
                       content: borderContent,
                       attributes: attributes,
                       columnClassNames: '',
@@ -7687,11 +7726,7 @@ function Edit(props) {
                         isContentOnlyMode: isContentOnlyMode,
                         dataFormat: columnDataTypes[column_id],
                         cell_id: cell_id,
-                        table: table
-                        // table_id={table_id}
-                        // row_id={row_id}
-                        // column_id={column_id}
-                        ,
+                        table: table,
                         content: borderContent,
                         attributes: attributes,
                         columnClassNames: '',
@@ -7713,11 +7748,7 @@ function Edit(props) {
                         dataFormat: columnDataTypes[column_id],
                         cell_id: cell_id,
                         table: table,
-                        cellTagId: getEditorColumnHeaderTagId(column_id)
-                        // table_id={table_id}
-                        // row_id={row_id}
-                        // column_id={column_id}
-                        ,
+                        cellTagId: getEditorColumnHeaderTagId(column_id),
                         content: content,
                         attributes: attributes,
                         isFocused: isFocused,
@@ -7842,11 +7873,7 @@ function Edit(props) {
                           isContentOnlyMode: isContentOnlyMode,
                           dataFormat: columnDataTypes[column_id],
                           cell_id: cell_id,
-                          table: table
-                          // table_id={table_id}
-                          // row_id={row_id}
-                          // column_id={column_id}
-                          ,
+                          table: table,
                           content: borderContent,
                           attributes: attributes,
                           columnClassNames: '',
@@ -7866,19 +7893,15 @@ function Edit(props) {
                           "data-col": Number(column_id),
                           "data-row": Number(row_id),
                           tabIndex: isFocused ? 0 : -1,
-                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.Button, {
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
                             href: "#",
-                            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_12__["default"]
+                            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_11__["default"]
                           })
                         }, cell_id), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(Cell, {
                           cellType: 'body',
                           dataFormat: columnDataTypes[column_id],
                           cell_id: cell_id,
-                          table: table
-                          // table_id={table_id}
-                          // row_id={row_id}
-                          // column_id={column_id}
-                          ,
+                          table: table,
                           content: content,
                           attributes: attributes,
                           isFocused: isFocused,
@@ -7928,20 +7951,20 @@ function Edit(props) {
           })
         })]
       })]
-    }), !isNewBlock && tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.Spinner, {
+    }), !isNewBlock && tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {
       children: "Retrieving Table Data"
-    }), isNewBlock && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.Placeholder, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Dynamic Table', 'dynamic-table'),
-      icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.BlockIcon, {
-        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_11__["default"],
+    }), isNewBlock && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Placeholder, {
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Dynamic Table', 'dynamic-table'),
+      icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__.BlockIcon, {
+        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__["default"],
         showColors: true
       }),
-      instructions: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Create a new dynamic table.', 'dynamic-table'),
+      instructions: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Create a new dynamic table.', 'dynamic-table'),
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("form", {
         className: "blocks-table__placeholder-form",
         onSubmit: onCreateTable,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.__experimentalInputControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Table Name', 'dynamic-table'),
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalInputControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Name', 'dynamic-table'),
           placeholder: "New Table",
           required: "true",
           onChange: value => setCreateDraftTable(prev => ({
@@ -7950,29 +7973,27 @@ function Edit(props) {
           })),
           value: createDraftTable.tableName,
           className: "blocks-table__placeholder-input"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.__experimentalNumberControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalNumberControl, {
           __nextHasNoMarginBottom: true,
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Table Columns', 'dynamic-table'),
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Columns', 'dynamic-table'),
           min: 1,
           required: "true",
           value: createDraftTable.numColumns,
           onChange: e => onChangeInitialColumnCount(e),
           className: "blocks-table__placeholder-input"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.__experimentalNumberControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalNumberControl, {
           __nextHasNoMarginBottom: true,
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Table Rows', 'dynamic-table'),
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Rows', 'dynamic-table'),
           required: "true",
-          min: 1
-          // value={numRows}
-          ,
+          min: 1,
           value: createDraftTable.numRows,
           onChange: e => onChangeInitialRowCount(e),
           className: "blocks-table__placeholder-input"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.Button, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
           className: "blocks-table__placeholder-button",
           variant: "primary",
           type: "submit",
-          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Create Table')
+          children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Create Table')
         })]
       })
     })]
@@ -8046,10 +8067,7 @@ function Cell(props) {
     isContentOnlyMode = false,
     dataFormat,
     table,
-    // row_id,
     cell_id,
-    // table_id,
-    // column_id,
     content,
     attributes,
     isFocused,
@@ -8081,7 +8099,7 @@ function Cell(props) {
   const [cellContent, setCellContent] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)();
   const initialCellValue = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(content);
   const [cellAttributes, setCellAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(attributes);
-  const htmlToText = (html = '') => (0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_10__.getTextContent)((0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_10__.create)({
+  const htmlToText = (html = '') => (0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_9__.getTextContent)((0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_9__.create)({
     html
   })).replace(/\s+/g, ' ').trim();
   const numberEntryWrapperRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
@@ -8309,7 +8327,7 @@ function Cell(props) {
    * @return {void}
    */
   const renderTypes = {
-    richText: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_9__.RichText, {
+    richText: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__.RichText, {
       tagName: "div",
       value: cellContent,
       readOnly: !isEditing,
@@ -8356,7 +8374,7 @@ function Cell(props) {
           children: cellContent
         });
       }
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.TextControl, {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.TextControl, {
         className: renderClassesEdit,
         type: inputType,
         __next40pxDefaultSize: true,
@@ -8389,7 +8407,7 @@ function Cell(props) {
       }
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("div", {
         ref: numberEntryWrapperRef,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__.TextControl, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.TextControl, {
           className: renderClassesEdit,
           type: 'text',
           inputMode: inputType === 'integer' ? 'numeric' : 'decimal',
@@ -8443,11 +8461,11 @@ function Cell(props) {
     default:
       break;
   }
-  const renderClassesDisplay = (0,clsx__WEBPACK_IMPORTED_MODULE_13__["default"])(columnClassNames, cellClassNames, {
+  const renderClassesDisplay = (0,clsx__WEBPACK_IMPORTED_MODULE_12__["default"])(columnClassNames, cellClassNames, {
     'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
     'grid-control__body-columns--number-red': redNegativeNumber
   });
-  const renderClassesEdit = (0,clsx__WEBPACK_IMPORTED_MODULE_13__["default"])(columnClassNames, {
+  const renderClassesEdit = (0,clsx__WEBPACK_IMPORTED_MODULE_12__["default"])(columnClassNames, {
     'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
     'grid-control__body-columns--number-red': redNegativeNumber
   });
@@ -8658,6 +8676,841 @@ __webpack_require__.r(__webpack_exports__);
     return null;
   }
 });
+
+/***/ },
+
+/***/ "./src/messages.js"
+/*!*************************!*\
+  !*** ./src/messages.js ***!
+  \*************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   MESSAGE_TARGETS: () => (/* binding */ MESSAGE_TARGETS),
+/* harmony export */   getMessageNoticeProps: () => (/* binding */ getMessageNoticeProps),
+/* harmony export */   getMessageRenderProps: () => (/* binding */ getMessageRenderProps),
+/* harmony export */   getMessageText: () => (/* binding */ getMessageText),
+/* harmony export */   publishMessage: () => (/* binding */ publishMessage),
+/* harmony export */   removeMessageNotice: () => (/* binding */ removeMessageNotice),
+/* harmony export */   showMessageNotice: () => (/* binding */ showMessageNotice),
+/* harmony export */   speakMessage: () => (/* binding */ speakMessage)
+/* harmony export */ });
+/* harmony import */ var _wordpress_a11y__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/a11y */ "@wordpress/a11y");
+/* harmony import */ var _wordpress_a11y__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_a11y__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* External dependencies */
+
+
+
+/**
+ * @callback CreateNoticeHandler
+ * @param {string} status    Notice status such as 'success', 'info', 'warning', or 'error'.
+ * @param {string} content   Notice message text.
+ * @param {Object} [options] Optional notice configuration.
+ * @return {*}
+ */
+
+/**
+ * @callback RemoveNoticeHandler
+ * @param {string} noticeId  Notice identifier.
+ * @param {string} [context] Notice context.
+ * @return {*}
+ */
+
+/**
+ * Identify the render method and  location
+ *
+ * @since 1.3.1
+ */
+const MESSAGE_TARGETS = Object.freeze({
+  STORE_INLINE: 'store-inline',
+  STORE_SNACKBAR: 'store-snackbar',
+  BLOCK_TOP: 'block-top',
+  BLOCK_BOTTOM: 'block-bottom',
+  SIDEBAR: 'sidebar',
+  MODAL: 'modal',
+  CELL_POPOVER: 'cell-popover'
+});
+
+/**
+ * Message targets to be implemented via the notice store.
+ *
+ * @since 1.3.1
+ */
+const STORE_TARGETS = new Set([MESSAGE_TARGETS.STORE_INLINE, MESSAGE_TARGETS.STORE_SNACKBAR]);
+
+/**
+ * Message targets to be implemented via local rendering.
+ *
+ * @since 1.3.1
+ */
+const LOCAL_TARGETS = new Set([MESSAGE_TARGETS.BLOCK_TOP, MESSAGE_TARGETS.BLOCK_BOTTOM, MESSAGE_TARGETS.SIDEBAR, MESSAGE_TARGETS.MODAL, MESSAGE_TARGETS.CELL_POPOVER]);
+
+/**
+ * Create and return the message definition from the message library.
+ *
+ * @since 1.3.1
+ *
+ * @param {Object}  param0                     Message definition parts.
+ * @param {?Object} [param0.notice=null]       Notice configuration for the message.
+ * @param {?Object} [param0.announcement=null] Announcement configuration for the message.
+ * @return {Object} 	                       Message definition.
+ */
+function buildMessage({
+  notice = null,
+  announcement = null
+}) {
+  return {
+    notice,
+    announcement
+  };
+}
+
+/**
+ * Create the notice portion of the message from the message library.
+ *
+ * @since 1.3.1
+ *
+ * @param {Object}          param0                 Notice configuration.
+ * @param {string}          [param0.id]            Unique notice identifier.
+ * @param {string}          [param0.status]        Notice status such as 'success', 'info', 'warning', or 'error'.
+ * @param {string|Function} [param0.content]       Notice text or callback that returns the text.
+ * @param {Array}           [param0.actions]       Optional notice actions.
+ * @param {*}               [param0.icon]          Optional notice icon.
+ * @param {boolean}         [param0.isDismissible] Whether the notice can be dismissed.
+ * @param {string}          [param0.politeness]    Optional screen reader politeness setting.
+ * @param {string|Function} [param0.spokenMessage] Optional spoken message override.
+ * @return {Object} 	                           Notice definition.
+ */
+function buildNotice({
+  id = '',
+  status = 'info',
+  content,
+  actions = [],
+  icon = null,
+  isDismissible = true,
+  politeness,
+  spokenMessage
+} = {}) {
+  return {
+    id,
+    status,
+    content,
+    actions,
+    icon,
+    isDismissible,
+    politeness,
+    spokenMessage
+  };
+}
+
+/**
+ * Create an error message definition for library message that are defined as errors.
+ *
+ * @since 1.3.1
+ *
+ * @param {string}          id      Notice identifier.
+ * @param {string|Function} content Notice text or callback that returns the text.
+ * @param {Object}          notice  Optional notice into which the returned notice can be merged.
+ * @return {Object} 	            Error message definition.
+ */
+function buildErrorMessage(id, content, notice = {}) {
+  return buildMessage({
+    notice: buildNotice({
+      id,
+      status: 'error',
+      content,
+      politeness: 'assertive',
+      ...notice
+    })
+  });
+}
+
+/**
+ * Create the announcement portion of the message from the message library.
+ *
+ * @since 1.3.1
+ *
+ * @param {string|Function} content    Announcement text or callback that returns the text.
+ * @param {string}          politeness Optional screen reader politeness setting.
+ * @return {Object} 	               Announcement definition.
+ */
+function buildAnnouncement(content, politeness) {
+  return {
+    content,
+    politeness
+  };
+}
+
+/**
+ * Library of pre-defined message definitions that can be formatted for rendering in various ways and
+ * locations. They can include a notice, an announcement, or both. Notices are used for visual display
+ * and can optionally be announced to screen readers. Announcements are only used for screen readers
+ * and will not have a visual display.
+ *
+ * Each message definition contains:
+ * 	- A unique message identifier used to retrieve the message from the library.
+ *  - Content which includes text and context. This content may be general or specitically identified
+ *    as a notice or announcement.
+ *
+ * @since 1.3.1
+ */
+
+const MESSAGE_LIBRARY = {
+  'update-entity-error': buildErrorMessage('dtbk-update-entity-error', () => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dynamic Tables could not queue the latest table changes for save.', 'dynamic-table-blocks')),
+  'invalid-num-columns': buildErrorMessage('invalidNumColumns', ({
+    count
+  }) => {
+    return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)(
+    // translators: %s: Column count entered by the user.
+    (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Cannot have %s columns. You must have at least 1 and no more than 50 columns.', 'dynamic-table-blocks'), count);
+  }),
+  'invalid-num-rows': buildErrorMessage('invalidNumRows', ({
+    count
+  }) => {
+    return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)(
+    // translators: %s: Row count entered by the user.
+    (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Cannot have %s rows. You must have at least 1 and no more than 1,000 rows.', 'dynamic-table-blocks'), count);
+  }),
+  'data-type-mismatch': buildMessage({
+    notice: buildNotice({
+      id: 'dataTypeMismatch',
+      status: 'error',
+      politeness: 'assertive',
+      content: () => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Cannot paste cell content because the source and target cell content types do not match.', 'dynamic-table-blocks')
+    }),
+    announcement: buildAnnouncement(() => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Cannot paste cell content because the source and target cell content types do not match.', 'dynamic-table-blocks'), 'assertive')
+  }),
+  'unmounted-reconcile-error': buildErrorMessage('dtbk-unmounted-reconcile-error', () => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dynamic Tables could not reconcile unmounted tables.', 'dynamic-table-blocks')),
+  'post-save-sync-error': buildErrorMessage('dtbk-post-save-sync-error', () => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dynamic Tables could not finish table cleanup after the post was saved.', 'dynamic-table-blocks')),
+  'post-id-sync-error': buildErrorMessage('dtbk-post-id-sync-error', () => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dynamic Tables could not synchronize the table post relationship.', 'dynamic-table-blocks')),
+  'unmount-save-error': buildErrorMessage('dtbk-unmount-save-error', () => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dynamic Tables could not save table cleanup state.', 'dynamic-table-blocks')),
+  'editing-cell': buildMessage({
+    announcement: buildAnnouncement(({
+      cellId
+    }) => {
+      // translators: %s: Cell identifier.
+      return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Editing cell %s.', 'dynamic-table-blocks'), cellId);
+    })
+  }),
+  'stopped-editing-cell': buildMessage({
+    announcement: buildAnnouncement(({
+      cellId
+    }) => {
+      // translators: %s: Cell identifier.
+      return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Stopped editing cell %s.', 'dynamic-table-blocks'), cellId);
+    })
+  }),
+  'cell-pasted': buildMessage({
+    announcement: buildAnnouncement(() => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Cell pasted.', 'dynamic-table-blocks'))
+  }),
+  'cell-cut': buildMessage({
+    announcement: buildAnnouncement(() => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Cell cut. Paste into another cell to move the content.', 'dynamic-table-blocks'))
+  }),
+  'cell-copied': buildMessage({
+    announcement: buildAnnouncement(() => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Cell copied.', 'dynamic-table-blocks'))
+  }),
+  'column-inserted-right': buildMessage({
+    announcement: buildAnnouncement(({
+      columnLabel
+    }) => {
+      // translators: %s: New column label such as A, B, or C.
+      return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Inserted column %s to the right.', 'dynamic-table-blocks'), columnLabel);
+    })
+  }),
+  'column-inserted-left': buildMessage({
+    announcement: buildAnnouncement(({
+      columnLabel
+    }) => {
+      // translators: %s: New column label such as A, B, or C.
+      return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Inserted column %s to the left.', 'dynamic-table-blocks'), columnLabel);
+    })
+  }),
+  'row-inserted-below': buildMessage({
+    announcement: buildAnnouncement(({
+      rowNumber
+    }) => {
+      // translators: %d: New row number.
+      return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Inserted row %d below.', 'dynamic-table-blocks'), rowNumber);
+    })
+  }),
+  'row-inserted-above': buildMessage({
+    announcement: buildAnnouncement(({
+      rowNumber
+    }) => {
+      // translators: %d: New row number.
+      return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Inserted row %d above.', 'dynamic-table-blocks'), rowNumber);
+    })
+  }),
+  'column-deleted': buildMessage({
+    announcement: buildAnnouncement(({
+      columnLabel
+    }) => {
+      // translators: %s: Deleted column label such as A, B, or C.
+      return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Deleted column %s.', 'dynamic-table-blocks'), columnLabel);
+    })
+  }),
+  'row-deleted': buildMessage({
+    announcement: buildAnnouncement(({
+      rowNumber
+    }) => {
+      // translators: %d: Deleted row number.
+      return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Deleted row %d.', 'dynamic-table-blocks'), rowNumber);
+    })
+  }),
+  'column-moved-right': buildMessage({
+    announcement: buildAnnouncement(({
+      columnLabel
+    }) => {
+      // translators: %s: Column label such as A, B, or C.
+      return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Moved column %s right.', 'dynamic-table-blocks'), columnLabel);
+    })
+  }),
+  'column-moved-left': buildMessage({
+    announcement: buildAnnouncement(({
+      columnLabel
+    }) => {
+      // translators: %s: Column label such as A, B, or C.
+      return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Moved column %s left.', 'dynamic-table-blocks'), columnLabel);
+    })
+  }),
+  'row-moved-down': buildMessage({
+    announcement: buildAnnouncement(({
+      rowNumber
+    }) => {
+      // translators: %d: Row number.
+      return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Moved row %d down.', 'dynamic-table-blocks'), rowNumber);
+    })
+  }),
+  'row-moved-up': buildMessage({
+    announcement: buildAnnouncement(({
+      rowNumber
+    }) => {
+      // translators: %d: Row number.
+      return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Moved row %d up.', 'dynamic-table-blocks'), rowNumber);
+    })
+  }),
+  'table-title-hidden': buildMessage({
+    announcement: buildAnnouncement(() => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Table title hidden. The table remains labeled for assistive technology.', 'dynamic-table-blocks'))
+  }),
+  'table-title-shown': buildMessage({
+    announcement: buildAnnouncement(() => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Table title shown.', 'dynamic-table-blocks'))
+  }),
+  'editor-grid-help': buildMessage({
+    announcement: buildAnnouncement(() => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Use arrow keys to move between cells. Press Enter or F2 to edit the selected cell. Use the row and column option buttons to manage table structure. If your screen reader is using browse or scan mode, switch to focus or forms mode to interact with the grid.', 'dynamic-table-blocks'))
+  })
+};
+
+/**
+ * Retrieve and prepare full message from the message library.
+ *
+ * @since 1.3.1
+ *
+ * @param {string|Function}   content   Message content or callback that returns message content.
+ * @param {Object<string, *>} [args={}] Arguments to pass to the content callback to be embedded into the message text.
+ * @return {*}                          Formatted content.
+ */
+function resolveContent(content, args = {}) {
+  return typeof content === 'function' ? content(args) : content;
+}
+
+/**
+ * Assign aria politeness based on status if it is not otherwise specified.
+ *
+ * @since 1.3.1
+ *
+ * @param {string} status Message status level (error, warning, info).
+ * @return {string}       Politeness level.
+ */
+function getDefaultPoliteness(status = 'info') {
+  if (status === 'error' || status === 'warning') {
+    return 'assertive';
+  }
+  return 'polite';
+}
+
+/**
+ * Notice updated for any applied overrides.
+ *
+ * @since 1.3.1
+ *
+ * @param {Object}            notice    Notice definition from MESSAGE_LIBRARY.
+ * @param {Object<string, *>} args      Values injected into dynamic message text.
+ * @param {Object}            overrides Override values applied while resolving the notice.
+ * @return {Object}                     Notice with overrides applied.
+ */
+function normalizeNotice(notice, args = {}, overrides = {}) {
+  if (!notice) {
+    return null;
+  }
+  const resolvedStatus = overrides.status ?? notice.status ?? 'info';
+  return {
+    ...notice,
+    id: overrides.id ?? notice.id ?? '',
+    status: resolvedStatus,
+    content: resolveContent(notice.content, args),
+    actions: overrides.actions ?? notice.actions ?? [],
+    icon: overrides.icon ?? notice.icon ?? null,
+    isDismissible: overrides.isDismissible ?? notice.isDismissible ?? true,
+    politeness: overrides.politeness ?? notice.politeness ?? getDefaultPoliteness(resolvedStatus),
+    spokenMessage: overrides.spokenMessage ?? resolveContent(notice.spokenMessage, args)
+  };
+}
+
+/**
+ * Announcement updated for any applied overrides.
+ *
+ * @since 1.3.1
+ *
+ * @param {Object}            announcement Announcement definition from `MESSAGE_LIBRARY`.
+ * @param {Object<string, *>} args         Values injected into dynamic message text
+ * @param {Object}            overrides    Override values applied while resolving the announcement.
+ * @return {Object}                        Announcement with overrides applied.
+ */
+function normalizeAnnouncement(announcement, args = {}, overrides = {}) {
+  if (!announcement) {
+    return null;
+  }
+  const resolvedStatus = overrides.status ?? 'info';
+  return {
+    content: resolveContent(announcement.content, args),
+    politeness: overrides.politeness ?? announcement.politeness ?? getDefaultPoliteness(resolvedStatus)
+  };
+}
+
+/**
+ * Generate notice from announcement when notice is not specified.
+ *
+ * @since 1.3.1
+ *
+ * @param {Object} announcement Announcement definition containing content and politeness.
+ * @param {Object} overrides    Override values applied while deriving the notice.
+ * @return {Object}             Notice with overrides applied.
+ */
+function deriveNoticeFromAnnouncement(announcement, overrides = {}) {
+  if (!announcement) {
+    return null;
+  }
+  const resolvedStatus = overrides.status ?? 'info';
+  return {
+    id: overrides.id ?? '',
+    status: resolvedStatus,
+    content: announcement.content,
+    actions: overrides.actions ?? [],
+    icon: overrides.icon ?? null,
+    isDismissible: overrides.isDismissible ?? true,
+    politeness: overrides.politeness ?? announcement.politeness ?? getDefaultPoliteness(resolvedStatus),
+    spokenMessage: overrides.spokenMessage
+  };
+}
+
+/**
+ * Retrieve and return message definition from the library.
+ *
+ * @since 1.3.1
+ *
+ * @param {string} messageId Registered message key defined in MESSAGE_LIBRARY.
+ * @return {Object}          Message definition.
+ */
+function resolveMessageDefinition(messageId) {
+  const definition = MESSAGE_LIBRARY[messageId];
+  if (!definition) {
+    throw new Error(`Unknown message "${messageId}".`);
+  }
+  return definition;
+}
+
+/**
+ * Identifies whether this will be rendered through the editor notification system.
+ *
+ * @since 1.3.1
+ *
+ * @param {string} target Message delivery target type and location.
+ * @return {boolean}      Whether the message should be rendered through the notice store.
+ */
+function isStoreTarget(target) {
+  return STORE_TARGETS.has(target);
+}
+
+/**
+ * Retrieve the notice type from the default target unless it is explicitly specified.
+ *
+ * @since 1.3.1
+ *
+ * @param {string} target       Message delivery target and render location.
+ * @param {string} explicitType Explicit store notice type override.
+ * @return {boolean}            Store notice type
+ */
+function resolveStoreType(target, explicitType) {
+  if (explicitType) {
+    return explicitType;
+  }
+  return target === MESSAGE_TARGETS.STORE_SNACKBAR ? 'snackbar' : 'default';
+}
+
+/**
+ * Build class name string from specified class names.
+ *
+ * @since 1.3.1
+ *
+ * @param {...string} classNames Class names to combine.
+ * @return {string}              Space-delimited class name string.
+ */
+function joinClassNames(...classNames) {
+  return classNames.filter(Boolean).join(' ');
+}
+
+/**
+ * Props associated with rendering notices locally.
+ *
+ * @since 1.3.1
+ *
+ * @param {string} target          Message delivery target and render location.
+ * @param {string} regionClassName Class name(s) associated with the message display region.
+ * @return {Object|null}           Props to be applied for local render targets, or `null` when no region wrapper is needed.
+ */
+function buildRegionProps(target, regionClassName = '') {
+  if (!LOCAL_TARGETS.has(target) || target === MESSAGE_TARGETS.CELL_POPOVER) {
+    return null;
+  }
+  return {
+    className: joinClassNames('dtbk-message-region', `dtbk-message-region--${target}`, regionClassName),
+    'data-dtbk-message-target': target
+  };
+}
+
+/**
+ * Build a resolved message descriptor from the message library for store-backed,
+ * local-rendered, and announcement-only usage.
+ *
+ * @since 1.3.1
+ *
+ * @param {string}            messageId                                 Registered message key defined in `MESSAGE_LIBRARY`.
+ * @param {Object}            [param1={}]                               Message resolution and rendering options.
+ * @param {Object<string, *>} [param1.args={}]                          Values injected into dynamic message text.
+ * @param {string}            [param1.target=MESSAGE_TARGETS.BLOCK_TOP] Message delivery target and render location.
+ * @param {string}            [param1.context='default']                Notice-store context used for create/remove operations.
+ * @param {string}            [param1.type]                             Explicit store notice type override, such as `default` or `snackbar`.
+ * @param {string}            [param1.id]                               Optional notice id override.
+ * @param {string}            [param1.status]                           Optional notice status override such as `success`, `info`, `warning`, or `error`.
+ * @param {Array<Object>}     [param1.actions]                          Optional notice actions.
+ * @param {*}                 [param1.icon]                             Optional notice icon.
+ * @param {string|Function}   [param1.spokenMessage]                    Optional spoken message override.
+ * @param {string}            [param1.politeness]                       Optional screen reader politeness override.
+ * @param {boolean}           [param1.isDismissible]                    Whether the notice can be dismissed.
+ * @param {boolean}           [param1.explicitDismiss=false]            Whether a store-based snackbar requires explicit dismissal.
+ * @param {Function}          [param1.onDismiss]                        Optional callback when a store notice is dismissed.
+ * @param {Function}          [param1.onRemove]                         Optional callback when a locally rendered notice is removed or a popover is closed.
+ * @param {string}            [param1.className='']                     Optional class name applied to a locally rendered notice.
+ * @param {string}            [param1.regionClassName='']               Optional class name applied to the local render region wrapper.
+ * @param {*}                 [param1.anchor=null]                      Optional anchor reference for `CELL_POPOVER` rendering.
+ * @param {string}            [param1.placement='top']                  Optional popover placement.
+ * @param {number}            [param1.offset=12]                        Optional popover offset.
+ * @param {boolean}           [param1.flip=true]                        Whether the popover may flip placement to remain visible.
+ * @param {boolean}           [param1.shift=true]                       Whether the popover may shift to remain visible.
+ * @param {boolean|string}    [param1.focusOnMount=false]               Popover focus behavior on mount.
+ * @param {boolean}           [param1.noArrow=false]                    Whether the popover arrow should be hidden.
+ * @param {Object}            [param1.popoverProps={}]                  Additional props merged into popover rendering.
+ * @return {Object} Resolved message descriptor containing notice, announcement, store, component, popover, and region data.
+ */
+function createMessageDescriptor(messageId, {
+  args = {},
+  target = MESSAGE_TARGETS.BLOCK_TOP,
+  context = 'default',
+  type,
+  id,
+  status,
+  actions,
+  icon,
+  spokenMessage,
+  politeness,
+  isDismissible,
+  explicitDismiss = false,
+  onDismiss,
+  onRemove,
+  className = '',
+  regionClassName = '',
+  anchor = null,
+  placement = 'top',
+  offset = 12,
+  flip = true,
+  shift = true,
+  focusOnMount = false,
+  noArrow = false,
+  popoverProps = {}
+} = {}) {
+  const definition = resolveMessageDefinition(messageId);
+  const announcement = normalizeAnnouncement(definition.announcement, args, {
+    status,
+    politeness
+  });
+  let notice = normalizeNotice(definition.notice, args, {
+    id,
+    status,
+    actions,
+    icon,
+    spokenMessage,
+    politeness,
+    isDismissible
+  });
+  if (!notice && announcement) {
+    notice = deriveNoticeFromAnnouncement(announcement, {
+      id,
+      status,
+      actions,
+      icon,
+      spokenMessage,
+      politeness,
+      isDismissible
+    });
+  }
+  const descriptor = {
+    messageId,
+    target,
+    context,
+    notice,
+    announcement,
+    store: null,
+    component: null,
+    popover: null,
+    regionProps: buildRegionProps(target, regionClassName)
+  };
+  if (notice && isStoreTarget(target)) {
+    descriptor.store = {
+      status: notice.status,
+      content: notice.content,
+      options: {
+        id: notice.id || undefined,
+        type: resolveStoreType(target, type),
+        context,
+        actions: notice.actions,
+        icon: notice.icon,
+        isDismissible: notice.isDismissible,
+        politeness: notice.politeness,
+        spokenMessage: notice.spokenMessage,
+        explicitDismiss,
+        onDismiss
+      }
+    };
+  }
+  if (notice && !isStoreTarget(target)) {
+    descriptor.component = {
+      status: notice.status,
+      actions: notice.actions,
+      icon: notice.icon,
+      isDismissible: notice.isDismissible,
+      onRemove,
+      politeness: notice.politeness,
+      spokenMessage: notice.spokenMessage,
+      className,
+      children: notice.content
+    };
+  }
+  if (target === MESSAGE_TARGETS.CELL_POPOVER) {
+    descriptor.popover = {
+      anchor,
+      placement,
+      offset,
+      flip,
+      shift,
+      focusOnMount,
+      noArrow,
+      onClose: onRemove,
+      ...popoverProps
+    };
+  }
+  return descriptor;
+}
+
+/**
+ * Retrieve and prepare full notice render props from the message library.
+ *
+ * Description: Prepare properties for direct <Notice /> rendering and optional
+ * popover rendering
+ *
+ * @since 1.3.1
+ *
+ * @param {string} messageId    Registered message key defined in MESSAGE_LIBRARY.
+ * @param {Object} [options={}] Message resolution and rendering options.
+ * @return {Object}             Render props including `target`, `regionProps`, `noticeProps`, `popoverProps`, and `descriptor`.
+ */
+function getMessageRenderProps(messageId, options = {}) {
+  const descriptor = createMessageDescriptor(messageId, options);
+  return {
+    target: descriptor.target,
+    regionProps: descriptor.regionProps,
+    noticeProps: descriptor.component,
+    popoverProps: descriptor.popover,
+    descriptor
+  };
+}
+
+/**
+ * Retrieve notice props from the message library for the <Notice /> component.
+ *
+ * Description: Lightweight helper that returns <Notice /> props only.
+ *
+ * @since 1.3.1
+ *
+ * @param {string} messageId    Registered message key defined in MESSAGE_LIBRARY.
+ * @param {Object} [options={}] Message resolution and rendering options.
+ * @return {Object}             Properties for the <Notice /> component.
+ */
+function getMessageNoticeProps(messageId, options = {}) {
+  return getMessageRenderProps(messageId, options).noticeProps;
+}
+
+/**
+ * Retrieve message text only from library.
+ *
+ * Description: Prefer announcement content when available. Otherwise use notice content
+ * as a fallback.
+ *
+ * @since 1.3.1
+ *
+ * @param {string} messageId    Registered message key defined in MESSAGE_LIBRARY.
+ * @param {Object} [options={}] Message resolution and rendering options.
+ * @return {Object}             Resolved message text.
+ */
+function getMessageText(messageId, options = {}) {
+  const descriptor = createMessageDescriptor(messageId, options);
+  return descriptor.announcement?.content ?? descriptor.notice?.content ?? '';
+}
+
+/**
+ * Retrieve a store based notice payload from the message library.
+ *
+ * @since 1.3.1
+ *
+ * @param {string} messageId    Registered message key defined in MESSAGE_LIBRARY.
+ * @param {Object} [options={}] Message resolution and rendering options.
+ * @return {Object}             Store notice payload from the message library.
+ */
+function getMessageStorePayload(messageId, options = {}) {
+  return createMessageDescriptor(messageId, {
+    target: MESSAGE_TARGETS.STORE_INLINE,
+    ...options
+  }).store;
+}
+
+/**
+ * Create a notice through the notice store from the message library.
+ *
+ * Description: Creates a store-based notice when the target is store-based but
+ *              does not create an accessibility announcement.
+ *
+ * @since 1.3.1
+ *
+ * @param {CreateNoticeHandler} createNotice Notice store createNotice action dispatcher.
+ * @param {string}              messageId    Registered message key defined in MESSAGE_LIBRARY.
+ * @param {Object}              [options={}] Message resolution and rendering options.
+ * @return {Object|null}                     Store notice payload or null if no notice was created.
+ */
+function showMessageNotice(createNotice, messageId, options = {}) {
+  const storeNotice = getMessageStorePayload(messageId, options);
+  if (!storeNotice || typeof createNotice !== 'function') {
+    return null;
+  }
+  createNotice(storeNotice.status, storeNotice.content, storeNotice.options);
+  return storeNotice;
+}
+
+/**
+ * Remove a store-based notice.
+ *
+ * @since 1.3.1
+ *
+ * @param {RemoveNoticeHandler} removeNotice Notice store removeNotice action dispatcher.
+ * @param {string}              messageId    Registered message key defined in MESSAGE_LIBRARY.
+ * @param {Object}              [options={}] Message resolution and rendering options.
+ * @return {string|null}                     Notice identifier from message library.
+ */
+function removeMessageNotice(removeNotice, messageId, options = {}) {
+  const descriptor = createMessageDescriptor(messageId, {
+    target: MESSAGE_TARGETS.STORE_INLINE,
+    ...options
+  });
+  const noticeId = descriptor.notice?.id || null;
+  if (!noticeId || typeof removeNotice !== 'function') {
+    return null;
+  }
+  removeNotice(noticeId, descriptor.context);
+  return noticeId;
+}
+
+/**
+ * Retrieve message announcement from message library.
+ *
+ * @since 1.3.1
+ *
+ * @param {string} messageId    Registered message key defined in MESSAGE_LIBRARY.
+ * @param {Object} [options={}] Message resolution and rendering options.
+ * @return {Object|null}        Announcement payloadwith content and politeness.
+ */
+function getAnnouncementPayload(messageId, options = {}) {
+  const descriptor = createMessageDescriptor(messageId, options);
+  if (descriptor.announcement) {
+    return descriptor.announcement;
+  }
+  if (descriptor.notice) {
+    return {
+      content: descriptor.notice.spokenMessage || descriptor.notice.content,
+      politeness: descriptor.notice.politeness || getDefaultPoliteness(descriptor.notice.status)
+    };
+  }
+  return null;
+}
+
+/**
+ * Send an accessibility announcement without rendering a notice.
+ *
+ * @since 1.3.1
+ *
+ * @param {string} messageId    Registered message key defined in MESSAGE_LIBRARY.
+ * @param {Object} [options={}] Message resolution and rendering options.
+ * @return {string|null}        Announcement text.
+ */
+function speakMessage(messageId, options = {}) {
+  const announcement = getAnnouncementPayload(messageId, options);
+  if (!announcement?.content) {
+    return null;
+  }
+  (0,_wordpress_a11y__WEBPACK_IMPORTED_MODULE_0__.speak)(announcement.content, announcement.politeness || 'polite');
+  return announcement.content;
+}
+
+/**
+ * Publish a message to the notice store.
+ *
+ * Description: Creates a store-based notice when the target is store-based and
+ *              optionally speak the message.
+ *
+ * @since 1.3.1
+ *
+ * @param {CreateNoticeHandler} createNotice Notice store createNotice action dispatcher.
+ * @param {string}              messageId    Registered message key defined in MESSAGE_LIBRARY.
+ * @param {Object}              [options={}] Message resolution and rendering options.
+ * @return {Object|null}                     Resolved message descriptor.
+ */
+function publishMessage(createNotice, messageId, options = {}) {
+  const {
+    announceMode = 'auto'
+  } = options;
+  const descriptor = createMessageDescriptor(messageId, {
+    target: MESSAGE_TARGETS.STORE_INLINE,
+    ...options
+  });
+  if (descriptor.store && typeof createNotice === 'function') {
+    createNotice(descriptor.store.status, descriptor.store.content, descriptor.store.options);
+  }
+  const shouldManuallyAnnounce = announceMode === 'manual' || announceMode === 'auto' && !descriptor.store;
+  if (shouldManuallyAnnounce) {
+    speakMessage(messageId, options);
+  }
+  return descriptor;
+}
 
 /***/ },
 
@@ -9447,6 +10300,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   DEFAULT_COLUMN_DATA_TYPE: () => (/* binding */ DEFAULT_COLUMN_DATA_TYPE),
 /* harmony export */   computeCellIds: () => (/* binding */ computeCellIds),
 /* harmony export */   countCaretTokens: () => (/* binding */ countCaretTokens),
+/* harmony export */   formatClipboardContent: () => (/* binding */ formatClipboardContent),
 /* harmony export */   formatedDisplayDate: () => (/* binding */ formatedDisplayDate),
 /* harmony export */   formattedIsoDate: () => (/* binding */ formattedIsoDate),
 /* harmony export */   formattedNumber: () => (/* binding */ formattedNumber),
@@ -9555,6 +10409,9 @@ function updateArray(arrayIn, key, id, updatedData) {
     ...item,
     ...updatedData
   } : item);
+}
+function escapeHtml(value) {
+  return String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
 }
 
 /**
@@ -9668,13 +10525,17 @@ function computeCellIds(fetchedCells) {
  * @return {Object}       Row and column id extracted from the cell id
  */
 function getCellIdCoordinates(cellId) {
-  const match = cellId.match(/^([A-Z]+)(\d+)$/i);
+  // console.log('Received cellId', cellId);
+  const match = cellId.match(/^(0|[A-Z]+)(\d+)$/i);
+  // const match = cellId.match(/^([A-Z]+)(\d+)$/i);
   if (!match) {
-    throw new Error("Invalid cell id");
+    throw new Error('Invalid cell id (' + cellId + ')');
   }
   const [, colLetters, rowString] = match;
   const rowId = Number(rowString);
-  const colId = letterToNumber(colLetters);
+  const colId = colLetters === '0' ? 0 : letterToNumber(colLetters);
+  // const colId = letterToNumber(colLetters);
+
   return {
     column_id: colId,
     row_id: rowId
@@ -10138,6 +10999,53 @@ function formattedNumber(rawValue, dataTypeFormat, thousandSeparator, decimalPla
     return `(${formattedMagnitude})`;
   }
   return `-${formattedMagnitude}`;
+}
+function formatClipboardContent(cellContent, cellValueAttr, columnDataType = DEFAULT_COLUMN_DATA_TYPE) {
+  const dataType = columnDataType?.type || 'general';
+  const typeFormat = columnDataType?.settings;
+  let formattedText = '';
+  let plainText = '';
+  switch (dataType) {
+    case 'general':
+      {
+        formattedText = cellContent;
+        plainText = cellValueAttr;
+        break;
+      }
+    case 'date-time':
+      {
+        console.log('Date/Time format = ' + typeFormat?.format);
+        formattedText = formatedDisplayDate(cellContent, typeFormat?.format);
+        plainText = formattedText;
+        break;
+      }
+    case 'number':
+      {
+        const numberDisplayValue = formattedNumber(cellContent, typeFormat?.format, typeFormat?.formatOptions?.thousandSeparator, typeFormat?.formatOptions?.decimalPlaces, typeFormat?.formatOptions?.showCurrencySymbol, typeFormat?.formatOptions?.bracketNegative);
+        if (typeFormat?.formatOptions?.redNegative) {
+          const isNegativeNumber = Number(cellContent) < 0;
+          const htmlFormatted = `<span style="color: red;">${escapeHtml(numberDisplayValue)}</span>`;
+          formattedText = isNegativeNumber ? htmlFormatted : numberDisplayValue;
+        } else {
+          formattedText = numberDisplayValue;
+        }
+        plainText = numberDisplayValue;
+      }
+      break;
+    default:
+      {
+        formattedText = cellContent;
+        plainText = cellValueAttr;
+      }
+  }
+  console.log('Formatted clipboard content', {
+    formattedText,
+    plainText
+  });
+  return {
+    formattedText,
+    plainText
+  };
 }
 
 /***/ },
