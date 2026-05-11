@@ -186,7 +186,7 @@ const MESSAGE_LIBRARY = {
 		);
 	}),
 
-	'data-type-mismatch': buildMessage({
+	'paste-content-type-mismatch': buildMessage({
 		notice: buildNotice({
 			id: 'dataTypeMismatch',
 			status: 'error',
@@ -578,7 +578,7 @@ function createMessageDescriptor(
 	{
 		args = {},
 		target = MESSAGE_TARGETS.BLOCK_TOP,
-		context = 'default',
+		context = 'global',
 		type,
 		id,
 		status,

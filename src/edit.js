@@ -48,6 +48,7 @@ import { store as tableStore } from './data';
 import { usePostChangesSaved, useEditorIdentity, useNotInInserterPreview } from './hooks';
 
 import {
+	MESSAGE_TARGETS,
 	getMessageText,
 	publishMessage,
 	removeMessageNotice,
@@ -2716,13 +2717,12 @@ export default function Edit(props) {
 		}
 
 		const currentColumnDataType = getClipboardDataType(column_id, row_id);
-		// const mismatchMessage = __(
-		// 	'Cannot paste cell content because the source and target cell content types do not match.',
-		// 	'dynamic-table-blocks'
-		// );
 
 		if (columnDataType !== currentColumnDataType) {
-			publishMessage(createNotice, 'data-type-mismatch');
+			publishMessage(createNotice, 'paste-content-type-mismatch', {
+				target: MESSAGE_TARGETS.STORE_SNACKBAR,
+				announceMode: 'manual',
+			});
 			return;
 		}
 

@@ -6896,13 +6896,11 @@ function Edit(props) {
       return;
     }
     const currentColumnDataType = getClipboardDataType(column_id, row_id);
-    // const mismatchMessage = __(
-    // 	'Cannot paste cell content because the source and target cell content types do not match.',
-    // 	'dynamic-table-blocks'
-    // );
-
     if (columnDataType !== currentColumnDataType) {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_15__.publishMessage)(createNotice, 'data-type-mismatch');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_15__.publishMessage)(createNotice, 'paste-content-type-mismatch', {
+        target: _messages__WEBPACK_IMPORTED_MODULE_15__.MESSAGE_TARGETS.STORE_SNACKBAR,
+        announceMode: 'manual'
+      });
       return;
     }
     const currentCellData = table.cells.find(c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id));
@@ -8874,7 +8872,7 @@ const MESSAGE_LIBRARY = {
     // translators: %s: Row count entered by the user.
     (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Cannot have %s rows. You must have at least 1 and no more than 1,000 rows.', 'dynamic-table-blocks'), count);
   }),
-  'data-type-mismatch': buildMessage({
+  'paste-content-type-mismatch': buildMessage({
     notice: buildNotice({
       id: 'dataTypeMismatch',
       status: 'error',
@@ -9218,7 +9216,7 @@ function buildRegionProps(target, regionClassName = '') {
 function createMessageDescriptor(messageId, {
   args = {},
   target = MESSAGE_TARGETS.BLOCK_TOP,
-  context = 'default',
+  context = 'global',
   type,
   id,
   status,

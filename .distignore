@@ -13,6 +13,7 @@ _assets
 .wporg-source
 assets-wordpress-repository
 Development Docs
+docs
 src
 node_modules
 
