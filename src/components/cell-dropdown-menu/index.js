@@ -15,7 +15,7 @@ import { getCellIdCoordinates } from '../../utils';
  * @since    1.3.1
  *
  * @param {Object} props
- * @return {Object} Updated cell
+ * @return {Object|null} Updated cell
  */
 function CellMenuImpl(props = {}) {
 	const {
@@ -99,6 +99,14 @@ function CellMenuImpl(props = {}) {
 		[onRequestClose]
 	);
 
+	/**
+	 * Initiate cell content copy based on menu selection.
+	 *
+	 * @since    1.3.1
+	 *
+	 * @param {Object} event  Menu action
+	 * @param {string} cellId Cell ID of the copied cell
+	 */
 	const onCopyCell = useCallback(
 		(event, cellId) => {
 			const updateType = 'copyCell';
@@ -109,6 +117,14 @@ function CellMenuImpl(props = {}) {
 		[updatedCell, tableId, close]
 	);
 
+	/**
+	 * Initiate cell content cut based on menu selection.
+	 *
+	 * @since    1.3.1
+	 *
+	 * @param {Object} event  Menu action
+	 * @param {string} cellId Cell ID of the cell to cut
+	 */
 	const onCutCell = useCallback(
 		(event, cellId) => {
 			const updateType = 'cutCell';
@@ -119,6 +135,14 @@ function CellMenuImpl(props = {}) {
 		[updatedCell, tableId, close]
 	);
 
+	/**
+	 * Initiate content paste into the cell based on menu selection.
+	 *
+	 * @since    1.3.1
+	 *
+	 * @param {Object} event  Menu action
+	 * @param {string} cellId Cell ID of the cell to receive pasted content
+	 */
 	const onPasteCell = useCallback(
 		(event, cellId) => {
 			const updateType = 'pasteCell';
@@ -129,6 +153,14 @@ function CellMenuImpl(props = {}) {
 		[updatedCell, tableId, close]
 	);
 
+	/**
+	 * Initiate content delete for the cell based on menu selection.
+	 *
+	 * @since    1.3.1
+	 *
+	 * @param {Object} event  Menu action
+	 * @param {string} cellId Cell ID of the cell from which to delete content
+	 */
 	const onClearCellContent = useCallback(
 		(event, cellId) => {
 			const updateType = 'clearCellContent';

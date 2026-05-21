@@ -41,7 +41,7 @@ __webpack_require__.r(__webpack_exports__);
  * @since    1.3.1
  *
  * @param {Object} props
- * @return {Object} Updated cell
+ * @return {Object|null} Updated cell
  */
 
 function CellMenuImpl(props = {}) {
@@ -113,21 +113,57 @@ function CellMenuImpl(props = {}) {
     const nextIdx = idx === -1 ? 0 : (idx + dir + items.length) % items.length;
     items[nextIdx]?.focus?.();
   }, [onRequestClose]);
+
+  /**
+   * Initiate cell content copy based on menu selection.
+   *
+   * @since    1.3.1
+   *
+   * @param {Object} event  Menu action
+   * @param {string} cellId Cell ID of the copied cell
+   */
   const onCopyCell = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, cellId) => {
     const updateType = 'copyCell';
     updatedCell(event, updateType, tableId, cellId, '');
     close();
   }, [updatedCell, tableId, close]);
+
+  /**
+   * Initiate cell content cut based on menu selection.
+   *
+   * @since    1.3.1
+   *
+   * @param {Object} event  Menu action
+   * @param {string} cellId Cell ID of the cell to cut
+   */
   const onCutCell = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, cellId) => {
     const updateType = 'cutCell';
     updatedCell(event, updateType, tableId, cellId, '');
     close();
   }, [updatedCell, tableId, close]);
+
+  /**
+   * Initiate content paste into the cell based on menu selection.
+   *
+   * @since    1.3.1
+   *
+   * @param {Object} event  Menu action
+   * @param {string} cellId Cell ID of the cell to receive pasted content
+   */
   const onPasteCell = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, cellId) => {
     const updateType = 'pasteCell';
     updatedCell(event, updateType, tableId, cellId, '');
     close();
   }, [updatedCell, tableId, close]);
+
+  /**
+   * Initiate content delete for the cell based on menu selection.
+   *
+   * @since    1.3.1
+   *
+   * @param {Object} event  Menu action
+   * @param {string} cellId Cell ID of the cell from which to delete content
+   */
   const onClearCellContent = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, cellId) => {
     const updateType = 'clearCellContent';
     updatedCell(event, updateType, tableId, cellId, '');
@@ -467,12 +503,13 @@ function ColumnMenuImpl(props = {}) {
    *
    * @since    1.2.2
    *
-   * @param {Object} event    Menu action
-   * @param {number} columnId Column ID for new row
+   * @param {Object} event          Menu action
+   * @param {number} targetColumnId Column ID for column to move
+   * @param {string} direction      Direction to move column (left or right)
    */
-  const onMoveColumn = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetRowId, direction) => {
+  const onMoveColumn = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetColumnId, direction) => {
     const updateType = direction === 'left' ? 'move-left' : 'move-right';
-    updatedColumn(event, updateType, tableId, targetRowId, '');
+    updatedColumn(event, updateType, tableId, targetColumnId, '');
     close();
   }, [updatedColumn, tableId, close]);
 
@@ -483,7 +520,7 @@ function ColumnMenuImpl(props = {}) {
    * @since    1.2.0 Refactor to move column width handling up to parent component
    *
    * @param {Object} event          Menu action
-   * @param {Object} targetColumnId Column ID for update
+   * @param {number} targetColumnId Column ID for update
    */
   const onUpdateColumnWidth = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetColumnId) => {
     updatedColumn(event, 'attributes', tableId, targetColumnId, '');
@@ -497,7 +534,7 @@ function ColumnMenuImpl(props = {}) {
    * @since    1.2.0 Refactor to move column width handling up to parent component
    *
    * @param {Object} event          Menu action
-   * @param {Object} targetColumnId Column ID for update
+   * @param {number} targetColumnId Column ID for update
    */
   const onUpdateColumnDataType = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetColumnId) => {
     updatedColumn(event, 'dataType', tableId, targetColumnId, '');
@@ -693,8 +730,6 @@ function ConfigureColumnDataType(props = {}) {
    * Close modal on cancel.
    *
    * @since    1.1.2
-   *
-   * @param {Object} event Cancel
    */
   function handleCancel() {
     onRequestClose?.();
@@ -805,7 +840,7 @@ function ConfigureColumnDataType(props = {}) {
   }
 
   /**
-   * Update number format and set default options
+   * Set the date value to today's date if default to today is checked.
    *
    * @since 1.2.0
    *
@@ -838,7 +873,7 @@ function ConfigureColumnDataType(props = {}) {
    *
    * @since 1.2.4
    *
-   * @param {*} numberFormat Number format to set
+   * @param {string} numberFormat Number format to set
    */
   function onNumberFormat(numberFormat) {
     setPercentEntryValue(null);
@@ -1038,11 +1073,6 @@ function ConfigureColumnDataType(props = {}) {
     }
     setNumberRawValue(nextRawValue);
   }
-  function onNumberPreviewKeyDown(event) {
-    if (event.key === '.' && (dataTypeFormat === 'integer' || numberRawValue.includes('.'))) {
-      event.preventDefault();
-    }
-  }
 
   /**
    * Change column data types and set formatting defaults
@@ -1055,7 +1085,7 @@ function ConfigureColumnDataType(props = {}) {
    */
   function onUpdateDataType(event) {
     let updatedDataType = {};
-    let newColumnClassNames = new Set(columnClassNames);
+    const newColumnClassNames = new Set(columnClassNames);
     switch (event) {
       case 'date-time':
         setDataTypeFormat('date');
@@ -1929,7 +1959,7 @@ __webpack_require__.r(__webpack_exports__);
  * @since    1.2.0 REfactored to support updates to the RowMenu component.
  *
  * @param {Object} props
- * @return {Object} Updated column properties
+ * @return {Object} Updated row properties
  */
 
 function ConfigureRowHeight(props = {}) {
@@ -2004,8 +2034,6 @@ function ConfigureRowHeight(props = {}) {
    * Close modal on cancel.
    *
    * @since    1.0.0
-   *
-   * @param {Object} event Cancel
    */
   function handleCancel() {
     onRequestClose?.();
@@ -2471,8 +2499,9 @@ function RowMenuImpl(props = {}) {
    *
    * @since    1.2.2
    *
-   * @param {Object} event Menu action
-   * @param {number} rowId Row ID for new row
+   * @param {Object} event     Menu action
+   * @param {number} rowId     Row ID for new row
+   * @param {string} direction Direction to move row (up or down)
    */
   const onMoveRow = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)((event, targetRowId, direction) => {
     const updateType = direction === 'up' ? 'move-up' : 'move-down';
@@ -4514,9 +4543,6 @@ function Edit(props) {
     isSavingEditorChanges: false
   });
   const isPageUnloadRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(false);
-  const htmlToText = (html = '') => (0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_9__.getTextContent)((0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_9__.create)({
-    html
-  })).replace(/\s+/g, ' ').trim();
 
   // Location of border cell last clicked
   const lastInvokerElRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
@@ -4904,6 +4930,12 @@ function Edit(props) {
       restoreFocusAfterOverlayClose();
     }
   };
+
+  /**
+   * Remove cell clipboard content and set inUse to false.
+   *
+   * @since 1.3.1
+   */
   function resetCellClipboard() {
     setCellClipboard({
       inUse: false,
@@ -6847,24 +6879,7 @@ function Edit(props) {
         ...clipboardPayload
       });
       (0,_messages__WEBPACK_IMPORTED_MODULE_15__.speakMessage)(updateType === 'cutCell' ? 'cell-cut' : 'cell-copied');
-
-      /**
-       * Note on system clipboard handling:
-       *   - Only text content is currently supported in the plugin
-       *   - Other content types can be added later, but only for the modern navigator method
-       *   - The fallback is only capable of supporting text
-       */
-
-      // Copy to the system clipboard
-      // const clipboardText = cellContent;
-
-      if (navigator?.clipboard?.writeText) {
-        navigator.clipboard.writeText(formattedText).catch(() => {
-          legacySystemClipboardFallback(formattedText);
-        });
-      } else {
-        legacySystemClipboardFallback(formattedText);
-      }
+      copyCellToSystemClipboard(formattedText, plainText);
     }
   }
 
@@ -6918,12 +6933,65 @@ function Edit(props) {
     // announceEditorMessage(__('Cell pasted.', 'dynamic-table-blocks'));
     (0,_messages__WEBPACK_IMPORTED_MODULE_15__.speakMessage)('cell-pasted');
   }
+
+  /**
+   * Paste data to the current cell from clipboard.
+   *
+   * @since 1.3.1
+   *
+   * @param {number} cellId Identifier for the table cell
+   */
   function getClipboardDataType(columnId, rowId) {
     const isHeaderRow = table?.rows?.find(r => Number(r.row_id) === Number(rowId))?.attributes?.isHeader === true;
     if (isHeaderRow) {
       return 'general';
     }
     return table?.columns?.find(c => Number(c.column_id) === Number(columnId))?.attributes?.columnDataType?.type || 'general';
+  }
+
+  /**
+   * Load clipboard content into system clipboard.
+   *
+   * @since 1.3.1
+   *
+   * @param {string} formattedText Copied formatted text
+   * @param {string} plainText Copied plain text
+   */
+  function copyCellToSystemClipboard(formattedText, plainText) {
+    if (typeof window !== 'undefined' && window.ClipboardItem && navigator?.clipboard?.write) {
+      const clipboardFormattedText = `<!--StartFragment-->${formattedText}<!--EndFragment-->`;
+      const clipboardItem = new window.ClipboardItem({
+        'text/html': new window.Blob([clipboardFormattedText], {
+          type: 'text/html'
+        }),
+        'text/plain': new window.Blob([plainText], {
+          type: 'text/plain'
+        })
+      });
+      console.log('CliboardItem', formattedText, plainText);
+      navigator.clipboard.write([clipboardItem]).catch(() => {
+        copyPlainTextToSystemClipboard(plainText);
+      });
+      return;
+    }
+    copyPlainTextToSystemClipboard(plainText);
+  }
+
+  /**
+   * Load legacy system clipboard.
+   *
+   * @since 1.3.1
+   *
+   * @param {string} clipboardContent Plain text to copy to clipboard
+   */
+  function copyPlainTextToSystemClipboard(clipboardContent) {
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(clipboardContent).catch(() => {
+        legacySystemClipboardFallback(clipboardContent);
+      });
+      return;
+    }
+    legacySystemClipboardFallback(clipboardContent);
   }
 
   /**
@@ -7289,7 +7357,7 @@ function Edit(props) {
   const bodyBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_18__.getBorderStyle)(bodyBorder, 'left', 'width', bodyBorderStyleType);
 
   // Accessibility support
-  const editorGridTitleText = htmlToText(table?.table_name || '').trim();
+  const editorGridTitleText = (0,_utils__WEBPACK_IMPORTED_MODULE_16__.htmlToIndexText)(table?.table_name || '').trim();
   const editorGridAccessibleName = editorGridTitleText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Dynamic table');
   const editorGridLabelledBy = !hideTitle && editorGridTitleText ? editorTitleTagId : undefined;
   const editorGridHelpText = (0,_messages__WEBPACK_IMPORTED_MODULE_15__.getMessageText)('editor-grid-help');
@@ -7427,7 +7495,7 @@ function Edit(props) {
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("span", {
                 className: "grid-control__inspector-controls--read-only-label",
                 children: "Table Name:"
-              }), htmlToText(table.table_name)]
+              }), (0,_utils__WEBPACK_IMPORTED_MODULE_16__.htmlToIndexText)(table.table_name)]
             })
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("div", {
@@ -8288,6 +8356,15 @@ function Cell(props) {
     }
     setCellContent(nextRawValue);
   }
+
+  /**
+   * Prepare updated cell content and pass to update handler
+   *
+   * @since 1.3.1
+   *
+   * @param {string} nextContent   Updated formatted text content for the cell
+   * @param {string} nextIndexText Updated plain text conent for the cell
+   */
   function persistCellEdit(nextContent, nextIndexText) {
     updateCellData({
       content: nextContent,
@@ -8330,8 +8407,8 @@ function Cell(props) {
       value: cellContent,
       readOnly: !isEditing,
       onChange: !isEditing ? undefined : next => {
-        const plainText = htmlToText(next);
-        persistCellEdit(next, plainText);
+        const indexText = (0,_utils__WEBPACK_IMPORTED_MODULE_16__.htmlToIndexText)(next);
+        persistCellEdit(next, indexText);
       }
     }),
     border: () => {
@@ -10307,6 +10384,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   getCaretIndexFromTokenCount: () => (/* binding */ getCaretIndexFromTokenCount),
 /* harmony export */   getCellIdCoordinates: () => (/* binding */ getCellIdCoordinates),
 /* harmony export */   getFirstNumericIndex: () => (/* binding */ getFirstNumericIndex),
+/* harmony export */   htmlToIndexText: () => (/* binding */ htmlToIndexText),
+/* harmony export */   htmlToReadableText: () => (/* binding */ htmlToReadableText),
 /* harmony export */   letterToNumber: () => (/* binding */ letterToNumber),
 /* harmony export */   normalizeCaretForPresentationPrefix: () => (/* binding */ normalizeCaretForPresentationPrefix),
 /* harmony export */   normalizeColumnDataType: () => (/* binding */ normalizeColumnDataType),
@@ -10323,7 +10402,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_date__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/date */ "@wordpress/date");
 /* harmony import */ var _wordpress_date__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_date__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_rich_text__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/rich-text */ "@wordpress/rich-text");
+/* harmony import */ var _wordpress_rich_text__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_1__);
 /* External dependencies */
+
 
 const LETTER_MAP = {
   1: 'A',
@@ -10353,6 +10435,84 @@ const LETTER_MAP = {
   p: 'Y',
   q: 'Z'
 };
+const READABLE_LINE_BREAK_TAGS = new Set(['BLOCKQUOTE', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI', 'OL', 'P', 'PRE', 'TABLE', 'TR', 'UL']);
+const READABLE_TAB_BREAK_TAGS = new Set(['TD', 'TH']);
+
+/**
+ * Replace html tags with readable equivalents.
+ *
+ * @since 3.1.0
+ *
+ * @param {Array}  buffer All tokens previously converted tokens
+ * @param {string} token  Token to be converted and added to the buffer
+ */
+function appendReadableToken(buffer, token) {
+  if (!token) {
+    return;
+  }
+  const lastToken = buffer[buffer.length - 1];
+  if ((token === '\n' || token === '\t') && lastToken === token) {
+    return;
+  }
+  buffer.push(token);
+}
+
+/**
+ * Create index text from HTML for search and accessibility purposes.
+ *
+ * @since 3.1.0
+ *
+ * @param {string} html Passed html string
+ * @return  {string}    Plain text
+ */
+function htmlToIndexText(html = '') {
+  return (0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_1__.getTextContent)((0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_1__.create)({
+    html
+  })).replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Convert html to plain text retaining line breaks and tabs.
+ *
+ * @since 3.1.0
+ *
+ * @param {string} html Passed html string
+ * @return  {string}    Plain text with line breaks and tabs converted for readability
+ */
+function htmlToReadableText(html = '') {
+  if (!html) {
+    return '';
+  }
+  if (typeof document === 'undefined') {
+    return htmlToIndexText(html);
+  }
+  const root = document.createElement('div');
+  root.innerHTML = String(html);
+  const tokens = [];
+  function transformNode(node) {
+    if (node.nodeType === 3) {
+      appendReadableToken(tokens, node.textContent || '');
+      return;
+    }
+    if (node.nodeType !== 1) {
+      return;
+    }
+    const tagName = node.tagName.toUpperCase();
+    if (tagName === 'BR') {
+      appendReadableToken(tokens, '\n');
+      return;
+    }
+    node.childNodes.forEach(transformNode);
+    if (READABLE_TAB_BREAK_TAGS.has(tagName)) {
+      appendReadableToken(tokens, '\t');
+    }
+    if (READABLE_LINE_BREAK_TAGS.has(tagName)) {
+      appendReadableToken(tokens, '\n');
+    }
+  }
+  root.childNodes.forEach(transformNode);
+  return tokens.join('').replace(/\u00a0/g, ' ').replace(/\r\n?/g, '\n').replace(/[^\S\n\t]+/g, ' ').replace(/ *\n */g, '\n').replace(/ *\t */g, '\t').replace(/\t+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+}
 
 /**
  * Convert a column number to a string of letters.
@@ -10998,6 +11158,17 @@ function formattedNumber(rawValue, dataTypeFormat, thousandSeparator, decimalPla
   }
   return `-${formattedMagnitude}`;
 }
+
+/**
+ * Strip formatting characters from numeric display string
+ *
+ * @since 1.3.1
+ *
+ * @param {string} cellContent    Value of the cell content to be copied
+ * @param {Array}  cellValueAttr  The cell attribute Value data
+ * @param {Object} columnDataType Column data settings
+ * @return {Array}                Formatted text and plain text to be copied to the clipboard
+ */
 function formatClipboardContent(cellContent, cellValueAttr, columnDataType = DEFAULT_COLUMN_DATA_TYPE) {
   const dataType = columnDataType?.type || 'general';
   const typeFormat = columnDataType?.settings;
@@ -11007,7 +11178,7 @@ function formatClipboardContent(cellContent, cellValueAttr, columnDataType = DEF
     case 'general':
       {
         formattedText = cellContent;
-        plainText = cellValueAttr;
+        plainText = htmlToReadableText(cellContent) || cellValueAttr.indexText || '';
         break;
       }
     case 'date-time':
@@ -11033,7 +11204,7 @@ function formatClipboardContent(cellContent, cellValueAttr, columnDataType = DEF
     default:
       {
         formattedText = cellContent;
-        plainText = cellValueAttr;
+        plainText = htmlToReadableText(cellContent) || cellValueAttr.indexText || '';
       }
   }
   console.log('Formatted clipboard content', {

@@ -1,5 +1,6 @@
 /* External dependencies */
 import { dateI18n } from '@wordpress/date';
+import { create, getTextContent } from '@wordpress/rich-text';
 
 const LETTER_MAP = {
 	1: 'A',
@@ -29,6 +30,123 @@ const LETTER_MAP = {
 	p: 'Y',
 	q: 'Z',
 };
+
+const READABLE_LINE_BREAK_TAGS = new Set([
+	'BLOCKQUOTE',
+	'DIV',
+	'H1',
+	'H2',
+	'H3',
+	'H4',
+	'H5',
+	'H6',
+	'LI',
+	'OL',
+	'P',
+	'PRE',
+	'TABLE',
+	'TR',
+	'UL',
+]);
+
+const READABLE_TAB_BREAK_TAGS = new Set(['TD', 'TH']);
+
+/**
+ * Replace html tags with readable equivalents.
+ *
+ * @since 3.1.0
+ *
+ * @param {Array}  buffer All tokens previously converted tokens
+ * @param {string} token  Token to be converted and added to the buffer
+ */
+function appendReadableToken(buffer, token) {
+	if (!token) {
+		return;
+	}
+
+	const lastToken = buffer[buffer.length - 1];
+	if ((token === '\n' || token === '\t') && lastToken === token) {
+		return;
+	}
+
+	buffer.push(token);
+}
+
+/**
+ * Create index text from HTML for search and accessibility purposes.
+ *
+ * @since 3.1.0
+ *
+ * @param {string} html Passed html string
+ * @return  {string}    Plain text
+ */
+export function htmlToIndexText(html = '') {
+	return getTextContent(create({ html })).replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Convert html to plain text retaining line breaks and tabs.
+ *
+ * @since 3.1.0
+ *
+ * @param {string} html Passed html string
+ * @return  {string}    Plain text with line breaks and tabs converted for readability
+ */
+export function htmlToReadableText(html = '') {
+	if (!html) {
+		return '';
+	}
+
+	if (typeof document === 'undefined') {
+		return htmlToIndexText(html);
+	}
+
+	const root = document.createElement('div');
+	root.innerHTML = String(html);
+
+	const tokens = [];
+
+	function transformNode(node) {
+		if (node.nodeType === 3) {
+			appendReadableToken(tokens, node.textContent || '');
+			return;
+		}
+
+		if (node.nodeType !== 1) {
+			return;
+		}
+
+		const tagName = node.tagName.toUpperCase();
+
+		if (tagName === 'BR') {
+			appendReadableToken(tokens, '\n');
+			return;
+		}
+
+		node.childNodes.forEach(transformNode);
+
+		if (READABLE_TAB_BREAK_TAGS.has(tagName)) {
+			appendReadableToken(tokens, '\t');
+		}
+
+		if (READABLE_LINE_BREAK_TAGS.has(tagName)) {
+			appendReadableToken(tokens, '\n');
+		}
+	}
+
+	root.childNodes.forEach(transformNode);
+
+	return tokens
+		.join('')
+		.replace(/\u00a0/g, ' ')
+		.replace(/\r\n?/g, '\n')
+		.replace(/[^\S\n\t]+/g, ' ')
+		.replace(/ *\n */g, '\n')
+		.replace(/ *\t */g, '\t')
+		.replace(/\t+\n/g, '\n')
+		.replace(/\n{3,}/g, '\n\n')
+		.trim();
+}
 
 /**
  * Convert a column number to a string of letters.
@@ -735,6 +853,16 @@ export function formattedNumber(
 	return `-${formattedMagnitude}`;
 }
 
+/**
+ * Strip formatting characters from numeric display string
+ *
+ * @since 1.3.1
+ *
+ * @param {string} cellContent    Value of the cell content to be copied
+ * @param {Array}  cellValueAttr  The cell attribute Value data
+ * @param {Object} columnDataType Column data settings
+ * @return {Array}                Formatted text and plain text to be copied to the clipboard
+ */
 export function formatClipboardContent(
 	cellContent,
 	cellValueAttr,
@@ -748,7 +876,7 @@ export function formatClipboardContent(
 	switch (dataType) {
 		case 'general': {
 			formattedText = cellContent;
-			plainText = cellValueAttr;
+			plainText = htmlToReadableText(cellContent) || cellValueAttr.indexText || '';
 			break;
 		}
 		case 'date-time': {
@@ -770,7 +898,6 @@ export function formatClipboardContent(
 				if (typeFormat?.formatOptions?.redNegative) {
 					const isNegativeNumber = Number(cellContent) < 0;
 					const htmlFormatted = `<span style="color: red;">${escapeHtml(numberDisplayValue)}</span>`;
-
 					formattedText = isNegativeNumber ? htmlFormatted : numberDisplayValue;
 				} else {
 					formattedText = numberDisplayValue;
@@ -780,7 +907,7 @@ export function formatClipboardContent(
 			break;
 		default: {
 			formattedText = cellContent;
-			plainText = cellValueAttr;
+			plainText = htmlToReadableText(cellContent) || cellValueAttr.indexText || '';
 		}
 	}
 	console.log('Formatted clipboard content', { formattedText, plainText });

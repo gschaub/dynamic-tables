@@ -19,7 +19,7 @@ import './style.scss';
  * @since    1.2.0 REfactored to support updates to the RowMenu component.
  *
  * @param {Object} props
- * @return {Object} Updated column properties
+ * @return {Object} Updated row properties
  */
 function ConfigureRowHeight(props = {}) {
 	const { tableId, rowId, rowLabel, rowAttributes, updatedRow, onRequestClose } = props;
@@ -88,8 +88,6 @@ function ConfigureRowHeight(props = {}) {
 	 * Close modal on cancel.
 	 *
 	 * @since    1.0.0
-	 *
-	 * @param {Object} event Cancel
 	 */
 	function handleCancel() {
 		onRequestClose?.();

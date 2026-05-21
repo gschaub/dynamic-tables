@@ -154,14 +154,15 @@ function ColumnMenuImpl(props = {}) {
 	 *
 	 * @since    1.2.2
 	 *
-	 * @param {Object} event    Menu action
-	 * @param {number} columnId Column ID for new row
+	 * @param {Object} event          Menu action
+	 * @param {number} targetColumnId Column ID for column to move
+	 * @param {string} direction      Direction to move column (left or right)
 	 */
 	const onMoveColumn = useCallback(
-		(event, targetRowId, direction) => {
+		(event, targetColumnId, direction) => {
 			const updateType = direction === 'left' ? 'move-left' : 'move-right';
 
-			updatedColumn(event, updateType, tableId, targetRowId, '');
+			updatedColumn(event, updateType, tableId, targetColumnId, '');
 			close();
 		},
 		[updatedColumn, tableId, close]
@@ -174,7 +175,7 @@ function ColumnMenuImpl(props = {}) {
 	 * @since    1.2.0 Refactor to move column width handling up to parent component
 	 *
 	 * @param {Object} event          Menu action
-	 * @param {Object} targetColumnId Column ID for update
+	 * @param {number} targetColumnId Column ID for update
 	 */
 	const onUpdateColumnWidth = useCallback(
 		(event, targetColumnId) => {
@@ -191,7 +192,7 @@ function ColumnMenuImpl(props = {}) {
 	 * @since    1.2.0 Refactor to move column width handling up to parent component
 	 *
 	 * @param {Object} event          Menu action
-	 * @param {Object} targetColumnId Column ID for update
+	 * @param {number} targetColumnId Column ID for update
 	 */
 	const onUpdateColumnDataType = useCallback(
 		(event, targetColumnId) => {

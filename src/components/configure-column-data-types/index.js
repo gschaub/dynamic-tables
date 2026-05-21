@@ -167,8 +167,6 @@ function ConfigureColumnDataType(props = {}) {
 	 * Close modal on cancel.
 	 *
 	 * @since    1.1.2
-	 *
-	 * @param {Object} event Cancel
 	 */
 	function handleCancel() {
 		onRequestClose?.();
@@ -299,7 +297,7 @@ function ConfigureColumnDataType(props = {}) {
 	}
 
 	/**
-	 * Update number format and set default options
+	 * Set the date value to today's date if default to today is checked.
 	 *
 	 * @since 1.2.0
 	 *
@@ -336,7 +334,7 @@ function ConfigureColumnDataType(props = {}) {
 	 *
 	 * @since 1.2.4
 	 *
-	 * @param {*} numberFormat Number format to set
+	 * @param {string} numberFormat Number format to set
 	 */
 	function onNumberFormat(numberFormat) {
 		setPercentEntryValue(null);
@@ -573,12 +571,6 @@ function ConfigureColumnDataType(props = {}) {
 		setNumberRawValue(nextRawValue);
 	}
 
-	function onNumberPreviewKeyDown(event) {
-		if (event.key === '.' && (dataTypeFormat === 'integer' || numberRawValue.includes('.'))) {
-			event.preventDefault();
-		}
-	}
-
 	/**
 	 * Change column data types and set formatting defaults
 	 *
@@ -590,7 +582,7 @@ function ConfigureColumnDataType(props = {}) {
 	 */
 	function onUpdateDataType(event) {
 		let updatedDataType = {};
-		let newColumnClassNames = new Set(columnClassNames);
+		const newColumnClassNames = new Set(columnClassNames);
 
 		switch (event) {
 			case 'date-time':

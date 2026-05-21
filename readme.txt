@@ -119,6 +119,8 @@ No. This plugin is free to use. However, we are planning for a premium version o
 = 1.3.1 =
 * Added support for copy/cut/paste a single cell's content to other cell in the same table with the same content type
 * Created right-click cell menu
+* Created centralized message library and utility functions to support consistent user messaging and notices
+* Bump support for WordPress 7.0
 
 
 = 1.3.0 =

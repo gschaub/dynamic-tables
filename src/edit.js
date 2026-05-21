@@ -74,6 +74,7 @@ import {
 	getFirstNumericIndex,
 	normalizeCaretForPresentationPrefix,
 	formatClipboardContent,
+	htmlToIndexText,
 } from './utils';
 
 import { initTable, getDefaultRow, getDefaultColumn, getDefaultCell } from './table-defaults';
@@ -210,8 +211,6 @@ export default function Edit(props) {
 	});
 
 	const isPageUnloadRef = useRef(false);
-
-	const htmlToText = (html = '') => getTextContent(create({ html })).replace(/\s+/g, ' ').trim();
 
 	// Location of border cell last clicked
 	const lastInvokerElRef = useRef(null);
@@ -591,6 +590,11 @@ export default function Edit(props) {
 		}
 	};
 
+	/**
+	 * Remove cell clipboard content and set inUse to false.
+	 *
+	 * @since 1.3.1
+	 */
 	function resetCellClipboard() {
 		setCellClipboard({
 			inUse: false,
@@ -2653,6 +2657,7 @@ export default function Edit(props) {
 				cellValueAttr,
 				columnDataTypeSettings
 			);
+
 			const clipboardPayload = {
 				inUse: true,
 				clipboardAction: updateType === 'copyCell' ? 'copy' : 'cut',
@@ -2670,23 +2675,7 @@ export default function Edit(props) {
 			setCellClipboard({ ...clipboardPayload });
 			speakMessage(updateType === 'cutCell' ? 'cell-cut' : 'cell-copied');
 
-			/**
-			 * Note on system clipboard handling:
-			 *   - Only text content is currently supported in the plugin
-			 *   - Other content types can be added later, but only for the modern navigator method
-			 *   - The fallback is only capable of supporting text
-			 */
-
-			// Copy to the system clipboard
-			// const clipboardText = cellContent;
-
-			if (navigator?.clipboard?.writeText) {
-				navigator.clipboard.writeText(formattedText).catch(() => {
-					legacySystemClipboardFallback(formattedText);
-				});
-			} else {
-				legacySystemClipboardFallback(formattedText);
-			}
+			copyCellToSystemClipboard(formattedText, plainText);
 		}
 	}
 
@@ -2747,6 +2736,13 @@ export default function Edit(props) {
 		speakMessage('cell-pasted');
 	}
 
+	/**
+	 * Paste data to the current cell from clipboard.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @param {number} cellId Identifier for the table cell
+	 */
 	function getClipboardDataType(columnId, rowId) {
 		const isHeaderRow =
 			table?.rows?.find(r => Number(r.row_id) === Number(rowId))?.attributes?.isHeader === true;
@@ -2759,6 +2755,50 @@ export default function Edit(props) {
 			table?.columns?.find(c => Number(c.column_id) === Number(columnId))?.attributes
 				?.columnDataType?.type || 'general'
 		);
+	}
+
+	/**
+	 * Load clipboard content into system clipboard.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @param {string} formattedText Copied formatted text
+	 * @param {string} plainText Copied plain text
+	 */
+	function copyCellToSystemClipboard(formattedText, plainText) {
+		if (typeof window !== 'undefined' && window.ClipboardItem && navigator?.clipboard?.write) {
+
+			const clipboardFormattedText =
+			`<!--StartFragment-->${formattedText}<!--EndFragment-->`;
+
+			const clipboardItem = new window.ClipboardItem({
+				'text/html': new window.Blob([clipboardFormattedText], { type: 'text/html' }),
+				'text/plain': new window.Blob([plainText], { type: 'text/plain' }),
+			});
+			console.log('CliboardItem', formattedText, plainText);
+			navigator.clipboard.write([clipboardItem]).catch(() => {
+				copyPlainTextToSystemClipboard(plainText);
+			});
+			return;
+		}
+		copyPlainTextToSystemClipboard(plainText);
+	}
+
+	/**
+	 * Load legacy system clipboard.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @param {string} clipboardContent Plain text to copy to clipboard
+	 */
+	function copyPlainTextToSystemClipboard(clipboardContent) {
+		if (navigator?.clipboard?.writeText) {
+			navigator.clipboard.writeText(clipboardContent).catch(() => {
+				legacySystemClipboardFallback(clipboardContent);
+			});
+			return;
+		}
+		legacySystemClipboardFallback(clipboardContent);
 	}
 
 	/**
@@ -3236,7 +3276,7 @@ export default function Edit(props) {
 	const bodyBorderLeftWidth = getBorderStyle(bodyBorder, 'left', 'width', bodyBorderStyleType);
 
 	// Accessibility support
-	const editorGridTitleText = htmlToText(table?.table_name || '').trim();
+	const editorGridTitleText = htmlToIndexText(table?.table_name || '').trim();
 	const editorGridAccessibleName = editorGridTitleText || __('Dynamic table');
 	const editorGridLabelledBy = !hideTitle && editorGridTitleText ? editorTitleTagId : undefined;
 	const editorGridHelpText = getMessageText('editor-grid-help');
@@ -3396,7 +3436,7 @@ export default function Edit(props) {
 								<span className="grid-control__inspector-controls--read-only-label">
 									Table Name:
 								</span>
-								{htmlToText(table.table_name)}
+								{htmlToIndexText(table.table_name)}
 							</div>
 						</PanelRow>
 
@@ -4495,6 +4535,14 @@ function Cell(props) {
 		setCellContent(nextRawValue);
 	}
 
+	/**
+	 * Prepare updated cell content and pass to update handler
+	 *
+	 * @since 1.3.1
+	 *
+	 * @param {string} nextContent   Updated formatted text content for the cell
+	 * @param {string} nextIndexText Updated plain text conent for the cell
+	 */
 	function persistCellEdit(nextContent, nextIndexText) {
 		updateCellData({
 			content: nextContent,
@@ -4541,8 +4589,8 @@ function Cell(props) {
 					!isEditing
 						? undefined
 						: next => {
-								const plainText = htmlToText(next);
-								persistCellEdit(next, plainText);
+								const indexText = htmlToIndexText(next);
+								persistCellEdit(next, indexText);
 							}
 				}
 			></RichText>

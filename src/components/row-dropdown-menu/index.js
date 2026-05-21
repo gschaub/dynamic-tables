@@ -173,8 +173,9 @@ function RowMenuImpl(props = {}) {
 	 *
 	 * @since    1.2.2
 	 *
-	 * @param {Object} event Menu action
-	 * @param {number} rowId Row ID for new row
+	 * @param {Object} event     Menu action
+	 * @param {number} rowId     Row ID for new row
+	 * @param {string} direction Direction to move row (up or down)
 	 */
 	const onMoveRow = useCallback(
 		(event, targetRowId, direction) => {
