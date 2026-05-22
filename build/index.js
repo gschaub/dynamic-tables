@@ -7140,14 +7140,14 @@ function Edit(props) {
    */
   function onBandedRowColor(table, type, color) {
     let updatedTableAttributes = '';
-    if (type == 'background') {
+    if (type == 'background' && color !== undefined && color !== null) {
       updatedTableAttributes = {
         ...table.attributes,
         bandedRowBackgroundColor: color
       };
       setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
     }
-    if (type == 'text') {
+    if (type == 'text' && color !== undefined && color !== null) {
       updatedTableAttributes = {
         ...table.attributes,
         bandedTextColor: color
@@ -10236,7 +10236,7 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
     showGridLines: true,
     bandedRows: false,
     bandedRowBackgroundColor: '#d8dbda',
-    bandedTextColor: '#d8dbda',
+    bandedTextColor: 'black',
     gridLineWidth: 1,
     allowHorizontalScroll: true,
     enableHeaderRow: false,

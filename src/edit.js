@@ -2948,7 +2948,7 @@ export default function Edit(props) {
 	 */
 	function onBandedRowColor(table, type, color) {
 		let updatedTableAttributes = '';
-		if (type == 'background') {
+		if (type == 'background' && color !== undefined && color !== null) {
 			updatedTableAttributes = {
 				...table.attributes,
 				bandedRowBackgroundColor: color,
@@ -2956,7 +2956,7 @@ export default function Edit(props) {
 			setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 		}
 
-		if (type == 'text') {
+		if (type == 'text' && color !== undefined && color !== null) {
 			updatedTableAttributes = {
 				...table.attributes,
 				bandedTextColor: color,

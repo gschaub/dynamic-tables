@@ -2,7 +2,7 @@
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, responsive tables, table block, gutenberg table
 Tested up to:      7.0
-Stable tag:        1.3.1
+Stable tag:        1.3.2
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -44,9 +44,9 @@ Dynamic Tables is designed specifically for tables that require ongoing updates,
 Some roadmap highlights include:
 
 * Adding more content types and formats for all rows in a column (e.g., checkboxes, images, links, buttons, etc.) without the need to format each cell
-* Copy/paste support
 * Undo/redo support
 * Importing in common formats (e.g., csv, xlsx)
+* Enhance copy/paste support
 * Enhanced responsive formatting for mobile devices
 * Integrating Dynamic Tables with WordPress search
 * Support for front end interactivity to sort and filter tables
@@ -116,6 +116,9 @@ No. This plugin is free to use. However, we are planning for a premium version o
 7. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+= 1.3.2 =
+* Fix bug that can incorrectly render banded row text color
+
 = 1.3.1 =
 * Added support for copy/cut/paste a single cell's content to other cell in the same table with the same content type
 * Created right-click cell menu

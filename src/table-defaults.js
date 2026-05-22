@@ -194,7 +194,7 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
 		showGridLines: true,
 		bandedRows: false,
 		bandedRowBackgroundColor: '#d8dbda',
-		bandedTextColor: '#d8dbda',
+		bandedTextColor: 'black',
 		gridLineWidth: 1,
 		allowHorizontalScroll: true,
 		enableHeaderRow: false,

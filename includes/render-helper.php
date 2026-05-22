@@ -346,7 +346,7 @@ function format_row( $row_attributes ) {
 }
 
 /**
- * Create grid-template-columns CSS variableUndocumented function.
+ * Create grid-template-columns CSS variable.
  *
  * Loop each column and build the CSS variable from the attributes as formatted
  * and concatenated.
