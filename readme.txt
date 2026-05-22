@@ -1,8 +1,8 @@
 === Dynamic Tables ===
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, responsive tables, table block, gutenberg table
-Tested up to:      6.9
-Stable tag:        1.3.0
+Tested up to:      7.0
+Stable tag:        1.3.1
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
