@@ -747,10 +747,6 @@ export default function Edit(props) {
 		if (!Object.keys(unmountedTables).length) return;
 		void processUnmountedTables(unmountedTables).catch(error => {
 			console.error('Error reconciling unmounted Dynamic Tables', error);
-			// showTablePersistenceNotice(
-			// 	__('Dynamic Tables could not reconcile unmounted tables.', 'dynamic-table-blocks'),
-			// 	'dtbk-unmounted-reconcile-error'
-			// );
 			showMessageNotice(createNotice, 'unmounted-reconcile-error');
 		});
 	}, [unmountedTables]);
@@ -2470,47 +2466,47 @@ export default function Edit(props) {
 		switch (updateType) {
 			case 'attributes': {
 				if (!updatedColumnAttributes) {
-					const clickedColumn = table.columns.find(c => c.column_id === columnId);
+					const clickedColumn = table.columns.find(c => String(c.column_id) === String(columnId));
 					const attrs = clickedColumn?.attributes || {};
 					const columnLabel = clickedColumn?.column_name || String(columnId);
-					openColumnWidthModal(e, columnId, columnLabel, attrs);
+					openColumnWidthModal(e, String(columnId), columnLabel, attrs);
 				} else {
-					setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
+					setTableAttributes(tableId, 'column', String(columnId), 'ATTRIBUTES', updatedColumnAttributes);
 				}
 				break;
 			}
 			case 'dataType': {
 				if (!updatedColumnAttributes) {
-					const clickedColumn = table.columns.find(c => c.column_id === columnId);
+					const clickedColumn = table.columns.find(c => String(c.column_id) === String(columnId));
 					const columnLabel = clickedColumn?.column_name || String(columnId);
 					const attrs = clickedColumn?.attributes || {};
 					const classes = clickedColumn?.classes || '';
-					openColumnDataTypeModal(e, columnId, columnLabel, attrs, classes);
+					openColumnDataTypeModal(e, String(columnId), columnLabel, attrs, classes);
 				} else {
-					setTableAttributes(tableId, 'column_name', columnId, 'PROP', columnName);
-					setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
-					setTableAttributes(tableId, 'column', columnId, 'CLASSES', updatedColumnClasses);
+					setTableAttributes(tableId, 'column_name', String(columnId), 'PROP', columnName);
+					setTableAttributes(tableId, 'column', String(columnId), 'ATTRIBUTES', updatedColumnAttributes);
+					setTableAttributes(tableId, 'column', String(columnId), 'CLASSES', updatedColumnClasses);
 				}
 				break;
 			}
 			case 'insert-left': {
-				insertColumn(tableId, columnId, 'left');
+				insertColumn(tableId, String(columnId), 'left');
 				break;
 			}
 			case 'insert-right': {
-				insertColumn(tableId, columnId, 'right');
+				insertColumn(tableId, String(columnId), 'right');
 				break;
 			}
 			case 'delete': {
-				deleteColumn(tableId, columnId);
+				deleteColumn(tableId, String(columnId));
 				break;
 			}
 			case 'move-left': {
-				reorderColumns(tableId, columnId, 'left');
+				reorderColumns(tableId, String(columnId), 'left');
 				break;
 			}
 			case 'move-right': {
-				reorderColumns(tableId, columnId, 'right');
+				reorderColumns(tableId, String(columnId), 'right');
 				break;
 			}
 			default:
@@ -2541,32 +2537,32 @@ export default function Edit(props) {
 		switch (updateType) {
 			case 'attributes': {
 				if (!updatedRowAttributes) {
-					const clickedRow = table.rows.find(r => r.row_id === rowId);
+					const clickedRow = table.rows.find(r => String(r.row_id) === String(rowId));
 					const attrs = clickedRow?.attributes || {};
 					openRowHeightModal(e, rowId, String(rowId), attrs);
 				} else {
-					setTableAttributes(tableId, 'row', rowId, 'ATTRIBUTES', updatedRowAttributes);
+					setTableAttributes(tableId, 'row', String(rowId), 'ATTRIBUTES', updatedRowAttributes);
 				}
 				break;
 			}
 			case 'insert-above': {
-				insertRow(tableId, rowId, 'above');
+				insertRow(tableId, String(rowId), 'above');
 				break;
 			}
 			case 'insert-below': {
-				insertRow(tableId, rowId, 'below');
+				insertRow(tableId, String(rowId), 'below');
 				break;
 			}
 			case 'delete': {
-				deleteRow(tableId, rowId);
+				deleteRow(tableId, String(rowId));
 				break;
 			}
 			case 'move-up': {
-				reorderRows(tableId, rowId, 'up');
+				reorderRows(tableId, String(rowId), 'up');
 				break;
 			}
 			case 'move-down': {
-				reorderRows(tableId, rowId, 'down');
+				reorderRows(tableId, String(rowId), 'down');
 				break;
 			}
 			default:
@@ -2859,10 +2855,10 @@ export default function Edit(props) {
 				return;
 			}
 
-			const clickedColumn = table.columns.find(c => c.column_id === column_id);
+			const clickedColumn = table.columns.find(c => String(c.column_id) === String(column_id));
 			const attrs = clickedColumn?.attributes || {};
 			const columnLabel = numberToLetter(Number(column_id));
-			openColumnMenu(e, column_id, columnLabel, attrs);
+			openColumnMenu(e, String(column_id), columnLabel, attrs);
 		}
 
 		if (Number(row_id) !== 0 && Number(column_id) === 0) {
@@ -2871,7 +2867,7 @@ export default function Edit(props) {
 				return;
 			}
 			const attrs = clickedRow?.attributes || {};
-			openRowMenu(e, row_id, String(row_id), attrs);
+			openRowMenu(e, String(row_id), String(row_id), attrs);
 		}
 
 		if (Number(row_id) !== 0 && Number(column_id) !== 0) {

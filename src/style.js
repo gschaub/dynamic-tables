@@ -153,7 +153,7 @@ export function processBodyRows(isNewBlock, tableIsResolving, rows) {
 
 			let sizing = '';
 
-			if (!isHeader) {
+			if (!isHeader && row_id !== '0') {
 				switch (rowHeightType) {
 					case 'Auto': {
 						newGridRowStyle = newGridRowStyle + 'auto ';

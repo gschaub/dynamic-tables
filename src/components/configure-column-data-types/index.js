@@ -621,6 +621,8 @@ function ConfigureColumnDataType(props = {}) {
 	 * @param {Object} event Form submit
 	 */
 	function onUpdate(event) {
+		event?.preventDefault?.();
+
 		const updatedColumnAttributes = {
 			columnWidthType: columnWidthType,
 			minWidth: minWidth,
@@ -682,8 +684,8 @@ function ConfigureColumnDataType(props = {}) {
 			overlayClassName="configure-column-modal"
 			onRequestClose={handleCancel}
 			focusOnMount="firstContentElement"
-			isDismissible="false"
-			shouldCloseOnClickOutside="false"
+			isDismissible={false}
+			shouldCloseOnClickOutside={false}
 			size="large"
 		>
 			<form

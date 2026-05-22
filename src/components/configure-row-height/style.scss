@@ -31,3 +31,16 @@ fieldset {
     font-style: italic;
     margin: 8px;
 }
+.configure-column-modal__button-group {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-top: 16px;
+}
+
+.configure-row-modal__button-group {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-top: 16px;
+}

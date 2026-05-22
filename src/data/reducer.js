@@ -488,6 +488,7 @@ const table = (
 			};
 
 		case UPDATE_ROW:
+			const targetRowId_UpdateRow = String(action.rowId);
 			let transformedValue_UpdateRow = ' "' + action.value + '"';
 
 			if (action.attribute === 'attributes') {
@@ -498,7 +499,12 @@ const table = (
 			const updatedRowData = JSON.parse(
 				'{ "' + action.attribute + '" :' + transformedValue_UpdateRow + '}'
 			);
-			const updatedRows = updateArray(newRowsState.rows, 'row_id', action.rowId, updatedRowData);
+			const updatedRows = updateArray(
+				newRowsState.rows,
+				'row_id',
+				targetRowId_UpdateRow,
+				updatedRowData
+			);
 
 			const returnedUpdatedTableRow = {
 				...newRowsState,
@@ -511,6 +517,7 @@ const table = (
 			};
 
 		case UPDATE_COLUMN:
+			const targetColumnId_UpdateColumn = String(action.columnId);
 			let transformedValue_UpdateColumn = ' "' + action.value + '"';
 
 			if (action.attribute === 'attributes') {
@@ -524,7 +531,7 @@ const table = (
 			const updatedColumns = updateArray(
 				newColumnsState.columns,
 				'column_id',
-				action.columnId,
+				targetColumnId_UpdateColumn,
 				updatedColumnData
 			);
 

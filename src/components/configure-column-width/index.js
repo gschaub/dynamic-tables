@@ -86,7 +86,7 @@ function ConfigureColumnWidth(props = {}) {
 		setMaxWidth(columnAttributes.maxWidth);
 		setMaxWidthUnits(columnAttributes.maxWidthUnits);
 		setFixedWidth(columnAttributes.fixedWidth);
-		setFixedWidthUnits(columnAttributes.fixedWidth);
+		setFixedWidthUnits(columnAttributes.fixedWidthUnits);
 		setDisableForPhone(columnAttributes.disableForPhone);
 		setDisableForTablet(columnAttributes.disableForTablet);
 	}, [columnAttributes]);
@@ -247,6 +247,8 @@ function ConfigureColumnWidth(props = {}) {
 	 * @param {Object} event Form submit
 	 */
 	function onUpdate(event) {
+		event?.preventDefault?.();
+
 		const updatedColumnAttributes = {
 			columnWidthType: columnWidthType,
 			minWidth: minWidth,
@@ -262,7 +264,7 @@ function ConfigureColumnWidth(props = {}) {
 			columnDataType: dataType,
 		};
 
-		updatedColumn(event, 'attributes', tableId, columnId, updatedColumnAttributes);
+		updatedColumn(event, 'attributes', tableId, columnId, '', updatedColumnAttributes);
 		close();
 	}
 
@@ -272,8 +274,8 @@ function ConfigureColumnWidth(props = {}) {
 				title="Configure Column Width"
 				onRequestClose={handleCancel}
 				focusOnMount="firstContentElement"
-				isDismissible="false"
-				shouldCloseOnClickOutside="false"
+				isDismissible={false}
+				shouldCloseOnClickOutside={false}
 				size="large"
 			>
 				<p className="column-label">For column {columnLabel}</p>
@@ -429,7 +431,7 @@ function ConfigureColumnWidth(props = {}) {
 						</>
 					)}
 					<span className="configure-column-modal__button-group">
-						<Button variant="secondary" onClick={handleCancel}>
+						<Button variant="secondary" type="button" onClick={handleCancel}>
 							Cancel
 						</Button>
 

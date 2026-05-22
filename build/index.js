@@ -1123,6 +1123,7 @@ function ConfigureColumnDataType(props = {}) {
    * @param {Object} event Form submit
    */
   function onUpdate(event) {
+    event?.preventDefault?.();
     const updatedColumnAttributes = {
       columnWidthType: columnWidthType,
       minWidth: minWidth,
@@ -1166,8 +1167,8 @@ function ConfigureColumnDataType(props = {}) {
     overlayClassName: "configure-column-modal",
     onRequestClose: handleCancel,
     focusOnMount: "firstContentElement",
-    isDismissible: "false",
-    shouldCloseOnClickOutside: "false",
+    isDismissible: false,
+    shouldCloseOnClickOutside: false,
     size: "large",
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("form", {
       className: "configure-data-type--form configure-column-modal__form",
@@ -1536,7 +1537,7 @@ function ConfigureColumnWidth(props = {}) {
     setMaxWidth(columnAttributes.maxWidth);
     setMaxWidthUnits(columnAttributes.maxWidthUnits);
     setFixedWidth(columnAttributes.fixedWidth);
-    setFixedWidthUnits(columnAttributes.fixedWidth);
+    setFixedWidthUnits(columnAttributes.fixedWidthUnits);
     setDisableForPhone(columnAttributes.disableForPhone);
     setDisableForTablet(columnAttributes.disableForTablet);
   }, [columnAttributes]);
@@ -1698,6 +1699,7 @@ function ConfigureColumnWidth(props = {}) {
    * @param {Object} event Form submit
    */
   function onUpdate(event) {
+    event?.preventDefault?.();
     const updatedColumnAttributes = {
       columnWidthType: columnWidthType,
       minWidth: minWidth,
@@ -1712,7 +1714,7 @@ function ConfigureColumnWidth(props = {}) {
       horizontalAlignment: 'none',
       columnDataType: dataType
     };
-    updatedColumn(event, 'attributes', tableId, columnId, updatedColumnAttributes);
+    updatedColumn(event, 'attributes', tableId, columnId, '', updatedColumnAttributes);
     close();
   }
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.Fragment, {
@@ -1720,8 +1722,8 @@ function ConfigureColumnWidth(props = {}) {
       title: "Configure Column Width",
       onRequestClose: handleCancel,
       focusOnMount: "firstContentElement",
-      isDismissible: "false",
-      shouldCloseOnClickOutside: "false",
+      isDismissible: false,
+      shouldCloseOnClickOutside: false,
       size: "large",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("p", {
         className: "column-label",
@@ -1910,6 +1912,7 @@ function ConfigureColumnWidth(props = {}) {
           className: "configure-column-modal__button-group",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
             variant: "secondary",
+            type: "button",
             onClick: handleCancel,
             children: "Cancel"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
@@ -2129,6 +2132,7 @@ function ConfigureRowHeight(props = {}) {
    * @param {Object} event Form submit
    */
   function onUpdate(event) {
+    event?.preventDefault?.();
     const updatedRowAttributes = {
       rowHeightType: rowHeightType,
       minHeight: minHeight,
@@ -2278,8 +2282,10 @@ function ConfigureRowHeight(props = {}) {
           })]
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+        className: "configure-row-modal__button-group",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
           variant: "secondary",
+          type: "button",
           onClick: handleCancel,
           children: "Cancel"
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
@@ -3974,6 +3980,7 @@ const table = (state = {
         table: returnedTableMovedRows
       };
     case UPDATE_ROW:
+      const targetRowId_UpdateRow = String(action.rowId);
       let transformedValue_UpdateRow = ' "' + action.value + '"';
       if (action.attribute === 'attributes') {
         transformedValue_UpdateRow = JSON.stringify(action.value);
@@ -3982,7 +3989,7 @@ const table = (state = {
         ...state
       };
       const updatedRowData = JSON.parse('{ "' + action.attribute + '" :' + transformedValue_UpdateRow + '}');
-      const updatedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newRowsState.rows, 'row_id', action.rowId, updatedRowData);
+      const updatedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newRowsState.rows, 'row_id', targetRowId_UpdateRow, updatedRowData);
       const returnedUpdatedTableRow = {
         ...newRowsState,
         rows: [...updatedRows],
@@ -3993,6 +4000,7 @@ const table = (state = {
         table: returnedUpdatedTableRow
       };
     case UPDATE_COLUMN:
+      const targetColumnId_UpdateColumn = String(action.columnId);
       let transformedValue_UpdateColumn = ' "' + action.value + '"';
       if (action.attribute === 'attributes') {
         transformedValue_UpdateColumn = JSON.stringify(action.value);
@@ -4001,7 +4009,7 @@ const table = (state = {
         ...state
       };
       const updatedColumnData = JSON.parse('{ "' + action.attribute + '" :' + transformedValue_UpdateColumn + '}');
-      const updatedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newColumnsState.columns, 'column_id', action.columnId, updatedColumnData);
+      const updatedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newColumnsState.columns, 'column_id', targetColumnId_UpdateColumn, updatedColumnData);
       const returnedUpdatedTableColumn = {
         ...newColumnsState,
         rows: [...newColumnsState.rows],
@@ -5085,10 +5093,6 @@ function Edit(props) {
     if (!Object.keys(unmountedTables).length) return;
     void processUnmountedTables(unmountedTables).catch(error => {
       console.error('Error reconciling unmounted Dynamic Tables', error);
-      // showTablePersistenceNotice(
-      // 	__('Dynamic Tables could not reconcile unmounted tables.', 'dynamic-table-blocks'),
-      // 	'dtbk-unmounted-reconcile-error'
-      // );
       (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'unmounted-reconcile-error');
     });
   }, [unmountedTables]);
@@ -6653,53 +6657,53 @@ function Edit(props) {
       case 'attributes':
         {
           if (!updatedColumnAttributes) {
-            const clickedColumn = table.columns.find(c => c.column_id === columnId);
+            const clickedColumn = table.columns.find(c => String(c.column_id) === String(columnId));
             const attrs = clickedColumn?.attributes || {};
             const columnLabel = clickedColumn?.column_name || String(columnId);
-            openColumnWidthModal(e, columnId, columnLabel, attrs);
+            openColumnWidthModal(e, String(columnId), columnLabel, attrs);
           } else {
-            setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
+            setTableAttributes(tableId, 'column', String(columnId), 'ATTRIBUTES', updatedColumnAttributes);
           }
           break;
         }
       case 'dataType':
         {
           if (!updatedColumnAttributes) {
-            const clickedColumn = table.columns.find(c => c.column_id === columnId);
+            const clickedColumn = table.columns.find(c => String(c.column_id) === String(columnId));
             const columnLabel = clickedColumn?.column_name || String(columnId);
             const attrs = clickedColumn?.attributes || {};
             const classes = clickedColumn?.classes || '';
-            openColumnDataTypeModal(e, columnId, columnLabel, attrs, classes);
+            openColumnDataTypeModal(e, String(columnId), columnLabel, attrs, classes);
           } else {
-            setTableAttributes(tableId, 'column_name', columnId, 'PROP', columnName);
-            setTableAttributes(tableId, 'column', columnId, 'ATTRIBUTES', updatedColumnAttributes);
-            setTableAttributes(tableId, 'column', columnId, 'CLASSES', updatedColumnClasses);
+            setTableAttributes(tableId, 'column_name', String(columnId), 'PROP', columnName);
+            setTableAttributes(tableId, 'column', String(columnId), 'ATTRIBUTES', updatedColumnAttributes);
+            setTableAttributes(tableId, 'column', String(columnId), 'CLASSES', updatedColumnClasses);
           }
           break;
         }
       case 'insert-left':
         {
-          insertColumn(tableId, columnId, 'left');
+          insertColumn(tableId, String(columnId), 'left');
           break;
         }
       case 'insert-right':
         {
-          insertColumn(tableId, columnId, 'right');
+          insertColumn(tableId, String(columnId), 'right');
           break;
         }
       case 'delete':
         {
-          deleteColumn(tableId, columnId);
+          deleteColumn(tableId, String(columnId));
           break;
         }
       case 'move-left':
         {
-          reorderColumns(tableId, columnId, 'left');
+          reorderColumns(tableId, String(columnId), 'left');
           break;
         }
       case 'move-right':
         {
-          reorderColumns(tableId, columnId, 'right');
+          reorderColumns(tableId, String(columnId), 'right');
           break;
         }
       default:
@@ -6730,37 +6734,37 @@ function Edit(props) {
       case 'attributes':
         {
           if (!updatedRowAttributes) {
-            const clickedRow = table.rows.find(r => r.row_id === rowId);
+            const clickedRow = table.rows.find(r => String(r.row_id) === String(rowId));
             const attrs = clickedRow?.attributes || {};
             openRowHeightModal(e, rowId, String(rowId), attrs);
           } else {
-            setTableAttributes(tableId, 'row', rowId, 'ATTRIBUTES', updatedRowAttributes);
+            setTableAttributes(tableId, 'row', String(rowId), 'ATTRIBUTES', updatedRowAttributes);
           }
           break;
         }
       case 'insert-above':
         {
-          insertRow(tableId, rowId, 'above');
+          insertRow(tableId, String(rowId), 'above');
           break;
         }
       case 'insert-below':
         {
-          insertRow(tableId, rowId, 'below');
+          insertRow(tableId, String(rowId), 'below');
           break;
         }
       case 'delete':
         {
-          deleteRow(tableId, rowId);
+          deleteRow(tableId, String(rowId));
           break;
         }
       case 'move-up':
         {
-          reorderRows(tableId, rowId, 'up');
+          reorderRows(tableId, String(rowId), 'up');
           break;
         }
       case 'move-down':
         {
-          reorderRows(tableId, rowId, 'down');
+          reorderRows(tableId, String(rowId), 'down');
           break;
         }
       default:
@@ -7047,10 +7051,10 @@ function Edit(props) {
       if (isContentOnlyMode) {
         return;
       }
-      const clickedColumn = table.columns.find(c => c.column_id === column_id);
+      const clickedColumn = table.columns.find(c => String(c.column_id) === String(column_id));
       const attrs = clickedColumn?.attributes || {};
       const columnLabel = (0,_utils__WEBPACK_IMPORTED_MODULE_16__.numberToLetter)(Number(column_id));
-      openColumnMenu(e, column_id, columnLabel, attrs);
+      openColumnMenu(e, String(column_id), columnLabel, attrs);
     }
     if (Number(row_id) !== 0 && Number(column_id) === 0) {
       const clickedRow = table?.rows?.find(r => Number(r.row_id) === Number(row_id));
@@ -7058,7 +7062,7 @@ function Edit(props) {
         return;
       }
       const attrs = clickedRow?.attributes || {};
-      openRowMenu(e, row_id, String(row_id), attrs);
+      openRowMenu(e, String(row_id), String(row_id), attrs);
     }
     if (Number(row_id) !== 0 && Number(column_id) !== 0) {
       const clickedCell = table?.cells?.find(c => Number(c.row_id) === Number(row_id) && Number(c.column_id) === Number(column_id));
@@ -9776,7 +9780,7 @@ function processBodyRows(isNewBlock, tableIsResolving, rows) {
         isHeader
       } = attributes;
       let sizing = '';
-      if (!isHeader) {
+      if (!isHeader && row_id !== '0') {
         switch (rowHeightType) {
           case 'Auto':
             {

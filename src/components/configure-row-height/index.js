@@ -182,6 +182,8 @@ function ConfigureRowHeight(props = {}) {
 	 * @param {Object} event Form submit
 	 */
 	function onUpdate(event) {
+		event?.preventDefault?.();
+
 		const updatedRowAttributes = {
 			rowHeightType: rowHeightType,
 			minHeight: minHeight,
@@ -307,8 +309,8 @@ function ConfigureRowHeight(props = {}) {
 					</span>
 				</fieldset>
 
-				<span>
-					<Button variant="secondary" onClick={handleCancel}>
+				<span className="configure-row-modal__button-group">
+					<Button variant="secondary" type="button" onClick={handleCancel}>
 						Cancel
 					</Button>
 
