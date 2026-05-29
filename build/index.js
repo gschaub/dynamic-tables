@@ -2947,15 +2947,18 @@ const updateTableEntity = (tableId, overrideTableStatus = '') => ({
     columns,
     cells
   } = select.getTable(tableId, false);
+  const safeRows = Array.isArray(rows) ? rows : [];
+  const safeColumns = Array.isArray(columns) ? columns : [];
+  const safeCells = Array.isArray(cells) ? cells : [];
 
   // Remove border row if it exists
-  const filteredRows = rows.filter(row => row.row_id !== '0');
+  const filteredRows = safeRows.filter(row => row.row_id !== '0');
 
   // Remove border column if it exists
-  const filteredColumns = columns.filter(column => column.column_id !== '0');
+  const filteredColumns = safeColumns.filter(column => column.column_id !== '0');
 
   // Remove border cells if they exists
-  const filteredCells = cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
+  const filteredCells = safeCells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
 
   // Remove cell_id from cells.  They don't go back to the webservice
   const transformedCells = filteredCells.map(({
@@ -3439,6 +3442,369 @@ const updateTableBorder = (tableId, tableRows, tableColumns, tableCells) => asyn
 
 /***/ },
 
+/***/ "./src/data/all-tables/all-tables-action-types.js"
+/*!********************************************************!*\
+  !*** ./src/data/all-tables/all-tables-action-types.js ***!
+  \********************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/**
+ * Valid reducer action types.
+ *
+ * @since    3.1.2
+ *
+ * @type     {Object} Constants to support Reducer
+ */
+const TYPES = {
+  RECEIVE_HYDRATE_ALL_TABLES: 'RECEIVE_HYDRATE_ALL_TABLES',
+  UPDATE_SUMMARY_TABLE: 'UPDATE_SUMMARY_TABLE'
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TYPES);
+
+/***/ },
+
+/***/ "./src/data/all-tables/all-tables-actions.js"
+/*!***************************************************!*\
+  !*** ./src/data/all-tables/all-tables-actions.js ***!
+  \***************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   receiveSummaryTables: () => (/* binding */ receiveSummaryTables),
+/* harmony export */   refreshSummaryTables: () => (/* binding */ refreshSummaryTables),
+/* harmony export */   updateSummaryTable: () => (/* binding */ updateSummaryTable)
+/* harmony export */ });
+/* harmony import */ var _all_tables_action_types_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./all-tables-action-types.js */ "./src/data/all-tables/all-tables-action-types.js");
+/* harmony import */ var _all_tables_apis_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./all-tables-apis.js */ "./src/data/all-tables/all-tables-apis.js");
+/* Internal dependencies */
+
+
+
+/* Load constants */
+const {
+  RECEIVE_HYDRATE_ALL_TABLES,
+  UPDATE_SUMMARY_TABLE
+} = _all_tables_action_types_js__WEBPACK_IMPORTED_MODULE_0__["default"];
+
+/**
+ * Returns action object used in signalling a tables have been received
+ * from REST service.
+ *
+ * @since 1.3.2
+ *
+ * @param {Array|Object} allTables Payload from dynamic tables API
+ * @return {Object} Action object
+ */
+const receiveSummaryTables = allTables => {
+  return {
+    type: RECEIVE_HYDRATE_ALL_TABLES,
+    tables: allTables
+  };
+};
+
+/**
+ * Update a single summary-table record in the allTables store.
+ *
+ * @since 3.1.2
+ *
+ * @param {Object} table Partial or full summary table payload
+ * @return {Object} Action object
+ */
+const updateSummaryTable = table => {
+  return {
+    type: UPDATE_SUMMARY_TABLE,
+    tableId: Number(table.table_id),
+    table
+  };
+};
+
+/**
+ * Explicitly refresh summary tables from the REST API.
+ *
+ * This is intended for imperative refresh points such as post save, opening the
+ * existing-table picker, regaining browser focus, or periodic refreshes.
+ *
+ * @since 3.1.2
+ *
+ * @return {Object} Action object
+ */
+const refreshSummaryTables = () => async ({
+  dispatch,
+  select
+}) => {
+  try {
+    const tables = await (0,_all_tables_apis_js__WEBPACK_IMPORTED_MODULE_1__.fetchSummaryTablesFromApi)();
+    const reconciledTables = (0,_all_tables_apis_js__WEBPACK_IMPORTED_MODULE_1__.reconcileSummaryTablesWithLocalState)(tables, {
+      unsavedTables: select.getUnsavedTables(),
+      deletedTables: select.getDeletedTables()
+    });
+    dispatch.receiveSummaryTables(reconciledTables);
+    return reconciledTables;
+  } catch (error) {
+    console.log('Error in refreshSummaryTables', error);
+    throw error;
+  }
+};
+
+/***/ },
+
+/***/ "./src/data/all-tables/all-tables-apis.js"
+/*!************************************************!*\
+  !*** ./src/data/all-tables/all-tables-apis.js ***!
+  \************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   fetchSummaryTablesFromApi: () => (/* binding */ fetchSummaryTablesFromApi),
+/* harmony export */   reconcileSummaryTablesWithLocalState: () => (/* binding */ reconcileSummaryTablesWithLocalState)
+/* harmony export */ });
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/url */ "@wordpress/url");
+/* harmony import */ var _wordpress_url__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_url__WEBPACK_IMPORTED_MODULE_1__);
+/* External dependencies */
+
+
+
+/**
+ * Fetch summary tables from the REST API and normalize them for the allTables store.
+ *
+ * @since 3.1.2
+ *
+ * @return {Promise<Object>} Summary tables keyed by table id
+ */
+async function fetchSummaryTablesFromApi() {
+  const path = (0,_wordpress_url__WEBPACK_IMPORTED_MODULE_1__.addQueryArgs)('/dynamic-table-blocks/v1/tables', {
+    context: 'view',
+    status: ['saved', 'new', 'loaded']
+  });
+  const tableSummaries = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default()({
+    path
+  });
+  return tableSummaries.reduce((allTables, {
+    id,
+    header = {},
+    column_structures = []
+  }) => {
+    allTables[id] = {
+      table_id: id,
+      block_table_ref: header.block_table_ref,
+      table_status: header.status,
+      post_id: header.post_id,
+      table_name: header.table_name,
+      total_rows: header.total_rows,
+      total_columns: header.total_columns,
+      columns: column_structures
+    };
+    return allTables;
+  }, {});
+}
+
+/**
+ * Overlay local unsaved and deleted table state onto fetched summary tables.
+ *
+ * This keeps the summary picker accurate before post save finishes by preserving
+ * local "new" and "deleted" state that may not yet exist in the REST response.
+ *
+ * @since 3.1.2
+ *
+ * @param {Object} tables             API summary tables
+ * @param {Object} args               Local overlay state
+ * @param {Object} args.unsavedTables Local tables with unsaved changes
+ * @param {Object} args.deletedTables Local deleted tables that have not been saved
+ * @return {Object} Reconciled summary tables
+ */
+function reconcileSummaryTablesWithLocalState(tables, {
+  unsavedTables = {},
+  deletedTables = {}
+} = {}) {
+  const reconciledTables = {
+    ...tables
+  };
+  Object.values(unsavedTables).forEach(({
+    table_id,
+    block_table_ref,
+    table_status,
+    post_id,
+    table_name,
+    rows = [],
+    columns = []
+  }) => {
+    const summaryRows = rows.filter(({
+      row_id
+    }) => Number(row_id) !== 0);
+    const summaryColumns = columns.filter(({
+      column_id
+    }) => Number(column_id) !== 0);
+    reconciledTables[table_id] = {
+      ...(reconciledTables[table_id] || {}),
+      table_id,
+      block_table_ref,
+      table_status,
+      post_id,
+      table_name,
+      total_rows: summaryRows.length,
+      total_columns: summaryColumns.length,
+      columns: summaryColumns
+    };
+  });
+  Object.values(deletedTables).forEach(({
+    table_id
+  }) => {
+    delete reconciledTables[table_id];
+  });
+  return reconciledTables;
+}
+
+/***/ },
+
+/***/ "./src/data/all-tables/all-tables-reducer.js"
+/*!***************************************************!*\
+  !*** ./src/data/all-tables/all-tables-reducer.js ***!
+  \***************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _all_tables_action_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./all-tables-action-types */ "./src/data/all-tables/all-tables-action-types.js");
+/* Internal dependencies */
+
+const {
+  RECEIVE_HYDRATE_ALL_TABLES,
+  UPDATE_SUMMARY_TABLE
+} = _all_tables_action_types__WEBPACK_IMPORTED_MODULE_0__["default"];
+
+/**
+ * Dynamic Table reducer helper for a single table.
+ *
+ * @since    3.1.2
+ *
+ * @param {Object} state  Current tables state
+ * @param {Object} action Action activity to be performed
+ * @return {Object} Updated tables state
+ */
+const reducer = (state = {}, action) => {
+  switch (action.type) {
+    case RECEIVE_HYDRATE_ALL_TABLES:
+      return {
+        ...action.tables
+      };
+    case UPDATE_SUMMARY_TABLE:
+      return {
+        ...state,
+        [action.tableId]: {
+          ...(state[action.tableId] || {}),
+          ...action.table
+        }
+      };
+    default:
+      return state;
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (reducer);
+
+/***/ },
+
+/***/ "./src/data/all-tables/all-tables-resolvers.js"
+/*!*****************************************************!*\
+  !*** ./src/data/all-tables/all-tables-resolvers.js ***!
+  \*****************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getSummaryTables: () => (/* binding */ getSummaryTables)
+/* harmony export */ });
+/* harmony import */ var _all_tables_apis_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./all-tables-apis.js */ "./src/data/all-tables/all-tables-apis.js");
+/* Internal dependencies */
+
+
+/**
+ * Requests a summary tables from the REST API.
+ *
+ * @since    1.3.2
+ *
+ * @param {boolean} areTablesStale Whether the current state is stale
+ */
+const getSummaryTables = areTablesStale => async ({
+  dispatch,
+  select
+}) => {
+  if (!areTablesStale) {
+    return;
+  }
+  try {
+    const tables = await (0,_all_tables_apis_js__WEBPACK_IMPORTED_MODULE_0__.fetchSummaryTablesFromApi)();
+    const reconciledTables = (0,_all_tables_apis_js__WEBPACK_IMPORTED_MODULE_0__.reconcileSummaryTablesWithLocalState)(tables, {
+      unsavedTables: select.getUnsavedTables(),
+      deletedTables: select.getDeletedTables()
+    });
+    dispatch.receiveSummaryTables(reconciledTables);
+  } catch (error) {
+    console.log('Error in getSummaryTables', error);
+  }
+};
+
+/***/ },
+
+/***/ "./src/data/all-tables/all-tables-selectors.js"
+/*!*****************************************************!*\
+  !*** ./src/data/all-tables/all-tables-selectors.js ***!
+  \*****************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getSummaryTables: () => (/* binding */ getSummaryTables)
+/* harmony export */ });
+/**
+ * Retrieve the current cached state of all tables in summary format.
+ * the table from the REST api.
+ *
+ * @since    1.3.2
+ *
+ * @param {Object}  state          Current state of tables
+ * @param {boolean} areTablesStale Should fresh data be fetch from API?
+ * @return {Object} Requested Table
+ */
+function getSummaryTables(state, areTablesStale = false) {
+  return state.allTables;
+}
+
+/***/ },
+
+/***/ "./src/data/all-tables/index.js"
+/*!**************************************!*\
+  !*** ./src/data/all-tables/index.js ***!
+  \**************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   actions: () => (/* reexport module object */ _all_tables_actions__WEBPACK_IMPORTED_MODULE_0__),
+/* harmony export */   reducer: () => (/* reexport safe */ _all_tables_reducer__WEBPACK_IMPORTED_MODULE_3__["default"]),
+/* harmony export */   resolvers: () => (/* reexport module object */ _all_tables_resolvers__WEBPACK_IMPORTED_MODULE_2__),
+/* harmony export */   selectors: () => (/* reexport module object */ _all_tables_selectors__WEBPACK_IMPORTED_MODULE_1__)
+/* harmony export */ });
+/* harmony import */ var _all_tables_actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./all-tables-actions */ "./src/data/all-tables/all-tables-actions.js");
+/* harmony import */ var _all_tables_selectors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./all-tables-selectors */ "./src/data/all-tables/all-tables-selectors.js");
+/* harmony import */ var _all_tables_resolvers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./all-tables-resolvers */ "./src/data/all-tables/all-tables-resolvers.js");
+/* harmony import */ var _all_tables_reducer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./all-tables-reducer */ "./src/data/all-tables/all-tables-reducer.js");
+
+
+
+
+
+/***/ },
+
 /***/ "./src/data/constants.js"
 /*!*******************************!*\
   !*** ./src/data/constants.js ***!
@@ -3478,7 +3844,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _selectors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./selectors */ "./src/data/selectors.js");
 /* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./actions */ "./src/data/actions.js");
 /* harmony import */ var _resolvers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./resolvers */ "./src/data/resolvers.js");
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./constants */ "./src/data/constants.js");
+/* harmony import */ var _all_tables__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./all-tables */ "./src/data/all-tables/index.js");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./constants */ "./src/data/constants.js");
 /* External dependencies */
 
 
@@ -3489,18 +3856,29 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 /**
  * Create Dynamic Tables store.
  *
  * @since    1.0.0
+ * @since    1.3.2  Added support for combined reducers
  *
  * @type     {Object} Wordpress block store
  */
-const store = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.createReduxStore)(_constants__WEBPACK_IMPORTED_MODULE_5__["default"], {
+const store = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.createReduxStore)(_constants__WEBPACK_IMPORTED_MODULE_6__["default"], {
   reducer: _reducer__WEBPACK_IMPORTED_MODULE_1__["default"],
-  selectors: _selectors__WEBPACK_IMPORTED_MODULE_2__,
-  actions: _actions__WEBPACK_IMPORTED_MODULE_3__,
-  resolvers: _resolvers__WEBPACK_IMPORTED_MODULE_4__
+  selectors: {
+    ..._selectors__WEBPACK_IMPORTED_MODULE_2__,
+    ..._all_tables__WEBPACK_IMPORTED_MODULE_5__.selectors
+  },
+  actions: {
+    ..._actions__WEBPACK_IMPORTED_MODULE_3__,
+    ..._all_tables__WEBPACK_IMPORTED_MODULE_5__.actions
+  },
+  resolvers: {
+    ..._resolvers__WEBPACK_IMPORTED_MODULE_4__,
+    ..._all_tables__WEBPACK_IMPORTED_MODULE_5__.resolvers
+  }
 });
 (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.register)(store);
 
@@ -3514,11 +3892,21 @@ const store = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.createReduxStore)(
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   reducer: () => (/* binding */ reducer)
 /* harmony export */ });
-/* harmony import */ var _action_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./action-types */ "./src/data/action-types.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _action_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./action-types */ "./src/data/action-types.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _all_tables__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./all-tables */ "./src/data/all-tables/index.js");
+/**
+ * External dependencies
+ */
+
+
 /* Internal dependencies */
+
 
 
 const {
@@ -3538,12 +3926,13 @@ const {
   UPDATE_CELL,
   RECEIVE_HYDRATE,
   PROCESS_BORDERS
-} = _action_types__WEBPACK_IMPORTED_MODULE_0__["default"];
+} = _action_types__WEBPACK_IMPORTED_MODULE_1__["default"];
 
 /**
  * Dynamic Table reducer helper for a single table.
  *
  * @since    1.0.0
+ * @since    1.3.2   Implement combined reducer to support multiple state slices.
  *
  * @param {Object} state  Current table
  * @param {Object} action Action activity to be performed
@@ -3638,7 +4027,7 @@ const table = (state = {
         }
       });
       columnsWithNewId_InsertColumn.push(action.newColumn);
-      const sortedColumns_InsertColumn = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('columns', columnsWithNewId_InsertColumn);
+      const sortedColumns_InsertColumn = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.tableSort)('columns', columnsWithNewId_InsertColumn);
 
       /**
        * Insert new cells and update existing column_id's
@@ -3649,7 +4038,7 @@ const table = (state = {
           cellsWithNewId_InsertColumn.push(cell);
         } else {
           const newColumnId_InsertColumn = String(Number(cell.column_id) + 1);
-          const columnLetter_InsertColumn = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(newColumnId_InsertColumn);
+          const columnLetter_InsertColumn = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.numberToLetter)(newColumnId_InsertColumn);
           const cellContent_InsertColumn = Number(cell.row_id) == 0 ? columnLetter_InsertColumn : cell.content;
           const newCell_InsertColumn = {
             table_id: cell.table_id,
@@ -3664,7 +4053,7 @@ const table = (state = {
         }
       });
       const allNewColumnCells_InsertColumn = [...cellsWithNewId_InsertColumn, ...action.columnCells];
-      const sortedCells_InsertColumn = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('cells', allNewColumnCells_InsertColumn);
+      const sortedCells_InsertColumn = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.tableSort)('cells', allNewColumnCells_InsertColumn);
       const returnedTableNewColumn_InsertColumn = {
         ...insertColumnState,
         rows: [...insertColumnState.rows],
@@ -3698,7 +4087,7 @@ const table = (state = {
         }
       });
       rowsWithNewId_InsertRow.push(action.newRow);
-      const sortedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('rows', rowsWithNewId_InsertRow);
+      const sortedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.tableSort)('rows', rowsWithNewId_InsertRow);
 
       /**
        * Insert new cells and update existing column_id's
@@ -3709,7 +4098,7 @@ const table = (state = {
           cellsWithNewId_InsertRow.push(cell);
         } else {
           const newRowId_InsertRow = String(Number(cell.row_id) + 1);
-          const columnLetter_InsertRow = cell.column_id == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(cell.column_id);
+          const columnLetter_InsertRow = cell.column_id == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_2__.numberToLetter)(cell.column_id);
           const cellContent_InsertRow = Number(cell.column_id) == 0 ? newRowId_InsertRow : cell.content;
           const newCell_InsertRow = {
             table_id: cell.table_id,
@@ -3724,7 +4113,7 @@ const table = (state = {
         }
       });
       const allNewRowCells = [...cellsWithNewId_InsertRow, ...action.rowCells];
-      const sortedCells_InsertRow = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('cells', allNewRowCells);
+      const sortedCells_InsertRow = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.tableSort)('cells', allNewRowCells);
       const returnedTableNewRow_InsertRow = {
         ...insertRowState,
         rows: [...sortedRows],
@@ -3767,7 +4156,7 @@ const table = (state = {
           cellsWithNewId_DeleteColumn.push(cell);
         } else if (Number(cell.column_id) > Number(action.columnId)) {
           const newColumnId_DeleteColumn = String(Number(cell.column_id) - 1);
-          const columnLetter_DeleteColumn = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(newColumnId_DeleteColumn);
+          const columnLetter_DeleteColumn = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.numberToLetter)(newColumnId_DeleteColumn);
           const cellContent_DeleteColumn = Number(cell.row_id) == 0 ? columnLetter_DeleteColumn : cell.content;
           const newCell_DeleteColumn = {
             table_id: cell.table_id,
@@ -3822,7 +4211,7 @@ const table = (state = {
           cellsWithNewId_DeleteRow.push(cell);
         } else if (Number(cell.row_id) > Number(action.rowId)) {
           const newRowId_DeleteRow = String(Number(cell.row_id) - 1);
-          const columnLetter_DeleteRow = cell.column_id == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(cell.column_id);
+          const columnLetter_DeleteRow = cell.column_id == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_2__.numberToLetter)(cell.column_id);
           const cellContent_DeleteRow = Number(cell.column_id) == 0 ? newRowId_DeleteRow : cell.content;
           const newCell_DeleteRow = {
             table_id: cell.table_id,
@@ -3875,7 +4264,7 @@ const table = (state = {
           classes: classes
         });
       });
-      const sortedMovedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('columns', movedColumns);
+      const sortedMovedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.tableSort)('columns', movedColumns);
 
       // Move related column cells
       const movedColumnCells = [];
@@ -3891,8 +4280,8 @@ const table = (state = {
         let borderContent = content;
         if (Number(column_id) === Number(action.columnId)) newColumnId = String(targetMoveColumnNewId);
         if (Number(column_id) === targetMoveColumnNewId) newColumnId = String(action.columnId);
-        if (row_id === '0') borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(newColumnId);
-        const columnLetter = newColumnId == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(newColumnId);
+        if (row_id === '0') borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.numberToLetter)(newColumnId);
+        const columnLetter = newColumnId == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_2__.numberToLetter)(newColumnId);
         return movedColumnCells.push({
           table_id: table_id,
           row_id: row_id,
@@ -3903,7 +4292,7 @@ const table = (state = {
           content: borderContent
         });
       });
-      const sortedMovedColumnCells = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('cells', movedColumnCells);
+      const sortedMovedColumnCells = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.tableSort)('cells', movedColumnCells);
       const returnedTableMovedColumns = {
         ...moveColumnState,
         rows: [...moveColumnState.rows],
@@ -3941,7 +4330,7 @@ const table = (state = {
           classes: classes
         });
       });
-      const sortedMovedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('rows', movedRows);
+      const sortedMovedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.tableSort)('rows', movedRows);
 
       // Move related row cells
       const movedRowCells = [];
@@ -3958,7 +4347,7 @@ const table = (state = {
         if (Number(row_id) === Number(action.rowId)) newRowId = String(targetMoveRowNewId);
         if (Number(row_id) === targetMoveRowNewId) newRowId = String(action.rowId);
         if (column_id === '0') borderContent = String(newRowId);
-        const columnLetter = column_id == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(column_id);
+        const columnLetter = column_id == '0' ? '0' : (0,_utils__WEBPACK_IMPORTED_MODULE_2__.numberToLetter)(column_id);
         return movedRowCells.push({
           table_id: table_id,
           row_id: newRowId,
@@ -3969,7 +4358,7 @@ const table = (state = {
           content: borderContent
         });
       });
-      const sortedMovedRowCells = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('cells', movedRowCells);
+      const sortedMovedRowCells = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.tableSort)('cells', movedRowCells);
       const returnedTableMovedRows = {
         ...moveRowState,
         rows: [...sortedMovedRows],
@@ -3989,7 +4378,7 @@ const table = (state = {
         ...state
       };
       const updatedRowData = JSON.parse('{ "' + action.attribute + '" :' + transformedValue_UpdateRow + '}');
-      const updatedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newRowsState.rows, 'row_id', targetRowId_UpdateRow, updatedRowData);
+      const updatedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.updateArray)(newRowsState.rows, 'row_id', targetRowId_UpdateRow, updatedRowData);
       const returnedUpdatedTableRow = {
         ...newRowsState,
         rows: [...updatedRows],
@@ -4009,7 +4398,7 @@ const table = (state = {
         ...state
       };
       const updatedColumnData = JSON.parse('{ "' + action.attribute + '" :' + transformedValue_UpdateColumn + '}');
-      const updatedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(newColumnsState.columns, 'column_id', targetColumnId_UpdateColumn, updatedColumnData);
+      const updatedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.updateArray)(newColumnsState.columns, 'column_id', targetColumnId_UpdateColumn, updatedColumnData);
       const returnedUpdatedTableColumn = {
         ...newColumnsState,
         rows: [...newColumnsState.rows],
@@ -4023,7 +4412,7 @@ const table = (state = {
       const updatedCellData = {
         [action.attribute]: action.value
       };
-      const updatedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.updateArray)(state.cells, 'cell_id', action.cellId, updatedCellData);
+      const updatedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.updateArray)(state.cells, 'cell_id', action.cellId, updatedCellData);
       return {
         table: {
           ...state,
@@ -4036,9 +4425,9 @@ const table = (state = {
       };
       const returnedBorderState = {
         ...newBaseTableState,
-        rows: (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('rows', [...action.rows]),
-        columns: (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('columns', [...action.columns]),
-        cells: (0,_utils__WEBPACK_IMPORTED_MODULE_1__.tableSort)('cells', [...action.cells])
+        rows: (0,_utils__WEBPACK_IMPORTED_MODULE_2__.tableSort)('rows', [...action.rows]),
+        columns: (0,_utils__WEBPACK_IMPORTED_MODULE_2__.tableSort)('columns', [...action.columns]),
+        cells: (0,_utils__WEBPACK_IMPORTED_MODULE_2__.tableSort)('cells', [...action.cells])
       };
       return {
         table: returnedBorderState
@@ -4064,66 +4453,62 @@ const table = (state = {
  * @param {Object} action Dispatched option
  * @return  {Object} Updated state
  */
-const reducer = (state = {
-  tables: {}
-}, action) => {
+const reducer = (state = {}, action) => {
   const tableKey = action.tableId;
-  const newTableState = table(state.tables[tableKey], action);
+  const newTableState = table(state[tableKey], action);
   if (JSON.stringify(newTableState.table) === '{}') {
     return state;
   }
   const newTablesState = {
-    ...state.tables
+    ...state
   };
   switch (action.type) {
     case CHANGE_TABLE_ID:
       const returnedTableNewId = {
         [action.newTableId]: newTableState.table
       };
-      const filteredTablesState = Object.keys(state.tables).reduce((acc, key) => {
-        if (state.tables[key].table_id !== action.tableId) {
+      const filteredTablesState = Object.keys(state).reduce((acc, key) => {
+        if (state[key].table_id !== action.tableId) {
           acc[key] = {
-            ...state.tables[key]
+            ...state[key]
           };
         }
         return acc;
       }, {});
       return {
-        tables: {
-          ...filteredTablesState,
-          ...returnedTableNewId
-        }
+        ...filteredTablesState,
+        ...returnedTableNewId
       };
     case DELETE_TABLE:
-      const deleteTablesState = Object.keys(state.tables).reduce((acc, key) => {
+      const deleteTablesState = Object.keys(state).reduce((acc, key) => {
         if (key !== String(action.tableId)) {
           acc[key] = {
-            ...state.tables[key],
-            rows: [...state.tables[key].rows],
-            columns: [...state.tables[key].columns],
-            cells: [...state.tables[key].cells]
+            ...state[key],
+            rows: [...state[key].rows],
+            columns: [...state[key].columns],
+            cells: [...state[key].cells]
           };
         }
         return acc;
       }, {});
       return {
-        tables: {
-          ...deleteTablesState
-        }
+        ...deleteTablesState
       };
     default:
       const returnedTableDefault = {
         [action.tableId]: newTableState.table
       };
       return {
-        tables: {
-          ...newTablesState,
-          ...returnedTableDefault
-        }
+        ...newTablesState,
+        ...returnedTableDefault
       };
   }
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (reducer);
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.combineReducers)({
+  tables: reducer,
+  allTables: _all_tables__WEBPACK_IMPORTED_MODULE_3__.reducer
+}));
 
 /***/ },
 
@@ -4418,6 +4803,158 @@ __webpack_require__.r(__webpack_exports__);
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table'),
   getTitle: record => record?.title || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Unnamed Table')
 }]);
+const SUMMARY_TABLE_REFRESH_INTERVAL = 60000;
+const summaryTableRefreshCoordinator = {
+  inFlightPromise: null,
+  showErrorNotice: false,
+  subscribers: new Map(),
+  intervalId: null,
+  focusHandler: null,
+  visibilityHandler: null
+};
+
+/**
+ * Set the loading state for summary table refresh on each subscriber.
+ *
+ * @since 1.3.2
+ *
+ * @param {boolean} isRefreshing Whether the summary tables are currently being refreshed
+ */
+function setSummaryTableRefreshLoading(isRefreshing) {
+  summaryTableRefreshCoordinator.subscribers.forEach(({
+    setIsRefreshingAllTables
+  }) => {
+    setIsRefreshingAllTables(isRefreshing);
+  });
+}
+
+/**
+ * Get the latest summary table refresh subscribers.
+ *
+ * @since 1.3.2
+ *
+ * @param {boolean} isRefreshing Whether the summary tables are currently being refreshed
+ * @returns {Object|null} The current list of subscribers or null if there are no subscribers
+ */
+function getSummaryTableRefreshSubscriber() {
+  const subscribers = Array.from(summaryTableRefreshCoordinator.subscribers.values());
+  return subscribers[subscribers.length - 1] || null;
+}
+
+/**
+ * Ensure summary table refresh listeners are added and set up.
+ *
+ * @since 1.3.2
+ */
+function ensureSummaryTableRefreshListeners() {
+  if (summaryTableRefreshCoordinator.intervalId !== null) {
+    return;
+  }
+  const refreshVisibleSummaryTables = () => {
+    if (document.visibilityState !== 'visible') {
+      return;
+    }
+    const subscriber = getSummaryTableRefreshSubscriber();
+    if (!subscriber) {
+      return;
+    }
+    void runSummaryTableRefresh({
+      refreshSummaryTables: subscriber.refreshSummaryTables,
+      createNotice: subscriber.createNotice
+    }).catch(() => {});
+  };
+  summaryTableRefreshCoordinator.focusHandler = refreshVisibleSummaryTables;
+  summaryTableRefreshCoordinator.visibilityHandler = refreshVisibleSummaryTables;
+  summaryTableRefreshCoordinator.intervalId = window.setInterval(refreshVisibleSummaryTables, SUMMARY_TABLE_REFRESH_INTERVAL);
+  window.addEventListener('focus', summaryTableRefreshCoordinator.focusHandler);
+  document.addEventListener('visibilitychange', summaryTableRefreshCoordinator.visibilityHandler);
+}
+
+/**
+ * Remove summary table refresh listeners as part of unmount cleanup.
+ *
+ * @since 1.3.2
+ */
+function maybeRemoveSummaryTableRefreshListeners() {
+  if (summaryTableRefreshCoordinator.subscribers.size > 0) {
+    return;
+  }
+  if (summaryTableRefreshCoordinator.intervalId !== null) {
+    window.clearInterval(summaryTableRefreshCoordinator.intervalId);
+    summaryTableRefreshCoordinator.intervalId = null;
+  }
+  if (summaryTableRefreshCoordinator.focusHandler) {
+    window.removeEventListener('focus', summaryTableRefreshCoordinator.focusHandler);
+    summaryTableRefreshCoordinator.focusHandler = null;
+  }
+  if (summaryTableRefreshCoordinator.visibilityHandler) {
+    document.removeEventListener('visibilitychange', summaryTableRefreshCoordinator.visibilityHandler);
+    summaryTableRefreshCoordinator.visibilityHandler = null;
+  }
+}
+
+/**
+ * Refresh summary tables store
+ *
+ * @since 1.3.2
+ *
+ * @param {Function} refreshSummaryTables Dispatch function to refresh summary tables store
+ * @param {Function} createNotice         Dispatch function to create notices in the editor
+ * @param {boolean} showErrorNotice       Whether to show an error notice if the refresh fails
+ * @return {Promise} Promise resolving to the refreshed summary tables
+ */
+async function runSummaryTableRefresh({
+  refreshSummaryTables,
+  createNotice,
+  showErrorNotice = false
+}) {
+  summaryTableRefreshCoordinator.showErrorNotice = summaryTableRefreshCoordinator.showErrorNotice || showErrorNotice;
+  if (summaryTableRefreshCoordinator.inFlightPromise) {
+    return summaryTableRefreshCoordinator.inFlightPromise;
+  }
+  setSummaryTableRefreshLoading(true);
+  const refreshPromise = (async () => {
+    try {
+      return await refreshSummaryTables();
+    } catch (error) {
+      console.error('Error refreshing Dynamic Tables summary list', error);
+      if (summaryTableRefreshCoordinator.showErrorNotice) {
+        (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'summary-refresh-error');
+      }
+      throw error;
+    } finally {
+      summaryTableRefreshCoordinator.inFlightPromise = null;
+      summaryTableRefreshCoordinator.showErrorNotice = false;
+      setSummaryTableRefreshLoading(false);
+    }
+  })();
+  summaryTableRefreshCoordinator.inFlightPromise = refreshPromise;
+  return refreshPromise;
+}
+
+/**
+ * Fetches summary tables and formats them for use as options in the table selection
+ * dropdown when attaching a block to an existing table.
+ *
+ * @since 1.3.2
+ *
+ * @param {Object} allTables All summarized dynamic tables currently in state
+ * @return {Array} Array of all tables available for block creation throught attachment
+ */
+function getLoadedSummaryTableOptions(allTables) {
+  return [{
+    value: '',
+    label: 'Choose table...'
+  }, ...Object.values(allTables || {}).filter(({
+    table_status
+  }) => table_status === 'loaded').map(({
+    table_id,
+    table_name
+  }) => ({
+    value: String(table_id),
+    label: `${table_name} (${table_id})`
+  }))];
+}
 
 /**
  * Exports main logic for Dynamic Tables block.
@@ -4452,7 +4989,16 @@ function Edit(props) {
 
   /* Table Store Action useDispatch declarations */
   const {
+    receiveTable
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
+  const {
     receiveNewTable
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
+  const {
+    updateSummaryTable
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
+  const {
+    refreshSummaryTables
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     cloneTable
@@ -4512,7 +5058,24 @@ function Edit(props) {
 
   /* Local State declarations */
   const [isTableStale, setTableStale] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(true);
+  const [isRefreshingAllTables, setIsRefreshingAllTables] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
+  const [existingTableOptions, setExistingTableOptions] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(null);
   const [showBorders, setShowBorders] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
+  const [tableCreationMethod, setTableCreationMethod] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)('choose');
+  const [tableRequest, setTableRequest] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({
+    tableId: 0,
+    action: null,
+    blockTableRef: ''
+  });
+  const shouldFetchRequestedTable = Number(tableRequest.tableId) > 0 && tableRequest.action !== null;
+  const {
+    table: requestedTable,
+    hasFinishedResolving: requestedTableHasFinishedResolving,
+    isResolving: requestedTableIsResolving
+  } = (0,_hooks__WEBPACK_IMPORTED_MODULE_14__.useGetTable)(tableRequest.tableId, {
+    isTableStale: true,
+    shouldFetch: shouldFetchRequestedTable
+  });
   const [createDraftTable, setCreateDraftTable] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({
     tableName: '',
     numColumns: 1,
@@ -4551,6 +5114,7 @@ function Edit(props) {
     isSavingEditorChanges: false
   });
   const isPageUnloadRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(false);
+  const summaryTableRefreshSubscriberIdRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(Symbol('dtbk-summary-refresh'));
 
   // Location of border cell last clicked
   const lastInvokerElRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
@@ -5273,6 +5837,74 @@ function Edit(props) {
   }, []);
 
   /**
+   * Retrieve summary data for all active tables and load all tables store.
+   *
+   * @since 1.3.2
+   */
+  const {
+    allTables,
+    allTablesIsResolving
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
+    const {
+      getSummaryTables,
+      isResolving
+    } = select(_data__WEBPACK_IMPORTED_MODULE_13__.store);
+    const selectorArgs = [true];
+    const allTables = getSummaryTables(true);
+    const allTablesIsResolving = isResolving('getSummaryTables', selectorArgs);
+    return {
+      allTables: allTables,
+      allTablesIsResolving: allTablesIsResolving
+    };
+  }, []);
+  const activeExistingTableOptions = existingTableOptions ?? (tableCreationMethod === 'existing-table' && !(allTablesIsResolving || isRefreshingAllTables) ? getLoadedSummaryTableOptions(allTables) : null);
+
+  /**
+   * Retrieve and set options array of tables available for attachment when table creation
+   * method is set to "existing table" and remove the options if the creation method is not
+   * set to "existing table".
+   *
+   * @since 1.3.2
+   */
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
+    if (tableCreationMethod !== 'existing-table') {
+      setExistingTableOptions(null);
+      return;
+    }
+    if (existingTableOptions !== null) return;
+    const nextExistingTableOptions = getLoadedSummaryTableOptions(allTables);
+    if (nextExistingTableOptions.length > 1 || !(allTablesIsResolving || isRefreshingAllTables)) {
+      setExistingTableOptions(nextExistingTableOptions);
+    }
+  }, [tableCreationMethod, existingTableOptions, allTables, allTablesIsResolving, isRefreshingAllTables]);
+
+  /**
+   * Refresh summary table data for all tables in the tables store when the table creation
+   * method is set to "existing table".
+   *
+   * @since 1.3.2
+   */
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
+    if (tableCreationMethod !== 'existing-table') return;
+    summaryTableRefreshCoordinator.subscribers.set(summaryTableRefreshSubscriberIdRef.current, {
+      refreshSummaryTables,
+      createNotice,
+      setIsRefreshingAllTables
+    });
+    ensureSummaryTableRefreshListeners();
+    void runSummaryTableRefresh({
+      refreshSummaryTables,
+      createNotice,
+      showErrorNotice: true
+    }).catch(() => {});
+    return () => {
+      summaryTableRefreshCoordinator.subscribers.delete(summaryTableRefreshSubscriberIdRef.current);
+      setIsRefreshingAllTables(false);
+      maybeRemoveSummaryTableRefreshListeners();
+    };
+  }, [tableCreationMethod, refreshSummaryTables, createNotice]);
+
+  /**
    * Retrieve table entity from table webservice and load table store.
    *
    * @since 1.0.0
@@ -5321,6 +5953,38 @@ function Edit(props) {
   }, [tableHasFinishedResolving]);
 
   /**
+   * Attach existing table to block when table is ready for attachment.
+   *
+   * @since 1.3.2
+   */
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
+    if (tableRequest.action !== 'attach') return;
+    if (!tableRequest.tableId) return;
+    if (!tableRequest.blockTableRef) return;
+    if (requestedTableIsResolving || !requestedTableHasFinishedResolving) return;
+    const attachedTableId = Number(tableRequest.tableId);
+    updateSummaryTable({
+      table_id: attachedTableId,
+      block_table_ref: tableRequest.blockTableRef,
+      table_status: 'new',
+      post_id: String(postId)
+    });
+    receiveTable(attachedTableId, tableRequest.blockTableRef, 'new', String(postId), requestedTable.table_name, requestedTable.attributes, requestedTable.classes, requestedTable.rows, requestedTable.columns, requestedTable.cells);
+    updateTableEntity(attachedTableId);
+    props.setAttributes({
+      original_post_type: postType,
+      original_post_id: Number(postId),
+      block_table_ref: tableRequest.blockTableRef,
+      table_id: Number(requestedTable.table_id)
+    });
+    setTableRequest({
+      tableId: 0,
+      action: null,
+      blockTableRef: ''
+    });
+  }, [tableRequest.action, tableRequest.blockTableRef, tableRequest.tableId, requestedTable?.table_id, requestedTable?.table_name, requestedTable?.attributes, requestedTable?.classes, requestedTable?.rows, requestedTable?.columns, requestedTable?.cells, requestedTableHasFinishedResolving, requestedTableIsResolving, postId, postType, receiveTable, updateTableEntity]);
+
+  /**
    * Set table attributes and attach table to block when table is created or
    * cloned and ready for attachment
    *
@@ -5361,37 +6025,38 @@ function Edit(props) {
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
     if (!didJustFinishPostSave) return;
     const finalizePostSaveTableChanges = async () => {
-      /**
-       * Remove deleted tables from persisted store
-       */
-      if (Object.keys(deletedTables).length > 0) {
-        await processDeletedTables(deletedTables);
-      }
-      const shouldPersistTableChanges = tableLoaded && Number(table.table_id) > 0 && (table.table_status == 'new' || tableHasPendingEntityEdits);
-      if (shouldPersistTableChanges) {
+      try {
         /**
-         * Tables are persisted when they are created, but should only remain
-         * if the underlying post is saved. Here we update the status of new
-         * tables from "new" to "saved" once the post is saved.
+         * Remove deleted tables from persisted store
          */
-        if (table.table_status == 'new') {
-          setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
+        if (Object.keys(deletedTables).length > 0) {
+          await processDeletedTables(deletedTables);
         }
-        await saveTableEntity(table.table_id);
+        const shouldPersistTableChanges = tableLoaded && Number(table.table_id) > 0 && (table.table_status == 'new' || tableHasPendingEntityEdits);
+        if (shouldPersistTableChanges) {
+          /**
+           * Tables are persisted when they are created, but should only remain
+           * if the underlying post is saved. Here we update the status of new
+           * tables from "new" to "saved" once the post is saved.
+           */
+          if (table.table_status == 'new') {
+            setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
+          }
+          await saveTableEntity(table.table_id);
+        }
+      } finally {
+        await runSummaryTableRefresh({
+          refreshSummaryTables,
+          createNotice,
+          showErrorNotice: true
+        });
       }
     };
     void finalizePostSaveTableChanges().catch(error => {
       console.error('Error processing Dynamic Tables after post save', error);
-      // showTablePersistenceNotice(
-      // 	__(
-      // 		'Dynamic Tables could not finish table cleanup after the post was saved.',
-      // 		'dynamic-table-blocks'
-      // 	),
-      // 	'dtbk-post-save-sync-error'
-      // );
       (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'post-save-sync-error');
     });
-  }, [didJustFinishPostSave, deletedTables, tableLoaded, table.table_id, table.table_status, tableHasPendingEntityEdits]);
+  }, [didJustFinishPostSave, deletedTables, tableLoaded, table.table_id, table.table_status, tableHasPendingEntityEdits, refreshSummaryTables, createNotice]);
 
   /**
    * Create a latch key before clone to identify the specific block being cloned. The block
@@ -5561,13 +6226,6 @@ function Edit(props) {
     setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId));
     void saveTableEntity(table.table_id).catch(error => {
       console.error('Error synchronizing Dynamic Table post_id', error);
-      // showTablePersistenceNotice(
-      // 	__(
-      // 		'Dynamic Tables could not synchronize the table post relationship.',
-      // 		'dynamic-table-blocks'
-      // 	),
-      // 	'dtbk-post-id-sync-error'
-      // );
       (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'post-id-sync-error');
     });
   }, [tableHasStartedResolving, tableHasFinishedResolving, isAwaitingTableAttachment, props.context.postId, table.table_id, table.post_id]);
@@ -5626,28 +6284,23 @@ function Edit(props) {
 
       // Mark table as a pattern block type
       if (wasInserterPreview || originalPostType === 'wp_block') {
-        updateTableProp(tableId, 'isPattern', true);
-        updateTableEntity(tableId);
+        setTableAttributes(tableId, 'isPattern', '', 'PROP', true);
         return;
       }
 
       // Set table's prior status to the current status before unmounting
-      updateTableProp(tableId, 'prior_status', lastTableStatus);
-      updateTableProp(tableId, 'table_status', 'unknown');
+      setTableAttributes(tableId, 'prior_status', '', 'PROP', lastTableStatus, false);
+      setTableAttributes(tableId, 'table_status', '', 'PROP', 'unknown', false);
 
       // Set the table's block identifier so that we can reattach it on remount and update
       // its status to unknown to signify that we won't know what is happening during the
       // time the block is unmounted
-      updateTableProp(tableId, 'unmounted_block', true);
+      setTableAttributes(tableId, 'unmounted_block', '', 'PROP', true, false);
       updateTableEntity(tableId, 'unknown');
 
       // Persist the table with its "unknown" status
       void saveTableEntity(tableId).catch(error => {
         console.error('Error saving Dynamic Table state during unmount cleanup', error);
-        // showTablePersistenceNotice(
-        // 	__('Dynamic Tables could not save table cleanup state.', 'dynamic-table-blocks'),
-        // 	'dtbk-unmount-save-error'
-        // );
         (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'unmount-save-error');
       });
     };
@@ -5929,9 +6582,6 @@ function Edit(props) {
             updateColumn(tableId, id, attribute, value);
           } else {
             updateTableProp(tableId, attribute, value);
-            if (attribute === 'prior_status') {
-              updateTableEntity(tableId, 'unknown');
-            }
           }
           break;
         }
@@ -6039,15 +6689,85 @@ function Edit(props) {
   }
 
   /**
+   * Attach existing table to new block.
+   *
+   * @since 1.3.2
+   */
+  function attachLoadedTable() {
+    if (!tableRequest.tableId || requestedTableIsResolving) {
+      return;
+    }
+    const nextBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_16__.generateBlockTableRef)();
+    setTableOperation({
+      kind: 'attaching',
+      blockTableRef: nextBlockTableRef,
+      sourceTableId: tableRequest.tableId,
+      error: null
+    });
+    setTableRequest(prev => ({
+      ...prev,
+      action: 'attach',
+      blockTableRef: nextBlockTableRef
+    }));
+  }
+
+  /**
    * Process event to create new table.
    *
    * @since 1.0.0
+   * @since 1.3.2  Expanded support for multiple table creation methods
    *
    * @param {Object} event Table Creation Event
    */
   function onCreateTable(event) {
     event.preventDefault();
-    createTable(createDraftTable.numColumns, createDraftTable.numRows, createDraftTable.tableName);
+    switch (tableCreationMethod) {
+      case 'choose':
+        break;
+      case 'new':
+        createTable(createDraftTable.numColumns, createDraftTable.numRows, createDraftTable.tableName);
+        break;
+      case 'existing-table':
+        attachLoadedTable();
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Set the chosen table creation method.
+   *
+   * @since 3.1.2
+   *
+   * @param {Object} event Table creation method event
+   */
+  function onCreateTableMethod(event) {
+    switch (event) {
+      case 'new':
+        setTableCreationMethod('new');
+        break;
+      case 'existing-table':
+        setTableCreationMethod('existing-table');
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Store selected table for the current table request.
+   *
+   * @since 3.1.2
+   *
+   * @param {Object} event Table Creation Event
+   */
+  function onAssignRequestedTableId(event) {
+    setTableRequest({
+      tableId: Number(event),
+      action: null,
+      blockTableRef: ''
+    });
   }
 
   /**
@@ -6323,14 +7043,12 @@ function Edit(props) {
       case 'ArrowUp':
         // Insert row above the current row
         if (isAltShiftOnly && canUseRowInsertDeleteShortcuts) {
-          // console.log('Inserting');
           insertRow(table_id, row, 'above');
           break;
         }
 
         // Move row above the current row
         if (isAltOnly && canUseStructureShortcuts) {
-          // console.log('Moving');
           const firstBodyRowId = navHeaderRow ? Number(navHeaderRow) + 1 : 1;
           if (row <= firstBodyRowId) break;
           reorderRows(table_id, row, 'up');
@@ -6339,7 +7057,6 @@ function Edit(props) {
 
         // Navigate to cell above the current cell
         if (isPrimaryKeyOnly) {
-          // console.log('Navigating');
           row = Math.max(1, row - 1);
           break;
         }
@@ -6347,14 +7064,12 @@ function Edit(props) {
       case 'ArrowDown':
         // Insert row below the current row
         if (isAltShiftOnly && canUseRowInsertDeleteShortcuts) {
-          // console.log('Inserting');
           insertRow(table_id, row, 'below');
           break;
         }
 
         // Move row below the current row
         if (isAltOnly && canUseStructureShortcuts) {
-          // console.log('Moving');
           if (isHeaderRow || row === navMaxRow) break;
           reorderRows(table_id, row, 'down');
           break;
@@ -6362,7 +7077,6 @@ function Edit(props) {
 
         // Navigate to cell below the current cell
         if (isPrimaryKeyOnly) {
-          // console.log('Navigating');
           row = Math.min(navMaxRow, row + 1);
           break;
         }
@@ -6370,14 +7084,12 @@ function Edit(props) {
       case 'ArrowLeft':
         // Insert column left of the current column
         if (isAltShiftOnly && canUseStructureShortcuts) {
-          // console.log('Inserting');
           insertColumn(table_id, col, 'left');
           break;
         }
 
         // Move column left of the current column
         if (isAltOnly && canUseStructureShortcuts) {
-          // console.log('Moving');
           if (col === 1) break;
           reorderColumns(table_id, col, 'left');
           break;
@@ -6385,7 +7097,6 @@ function Edit(props) {
 
         // Navigate to cell left of the current cell
         if (isPrimaryKeyOnly) {
-          // console.log('Navigating');
           col = Math.max(1, col - 1);
           break;
         }
@@ -6393,14 +7104,12 @@ function Edit(props) {
       case 'ArrowRight':
         // Insert column right of the current column
         if (isAltShiftOnly && canUseStructureShortcuts) {
-          // console.log('Inserting');
           insertColumn(table_id, col, 'right');
           break;
         }
 
         // Move column right of the current column
         if (isAltOnly && canUseStructureShortcuts) {
-          // console.log('Moving');
           if (col === navMaxCol) break;
           reorderColumns(table_id, col, 'right');
           break;
@@ -6408,7 +7117,6 @@ function Edit(props) {
 
         // Navigate to cell right of the current cell
         if (isPrimaryKeyOnly) {
-          // console.log('Navigating');
           col = Math.min(navMaxCol, col + 1);
           break;
         }
@@ -6436,21 +7144,18 @@ function Edit(props) {
       case 'Delete':
       case 'Backspace':
         if (isPrimaryKeyOnly) {
-          // console.log('Delete Key Hit');
           processCellDelete(col, row);
           return;
         }
 
         // Delete the current column
         if (event.key === 'Delete' && isAltShiftOnly && canUseStructureShortcuts) {
-          // console.log('Deleting Column');
           deleteColumn(table_id, col);
           break;
         }
 
         // Delete the current row
         if (event.key === 'Delete' && isAltOnly && canUseRowInsertDeleteShortcuts) {
-          // console.log('Deleting Row');
           deleteRow(table_id, row);
           break;
         }
@@ -6934,7 +7639,6 @@ function Edit(props) {
       processCellDelete(columnId, rowId);
       resetCellClipboard();
     }
-    // announceEditorMessage(__('Cell pasted.', 'dynamic-table-blocks'));
     (0,_messages__WEBPACK_IMPORTED_MODULE_15__.speakMessage)('cell-pasted');
   }
 
@@ -6972,7 +7676,6 @@ function Edit(props) {
           type: 'text/plain'
         })
       });
-      console.log('CliboardItem', formattedText, plainText);
       navigator.clipboard.write([clipboardItem]).catch(() => {
         copyPlainTextToSystemClipboard(plainText);
       });
@@ -7044,7 +7747,6 @@ function Edit(props) {
    * @param {Object} e         Mouse Click Event
    */
   function onMouseMenuClick(column_id, row_id, table, e) {
-    // console.log('Handling Menu Click');
     e?.preventDefault?.();
     e?.stopPropagation?.();
     if (Number(row_id) === 0 && Number(column_id) !== 0) {
@@ -7365,6 +8067,9 @@ function Edit(props) {
   const editorGridAccessibleName = editorGridTitleText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Dynamic table');
   const editorGridLabelledBy = !hideTitle && editorGridTitleText ? editorTitleTagId : undefined;
   const editorGridHelpText = (0,_messages__WEBPACK_IMPORTED_MODULE_15__.getMessageText)('editor-grid-help');
+
+  // Create table settings
+  const createTableDisabled = tableCreationMethod === 'choose' || isAwaitingTableAttachment || tableCreationMethod === 'existing-table' && (!tableRequest.tableId || requestedTableIsResolving);
 
   /**
    * Render clickable row menu
@@ -8021,46 +8726,90 @@ function Edit(props) {
           })
         })]
       })]
-    }), !isNewBlock && tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {
-      children: "Retrieving Table Data"
+    }), !isNewBlock && tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("span", {
+      className: 'dtbk-spinner-message',
+      children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Loading Dynamic Table...', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
     }), isNewBlock && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Placeholder, {
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Dynamic Table', 'dynamic-table'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Dynamic Table', 'dynamic-table-blocks'),
       icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__.BlockIcon, {
         icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_10__["default"],
         showColors: true
       }),
-      instructions: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Create a new dynamic table.', 'dynamic-table'),
+      instructions: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Create a new dynamic table.', 'dynamic-table-blocks'),
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("form", {
         className: "blocks-table__placeholder-form",
         onSubmit: onCreateTable,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalInputControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Name', 'dynamic-table'),
-          placeholder: "New Table",
-          required: "true",
-          onChange: value => setCreateDraftTable(prev => ({
-            ...prev,
-            tableName: value
-          })),
-          value: createDraftTable.tableName,
-          className: "blocks-table__placeholder-input"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalNumberControl, {
-          __nextHasNoMarginBottom: true,
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Columns', 'dynamic-table'),
-          min: 1,
-          required: "true",
-          value: createDraftTable.numColumns,
-          onChange: e => onChangeInitialColumnCount(e),
-          className: "blocks-table__placeholder-input"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalNumberControl, {
-          __nextHasNoMarginBottom: true,
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Rows', 'dynamic-table'),
-          required: "true",
-          min: 1,
-          value: createDraftTable.numRows,
-          onChange: e => onChangeInitialRowCount(e),
-          className: "blocks-table__placeholder-input"
+        children: [tableCreationMethod === 'choose' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
+          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table creation method:', 'dynamic-table-blocks'),
+          onChange: onCreateTableMethod,
+          options: [{
+            value: 'choose',
+            label: 'Choose...'
+          }, {
+            value: 'new',
+            label: 'New'
+          }, {
+            value: 'existing-table',
+            label: 'Existing Table'
+          }],
+          __nextHasNoMarginBottom: true
+        }), tableCreationMethod !== 'choose' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("p", {
+            children: ["Table creation method: ", tableCreationMethod]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)("hr", {
+            style: {
+              alignSelf: 'stretch',
+              width: '100%',
+              margin: '8px 0 12px',
+              border: 0,
+              borderTop: '1px solid #dcdcde'
+            }
+          })]
+        }), tableCreationMethod === 'existing-table' && activeExistingTableOptions === null && (allTablesIsResolving || isRefreshingAllTables) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("span", {
+          className: 'dtbk-spinner-message',
+          children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Retrieving table list...', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
+        }), tableCreationMethod === 'existing-table' && activeExistingTableOptions !== null && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Select table:', 'dynamic-table-blocks'),
+            onChange: onAssignRequestedTableId,
+            value: tableRequest.tableId || '',
+            options: activeExistingTableOptions,
+            __nextHasNoMarginBottom: true
+          }), tableRequest.action !== null && requestedTableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("span", {
+            className: 'dtbk-spinner-message',
+            children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Retrieving selected table...', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
+          })]
+        }), tableCreationMethod === 'new' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalInputControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Name', 'dynamic-table-blocks'),
+            placeholder: "New Table",
+            required: "true",
+            onChange: value => setCreateDraftTable(prev => ({
+              ...prev,
+              tableName: value
+            })),
+            value: createDraftTable.tableName,
+            className: "blocks-table__placeholder-input"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalNumberControl, {
+            __nextHasNoMarginBottom: true,
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Columns', 'dynamic-table-blocks'),
+            min: 1,
+            required: "true",
+            value: createDraftTable.numColumns,
+            onChange: e => onChangeInitialColumnCount(e),
+            className: "blocks-table__placeholder-input"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalNumberControl, {
+            __nextHasNoMarginBottom: true,
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Rows', 'dynamic-table-blocks'),
+            required: "true",
+            min: 1,
+            value: createDraftTable.numRows,
+            onChange: e => onChangeInitialRowCount(e),
+            className: "blocks-table__placeholder-input"
+          })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
           className: "blocks-table__placeholder-button",
+          disabled: createTableDisabled,
           variant: "primary",
           type: "submit",
           children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Create Table')
@@ -8611,6 +9360,7 @@ function Cell(props) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   useEditorIdentity: () => (/* binding */ useEditorIdentity),
+/* harmony export */   useGetTable: () => (/* binding */ useGetTable),
 /* harmony export */   useNotInInserterPreview: () => (/* binding */ useNotInInserterPreview),
 /* harmony export */   usePostChangesSaved: () => (/* binding */ usePostChangesSaved)
 /* harmony export */ });
@@ -8620,8 +9370,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./data */ "./src/data/index.js");
+/* External dependencies */
 
 
+
+
+/* Internal dependencies */
 
 
 /**
@@ -8728,6 +9483,51 @@ function useNotInInserterPreview() {
     const isPreview = !!settings.isPreviewMode || !!settings.__unstableIsPreviewMode || !!settings.__experimentalIsPreviewMode;
     return !isPreview;
   }, []);
+}
+
+/**
+ * Retrieve a table by ID and fetch it from the API if it is not already in the store.
+ *
+ * @since    1.3.2
+ *
+ * @param {string}  tableId           The ID of the table to retrieve
+ * @param {Object}  args
+ * @param {boolean} args.isTableStale Whether to force refetching the table from the API
+ * @param {boolean} args.shouldFetch  Whether there is an active request to get a table
+ * @return {Object} The table data and resolution status
+ */
+function useGetTable(tableId, {
+  isTableStale = false,
+  shouldFetch = true
+} = {}) {
+  const shouldResolveTable = shouldFetch && Number(tableId) > 0;
+  return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => {
+    if (!shouldResolveTable) {
+      return {
+        table: null,
+        hasStartedResolving: false,
+        hasFinishedResolving: false,
+        isResolving: false
+      };
+    }
+    const {
+      getTable,
+      hasStartedResolution,
+      hasFinishedResolution,
+      isResolving
+    } = select(_data__WEBPACK_IMPORTED_MODULE_3__.store);
+    const selectorArgs = [tableId, isTableStale];
+    const table = getTable(tableId, isTableStale);
+    const hasStartedResolving = hasStartedResolution('getTable', selectorArgs);
+    const hasFinishedResolving = hasFinishedResolution('getTable', selectorArgs);
+    const tableIsResolving = isResolving('getTable', selectorArgs);
+    return {
+      table,
+      hasStartedResolving,
+      hasFinishedResolving,
+      isResolving: tableIsResolving
+    };
+  }, [tableId, isTableStale, shouldResolveTable]);
 }
 
 /***/ },
@@ -8965,6 +9765,7 @@ const MESSAGE_LIBRARY = {
   'unmounted-reconcile-error': buildErrorMessage('dtbk-unmounted-reconcile-error', () => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dynamic Tables could not reconcile unmounted tables.', 'dynamic-table-blocks')),
   'post-save-sync-error': buildErrorMessage('dtbk-post-save-sync-error', () => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dynamic Tables could not finish table cleanup after the post was saved.', 'dynamic-table-blocks')),
   'post-id-sync-error': buildErrorMessage('dtbk-post-id-sync-error', () => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dynamic Tables could not synchronize the table post relationship.', 'dynamic-table-blocks')),
+  'summary-refresh-error': buildErrorMessage('dtbk-summary-refresh-error', () => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dynamic Tables could not refresh the available table list.', 'dynamic-table-blocks')),
   'unmount-save-error': buildErrorMessage('dtbk-unmount-save-error', () => (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Dynamic Tables could not save table cleanup state.', 'dynamic-table-blocks')),
   'editing-cell': buildMessage({
     announcement: buildAnnouncement(({
@@ -10687,17 +11488,13 @@ function computeCellIds(fetchedCells) {
  * @return {Object}       Row and column id extracted from the cell id
  */
 function getCellIdCoordinates(cellId) {
-  // console.log('Received cellId', cellId);
   const match = cellId.match(/^(0|[A-Z]+)(\d+)$/i);
-  // const match = cellId.match(/^([A-Z]+)(\d+)$/i);
   if (!match) {
     throw new Error('Invalid cell id (' + cellId + ')');
   }
   const [, colLetters, rowString] = match;
   const rowId = Number(rowString);
   const colId = colLetters === '0' ? 0 : letterToNumber(colLetters);
-  // const colId = letterToNumber(colLetters);
-
   return {
     column_id: colId,
     row_id: rowId
@@ -11187,7 +11984,6 @@ function formatClipboardContent(cellContent, cellValueAttr, columnDataType = DEF
       }
     case 'date-time':
       {
-        console.log('Date/Time format = ' + typeFormat?.format);
         formattedText = formatedDisplayDate(cellContent, typeFormat?.format);
         plainText = formattedText;
         break;
@@ -11211,10 +12007,6 @@ function formatClipboardContent(cellContent, cellValueAttr, columnDataType = DEF
         plainText = htmlToReadableText(cellContent) || cellValueAttr.indexText || '';
       }
   }
-  console.log('Formatted clipboard content', {
-    formattedText,
-    plainText
-  });
   return {
     formattedText,
     plainText
@@ -11349,6 +12141,16 @@ module.exports = window["wp"]["a11y"];
 
 /***/ },
 
+/***/ "@wordpress/api-fetch"
+/*!**********************************!*\
+  !*** external ["wp","apiFetch"] ***!
+  \**********************************/
+(module) {
+
+module.exports = window["wp"]["apiFetch"];
+
+/***/ },
+
 /***/ "@wordpress/block-editor"
 /*!*************************************!*\
   !*** external ["wp","blockEditor"] ***!
@@ -11476,6 +12278,16 @@ module.exports = window["wp"]["primitives"];
 (module) {
 
 module.exports = window["wp"]["richText"];
+
+/***/ },
+
+/***/ "@wordpress/url"
+/*!*****************************!*\
+  !*** external ["wp","url"] ***!
+  \*****************************/
+(module) {
+
+module.exports = window["wp"]["url"];
 
 /***/ },
 

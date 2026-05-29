@@ -13,6 +13,54 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * All valid table statuses.
+ *
+ * @since 1.0.0
+ *
+ * @return array Array of valid table statuses with name and label properties.
+ */
+function get_table_statuses() {
+	$statuses = array();
+
+	$statuses['saved'] = (object) array(
+		'name'  => 'Saved',
+		'label' => __( 'Post containing table has been saved.', 'dynamic-table-blocks' ),
+	);
+
+	$statuses['new'] = (object) array(
+		'name'  => 'New',
+		'label' => __( 'Table created but post has not been saved.', 'dynamic-table-blocks' ),
+	);
+
+	$statuses['loaded'] = (object) array(
+		'name'  => 'Loaded',
+		'label' => __( 'Table is available for attachment to a post.', 'dynamic-table-blocks' ),
+	);
+
+	$statuses['unknown'] = (object) array(
+		'name'  => 'Unknown',
+		'label' => __( 'Transient state when block is unmounted in editor.', 'dynamic-table-blocks' ),
+	);
+
+	$statuses['deleted'] = (object) array(
+		'name'  => 'Deleted',
+		'label' => __( 'Transient state when table is deleted in post editor but not yet removed.', 'dynamic-table-blocks' ),
+	);
+
+	$statuses['orphan'] = (object) array(
+		'name'  => 'Orphaned table',
+		'label' => __( 'Error state when tables related post no longer exists.', 'dynamic-table-blocks' ),
+	);
+
+	$statuses['corrupted'] = (object) array(
+		'name'  => 'Table data is corrupted',
+		'label' => __( 'Error state when maintenance determines table data is no longer valid.', 'dynamic-table-blocks' ),
+	);
+
+	return $statuses;
+}
+
+/**
  * Create or update a dynamic table.
  *
  * @since 1.0.0
@@ -326,7 +374,7 @@ function delete_table( $table_id = 0, $force = false ) {
  * @since 1.0.0
  * @since 1.1.0 Added simple check for existance of header row
  *
- * @param int  $table_id                Table id.
+ * @param int  $table_id               Table id.
  * @param bool $validate_header_only   Ensure header record exists
  * @return array|bool|WP_Error         Table data retrieved or simply that the header record exists
  */
@@ -434,18 +482,103 @@ function get_table_by_ref( $block_table_ref ) {
  * Extracts and returns the summary table data for all tables from the database
  *
  * @since 1.1.0
+ * @since 1.3.2  Added support for filtered results
  *
- * @return array|WP_Error Table data retrieved.
+ * @param array $enrich_results - Include structural data.
+ * @param array $query_args - Search filter terms.
+ * @return array| \WP_Error Table data retrieved.
  */
-function get_tables() {
-	$get_table = new PersistTableData();
-	$results   = $get_table->get_tables();
+function get_tables( $enrich_results = false, $query_args = array() ) {
 
-	if ( ! $results['success'] ) {
-		return new \WP_Error( 'db_read_error', __( 'Database error retrieving tables.', 'dynamic-table-blocks' ) );
+	$get_tables     = new PersistTableData();
+	$result_headers = $get_tables->get_tables( $query_args );
+
+	if ( ! $result_headers['success'] ) {
+		return new \WP_Error(
+			'db_read_error',
+			__( 'Database error retrieving tables.', 'dynamic-table-blocks' ),
+			array( 'status' => 500 )
+		);
 	}
 
-	return $results['result'];
+	error_log( 'Table results header = ' . json_encode( $result_headers['result'] ) );
+
+	if ( ! $enrich_results ) {
+		return $result_headers['result'];
+	}
+
+	$results = array();
+
+	foreach ( $result_headers['result'] as $header ) {
+		$table_id = $header['id'];
+		$result   = array();
+		$result  += array( 'id' => $table_id );
+		$result  += array( 'header' => $header );
+		unset( $result['header']['attributes'] );
+		unset( $result['header']['classes'] );
+
+		// Get row count.
+		$table        = 'dtbk_table_rows';
+		$get_table    = new PersistTableData();
+		$results_rows = $get_table->get_table( $table_id, $table );
+		if ( ! $results_rows['success'] ) {
+			return new \WP_Error(
+				'db_read_error',
+				__( 'Database error retrieving table rows.', 'dynamic-table-blocks' ),
+				array( 'status' => 500 )
+			);
+		}
+		$result['header'] += array( 'total_rows' => count( $results_rows['result'] ) );
+
+		// Get column data.
+		$table           = 'dtbk_table_columns';
+		$get_table       = new PersistTableData();
+		$results_columns = $get_table->get_table( $table_id, $table );
+
+		if ( ! $results_columns['success'] ) {
+			return new \WP_Error(
+				'db_read_error',
+				__( 'Database error retrieving table columns.', 'dynamic-table-blocks' ),
+				array( 'status' => 500 )
+			);
+		}
+
+		$result['header'] += array( 'total_columns' => count( $results_columns['result'] ) );
+
+		$result += array( 'column_structures' => array() );
+
+		foreach ( $results_columns['result'] as $column ) {
+			$column_element = array();
+
+			$column_id          = isset( $column['column_id'] ) ? $column['column_id'] : '';
+			$column_name        = isset( $column['column_name'] ) ? $column['column_name'] : '';
+			$column_data_type   = isset( $column['attributes']['columnDataType']['type'] ) ? $column['attributes']['columnDataType']['type'] : '';
+			$column_data_format = isset( $column['attributes']['columnDataType']['settings']['format'] ) ? $column['attributes']['columnDataType']['settings']['format'] : '';
+
+			if ( $column_id ) {
+				$column_element['column_id'] = $column_id;
+			}
+
+			if ( $column_name ) {
+				$column_element['column_name'] = $column_name;
+			}
+
+			if ( $column_data_type ) {
+				$column_element['column_data_type'] = $column_data_type;
+			}
+
+			if ( $column_data_format ) {
+				$column_element['column_data_format'] = $column_data_format;
+			}
+
+			$result['column_structures'][] = $column_element;
+		}
+
+		$results[] = $result;
+	}
+
+	error_log( 'Full table results = ' . json_encode( $results ) );
+	return $results;
 }
 
 /**

@@ -31,8 +31,13 @@ class PersistTableData {
 	 *      - select: Reserved for future
 	 *      - aggregate: Reserved for future
 	 *      - where: field = Database field name, value = field comparison value
+	 *      - where_in: field = Database field name, value = comma separated string field comparison
+	 *        value(s) to include
+	 *      - where_not_in: field = Database field name, value = comma separated string field comparison
+	 *        value(s) to exclude
 	 *      - having: Reserved for future
-	 *      - order_by: Reserved for future
+	 *      - order_by: field = Database field name(s) by which to sort results in ascending order
+	 *      - order_by_desc: field = Database field name(s) by which to sort results in descending order
 	 *
 	 *  Notes:
 	 *      - Argument order is important in building query string and must be in the order
@@ -107,9 +112,11 @@ class PersistTableData {
 		if ( ! $args ) {
 			return false;
 		}
+		error_log( 'SQL Args: ' . json_encode( $args ) );
 
 		$query        = 'SELECT * ';
 		$query_string = $this->process_query_string( $this->request_args );
+		error_log( 'SQL Query String: ' . $query_string );
 		if ( ! $query_string ) {
 			return false;
 		}
@@ -910,10 +917,12 @@ class PersistTableData {
 	 * Get table header information for all tables
 	 *
 	 * @since 1.1.0
+	 * @since 1.3.2  Add support for filters and sort
 	 *
-	 * @return void
+	 * @param array $query_args  Filter and sort criteria.
+	 * @return array $query results
 	 */
-	public function get_tables() {
+	public function get_tables( $query_args = array() ) {
 		global $wpdb;
 
 		$success = false;
@@ -931,6 +940,88 @@ class PersistTableData {
 				'value' => null,
 			)
 		);
+
+		foreach ( $query_args as $arg => $value ) {
+			$arg_value = $value;
+
+			if ( isset( $arg_value ) && $arg_value ) {
+				switch ( $arg ) {
+					case 'include':
+						array_push(
+							$this->request_args,
+							array(
+								'type'  => 'where_in',
+								'field' => 'id',
+								'value' => $arg_value,
+							)
+						);
+						break;
+					case 'exclude':
+						array_push(
+							$this->request_args,
+							array(
+								'type'  => 'where_not_in',
+								'field' => 'id',
+								'value' => $arg_value,
+							)
+						);
+						break;
+					case 'post':
+						array_push(
+							$this->request_args,
+							array(
+								'type'  => 'where_in',
+								'field' => 'post_id',
+								'value' => $arg_value,
+							)
+						);
+						break;
+					case 'post_exclude':
+						array_push(
+							$this->request_args,
+							array(
+								'type'  => 'where_not_in',
+								'field' => 'post_id',
+								'value' => $arg_value,
+							)
+						);
+						break;
+					case 'status':
+						array_push(
+							$this->request_args,
+							array(
+								'type'  => 'where_in',
+								'field' => 'status',
+								'value' => $arg_value,
+							)
+						);
+						break;
+					case 'table':
+						array_push(
+							$this->request_args,
+							array(
+								'type'  => 'where_in',
+								'field' => 'table_name',
+								'value' => $arg_value,
+							)
+						);
+						break;
+					case 'orderby':
+						$descending = $query_args['order'] === 'desc' ? true : false;
+						array_push(
+							$this->request_args,
+							array(
+								'type'  => $descending ? 'order_by_desc' : 'order_by',
+								'field' => $value,
+								'value' => null,
+							)
+						);
+						break;
+				}
+			}
+		}
+
+		error_log( 'Request args = ' . json_encode( $this->request_args ) );
 
 		$query_results = $this->get_table_data( $return_collection );
 
@@ -1327,25 +1418,36 @@ class PersistTableData {
 		$sql_args       = array();
 		$prior_arg_type = 'none';
 
-		foreach ( $this->request_args as $index => $items ) {
+		error_log( 'In Process Args' );
+		error_log( '    ' . json_encode( $this->request_args ) );
+
+		foreach ( $this->request_args as $items ) {
 			foreach ( $items as $item => $arg ) {
 				switch ( $item ) {
 					case 'type':
 						$arg_type = $arg;
+						break;
 					case 'field':
 						$arg_field = $arg;
+						break;
 					case 'value':
 						$arg_value = $arg;
+						break;
+					default:
+						break;
 				}
 			}
 
 			if ( $arg_type === 'from' and $prior_arg_type === 'where' ) {
 				return false;
 			}
-			$sql_args      += $this->transform_arg( $arg_type, $arg_field, $arg_value );
+
+			$sql_args       = array_merge( $sql_args, $this->transform_arg( $arg_type, $arg_field, $arg_value ) );
 			$prior_arg_type = $arg_type;
 
 		}
+
+		error_log( 'Transformed SQL Args: ' . wp_json_encode( $sql_args ) );
 		return $sql_args;
 	}
 
@@ -1353,10 +1455,11 @@ class PersistTableData {
 	 * Transform SQL one argument to support the $wpdb->prepare format.
 	 *
 	 * @since 1.0.0
+	 * @since 1.3.2  Added support for IN sql operators and descending order by
 	 *
-	 * @param array $arg_type   SQL Statement argument
-	 * @param array $arg_field  Table field name associated with the argument.
-	 * @param array $arg_value  Value associated with the table field for WHERE and SET arguments
+	 * @param string $arg_type   SQL Statement argument.
+	 * @param string $arg_field  Table field name associated with the argument.
+	 * @param string $arg_value  Value associated with the table field for WHERE and SET arguments.
 	 * @return array    Transformed argument.
 	 */
 	protected function transform_arg( $arg_type, $arg_field, $arg_value ) {
@@ -1368,11 +1471,34 @@ class PersistTableData {
 			return array( 'tablename' => $transformed_table_name );
 		}
 
-		if ( $arg_type === 'where' or $arg_type === 'set' or $arg_type === 'value' ) {
+		if ( $arg_type === 'where' || $arg_type === 'set' || $arg_type === 'value' ) {
 			return array( $arg_field => $arg_value );
 		}
 
+		// if ( $arg_type === 'where_in' || $arg_type === 'where_not_in' ) {
+		// return array( $arg_field => '(' . $arg_value . ')' );
+
+		if ( $arg_type === 'where_in' || $arg_type === 'where_not_in' ) {
+			if ( is_array( $arg_value ) ) {
+				$transformed_args = array();
+
+				foreach ( array_values( $arg_value ) as $index => $value ) {
+					$transformed_args[ $arg_type . '_' . $arg_field . '_' . $index ] = $value;
+				}
+
+				return $transformed_args;
+			}
+
+			return array( $arg_field => $arg_value );
+
+		}
+
 		if ( $arg_type === 'order_by' ) {
+			return array( 'order_by_' . $arg_field => $arg_field );
+
+		}
+
+		if ( $arg_type === 'order_by_desc' ) {
 			return array( 'order_by_' . $arg_field => $arg_field );
 		}
 	}
@@ -1381,6 +1507,7 @@ class PersistTableData {
 	 * Build SQL query string.
 	 *
 	 * @since 1.0.0
+	 * @since 1.3.2      Added support for additional sql operators
 	 *
 	 * @return string    Valid SQL query string.
 	 */
@@ -1395,6 +1522,7 @@ class PersistTableData {
 		$insert_clause             = '';
 		$set_clause                = 'SET ';
 		$where_clause              = '';
+		$where_modifier            = '';
 		$current_set_position      = 0;
 		$current_order_by_position = 0;
 		$current_value_position    = 0;
@@ -1402,8 +1530,11 @@ class PersistTableData {
 
 		$set_type_count      = $this->count_request_args_by_type( $this->request_args, 'set' );
 		$order_by_type_count = $this->count_request_args_by_type( $this->request_args, 'order_by' );
+		$order_by_type_count = $order_by_type_count + $this->count_request_args_by_type( $this->request_args, 'order_by_desc' );
 		$value_type_count    = $this->count_request_args_by_type( $this->request_args, 'value' );
 		$where_type_count    = $this->count_request_args_by_type( $this->request_args, 'where' );
+		$where_type_count    = $where_type_count + $this->count_request_args_by_type( $this->request_args, 'where_in' );
+		$where_type_count    = $where_type_count + $this->count_request_args_by_type( $this->request_args, 'where_not_in' );
 
 		if ( $where_type_count > 0 ) {
 			$where_clause = 'WHERE ';
@@ -1415,15 +1546,18 @@ class PersistTableData {
 			$order_by_clause = 'ORDER BY ';
 		}
 
-		foreach ( $this->request_args as $index => $items ) {
+		foreach ( $this->request_args as $items ) {
 			foreach ( $items as $item => $arg ) {
 				switch ( $item ) {
 					case 'type':
 						$arg_type = $arg;
+						break;
 					case 'field':
 						$arg_field = $arg;
+						break;
 					case 'value':
 						$arg_value = $arg;
+						break;
 				}
 			}
 
@@ -1449,6 +1583,15 @@ class PersistTableData {
 
 			if ( $arg_type === 'order_by' ) {
 				$order_by_clause .= '%i';
+
+				if ( $current_order_by_position !== $order_by_type_count - 1 ) {
+					$order_by_clause .= ', ';
+				}
+				++$current_order_by_position;
+			}
+
+			if ( $arg_type === 'order_by_desc' ) {
+				$order_by_clause .= '%i DESC';
 
 				if ( $current_order_by_position !== $order_by_type_count - 1 ) {
 					$order_by_clause .= ', ';
@@ -1483,23 +1626,37 @@ class PersistTableData {
 			}
 
 			if ( $arg_type === 'where' ) {
+				$where_modifier = '=';
+			}
+
+			if ( $arg_type === 'where_in' ) {
+				$where_modifier = 'IN';
+			}
+
+			if ( $arg_type === 'where_not_in' ) {
+				$where_modifier = 'NOT IN';
+			}
+
+			if ( $arg_type === 'where' || $arg_type === 'where_in' || $arg_type === 'where_not_in' ) {
 				if ( $transaction_type === '' ) {
 					$transaction_type = 'where';
 					$where_clause     = '';
 				}
 
 				if ( $transaction_type === 'from' ) {
-					$where_clause .= $arg_field . ' = ' . $this->specific_query( $transaction_type, $arg_field );
-
-					if ( ( $current_where_position !== $where_type_count - 1 ) and
-						( $this->specific_query( $transaction_type, $arg_field ) !== null ) ) {
+					$where_clause .= $this->specific_query( $transaction_type, $arg_field, $where_modifier, $arg_value );
+					if ( ( $current_where_position !== $where_type_count - 1 ) &&
+						( $this->specific_query( $transaction_type, $arg_field, $where_modifier, $arg_value ) !== null ) ) {
+						// ( $this->specific_query( $transaction_type, $arg_field, $where_modifier ) !== null ) ) {
 						$where_clause .= ' AND ';
 					}
 				} else {
-					$where_clause .= $this->specific_query( $transaction_type, $arg_field );
+					// $where_clause .= $this->specific_query( $transaction_type, $arg_field, $where_modifier );
+					$where_clause .= $this->specific_query( $transaction_type, $arg_field, $where_modifier, $arg_value );
 
-					if ( ( $current_where_position !== $where_type_count - 1 ) and
-						( $this->specific_query( $transaction_type, $arg_field ) !== null ) ) {
+					if ( ( $current_where_position !== $where_type_count - 1 ) &&
+						// ( $this->specific_query( $transaction_type, $arg_field, $where_modifier ) !== null ) ) {
+						( $this->specific_query( $transaction_type, $arg_field, $where_modifier, $arg_value ) !== null ) ) {
 						$where_clause .= ' AND ';
 					}
 				}
@@ -1529,47 +1686,43 @@ class PersistTableData {
 	 * Lookup Parameter data type for a specific query field.
 	 *
 	 * @since 1.0.0
+	 * @since 1.3.2                  Added support for IN and NOT IN operators
 	 *
-	 * @param array $transType      SQL transaction type and position of the statement in query
-	 *                              or specific field names of INSERT transactions
-	 * @param array $arg_field       Field name of the parameter for lookup
-	 * @return string    Valid SQL query string.
+	 * @param string $trans_type     SQL transaction type and position of the statement in query
+	 *                               or specific field names of INSERT transactions.
+	 * @param string $arg_field      Field name of the parameter for lookup.
+	 * @param string $operator       Field comparison operator.
+	 * @return string                Valid SQL query string.
 	 */
-	protected function specific_query( $trans_type, $arg_field ) {
-		if ( $trans_type = 'value' ) {
-			switch ( $arg_field ) {
-				case 'id':
-					return '%d';
-				case 'table_id':
-					return '%d';
-				case 'post_id':
-					return '%d';
-				case 'column_id':
-					return '%d';
-				case 'row_id':
-					return '%d';
-				default:
-					return '%s';
-			}
+	// protected function specific_query( $trans_type, $arg_field, $operator = '=' ) {
+	protected function specific_query( $trans_type, $arg_field, $operator = '=', $arg_value = null ) {
+		$field_format = '%s';
+
+		switch ( $arg_field ) {
+			case 'id':
+			case 'table_id':
+			case 'post_id':
+			case 'column_id':
+			case 'row_id':
+				$field_format = '%d';
+				break;
+		}
+
+		if ( $trans_type === 'value' ) {
+			return $field_format;
+		}
+
+		if ( ( $operator === 'IN' || $operator === 'NOT IN' ) && is_array( $arg_value ) ) {
+			$field_formats = implode( ', ', array_fill( 0, count( $arg_value ), $field_format ) );
+			return $arg_field . ' ' . $operator . ' ( ' . $field_formats . ' )';
 		}
 
 		switch ( $arg_field ) {
 			case 'tablename':
-				return null;
 			case 'fieldname':
 				return null;
-			case 'id':
-				return 'id = %d';
-			case 'table_id':
-				return 'table_id = %d';
-			case 'post_id':
-				return 'table_id = %d';
-			case 'column_id':
-				return 'column_id = %d';
-			case 'row_id':
-				return 'row_id = %d';
 			default:
-				return $arg_field . ' = %s';
+				return $arg_field . ' ' . $operator . ' ' . $field_format;
 		}
 	}
 

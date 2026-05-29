@@ -9,6 +9,8 @@
 
 namespace DynamicTableBlocks;
 
+use Error;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -47,7 +49,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
-					// 'args' => $this->get_collection_params(),
+					'args'                => $this->get_collection_params(),
 				),
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -96,15 +98,17 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	}
 
 	/**
-	 * RESERVED FOR FUTURE USE
-	 *
 	 * Checks if a given request has access to read tables.
 	 *
 	 * @since 1.0.0
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return void | WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @since 1.3.2  Enabled get_items endpoint
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @return void | \WP_Error True if the request has read access, WP_Error object otherwise.
 	 */
 	public function get_items_permissions_check( $request ) {
+		error_log( 'get_items_permissions_check called' );
+		return true;
 		_doing_it_wrong(
 			'get_tables',
 			sprintf(
@@ -115,24 +119,130 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	}
 
 	/**
-	 * RESERVED FOR FUTURE USE
-	 *
 	 * Retrieves a collection of TABLES.
 	 *
 	 * @since 1.0.0
+	 * @since 1.3.2  Enabled get_items endpoint
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return void WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_items( $request ) {
-		_doing_it_wrong(
-			'get_tables',
-			sprintf(
-				/* translators: 1: The taxonomy name, 2: The property name, either 'rest_base' or 'name', 3: The conflicting value. */
-				esc_attr_e( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use', 'dynamic-table-blocks' ),
-			),
-			'1.0'
+		error_log( 'get_items called' );
+
+		$error_retrieval = new \WP_Error(
+			'rest_tables_retrieval',
+			__( 'Error retrieving tables from database.', 'dynamic-table-blocks' ),
+			array( 'status' => 500 )
 		);
+
+		// Retrieve the list of registered collection query parameters.
+		$registered = $this->get_collection_params();
+		$args       = array();
+
+		/*
+		 * This array defines mappings between public API query parameters whose
+		 * values are accepted as-passed, and their internal SQL parameter
+		 * name equivalents (some are the same).
+		 */
+		$parameter_mappings = array(
+			'include'        => 'table__in',
+			'exclude'        => 'table__not_in',
+			'post'           => 'post__in',
+			'post_exclude'   => 'post__not_in',
+			'search'         => 's',
+			'search_columns' => 'search_columns',
+			'table'          => 'table_name__in',
+			'status'         => 'status',
+			'order'          => 'order',
+			'orderby'        => 'orderby',
+			'page'           => 'page',
+		);
+
+		/*
+		 * For each known parameter which is both registered and present in the request,
+		 * set the parameter's value on the query $args.
+		 */
+		foreach ( $parameter_mappings as $api_param => $dtbk_param ) {
+			error_log( 'Request Param = ' . $api_param . ' - Registered = ' . ( isset( $registered[ $api_param ] ) ? 'true' : 'false' ) . ' - In Request = ' . ( isset( $request[ $api_param ] ) ? 'true' : 'false' ) );
+			if ( isset( $registered[ $api_param ], $request[ $api_param ] ) ) {
+				$args[ $dtbk_param ] = $request[ $api_param ];
+			}
+		}
+
+		// Ensure our per_page parameter overrides any provided tables_per_page filter.
+		if ( isset( $registered['per_page'] ) ) {
+			$args['tabless_per_page'] = $request['per_page'];
+		}
+
+		$query_args = $this->prepare_items_query( $args, $request );
+		error_log( 'Query args: ' . json_encode( $query_args ) );
+
+		$query_result = get_tables( true, $query_args );
+
+		if ( is_wp_error( $query_result ) && $query_result->get_error_code() === 500 ) {
+			return $error_retrieval;
+		}
+
+		if ( is_wp_error( $query_result ) ) {
+			return $error_retrieval;
+		}
+
+		if ( empty( $query_result ) ) {
+			return $error_retrieval;
+		}
+
+		$is_head_request = $request->is_method( 'HEAD' );
+		if ( $is_head_request ) {
+			Error_log( 'HEAD request detected - optimizing query for pagination calculation' );
+			// Force the 'fields' argument. For HEAD requests, only post IDs are required to calculate pagination.
+			$args['fields'] = 'ids';
+			// Disable priming post meta for HEAD requests to improve performance.
+			$args['update_table_cache']      = false;
+			$args['update_table_meta_cache'] = false;
+		}
+
+		$tables = array();
+		if ( ! $is_head_request ) {
+			// update_table_caches( $query_result );
+
+			foreach ( $query_result as $table ) {
+				error_log( 'Processing query result: ' . json_encode( $table ) );
+				// if ( 'edit' === $request['context'] ) {
+				// $permission = $this->check_update_permission( $post );
+				// } else {
+				// $permission = $this->check_read_permission( $post );
+				// }
+
+				// $permissions === true;
+
+				// if ( ! $permissions ) {
+				// continue;
+				// }
+
+				$data     = $this->prepare_item_for_response( $table, $request );
+				$tables[] = $this->prepare_response_for_collection( $data );
+			}
+		}
+
+		// $page         = (int) ( $query_args['page'] ?? 0 );
+		// $total_tables = $query_result->found_tables;
+		// $max_pages    = (int) ceil( $total_tables / (int) $registered['per_page'] );
+
+		// if ( $page > $max_pages && $total_tables > 0 ) {
+		// return new WP_Error(
+		// 'rest_post_invalid_page_number',
+		// __( 'The page number requested is larger than the number of pages available.' ),
+		// array( 'status' => 400 )
+		// );
+		// }
+
+		$response = $is_head_request ? new WP_REST_Response( array() ) : rest_ensure_response( $tables );
+
+		// $response->header( 'X-WP-Total', (int) $total_tables );
+		// $response->header( 'X-WP-TotalPages', (int) $max_pages );
+
+		return $response;
 	}
 
 	/**
@@ -140,8 +250,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return bool|WP_Error True if the request has read access for the item, WP_Error object or false otherwise.
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @return bool|\WP_Error True if the request has read access for the item, WP_Error object or false otherwise.
 	 */
 	public function get_item_permissions_check( $request ) {
 		// Permissions for editing a table are based upon the underlying post to which
@@ -203,8 +313,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_item( $request ) {
 		$table = $this->get_table( $request['id'] );
@@ -307,8 +417,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to create items, WP_Error object otherwise.
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @return true|\WP_Error True if the request has access to create items, WP_Error object otherwise.
 	 */
 	public function create_item_permissions_check( $request ) {
 		error_log( 'In create_item_permissions_check' );
@@ -422,8 +532,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function create_item( $request ) {
 		if ( (int) 0 !== (int) $request['id'] ) {
@@ -443,8 +553,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		if ( is_wp_error( $table_id ) ) {
 			if ( 'db_insert_error' === $table_id->get_error_code() ||
-				'db_update_error' === $table_id->get_error_code() ||
-				'db_read_error' === $table_id->get_error_code() ) {
+			'db_update_error' === $table_id->get_error_code() ||
+			'db_read_error' === $table_id->get_error_code() ) {
 				$table_id->add_data( array( 'status' => 500 ) );
 			} else {
 				$table_id->add_data( array( 'status' => 400 ) );
@@ -469,8 +579,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to update the item, WP_Error
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @return true|\WP_Error True if the request has access to update the item, WP_Error
 	 *  object otherwise.
 	 */
 	public function update_item_permissions_check( $request ) {
@@ -532,8 +642,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function update_item( $request ) {
 		$valid_check = $this->get_table( $request['id'] );
@@ -551,8 +661,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		if ( is_wp_error( $table_id ) ) {
 			if ( 'db_insert_error' === $table_id->get_error_code() ||
-				'db_update_error' === $table_id->get_error_code() ||
-				'db_read_error' === $table_id->get_error_code() ) {
+			'db_update_error' === $table_id->get_error_code() ||
+			'db_read_error' === $table_id->get_error_code() ) {
 				$table_id->add_data( array( 'status' => 500 ) );
 			} else {
 				$table_id->add_data( array( 'status' => 400 ) );
@@ -576,8 +686,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to delete the item, WP_Error object otherwise.
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @return true|\WP_Error True if the request has access to delete the item, WP_Error object otherwise.
 	 */
 	public function delete_item_permissions_check( $request ) {
 		// Determine if this is from internal maintenance, verify signature, and authorize if verified
@@ -653,8 +763,8 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function delete_item( $request ) {
 
@@ -735,12 +845,46 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	}
 
 	/**
+	 * Determines the allowed query_vars for a get_items() response and prepares
+	 * them for WP_Query.
+	 *
+	 * @since 1.3.2
+	 *
+	 * @param array            $prepared_args Optional. Prepared WP_Query arguments. Default empty array.
+	 * @param \WP_REST_Request $request       Optional. Full details about the request.
+	 * @return array Items query arguments.
+	 */
+	protected function prepare_items_query( $prepared_args = array(), $request = null ) {
+		if ( ! is_array( $prepared_args ) ) {
+			$prepared_args = array();
+		}
+
+		$query_args = $prepared_args;
+
+		// Map to proper WP_Query orderby param.
+		if ( isset( $query_args['orderby'] ) && isset( $request['orderby'] ) ) {
+			$orderby_mappings = array(
+				'id'           => 'ID',
+				'include'      => 'table__in',
+				'name'         => 'table_name',
+				'include_name' => 'table_name__in',
+			);
+
+			if ( isset( $orderby_mappings[ $request['orderby'] ] ) ) {
+				$query_args['orderby'] = $orderby_mappings[ $request['orderby'] ];
+			}
+		}
+
+		return $query_args;
+	}
+
+	/**
 	 * Prepares a single table for create or update.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return stdClass|WP_Error Post object or WP_Error.
+	 * @param \WP_REST_Request $request Request object.
+	 * @return \stdClass|\WP_Error Post object or WP_Error.
 	 */
 	protected function prepare_item_for_database( $request ) {
 		$prepared_table = new \stdClass();
@@ -780,38 +924,38 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 			// Table post block cross reference.
 			if ( ! empty( $schema_header['properties']['block_table_ref'] ) &&
-				isset( $request['header']['block_table_ref'] ) ) {
+			isset( $request['header']['block_table_ref'] ) ) {
 				$prepared_table->header['block_table_ref'] = $request['header']['block_table_ref'];
 			}
 
 			// Table status.
 			if ( ! empty( $schema_header['properties']['status'] ) &&
-				isset( $request['header']['status'] ) &&
-				( ! $current_status || $current_status !== $request['status'] ) ) {
+			isset( $request['header']['status'] ) &&
+			( ! $current_status || $current_status !== $request['status'] ) ) {
 				$prepared_table->header['status'] = $request['header']['status'];
 			}
 
 			// Table Post ID cross reference.
 			if ( ! empty( $schema_header['properties']['post_id'] ) &&
-				isset( $request['header']['post_id'] ) ) {
+			isset( $request['header']['post_id'] ) ) {
 				$prepared_table->header['post_id'] = (int) $request['header']['post_id'];
 			}
 
 			// Table name.
 			if ( ! empty( $schema_header['properties']['table_name'] ) &&
-				isset( $request['header']['table_name'] ) ) {
+			isset( $request['header']['table_name'] ) ) {
 				$prepared_table->header['table_name'] = $request['header']['table_name'];
 			}
 
 			// Table attributes.
 			if ( ! empty( $schema_header['properties']['attributes'] ) &&
-				isset( $request['header']['attributes'] ) ) {
+			isset( $request['header']['attributes'] ) ) {
 				$prepared_table->header['attributes'] = $request['header']['attributes'];
 			}
 
 			// Table css classes.
 			if ( ! empty( $schema_header['properties']['classes'] ) &&
-				isset( $request['header']['classes'] ) ) {
+			isset( $request['header']['classes'] ) ) {
 				$prepared_table->header['classes'] = $request['header']['classes'];
 			}
 		}
@@ -820,7 +964,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		 * Process Table Row Block for each row in the table
 		 */
 		if ( ! empty( $schema['properties']['rows'] )
-			&& isset( $request['rows'] ) ) {
+		&& isset( $request['rows'] ) ) {
 			$schema_rows = $schema['properties']['rows'];
 
 			foreach ( $request['rows'] as $key => $row ) {
@@ -842,19 +986,19 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 				// Row's Row ID
 				if ( ! empty( $schema_row['properties']['row_id'] ) &&
-					isset( $request['rows'][ $key ]['row_id'] ) ) {
+				isset( $request['rows'][ $key ]['row_id'] ) ) {
 					$prepared_table->rows[ $key ]['row_id'] = (int) $request['rows'][ $key ]['row_id'];
 				}
 
 				// Row attributes
 				if ( ! empty( $schema_row['properties']['attributes'] ) &&
-					isset( $request['rows'][ $key ]['attributes'] ) ) {
+				isset( $request['rows'][ $key ]['attributes'] ) ) {
 					$prepared_table->rows[ $key ]['attributes'] = $request['rows'][ $key ]['attributes'];
 				}
 
 				// Row css classes
 				if ( ! empty( $schema_row['properties']['classes'] ) &&
-					isset( $request['rows'][ $key ]['classes'] ) ) {
+				isset( $request['rows'][ $key ]['classes'] ) ) {
 					$prepared_table->rows[ $key ]['classes'] = $request['rows'][ $key ]['classes'];
 				}
 			}
@@ -864,7 +1008,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		 * Process Table Column Block for each column in the table
 		 */
 		if ( ! empty( $schema['properties']['columns'] )
-			&& isset( $request['columns'] ) ) {
+		&& isset( $request['columns'] ) ) {
 			$schema_columns = $schema['properties']['columns'];
 
 			foreach ( $request['columns'] as $key => $column ) {
@@ -886,24 +1030,24 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 				// Colunmn's Column ID
 				if ( ! empty( $schema_column['properties']['column_id'] ) &&
-					isset( $request['columns'][ $key ]['column_id'] ) ) {
+				isset( $request['columns'][ $key ]['column_id'] ) ) {
 					$prepared_table->columns[ $key ]['column_id'] = (int) $request['columns'][ $key ]['column_id'];
 				}
 
 				// Colunmn's Column Name
 				if ( ! empty( $schema_column['properties']['column_name'] ) &&
-					isset( $request['columns'][ $key ]['column_name'] ) ) {
+				isset( $request['columns'][ $key ]['column_name'] ) ) {
 					$prepared_table->columns[ $key ]['column_name'] = $request['columns'][ $key ]['column_name'];
 				}
 				// Column attributes
 				if ( ! empty( $schema_column['properties']['attributes'] ) &&
-					isset( $request['columns'][ $key ]['attributes'] ) ) {
+				isset( $request['columns'][ $key ]['attributes'] ) ) {
 					$prepared_table->columns[ $key ]['attributes'] = $request['columns'][ $key ]['attributes'];
 				}
 
 				// Column css classes
 				if ( ! empty( $schema_column['properties']['classes'] ) &&
-					isset( $request['columns'][ $key ]['classes'] ) ) {
+				isset( $request['columns'][ $key ]['classes'] ) ) {
 					$prepared_table->columns[ $key ]['classes'] = $request['columns'][ $key ]['classes'];
 				}
 			}
@@ -913,7 +1057,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		 * Process Table Cell Block for each cell in the table
 		 */
 		if ( ! empty( $schema['properties']['cells'] )
-			&& isset( $request['cells'] ) ) {
+		&& isset( $request['cells'] ) ) {
 			$schema_cells = $schema['properties']['cells'];
 
 			foreach ( $request['cells'] as $key => $cell ) {
@@ -935,30 +1079,30 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 				// Column ID
 				if ( ! empty( $schema_cell['properties']['column_id'] ) &&
-					isset( $request['cells'][ $key ]['column_id'] ) ) {
+				isset( $request['cells'][ $key ]['column_id'] ) ) {
 					$prepared_table->cells[ $key ]['column_id'] = (int) $request['cells'][ $key ]['column_id'];
 				}
 
 				// Row ID
 				if ( ! empty( $schema_cell['properties']['row_id'] ) &&
-					isset( $request['cells'][ $key ]['row_id'] ) ) {
+				isset( $request['cells'][ $key ]['row_id'] ) ) {
 					$prepared_table->cells[ $key ]['row_id'] = (int) $request['cells'][ $key ]['row_id'];
 				}
 				// Cell attributes
 				if ( ! empty( $schema_cell['properties']['attributes'] ) &&
-					isset( $request['cells'][ $key ]['attributes'] ) ) {
+				isset( $request['cells'][ $key ]['attributes'] ) ) {
 					$prepared_table->cells[ $key ]['attributes'] = $request['cells'][ $key ]['attributes'];
 				}
 
 				// Cell css classes
 				if ( ! empty( $schema_cell['properties']['classes'] ) &&
-					isset( $request['cells'][ $key ]['classes'] ) ) {
+				isset( $request['cells'][ $key ]['classes'] ) ) {
 					$prepared_table->cells[ $key ]['classes'] = $request['cells'][ $key ]['classes'];
 				}
 
 				// Cell css content
 				if ( ! empty( $schema_cell['properties']['content'] ) &&
-					isset( $request['cells'][ $key ]['content'] ) ) {
+				isset( $request['cells'][ $key ]['content'] ) ) {
 					$prepared_table->cells[ $key ]['content'] = $request['cells'][ $key ]['content'];
 				}
 			}
@@ -972,9 +1116,9 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Table           $item      Table object.
-	 * @param WP_REST_Request $request   Request object.
-	 * @return WP_REST_Response Response object.
+	 * @param Table            $item      Table object.
+	 * @param \WP_REST_Request $request   Request object.
+	 * @return \WP_REST_Response Response object.
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		// Restores the more descriptive, specific name for use within this method.
@@ -1004,89 +1148,135 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			$data['header']['post_id'] = $table['header']['post_id'];
 		}
 
-		if ( rest_is_field_included( 'header.table_name', $fields ) ) {
+		if ( rest_is_field_included( 'header.table_name', $fields ) &&
+			isset( $table['header']['table_name'] ) ) {
 			$data['header']['table_name'] = $table['header']['table_name'];
 		}
 
-		if ( rest_is_field_included( 'header.attributes', $fields ) ) {
+		if ( rest_is_field_included( 'header.attributes', $fields ) &&
+			isset( $table['header']['attributes'] ) ) {
 			$data['header']['attributes'] = $table['header']['attributes'];
 		}
 
-		if ( rest_is_field_included( 'header.classes', $fields ) ) {
+		if ( rest_is_field_included( 'header.classes', $fields ) &&
+			isset( $table['header']['classes'] ) ) {
 			$data['header']['classes'] = $table['header']['classes'];
+		}
+
+		if ( rest_is_field_included( 'header.total_rows', $fields ) &&
+			isset( $table['header']['total_rows'] ) ) {
+			$data['header']['total_rows'] = $table['header']['total_rows'];
+		}
+
+		if ( rest_is_field_included( 'header.total_columns', $fields ) &&
+			isset( $table['header']['total_columns'] ) ) {
+			$data['header']['total_columns'] = $table['header']['total_columns'];
 		}
 
 		/**
 		 * Row Block
 		 */
-		foreach ( $table['rows'] as $key => $row ) {
-			if ( rest_is_field_included( 'rows.row.table_id', $fields ) ) {
-				$data['rows'][ $key ]['table_id'] = $row['table_id'];
-			}
+		if ( isset( $table['rows'] ) ) {
+			foreach ( $table['rows'] as $key => $row ) {
+				if ( rest_is_field_included( 'rows.row.table_id', $fields ) ) {
+					$data['rows'][ $key ]['table_id'] = $row['table_id'];
+				}
 
-			if ( rest_is_field_included( 'rows.row.row_id', $fields ) ) {
-				$data['rows'][ $key ]['row_id'] = $row['row_id'];
-			}
+				if ( rest_is_field_included( 'rows.row.row_id', $fields ) ) {
+					$data['rows'][ $key ]['row_id'] = $row['row_id'];
+				}
 
-			if ( rest_is_field_included( 'rows.row.attributes', $fields ) ) {
-				$data['rows'][ $key ]['attributes'] = $row['attributes'];
-			}
+				if ( rest_is_field_included( 'rows.row.attributes', $fields ) ) {
+					$data['rows'][ $key ]['attributes'] = $row['attributes'];
+				}
 
-			if ( rest_is_field_included( 'rows.row.classes', $fields ) ) {
-				$data['rows'][ $key ]['classes'] = $row['classes'];
+				if ( rest_is_field_included( 'rows.row.classes', $fields ) ) {
+					$data['rows'][ $key ]['classes'] = $row['classes'];
+				}
 			}
 		}
 
 		/**
 		 * Columns Block
 		 */
-		foreach ( $table['columns'] as $key => $column ) {
-			if ( rest_is_field_included( 'columns.column.table_id', $fields ) ) {
-				$data['columns'][ $key ]['table_id'] = $column['table_id'];
-			}
+		if ( isset( $table['columns'] ) ) {
+			foreach ( $table['columns'] as $key => $column ) {
+				if ( rest_is_field_included( 'columns.column.table_id', $fields ) ) {
+					$data['columns'][ $key ]['table_id'] = $column['table_id'];
+				}
 
-			if ( rest_is_field_included( 'columns.column.column_id', $fields ) ) {
-				$data['columns'][ $key ]['column_id'] = $column['column_id'];
-			}
+				if ( rest_is_field_included( 'columns.column.column_id', $fields ) ) {
+					$data['columns'][ $key ]['column_id'] = $column['column_id'];
+				}
 
-			if ( rest_is_field_included( 'columns.column.column_name', $fields ) ) {
-				$data['columns'][ $key ]['column_name'] = $column['column_name'];
-			}
+				if ( rest_is_field_included( 'columns.column.column_name', $fields ) ) {
+					$data['columns'][ $key ]['column_name'] = $column['column_name'];
+				}
 
-			if ( rest_is_field_included( 'columns.column.attributes', $fields ) ) {
-				$data['columns'][ $key ]['attributes'] = $column['attributes'];
-			}
+				if ( rest_is_field_included( 'columns.column.attributes', $fields ) ) {
+					$data['columns'][ $key ]['attributes'] = $column['attributes'];
+				}
 
-			if ( rest_is_field_included( 'columns.column.classes', $fields ) ) {
-				$data['columns'][ $key ]['classes'] = $column['classes'];
+				if ( rest_is_field_included( 'columns.column.classes', $fields ) ) {
+					$data['columns'][ $key ]['classes'] = $column['classes'];
+				}
 			}
 		}
 
 		/**
 		 * Cells Block
 		 */
-		foreach ( $table['cells'] as $key => $cell ) {
-			if ( rest_is_field_included( 'cells.cell.table_id', $fields ) ) {
-				$data['cells'][ $key ]['table_id'] = $cell['table_id'];
-			}
+		if ( isset( $table['cells'] ) ) {
+			foreach ( $table['cells'] as $key => $cell ) {
+				if ( rest_is_field_included( 'cells.cell.table_id', $fields ) ) {
+					$data['cells'][ $key ]['table_id'] = $cell['table_id'];
+				}
 
-			if ( rest_is_field_included( 'cells.cell.column_id', $fields ) ) {
-				$data['cells'][ $key ]['column_id'] = $cell['column_id'];
-			}
+				if ( rest_is_field_included( 'cells.cell.column_id', $fields ) ) {
+					$data['cells'][ $key ]['column_id'] = $cell['column_id'];
+				}
 
-			if ( rest_is_field_included( 'cells.cell.row_id', $fields ) ) {
-				$data['cells'][ $key ]['row_id'] = $cell['row_id'];
-			}
-			if ( rest_is_field_included( 'cells.cell.attributes', $fields ) ) {
-				$data['cells'][ $key ]['attributes'] = $cell['attributes'];
-			}
+				if ( rest_is_field_included( 'cells.cell.row_id', $fields ) ) {
+					$data['cells'][ $key ]['row_id'] = $cell['row_id'];
+				}
+				if ( rest_is_field_included( 'cells.cell.attributes', $fields ) ) {
+					$data['cells'][ $key ]['attributes'] = $cell['attributes'];
+				}
 
-			if ( rest_is_field_included( 'cells.cell.classes', $fields ) ) {
-				$data['cells'][ $key ]['classes'] = $cell['classes'];
-			}
+				if ( rest_is_field_included( 'cells.cell.classes', $fields ) ) {
+					$data['cells'][ $key ]['classes'] = $cell['classes'];
+				}
 
-			if ( rest_is_field_included( 'cells.cell.content', $fields ) ) {
-				$data['cells'][ $key ]['content'] = $cell['content'];
+				if ( rest_is_field_included( 'cells.cell.content', $fields ) ) {
+					$data['cells'][ $key ]['content'] = $cell['content'];
+				}
+			}
+		}
+
+		/**
+		 * Column Data Structures
+		 */
+		error_log( 'Processing Data Structures: ' . json_encode( $table['column_structures'] ) );
+		if ( isset( $table['column_structures'] ) ) {
+			foreach ( $table['column_structures'] as $key => $column ) {
+				error_log( 'Processing Column: key = ' . $key . ', column = ' . json_encode( $column ) );
+				if ( rest_is_field_included( 'column_structures.column.column_id', $fields ) ) {
+					$data['column_structures'][ $key ]['column_id'] = $column['column_id'];
+				}
+
+				if ( rest_is_field_included( 'column_structures.column.column_name', $fields ) ) {
+					$data['column_structures'][ $key ]['column_name'] = $column['column_name'];
+				}
+
+				if ( rest_is_field_included( 'column_structures.column.column_data_type', $fields ) &&
+					isset( $column['column_data_type'] ) ) {
+					$data['column_structures'][ $key ]['column_data_type'] = $column['column_data_type'];
+				}
+
+				if ( rest_is_field_included( 'column_structures.column.column_data_format', $fields ) &&
+					isset( $column['column_data_format'] ) ) {
+					$data['column_structures'][ $key ]['column_data_format'] = $column['column_data_format'];
+				}
 			}
 		}
 
@@ -1117,21 +1307,20 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			'title'      => 'dynamic-table-blocks',
 			'type'       => 'object',
 			'properties' => array(
-				'id'      => array(
+				'id'                => array(
 					'description' => __( 'Unique identifier for the table.', 'dynamic-table-blocks' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
-				'title'   => array(
+				'title'             => array(
 					'description' => __( 'Table name which can include html style elements.', 'dynamic-table-blocks' ),
 					'type'        => 'string',
 				),
-				'header'  => array(
+				'header'            => array(
 					'description' => __( 'Tablewide properties.', 'dynamic-table-blocks' ),
 					'type'        => 'object',
 					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
 					'properties'  => array(
 						'id'              => array(
 							'description' => __( 'Table ID.', 'dynamic-table-blocks' ),
@@ -1161,56 +1350,64 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 						),
 						'attributes'      => array(
 							'description' => __( 'Tablewide attributes.', 'dynamic-table-blocks' ),
-							'type'        => 'array',
+							'type'        => 'object',
 							'context'     => array( 'view', 'edit' ),
 						),
 						'classes'         => array(
 							'description' => __( 'Tablewide css classes.', 'dynamic-table-blocks' ),
-							'type'        => 'array',
+							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
+						),
+						'total_rows'      => array(
+							'description' => __( 'Number of rows in the table.', 'dynamic-table-blocks' ),
+							'type'        => 'integer',
+							'readonly'    => true,
+							'context'     => array( 'view' ),
+						),
+						'total_columns'   => array(
+							'description' => __( 'Number of columns in the table.', 'dynamic-table-blocks' ),
+							'type'        => 'integer',
+							'readonly'    => true,
+							'context'     => array( 'view' ),
 						),
 					),
 				),
-				'rows'    => array(
+				'rows'              => array(
 					'description' => __( 'Table rows collection', 'dynamic-table-blocks' ),
 					'type'        => 'array',
 					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
 					'properties'  => array(
 						'row' => array(
 							'description' => __( 'Table row', 'dynamic-table-blocks' ),
 							'type'        => 'object',
 							'context'     => array( 'view', 'edit' ),
-							'readonly'    => true,
 							'properties'  => array(
 								'table_id'   => array(
 									'description' => __( 'Table ID.', 'dynamic-table-blocks' ),
 									'type'        => 'integer',
 									'context'     => array( 'view', 'edit' ),
-									'readonly'    => true,
 								),
 								'row_id'     => array(
 									'description' => __( 'Table Row Number.', 'dynamic-table-blocks' ),
 									'type'        => 'integer',
 									'context'     => array( 'view', 'edit' ),
-									'readonly'    => true,
 								),
 								'attributes' => array(
 									'description' => __( 'Attributes for the row and inhereted by cells.', 'dynamic-table-blocks' ),
-									'type'        => 'array',
+									'type'        => 'object',
 									'context'     => array( 'view', 'edit' ),
 								),
 								'classes'    => array(
 									'description' => __( 'Css classes for the row and inhereted by cells.', 'dynamic-table-blocks' ),
-									'type'        => 'array',
+									'type'        => 'string',
 									'context'     => array( 'view', 'edit' ),
 								),
 							),
 						),
 					),
 				),
-				'columns' => array(
-					'description' => __( 'Table columns collection', 'dynamic-table-blocks' ),
+				'column_structures' => array(
+					'description' => __( 'Table columns data structure collection', 'dynamic-table-blocks' ),
 					'type'        => 'array',
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
@@ -1219,83 +1416,108 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 							'description' => __( 'Table column', 'dynamic-table-blocks' ),
 							'type'        => 'object',
 							'context'     => array( 'view', 'edit', 'dynamic-table-blocks' ),
-							'readonly'    => true,
 							'properties'  => array(
-								'table_id'    => array(
-									'description' => __( 'Table ID.', 'dynamic-table-blocks' ),
-									'type'        => 'integer',
-									'context'     => array( 'view', 'edit' ),
-									'readonly'    => true,
-								),
-								'column_id'   => array(
+								'column_id'          => array(
 									'description' => __( 'Table Column Number.', 'dynamic-table-blocks' ),
 									'type'        => 'integer',
 									'context'     => array( 'view', 'edit' ),
-									'readonly'    => true,
 								),
-								'column_name' => array(
+								'column_name'        => array(
 									'description' => __( 'Table Column Name.', 'dynamic-table-blocks' ),
 									'type'        => 'string',
 									'context'     => array( 'view', 'edit' ),
-									'readonly'    => true,
 								),
-								'attributes'  => array(
-									'description' => __( 'Column attributes inhereted by cells.', 'dynamic-table-blocks' ),
-									'type'        => 'array',
+								'column_data_type'   => array(
+									'description' => __( 'Data type', 'dynamic-table-blocks' ),
+									'type'        => 'string',
 									'context'     => array( 'view', 'edit' ),
 								),
-								'classes'     => array(
-									'description' => __( 'CSS column classes inhereted by cells.', 'dynamic-table-blocks' ),
-									'type'        => 'array',
+								'column_data_format' => array(
+									'description' => __( 'Data type format', 'dynamic-table-blocks' ),
+									'type'        => 'string',
 									'context'     => array( 'view', 'edit' ),
 								),
 							),
 						),
 					),
 				),
-				'cells'   => array(
+				'columns'           => array(
+					'description' => __( 'Table columns collection', 'dynamic-table-blocks' ),
+					'type'        => 'array',
+					'context'     => array( 'view', 'edit' ),
+					'properties'  => array(
+						'column' => array(
+							'description' => __( 'Table column', 'dynamic-table-blocks' ),
+							'type'        => 'object',
+							'context'     => array( 'view', 'edit', 'dynamic-table-blocks' ),
+							'properties'  => array(
+								'table_id'    => array(
+									'description' => __( 'Table ID.', 'dynamic-table-blocks' ),
+									'type'        => 'integer',
+									'context'     => array( 'view', 'edit' ),
+								),
+								'column_id'   => array(
+									'description' => __( 'Table Column Number.', 'dynamic-table-blocks' ),
+									'type'        => 'integer',
+									'context'     => array( 'view', 'edit' ),
+								),
+								'column_name' => array(
+									'description' => __( 'Table Column Name.', 'dynamic-table-blocks' ),
+									'type'        => 'string',
+									'context'     => array( 'view', 'edit' ),
+								),
+								'attributes'  => array(
+									'description' => __( 'Column attributes inhereted by cells.', 'dynamic-table-blocks' ),
+									'type'        => 'object',
+									'context'     => array( 'view', 'edit' ),
+								),
+								'classes'     => array(
+									'description' => __( 'CSS column classes inhereted by cells.', 'dynamic-table-blocks' ),
+									'type'        => 'string',
+									'context'     => array( 'view', 'edit' ),
+								),
+							),
+						),
+					),
+				),
+				'cells'             => array(
 					'description' => __( 'Table cells collection.', 'dynamic-table-blocks' ),
 					'type'        => 'array',
 					'context'     => array( 'view', 'edit' ),
-					'readonly'    => true,
 					'properties'  => array(
 						'cell' => array(
 							'description' => __( 'Table cell', 'dynamic-table-blocks' ),
 							'type'        => 'object',
 							'context'     => array( 'view', 'edit' ),
-							'readonly'    => true,
 							'properties'  => array(
 								'table_id'   => array(
 									'description' => __( 'Table ID.', 'dynamic-table-blocks' ),
 									'type'        => 'integer',
 									'context'     => array( 'view', 'edit' ),
-									'readonly'    => true,
 								),
 								'column_id'  => array(
 									'description' => __( 'Table Column Number.', 'dynamic-table-blocks' ),
 									'type'        => 'integer',
 									'context'     => array( 'view', 'edit' ),
-									'readonly'    => true,
 								),
 								'row_id'     => array(
 									'description' => __( 'Table Row Number.', 'dynamic-table-blocks' ),
 									'type'        => 'integer',
 									'context'     => array( 'view', 'edit' ),
-									'readonly'    => true,
 								),
 								'attributes' => array(
 									'description' => __( 'Cell attributes.', 'dynamic-table-blocks' ),
-									'type'        => 'array',
+									'type'        => 'object',
 									'context'     => array( 'view', 'edit' ),
 								),
 								'classes'    => array(
 									'description' => __( 'CSS cell classes.', 'dynamic-table-blocks' ),
-									'type'        => 'array',
+									'type'        => 'string',
 									'context'     => array( 'view', 'edit' ),
 								),
 								'content'    => array(
 									'description' => __( 'Cell visible content which can include html style elements.', 'dynamic-table-blocks' ),
-									'type'        => 'array',
+									'type'        => 'string',
 									'context'     => array( 'view', 'edit' ),
 									'arg_options' => array(
 										'sanitize_callback' => null, // Note: sanitization implemented in self::prepare_item_for_database().
@@ -1307,29 +1529,20 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 					),
 				),
 			),
-
 		);
 
-		// Take a snapshot of which fields are in the schema pre-filtering.
-		$schema_fields = array_keys( $schema['properties'] );
-
-		// Emit a _doing_it_wrong warning if user tries to add new properties using this filter.
-		$new_fields = array_diff( array_keys( $schema['properties'] ), $schema_fields );
-		if ( count( $new_fields ) > 0 ) {
-			_doing_it_wrong(
-				__METHOD__,
-				sprintf(
-					/* translators: %s: register_rest_field */
-					'Please use %s to add new schema properties.',
-					'register_rest_field'
-				),
-				'5.4.0'
-			);
-		}
-		$this->schema = $schema;
-		return $this->add_additional_fields_schema( $this->schema );
+			$this->schema = $schema;
+			return $this->add_additional_fields_schema( $this->schema );
 	}
 
+	/**
+	 * Validate permission header passed for internal API requests.
+	 *
+	 * @since 1.3.2
+	 *
+	 * @param \WP_REST_Request $request Full details about the request.
+	 * @return bool Is valid?
+	 */
 	function verify_internal_signature( $request ) {
 		$key = dtbk_signing_key();
 
@@ -1340,5 +1553,111 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		$header   = $request->get_header( 'x-dtbk-signature' );
 
 		return $header && hash_equals( $expected, $header );
+	}
+
+	/**
+	 * List of valid query parameters for the get_items endpoint.
+	 *
+	 * @since 1.3.2
+	 *
+	 * @return array Item schema data.
+	 */
+	public function get_collection_params() {
+		error_log( 'get_collection_params called' );
+		$query_params = parent::get_collection_params();
+
+		$query_params['context']['default'] = 'view';
+
+		$query_params['exclude'] = array(
+			'description' => __( 'Ensure result set excludes specific IDs.' ),
+			'type'        => 'array',
+			'items'       => array(
+				'type' => 'integer',
+			),
+			'default'     => array(),
+		);
+
+		$query_params['include'] = array(
+			'description' => __( 'Limit result set to specific IDs.' ),
+			'type'        => 'array',
+			'items'       => array(
+				'type' => 'integer',
+			),
+			'default'     => array(),
+		);
+
+		$query_params['post'] = array(
+			'description' => __( 'Limit result set to specific post IDs.' ),
+			'type'        => 'array',
+			'items'       => array(
+				'type' => 'integer',
+			),
+			'default'     => array(),
+		);
+
+		$query_params['post_exclude'] = array(
+			'description' => __( 'Ensure result set excludes specific post IDs.' ),
+			'type'        => 'array',
+			'items'       => array(
+				'type' => 'integer',
+			),
+			'default'     => array(),
+		);
+
+		$query_params['name'] = array(
+			'description' => __( 'Limit result set to tables with one or more specific table name.' ),
+			'type'        => 'array',
+			'items'       => array(
+				'type' => 'string',
+			),
+		);
+
+		$query_params['status'] = array(
+			'default'     => array( 'saved' ),
+			'description' => __( 'Limit result set to items with a table status.', 'dynamic-table-blocks' ),
+			'type'        => 'array',
+			'items'       => array(
+				'enum' => array_merge( array_keys( get_table_statuses() ), array( 'any' ) ),
+				'type' => 'string',
+			),
+		);
+
+		$query_params['search_semantics'] = array(
+			'description' => __( 'How to interpret the search input.' ),
+			'type'        => 'string',
+			'enum'        => array( 'exact' ),
+		);
+
+		$query_params['order'] = array(
+			'description' => __( 'Order sort attribute ascending or descending.' ),
+			'type'        => 'string',
+			'default'     => 'desc',
+			'enum'        => array( 'asc', 'desc' ),
+		);
+
+		$query_params['orderby'] = array(
+			'description' => __( 'Sort collection by post attribute.' ),
+			'type'        => 'string',
+			'default'     => 'id',
+			'enum'        => array(
+				'id',
+				'status',
+				'post',
+				'include',
+				'name',
+			),
+		);
+
+		$query_params['search_columns'] = array(
+			'default'     => array(),
+			'description' => __( 'Array of column names to be searched.' ),
+			'type'        => 'array',
+			'items'       => array(
+				'enum' => array( 'post_title', 'post_content', 'post_excerpt' ),
+				'type' => 'string',
+			),
+		);
+
+		return $query_params;
 	}
 }

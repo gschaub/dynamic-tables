@@ -326,9 +326,7 @@ export function computeCellIds(fetchedCells) {
  * @return {Object}       Row and column id extracted from the cell id
  */
 export function getCellIdCoordinates(cellId) {
-	// console.log('Received cellId', cellId);
 	const match = cellId.match(/^(0|[A-Z]+)(\d+)$/i);
-	// const match = cellId.match(/^([A-Z]+)(\d+)$/i);
 	if (!match) {
 		throw new Error('Invalid cell id (' + cellId + ')');
 	}
@@ -336,7 +334,6 @@ export function getCellIdCoordinates(cellId) {
 	const [, colLetters, rowString] = match;
 	const rowId = Number(rowString);
 	const colId = colLetters === '0' ? 0 : letterToNumber(colLetters);
-	// const colId = letterToNumber(colLetters);
 
 	return { column_id: colId, row_id: rowId };
 }
@@ -880,7 +877,6 @@ export function formatClipboardContent(
 			break;
 		}
 		case 'date-time': {
-			console.log('Date/Time format = ' + typeFormat?.format);
 			formattedText = formatedDisplayDate(cellContent, typeFormat?.format);
 			plainText = formattedText;
 			break;
@@ -910,7 +906,6 @@ export function formatClipboardContent(
 			plainText = htmlToReadableText(cellContent) || cellValueAttr.indexText || '';
 		}
 	}
-	console.log('Formatted clipboard content', { formattedText, plainText });
 	return {
 		formattedText,
 		plainText,

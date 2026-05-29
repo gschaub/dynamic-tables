@@ -1,6 +1,10 @@
+/* External dependencies */
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { usePrevious } from '@wordpress/compose';
 import { useSelect } from '@wordpress/data';
+
+/* Internal dependencies */
+import { store as tableStore } from './data';
 
 /**
  * Returns `true` after an editor save cycle completes.
@@ -28,24 +32,18 @@ export const usePostChangesSaved = () => {
 	useEffect(() => {
 		if (isSavingPost) {
 			saveCycleRef.current.wasAutosave = saveCycleRef.current.wasAutosave || isAutosavingPost;
- 			setAreChangesSaved(false);
+			setAreChangesSaved(false);
 			return;
 		}
 
 		if (wasSavingPost) {
-			const didCompleteManualSave =
-				!saveCycleRef.current.wasAutosave && didPostSaveRequestSucceed;
+			const didCompleteManualSave = !saveCycleRef.current.wasAutosave && didPostSaveRequestSucceed;
 			setAreChangesSaved(didCompleteManualSave);
 			saveCycleRef.current = {
 				wasAutosave: false,
 			};
 		}
-	}, [
-		isSavingPost,
-		isAutosavingPost,
-		didPostSaveRequestSucceed,
-		wasSavingPost,
-	]);
+	}, [isSavingPost, isAutosavingPost, didPostSaveRequestSucceed, wasSavingPost]);
 
 	return areChangesSaved;
 };
@@ -109,4 +107,49 @@ export function useNotInInserterPreview() {
 
 		return !isPreview;
 	}, []);
+}
+
+/**
+ * Retrieve a table by ID and fetch it from the API if it is not already in the store.
+ *
+ * @since    1.3.2
+ *
+ * @param {string}  tableId           The ID of the table to retrieve
+ * @param {Object}  args
+ * @param {boolean} args.isTableStale Whether to force refetching the table from the API
+ * @param {boolean} args.shouldFetch  Whether there is an active request to get a table
+ * @return {Object} The table data and resolution status
+ */
+export function useGetTable(tableId, { isTableStale = false, shouldFetch = true } = {}) {
+	const shouldResolveTable = shouldFetch && Number(tableId) > 0;
+
+	return useSelect(
+		select => {
+			if (!shouldResolveTable) {
+				return {
+					table: null,
+					hasStartedResolving: false,
+					hasFinishedResolving: false,
+					isResolving: false,
+				};
+			}
+
+			const { getTable, hasStartedResolution, hasFinishedResolution, isResolving } =
+				select(tableStore);
+
+			const selectorArgs = [tableId, isTableStale];
+			const table = getTable(tableId, isTableStale);
+			const hasStartedResolving = hasStartedResolution('getTable', selectorArgs);
+			const hasFinishedResolving = hasFinishedResolution('getTable', selectorArgs);
+			const tableIsResolving = isResolving('getTable', selectorArgs);
+
+			return {
+				table,
+				hasStartedResolving,
+				hasFinishedResolving,
+				isResolving: tableIsResolving,
+			};
+		},
+		[tableId, isTableStale, shouldResolveTable]
+	);
 }

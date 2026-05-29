@@ -21,6 +21,7 @@ import {
 	Button,
 	Spinner,
 	Placeholder,
+	SelectControl,
 	CheckboxControl,
 	TextControl,
 	__experimentalInputControl as InputControl,
@@ -45,7 +46,7 @@ import clsx from 'clsx';
 
 /* Internal dependencies */
 import { store as tableStore } from './data';
-import { usePostChangesSaved, useEditorIdentity, useNotInInserterPreview } from './hooks';
+import { usePostChangesSaved, useEditorIdentity, useNotInInserterPreview, useGetTable } from './hooks';
 
 import {
 	MESSAGE_TARGETS,
@@ -117,6 +118,178 @@ dispatch('core').addEntities([
 	},
 ]);
 
+const SUMMARY_TABLE_REFRESH_INTERVAL = 60000;
+const summaryTableRefreshCoordinator = {
+	inFlightPromise: null,
+	showErrorNotice: false,
+	subscribers: new Map(),
+	intervalId: null,
+	focusHandler: null,
+	visibilityHandler: null,
+};
+
+/**
+ * Set the loading state for summary table refresh on each subscriber.
+ *
+ * @since 1.3.2
+ *
+ * @param {boolean} isRefreshing Whether the summary tables are currently being refreshed
+ */
+function setSummaryTableRefreshLoading(isRefreshing) {
+	summaryTableRefreshCoordinator.subscribers.forEach(({ setIsRefreshingAllTables }) => {
+		setIsRefreshingAllTables(isRefreshing);
+	});
+}
+
+/**
+ * Get the latest summary table refresh subscribers.
+ *
+ * @since 1.3.2
+ *
+ * @param {boolean} isRefreshing Whether the summary tables are currently being refreshed
+ * @returns {Object|null} The current list of subscribers or null if there are no subscribers
+ */
+function getSummaryTableRefreshSubscriber() {
+	const subscribers = Array.from(summaryTableRefreshCoordinator.subscribers.values());
+	return subscribers[subscribers.length - 1] || null;
+}
+
+/**
+ * Ensure summary table refresh listeners are added and set up.
+ *
+ * @since 1.3.2
+ */
+function ensureSummaryTableRefreshListeners() {
+	if (summaryTableRefreshCoordinator.intervalId !== null) {
+		return;
+	}
+
+	const refreshVisibleSummaryTables = () => {
+		if (document.visibilityState !== 'visible') {
+			return;
+		}
+
+		const subscriber = getSummaryTableRefreshSubscriber();
+		if (!subscriber) {
+			return;
+		}
+
+		void runSummaryTableRefresh({
+			refreshSummaryTables: subscriber.refreshSummaryTables,
+			createNotice: subscriber.createNotice,
+		}).catch(() => {});
+	};
+
+	summaryTableRefreshCoordinator.focusHandler = refreshVisibleSummaryTables;
+	summaryTableRefreshCoordinator.visibilityHandler = refreshVisibleSummaryTables;
+	summaryTableRefreshCoordinator.intervalId = window.setInterval(
+		refreshVisibleSummaryTables,
+		SUMMARY_TABLE_REFRESH_INTERVAL
+	);
+	window.addEventListener('focus', summaryTableRefreshCoordinator.focusHandler);
+	document.addEventListener(
+		'visibilitychange',
+		summaryTableRefreshCoordinator.visibilityHandler
+	);
+}
+
+/**
+ * Remove summary table refresh listeners as part of unmount cleanup.
+ *
+ * @since 1.3.2
+ */
+function maybeRemoveSummaryTableRefreshListeners() {
+	if (summaryTableRefreshCoordinator.subscribers.size > 0) {
+		return;
+	}
+
+	if (summaryTableRefreshCoordinator.intervalId !== null) {
+		window.clearInterval(summaryTableRefreshCoordinator.intervalId);
+		summaryTableRefreshCoordinator.intervalId = null;
+	}
+
+	if (summaryTableRefreshCoordinator.focusHandler) {
+		window.removeEventListener('focus', summaryTableRefreshCoordinator.focusHandler);
+		summaryTableRefreshCoordinator.focusHandler = null;
+	}
+
+	if (summaryTableRefreshCoordinator.visibilityHandler) {
+		document.removeEventListener(
+			'visibilitychange',
+			summaryTableRefreshCoordinator.visibilityHandler
+		);
+		summaryTableRefreshCoordinator.visibilityHandler = null;
+	}
+}
+
+/**
+ * Refresh summary tables store
+ *
+ * @since 1.3.2
+ *
+ * @param {Function} refreshSummaryTables Dispatch function to refresh summary tables store
+ * @param {Function} createNotice         Dispatch function to create notices in the editor
+ * @param {boolean} showErrorNotice       Whether to show an error notice if the refresh fails
+ * @return {Promise} Promise resolving to the refreshed summary tables
+ */
+async function runSummaryTableRefresh({
+	refreshSummaryTables,
+	createNotice,
+	showErrorNotice = false,
+}) {
+	summaryTableRefreshCoordinator.showErrorNotice =
+		summaryTableRefreshCoordinator.showErrorNotice || showErrorNotice;
+
+	if (summaryTableRefreshCoordinator.inFlightPromise) {
+		return summaryTableRefreshCoordinator.inFlightPromise;
+	}
+
+	setSummaryTableRefreshLoading(true);
+
+	const refreshPromise = (async () => {
+		try {
+			return await refreshSummaryTables();
+		} catch (error) {
+			console.error('Error refreshing Dynamic Tables summary list', error);
+
+			if (summaryTableRefreshCoordinator.showErrorNotice) {
+				showMessageNotice(createNotice, 'summary-refresh-error');
+			}
+
+			throw error;
+		} finally {
+			summaryTableRefreshCoordinator.inFlightPromise = null;
+			summaryTableRefreshCoordinator.showErrorNotice = false;
+			setSummaryTableRefreshLoading(false);
+		}
+	})();
+
+	summaryTableRefreshCoordinator.inFlightPromise = refreshPromise;
+	return refreshPromise;
+}
+
+
+/**
+ * Fetches summary tables and formats them for use as options in the table selection
+ * dropdown when attaching a block to an existing table.
+ *
+ * @since 1.3.2
+ *
+ * @param {Object} allTables All summarized dynamic tables currently in state
+ * @return {Array} Array of all tables available for block creation throught attachment
+ */
+function getLoadedSummaryTableOptions(allTables) {
+	return [
+		{ value: '', label: 'Choose table...' },
+		...Object.values(allTables || {})
+			.filter(({ table_status }) => table_status === 'loaded')
+			.map(({ table_id, table_name }) => ({
+				value: String(table_id),
+				label: `${table_name} (${table_id})`,
+			})),
+	];
+}
+
 /**
  * Exports main logic for Dynamic Tables block.
  *
@@ -144,7 +317,10 @@ export default function Edit(props) {
 	const isSavingEditorChanges = isSavingPost || isAutosavingPost;
 
 	/* Table Store Action useDispatch declarations */
+	const { receiveTable } = useDispatch(tableStore);
 	const { receiveNewTable } = useDispatch(tableStore);
+	const { updateSummaryTable } = useDispatch(tableStore);
+	const { refreshSummaryTables } = useDispatch(tableStore);
 	const { cloneTable } = useDispatch(tableStore);
 	const { createTableEntity } = useDispatch(tableStore);
 	const { saveTableEntity } = useDispatch(tableStore);
@@ -166,7 +342,31 @@ export default function Edit(props) {
 
 	/* Local State declarations */
 	const [isTableStale, setTableStale] = useState(true);
+	const [isRefreshingAllTables, setIsRefreshingAllTables] = useState(false);
+	const [existingTableOptions, setExistingTableOptions] = useState(null);
 	const [showBorders, setShowBorders] = useState(false);
+	const [tableCreationMethod, setTableCreationMethod] = useState('choose');
+	const [tableRequest, setTableRequest] = useState({
+		tableId: 0,
+		action: null,
+		blockTableRef: '',
+	});
+
+	const shouldFetchRequestedTable =
+		Number(tableRequest.tableId) > 0 && tableRequest.action !== null;
+
+	const {
+		table: requestedTable,
+		hasFinishedResolving: requestedTableHasFinishedResolving,
+		isResolving: requestedTableIsResolving,
+	} = useGetTable(
+		tableRequest.tableId,
+		{
+			isTableStale: true,
+			shouldFetch: shouldFetchRequestedTable,
+		}
+	);
+
 	const [createDraftTable, setCreateDraftTable] = useState({
 		tableName: '',
 		numColumns: 1,
@@ -211,6 +411,7 @@ export default function Edit(props) {
 	});
 
 	const isPageUnloadRef = useRef(false);
+	const summaryTableRefreshSubscriberIdRef = useRef(Symbol('dtbk-summary-refresh'));
 
 	// Location of border cell last clicked
 	const lastInvokerElRef = useRef(null);
@@ -922,6 +1123,100 @@ export default function Edit(props) {
 	}, []);
 
 	/**
+	 * Retrieve summary data for all active tables and load all tables store.
+	 *
+	 * @since 1.3.2
+	 */
+	const {
+		allTables,
+		allTablesIsResolving,
+	} = useSelect(
+		select => {
+			const { getSummaryTables, isResolving } = select(tableStore);
+
+			const selectorArgs = [true];
+
+			const allTables = getSummaryTables(true);
+			const allTablesIsResolving = isResolving('getSummaryTables', selectorArgs);
+
+			return {
+				allTables: allTables,
+				allTablesIsResolving: allTablesIsResolving,
+			};
+		},
+		[]
+	);
+
+	const activeExistingTableOptions =
+		existingTableOptions ??
+		(tableCreationMethod === 'existing-table' &&
+		!(allTablesIsResolving || isRefreshingAllTables)
+			? getLoadedSummaryTableOptions(allTables)
+			: null);
+
+	/**
+	 * Retrieve and set options array of tables available for attachment when table creation
+	 * method is set to "existing table" and remove the options if the creation method is not
+	 * set to "existing table".
+	 *
+	 * @since 1.3.2
+	 */
+	useEffect(() => {
+		if (tableCreationMethod !== 'existing-table') {
+			setExistingTableOptions(null);
+			return;
+		}
+
+		if (existingTableOptions !== null) return;
+
+		const nextExistingTableOptions = getLoadedSummaryTableOptions(allTables);
+
+		if (
+			nextExistingTableOptions.length > 1 ||
+			!(allTablesIsResolving || isRefreshingAllTables)
+		) {
+			setExistingTableOptions(nextExistingTableOptions);
+		}
+	}, [
+		tableCreationMethod,
+		existingTableOptions,
+		allTables,
+		allTablesIsResolving,
+		isRefreshingAllTables,
+	]);
+
+	/**
+	 * Refresh summary table data for all tables in the tables store when the table creation
+	 * method is set to "existing table".
+	 *
+	 * @since 1.3.2
+	 */
+	useEffect(() => {
+		if (tableCreationMethod !== 'existing-table') return;
+
+		summaryTableRefreshCoordinator.subscribers.set(summaryTableRefreshSubscriberIdRef.current, {
+			refreshSummaryTables,
+			createNotice,
+			setIsRefreshingAllTables,
+		});
+		ensureSummaryTableRefreshListeners();
+
+		void runSummaryTableRefresh({
+			refreshSummaryTables,
+			createNotice,
+			showErrorNotice: true,
+		}).catch(() => {});
+
+		return () => {
+			summaryTableRefreshCoordinator.subscribers.delete(
+				summaryTableRefreshSubscriberIdRef.current
+			);
+			setIsRefreshingAllTables(false);
+			maybeRemoveSummaryTableRefreshListeners();
+		};
+	}, [tableCreationMethod, refreshSummaryTables, createNotice]);
+
+	/**
 	 * Retrieve table entity from table webservice and load table store.
 	 *
 	 * @since 1.0.0
@@ -971,6 +1266,72 @@ export default function Edit(props) {
 		if (!tableHasFinishedResolving) return;
 		setTableStale(false);
 	}, [tableHasFinishedResolving]);
+
+	/**
+	 * Attach existing table to block when table is ready for attachment.
+	 *
+	 * @since 1.3.2
+	 */
+	useEffect(() => {
+		if (tableRequest.action !== 'attach') return;
+		if (!tableRequest.tableId) return;
+		if (!tableRequest.blockTableRef) return;
+		if (requestedTableIsResolving || !requestedTableHasFinishedResolving) return;
+
+		const attachedTableId = Number(tableRequest.tableId);
+
+		updateSummaryTable({
+			table_id: attachedTableId,
+			block_table_ref: tableRequest.blockTableRef,
+			table_status: 'new',
+			post_id: String(postId),
+		});
+
+		receiveTable(
+			attachedTableId,
+			tableRequest.blockTableRef,
+			'new',
+			String(postId),
+			requestedTable.table_name,
+			requestedTable.attributes,
+			requestedTable.classes,
+			requestedTable.rows,
+			requestedTable.columns,
+			requestedTable.cells
+		);
+
+		updateTableEntity(attachedTableId);
+
+		props.setAttributes({
+			original_post_type: postType,
+			original_post_id: Number(postId),
+			block_table_ref: tableRequest.blockTableRef,
+			table_id: Number(requestedTable.table_id),
+		});
+		setTableRequest({
+			tableId: 0,
+			action: null,
+			blockTableRef: '',
+		});
+	}, [
+		tableRequest.action,
+		tableRequest.blockTableRef,
+		tableRequest.tableId,
+		requestedTable?.table_id,
+		requestedTable?.table_name,
+		requestedTable?.attributes,
+		requestedTable?.classes,
+		requestedTable?.rows,
+		requestedTable?.columns,
+		requestedTable?.cells,
+		requestedTableHasFinishedResolving,
+		requestedTableIsResolving,
+		postId,
+		postType,
+		receiveTable,
+		updateTableEntity,
+	]);
+
 
 	/**
 	 * Set table attributes and attach table to block when table is created or
@@ -1024,41 +1385,43 @@ export default function Edit(props) {
 	useEffect(() => {
 		if (!didJustFinishPostSave) return;
 		const finalizePostSaveTableChanges = async () => {
-			/**
-			 * Remove deleted tables from persisted store
-			 */
-			if (Object.keys(deletedTables).length > 0) {
-				await processDeletedTables(deletedTables);
-			}
 
-			const shouldPersistTableChanges =
-				tableLoaded &&
-				Number(table.table_id) > 0 &&
-				(table.table_status == 'new' || tableHasPendingEntityEdits);
-
-			if (shouldPersistTableChanges) {
+			try {
 				/**
-				 * Tables are persisted when they are created, but should only remain
-				 * if the underlying post is saved. Here we update the status of new
-				 * tables from "new" to "saved" once the post is saved.
+				 * Remove deleted tables from persisted store
 				 */
-				if (table.table_status == 'new') {
-					setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
+				if (Object.keys(deletedTables).length > 0) {
+					await processDeletedTables(deletedTables);
 				}
 
-				await saveTableEntity(table.table_id);
+				const shouldPersistTableChanges =
+					tableLoaded &&
+					Number(table.table_id) > 0 &&
+					(table.table_status == 'new' || tableHasPendingEntityEdits);
+
+				if (shouldPersistTableChanges) {
+					/**
+					 * Tables are persisted when they are created, but should only remain
+					 * if the underlying post is saved. Here we update the status of new
+					 * tables from "new" to "saved" once the post is saved.
+					 */
+					if (table.table_status == 'new') {
+						setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
+					}
+
+					await saveTableEntity(table.table_id);
+				}
+			} finally {
+				await runSummaryTableRefresh({
+					refreshSummaryTables,
+					createNotice,
+					showErrorNotice: true,
+				});
 			}
 		};
 
 		void finalizePostSaveTableChanges().catch(error => {
 			console.error('Error processing Dynamic Tables after post save', error);
-			// showTablePersistenceNotice(
-			// 	__(
-			// 		'Dynamic Tables could not finish table cleanup after the post was saved.',
-			// 		'dynamic-table-blocks'
-			// 	),
-			// 	'dtbk-post-save-sync-error'
-			// );
 			showMessageNotice(createNotice, 'post-save-sync-error');
 		});
 	}, [
@@ -1068,6 +1431,8 @@ export default function Edit(props) {
 		table.table_id,
 		table.table_status,
 		tableHasPendingEntityEdits,
+		refreshSummaryTables,
+		createNotice,
 	]);
 
 	/**
@@ -1249,13 +1614,6 @@ export default function Edit(props) {
 		setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId));
 		void saveTableEntity(table.table_id).catch(error => {
 			console.error('Error synchronizing Dynamic Table post_id', error);
-			// showTablePersistenceNotice(
-			// 	__(
-			// 		'Dynamic Tables could not synchronize the table post relationship.',
-			// 		'dynamic-table-blocks'
-			// 	),
-			// 	'dtbk-post-id-sync-error'
-			// );
 			showMessageNotice(createNotice, 'post-id-sync-error');
 		});
 	}, [
@@ -1329,28 +1687,23 @@ export default function Edit(props) {
 
 			// Mark table as a pattern block type
 			if (wasInserterPreview || originalPostType === 'wp_block') {
-				updateTableProp(tableId, 'isPattern', true);
-				updateTableEntity(tableId);
+				setTableAttributes(tableId, 'isPattern', '', 'PROP', true);
 				return;
 			}
 
 			// Set table's prior status to the current status before unmounting
-			updateTableProp(tableId, 'prior_status', lastTableStatus);
-			updateTableProp(tableId, 'table_status', 'unknown');
+			setTableAttributes(tableId, 'prior_status', '', 'PROP', lastTableStatus, false);
+			setTableAttributes(tableId, 'table_status', '', 'PROP', 'unknown', false);
 
 			// Set the table's block identifier so that we can reattach it on remount and update
 			// its status to unknown to signify that we won't know what is happening during the
 			// time the block is unmounted
-			updateTableProp(tableId, 'unmounted_block', true);
-			updateTableEntity(tableId, 'unknown');
+			setTableAttributes(tableId, 'unmounted_block', '', 'PROP', true, false);
+ 			updateTableEntity(tableId, 'unknown');
 
 			// Persist the table with its "unknown" status
 			void saveTableEntity(tableId).catch(error => {
 				console.error('Error saving Dynamic Table state during unmount cleanup', error);
-				// showTablePersistenceNotice(
-				// 	__('Dynamic Tables could not save table cleanup state.', 'dynamic-table-blocks'),
-				// 	'dtbk-unmount-save-error'
-				// );
 				showMessageNotice(createNotice, 'unmount-save-error');
 			});
 		};
@@ -1656,9 +2009,6 @@ export default function Edit(props) {
 					updateColumn(tableId, id, attribute, value);
 				} else {
 					updateTableProp(tableId, attribute, value);
-					if (attribute === 'prior_status') {
-						updateTableEntity(tableId, 'unknown');
-					}
 				}
 				break;
 			}
@@ -1768,15 +2118,88 @@ export default function Edit(props) {
 	}
 
 	/**
+	 * Attach existing table to new block.
+	 *
+	 * @since 1.3.2
+	 */
+	function attachLoadedTable() {
+		if (!tableRequest.tableId || requestedTableIsResolving) {
+			return;
+		}
+
+		const nextBlockTableRef = generateBlockTableRef();
+
+		setTableOperation({
+			kind: 'attaching',
+			blockTableRef: nextBlockTableRef,
+			sourceTableId: tableRequest.tableId,
+			error: null,
+		});
+		setTableRequest(prev => ({
+			...prev,
+			action: 'attach',
+			blockTableRef: nextBlockTableRef,
+		}));
+	}
+
+	/**
 	 * Process event to create new table.
 	 *
 	 * @since 1.0.0
+	 * @since 1.3.2  Expanded support for multiple table creation methods
 	 *
 	 * @param {Object} event Table Creation Event
 	 */
 	function onCreateTable(event) {
 		event.preventDefault();
-		createTable(createDraftTable.numColumns, createDraftTable.numRows, createDraftTable.tableName);
+
+		switch (tableCreationMethod) {
+			case 'choose':
+				break;
+			case 'new':
+				createTable(createDraftTable.numColumns, createDraftTable.numRows, createDraftTable.tableName);
+				break;
+			case 'existing-table':
+				attachLoadedTable();
+				break;
+			default:
+				break;
+		}
+	}
+
+	/**
+	 * Set the chosen table creation method.
+	 *
+	 * @since 3.1.2
+	 *
+	 * @param {Object} event Table creation method event
+	 */
+	function onCreateTableMethod(event) {
+		switch (event) {
+			case 'new':
+				setTableCreationMethod('new');
+				break;
+			case 'existing-table':
+				setTableCreationMethod('existing-table');
+				break;
+			default:
+				break;
+		}
+	}
+
+	/**
+	 * Store selected table for the current table request.
+	 *
+	 * @since 3.1.2
+	 *
+	 * @param {Object} event Table Creation Event
+	 */
+	function onAssignRequestedTableId(event) {
+		setTableRequest({
+			tableId: Number(event),
+			action: null,
+			blockTableRef: '',
+		});
 	}
 
 	/**
@@ -2106,14 +2529,12 @@ export default function Edit(props) {
 			case 'ArrowUp':
 				// Insert row above the current row
 				if (isAltShiftOnly && canUseRowInsertDeleteShortcuts) {
-					// console.log('Inserting');
 					insertRow(table_id, row, 'above');
 					break;
 				}
 
 				// Move row above the current row
 				if (isAltOnly && canUseStructureShortcuts) {
-					// console.log('Moving');
 					const firstBodyRowId = navHeaderRow ? Number(navHeaderRow) + 1 : 1;
 					if (row <= firstBodyRowId) break;
 					reorderRows(table_id, row, 'up');
@@ -2122,7 +2543,6 @@ export default function Edit(props) {
 
 				// Navigate to cell above the current cell
 				if (isPrimaryKeyOnly) {
-					// console.log('Navigating');
 					row = Math.max(1, row - 1);
 					break;
 				}
@@ -2130,14 +2550,12 @@ export default function Edit(props) {
 			case 'ArrowDown':
 				// Insert row below the current row
 				if (isAltShiftOnly && canUseRowInsertDeleteShortcuts) {
-					// console.log('Inserting');
 					insertRow(table_id, row, 'below');
 					break;
 				}
 
 				// Move row below the current row
 				if (isAltOnly && canUseStructureShortcuts) {
-					// console.log('Moving');
 					if (isHeaderRow || row === navMaxRow) break;
 					reorderRows(table_id, row, 'down');
 					break;
@@ -2145,7 +2563,6 @@ export default function Edit(props) {
 
 				// Navigate to cell below the current cell
 				if (isPrimaryKeyOnly) {
-					// console.log('Navigating');
 					row = Math.min(navMaxRow, row + 1);
 					break;
 				}
@@ -2153,14 +2570,12 @@ export default function Edit(props) {
 			case 'ArrowLeft':
 				// Insert column left of the current column
 				if (isAltShiftOnly && canUseStructureShortcuts) {
-					// console.log('Inserting');
 					insertColumn(table_id, col, 'left');
 					break;
 				}
 
 				// Move column left of the current column
 				if (isAltOnly && canUseStructureShortcuts) {
-					// console.log('Moving');
 					if (col === 1) break;
 					reorderColumns(table_id, col, 'left');
 					break;
@@ -2168,7 +2583,6 @@ export default function Edit(props) {
 
 				// Navigate to cell left of the current cell
 				if (isPrimaryKeyOnly) {
-					// console.log('Navigating');
 					col = Math.max(1, col - 1);
 					break;
 				}
@@ -2176,14 +2590,12 @@ export default function Edit(props) {
 			case 'ArrowRight':
 				// Insert column right of the current column
 				if (isAltShiftOnly && canUseStructureShortcuts) {
-					// console.log('Inserting');
 					insertColumn(table_id, col, 'right');
 					break;
 				}
 
 				// Move column right of the current column
 				if (isAltOnly && canUseStructureShortcuts) {
-					// console.log('Moving');
 					if (col === navMaxCol) break;
 					reorderColumns(table_id, col, 'right');
 					break;
@@ -2191,7 +2603,6 @@ export default function Edit(props) {
 
 				// Navigate to cell right of the current cell
 				if (isPrimaryKeyOnly) {
-					// console.log('Navigating');
 					col = Math.min(navMaxCol, col + 1);
 					break;
 				}
@@ -2221,21 +2632,18 @@ export default function Edit(props) {
 			case 'Delete':
 			case 'Backspace':
 				if (isPrimaryKeyOnly) {
-					// console.log('Delete Key Hit');
 					processCellDelete(col, row);
 					return;
 				}
 
 				// Delete the current column
 				if (event.key === 'Delete' && isAltShiftOnly && canUseStructureShortcuts) {
-					// console.log('Deleting Column');
 					deleteColumn(table_id, col);
 					break;
 				}
 
 				// Delete the current row
 				if (event.key === 'Delete' && isAltOnly && canUseRowInsertDeleteShortcuts) {
-					// console.log('Deleting Row');
 					deleteRow(table_id, row);
 					break;
 				}
@@ -2728,7 +3136,6 @@ export default function Edit(props) {
 			processCellDelete(columnId, rowId);
 			resetCellClipboard();
 		}
-		// announceEditorMessage(__('Cell pasted.', 'dynamic-table-blocks'));
 		speakMessage('cell-pasted');
 	}
 
@@ -2771,7 +3178,6 @@ export default function Edit(props) {
 				'text/html': new window.Blob([clipboardFormattedText], { type: 'text/html' }),
 				'text/plain': new window.Blob([plainText], { type: 'text/plain' }),
 			});
-			console.log('CliboardItem', formattedText, plainText);
 			navigator.clipboard.write([clipboardItem]).catch(() => {
 				copyPlainTextToSystemClipboard(plainText);
 			});
@@ -2846,7 +3252,6 @@ export default function Edit(props) {
 	 * @param {Object} e         Mouse Click Event
 	 */
 	function onMouseMenuClick(column_id, row_id, table, e) {
-		// console.log('Handling Menu Click');
 		e?.preventDefault?.();
 		e?.stopPropagation?.();
 
@@ -3276,6 +3681,14 @@ export default function Edit(props) {
 	const editorGridAccessibleName = editorGridTitleText || __('Dynamic table');
 	const editorGridLabelledBy = !hideTitle && editorGridTitleText ? editorTitleTagId : undefined;
 	const editorGridHelpText = getMessageText('editor-grid-help');
+
+	// Create table settings
+	const createTableDisabled =
+		tableCreationMethod === 'choose' ||
+		isAwaitingTableAttachment ||
+		(tableCreationMethod === 'existing-table' &&
+			(!tableRequest.tableId || requestedTableIsResolving));
+
 
 	/**
 	 * Render clickable row menu
@@ -4139,50 +4552,130 @@ export default function Edit(props) {
 			)}
 
 			{/* Show a spinner while the table is being fetcheds */}
-			{!isNewBlock && tableIsResolving && <Spinner>Retrieving Table Data</Spinner>}
+			{!isNewBlock && tableIsResolving && (
+				<span
+					className={'dtbk-spinner-message'}
+				>
+					{__('Loading Dynamic Table...', 'dynamic-table-blocks')}
+					<Spinner />
+				</span>
+			)}
 
 			{/* Show the form to identify and create a new table */}
 			{isNewBlock && (
 				<Placeholder
-					label={__('Dynamic Table', 'dynamic-table')}
+					label={__('Dynamic Table', 'dynamic-table-blocks')}
 					icon={<BlockIcon icon={icon} showColors />}
-					instructions={__('Create a new dynamic table.', 'dynamic-table')}
+					instructions={__('Create a new dynamic table.', 'dynamic-table-blocks')}
 				>
+
 					<form className="blocks-table__placeholder-form" onSubmit={onCreateTable}>
-						<InputControl
-							label={__('Table Name', 'dynamic-table')}
-							placeholder="New Table"
-							required="true"
-							onChange={value =>
-								setCreateDraftTable(prev => ({
-									...prev,
-									tableName: value,
-								}))
-							}
-							value={createDraftTable.tableName}
-							className="blocks-table__placeholder-input"
-						/>
+						{tableCreationMethod === 'choose' && (
+							<SelectControl
+								label={__('Table creation method:', 'dynamic-table-blocks')}
+								onChange={onCreateTableMethod}
+								options={[
+									{ value: 'choose', label: 'Choose...' },
+									{ value: 'new', label: 'New' },
+									{ value: 'existing-table', label: 'Existing Table' },
+								]}
+								__nextHasNoMarginBottom
+							/>
+						)}
 
-						<NumberControl
-							__nextHasNoMarginBottom
-							label={__('Table Columns', 'dynamic-table')}
-							min={1}
-							required="true"
-							value={createDraftTable.numColumns}
-							onChange={e => onChangeInitialColumnCount(e)}
-							className="blocks-table__placeholder-input"
-						/>
+						{tableCreationMethod !== 'choose' && (
+							<>
+								<p>
+									Table creation method: {tableCreationMethod}
+								</p>
+								<hr
+									style={
+										{
+											alignSelf: 'stretch',
+											width: '100%',
+											margin: '8px 0 12px',
+											border: 0,
+											borderTop: '1px solid #dcdcde',
+										}
+									}
+								/>
+							</>
+						)}
 
-						<NumberControl
-							__nextHasNoMarginBottom
-							label={__('Table Rows', 'dynamic-table')}
-							required="true"
-							min={1}
-							value={createDraftTable.numRows}
-							onChange={e => onChangeInitialRowCount(e)}
-							className="blocks-table__placeholder-input"
-						/>
-						<Button className="blocks-table__placeholder-button" variant="primary" type="submit">
+						{tableCreationMethod === 'existing-table' &&
+							activeExistingTableOptions === null &&
+							(allTablesIsResolving || isRefreshingAllTables) && (
+							<span
+								className={'dtbk-spinner-message'}
+							>
+								{__('Retrieving table list...', 'dynamic-table-blocks')}
+								<Spinner />
+							</span>
+						)}
+
+						{tableCreationMethod === 'existing-table' &&
+							activeExistingTableOptions !== null && (
+							<>
+								<SelectControl
+									label={__('Select table:', 'dynamic-table-blocks')}
+									onChange={onAssignRequestedTableId}
+									value={tableRequest.tableId || ''}
+									options={activeExistingTableOptions}
+									__nextHasNoMarginBottom
+								/>
+								{tableRequest.action !== null && requestedTableIsResolving && (
+									<span className={'dtbk-spinner-message'}>
+										{__('Retrieving selected table...', 'dynamic-table-blocks')}
+										<Spinner />
+									</span>
+								)}
+							</>
+						)}
+
+						{tableCreationMethod === 'new' && (
+							<>
+								<InputControl
+									label={__('Table Name', 'dynamic-table-blocks')}
+									placeholder="New Table"
+									required="true"
+									onChange={value =>
+										setCreateDraftTable(prev => ({
+											...prev,
+											tableName: value,
+										}))
+									}
+									value={createDraftTable.tableName}
+									className="blocks-table__placeholder-input"
+								/>
+
+								<NumberControl
+									__nextHasNoMarginBottom
+									label={__('Table Columns', 'dynamic-table-blocks')}
+									min={1}
+									required="true"
+									value={createDraftTable.numColumns}
+									onChange={e => onChangeInitialColumnCount(e)}
+									className="blocks-table__placeholder-input"
+								/>
+
+								<NumberControl
+									__nextHasNoMarginBottom
+									label={__('Table Rows', 'dynamic-table-blocks')}
+									required="true"
+									min={1}
+									value={createDraftTable.numRows}
+									onChange={e => onChangeInitialRowCount(e)}
+									className="blocks-table__placeholder-input"
+								/>
+							</>
+						)}
+
+						<Button
+							className="blocks-table__placeholder-button"
+							disabled={createTableDisabled}
+							variant="primary"
+							type="submit"
+						>
 							{__('Create Table')}
 						</Button>
 					</form>

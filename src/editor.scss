@@ -8,6 +8,19 @@
 	border: 0px dotted #f00;
 }
 
+.dtbk-spinner-message {
+    font-size: 11px;
+    font-weight: 499;
+    line-height: 1.4;
+    text-transform: uppercase;
+	padding-top: 0px;
+    padding-bottom: 0px;
+    max-width: 100%;
+	display: 'inline-flex';
+	align-items: 'center';
+	gap: '8px';
+}
+
 .border-box-workaround {
 	width: 100%;
 }

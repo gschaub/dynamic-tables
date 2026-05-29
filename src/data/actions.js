@@ -296,14 +296,20 @@ export const updateTableEntity =
 			cells,
 		} = select.getTable(tableId, false);
 
+		const safeRows = Array.isArray(rows) ? rows : [];
+		const safeColumns = Array.isArray(columns) ? columns : [];
+		const safeCells = Array.isArray(cells) ? cells : [];
+
 		// Remove border row if it exists
-		const filteredRows = rows.filter(row => row.row_id !== '0');
+		const filteredRows = safeRows.filter(row => row.row_id !== '0');
 
 		// Remove border column if it exists
-		const filteredColumns = columns.filter(column => column.column_id !== '0');
+		const filteredColumns = safeColumns.filter(column => column.column_id !== '0');
 
 		// Remove border cells if they exists
-		const filteredCells = cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
+		const filteredCells = safeCells.filter(
+			cell => cell.row_id !== '0' && cell.column_id !== '0'
+		);
 
 		// Remove cell_id from cells.  They don't go back to the webservice
 		const transformedCells = filteredCells.map(

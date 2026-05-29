@@ -222,6 +222,10 @@ const MESSAGE_LIBRARY = {
 		__('Dynamic Tables could not synchronize the table post relationship.', 'dynamic-table-blocks')
 	),
 
+	'summary-refresh-error': buildErrorMessage('dtbk-summary-refresh-error', () =>
+		__('Dynamic Tables could not refresh the available table list.', 'dynamic-table-blocks')
+	),
+
 	'unmount-save-error': buildErrorMessage('dtbk-unmount-save-error', () =>
 		__('Dynamic Tables could not save table cleanup state.', 'dynamic-table-blocks')
 	),

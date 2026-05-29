@@ -1,6 +1,12 @@
+/**
+ * External dependencies
+ */
+import { combineReducers } from '@wordpress/data';
+
 /* Internal dependencies */
 import TYPES from './action-types';
 import { numberToLetter, updateArray, tableSort } from '../utils';
+import { reducer as allTables } from './all-tables';
 
 const {
 	CREATE_TABLE,
@@ -25,6 +31,7 @@ const {
  * Dynamic Table reducer helper for a single table.
  *
  * @since    1.0.0
+ * @since    1.3.2   Implement combined reducer to support multiple state slices.
  *
  * @param {Object} state  Current table
  * @param {Object} action Action activity to be performed
@@ -595,20 +602,15 @@ const table = (
  * @param {Object} action Dispatched option
  * @return  {Object} Updated state
  */
-const reducer = (
-	state = {
-		tables: {},
-	},
-	action
-) => {
+const reducer = (state = {}, action) => {
 	const tableKey = action.tableId;
-	const newTableState = table(state.tables[tableKey], action);
+	const newTableState = table(state[tableKey], action);
 
 	if (JSON.stringify(newTableState.table) === '{}') {
 		return state;
 	}
 
-	const newTablesState = { ...state.tables };
+	const newTablesState = { ...state };
 
 	switch (action.type) {
 		case CHANGE_TABLE_ID:
@@ -616,37 +618,33 @@ const reducer = (
 				[action.newTableId]: newTableState.table,
 			};
 
-			const filteredTablesState = Object.keys(state.tables).reduce((acc, key) => {
-				if (state.tables[key].table_id !== action.tableId) {
-					acc[key] = { ...state.tables[key] };
+			const filteredTablesState = Object.keys(state).reduce((acc, key) => {
+				if (state[key].table_id !== action.tableId) {
+					acc[key] = { ...state[key] };
 				}
 				return acc;
 			}, {});
 
 			return {
-				tables: {
-					...filteredTablesState,
-					...returnedTableNewId,
-				},
+				...filteredTablesState,
+				...returnedTableNewId,
 			};
 
 		case DELETE_TABLE:
-			const deleteTablesState = Object.keys(state.tables).reduce((acc, key) => {
+			const deleteTablesState = Object.keys(state).reduce((acc, key) => {
 				if (key !== String(action.tableId)) {
 					acc[key] = {
-						...state.tables[key],
-						rows: [...state.tables[key].rows],
-						columns: [...state.tables[key].columns],
-						cells: [...state.tables[key].cells],
+						...state[key],
+						rows: [...state[key].rows],
+						columns: [...state[key].columns],
+						cells: [...state[key].cells],
 					};
 				}
 				return acc;
 			}, {});
 
 			return {
-				tables: {
-					...deleteTablesState,
-				},
+				...deleteTablesState,
 			};
 
 		default:
@@ -655,12 +653,15 @@ const reducer = (
 			};
 
 			return {
-				tables: {
-					...newTablesState,
-					...returnedTableDefault,
-				},
+				...newTablesState,
+				...returnedTableDefault,
 			};
 	}
 };
 
-export default reducer;
+export { reducer };
+
+export default combineReducers({
+	tables: reducer,
+	allTables,
+});
