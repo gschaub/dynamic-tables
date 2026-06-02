@@ -63,12 +63,122 @@
 	text-align: center;
 }
 
-/** Styles for Export dialog **/
+/** Styles for Import/Export dialog **/
+.dtbk-import-dialog-body,
 .dtbk-export-dialog-body {
 	margin-top: 6px;
 }
 
+/** Styles for Import wizard **/
+.dtbk-import-upload__intro,
+.dtbk-import-upload__target {
+	margin: 0 0 12px;
+}
+
+.dtbk-import-dropzone {
+	display: grid;
+	gap: 8px;
+	justify-items: center;
+	padding: 24px 18px;
+	border: 2px dashed #c3c4c7;
+	border-radius: 10px;
+	background: #fff;
+	text-align: center;
+	cursor: pointer;
+	transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.dtbk-import-dropzone.is-dragover,
+.dtbk-import-dropzone:focus {
+	border-color: #2271b1;
+	background: #f0f6fc;
+	outline: none;
+}
+
+.dtbk-import-dropzone.is-busy {
+	opacity: 0.65;
+	pointer-events: none;
+}
+
+.dtbk-import-options,
+.dtbk-import-actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	margin-top: 14px;
+	flex-wrap: wrap;
+}
+
+.dtbk-import-option {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.dtbk-import-review {
+	margin-top: 18px;
+}
+
+.dtbk-import-status:empty {
+	display: none;
+}
+
+.dtbk-import-status {
+	margin-top: 14px;
+}
+
+.dtbk-import-restore-options {
+	display: grid;
+	gap: 8px;
+	margin: 16px 0;
+}
+
+.dtbk-import-header-editor {
+	margin: 16px 0;
+}
+
+.dtbk-import-header-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+	margin-top: 10px;
+}
+
+.dtbk-import-header-field {
+	display: grid;
+	gap: 6px;
+}
+
+.dtbk-import-header-field span {
+	font-weight: 600;
+}
+
+.dtbk-import-summary-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+	margin-bottom: 14px;
+}
+
+.dtbk-import-summary-grid strong {
+	display: block;
+	margin-bottom: 4px;
+}
+
+.dtbk-import-preview-table th,
+.dtbk-import-preview-table td {
+	vertical-align: top;
+	word-break: break-word;
+}
+
+.dtbk-import-preview-table tr.is-header td,
+.dtbk-import-preview-table tr.is-header th {
+	font-weight: 600;
+}
+
 /* Grid layout */
+.dtbk-import-tile-grid,
 .dtbk-export-tile-grid {
 	display: grid;
 	grid-template-columns: repeat(3, minmax(96px, 1fr));
@@ -77,6 +187,7 @@
 }
 
 /* Tile button */
+.dtbk-import-tile,
 .dtbk-export-tile {
 	position: relative;
 	display: flex;
@@ -94,11 +205,13 @@
 	transition: background-color 120ms ease;
 }
 
+.dtbk-import-tile[aria-disabled="true"],
 .dtbk-export-tile[aria-disabled="true"] {
 	cursor: default;
 }
 
 /* Icon */
+.dtbk-import-tile__icon,
 .dtbk-export-tile__icon {
 	width: 60px;
 	height: 60px;
@@ -106,10 +219,12 @@
 }
 
 /* Hover/focus */
+.dtbk-import-tile:hover,
 .dtbk-export-tile:hover {
 	background: #f6f7f7;
 }
 
+.dtbk-import-tile:focus,
 .dtbk-export-tile:focus {
 	outline: none;
 	box-shadow: 0 0 0 2px #2271b1;
@@ -117,11 +232,14 @@
 }
 
 /* Active tap feedback */
+.dtbk-import-tile:active,
 .dtbk-export-tile:active {
 	transform: translateY(1px);
 }
 
 /* Locked */
+.dtbk-import-tile.is-locked,
+.dtbk-import-tile[aria-disabled="true"],
 .dtbk-export-tile.is-locked,
 .dtbk-export-tile[aria-disabled="true"] {
 	opacity: 0.55;

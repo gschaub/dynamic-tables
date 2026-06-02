@@ -124,14 +124,16 @@ class DTBK_Admin {
 			'dtbk-table-list',
 			'DTBK_TABLE_LIST',
 			array(
-				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
-				'nonce'        => wp_create_nonce( 'dtbk-table-list' ),
-				'adminPostUrl' => admin_url( 'admin-post.php' ),
-				'exportAction' => 'dtbk_export_download',
-				'exportNonce'  => wp_create_nonce( 'dtbk_export_download' ),
+				'ajaxUrl'             => admin_url( 'admin-ajax.php' ),
+				'nonce'               => wp_create_nonce( 'dtbk-table-list' ),
+				'adminPostUrl'        => admin_url( 'admin-post.php' ),
+				'importAnalyzeAction' => 'dtbk_import_analyze',
+				'importCommitAction'  => 'dtbk_import_commit',
+				'exportAction'        => 'dtbk_export_download',
+				'exportNonce'         => wp_create_nonce( 'dtbk_export_download' ),
 
 				// Icon urls.
-				'icons'        => array(
+				'icons'               => array(
 					'fileTextRegular'  => dtbk_get_setting( 'url' ) . 'assets/icons/document-text-24-regular.svg',
 					'fileTextFilled'   => dtbk_get_setting( 'url' ) . 'assets/icons/document-text-24-filled.svg',
 					'fileTableRegular' => dtbk_get_setting( 'url' ) . 'assets/icons/document-table-24-regular.svg',
@@ -141,17 +143,52 @@ class DTBK_Admin {
 					'fileXLSX'         => dtbk_get_setting( 'url' ) . 'assets/icons/xlsx-fluent-classic.svg',
 				),
 
-				'i18n'         => array(
-					'view'         => __( 'Table Data ', 'dynamic-table-blocks' ),
-					'deleted'      => __( 'Deleted successfully.', 'dynamic-table-blocks' ),
-					'error'        => __( 'Something went wrong.', 'dynamic-table-blocks' ),
-					'confirmTitle' => __( 'Confirm Delete', 'dynamic-table-blocks' ),
-					'confirmBody'  => __( 'Are you sure you want to delete the selected item(s)? This cannot be undone.', 'dynamic-table-blocks' ),
-					'cancel'       => __( 'Cancel', 'dynamic-table-blocks' ),
-					'exportTitle'  => __( 'Export Dynamic Tables', 'dynamic-table-blocks' ),
-					'exportJson'   => __( 'Backup (JSON)', 'dynamic-table-blocks' ),
-					'exportCsv'    => __( 'CSV', 'dynamic-table-blocks' ),
-					'exportXlsx'   => __( 'Excel (XLSX)', 'dynamic-table-blocks' ),
+				'i18n'                => array(
+					'view'                 => __( 'Table Data ', 'dynamic-table-blocks' ),
+					'deleted'              => __( 'Deleted successfully.', 'dynamic-table-blocks' ),
+					'error'                => __( 'Something went wrong.', 'dynamic-table-blocks' ),
+					'unexpectedResponse'   => __( 'The server returned an unexpected response.', 'dynamic-table-blocks' ),
+					'loading'              => __( 'Loading...', 'dynamic-table-blocks' ),
+					'confirmTitle'         => __( 'Confirm Delete', 'dynamic-table-blocks' ),
+					'confirmBody'          => __( 'Are you sure you want to delete the selected item(s)? This cannot be undone.', 'dynamic-table-blocks' ),
+					'cancel'               => __( 'Cancel', 'dynamic-table-blocks' ),
+					'back'                 => __( 'Back', 'dynamic-table-blocks' ),
+					'exportTitle'          => __( 'Export Dynamic Tables', 'dynamic-table-blocks' ),
+					'exportJson'           => __( 'Backup (JSON)', 'dynamic-table-blocks' ),
+					'exportCsv'            => __( 'CSV', 'dynamic-table-blocks' ),
+					'exportXlsx'           => __( 'Excel (XLSX)', 'dynamic-table-blocks' ),
+					'importTitle'          => __( 'Import Dynamic Tables', 'dynamic-table-blocks' ),
+					'importJson'           => __( 'Restore (JSON)', 'dynamic-table-blocks' ),
+					'importCsv'            => __( 'CSV', 'dynamic-table-blocks' ),
+					'importXlsx'           => __( 'Excel (XLSX)', 'dynamic-table-blocks' ),
+					'importIndependentNotice' => __( 'Imported tables are added to the library. JSON restores can replace an existing local table when the imported table ID already exists.', 'dynamic-table-blocks' ),
+					'importRestoreModeTitle'  => __( 'Restore Options', 'dynamic-table-blocks' ),
+					'importReplaceExisting'   => __( 'Replace existing table', 'dynamic-table-blocks' ),
+					'importCreateNew'         => __( 'Create new independent table', 'dynamic-table-blocks' ),
+					'importExistingTableFound'=> __( 'A local table with the imported table ID already exists.', 'dynamic-table-blocks' ),
+					'importNewTableLabel'     => __( 'New table', 'dynamic-table-blocks' ),
+					'importAnalyzePrompt'  => __( 'Upload a file to validate and preview the import.', 'dynamic-table-blocks' ),
+					'importReplaceNotice'  => __( 'The imported data will replace the selected table.', 'dynamic-table-blocks' ),
+					'importDropPrompt'     => __( 'Drop a file here or click to browse.', 'dynamic-table-blocks' ),
+					'importSelectFile'     => __( 'Choose file', 'dynamic-table-blocks' ),
+					'importNoFile'         => __( 'No file selected.', 'dynamic-table-blocks' ),
+					'importAnalyze'        => __( 'Analyze File', 'dynamic-table-blocks' ),
+					'importCommit'         => __( 'Import Table', 'dynamic-table-blocks' ),
+					'importFileMissing'    => __( 'Select a file to import.', 'dynamic-table-blocks' ),
+					'importFirstRowHeader' => __( 'Treat first row as headers', 'dynamic-table-blocks' ),
+					'importCsvFlatNotice' => __( 'CSV imports only structure and cell content. Style and smart typing are not imported.', 'dynamic-table-blocks' ),
+					'importHeaderNamesTitle' => __( 'Column Names', 'dynamic-table-blocks' ),
+					'importHeaderNameMissing' => __( 'Enter a name for every column.', 'dynamic-table-blocks' ),
+					'importSingleTarget'   => __( 'Import currently supports one target table at a time.', 'dynamic-table-blocks' ),
+					'importChooseItem'     => __( 'Backup item', 'dynamic-table-blocks' ),
+					'importPreviewTitle'   => __( 'Preview', 'dynamic-table-blocks' ),
+					'importWarningsTitle'  => __( 'Warnings', 'dynamic-table-blocks' ),
+					'importSourceLabel'    => __( 'Source', 'dynamic-table-blocks' ),
+					'importTargetLabel'    => __( 'Target', 'dynamic-table-blocks' ),
+					'importRowsLabel'      => __( 'Rows', 'dynamic-table-blocks' ),
+					'importColumnsLabel'   => __( 'Columns', 'dynamic-table-blocks' ),
+					'importCellsLabel'     => __( 'Cells', 'dynamic-table-blocks' ),
+					'importSuccess'        => __( 'Table imported successfully.', 'dynamic-table-blocks' ),
 				),
 			)
 		);
@@ -329,7 +366,10 @@ class DTBK_Admin {
 	public function plugin_table_maintenance() {
 		$admin_table_listing = new DTBK_List_Dynamic_Table_Blocks();
 
-		echo '<div class = "wrap"><h2>Dynamic Tables</h2>';
+		echo '<div class="wrap">';
+		echo '<h1 class="wp-heading-inline">' . esc_html__( 'Dynamic Tables', 'dynamic-table-blocks' ) . '</h1>';
+		echo '<a href="#" id="dtbk-import-table-trigger" class="page-title-action">' . esc_html__( 'Import Table', 'dynamic-table-blocks' ) . '</a>';
+		echo '<hr class="wp-header-end">';
 		echo '<form method = "post">';
 
 		$admin_table_listing->prepare_items();
@@ -346,6 +386,16 @@ class DTBK_Admin {
 				<p> ' . esc_html__( 'Are you sure you want to view the selected item ? ', 'dynamic-table-blocks' ) . ' </p>
 			</div>';
 
+		// A hidden dialog div the script will turn into a modal for import confirmation
+		echo '<div id="dtbk-import-dialog" title="' . esc_attr__( 'Import Dynamic Tables', 'dynamic-table-blocks' ) . '" style="display:none;">
+			<p>' . esc_html__( 'Select import format:', 'dynamic-table-blocks' ) . '</p>
+			<div class="dtbk-import-buttons">
+				<button type="button" class="button button-primary" data-format="json">' . esc_html__( 'Backup (JSON)', 'dynamic-table-blocks' ) . '</button>
+				<button type="button" class="button" data-format="csv">' . esc_html__( 'CSV', 'dynamic-table-blocks' ) . '</button>
+				<button type="button" class="button" data-format="xlsx">' . esc_html__( 'Excel (XLSX)', 'dynamic-table-blocks' ) . '</button>
+			</div>
+		</div>';
+
 		// A hidden dialog div the script will turn into a modal for export confirmation
 		echo '<div id="dtbk-export-dialog" title="' . esc_attr__( 'Export Dynamic Tables', 'dynamic-table-blocks' ) . '" style="display:none;">
 			<p>' . esc_html__( 'Select export format:', 'dynamic-table-blocks' ) . '</p>
@@ -355,6 +405,7 @@ class DTBK_Admin {
 				<button type="button" class="button" data-format="xlsx">' . esc_html__( 'Excel (XLSX)', 'dynamic-table-blocks' ) . '</button>
 			</div>
 		</div>';
+
 		// (WP notice styles)
 		echo '<div id="dt-js-notices" aria-live="polite"> </div>';
 	}

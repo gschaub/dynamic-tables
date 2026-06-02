@@ -219,6 +219,7 @@ class DTBK_Maintenance {
 	 *           no longer have any associated blocks are optionally deleted or marked as orphan.
 	 *
 	 * @since 1.1.0
+	 * @since 1.3.2 - Handle the new status of 'loaded'
 	 *
 	 * @return void
 	 */
@@ -261,6 +262,14 @@ class DTBK_Maintenance {
 				$matching_post_history = $this->perform_indexed_and_search( $post_blocks, $post_history_blocks_index, $post_search_criteria );
 				if ( $matching_post_history ) {
 					$this->process_table_post_matches( $matching_post_history, $table );
+				} elseif (
+					isset( $table['status'], $table['post_id'] ) &&
+					'loaded' === $table['status'] &&
+					0 === (int) $table['post_id']
+				) {
+					// Loaded tables with post_id = 0 are valid unattached library tables.
+					// They should remain available for future attachment, not be marked orphaned.
+					continue;
 				} elseif ( $table['status'] !== 'orphan' ) {
 					// Tables without a matching post are marked as orphaned or optionally deleted
 					$full_table = $this->get_table( (int) $table_id );

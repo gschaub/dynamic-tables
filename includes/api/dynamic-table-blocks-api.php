@@ -187,36 +187,82 @@ function create_table_data( $tablearr, $wp_error = false ) {
 	}
 
 	// Create table rows
-	$table_id = $table_id;
+	// error_log( 'Table rows to Load: ' . print_r( $tablearr['rows'], true ) );
+
+	// $table_id = $table_id;
 	if ( isset( $tablearr['rows'] ) ) {
+		// error_log( 'Found rows to update.' );
+
 		$request_rows = $tablearr['rows'];
 		$put_rows     = update_table_rows( $table_id, $request_rows );
-		if ( $put_rows === false ) {
+
+		// error_log( 'Rows Updated = : ' . print_r( $put_rows['updated_rows'], true ) );
+
+		if ( is_wp_error( $put_rows ) || false === $put_rows ) {
+			// error_log( 'Processing row update error:' . print_r( $put_rows, true ) );
+
+			if ( ! $update && $table_id > 0 ) {
+				// Remove the new header/parts already written for this import attempt.
+				delete_table( $table_id, true );
+			}
+
 			if ( $wp_error ) {
+				if ( is_wp_error( $put_rows ) ) {
+					return $put_rows;
+				}
 				return new \WP_Error( 'db_update_error', __( 'Database error creating table rows.', 'dynamic-table-blocks' ) );
 			}
+			return 0;
 		}
 	}
 
 	// Create table columns
+	// error_log( 'Table columns to Load: ' . print_r( $tablearr['columns'], true ) );
+
 	if ( isset( $tablearr['columns'] ) ) {
+		// error_log( 'Found columns to update.' );
 		$request_columns = $tablearr['columns'];
 		$put_columns     = update_table_columns( $table_id, $request_columns );
-		if ( $put_columns === false ) {
+		// error_log( 'Column Updated = : ' . print_r( $put_columns, true ) );
+		if ( is_wp_error( $put_columns ) || false === $put_columns ) {
+			// error_log( 'Processing column update error:' . print_r( $put_columns, true ) );
+			if ( ! $update && $table_id > 0 ) {
+				// Remove the new header/parts already written for this import attempt.
+				delete_table( $table_id, true );
+			}
+
 			if ( $wp_error ) {
+				if ( is_wp_error( $put_columns ) ) {
+					return $put_columns;
+				}
 				return new \WP_Error( 'db_update_error', __( 'Database error creating table columns.', 'dynamic-table-blocks' ) );
 			}
+			return 0;
 		}
 	}
 
 	// Create table cells
+	// error_log( 'Table cells to Load: ' . print_r( $tablearr['cells'], true ) );
+
 	if ( isset( $tablearr['cells'] ) ) {
+		// error_log( 'Found cells to update.' );
 		$request_cells = $tablearr['cells'];
 		$put_cells     = update_table_cells( $table_id, $request_cells );
-		if ( $put_cells === false ) {
+		// error_log( 'Cells Updated = : ' . print_r( $put_cells, true ) );
+		if ( is_wp_error( $put_cells ) || false === $put_cells ) {
+			if ( ! $update && $table_id > 0 ) {
+				// error_log( 'Processing cell update error:' . print_r( $put_cells, true ) );
+				// Remove the new header/parts already written for this import attempt.
+				delete_table( $table_id, true );
+			}
+
 			if ( $wp_error ) {
+				if ( is_wp_error( $put_cells ) ) {
+					return $put_cells;
+				}
 				return new \WP_Error( 'db_update_error', __( 'Database error creating table cells.', 'dynamic-table-blocks' ) );
 			}
+			return 0;
 		}
 	}
 
@@ -249,6 +295,14 @@ function update_table_data( $tablearr, $wp_error = false ) {
 	}
 	$tablearr = array_merge( $table, $tablearr );
 
+	if (
+		isset( $table['header'], $tablearr['header'] ) &&
+		is_array( $table['header'] ) &&
+		is_array( $tablearr['header'] )
+	) {
+		$tablearr['header'] = array_merge( $table['header'], $tablearr['header'] );
+	}
+
 	return create_table_data( $tablearr, $wp_error );
 }
 
@@ -262,6 +316,8 @@ function update_table_data( $tablearr, $wp_error = false ) {
  * @return array|WP_Error Updated row values for new or updated table, WP_Error object on failure.
  */
 function update_table_rows( $table_id, $request_rows ) {
+	// error_log( 'Updating table rows for table id ' . $table_id );
+
 	$results = null;
 	$rows    = array();
 
@@ -275,6 +331,7 @@ function update_table_rows( $table_id, $request_rows ) {
 
 	$update_table_rows = new PersistTableData();
 	$results           = $update_table_rows->update_table_rows( $table_id, $rows );
+	// error_log( '  Results for table id ' . $table_id . ': ' . print_r( $results, true ) );
 
 	if ( ! $results['success'] ) {
 		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
@@ -375,8 +432,8 @@ function delete_table( $table_id = 0, $force = false ) {
  * @since 1.1.0 Added simple check for existance of header row
  *
  * @param int  $table_id               Table id.
- * @param bool $validate_header_only   Ensure header record exists
- * @return array|bool|WP_Error         Table data retrieved or simply that the header record exists
+ * @param bool $validate_header_only   Ensure header record exists.
+ * @return array|bool|\WP_Error        Table data retrieved or simply that the header record exists.
  */
 function get_table( $table_id, $validate_header_only = false ) {
 	$results = array();
@@ -408,7 +465,16 @@ function get_table( $table_id, $validate_header_only = false ) {
 		);
 	}
 
+	// if ( $validate_header_only ) {
+	// if ( $results_header['success'] ) {
+	// return true;
+	// } else {
+	// return false;
+	// }
+	// }
+
 	if ( $validate_header_only ) {
+		// return $results;
 		if ( $results_header['success'] ) {
 			return true;
 		} else {
@@ -459,6 +525,33 @@ function get_table( $table_id, $validate_header_only = false ) {
 }
 
 /**
+ * Extract and returns only the table header data.
+ *
+ * @since 1.3.2
+ *
+ * @param int $table_id Table id.
+ * @return array|\WP_Error Table header data retrieved.
+ */
+function get_table_header( $table_id ) {
+	$results        = array( 'id' => $table_id );
+	$table          = 'dtbk_tables';
+	$get_table      = new PersistTableData();
+	$results_header = $get_table->get_table( $table_id, $table );
+
+	if ( ! $results_header['success'] ) {
+		return new \WP_Error(
+			'db_read_error',
+			__( 'Database error retrieving table header.', 'dynamic-table-blocks' ),
+			array( 'status' => 404 )
+		);
+	}
+
+	$results += array( 'header' => $results_header['result'] );
+
+	return $results;
+}
+
+/**
  *  Extract and returns the table object based on a reference id
  *
  * @since 1.1.0
@@ -501,7 +594,7 @@ function get_tables( $enrich_results = false, $query_args = array() ) {
 		);
 	}
 
-	error_log( 'Table results header = ' . json_encode( $result_headers['result'] ) );
+	// error_log( 'Table results header = ' . json_encode( $result_headers['result'] ) );
 
 	if ( ! $enrich_results ) {
 		return $result_headers['result'];
@@ -577,7 +670,7 @@ function get_tables( $enrich_results = false, $query_args = array() ) {
 		$results[] = $result;
 	}
 
-	error_log( 'Full table results = ' . json_encode( $results ) );
+	// error_log( 'Full table results = ' . json_encode( $results ) );
 	return $results;
 }
 

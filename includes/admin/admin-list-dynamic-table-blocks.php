@@ -302,16 +302,12 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 	protected function column_name( $item ) {
 		$export_nonce = wp_create_nonce( 'dtbk_export_download' );
 		$actions      = array(
-			// 'update_status' => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Update Status', 'dynamic-table-blocks') . '</a>',
-			// $_REQUEST['page'],
-			// 'update_status',
-			// $item['id']),
 
 			'export' => sprintf(
 				'<a href="#" data-dtbk-action="export" data-id="%d" data-nonce="%s">%s</a>',
 				(int) $item['id'],
 				esc_attr( $export_nonce ),
-				esc_html__( 'Export…', 'dynamic-table-blocks' )
+				esc_html__( 'Export...', 'dynamic-table-blocks' )
 			),
 
 			'view'   => sprintf(
