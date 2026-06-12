@@ -107,7 +107,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return void | \WP_Error True if the request has read access, WP_Error object otherwise.
 	 */
 	public function get_items_permissions_check( $request ) {
-		error_log( 'get_items_permissions_check called' );
 		return true;
 		_doing_it_wrong(
 			'get_tables',
@@ -128,7 +127,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_items( $request ) {
-		error_log( 'get_items called' );
 
 		$error_retrieval = new \WP_Error(
 			'rest_tables_retrieval',
@@ -164,7 +162,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		 * set the parameter's value on the query $args.
 		 */
 		foreach ( $parameter_mappings as $api_param => $dtbk_param ) {
-			error_log( 'Request Param = ' . $api_param . ' - Registered = ' . ( isset( $registered[ $api_param ] ) ? 'true' : 'false' ) . ' - In Request = ' . ( isset( $request[ $api_param ] ) ? 'true' : 'false' ) );
 			if ( isset( $registered[ $api_param ], $request[ $api_param ] ) ) {
 				$args[ $dtbk_param ] = $request[ $api_param ];
 			}
@@ -176,8 +173,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		}
 
 		$query_args = $this->prepare_items_query( $args, $request );
-		error_log( 'Query args: ' . json_encode( $query_args ) );
-
 		$query_result = get_tables( true, $query_args );
 
 		if ( is_wp_error( $query_result ) && $query_result->get_error_code() === 500 ) {
@@ -194,7 +189,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		$is_head_request = $request->is_method( 'HEAD' );
 		if ( $is_head_request ) {
-			Error_log( 'HEAD request detected - optimizing query for pagination calculation' );
 			// Force the 'fields' argument. For HEAD requests, only post IDs are required to calculate pagination.
 			$args['fields'] = 'ids';
 			// Disable priming post meta for HEAD requests to improve performance.
@@ -207,41 +201,12 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			// update_table_caches( $query_result );
 
 			foreach ( $query_result as $table ) {
-				// error_log( 'Processing query result: ' . json_encode( $table ) );
-				// if ( 'edit' === $request['context'] ) {
-				// $permission = $this->check_update_permission( $post );
-				// } else {
-				// $permission = $this->check_read_permission( $post );
-				// }
-
-				// $permissions === true;
-
-				// if ( ! $permissions ) {
-				// continue;
-				// }
-
 				$data     = $this->prepare_item_for_response( $table, $request );
 				$tables[] = $this->prepare_response_for_collection( $data );
 			}
 		}
 
-		// $page         = (int) ( $query_args['page'] ?? 0 );
-		// $total_tables = $query_result->found_tables;
-		// $max_pages    = (int) ceil( $total_tables / (int) $registered['per_page'] );
-
-		// if ( $page > $max_pages && $total_tables > 0 ) {
-		// return new WP_Error(
-		// 'rest_post_invalid_page_number',
-		// __( 'The page number requested is larger than the number of pages available.' ),
-		// array( 'status' => 400 )
-		// );
-		// }
-
 		$response = $is_head_request ? new WP_REST_Response( array() ) : rest_ensure_response( $tables );
-
-		// $response->header( 'X-WP-Total', (int) $total_tables );
-		// $response->header( 'X-WP-TotalPages', (int) $max_pages );
-
 		return $response;
 	}
 
@@ -353,19 +318,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			return $error_header;
 		}
 
-		// $table = get_table( (int) $id, $validate_header_only );
-		// if ( is_wp_error( $table ) && $table->get_error_code() === 404 ) {
-		// return $error_header;
-		// }
-
-		// if ( is_wp_error( $table ) && $table->get_error_code() === 500 ) {
-		// return $error_body;
-		// }
-
-		// if ( is_wp_error( $table ) ) {
-		// return $error_body;
-		// }
-
 		$table = $validate_header_only
 			? get_table_header( (int) $id )
 			: get_table( (int) $id, false );
@@ -434,8 +386,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return true|\WP_Error True if the request has access to create items, WP_Error object otherwise.
 	 */
 	public function create_item_permissions_check( $request ) {
-		error_log( 'In create_item_permissions_check' );
-
 		if ( (int) 0 !== (int) $request['id'] ) {
 			return new \WP_Error(
 				'rest_table_exists',
@@ -452,7 +402,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		// Permissions for creating a table are based upon the underlying post to which
 		// it is attached.
-		error_log( 'Request object: ' . json_encode( $request ) );
 		if ( isset( $request['header']['post_id'] ) ) {
 			$post_id = (int) $request['header']['post_id'];
 
@@ -495,48 +444,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				array( 'status' => 500 )
 			);
 		}
-		// if ( isset( $request['header']['post_id'] ) ) {
-		// $post_id = (int) $request['header']['post_id'];
-
-		// if ( $post_id !== 0 ) {
-		// $post = $this->get_post( $post_id );
-		// if ( is_wp_error( $post ) ) {
-		// return $post;
-		// }
-
-		// $post_type = get_post_type_object( $post->post_type );
-
-		// if ( $post && ! $this->check_update_permission( $post ) ) {
-		// return new \WP_Error(
-		// 'rest_cannot_edit',
-		// __( 'Sorry, you are not allowed to create tables for this post as this user.', 'dynamic-table-blocks' ),
-		// array( 'status' => rest_authorization_required_code() )
-		// );
-		// }
-
-		// if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
-		// return new \WP_Error(
-		// 'rest_cannot_edit_others',
-		// __( 'Sorry, you are not allowed to create tables for this post as this user.', 'dynamic-table-blocks' ),
-		// array( 'status' => rest_authorization_required_code() )
-		// );
-		// }
-		// }
-
-		// if ( $post_id === 0 && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
-		// return new \WP_Error(
-		// 'rest_cannot_edit',
-		// __( 'Sorry, you are not allowed to create tables for this post as this user.', 'dynamic-table-blocks' ),
-		// array( 'status' => rest_authorization_required_code() )
-		// );
-		// }
-		// } else {
-		// return new \WP_Error(
-		// 'missing_post_id',
-		// __( 'Post ID is missing from request.', 'dynamic-table-blocks' ),
-		// array( 'status' => 500 )
-		// );
-		// }
 		return true;
 	}
 
@@ -605,41 +512,25 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	public function update_item_permissions_check( $request ) {
 		// Permissions for editing a table are based upon the underlying post to which
 		// it is attached.
-		error_log( 'In update_item_permissions_check, table id = ' . $request['id'] );
+
 		// Determine if this is from internal maintenance, verify signature, and authorize if verified
 		if ( $this->verify_internal_signature( $request ) ) {
 			$this->maintenance_request = true;
 			return true;
 		}
 
-		// $existing_table = $this->get_table( $request['id'], true );
-		// error_log( '   ...table id = ' . $request['id'], 'post_id = ' . $request['header']['post_id'] );
 		$existing_table  = $this->get_table( $request['id'], true );
 		$request_post_id = isset( $request['header']['post_id'] )
 			? (int) $request['header']['post_id']
 			: null;
-		error_log(
-			'   ...table id = ' . $request['id'] .
-			', request_post_id = ' . ( null === $request_post_id ? 'null' : (string) $request_post_id )
-		);
-		// $request_post_id = isset( $request['header']['post_id'] )
-		// ? (int) $request['header']['post_id']
-		// : null;
-		// error_log(
-		// '   ...table id = ' . $request['id'] .
-		// ', request_post_id = ' . ( null === $request_post_id ? 'null' : (string) $request_post_id )
-		// );
+
 		if ( is_wp_error( $existing_table ) ) {
-			error_log( '    ...Error getting table, table id = ' . $request['id'] );
 			return $existing_table;
 		}
 
 		$existing_post_id = isset( $existing_table['header']['post_id'] )
 			? (int) $existing_table['header']['post_id']
 			: null;
-		// $request_post_id  = isset( $request['header']['post_id'] )
-		// ? (int) $request['header']['post_id']
-		// : null;
 
 		$post_id = null !== $request_post_id ? $request_post_id : $existing_post_id;
 
@@ -647,13 +538,11 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			if ( $post_id !== 0 ) {
 				$post = $this->get_post( $post_id );
 				if ( is_wp_error( $post ) ) {
-					error_log( '    ...Error getting post, post id = ' . $post_id );
 					return $post;
 				}
 				$post_type = get_post_type_object( $post->post_type );
 
 				if ( $post && ! $this->check_update_permission( $post ) ) {
-					error_log( '    ...Error in post permissions' );
 					return new \WP_Error(
 						'rest_cannot_edit',
 						__( 'Sorry, you are not allowed to update tables for this post as this user.', 'dynamic-table-blocks' ),
@@ -662,7 +551,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				}
 
 				if ( ! empty( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( $post_type->cap->edit_others_posts ) ) {
-					error_log( '    ...Error with author permissions' );
 					return new \WP_Error(
 						'rest_cannot_edit_others',
 						__( 'Sorry, you are not allowed to update tables for this post as this user.', 'dynamic-table-blocks' ),
@@ -672,7 +560,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			}
 
 			if ( $post_id === 0 && ( ! ( current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' ) ) ) ) {
-					error_log( '    ...Error with publishpermissions' );
 				return new \WP_Error(
 					'rest_cannot_edit',
 					__( 'Sorry, you are not allowed to update tables for this post as this user.', 'dynamic-table-blocks' ),
@@ -680,14 +567,12 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				);
 			}
 		} else {
-			error_log( '    ...Missing post ID' );
 			return new \WP_Error(
 				'missing_post_id',
 				__( 'Post ID is missing from request.', 'dynamic-table-blocks' ),
 				array( 'status' => 500 )
 			);
 		}
-		error_log( 'Exiting update_item_permissions_check, table id = ' . $request['id'] );
 
 		return true;
 	}
@@ -701,9 +586,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function update_item( $request ) {
-		error_log( 'In update_item' );
-		error_log( 'DTBK update_item header: ' . wp_json_encode( $request['header'] ) );
-
 		$valid_check = $this->get_table( $request['id'] );
 		if ( is_wp_error( $valid_check ) ) {
 			return $valid_check;
@@ -735,7 +617,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		$request->set_param( 'context', 'edit' );
 		$response = $this->prepare_item_for_response( $table, $request );
-		error_log( 'Exiting update_item' );
 
 		return rest_ensure_response( $response );
 	}
@@ -948,7 +829,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	protected function prepare_item_for_database( $request ) {
 		$prepared_table = new \stdClass();
 		$current_status = '';
-		error_log( 'DTBK prepare_item_for_database header: ' . wp_json_encode( $request['header'] ) );
 
 		if ( isset( $request['id'] ) && (int) $request['id'] !== 0 ) {
 			$existing_table = $this->get_table( $request['id'] );
@@ -989,9 +869,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			}
 
 			// Table status.
-			// if ( ! empty( $schema_header['properties']['status'] ) &&
-			// isset( $request['header']['status'] ) &&
-			// ( ! $current_status || $current_status !== $request['status'] ) ) {
 			if ( ! empty( $schema_header['properties']['status'] ) &&
 			isset( $request['header']['status'] ) &&
 			( ! $current_status || $current_status !== $request['header']['status'] ) ) {
@@ -1623,7 +1500,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @return array Item schema data.
 	 */
 	public function get_collection_params() {
-		// error_log( 'get_collection_params called' );
 		$query_params = parent::get_collection_params();
 
 		$query_params['context']['default'] = 'view';

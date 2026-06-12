@@ -58,6 +58,12 @@ import {
 } from './messages';
 
 import {
+	getLoadedSummaryTableOptions,
+	registerSummaryTableRefreshSubscriber,
+	runSummaryTableRefresh,
+} from './summary-table-refresh';
+
+import {
 	tableSort,
 	generateBlockTableRef,
 	numberToLetter,
@@ -118,178 +124,6 @@ dispatch('core').addEntities([
 	},
 ]);
 
-const SUMMARY_TABLE_REFRESH_INTERVAL = 60000;
-const summaryTableRefreshCoordinator = {
-	inFlightPromise: null,
-	showErrorNotice: false,
-	subscribers: new Map(),
-	intervalId: null,
-	focusHandler: null,
-	visibilityHandler: null,
-};
-
-/**
- * Set the loading state for summary table refresh on each subscriber.
- *
- * @since 1.3.2
- *
- * @param {boolean} isRefreshing Whether the summary tables are currently being refreshed
- */
-function setSummaryTableRefreshLoading(isRefreshing) {
-	summaryTableRefreshCoordinator.subscribers.forEach(({ setIsRefreshingAllTables }) => {
-		setIsRefreshingAllTables(isRefreshing);
-	});
-}
-
-/**
- * Get the latest summary table refresh subscribers.
- *
- * @since 1.3.2
- *
- * @param {boolean} isRefreshing Whether the summary tables are currently being refreshed
- * @returns {Object|null} The current list of subscribers or null if there are no subscribers
- */
-function getSummaryTableRefreshSubscriber() {
-	const subscribers = Array.from(summaryTableRefreshCoordinator.subscribers.values());
-	return subscribers[subscribers.length - 1] || null;
-}
-
-/**
- * Ensure summary table refresh listeners are added and set up.
- *
- * @since 1.3.2
- */
-function ensureSummaryTableRefreshListeners() {
-	if (summaryTableRefreshCoordinator.intervalId !== null) {
-		return;
-	}
-
-	const refreshVisibleSummaryTables = () => {
-		if (document.visibilityState !== 'visible') {
-			return;
-		}
-
-		const subscriber = getSummaryTableRefreshSubscriber();
-		if (!subscriber) {
-			return;
-		}
-
-		void runSummaryTableRefresh({
-			refreshSummaryTables: subscriber.refreshSummaryTables,
-			createNotice: subscriber.createNotice,
-		}).catch(() => {});
-	};
-
-	summaryTableRefreshCoordinator.focusHandler = refreshVisibleSummaryTables;
-	summaryTableRefreshCoordinator.visibilityHandler = refreshVisibleSummaryTables;
-	summaryTableRefreshCoordinator.intervalId = window.setInterval(
-		refreshVisibleSummaryTables,
-		SUMMARY_TABLE_REFRESH_INTERVAL
-	);
-	window.addEventListener('focus', summaryTableRefreshCoordinator.focusHandler);
-	document.addEventListener(
-		'visibilitychange',
-		summaryTableRefreshCoordinator.visibilityHandler
-	);
-}
-
-/**
- * Remove summary table refresh listeners as part of unmount cleanup.
- *
- * @since 1.3.2
- */
-function maybeRemoveSummaryTableRefreshListeners() {
-	if (summaryTableRefreshCoordinator.subscribers.size > 0) {
-		return;
-	}
-
-	if (summaryTableRefreshCoordinator.intervalId !== null) {
-		window.clearInterval(summaryTableRefreshCoordinator.intervalId);
-		summaryTableRefreshCoordinator.intervalId = null;
-	}
-
-	if (summaryTableRefreshCoordinator.focusHandler) {
-		window.removeEventListener('focus', summaryTableRefreshCoordinator.focusHandler);
-		summaryTableRefreshCoordinator.focusHandler = null;
-	}
-
-	if (summaryTableRefreshCoordinator.visibilityHandler) {
-		document.removeEventListener(
-			'visibilitychange',
-			summaryTableRefreshCoordinator.visibilityHandler
-		);
-		summaryTableRefreshCoordinator.visibilityHandler = null;
-	}
-}
-
-/**
- * Refresh summary tables store
- *
- * @since 1.3.2
- *
- * @param {Function} refreshSummaryTables Dispatch function to refresh summary tables store
- * @param {Function} createNotice         Dispatch function to create notices in the editor
- * @param {boolean} showErrorNotice       Whether to show an error notice if the refresh fails
- * @return {Promise} Promise resolving to the refreshed summary tables
- */
-async function runSummaryTableRefresh({
-	refreshSummaryTables,
-	createNotice,
-	showErrorNotice = false,
-}) {
-	summaryTableRefreshCoordinator.showErrorNotice =
-		summaryTableRefreshCoordinator.showErrorNotice || showErrorNotice;
-
-	if (summaryTableRefreshCoordinator.inFlightPromise) {
-		return summaryTableRefreshCoordinator.inFlightPromise;
-	}
-
-	setSummaryTableRefreshLoading(true);
-
-	const refreshPromise = (async () => {
-		try {
-			return await refreshSummaryTables();
-		} catch (error) {
-			console.error('Error refreshing Dynamic Tables summary list', error);
-
-			if (summaryTableRefreshCoordinator.showErrorNotice) {
-				showMessageNotice(createNotice, 'summary-refresh-error');
-			}
-
-			throw error;
-		} finally {
-			summaryTableRefreshCoordinator.inFlightPromise = null;
-			summaryTableRefreshCoordinator.showErrorNotice = false;
-			setSummaryTableRefreshLoading(false);
-		}
-	})();
-
-	summaryTableRefreshCoordinator.inFlightPromise = refreshPromise;
-	return refreshPromise;
-}
-
-
-/**
- * Fetches summary tables and formats them for use as options in the table selection
- * dropdown when attaching a block to an existing table.
- *
- * @since 1.3.2
- *
- * @param {Object} allTables All summarized dynamic tables currently in state
- * @return {Array} Array of all tables available for block creation throught attachment
- */
-function getLoadedSummaryTableOptions(allTables) {
-	return [
-		{ value: '', label: 'Choose table...' },
-		...Object.values(allTables || {})
-			.filter(({ table_status }) => table_status === 'loaded')
-			.map(({ table_id, table_name }) => ({
-				value: String(table_id),
-				label: `${table_name} (${table_id})`,
-			})),
-	];
-}
-
 /**
  * Exports main logic for Dynamic Tables block.
  *
@@ -343,7 +177,6 @@ export default function Edit(props) {
 	/* Local State declarations */
 	const [isTableStale, setTableStale] = useState(true);
 	const [isRefreshingAllTables, setIsRefreshingAllTables] = useState(false);
-	const [existingTableOptions, setExistingTableOptions] = useState(null);
 	const [showBorders, setShowBorders] = useState(false);
 
 	/* Table Operation declarations */
@@ -1150,43 +983,21 @@ export default function Edit(props) {
 		[]
 	);
 
-	const activeExistingTableOptions =
-		existingTableOptions ??
-		(tableCreationMethod === 'existing-table' &&
-		!(allTablesIsResolving || isRefreshingAllTables)
-			? getLoadedSummaryTableOptions(allTables)
-			: null);
-
-	/**
-	 * Retrieve and set options array of tables available for attachment when table creation
-	 * method is set to "existing table" and remove the options if the creation method is not
-	 * set to "existing table".
-	 *
-	 * @since 1.3.2
-	 */
-	useEffect(() => {
+	const activeExistingTableOptions = useMemo(() => {
 		if (tableCreationMethod !== 'existing-table') {
-			setExistingTableOptions(null);
-			return;
+			return null;
 		}
-
-		if (existingTableOptions !== null) return;
 
 		const nextExistingTableOptions = getLoadedSummaryTableOptions(allTables);
 
-		if (
-			nextExistingTableOptions.length > 1 ||
-			!(allTablesIsResolving || isRefreshingAllTables)
-		) {
-			setExistingTableOptions(nextExistingTableOptions);
+		if (nextExistingTableOptions.length > 1) {
+			return nextExistingTableOptions;
 		}
-	}, [
-		tableCreationMethod,
-		existingTableOptions,
-		allTables,
-		allTablesIsResolving,
-		isRefreshingAllTables,
-	]);
+
+		return allTablesIsResolving || isRefreshingAllTables
+			? null
+			: nextExistingTableOptions;
+	}, [tableCreationMethod, allTables, allTablesIsResolving, isRefreshingAllTables]);
 
 	/**
 	 * Refresh summary table data for all tables in the tables store when the table creation
@@ -1195,28 +1006,14 @@ export default function Edit(props) {
 	 * @since 1.3.2
 	 */
 	useEffect(() => {
-		if (tableCreationMethod !== 'existing-table') return;
-
-		summaryTableRefreshCoordinator.subscribers.set(summaryTableRefreshSubscriberIdRef.current, {
+		return registerSummaryTableRefreshSubscriber({
+			tableCreationMethod,
 			refreshSummaryTables,
 			createNotice,
 			setIsRefreshingAllTables,
+			subscriberId: summaryTableRefreshSubscriberIdRef.current,
 		});
-		ensureSummaryTableRefreshListeners();
 
-		void runSummaryTableRefresh({
-			refreshSummaryTables,
-			createNotice,
-			showErrorNotice: true,
-		}).catch(() => {});
-
-		return () => {
-			summaryTableRefreshCoordinator.subscribers.delete(
-				summaryTableRefreshSubscriberIdRef.current
-			);
-			setIsRefreshingAllTables(false);
-			maybeRemoveSummaryTableRefreshListeners();
-		};
 	}, [tableCreationMethod, refreshSummaryTables, createNotice]);
 
 	/**
@@ -1350,14 +1147,17 @@ export default function Edit(props) {
 	useEffect(() => {
 		if (tableRequest.action !== 'attach') return;
 
-		const summaryTableId = Number(table.table_id || tableRequest.tableId || 0);
+		if (Number(table.table_id) <= 0) return;
 
-		void (async () => {
+		let isActive = true;
+
+		async function persistAttachedTable() {
 			try {
 				const entityId = Number(table.table_id);
 				updateTableEntity(entityId);
-				const savedEntity = await saveTableEntity(entityId);
+				await saveTableEntity(entityId);
 			} catch (error) {
+				if (!isActive) return;
 				console.error('Error saving attached Dynamic Table entity', error);
 				showMessageNotice(createNotice, 'update-entity-error');
 				setTableOperation({
@@ -1367,26 +1167,28 @@ export default function Edit(props) {
 					error,
 				});
 			} finally {
+				if (!isActive) return;
 				setTableRequest({
 					tableId: 0,
 					action: 'idle',
 					blockTableRef: '',
 				});
 			}
-		})();
+		}
+
+		void persistAttachedTable();
+
+		return () => {
+			isActive = false;
+		};
 
 	}, [
 		tableRequest.action,
-		postId,
-		allTables,
-		existingTableOptions,
-		activeExistingTableOptions,
+		tableRequest.blockTableRef,
 		table.table_id,
-		table.block_table_ref,
-		table.table_status,
-		table.post_id,
 		saveTableEntity,
-		updateSummaryTable,
+		updateTableEntity,
+		createNotice,
 	]);
 
 	const tableHasPendingEntityEdits = useSelect(
@@ -2052,7 +1854,6 @@ export default function Edit(props) {
 				} else if (attribute === 'row') {
 					updateRow(tableId, id, 'attributes', value);
 				} else if (attribute === 'column') {
-					// setColumnAttributes(value);
 					updateColumn(tableId, id, 'attributes', value);
 				} else if (attribute === 'table') {
 					updateTableProp(tableId, 'attributes', value);
@@ -2282,7 +2083,6 @@ export default function Edit(props) {
 
 			newNumColumns = Number(createDraftTable.numColumns);
 		} else {
-			// removeNotice('invalidNumColumns');
 			removeMessageNotice(removeNotice, 'invalid-num-columns');
 		}
 		setCreateDraftTable(prev => ({
@@ -2307,7 +2107,6 @@ export default function Edit(props) {
 
 			newNumRows = Number(createDraftTable.numRows);
 		} else {
-			// removeNotice('invalidNumRows');
 			removeMessageNotice(removeNotice, 'invalid-num-rows');
 		}
 		setCreateDraftTable(prev => ({

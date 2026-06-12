@@ -187,22 +187,12 @@ function create_table_data( $tablearr, $wp_error = false ) {
 	}
 
 	// Create table rows
-	// error_log( 'Table rows to Load: ' . print_r( $tablearr['rows'], true ) );
-
-	// $table_id = $table_id;
 	if ( isset( $tablearr['rows'] ) ) {
-		// error_log( 'Found rows to update.' );
-
 		$request_rows = $tablearr['rows'];
 		$put_rows     = update_table_rows( $table_id, $request_rows );
 
-		// error_log( 'Rows Updated = : ' . print_r( $put_rows['updated_rows'], true ) );
-
 		if ( is_wp_error( $put_rows ) || false === $put_rows ) {
-			// error_log( 'Processing row update error:' . print_r( $put_rows, true ) );
-
 			if ( ! $update && $table_id > 0 ) {
-				// Remove the new header/parts already written for this import attempt.
 				delete_table( $table_id, true );
 			}
 
@@ -217,17 +207,11 @@ function create_table_data( $tablearr, $wp_error = false ) {
 	}
 
 	// Create table columns
-	// error_log( 'Table columns to Load: ' . print_r( $tablearr['columns'], true ) );
-
 	if ( isset( $tablearr['columns'] ) ) {
-		// error_log( 'Found columns to update.' );
 		$request_columns = $tablearr['columns'];
 		$put_columns     = update_table_columns( $table_id, $request_columns );
-		// error_log( 'Column Updated = : ' . print_r( $put_columns, true ) );
 		if ( is_wp_error( $put_columns ) || false === $put_columns ) {
-			// error_log( 'Processing column update error:' . print_r( $put_columns, true ) );
 			if ( ! $update && $table_id > 0 ) {
-				// Remove the new header/parts already written for this import attempt.
 				delete_table( $table_id, true );
 			}
 
@@ -242,16 +226,11 @@ function create_table_data( $tablearr, $wp_error = false ) {
 	}
 
 	// Create table cells
-	// error_log( 'Table cells to Load: ' . print_r( $tablearr['cells'], true ) );
-
 	if ( isset( $tablearr['cells'] ) ) {
-		// error_log( 'Found cells to update.' );
 		$request_cells = $tablearr['cells'];
 		$put_cells     = update_table_cells( $table_id, $request_cells );
-		// error_log( 'Cells Updated = : ' . print_r( $put_cells, true ) );
 		if ( is_wp_error( $put_cells ) || false === $put_cells ) {
 			if ( ! $update && $table_id > 0 ) {
-				// error_log( 'Processing cell update error:' . print_r( $put_cells, true ) );
 				// Remove the new header/parts already written for this import attempt.
 				delete_table( $table_id, true );
 			}
@@ -316,8 +295,6 @@ function update_table_data( $tablearr, $wp_error = false ) {
  * @return array|WP_Error Updated row values for new or updated table, WP_Error object on failure.
  */
 function update_table_rows( $table_id, $request_rows ) {
-	// error_log( 'Updating table rows for table id ' . $table_id );
-
 	$results = null;
 	$rows    = array();
 
@@ -331,7 +308,6 @@ function update_table_rows( $table_id, $request_rows ) {
 
 	$update_table_rows = new PersistTableData();
 	$results           = $update_table_rows->update_table_rows( $table_id, $rows );
-	// error_log( '  Results for table id ' . $table_id . ': ' . print_r( $results, true ) );
 
 	if ( ! $results['success'] ) {
 		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
@@ -465,16 +441,7 @@ function get_table( $table_id, $validate_header_only = false ) {
 		);
 	}
 
-	// if ( $validate_header_only ) {
-	// if ( $results_header['success'] ) {
-	// return true;
-	// } else {
-	// return false;
-	// }
-	// }
-
 	if ( $validate_header_only ) {
-		// return $results;
 		if ( $results_header['success'] ) {
 			return true;
 		} else {
@@ -594,8 +561,6 @@ function get_tables( $enrich_results = false, $query_args = array() ) {
 		);
 	}
 
-	// error_log( 'Table results header = ' . json_encode( $result_headers['result'] ) );
-
 	if ( ! $enrich_results ) {
 		return $result_headers['result'];
 	}
@@ -670,7 +635,6 @@ function get_tables( $enrich_results = false, $query_args = array() ) {
 		$results[] = $result;
 	}
 
-	// error_log( 'Full table results = ' . json_encode( $results ) );
 	return $results;
 }
 

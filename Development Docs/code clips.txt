@@ -47,3 +47,16 @@ update wp_dtbk_tables set post_id = 478 where id = 1205
 update wp_dtbk_table_rows
 update wp_dtbk_table_columns
 update wp_dtbk_table_cells
+
+// Update attached tables to loaded.	
+select *
+from wp_dtbk_tables
+where id in (1318,1316,1321)
+
+update wp_dtbk_tables
+set status = 'loaded',
+    block_table_ref = '',
+    post_id = 0
+where id in (1318,1316,1321);
+
+

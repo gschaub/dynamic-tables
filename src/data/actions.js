@@ -258,16 +258,12 @@ export const saveTableEntity =
 	tableId =>
 	async ({ registry }) => {
 		const editedTableData = registry.select(coreStore).getEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
-		console.log('...table entity retrieved for saving', { editedTableData })
 
 		try {
-			// registry.dispatch(coreStore).saveEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
 			return await registry
 				.dispatch(coreStore)
 				.saveEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
 		} catch (error) {
-			// console.log('Error in saveTableEntity - Table ID - ' + tableId);
-			// alert('            ...Save Table Entity - async error - ' + error);
 			console.error('Error in saveTableEntity - Table ID - ' + tableId, error);
 			throw error;
 		}
@@ -286,12 +282,6 @@ export const saveTableEntity =
 export const updateTableEntity =
 	(tableId, overrideTableStatus = '', tableOverride = null) =>
 	({ select, registry }) => {
-		console.log('In updateTableEntity - Table ID - ' + tableId );
-		// const sourceTable = tableOverride ?? select.getTable(tableId, false);
-
-		// if (!sourceTable?.table_id) {
-		// 	return false;
-		// }
 
 		const {
 			table_id,
@@ -305,8 +295,6 @@ export const updateTableEntity =
 			columns,
 			cells,
 		} = select.getTable(tableId, false);
-		// } = sourceTable;
-		console.log('...table data retrieved for updateTableEntity', { table_id, block_table_ref, table_status, post_id, table_name, attributes, classes, rows, columns, cells } );
 
 		const safeRows = Array.isArray(rows) ? rows : [];
 		const safeColumns = Array.isArray(columns) ? columns : [];
@@ -341,7 +329,6 @@ export const updateTableEntity =
 			}
 			return table_status;
 		};
-		console.log('...table Status - ' + tableStatus(overrideTableStatus, table_status) );
 
 		const updatedTable = {
 			id: tableId,
@@ -359,13 +346,12 @@ export const updateTableEntity =
 			columns: [...filteredColumns],
 			cells: [...transformedCells],
 		};
-		console.log('...updated table prepared for updateTableEntity', updatedTable );
+
 		/**
 		 * Options: isCached: Bool
 		 *          undoIgnore: Bool
 		 */
 		try {
-			console.log('...dispatching' );
 			return registry
 				.dispatch(coreStore)
 				.editEntityRecord('dynamic-table-blocks', 'table', table_id, updatedTable);
@@ -724,27 +710,6 @@ export const updateRow = (tableId, rowId, attribute, value) => {
 		value,
 	};
 };
-
-/**
- * Signal an update to a column attributes.
- *
- * @since    1.1.2
- *
- * @param {number}        tableId   Identifier key for the table
- * @param {number}        columnId  Identifier for a table column
- * @param {string}        prop      Type of property
- * @param {Object|string} value     New value for the prop
- * @return  {Object} Action object
- */
-// export const updateColumnProps = (tableId, columnId, prop, value) => {
-// 	return {
-// 		type: UPDATE_COLUMN_PROPS,
-// 		tableId,
-// 		columnId,
-// 		prop,
-// 		value,
-// 	};
-// };
 
 /**
  * Signal an update to a column attributes.

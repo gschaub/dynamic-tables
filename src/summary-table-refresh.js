@@ -10,17 +10,37 @@ const summaryTableRefreshCoordinator = {
 	visibilityHandler: null,
 };
 
+/**
+ * Set the loading state for summary table refresh on each subscriber.
+ *
+ * @since 1.3.2
+ *
+ * @param {boolean} isRefreshing Whether the summary tables are currently being refreshed
+ */
 function setSummaryTableRefreshLoading(isRefreshing) {
 	summaryTableRefreshCoordinator.subscribers.forEach(({ setIsRefreshingAllTables }) => {
 		setIsRefreshingAllTables(isRefreshing);
 	});
 }
 
+/**
+ * Get the latest summary table refresh subscribers.
+ *
+ * @since 1.3.2
+ *
+ * @param {boolean} isRefreshing Whether the summary tables are currently being refreshed
+ * @returns {Object|null} The current list of subscribers or null if there are no subscribers
+ */
 function getSummaryTableRefreshSubscriber() {
 	const subscribers = Array.from(summaryTableRefreshCoordinator.subscribers.values());
 	return subscribers[subscribers.length - 1] || null;
 }
 
+/**
+ * Ensure summary table refresh listeners are added and set up.
+ *
+ * @since 1.3.2
+ */
 function ensureSummaryTableRefreshListeners() {
 	if (summaryTableRefreshCoordinator.intervalId !== null) {
 		return;
@@ -55,6 +75,11 @@ function ensureSummaryTableRefreshListeners() {
 	);
 }
 
+/**
+ * Remove summary table refresh listeners as part of unmount cleanup.
+ *
+ * @since 1.3.2
+ */
 function maybeRemoveSummaryTableRefreshListeners() {
 	if (summaryTableRefreshCoordinator.subscribers.size > 0) {
 		return;
@@ -79,6 +104,16 @@ function maybeRemoveSummaryTableRefreshListeners() {
 	}
 }
 
+/**
+ * Refresh summary tables store
+ *
+ * @since 1.3.2
+ *
+ * @param {Function} refreshSummaryTables Dispatch function to refresh summary tables store
+ * @param {Function} createNotice         Dispatch function to create notices in the editor
+ * @param {boolean} showErrorNotice       Whether to show an error notice if the refresh fails
+ * @return {Promise} Promise resolving to the refreshed summary tables
+ */
 export async function runSummaryTableRefresh({
 	refreshSummaryTables,
 	createNotice,
@@ -147,6 +182,15 @@ export function registerSummaryTableRefreshSubscriber({
 	};
 }
 
+/**
+ * Fetches summary tables and formats them for use as options in the table selection
+ * dropdown when attaching a block to an existing table.
+ *
+ * @since 1.3.2
+ *
+ * @param {Object} allTables All summarized dynamic tables currently in state
+ * @return {Array} Array of all tables available for block creation throught attachment
+ */
 export function getLoadedSummaryTableOptions(allTables) {
 	return [
 		{ value: '', label: 'Choose table...' },

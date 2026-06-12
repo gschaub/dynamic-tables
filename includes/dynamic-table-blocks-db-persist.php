@@ -112,11 +112,9 @@ class PersistTableData {
 		if ( ! $args ) {
 			return false;
 		}
-		// error_log( 'SQL Args: ' . json_encode( $args ) );
 
 		$query        = 'SELECT * ';
 		$query_string = $this->process_query_string( $this->request_args );
-		// error_log( 'SQL Query String: ' . $query_string );
 		if ( ! $query_string ) {
 			return false;
 		}
@@ -205,8 +203,6 @@ class PersistTableData {
 		// Perform Replace/Insert
 		$this->replacement_result = $wpdb->replace( $db_table, $data, $format );
 
-		// error_log( 'Replace Result: ' . print_r( $this->replacement_result, true ) );
-
 		return $this->replacement_result;
 	}
 
@@ -249,7 +245,6 @@ class PersistTableData {
 			$wpdb->query( 'COMMIT' ); // commit all queries
 			$success = true;
 		} else {
-			error_log( 'Rollback Triggered' );
 			$wpdb->query( 'ROLLBACK' ); // rollback everything.
 		}
 
@@ -462,7 +457,6 @@ class PersistTableData {
 
 		if ( $update_result === false ) {
 			$wpdb->query( 'ROLLBACK' ); // rollback everything
-			error_log( 'Rollback Triggered' );
 			$this->result = array(
 				'success'      => $success,
 				'updated_rows' => '0',
@@ -597,7 +591,6 @@ class PersistTableData {
 
 			if ( ! $query_returned_result ) {
 				$wpdb->query( 'ROLLBACK' ); // rollback everything
-				error_log( 'Rollback Triggered' );
 				$this->result = array(
 					'success'      => $success,
 					'updated_rows' => '0',
@@ -608,7 +601,6 @@ class PersistTableData {
 			++$inserted_rows;
 		}
 
-		// error_log( 'Committing row inserts' );
 		$wpdb->query( 'COMMIT' ); // commit all queries
 		$success = 'True';
 
@@ -744,7 +736,6 @@ class PersistTableData {
 
 			if ( ! $query_returned_result ) {
 				$wpdb->query( 'ROLLBACK' ); // rollback everything
-				error_log( 'Rollback Triggered' );
 				$this->result = array(
 					'success'      => $success,
 					'updated_rows' => '0',
@@ -755,7 +746,6 @@ class PersistTableData {
 			++$inserted_rows;
 		}
 
-		error_log( 'Committing column inserts' );
 		$wpdb->query( 'COMMIT' ); // commit all queries
 		$success = true;
 
@@ -904,9 +894,7 @@ class PersistTableData {
 			$query_returned_result = $this->replace_table( 'dtbk_table_cells', $table_id );
 
 			if ( ! $query_returned_result ) {
-				error_log( 'Rolling back cells' );
 				$wpdb->query( 'ROLLBACK' ); // rollback everything
-				error_log( 'Rollback Triggered' );
 				$this->result = array(
 					'success'      => $success,
 					'updated_rows' => '0',
@@ -916,7 +904,6 @@ class PersistTableData {
 			++$inserted_rows;
 		}
 
-		error_log( 'Committing cell inserts' );
 		$wpdb->query( 'COMMIT' ); // commit all queries
 		$success = true;
 
@@ -1035,8 +1022,6 @@ class PersistTableData {
 				}
 			}
 		}
-
-		// error_log( 'Request args = ' . json_encode( $this->request_args ) );
 
 		$query_results = $this->get_table_data( $return_collection );
 
@@ -1260,7 +1245,6 @@ class PersistTableData {
 		);
 
 		$query_results = $this->get_table_data( $return_collection );
-		// error_log( 'DB - Get Table ID - Query Resulta = ' . json_encode( $query_results ) );
 
 		$table_id = $query_results['id'];
 		$success  = true;
@@ -1412,7 +1396,6 @@ class PersistTableData {
 
 		$deleted_cell_rows = $query_returned_result;
 
-		error_log( 'Committing deletes' );
 		$wpdb->query( 'COMMIT' ); // commit all queries
 		$success = 'True';
 
@@ -1434,9 +1417,6 @@ class PersistTableData {
 	protected function process_args() {
 		$sql_args       = array();
 		$prior_arg_type = 'none';
-
-		// error_log( 'In Process Args' );
-		// error_log( '    ' . json_encode( $this->request_args ) );
 
 		foreach ( $this->request_args as $items ) {
 			foreach ( $items as $item => $arg ) {
@@ -1464,7 +1444,6 @@ class PersistTableData {
 
 		}
 
-		// error_log( 'Transformed SQL Args: ' . wp_json_encode( $sql_args ) );
 		return $sql_args;
 	}
 
@@ -1491,9 +1470,6 @@ class PersistTableData {
 		if ( $arg_type === 'where' || $arg_type === 'set' || $arg_type === 'value' ) {
 			return array( $arg_field => $arg_value );
 		}
-
-		// if ( $arg_type === 'where_in' || $arg_type === 'where_not_in' ) {
-		// return array( $arg_field => '(' . $arg_value . ')' );
 
 		if ( $arg_type === 'where_in' || $arg_type === 'where_not_in' ) {
 			if ( is_array( $arg_value ) ) {
@@ -1664,15 +1640,12 @@ class PersistTableData {
 					$where_clause .= $this->specific_query( $transaction_type, $arg_field, $where_modifier, $arg_value );
 					if ( ( $current_where_position !== $where_type_count - 1 ) &&
 						( $this->specific_query( $transaction_type, $arg_field, $where_modifier, $arg_value ) !== null ) ) {
-						// ( $this->specific_query( $transaction_type, $arg_field, $where_modifier ) !== null ) ) {
 						$where_clause .= ' AND ';
 					}
 				} else {
-					// $where_clause .= $this->specific_query( $transaction_type, $arg_field, $where_modifier );
 					$where_clause .= $this->specific_query( $transaction_type, $arg_field, $where_modifier, $arg_value );
 
 					if ( ( $current_where_position !== $where_type_count - 1 ) &&
-						// ( $this->specific_query( $transaction_type, $arg_field, $where_modifier ) !== null ) ) {
 						( $this->specific_query( $transaction_type, $arg_field, $where_modifier, $arg_value ) !== null ) ) {
 						$where_clause .= ' AND ';
 					}
@@ -1711,7 +1684,6 @@ class PersistTableData {
 	 * @param string $operator       Field comparison operator.
 	 * @return string                Valid SQL query string.
 	 */
-	// protected function specific_query( $trans_type, $arg_field, $operator = '=' ) {
 	protected function specific_query( $trans_type, $arg_field, $operator = '=', $arg_value = null ) {
 		$field_format = '%s';
 
@@ -1726,7 +1698,6 @@ class PersistTableData {
 		}
 
 		if ( $trans_type === 'value' || $trans_type === 'insert' ) {
-			// if ( $trans_type === 'value' ) {
 			return $field_format;
 		}
 
