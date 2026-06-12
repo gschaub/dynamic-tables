@@ -702,6 +702,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 */
 	public function update_item( $request ) {
 		error_log( 'In update_item' );
+		error_log( 'DTBK update_item header: ' . wp_json_encode( $request['header'] ) );
 
 		$valid_check = $this->get_table( $request['id'] );
 		if ( is_wp_error( $valid_check ) ) {
@@ -947,6 +948,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	protected function prepare_item_for_database( $request ) {
 		$prepared_table = new \stdClass();
 		$current_status = '';
+		error_log( 'DTBK prepare_item_for_database header: ' . wp_json_encode( $request['header'] ) );
 
 		if ( isset( $request['id'] ) && (int) $request['id'] !== 0 ) {
 			$existing_table = $this->get_table( $request['id'] );

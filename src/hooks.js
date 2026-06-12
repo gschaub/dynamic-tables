@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { usePrevious } from '@wordpress/compose';
 import { useSelect } from '@wordpress/data';
+import { store as coreStore } from '@wordpress/core-data';
 
 /* Internal dependencies */
 import { store as tableStore } from './data';
@@ -128,6 +129,8 @@ export function useGetTable(tableId, { isTableStale = false, shouldFetch = true 
 			if (!shouldResolveTable) {
 				return {
 					table: null,
+					entityRecord: null,
+					hasEntityRecord: false,
 					hasStartedResolving: false,
 					hasFinishedResolving: false,
 					isResolving: false,
@@ -136,18 +139,28 @@ export function useGetTable(tableId, { isTableStale = false, shouldFetch = true 
 
 			const { getTable, hasStartedResolution, hasFinishedResolution, isResolving } =
 				select(tableStore);
+			const core = select(coreStore);
 
-			const selectorArgs = [tableId, isTableStale];
+			const tableSelectorArgs = [tableId, isTableStale];
+			const entitySelectorArgs = ['dynamic-table-blocks', 'table', Number(tableId)];
 			const table = getTable(tableId, isTableStale);
-			const hasStartedResolving = hasStartedResolution('getTable', selectorArgs);
-			const hasFinishedResolving = hasFinishedResolution('getTable', selectorArgs);
-			const tableIsResolving = isResolving('getTable', selectorArgs);
+			const entityRecord = core.getEntityRecord('dynamic-table-blocks', 'table', Number(tableId));
+			const tableHasStartedResolving = hasStartedResolution('getTable', tableSelectorArgs);
+			const tableHasFinishedResolving = hasFinishedResolution('getTable', tableSelectorArgs);
+			const tableIsResolving = isResolving('getTable', tableSelectorArgs);
+			const entityHasStartedResolving =
+				core?.hasStartedResolution?.('getEntityRecord', entitySelectorArgs) ?? false;
+			const entityHasFinishedResolving =
+				core?.hasFinishedResolution?.('getEntityRecord', entitySelectorArgs) ?? false;
+			const entityIsResolving = core?.isResolving?.('getEntityRecord', entitySelectorArgs) ?? false;
 
 			return {
 				table,
-				hasStartedResolving,
-				hasFinishedResolving,
-				isResolving: tableIsResolving,
+				entityRecord,
+				hasEntityRecord: !!entityRecord?.id,
+				hasStartedResolving: tableHasStartedResolving || entityHasStartedResolving,
+				hasFinishedResolving: tableHasFinishedResolving && entityHasFinishedResolving,
+				isResolving: tableIsResolving || entityIsResolving,
 			};
 		},
 		[tableId, isTableStale, shouldResolveTable]

@@ -1,5 +1,5 @@
 /* External dependencies */
-import { useSelect, useDispatch, dispatch } from '@wordpress/data';
+import { useSelect, useDispatch, dispatch, select } from '@wordpress/data';
 import { usePrevious } from '@wordpress/compose';
 import {
 	useState,
@@ -345,33 +345,8 @@ export default function Edit(props) {
 	const [isRefreshingAllTables, setIsRefreshingAllTables] = useState(false);
 	const [existingTableOptions, setExistingTableOptions] = useState(null);
 	const [showBorders, setShowBorders] = useState(false);
-	const [tableCreationMethod, setTableCreationMethod] = useState('choose');
-	const [tableRequest, setTableRequest] = useState({
-		tableId: 0,
-		action: null,
-		blockTableRef: '',
-	});
 
-	const shouldFetchRequestedTable =
-		Number(tableRequest.tableId) > 0 && tableRequest.action !== null;
-
-	const {
-		table: requestedTable,
-		hasFinishedResolving: requestedTableHasFinishedResolving,
-		isResolving: requestedTableIsResolving,
-	} = useGetTable(
-		tableRequest.tableId,
-		{
-			isTableStale: true,
-			shouldFetch: shouldFetchRequestedTable,
-		}
-	);
-
-	const [createDraftTable, setCreateDraftTable] = useState({
-		tableName: '',
-		numColumns: 1,
-		numRows: 1,
-	});
+	/* Table Operation declarations */
 	const [tableOperation, setTableOperation] = useState({
 		kind: 'idle', // idle | creating | cloning | attaching | ready | error
 		blockTableRef: '',
@@ -382,6 +357,33 @@ export default function Edit(props) {
 		tableOperation.kind === 'creating' ||
 		tableOperation.kind === 'cloning' ||
 		tableOperation.kind === 'attaching';
+	const [tableCreationMethod, setTableCreationMethod] = useState('choose');
+	const [createDraftTable, setCreateDraftTable] = useState({
+		tableName: '',
+		numColumns: 1,
+		numRows: 1,
+	});
+	const [tableRequest, setTableRequest] = useState({
+		tableId: 0,
+		action: 'idle', // idle | receive | attach
+		blockTableRef: '',
+	});
+
+	const shouldFetchRequestedTable =
+		Number(tableRequest.tableId) > 0 && tableRequest.action === 'receive';
+
+	const {
+		table: requestedTable,
+		hasEntityRecord: requestedTableHasEntity,
+		hasFinishedResolving: requestedTableHasFinishedResolving,
+		isResolving: requestedTableIsResolving,
+	} = useGetTable(
+		tableRequest.tableId,
+		{
+			isTableStale: true,
+			shouldFetch: shouldFetchRequestedTable,
+		}
+	);
 
 	const [editingCellId, setEditingCellId] = useState(null);
 	const editingCellIdRef = useRef(null);
@@ -409,11 +411,12 @@ export default function Edit(props) {
 		tableStatus: '',
 		isSavingEditorChanges: false,
 	});
+	const latestLifecycleRef = useRef({});
 
 	const isPageUnloadRef = useRef(false);
 	const summaryTableRefreshSubscriberIdRef = useRef(Symbol('dtbk-summary-refresh'));
 
-	// Location of border cell last clicked
+	/* Location of border cell last clicked */
 	const lastInvokerElRef = useRef(null);
 	const lastInvokerWasKeyboardRef = useRef(false);
 	const suppressNextInvokerRestoreRef = useRef(false);
@@ -511,7 +514,7 @@ export default function Edit(props) {
 		e?.preventDefault?.();
 		e?.stopPropagation?.();
 
-		// Capture a real element, not the synthetic event
+		/* Capture a real element, not the synthetic event */
 		const el = e?.currentTarget || null;
 		lastInvokerElRef.current = el;
 		lastInvokerWasKeyboardRef.current = Number(e?.detail) === 0;
@@ -613,7 +616,7 @@ export default function Edit(props) {
 		e?.preventDefault?.();
 		e?.stopPropagation?.();
 
-		// Capture a real element, not the synthetic event
+		/* Capture a real element, not the synthetic event */
 		const el = e?.currentTarget || null;
 		lastInvokerElRef.current = el;
 		lastInvokerWasKeyboardRef.current = Number(e?.detail) === 0;
@@ -762,7 +765,7 @@ export default function Edit(props) {
 		e?.preventDefault?.();
 		e?.stopPropagation?.();
 
-		// Capture a real element, not the synthetic event
+		/* Capture a real element, not the synthetic event */
 		const el = e?.currentTarget || null;
 		lastInvokerElRef.current = el;
 		lastInvokerWasKeyboardRef.current = Number(e?.detail) === 0;
@@ -811,10 +814,10 @@ export default function Edit(props) {
 		});
 	}
 
-	// Support table creation and cloning
+	/* Support table creation and cloning */
 	const cloneLatchRef = useRef(new Set());
 
-	// Support keyboard navigation in table
+	/* Support keyboard navigation in table */
 	const [focusedCell, setFocusedCell] = useState({ col: 0, row: 0 });
 	const gridRef = useRef(null);
 
@@ -983,7 +986,7 @@ export default function Edit(props) {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return  {("None" | "New" | "Stale" | "Saved")}  Table Status
+	 * @return  {("None" | "Stale" | "Loaded" | "New" | "Saved")}  Table Status
 	 */
 	const setBlockTableStatus = () => {
 		if (block_table_ref === '') {
@@ -1058,7 +1061,7 @@ export default function Edit(props) {
 		);
 	}
 
-	// Ensure structural changes are unavailable when block editor is in contentOnly mode
+	/* Ensure structural changes are unavailable when block editor is in contentOnly mode */
 	useEffect(() => {
 		if (!isContentOnlyMode) return;
 
@@ -1098,7 +1101,7 @@ export default function Edit(props) {
 		};
 
 		const clearPageUnload = event => {
-			// Do not clear during a real unload when the document becomes hidden.
+			/* Do not clear during a real unload when the document becomes hidden. */
 			if (event?.type === 'visibilitychange' && document.visibilityState !== 'visible') {
 				return;
 			}
@@ -1261,7 +1264,7 @@ export default function Edit(props) {
 		[table_id, isTableStale, block_table_ref]
 	);
 
-	// Table is no longer stale once it has finished resolving
+	/* Table is no longer stale once it has finished resolving */
 	useEffect(() => {
 		if (!tableHasFinishedResolving) return;
 		setTableStale(false);
@@ -1273,34 +1276,39 @@ export default function Edit(props) {
 	 * @since 1.3.2
 	 */
 	useEffect(() => {
-		if (tableRequest.action !== 'attach') return;
+		if (tableRequest.action !== 'receive') return;
 		if (!tableRequest.tableId) return;
 		if (!tableRequest.blockTableRef) return;
 		if (requestedTableIsResolving || !requestedTableHasFinishedResolving) return;
+		if (!requestedTable?.table_id) return;
+		if (!requestedTableHasEntity) return;
 
 		const attachedTableId = Number(tableRequest.tableId);
+		const attachedTable = {
+			...requestedTable,
+			block_table_ref: tableRequest.blockTableRef,
+			table_status: 'new',
+			post_id: String(postId),
+		};
 
 		updateSummaryTable({
 			table_id: attachedTableId,
 			block_table_ref: tableRequest.blockTableRef,
-			table_status: 'new',
+			table_status: attachedTable.table_status,
 			post_id: String(postId),
 		});
 
 		receiveTable(
 			attachedTableId,
-			tableRequest.blockTableRef,
-			'new',
-			String(postId),
-			requestedTable.table_name,
-			requestedTable.attributes,
-			requestedTable.classes,
-			requestedTable.rows,
-			requestedTable.columns,
-			requestedTable.cells
-		);
-
-		updateTableEntity(attachedTableId);
+			attachedTable.block_table_ref,
+			attachedTable.table_status,
+			attachedTable.post_id,
+			attachedTable.table_name,
+			attachedTable.attributes,
+			attachedTable.classes,
+			attachedTable.rows,
+			attachedTable.columns,
+			attachedTable.cells		);
 
 		props.setAttributes({
 			original_post_type: postType,
@@ -1308,11 +1316,12 @@ export default function Edit(props) {
 			block_table_ref: tableRequest.blockTableRef,
 			table_id: Number(requestedTable.table_id),
 		});
-		setTableRequest({
-			tableId: 0,
-			action: null,
-			blockTableRef: '',
-		});
+
+		setTableRequest(prev => ({
+			...prev,
+			action: 'attach',
+		}));
+
 	}, [
 		tableRequest.action,
 		tableRequest.blockTableRef,
@@ -1324,14 +1333,78 @@ export default function Edit(props) {
 		requestedTable?.rows,
 		requestedTable?.columns,
 		requestedTable?.cells,
+		requestedTableHasEntity,
 		requestedTableHasFinishedResolving,
 		requestedTableIsResolving,
 		postId,
 		postType,
+		updateSummaryTable,
 		receiveTable,
-		updateTableEntity,
 	]);
 
+	/**
+	 * Attach existing table to block when table is ready for attachment.
+	 *
+	 * @since 1.3.2
+	 */
+	useEffect(() => {
+		if (tableRequest.action !== 'attach') return;
+
+		const summaryTableId = Number(table.table_id || tableRequest.tableId || 0);
+
+		void (async () => {
+			try {
+				const entityId = Number(table.table_id);
+				updateTableEntity(entityId);
+				const savedEntity = await saveTableEntity(entityId);
+			} catch (error) {
+				console.error('Error saving attached Dynamic Table entity', error);
+				showMessageNotice(createNotice, 'update-entity-error');
+				setTableOperation({
+					kind: 'error',
+					blockTableRef: tableRequest.blockTableRef,
+					sourceTableId: table.table_id,
+					error,
+				});
+			} finally {
+				setTableRequest({
+					tableId: 0,
+					action: 'idle',
+					blockTableRef: '',
+				});
+			}
+		})();
+
+	}, [
+		tableRequest.action,
+		postId,
+		allTables,
+		existingTableOptions,
+		activeExistingTableOptions,
+		table.table_id,
+		table.block_table_ref,
+		table.table_status,
+		table.post_id,
+		saveTableEntity,
+		updateSummaryTable,
+	]);
+
+	const tableHasPendingEntityEdits = useSelect(
+		select => {
+			if (!table?.block_table_ref || Number(table.table_id) <= 0) {
+				return false;
+			}
+
+			return (
+				select(coreStore)?.hasEditsForEntityRecord?.(
+					'dynamic-table-blocks',
+					'table',
+					Number(table.table_id)
+				) ?? false
+			);
+		},
+		[table?.block_table_ref, table.table_id]
+	);
 
 	/**
 	 * Set table attributes and attach table to block when table is created or
@@ -1358,25 +1431,8 @@ export default function Edit(props) {
 		);
 	}, [isAwaitingTableAttachment, block_table_ref, attachedTableId, table_id, postType, postId]);
 
-	//Determine if table has been loaded.
+	/* Determine if table has been loaded. */
 	const tableLoaded = !!table.block_table_ref && blockTableStatus !== 'None';
-
-	const tableHasPendingEntityEdits = useSelect(
-		select => {
-			if (!table?.block_table_ref || Number(table.table_id) <= 0) {
-				return false;
-			}
-
-			return (
-				select(coreStore)?.hasEditsForEntityRecord?.(
-					'dynamic-table-blocks',
-					'table',
-					Number(table.table_id)
-				) ?? false
-			);
-		},
-		[table?.block_table_ref, table.table_id]
-	);
 
 	/**
 	 * Fires when posts have just finished saving and when a change is detected in
@@ -1407,6 +1463,10 @@ export default function Edit(props) {
 					 */
 					if (table.table_status == 'new') {
 						setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
+						updateTableEntity(table.table_id, 'saved', {
+							...table,
+							table_status: 'saved',
+						});
 					}
 
 					await saveTableEntity(table.table_id);
@@ -1433,6 +1493,7 @@ export default function Edit(props) {
 		tableHasPendingEntityEdits,
 		refreshSummaryTables,
 		createNotice,
+		updateTableEntity,
 	]);
 
 	/**
@@ -1449,12 +1510,12 @@ export default function Edit(props) {
 	function acquireCloneLatch({ clientId, postId, tableId }) {
 		const key = [clientId || 'no-client', postId || 0, tableId || 0].join(':');
 
-		// If we already cloned for this key, deny.
+		/* If we already cloned for this key, deny. */
 		if (cloneLatchRef.current.has(key)) {
 			return { locked: true };
 		}
 
-		// Otherwise lock it now.
+		/* Otherwise lock it now. */
 		cloneLatchRef.current.add(key);
 		return { locked: false };
 	}
@@ -1475,12 +1536,12 @@ export default function Edit(props) {
 		const patternName = props.attributes?.metadata?.patternName;
 		const isBlockFromPattern = !!patternName;
 
-		// Exit if table is not loaded
+		/* Exit if table is not loaded */
 		if (!tableLoaded) {
 			return false;
 		}
 
-		// Exit if table is being created manually
+		/* Exit if table is being created manually */
 		if (isNewBlock) {
 			return false;
 		}
@@ -1493,17 +1554,17 @@ export default function Edit(props) {
 			return false;
 		}
 
-		// Duplicated blocks inherit the original table reference and need their own clone.
+		/* Duplicated blocks inherit the original table reference and need their own clone. */
 		if (isDuplicatedBlockInstance) {
 			return true;
 		}
 
-		// Inserted post type is not a pattern
+		/* Inserted post type is not a pattern */
 		if (original_post_type !== 'wp_block') {
 			return false;
 		}
 
-		// Inserted Patterns have meta and pattern meta does not load in preview inserter
+		/* Inserted Patterns have meta and pattern meta does not load in preview inserter */
 		if (!isBlockFromPattern) {
 			return false;
 		}
@@ -1669,8 +1730,10 @@ export default function Edit(props) {
 				isSavingEditorChanges: wasSavingEditorChanges,
 			} = unmountSnapshotRef.current;
 
-			// No cleanup is needed for blocks that never finished loading, are still new,
-			// or do not yet have a persisted table ID.
+			/** No cleanup is needed for blocks that never finished loading, are still new,
+			 * or do not yet have a persisted table ID.
+			 */
+
 			if (!wasTableLoaded || wasNewBlock || tableId <= 0) {
 				return;
 			}
@@ -2135,9 +2198,10 @@ export default function Edit(props) {
 			sourceTableId: tableRequest.tableId,
 			error: null,
 		});
+
 		setTableRequest(prev => ({
 			...prev,
-			action: 'attach',
+			action: 'receive',
 			blockTableRef: nextBlockTableRef,
 		}));
 	}
@@ -2197,7 +2261,7 @@ export default function Edit(props) {
 	function onAssignRequestedTableId(event) {
 		setTableRequest({
 			tableId: Number(event),
-			action: null,
+			action: 'idle',
 			blockTableRef: '',
 		});
 	}
@@ -4623,7 +4687,7 @@ export default function Edit(props) {
 									options={activeExistingTableOptions}
 									__nextHasNoMarginBottom
 								/>
-								{tableRequest.action !== null && requestedTableIsResolving && (
+								{tableRequest.action !== 'idle' && requestedTableIsResolving && (
 									<span className={'dtbk-spinner-message'}>
 										{__('Retrieving selected table...', 'dynamic-table-blocks')}
 										<Spinner />

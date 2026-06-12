@@ -203,7 +203,7 @@ export const cloneTable =
  * @return  {Object} Action object
  */
 export const createTableEntity =
-	() =>
+	(tableIdToCreate = '0') =>
 	async ({ select, dispatch, registry }) => {
 		const {
 			table_id,
@@ -215,7 +215,7 @@ export const createTableEntity =
 			rows,
 			columns,
 			cells,
-		} = select.getTable('0', true);
+		} = select.getTable(tableIdToCreate, true);
 		const newTable = {
 			title: table_name,
 			header: {
@@ -257,6 +257,9 @@ export const createTableEntity =
 export const saveTableEntity =
 	tableId =>
 	async ({ registry }) => {
+		const editedTableData = registry.select(coreStore).getEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
+		console.log('...table entity retrieved for saving', { editedTableData })
+
 		try {
 			// registry.dispatch(coreStore).saveEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
 			return await registry
@@ -281,8 +284,15 @@ export const saveTableEntity =
  * @return  {Object} Action Object
  */
 export const updateTableEntity =
-	(tableId, overrideTableStatus = '') =>
+	(tableId, overrideTableStatus = '', tableOverride = null) =>
 	({ select, registry }) => {
+		console.log('In updateTableEntity - Table ID - ' + tableId );
+		// const sourceTable = tableOverride ?? select.getTable(tableId, false);
+
+		// if (!sourceTable?.table_id) {
+		// 	return false;
+		// }
+
 		const {
 			table_id,
 			block_table_ref,
@@ -295,6 +305,8 @@ export const updateTableEntity =
 			columns,
 			cells,
 		} = select.getTable(tableId, false);
+		// } = sourceTable;
+		console.log('...table data retrieved for updateTableEntity', { table_id, block_table_ref, table_status, post_id, table_name, attributes, classes, rows, columns, cells } );
 
 		const safeRows = Array.isArray(rows) ? rows : [];
 		const safeColumns = Array.isArray(columns) ? columns : [];
@@ -329,6 +341,7 @@ export const updateTableEntity =
 			}
 			return table_status;
 		};
+		console.log('...table Status - ' + tableStatus(overrideTableStatus, table_status) );
 
 		const updatedTable = {
 			id: tableId,
@@ -346,31 +359,18 @@ export const updateTableEntity =
 			columns: [...filteredColumns],
 			cells: [...transformedCells],
 		};
-
+		console.log('...updated table prepared for updateTableEntity', updatedTable );
 		/**
 		 * Options: isCached: Bool
 		 *          undoIgnore: Bool
 		 */
 		try {
+			console.log('...dispatching' );
 			return registry
 				.dispatch(coreStore)
 				.editEntityRecord('dynamic-table-blocks', 'table', table_id, updatedTable);
 		} catch (error) {
 			console.error('Error in updateTableEntity - Table ID - ' + table_id, error);
-			// registry
-			// 	.dispatch(noticeStore)
-			// 	.createNotice(
-			// 		'error',
-			// 		__(
-			// 			'Dynamic Tables could not queue the latest table changes for save.',
-			// 			'dynamic-table-blocks'
-			// 		),
-			// 		{
-			// 			id: 'dtbk-update-entity-error',
-			// 			isDismissible: true,
-			// 			politeness: 'assertive',
-			// 		}
-			// 	);
 			showMessageNotice(
 				registry.dispatch(noticeStore).createNotice,
 				'update-entity-error'

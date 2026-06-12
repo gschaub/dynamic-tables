@@ -2857,7 +2857,7 @@ const cloneTable = (tableId, postId, blockTableRef) => async ({
  *
  * @return  {Object} Action object
  */
-const createTableEntity = () => async ({
+const createTableEntity = (tableIdToCreate = '0') => async ({
   select,
   dispatch,
   registry
@@ -2872,7 +2872,7 @@ const createTableEntity = () => async ({
     rows,
     columns,
     cells
-  } = select.getTable('0', true);
+  } = select.getTable(tableIdToCreate, true);
   const newTable = {
     title: table_name,
     header: {
@@ -2910,6 +2910,10 @@ const createTableEntity = () => async ({
 const saveTableEntity = tableId => async ({
   registry
 }) => {
+  const editedTableData = registry.select(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).getEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
+  console.log('...table entity retrieved for saving', {
+    editedTableData
+  });
   try {
     // registry.dispatch(coreStore).saveEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
     return await registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).saveEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
@@ -2931,10 +2935,17 @@ const saveTableEntity = tableId => async ({
  * @param {string} [overrideTableStatus=''] Updates the table's status if populated
  * @return  {Object} Action Object
  */
-const updateTableEntity = (tableId, overrideTableStatus = '') => ({
+const updateTableEntity = (tableId, overrideTableStatus = '', tableOverride = null) => ({
   select,
   registry
 }) => {
+  console.log('In updateTableEntity - Table ID - ' + tableId);
+  // const sourceTable = tableOverride ?? select.getTable(tableId, false);
+
+  // if (!sourceTable?.table_id) {
+  // 	return false;
+  // }
+
   const {
     table_id,
     block_table_ref,
@@ -2947,6 +2958,19 @@ const updateTableEntity = (tableId, overrideTableStatus = '') => ({
     columns,
     cells
   } = select.getTable(tableId, false);
+  // } = sourceTable;
+  console.log('...table data retrieved for updateTableEntity', {
+    table_id,
+    block_table_ref,
+    table_status,
+    post_id,
+    table_name,
+    attributes,
+    classes,
+    rows,
+    columns,
+    cells
+  });
   const safeRows = Array.isArray(rows) ? rows : [];
   const safeColumns = Array.isArray(columns) ? columns : [];
   const safeCells = Array.isArray(cells) ? cells : [];
@@ -2982,6 +3006,7 @@ const updateTableEntity = (tableId, overrideTableStatus = '') => ({
     }
     return table_status;
   };
+  console.log('...table Status - ' + tableStatus(overrideTableStatus, table_status));
   const updatedTable = {
     id: tableId,
     title: table_name,
@@ -2998,29 +3023,16 @@ const updateTableEntity = (tableId, overrideTableStatus = '') => ({
     columns: [...filteredColumns],
     cells: [...transformedCells]
   };
-
+  console.log('...updated table prepared for updateTableEntity', updatedTable);
   /**
    * Options: isCached: Bool
    *          undoIgnore: Bool
    */
   try {
+    console.log('...dispatching');
     return registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).editEntityRecord('dynamic-table-blocks', 'table', table_id, updatedTable);
   } catch (error) {
     console.error('Error in updateTableEntity - Table ID - ' + table_id, error);
-    // registry
-    // 	.dispatch(noticeStore)
-    // 	.createNotice(
-    // 		'error',
-    // 		__(
-    // 			'Dynamic Tables could not queue the latest table changes for save.',
-    // 			'dynamic-table-blocks'
-    // 		),
-    // 		{
-    // 			id: 'dtbk-update-entity-error',
-    // 			isDismissible: true,
-    // 			politeness: 'assertive',
-    // 		}
-    // 	);
     (0,_messages__WEBPACK_IMPORTED_MODULE_5__.showMessageNotice)(registry.dispatch(_wordpress_notices__WEBPACK_IMPORTED_MODULE_2__.store).createNotice, 'update-entity-error');
     return false;
   }
@@ -5061,26 +5073,8 @@ function Edit(props) {
   const [isRefreshingAllTables, setIsRefreshingAllTables] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
   const [existingTableOptions, setExistingTableOptions] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(null);
   const [showBorders, setShowBorders] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
-  const [tableCreationMethod, setTableCreationMethod] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)('choose');
-  const [tableRequest, setTableRequest] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({
-    tableId: 0,
-    action: null,
-    blockTableRef: ''
-  });
-  const shouldFetchRequestedTable = Number(tableRequest.tableId) > 0 && tableRequest.action !== null;
-  const {
-    table: requestedTable,
-    hasFinishedResolving: requestedTableHasFinishedResolving,
-    isResolving: requestedTableIsResolving
-  } = (0,_hooks__WEBPACK_IMPORTED_MODULE_14__.useGetTable)(tableRequest.tableId, {
-    isTableStale: true,
-    shouldFetch: shouldFetchRequestedTable
-  });
-  const [createDraftTable, setCreateDraftTable] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({
-    tableName: '',
-    numColumns: 1,
-    numRows: 1
-  });
+
+  /* Table Operation declarations */
   const [tableOperation, setTableOperation] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({
     kind: 'idle',
     // idle | creating | cloning | attaching | ready | error
@@ -5089,6 +5083,28 @@ function Edit(props) {
     error: null
   });
   const isAwaitingTableAttachment = tableOperation.kind === 'creating' || tableOperation.kind === 'cloning' || tableOperation.kind === 'attaching';
+  const [tableCreationMethod, setTableCreationMethod] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)('choose');
+  const [createDraftTable, setCreateDraftTable] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({
+    tableName: '',
+    numColumns: 1,
+    numRows: 1
+  });
+  const [tableRequest, setTableRequest] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({
+    tableId: 0,
+    action: 'idle',
+    // idle | receive | attach
+    blockTableRef: ''
+  });
+  const shouldFetchRequestedTable = Number(tableRequest.tableId) > 0 && tableRequest.action === 'receive';
+  const {
+    table: requestedTable,
+    hasEntityRecord: requestedTableHasEntity,
+    hasFinishedResolving: requestedTableHasFinishedResolving,
+    isResolving: requestedTableIsResolving
+  } = (0,_hooks__WEBPACK_IMPORTED_MODULE_14__.useGetTable)(tableRequest.tableId, {
+    isTableStale: true,
+    shouldFetch: shouldFetchRequestedTable
+  });
   const [editingCellId, setEditingCellId] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(null);
   const editingCellIdRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
   const [cellClipboard, setCellClipboard] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({
@@ -5113,10 +5129,11 @@ function Edit(props) {
     tableStatus: '',
     isSavingEditorChanges: false
   });
+  const latestLifecycleRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)({});
   const isPageUnloadRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(false);
   const summaryTableRefreshSubscriberIdRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(Symbol('dtbk-summary-refresh'));
 
-  // Location of border cell last clicked
+  /* Location of border cell last clicked */
   const lastInvokerElRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
   const lastInvokerWasKeyboardRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(false);
   const suppressNextInvokerRestoreRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(false);
@@ -5214,7 +5231,7 @@ function Edit(props) {
     e?.preventDefault?.();
     e?.stopPropagation?.();
 
-    // Capture a real element, not the synthetic event
+    /* Capture a real element, not the synthetic event */
     const el = e?.currentTarget || null;
     lastInvokerElRef.current = el;
     lastInvokerWasKeyboardRef.current = Number(e?.detail) === 0;
@@ -5319,7 +5336,7 @@ function Edit(props) {
     e?.preventDefault?.();
     e?.stopPropagation?.();
 
-    // Capture a real element, not the synthetic event
+    /* Capture a real element, not the synthetic event */
     const el = e?.currentTarget || null;
     lastInvokerElRef.current = el;
     lastInvokerWasKeyboardRef.current = Number(e?.detail) === 0;
@@ -5472,7 +5489,7 @@ function Edit(props) {
     e?.preventDefault?.();
     e?.stopPropagation?.();
 
-    // Capture a real element, not the synthetic event
+    /* Capture a real element, not the synthetic event */
     const el = e?.currentTarget || null;
     lastInvokerElRef.current = el;
     lastInvokerWasKeyboardRef.current = Number(e?.detail) === 0;
@@ -5523,10 +5540,10 @@ function Edit(props) {
     });
   }
 
-  // Support table creation and cloning
+  /* Support table creation and cloning */
   const cloneLatchRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(new Set());
 
-  // Support keyboard navigation in table
+  /* Support keyboard navigation in table */
   const [focusedCell, setFocusedCell] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({
     col: 0,
     row: 0
@@ -5696,7 +5713,7 @@ function Edit(props) {
    *
    * @since 1.0.0
    *
-   * @return  {("None" | "New" | "Stale" | "Saved")}  Table Status
+   * @return  {("None" | "Stale" | "Loaded" | "New" | "Saved")}  Table Status
    */
   const setBlockTableStatus = () => {
     if (block_table_ref === '') {
@@ -5765,7 +5782,7 @@ function Edit(props) {
     return updateType === 'insert-above' || updateType === 'insert-below' || updateType === 'delete';
   }
 
-  // Ensure structural changes are unavailable when block editor is in contentOnly mode
+  /* Ensure structural changes are unavailable when block editor is in contentOnly mode */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
     if (!isContentOnlyMode) return;
     setRowHeightModal(prev => ({
@@ -5815,7 +5832,7 @@ function Edit(props) {
       isPageUnloadRef.current = true;
     };
     const clearPageUnload = event => {
-      // Do not clear during a real unload when the document becomes hidden.
+      /* Do not clear during a real unload when the document becomes hidden. */
       if (event?.type === 'visibilitychange' && document.visibilityState !== 'visible') {
         return;
       }
@@ -5946,7 +5963,7 @@ function Edit(props) {
     };
   }, [table_id, isTableStale, block_table_ref]);
 
-  // Table is no longer stale once it has finished resolving
+  /* Table is no longer stale once it has finished resolving */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
     if (!tableHasFinishedResolving) return;
     setTableStale(false);
@@ -5958,31 +5975,75 @@ function Edit(props) {
    * @since 1.3.2
    */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
-    if (tableRequest.action !== 'attach') return;
+    if (tableRequest.action !== 'receive') return;
     if (!tableRequest.tableId) return;
     if (!tableRequest.blockTableRef) return;
     if (requestedTableIsResolving || !requestedTableHasFinishedResolving) return;
+    if (!requestedTable?.table_id) return;
+    if (!requestedTableHasEntity) return;
     const attachedTableId = Number(tableRequest.tableId);
-    updateSummaryTable({
-      table_id: attachedTableId,
+    const attachedTable = {
+      ...requestedTable,
       block_table_ref: tableRequest.blockTableRef,
       table_status: 'new',
       post_id: String(postId)
+    };
+    updateSummaryTable({
+      table_id: attachedTableId,
+      block_table_ref: tableRequest.blockTableRef,
+      table_status: attachedTable.table_status,
+      post_id: String(postId)
     });
-    receiveTable(attachedTableId, tableRequest.blockTableRef, 'new', String(postId), requestedTable.table_name, requestedTable.attributes, requestedTable.classes, requestedTable.rows, requestedTable.columns, requestedTable.cells);
-    updateTableEntity(attachedTableId);
+    receiveTable(attachedTableId, attachedTable.block_table_ref, attachedTable.table_status, attachedTable.post_id, attachedTable.table_name, attachedTable.attributes, attachedTable.classes, attachedTable.rows, attachedTable.columns, attachedTable.cells);
     props.setAttributes({
       original_post_type: postType,
       original_post_id: Number(postId),
       block_table_ref: tableRequest.blockTableRef,
       table_id: Number(requestedTable.table_id)
     });
-    setTableRequest({
-      tableId: 0,
-      action: null,
-      blockTableRef: ''
-    });
-  }, [tableRequest.action, tableRequest.blockTableRef, tableRequest.tableId, requestedTable?.table_id, requestedTable?.table_name, requestedTable?.attributes, requestedTable?.classes, requestedTable?.rows, requestedTable?.columns, requestedTable?.cells, requestedTableHasFinishedResolving, requestedTableIsResolving, postId, postType, receiveTable, updateTableEntity]);
+    setTableRequest(prev => ({
+      ...prev,
+      action: 'attach'
+    }));
+  }, [tableRequest.action, tableRequest.blockTableRef, tableRequest.tableId, requestedTable?.table_id, requestedTable?.table_name, requestedTable?.attributes, requestedTable?.classes, requestedTable?.rows, requestedTable?.columns, requestedTable?.cells, requestedTableHasEntity, requestedTableHasFinishedResolving, requestedTableIsResolving, postId, postType, updateSummaryTable, receiveTable]);
+
+  /**
+   * Attach existing table to block when table is ready for attachment.
+   *
+   * @since 1.3.2
+   */
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
+    if (tableRequest.action !== 'attach') return;
+    const summaryTableId = Number(table.table_id || tableRequest.tableId || 0);
+    void (async () => {
+      try {
+        const entityId = Number(table.table_id);
+        updateTableEntity(entityId);
+        const savedEntity = await saveTableEntity(entityId);
+      } catch (error) {
+        console.error('Error saving attached Dynamic Table entity', error);
+        (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'update-entity-error');
+        setTableOperation({
+          kind: 'error',
+          blockTableRef: tableRequest.blockTableRef,
+          sourceTableId: table.table_id,
+          error
+        });
+      } finally {
+        setTableRequest({
+          tableId: 0,
+          action: 'idle',
+          blockTableRef: ''
+        });
+      }
+    })();
+  }, [tableRequest.action, postId, allTables, existingTableOptions, activeExistingTableOptions, table.table_id, table.block_table_ref, table.table_status, table.post_id, saveTableEntity, updateSummaryTable]);
+  const tableHasPendingEntityEdits = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
+    if (!table?.block_table_ref || Number(table.table_id) <= 0) {
+      return false;
+    }
+    return select(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_3__.store)?.hasEditsForEntityRecord?.('dynamic-table-blocks', 'table', Number(table.table_id)) ?? false;
+  }, [table?.block_table_ref, table.table_id]);
 
   /**
    * Set table attributes and attach table to block when table is created or
@@ -6009,14 +6070,8 @@ function Edit(props) {
     });
   }, [isAwaitingTableAttachment, block_table_ref, attachedTableId, table_id, postType, postId]);
 
-  //Determine if table has been loaded.
+  /* Determine if table has been loaded. */
   const tableLoaded = !!table.block_table_ref && blockTableStatus !== 'None';
-  const tableHasPendingEntityEdits = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
-    if (!table?.block_table_ref || Number(table.table_id) <= 0) {
-      return false;
-    }
-    return select(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_3__.store)?.hasEditsForEntityRecord?.('dynamic-table-blocks', 'table', Number(table.table_id)) ?? false;
-  }, [table?.block_table_ref, table.table_id]);
 
   /**
    * Fires when posts have just finished saving and when a change is detected in
@@ -6041,6 +6096,10 @@ function Edit(props) {
            */
           if (table.table_status == 'new') {
             setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
+            updateTableEntity(table.table_id, 'saved', {
+              ...table,
+              table_status: 'saved'
+            });
           }
           await saveTableEntity(table.table_id);
         }
@@ -6056,7 +6115,7 @@ function Edit(props) {
       console.error('Error processing Dynamic Tables after post save', error);
       (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'post-save-sync-error');
     });
-  }, [didJustFinishPostSave, deletedTables, tableLoaded, table.table_id, table.table_status, tableHasPendingEntityEdits, refreshSummaryTables, createNotice]);
+  }, [didJustFinishPostSave, deletedTables, tableLoaded, table.table_id, table.table_status, tableHasPendingEntityEdits, refreshSummaryTables, createNotice, updateTableEntity]);
 
   /**
    * Create a latch key before clone to identify the specific block being cloned. The block
@@ -6076,14 +6135,14 @@ function Edit(props) {
   }) {
     const key = [clientId || 'no-client', postId || 0, tableId || 0].join(':');
 
-    // If we already cloned for this key, deny.
+    /* If we already cloned for this key, deny. */
     if (cloneLatchRef.current.has(key)) {
       return {
         locked: true
       };
     }
 
-    // Otherwise lock it now.
+    /* Otherwise lock it now. */
     cloneLatchRef.current.add(key);
     return {
       locked: false
@@ -6106,12 +6165,12 @@ function Edit(props) {
     const patternName = props.attributes?.metadata?.patternName;
     const isBlockFromPattern = !!patternName;
 
-    // Exit if table is not loaded
+    /* Exit if table is not loaded */
     if (!tableLoaded) {
       return false;
     }
 
-    // Exit if table is being created manually
+    /* Exit if table is being created manually */
     if (isNewBlock) {
       return false;
     }
@@ -6122,17 +6181,17 @@ function Edit(props) {
       return false;
     }
 
-    // Duplicated blocks inherit the original table reference and need their own clone.
+    /* Duplicated blocks inherit the original table reference and need their own clone. */
     if (isDuplicatedBlockInstance) {
       return true;
     }
 
-    // Inserted post type is not a pattern
+    /* Inserted post type is not a pattern */
     if (original_post_type !== 'wp_block') {
       return false;
     }
 
-    // Inserted Patterns have meta and pattern meta does not load in preview inserter
+    /* Inserted Patterns have meta and pattern meta does not load in preview inserter */
     if (!isBlockFromPattern) {
       return false;
     }
@@ -6266,8 +6325,10 @@ function Edit(props) {
         isSavingEditorChanges: wasSavingEditorChanges
       } = unmountSnapshotRef.current;
 
-      // No cleanup is needed for blocks that never finished loading, are still new,
-      // or do not yet have a persisted table ID.
+      /** No cleanup is needed for blocks that never finished loading, are still new,
+       * or do not yet have a persisted table ID.
+       */
+
       if (!wasTableLoaded || wasNewBlock || tableId <= 0) {
         return;
       }
@@ -6706,7 +6767,7 @@ function Edit(props) {
     });
     setTableRequest(prev => ({
       ...prev,
-      action: 'attach',
+      action: 'receive',
       blockTableRef: nextBlockTableRef
     }));
   }
@@ -6765,7 +6826,7 @@ function Edit(props) {
   function onAssignRequestedTableId(event) {
     setTableRequest({
       tableId: Number(event),
-      action: null,
+      action: 'idle',
       blockTableRef: ''
     });
   }
@@ -8775,7 +8836,7 @@ function Edit(props) {
             value: tableRequest.tableId || '',
             options: activeExistingTableOptions,
             __nextHasNoMarginBottom: true
-          }), tableRequest.action !== null && requestedTableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("span", {
+          }), tableRequest.action !== 'idle' && requestedTableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsxs)("span", {
             className: 'dtbk-spinner-message',
             children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Retrieving selected table...', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_21__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
           })]
@@ -9370,8 +9431,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./data */ "./src/data/index.js");
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./data */ "./src/data/index.js");
 /* External dependencies */
+
 
 
 
@@ -9505,6 +9569,8 @@ function useGetTable(tableId, {
     if (!shouldResolveTable) {
       return {
         table: null,
+        entityRecord: null,
+        hasEntityRecord: false,
         hasStartedResolving: false,
         hasFinishedResolving: false,
         isResolving: false
@@ -9515,17 +9581,25 @@ function useGetTable(tableId, {
       hasStartedResolution,
       hasFinishedResolution,
       isResolving
-    } = select(_data__WEBPACK_IMPORTED_MODULE_3__.store);
-    const selectorArgs = [tableId, isTableStale];
+    } = select(_data__WEBPACK_IMPORTED_MODULE_4__.store);
+    const core = select(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_3__.store);
+    const tableSelectorArgs = [tableId, isTableStale];
+    const entitySelectorArgs = ['dynamic-table-blocks', 'table', Number(tableId)];
     const table = getTable(tableId, isTableStale);
-    const hasStartedResolving = hasStartedResolution('getTable', selectorArgs);
-    const hasFinishedResolving = hasFinishedResolution('getTable', selectorArgs);
-    const tableIsResolving = isResolving('getTable', selectorArgs);
+    const entityRecord = core.getEntityRecord('dynamic-table-blocks', 'table', Number(tableId));
+    const tableHasStartedResolving = hasStartedResolution('getTable', tableSelectorArgs);
+    const tableHasFinishedResolving = hasFinishedResolution('getTable', tableSelectorArgs);
+    const tableIsResolving = isResolving('getTable', tableSelectorArgs);
+    const entityHasStartedResolving = core?.hasStartedResolution?.('getEntityRecord', entitySelectorArgs) ?? false;
+    const entityHasFinishedResolving = core?.hasFinishedResolution?.('getEntityRecord', entitySelectorArgs) ?? false;
+    const entityIsResolving = core?.isResolving?.('getEntityRecord', entitySelectorArgs) ?? false;
     return {
       table,
-      hasStartedResolving,
-      hasFinishedResolving,
-      isResolving: tableIsResolving
+      entityRecord,
+      hasEntityRecord: !!entityRecord?.id,
+      hasStartedResolving: tableHasStartedResolving || entityHasStartedResolving,
+      hasFinishedResolving: tableHasFinishedResolving && entityHasFinishedResolving,
+      isResolving: tableIsResolving || entityIsResolving
     };
   }, [tableId, isTableStale, shouldResolveTable]);
 }

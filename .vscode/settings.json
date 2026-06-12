@@ -13,5 +13,12 @@
     "[php]":  {
                   "editor.formatOnSave":  true
               },
+    "phpcs.enable":  true,
+    "phpcs.autoConfigSearch":  true,
+    "phpcs.standard":  "./phpcs.xml",
+    "phpsab.snifferEnable":  false,
+    "phpsab.autoRulesetSearch":  true,
+    "phpsab.standard":  "./phpcs.xml",
+    "phpCodeSniffer.standard":  "Disabled",
     "files.eol":  "\n"
 }

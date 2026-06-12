@@ -321,27 +321,27 @@ class PersistTableData {
 		 * table values
 		 */
 		if ( $block_table_ref === null ) {
-			$block_table_ref = $query_results[0]->block_table_ref;
+			$block_table_ref = $query_results['block_table_ref'];
 		}
 
 		if ( $status === null ) {
-			$status = $query_results[0]->status;
+			$status = $query_results['status'];
 		}
 
 		if ( $post_id === null ) {
-			$post_id = $query_results[0]->post_id;
+			$post_id = $query_results['post_id'];
 		}
 
 		if ( $table_name === null ) {
-			$table_name = sanitize_text_field( $query_results[0]->table_name );
+			$table_name = sanitize_text_field( $query_results['table_name'] );
 		}
 
 		if ( $attributes === null ) {
-			$attributes = $query_results[0]->table_name;
+			$attributes = $query_results['attributes'];
 		}
 
 		if ( $classes === null ) {
-			$classes = $query_results[0]->classes;
+			$classes = $query_results['classes'];
 		}
 
 		/**
@@ -413,7 +413,7 @@ class PersistTableData {
 				'updated_rows' => '0',
 			);
 		}
-		$set_format = array_map( 'trim', explode( ',', $query_string ) );
+		$set_format = array( '%s', '%s', '%d', '%s', '%s', '%s' );
 
 		/**
 		 * Create arrays with required args for the update and
@@ -438,7 +438,7 @@ class PersistTableData {
 				'updated_rows' => '0',
 			);
 		}
-		$where_format = array_map( 'trim', explode( ',', $query_string ) );
+		$where_format = array( '%d' );
 
 		/**
 		 * Run update query for dtbk_tables
