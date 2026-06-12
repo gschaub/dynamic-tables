@@ -191,7 +191,8 @@ class DTBK_Maintenance {
 	 * @return void
 	 */
 	protected function run_scheduled_tasks() {
-		error_log( 'Running Cron Tasks for Dynamic Table Blocks' );
+		$this->log( 'Running Cron Tasks for Dynamic Table Blocks' );
+		// error_log( 'Running Cron Tasks for Dynamic Table Blocks' );
 		$this->delete_expired_transients();
 		$this->validate_tables();
 	}
@@ -224,7 +225,6 @@ class DTBK_Maintenance {
 	 * @return void
 	 */
 	public function validate_tables() {
-		error_log( 'Running Validate Table' );
 		// Retrieve dynamic table blocks in all parent posts and index fields
 		$search_post_types = array(
 			'exclude' => array( 'revision', 'attachment', 'nav_menu_item', 'custom_css', 'changeset' ),
@@ -300,6 +300,10 @@ class DTBK_Maintenance {
 	private function process_table_post_matches( $matching_posts, $table ) {
 		$posts_matched = 0;
 
+		if ( $table['status'] === 'loaded' && (int) $table['post_id'] === 0 && $table['block_table_ref'] === '' ) {
+			return;
+		}
+
 		foreach ( $matching_posts as $post_block ) {
 			if ( (int) $table['post_id'] === 0 ) {
 				if ( $post_block['block_table_ref'] === $table['block_table_ref'] ) {
@@ -337,7 +341,7 @@ class DTBK_Maintenance {
 			} elseif ( $table['status'] !== 'corrupted' ) {
 				// Update table status = 'corrupted'
 				$full_table                     = $this->get_table( (int) $table['id'] );
-				$full_table['header']['status'] = 'currupted';
+				$full_table['header']['status'] = 'corrupted';
 				$this->update_table( $full_table );
 			}
 			++$posts_matched;
@@ -347,7 +351,7 @@ class DTBK_Maintenance {
 			if ( $table['status'] !== 'corrupted' ) {
 				// Update table status = 'corrupted'
 				$full_table                     = $this->get_table( (int) $table['id'] );
-				$full_table['header']['status'] = 'currupted';
+				$full_table['header']['status'] = 'corrupted';
 				$this->update_table( $full_table );
 			}
 		}
@@ -591,7 +595,6 @@ class DTBK_Maintenance {
 
 		// Execute the request
 		$response = rest_do_request( $request );
-		error_log( 'Get Table Response: ' . json_encode( $response ) );
 		if ( $response->is_error() ) {
 			return $response;
 		}
@@ -703,7 +706,6 @@ class DTBK_Maintenance {
 	 * @return void
 	 */
 	private function delete_expired_transients() {
-		error_log( 'Running Delete Transients' );
 		global $wpdb;
 		$expiration_cutoff = time() - DAY_IN_SECONDS;
 

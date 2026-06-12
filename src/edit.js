@@ -2033,6 +2033,27 @@ export default function Edit(props) {
 	}
 
 	/**
+	 * Remove the placeholder block when block creation is cancelled..
+	 *
+	 * @since 1.3.2
+	 */
+	function onCancelNewBlock() {
+		if (!props.clientId || !isNewBlock) {
+			return;
+		}
+
+		removeMessageNotice(removeNotice, 'invalid-num-columns');
+		removeMessageNotice(removeNotice, 'invalid-num-rows');
+
+		const blockEditorDispatch = dispatch('core/block-editor');
+		if (typeof blockEditorDispatch?.removeBlock !== 'function') {
+			return;
+		}
+
+		blockEditorDispatch.removeBlock(props.clientId);
+	}
+
+	/**
 	 * Set the chosen table creation method.
 	 *
 	 * @since 3.1.2
@@ -4533,14 +4554,37 @@ export default function Edit(props) {
 							</>
 						)}
 
-						<Button
-							className="blocks-table__placeholder-button"
-							disabled={createTableDisabled}
-							variant="primary"
-							type="submit"
-						>
-							{__('Create Table')}
-						</Button>
+						<hr
+							style={
+								{
+									alignSelf: 'stretch',
+									width: '100%',
+									margin: '8px 0 12px',
+									border: 0,
+									borderTop: '1px solid #dcdcde',
+								}
+							}
+						/>
+
+						<div className="dtbk-modal__footer">
+							<div className="dtbk-modal__button-group">
+								<Button
+									variant="secondary"
+									type="button"
+									onClick={onCancelNewBlock}
+								>
+									{__('Cancel', 'dynamic-table-blocks')}
+								</Button>
+
+								<Button
+									disabled={createTableDisabled}
+									variant="primary"
+									type="submit"
+								>
+									{__('Create Table', 'dynamic-table-blocks')}
+								</Button>
+							</div>
+						</div>
 					</form>
 				</Placeholder>
 			)}

@@ -1,13 +1,35 @@
 /*!****************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/editor.scss ***!
   \****************************************************************************************************************************************************************************************************************************************/
-/**
- * The following styles get applied inside the editor only.
- *
- * Replace them with your own styles or remove the file completely.
- */
+@charset "UTF-8";
+.wp-block-table {
+  margin: 0;
+}
+.wp-block[data-align=left] > .wp-block-table, .wp-block[data-align=right] > .wp-block-table, .wp-block[data-align=center] > .wp-block-table {
+  height: auto;
+}
+.wp-block[data-align=left] > .wp-block-table table, .wp-block[data-align=right] > .wp-block-table table, .wp-block[data-align=center] > .wp-block-table table {
+  width: auto;
+}
+.wp-block[data-align=center] > .wp-block-table {
+  text-align: initial;
+}
+.wp-block[data-align=center] > .wp-block-table table {
+  margin: 0 auto;
+}
 .wp-block-dynamic-table-blocks-dynamic-table-blocks {
   border: 0px dotted #f00;
+}
+.blocks-table__placeholder-form.blocks-table__placeholder-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.blocks-table__placeholder-input {
+  margin-bottom: 0;
+}
+.column-menu {
+  visibility: hidden;
 }
 .dtbk-spinner-message {
   font-size: 11px;
@@ -20,6 +42,19 @@
   display: "inline-flex";
   align-items: "center";
   gap: "8px";
+}
+/* Sticky footer (no more “scroll to Update”) */
+.dtbk-modal__footer {
+  flex: 0 0 auto;
+  position: sticky;
+  bottom: 0;
+  background: #fff; /* or var token if you prefer */
+  z-index: 2;
+}
+.dtbk-modal__button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }
 .border-box-workaround {
   width: 100%;
@@ -142,9 +177,6 @@
 .grid-control__inspector-controls--border-box-control {
   height: 15px;
 }
-.column-menu {
-  visibility: hidden;
-}
 .grid-control__cellEditor {
   font: inherit; /* shorthand: family/size/weight */
   font-size: inherit;
@@ -152,29 +184,6 @@
   letter-spacing: inherit;
   background-color: transparent;
   box-shadow: inherit;
-}
-.wp-block-table {
-  margin: 0;
-}
-.wp-block[data-align=left] > .wp-block-table, .wp-block[data-align=right] > .wp-block-table, .wp-block[data-align=center] > .wp-block-table {
-  height: auto;
-}
-.wp-block[data-align=left] > .wp-block-table table, .wp-block[data-align=right] > .wp-block-table table, .wp-block[data-align=center] > .wp-block-table table {
-  width: auto;
-}
-.wp-block[data-align=center] > .wp-block-table {
-  text-align: initial;
-}
-.wp-block[data-align=center] > .wp-block-table table {
-  margin: 0 auto;
-}
-.blocks-table__placeholder-form.blocks-table__placeholder-form {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-.blocks-table__placeholder-input {
-  margin-bottom: 0;
 }
 /* Date/Time editor input (TextControl) styling in Gutenberg editor */
 .grid-control__cellEditor--dateTimeInput,

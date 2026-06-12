@@ -1,11 +1,44 @@
-/**
- * The following styles get applied inside the editor only.
- *
- * Replace them with your own styles or remove the file completely.
- */
+.wp-block-table {
+	// Remove default <figure> style.
+	margin: 0;
+
+	.wp-block[data-align="left"]>&,
+	.wp-block[data-align="right"]>&,
+	.wp-block[data-align="center"]>& {
+		// Stop table block from collapsing when tables are floated.
+		height: auto;
+
+		table {
+			// Ensure the table element is not full-width when aligned.
+			width: auto;
+		}
+	}
+
+	.wp-block[data-align="center"]>& {
+		text-align: initial;
+
+		table {
+			margin: 0 auto;
+		}
+	}
+}
 
 .wp-block-dynamic-table-blocks-dynamic-table-blocks {
 	border: 0px dotted #f00;
+}
+
+.blocks-table__placeholder-form.blocks-table__placeholder-form {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.blocks-table__placeholder-input {
+	margin-bottom: 0;
+}
+
+.column-menu {
+	visibility: hidden;
 }
 
 .dtbk-spinner-message {
@@ -19,6 +52,21 @@
 	display: 'inline-flex';
 	align-items: 'center';
 	gap: '8px';
+}
+
+/* Sticky footer (no more “scroll to Update”) */
+.dtbk-modal__footer {
+	flex: 0 0 auto;
+	position: sticky;
+	bottom: 0;
+	background: #fff; /* or var token if you prefer */
+	z-index: 2;
+}
+
+.dtbk-modal__button-group{
+	display:flex;
+	justify-content:flex-end;
+	gap:8px;
 }
 
 .border-box-workaround {
@@ -183,10 +231,6 @@
 	height: 15px;
 }
 
-.column-menu {
-	visibility: hidden;
-}
-
 .grid-control__cellEditor {
   font: inherit;          /* shorthand: family/size/weight */
   font-size: inherit;
@@ -194,41 +238,6 @@
   letter-spacing: inherit;
   background-color: transparent;
   box-shadow: inherit
-}
-
-.wp-block-table {
-	// Remove default <figure> style.
-	margin: 0;
-
-	.wp-block[data-align="left"]>&,
-	.wp-block[data-align="right"]>&,
-	.wp-block[data-align="center"]>& {
-		// Stop table block from collapsing when tables are floated.
-		height: auto;
-
-		table {
-			// Ensure the table element is not full-width when aligned.
-			width: auto;
-		}
-	}
-
-	.wp-block[data-align="center"]>& {
-		text-align: initial;
-
-		table {
-			margin: 0 auto;
-		}
-	}
-}
-
-.blocks-table__placeholder-form.blocks-table__placeholder-form {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-}
-
-.blocks-table__placeholder-input {
-	margin-bottom: 0;
 }
 
 /* Date/Time editor input (TextControl) styling in Gutenberg editor */

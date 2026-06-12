@@ -1,6 +1,7 @@
 /* External dependencies */
 import { useInstanceId } from '@wordpress/compose';
-import { useEffect, useLayoutEffect, useRef, useState, memo } from '@wordpress/element';
+import { useLayoutEffect, useRef, useState, memo } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import {
 	Modal,
 	BaseControl,
@@ -935,10 +936,10 @@ function ConfigureColumnDataType(props = {}) {
 				<div className="configure-column-modal__footer">
 					<div className="configure-column-modal__button-group">
 						<Button variant="secondary" onClick={handleCancel}>
-							Cancel
+							{__('Cancel', 'dynamic-table-blocks')}
 						</Button>
 						<Button variant="primary" type="submit">
-							Update
+							{__('Update', 'dynamic-table-blocks')}
 						</Button>
 					</div>
 				</div>
