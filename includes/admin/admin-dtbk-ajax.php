@@ -1,6 +1,6 @@
 <?php
 /**
- * Provides the main Dynamic Tables admin page.
+ * Provides AJAX services.
  */
 namespace DynamicTableBlocks;
 
@@ -20,12 +20,6 @@ class DTBK_Admin_Ajax {
 		add_action( 'wp_ajax_dtbk_import_analyze', array( $this, 'import_analyze' ) );
 		add_action( 'wp_ajax_dtbk_import_commit', array( $this, 'import_commit' ) );
 	}
-
-	/**
-	 * Supply data for modal view in .
-	 *
-	 * @since 1.1.0
-	 */
 
 	/**
 	 * Supply data for modal view data view in table list.
@@ -105,11 +99,9 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Load imported table data to an html table for user review prior to creating the new table
 	 *
-	 * @todo Document function
-	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 */
 	public function import_analyze() {
 		check_ajax_referer( 'dtbk-table-list' );
@@ -148,11 +140,9 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Create a dynamic table from imported table data
 	 *
-	 * @todo Document function
-	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 */
 	public function import_commit() {
 		check_ajax_referer( 'dtbk-table-list' );
@@ -207,11 +197,11 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Retrieve and return the imported file format from the import request.
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @return string File format of the file to load.
 	 */
 	private function get_import_format() {
 		$format = isset( $_POST['format'] ) ? sanitize_key( wp_unslash( $_POST['format'] ) ) : '';
@@ -228,11 +218,11 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Gather and return the import options selected by the user in the import wizard
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @return array Import options selected by the user.
 	 */
 	private function get_import_options() {
 		$raw          = isset( $_POST['options'] ) ? wp_unslash( $_POST['options'] ) : '{}';
@@ -259,11 +249,11 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Retrieve and validate the uploaded file from the import request.
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @return array|\WP_Error Metadata from the uploaded file
 	 */
 	private function get_import_file() {
 		if ( empty( $_FILES['file'] ) || ! is_array( $_FILES['file'] ) ) {
@@ -300,13 +290,17 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * File Creation controller to build table array based on file type
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @param string $format       File format
+	 * @param array $uploaded_file File metadata
+	 * @param array $options       User selected import options
+	 * @param boolean $is_commit   We are creating/saving the table
+	 * @return array|\WP_Error     Import file transformed into REST API table shape
 	 */
-	private function build_import_table( $format, array $uploaded_file, array $options, $is_commit = false ) {
+	private function build_import_table( $format, $uploaded_file, $options, $is_commit = false ) {
 		switch ( $format ) {
 			case 'json':
 				// JSON restores the backed-up payload but keeps the selected table identity.
@@ -326,13 +320,16 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Transform JSON input to standard dynamic tables array
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @param array $uploaded_file File metadata
+	 * @param array $options       User selected import options
+	 * @param boolean $is_commit   We are creating/saving the table
+	 * @return array|\WP_Error Import file transformed into REST API table shape
 	 */
-	private function normalize_json_import( array $uploaded_file, array $options, $is_commit = false ) {
+	private function normalize_json_import( $uploaded_file, $options, $is_commit = false ) {
 
 		$parsed = $this->parse_json_import_file( $uploaded_file );
 		if ( is_wp_error( $parsed ) ) {
@@ -425,11 +422,12 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Retrieve and format file contents as an array.
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @param array $uploaded_file  One or more table
+	 * @return array|\WP_Error JSON file transformed into an array of rows
 	 */
 	private function parse_json_import_file( array $uploaded_file ) {
 		$contents = file_get_contents( $uploaded_file['tmp_name'] );
@@ -483,13 +481,15 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Transform JSON table array into
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @param array $source_table Imported JSON table
+	 * @param array $target_table Existing table with the imported table's table_id
+	 * @return array|\WP_Error Import file transformed into REST API table shape
 	 */
-	private function build_normalized_json_table( array $source_table, array $target_table = array() ) {
+	private function build_normalized_json_table( $source_table, $target_table = array() ) {
 		$is_create          = empty( $target_table ) || empty( $target_table['id'] );
 		$target_id          = $is_create ? 0 : (int) $target_table['id'];
 		$target_header      = isset( $target_table['header'] ) && is_array( $target_table['header'] ) ? $target_table['header'] : array();
@@ -576,7 +576,7 @@ class DTBK_Admin_Ajax {
 				'table_id'   => $target_id,
 				'row_id'     => $row_id,
 				'attributes' => array_merge(
-					$this->get_default_row_attributes(),
+					get_default_row_attributes(),
 					is_array( $row['attributes'] ?? null ) ? $row['attributes'] : array()
 				),
 				'classes'    => isset( $row['classes'] ) ? (string) $row['classes'] : '',
@@ -599,7 +599,7 @@ class DTBK_Admin_Ajax {
 				'column_id'   => $column_id,
 				'column_name' => isset( $column['column_name'] ) ? (string) $column['column_name'] : '',
 				'attributes'  => array_merge(
-					$this->get_default_column_attributes(),
+					get_default_column_attributes(),
 					is_array( $column['attributes'] ?? null ) ? $column['attributes'] : array()
 				),
 				'classes'     => isset( $column['classes'] ) ? (string) $column['classes'] : '',
@@ -689,13 +689,16 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Transform CSV input to standard dynamic tables array
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @param array $uploaded_file File metadata
+	 * @param array $options       User selected import options
+	 * @param boolean $is_commit   We are creating/saving the table
+	 * @return array|\WP_Error Import file transformed into REST API table shape
 	 */
-	private function normalize_csv_import( array $uploaded_file, array $options, $is_commit = false ) {
+	private function normalize_csv_import( $uploaded_file, $options, $is_commit = false ) {
 		$rows = $this->parse_csv_rows( $uploaded_file['tmp_name'] );
 		if ( is_wp_error( $rows ) ) {
 			return $rows;
@@ -704,6 +707,7 @@ class DTBK_Admin_Ajax {
 		$first_row_header = ! empty( $options['firstRowHeader'] );
 		$provided_headers = isset( $options['headerNames'] ) && is_array( $options['headerNames'] ) ? $options['headerNames'] : array();
 		$max_columns      = 0;
+		$warnings         = array();
 
 		foreach ( $rows as $row_index => $row ) {
 			$rows[ $row_index ] = array_map(
@@ -712,6 +716,7 @@ class DTBK_Admin_Ajax {
 			);
 		}
 
+		/* Get maximum column count */
 		foreach ( $rows as $row ) {
 			$max_columns = max( $max_columns, count( $row ) );
 		}
@@ -753,9 +758,10 @@ class DTBK_Admin_Ajax {
 
 		$table_name                          = (string) pathinfo( $uploaded_file['name'], PATHINFO_FILENAME );
 		$target_id                           = 0;
-		$table_attributes                    = $this->get_default_table_attributes();
+		$table_attributes                    = get_default_table_attributes();
 		$table_attributes['enableHeaderRow'] = $first_row_header;
 
+		/* Create table structure and populate header data */
 		$table = array(
 			'id'      => $target_id,
 			'title'   => $table_name,
@@ -773,6 +779,7 @@ class DTBK_Admin_Ajax {
 			'cells'   => array(),
 		);
 
+		/* Build table columns */
 		for ( $column_id = 1; $column_id <= $max_columns; $column_id++ ) {
 			if ( $first_row_header ) {
 				$column_name = trim( $this->normalize_import_text( $rows[0][ $column_id - 1 ] ?? '' ) );
@@ -792,6 +799,7 @@ class DTBK_Admin_Ajax {
 			);
 		}
 
+		/* Build table rows */
 		foreach ( $rows as $row_index => $row_values ) {
 			$row_id    = $row_index + 1;
 			$is_header = $first_row_header && 1 === $row_id;
@@ -800,12 +808,13 @@ class DTBK_Admin_Ajax {
 				'table_id'   => $target_id,
 				'row_id'     => $row_id,
 				'attributes' => array_merge(
-					$this->get_default_row_attributes(),
+					get_default_row_attributes(),
 					array( 'isHeader' => (bool) $is_header )
 				),
 				'classes'    => '',
 			);
 
+			/* Build table cells */
 			for ( $column_id = 1; $column_id <= $max_columns; $column_id++ ) {
 				$raw_value    = $this->normalize_import_text( $row_values[ $column_id - 1 ] ?? '' );
 				$cell_content = $this->sanitize_import_content( $raw_value );
@@ -843,11 +852,12 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Parse the uploaded CSV file and return its rows as arrays of cell values.
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @param string $tmp_name File metadata
+	 * @return array|\WP_Error CSV file transformed into an array of rows
 	 */
 	private function parse_csv_rows( $tmp_name ) {
 		$handle = fopen( $tmp_name, 'rb' );
@@ -876,13 +886,16 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Parse the uploaded CSV file and return its rows as arrays of cell values.
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @param string $format   File format
+	 * @param array $table     table data
+	 * @param array $meta      Supporting data for file processing, feedback and user prompts
+	 * @return array           Summary table data and other meta to support subsequent import commit
 	 */
-	private function build_import_analysis_payload( $format, array $table, array $meta ) {
+	private function build_import_analysis_payload( $format, $table, $meta ) {
 		$restore      = isset( $meta['restore'] ) && is_array( $meta['restore'] ) ? $meta['restore'] : array();
 		$restore_mode = isset( $meta['options']['restoreMode'] ) ? (string) $meta['options']['restoreMode'] : 'create';
 		$target       = array(
@@ -914,13 +927,15 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Transform CSV input to standard dynamic tables array
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @param integer $column_count    Number of columns in the imported CSV File
+	 * @param array $provided_headers  User selected import options
+	 * @return array|\WP_Error Column header names
 	 */
-	private function build_csv_header_inputs( $column_count, array $provided_headers = array() ) {
+	private function build_csv_header_inputs( $column_count, $provided_headers = array() ) {
 		$inputs = array();
 
 		for ( $column_id = 1; $column_id <= $column_count; $column_id++ ) {
@@ -937,22 +952,27 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Create default column header name
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @param integer $column_id    Number of columns in the imported CSV File
+	 * @return string Default column header name
 	 */
 	private function get_csv_fallback_header_name( $column_id ) {
 		return 'Column ' . number_to_letter( $column_id );
 	}
 
 	/**
-	 * Document function
+	 * Prepare table data for analysis results
 	 *
-	 * @todo Document function
+	 * Description: Return no more than 5 rows of simplified table data for user review prior to saving
+	 *              the data as a table.
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
+	 *
+	 * @param array $table    Full table data
+	 * @return array Default column header name
 	 */
 	private function build_import_preview( array $table ) {
 		$preview_columns = array_slice( $table['columns'], 0, 5 );
@@ -1001,13 +1021,14 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Replace existing table with the imported file data.
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @param array $table Table payload.
+	 * @return array|\WP_Error
 	 */
-	private function persist_import_table( array $table ) {
+	private function persist_import_table( $table ) {
 		wp_set_current_user( get_current_user_id() );
 
 		$path         = '/dynamic-table-blocks/v1/tables/' . (int) $table['id'];
@@ -1032,14 +1053,14 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Create a new imported table through the existing REST create endpoint.
+	 * Create a new table based on the imported file data.
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 *
 	 * @param array $table Table payload.
 	 * @return array|\WP_Error
 	 */
-	private function create_import_table( array $table ) {
+	private function create_import_table( $table ) {
 		wp_set_current_user( get_current_user_id() );
 
 		$path         = '/dynamic-table-blocks/v1/tables';
@@ -1065,7 +1086,7 @@ class DTBK_Admin_Ajax {
 	 *
 	 * Create requests must not send readonly ids inside the header object.
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 *
 	 * @param array $table Table payload.
 	 * @return array
@@ -1092,7 +1113,7 @@ class DTBK_Admin_Ajax {
 	/**
 	 * Build an internal REST signature for server-side import requests.
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 *
 	 * @param string $method HTTP method.
 	 * @param string $path REST route path.
@@ -1107,12 +1128,12 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Find an existing local table by imported table id.
+	 * Retrieve an existing table by imported table id.
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 *
 	 * @param int $table_id Imported table id.
-	 * @return array|\WP_Error|null
+	 * @return array|\WP_Error|null Existing table
 	 */
 	private function find_existing_table_by_id( $table_id ) {
 		$table_id = absint( $table_id );
@@ -1120,7 +1141,7 @@ class DTBK_Admin_Ajax {
 			return null;
 		}
 
-		$table = $this->fetch_table_via_rest( $table_id );
+		$table = $this->fetch_dynamic_table( $table_id );
 		if ( is_wp_error( $table ) ) {
 			$data   = $table->get_error_data();
 			$status = is_array( $data ) && isset( $data['status'] ) ? (int) $data['status'] : ( is_int( $data ) ? $data : 0 );
@@ -1131,14 +1152,17 @@ class DTBK_Admin_Ajax {
 		return $table;
 	}
 
+
+
 	/**
-	 * Document function
+	 * Retrieve existing table data via REST call.
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @param int $table_id Imported table id.
+	 * @return array|\WP_Error Existing table data
 	 */
-	private function fetch_table_via_rest( $table_id ) {
+	private function fetch_dynamic_table( $table_id ) {
 		wp_set_current_user( get_current_user_id() );
 
 		$path      = '/dynamic-table-blocks/v1/tables/' . (int) $table_id;
@@ -1162,7 +1186,7 @@ class DTBK_Admin_Ajax {
 	/**
 	 * Extract the imported table id from a JSON backup item.
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 *
 	 * @param array $table Imported table payload.
 	 * @return int
@@ -1176,11 +1200,12 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Create a list of JSON tables that can be imported
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @param array $items Imported table(s) from uploaded JSON import file.
+	 * @return array       Picklist of available tables for import.
 	 */
 	private function build_json_item_options( array $items ) {
 		$options = array();
@@ -1207,72 +1232,26 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Create column attributes for CSV file import
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
-	 */
-	private function build_csv_column_name( array $rows, $column_id, $first_row_header, array $existing_column, array &$warnings ) {
-		$fallback = ! empty( $existing_column['column_name'] )
-			? (string) $existing_column['column_name']
-			: 'Column ' . number_to_letter( $column_id );
-
-		if ( ! $first_row_header ) {
-			return $fallback;
-		}
-
-		$value = isset( $rows[0][ $column_id - 1 ] ) ? trim( (string) $rows[0][ $column_id - 1 ] ) : '';
-		if ( '' !== $value ) {
-			return $value;
-		}
-
-		$warnings[] = sprintf(
-			/* translators: %d: column number */
-			__( 'Column %d did not have a header value and was given a fallback label.', 'dynamic-table-blocks' ),
-			(int) $column_id
-		);
-
-		return $fallback;
-	}
-
-	/**
-	 * Document function
-	 *
-	 * @todo Document function
-	 *
-	 * @since 1.3.2
+	 * @return array  Column attributes
 	 */
 	private function build_csv_column_attributes() {
-		$attributes                   = $this->get_default_column_attributes();
+		$attributes                   = get_default_column_attributes();
 		$attributes['columnDataType'] = array( 'type' => 'general' );
 
 		return $attributes;
 	}
 
 	/**
-	 * Document function
+	 * Create cell attributes from CSV cell content
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
-	 */
-	private function build_csv_row_attributes( array $existing_row, $is_header ) {
-		$attributes = array_merge(
-			$this->get_default_row_attributes(),
-			is_array( $existing_row['attributes'] ?? null ) ? $existing_row['attributes'] : array()
-		);
-
-		$attributes['isHeader'] = (bool) $is_header;
-		return $attributes;
-	}
-
-	/**
-	 * Document function
-	 *
-	 * @todo Document function
-	 *
-	 * @since 1.3.2
+	 * @param string $raw_value  Imported cell content
+	 * @return array  Cell attributes
 	 */
 	private function build_csv_cell_attributes( $raw_value ) {
 		return array(
@@ -1284,15 +1263,17 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Fill in missing cell attributes from imported file
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @param array $attributes Imported cell attributes
+	 * @param string $content    Imported cell content
+	 * @return array  Updated cell attributes
 	 */
 	private function ensure_cell_attributes( array $attributes, $content ) {
 		$attributes = array_merge(
-			$this->get_default_cell_attributes(),
+			get_default_cell_attributes(),
 			$attributes
 		);
 
@@ -1308,11 +1289,12 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Sanitize cell contents prior to creating table
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @param string $raw_value  Imported cell content
+	 * @return string Sanitized cell content
 	 */
 	private function sanitize_import_content( $raw_value ) {
 		$raw_value = $this->normalize_import_text( $raw_value );
@@ -1322,7 +1304,7 @@ class DTBK_Admin_Ajax {
 	/**
 	 * Normalize imported text values by removing a UTF-8 BOM and standardizing newlines.
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 *
 	 * @param mixed $value Raw imported value.
 	 * @return string
@@ -1333,11 +1315,12 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Document function
+	 * Strip non-printable characters to support indexing
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
+	 * @param string $value  Text to format
+	 * @return string Formatted text
 	 */
 	private function build_index_text( $value ) {
 		$text = preg_replace( '/\s+/u', ' ', wp_strip_all_tags( $this->normalize_import_text( $value ) ) );
@@ -1349,124 +1332,28 @@ class DTBK_Admin_Ajax {
 	 *
 	 * @todo Document function
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 */
-	private function index_target_cells( array $cells ) {
-		$indexed = array();
+	// private function index_target_cells( array $cells ) {
+	//  $indexed = array();
 
-		foreach ( $cells as $cell ) {
-			if ( ! isset( $cell['row_id'], $cell['column_id'] ) ) {
-				continue;
-			}
+	//  foreach ( $cells as $cell ) {
+	//      if ( ! isset( $cell['row_id'], $cell['column_id'] ) ) {
+	//          continue;
+	//      }
 
-			$indexed[ (int) $cell['row_id'] . ':' . (int) $cell['column_id'] ] = $cell;
-		}
+	//      $indexed[ (int) $cell['row_id'] . ':' . (int) $cell['column_id'] ] = $cell;
+	//  }
 
-		return $indexed;
-	}
+	//  return $indexed;
+	// }
 
 	/**
-	 * Document function
+	 * Return import errors
 	 *
-	 * @todo Document function
+	 * @since 1.4.0
 	 *
-	 * @since 1.3.2
-	 */
-	private function get_default_table_attributes() {
-		return array(
-			'showGridLines'            => true,
-			'bandedRows'               => false,
-			'bandedRowBackgroundColor' => '#d8dbda',
-			'bandedTextColor'          => 'black',
-			'gridLineWidth'            => 1,
-			'allowHorizontalScroll'    => true,
-			'enableHeaderRow'          => false,
-			'headerAlignment'          => 'center',
-			'headerRowSticky'          => false,
-			'headerBorder'             => array(
-				'color' => 'black',
-				'style' => 'solid',
-				'width' => '1px',
-			),
-			'horizontalAlignment'      => 'none',
-			'bodyAlignment'            => null,
-			'bodyBorder'               => array(
-				'color' => 'black',
-				'style' => 'solid',
-				'width' => '1px',
-			),
-			'verticalAlignment'        => 'none',
-			'hideTitle'                => true,
-		);
-	}
-
-	/**
-	 * Document function
-	 *
-	 * @todo Document function
-	 *
-	 * @since 1.3.2
-	 */
-	private function get_default_row_attributes() {
-		return array(
-			'rowHeightType'     => 'Auto',
-			'minHeight'         => 0,
-			'minHeightUnits'    => 'em',
-			'maxHeight'         => 0,
-			'maxHeightUnits'    => 'em',
-			'fixedHeight'       => 0,
-			'fixedHeightUnits'  => 'em',
-			'isHeader'          => false,
-			'verticalAlignment' => 'none',
-		);
-	}
-
-	/**
-	 * Document function
-	 *
-	 * @todo Document function
-	 *
-	 * @since 1.3.2
-	 */
-	private function get_default_column_attributes() {
-		return array(
-			'columnDataType'         => array( 'type' => 'general' ),
-			'columnWidthType'        => 'Proportional',
-			'minWidth'               => 2,
-			'minWidthUnits'          => 'ch',
-			'maxWidth'               => 1,
-			'maxWidthUnits'          => 'fr',
-			'fixedWidth'             => 1,
-			'fixedWidthUnits'        => 'fr',
-			'disableForTablet'       => false,
-			'disableForPhone'        => false,
-			'isFixedLeftColumnGroup' => false,
-			'horizontalAlignment'    => 'none',
-		);
-	}
-
-	/**
-	 * Document function
-	 *
-	 * @todo Document function
-	 *
-	 * @since 1.3.2
-	 */
-	private function get_default_cell_attributes() {
-		return array(
-			'border' => false,
-			'value'  => array(
-				'indexText' => '',
-			),
-		);
-	}
-
-	/**
-	 * Document function
-	 *
-	 * @todo Document function
-	 *
-	 * @since 1.3.2
+	 * @param \WP_Error Error message to return
 	 */
 	private function send_import_error( \WP_Error $error ) {
 		$status = 400;

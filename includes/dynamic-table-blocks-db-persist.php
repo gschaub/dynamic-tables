@@ -919,7 +919,7 @@ class PersistTableData {
 	 * Get table header information for all tables
 	 *
 	 * @since 1.1.0
-	 * @since 1.3.2  Add support for filters and sort
+	 * @since 1.4.0  Add support for filters and sort
 	 *
 	 * @param array $query_args  Filter and sort criteria.
 	 * @return array $query results
@@ -1451,7 +1451,7 @@ class PersistTableData {
 	 * Transform SQL one argument to support the $wpdb->prepare format.
 	 *
 	 * @since 1.0.0
-	 * @since 1.3.2  Added support for IN sql operators and descending order by
+	 * @since 1.4.0  Added support for IN sql operators and descending order by
 	 *
 	 * @param string $arg_type   SQL Statement argument.
 	 * @param string $arg_field  Table field name associated with the argument.
@@ -1500,7 +1500,7 @@ class PersistTableData {
 	 * Build SQL query string.
 	 *
 	 * @since 1.0.0
-	 * @since 1.3.2      Added support for additional sql operators
+	 * @since 1.4.0      Added support for additional sql operators
 	 *
 	 * @return string    Valid SQL query string.
 	 */
@@ -1676,7 +1676,7 @@ class PersistTableData {
 	 * Lookup Parameter data type for a specific query field.
 	 *
 	 * @since 1.0.0
-	 * @since 1.3.2                  Added support for IN and NOT IN operators
+	 * @since 1.4.0                  Added support for IN and NOT IN operators
 	 *
 	 * @param string $trans_type     SQL transaction type and position of the statement in query
 	 *                               or specific field names of INSERT transactions.

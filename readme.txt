@@ -2,7 +2,7 @@
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, responsive tables, table block, gutenberg table
 Tested up to:      7.0
-Stable tag:        1.3.2
+Stable tag:        1.4.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,7 @@ Whether you're building comparison tables, product listings, directory lookup ta
 * Support for column specific content types (e.g., rich text, date, time, number, etc.)
 * Header row support with formatting independent from the table body
 * Inline editing of cell content
+* Import CSV files and allow them to be attached to new dynamic table blocks
 * Copy/cut/paste support for individual cells within a table
 * Fully responsive: tables scale, wrap and adapt to mobile screens
 * Clean semantic HTML output for SEO and accessibility
@@ -74,7 +75,7 @@ Dynamic Tables uses a unique architecture designed to provide power and flexibil
 == Frequently Asked Questions ==
 = Can I import data from CSV or Excel? =
 
-Not yet in this version. The architecture for external data sources is in the roadmap, and upcoming versions will include more import/export options.
+Yes, you can import data from CSV files. Support for importing Excel files is still on the roadmap.
 
 = Will this work with any theme? =
 
@@ -116,8 +117,12 @@ No. This plugin is free to use. However, we are planning for a premium version o
 7. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
-= 1.3.2 =
+= 1.4.0 =
+* Added support for importing CSV files and loading them as Dynamic Tables
+* Updated table creation to attach loaded tables to new blocks
+* Enhanced REST API to get multiple tables and apply filters to those requests
 * Fix bug that can incorrectly render banded row text color
+* Fixed multiple additional bugs
 
 = 1.3.1 =
 * Added support for copy/cut/paste a single cell's content to other cell in the same table with the same content type

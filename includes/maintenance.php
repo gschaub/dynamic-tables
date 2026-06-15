@@ -220,7 +220,7 @@ class DTBK_Maintenance {
 	 *           no longer have any associated blocks are optionally deleted or marked as orphan.
 	 *
 	 * @since 1.1.0
-	 * @since 1.3.2 - Handle the new status of 'loaded'
+	 * @since 1.4.0 - Handle the new status of 'loaded'
 	 *
 	 * @return void
 	 */
@@ -779,6 +779,8 @@ class DTBK_Maintenance {
 					if ( isset( $block['blockName'] ) &&
 						$block['blockName'] === 'dynamic-table-blocks/dynamic-table-blocks' &&
 						isset( $block['attrs'] ) &&
+						isset( $block['attrs']['table_id'] ) &&
+						isset( $block['attrs']['block_table_ref'] ) &&
 						! empty( $block['attrs'] ) ) {
 							$attrs = $block['attrs'];
 							array_push(

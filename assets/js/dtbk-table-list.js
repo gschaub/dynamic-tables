@@ -440,7 +440,7 @@ jQuery($ => {
 		/**
 		 * Retrieve table id(s) and prepare for import.
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 *
 		 * @param {Object} e Event object.
 		 */
@@ -454,7 +454,7 @@ jQuery($ => {
 		/**
 		 * Get table data and build HTML for import display.
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 *
 		 * @param {number} id Table ID.
 		 */
@@ -472,7 +472,7 @@ jQuery($ => {
 					iconKey: 'fileJSON',
 					label: this.importUi.formats.json,
 					isPro: false,
-					isComingSoon: false,
+					isComingSoon: true,
 					isBackup: true,
 				},
 				csv: {
@@ -622,9 +622,9 @@ jQuery($ => {
 		}
 
 		/**
-		 * @todo Document function
+		 * Create an empty import state template.
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 */
 		getEmptyImportState() {
 			return {
@@ -641,11 +641,11 @@ jQuery($ => {
 		}
 
 		/**
-		 * @todo Document function
+		 * Open dialog to upload the file for importing
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 *
-		 * @param format
+		 * @param {string} format Selected file format to import.
 		 */
 		openImportUploadStep(format) {
 			const $dlg = this.$(`#${this.importDialogId}`);
@@ -727,9 +727,9 @@ jQuery($ => {
 		}
 
 		/**
-		 * @todo Document function
+		 * Bind import dialog to events and code for processing
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 */
 		bindImportUploadEvents() {
 			const dialogSelector = `#${this.importDialogId}`;
@@ -867,9 +867,9 @@ jQuery($ => {
 		}
 
 		/**
-		 * @todo Document function
+		 * Retrieve user input in preparation for processing the file
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 */
 		collectImportOptions() {
 			const $dlg = this.$(`#${this.importDialogId}`);
@@ -895,7 +895,7 @@ jQuery($ => {
 		/**
 		 * Render JSON restore options when the imported table ID already exists locally.
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 *
 		 * @param analysis
 		 */
@@ -938,7 +938,7 @@ jQuery($ => {
 		 * Keep the CSV preview headers in sync with the custom header-name inputs
 		 * without forcing another upload/analyze request on every keystroke.
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 */
 		syncCsvPreviewHeaders() {
 			const $dlg = this.$(`#${this.importDialogId}`);
@@ -967,11 +967,11 @@ jQuery($ => {
 		}
 
 		/**
-		 * @todo Document function
+		 * Display names of columns from imported file
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 *
-		 * @param analysis
+		 * @param {Array} analysis Table data returned from REST.
 		 */
 		renderImportHeaderInputs(analysis) {
 			const inputs = Array.isArray(analysis?.csvHeaderInputs) ? analysis.csvHeaderInputs : [];
@@ -1005,9 +1005,9 @@ jQuery($ => {
 		}
 
 		/**
-		 * @todo Document function
+		 * Attach the file name and size to the import dialog id
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 *
 		 * @param file
 		 */
@@ -1027,19 +1027,19 @@ jQuery($ => {
 		/**
 		 * Clear transient import status messaging without disturbing the review UI.
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 */
 		clearImportStatus() {
 			this.$(`#${this.importDialogId} [data-dtbk-import-status]`).empty();
 		}
 
 		/**
-		 * @todo Document function
+		 * Render notices associated with import file review or commit
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 *
-		 * @param message
-		 * @param type
+		 * @param {string} message Text of notice
+		 * @param {string} type    Notice type
 		 */
 		renderImportReviewNotice(message, type = 'info') {
 			const noticeType = ['error', 'warning', 'success'].includes(type) ? type : 'info';
@@ -1053,11 +1053,11 @@ jQuery($ => {
 		}
 
 		/**
-		 * @todo Document function
+		 * Render summary table data from the imported file prior to saving
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 *
-		 * @param preview
+		 * @param {Array} preview Table data to render
 		 */
 		renderImportPreviewTable(preview = {}) {
 			const columns = Array.isArray(preview.columns) ? preview.columns : [];
@@ -1106,11 +1106,11 @@ jQuery($ => {
 		}
 
 		/**
-		 * @todo Document function
+		 * Render HTML preview table of imported file
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 *
-		 * @param analysis
+		 * @param {Array} analysis Summary table data
 		 */
 		renderImportAnalysis(analysis) {
 			const warnings = Array.isArray(analysis.warnings) ? analysis.warnings : [];
@@ -1205,9 +1205,9 @@ jQuery($ => {
 		}
 
 		/**
-		 * @todo Document function
+		 * Process file for analysis prior to saving via AJAX
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 */
 		async analyzeImport() {
 			if (!this.importState.file) {
@@ -1228,7 +1228,7 @@ jQuery($ => {
 			this.setImportBusy(true, DTBK_TABLE_LIST?.i18n?.loading || 'Loading...');
 
 			try {
-				const response = await this.postAjaxForm(fd);
+				const response = await this.postAjaxImportForm(fd);
 
 				if (!response?.success) {
 					throw new Error(response?.data?.message || 'Import validation failed.');
@@ -1247,9 +1247,9 @@ jQuery($ => {
 		}
 
 		/**
-		 * @todo Document function
+		 * Save imported file via AJAX
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 */
 		async commitImport() {
 			if (!this.importState.file) {
@@ -1286,7 +1286,7 @@ jQuery($ => {
 			this.setImportBusy(true, DTBK_TABLE_LIST?.i18n?.loading || 'Loading...');
 
 			try {
-				const response = await this.postAjaxForm(fd);
+				const response = await this.postAjaxImportForm(fd);
 
 				if (!response?.success) {
 					throw new Error(response?.data?.message || 'Import failed.');
@@ -1313,14 +1313,13 @@ jQuery($ => {
 		}
 
 		/**
-		 * @todo Document function
+		 * Disable dialog while file is being processed and providing feedback to the user
+		 * about what is currently happening asyncronously.
 		 *
-		 * @since    1.3.2
+		 * @since    1.1.0
 		 *
-		 * @param isBusy
-		 * @param message
-		 * @param isBusy
-		 * @param message
+		 * @param {boolean} isBusy  Is an action currently happening that requires disablement?
+		 * @param {string}  message Optional message to display to identify the reason the system is busy
 		 */
 		setImportBusy(isBusy, message = '') {
 			this.importState.isBusy = isBusy;
@@ -1340,9 +1339,9 @@ jQuery($ => {
 		}
 
 		/**
-		 * @todo Document function
+		 * Close the import dialog after the file has been successfully uploaded/processed.
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 */
 		closeImportDialog() {
 			const $dlg = this.$(`#${this.importDialogId}`);
@@ -1357,13 +1356,13 @@ jQuery($ => {
 		}
 
 		/**
-		 * @todo Document function
+		 * Execute AJAX for file import processing
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 *
-		 * @param fd
+		 * @param {FormData} fd Data for AJAX processing.
 		 */
-		async postAjaxForm(fd) {
+		async postAjaxImportForm(fd) {
 			const res = await fetch(DTBK_TABLE_LIST.ajaxUrl, {
 				method: 'POST',
 				body: fd,
@@ -1395,11 +1394,11 @@ jQuery($ => {
 		}
 
 		/**
-		 * @todo Document function
+		 * Provide acceptable file MIME types for file upload based on the selected import format
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 *
-		 * @param format
+		 * @param {string} format File type for import
 		 */
 		getImportAccept(format) {
 			switch (format) {
@@ -1413,11 +1412,11 @@ jQuery($ => {
 		}
 
 		/**
-		 * @todo Document function
+		 * Format file size into human readable text
 		 *
-		 * @since    1.3.2
+		 * @since    1.4.0
 		 *
-		 * @param bytes
+		 * @param {number} bytes Import file size in bytes
 		 */
 		formatBytes(bytes) {
 			if (!bytes) {

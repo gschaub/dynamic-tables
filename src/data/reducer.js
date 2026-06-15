@@ -31,7 +31,7 @@ const {
  * Dynamic Table reducer helper for a single table.
  *
  * @since    1.0.0
- * @since    1.3.2   Implement combined reducer to support multiple state slices.
+ * @since    1.4.0   Implement combined reducer to support multiple state slices.
  *
  * @param {Object} state  Current table
  * @param {Object} action Action activity to be performed

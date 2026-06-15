@@ -961,7 +961,7 @@ export default function Edit(props) {
 	/**
 	 * Retrieve summary data for all active tables and load all tables store.
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 */
 	const {
 		allTables,
@@ -1003,7 +1003,7 @@ export default function Edit(props) {
 	 * Refresh summary table data for all tables in the tables store when the table creation
 	 * method is set to "existing table".
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 */
 	useEffect(() => {
 		return registerSummaryTableRefreshSubscriber({
@@ -1070,7 +1070,7 @@ export default function Edit(props) {
 	/**
 	 * Attach existing table to block when table is ready for attachment.
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 */
 	useEffect(() => {
 		if (tableRequest.action !== 'receive') return;
@@ -1142,7 +1142,7 @@ export default function Edit(props) {
 	/**
 	 * Attach existing table to block when table is ready for attachment.
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 */
 	useEffect(() => {
 		if (tableRequest.action !== 'attach') return;
@@ -1984,7 +1984,7 @@ export default function Edit(props) {
 	/**
 	 * Attach existing table to new block.
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 */
 	function attachLoadedTable() {
 		if (!tableRequest.tableId || requestedTableIsResolving) {
@@ -2011,7 +2011,7 @@ export default function Edit(props) {
 	 * Process event to create new table.
 	 *
 	 * @since 1.0.0
-	 * @since 1.3.2  Expanded support for multiple table creation methods
+	 * @since 1.4.0  Expanded support for multiple table creation methods
 	 *
 	 * @param {Object} event Table Creation Event
 	 */
@@ -2035,7 +2035,7 @@ export default function Edit(props) {
 	/**
 	 * Remove the placeholder block when block creation is cancelled..
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 */
 	function onCancelNewBlock() {
 		if (!props.clientId || !isNewBlock) {

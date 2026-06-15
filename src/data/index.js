@@ -19,7 +19,7 @@ import STORE_NAME from './constants';
  * Create Dynamic Tables store.
  *
  * @since    1.0.0
- * @since    1.3.2  Added support for combined reducers
+ * @since    1.4.0  Added support for combined reducers
  *
  * @type     {Object} Wordpress block store
  */

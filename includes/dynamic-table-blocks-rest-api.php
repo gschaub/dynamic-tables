@@ -101,27 +101,33 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * Checks if a given request has access to read tables.
 	 *
 	 * @since 1.0.0
-	 * @since 1.3.2  Enabled get_items endpoint
+	 * @since 1.4.0  Enabled get_items endpoint
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
 	 * @return void | \WP_Error True if the request has read access, WP_Error object otherwise.
 	 */
 	public function get_items_permissions_check( $request ) {
+		if ( $this->verify_internal_signature( $request ) ) {
+			$this->maintenance_request = true;
+			return true;
+		}
+
+		if ( ! current_user_can( 'edit_posts' ) && ! current_user_can( 'edit_pages' ) ) {
+			return new \WP_Error(
+				'rest_forbidden_context',
+				__( 'Sorry, you are not allowed to list tables.', 'dynamic-table-blocks' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
 		return true;
-		_doing_it_wrong(
-			'get_tables',
-			sprintf(
-				esc_attr( 'Functionality to filter and retrieve multiple tables is not implemented.  The endpoint is reserved for future use' )
-			),
-			'1.0'
-		);
 	}
 
 	/**
 	 * Retrieves a collection of TABLES.
 	 *
 	 * @since 1.0.0
-	 * @since 1.3.2  Enabled get_items endpoint
+	 * @since 1.4.0  Enabled get_items endpoint
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
@@ -201,12 +207,16 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			// update_table_caches( $query_result );
 
 			foreach ( $query_result as $table ) {
+				if ( ! $this->check_read_permission( $table ) ) {
+					continue;
+				}
+
 				$data     = $this->prepare_item_for_response( $table, $request );
 				$tables[] = $this->prepare_response_for_collection( $data );
 			}
 		}
 
-		$response = $is_head_request ? new WP_REST_Response( array() ) : rest_ensure_response( $tables );
+		$response = $is_head_request ? new \WP_REST_Response( array() ) : rest_ensure_response( $tables );
 		return $response;
 	}
 
@@ -236,38 +246,47 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		// Permissions for reading a table are based upon the underlying post to which
 		// it is attached.
-		if ( isset( $table['header']['post_id'] ) ) {
-			$post_id = (int) $table['header']['post_id'];
-			if ( $post_id !== 0 ) {
+		// if ( isset( $table['header']['post_id'] ) ) {
+		//  $post_id = (int) $table['header']['post_id'];
+		//  if ( $post_id !== 0 ) {
 
-				$post = $this->get_post( $post_id );
-				if ( is_wp_error( $post ) ) {
-					return $post;
-				}
+		//      $post = $this->get_post( $post_id );
+		//      if ( is_wp_error( $post ) ) {
+		//          return $post;
+		//      }
 
-				if ( 'edit' === $request['context'] && $post && ! $this->check_update_permission( $post ) ) {
-					return new \WP_Error(
-						'rest_forbidden_context',
-						__( 'Sorry, you are not allowed to edit this post.', 'dynamic-table-blocks' ),
-						array( 'status' => rest_authorization_required_code() )
-					);
-				}
-			}
+		//      if ( 'edit' === $request['context'] && $post && ! $this->check_update_permission( $post ) ) {
+		//          return new \WP_Error(
+		//              'rest_forbidden_context',
+		//              __( 'Sorry, you are not allowed to edit this post.', 'dynamic-table-blocks' ),
+		//              array( 'status' => rest_authorization_required_code() )
+		//          );
+		//      }
+		//  }
 
-			if ( (int) $post_id === 0 ) {
-				if ( 'edit' === $request['context'] && ! current_user_can( 'edit_posts' ) ) {
-					return new \WP_Error(
-						'rest_forbidden_context',
-						__( 'Sorry, you are not allowed to edit this post.', 'dynamic-table-blocks' ),
-						array( 'status' => rest_authorization_required_code() )
-					);
-				}
-			}
-		} else {
+		//  if ( (int) $post_id === 0 ) {
+		//      if ( 'edit' === $request['context'] && ! current_user_can( 'edit_posts' ) ) {
+		//          return new \WP_Error(
+		//              'rest_forbidden_context',
+		//              __( 'Sorry, you are not allowed to edit this post.', 'dynamic-table-blocks' ),
+		//              array( 'status' => rest_authorization_required_code() )
+		//          );
+		//      }
+		//  }
+		// } else {
+		if ( ! isset( $table['header']['post_id'] ) ) {
 			return new \WP_Error(
 				'missing_post_id',
 				__( 'Post ID is missing from request.', 'dynamic-table-blocks' ),
 				array( 'status' => 500 )
+			);
+		}
+
+		if ( ! $this->check_read_permission( $table ) ) {
+			return new \WP_Error(
+				'rest_forbidden_context',
+				__( 'Sorry, you are not allowed to read this table.', 'dynamic-table-blocks' ),
+				array( 'status' => rest_authorization_required_code() )
 			);
 		}
 		return true;
@@ -747,6 +766,29 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	}
 
 	/**
+	 * Checks if a table can be read.
+	 *
+	 * @since 1.4.0
+	 *
+	 * @param object $table Post object.
+	 * @return bool Whether the post can be edited.
+	 */
+	protected function check_read_permission( $table ) {
+		$post_id = (int) $table['header']['post_id'];
+
+		if ( 0 === $post_id ) {
+			return current_user_can( 'publish_posts' ) || current_user_can( 'publish_pages' );
+		}
+
+		$post = $this->get_post( $post_id );
+		if ( is_wp_error( $post ) ) {
+			return false;
+		}
+
+		return $this->check_update_permission( $post );
+	}
+
+	/**
 	 * Checks if a post can be edited.
 	 *
 	 * @since 1.0.0
@@ -788,7 +830,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * Determines the allowed query_vars for a get_items() response and prepares
 	 * them for WP_Query.
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 *
 	 * @param array            $prepared_args Optional. Prepared WP_Query arguments. Default empty array.
 	 * @param \WP_REST_Request $request       Optional. Full details about the request.
@@ -1475,7 +1517,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	/**
 	 * Validate permission header passed for internal API requests.
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
 	 * @return bool Is valid?
@@ -1495,7 +1537,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	/**
 	 * List of valid query parameters for the get_items endpoint.
 	 *
-	 * @since 1.3.2
+	 * @since 1.4.0
 	 *
 	 * @return array Item schema data.
 	 */

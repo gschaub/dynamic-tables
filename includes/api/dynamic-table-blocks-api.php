@@ -494,7 +494,7 @@ function get_table( $table_id, $validate_header_only = false ) {
 /**
  * Extract and returns only the table header data.
  *
- * @since 1.3.2
+ * @since 1.4.0
  *
  * @param int $table_id Table id.
  * @return array|\WP_Error Table header data retrieved.
@@ -542,7 +542,7 @@ function get_table_by_ref( $block_table_ref ) {
  * Extracts and returns the summary table data for all tables from the database
  *
  * @since 1.1.0
- * @since 1.3.2  Added support for filtered results
+ * @since 1.4.0  Added support for filtered results
  *
  * @param array $enrich_results - Include structural data.
  * @param array $query_args - Search filter terms.

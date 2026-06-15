@@ -3461,7 +3461,7 @@ const {
  * Returns action object used in signalling a tables have been received
  * from REST service.
  *
- * @since 1.3.2
+ * @since 1.4.0
  *
  * @param {Array|Object} allTables Payload from dynamic tables API
  * @return {Object} Action object
@@ -3696,7 +3696,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Requests a summary tables from the REST API.
  *
- * @since    1.3.2
+ * @since    1.4.0
  *
  * @param {boolean} areTablesStale Whether the current state is stale
  */
@@ -3735,7 +3735,7 @@ __webpack_require__.r(__webpack_exports__);
  * Retrieve the current cached state of all tables in summary format.
  * the table from the REST api.
  *
- * @since    1.3.2
+ * @since    1.4.0
  *
  * @param {Object}  state          Current state of tables
  * @param {boolean} areTablesStale Should fresh data be fetch from API?
@@ -3827,7 +3827,7 @@ __webpack_require__.r(__webpack_exports__);
  * Create Dynamic Tables store.
  *
  * @since    1.0.0
- * @since    1.3.2  Added support for combined reducers
+ * @since    1.4.0  Added support for combined reducers
  *
  * @type     {Object} Wordpress block store
  */
@@ -3898,7 +3898,7 @@ const {
  * Dynamic Table reducer helper for a single table.
  *
  * @since    1.0.0
- * @since    1.3.2   Implement combined reducer to support multiple state slices.
+ * @since    1.4.0   Implement combined reducer to support multiple state slices.
  *
  * @param {Object} state  Current table
  * @param {Object} action Action activity to be performed
@@ -5659,7 +5659,7 @@ function Edit(props) {
   /**
    * Retrieve summary data for all active tables and load all tables store.
    *
-   * @since 1.3.2
+   * @since 1.4.0
    */
   const {
     allTables,
@@ -5692,7 +5692,7 @@ function Edit(props) {
    * Refresh summary table data for all tables in the tables store when the table creation
    * method is set to "existing table".
    *
-   * @since 1.3.2
+   * @since 1.4.0
    */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
     return (0,_summary_table_refresh__WEBPACK_IMPORTED_MODULE_16__.registerSummaryTableRefreshSubscriber)({
@@ -5755,7 +5755,7 @@ function Edit(props) {
   /**
    * Attach existing table to block when table is ready for attachment.
    *
-   * @since 1.3.2
+   * @since 1.4.0
    */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
     if (tableRequest.action !== 'receive') return;
@@ -5793,7 +5793,7 @@ function Edit(props) {
   /**
    * Attach existing table to block when table is ready for attachment.
    *
-   * @since 1.3.2
+   * @since 1.4.0
    */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
     if (tableRequest.action !== 'attach') return;
@@ -6541,7 +6541,7 @@ function Edit(props) {
   /**
    * Attach existing table to new block.
    *
-   * @since 1.3.2
+   * @since 1.4.0
    */
   function attachLoadedTable() {
     if (!tableRequest.tableId || requestedTableIsResolving) {
@@ -6565,7 +6565,7 @@ function Edit(props) {
    * Process event to create new table.
    *
    * @since 1.0.0
-   * @since 1.3.2  Expanded support for multiple table creation methods
+   * @since 1.4.0  Expanded support for multiple table creation methods
    *
    * @param {Object} event Table Creation Event
    */
@@ -6588,7 +6588,7 @@ function Edit(props) {
   /**
    * Remove the placeholder block when block creation is cancelled..
    *
-   * @since 1.3.2
+   * @since 1.4.0
    */
   function onCancelNewBlock() {
     if (!props.clientId || !isNewBlock) {
@@ -9375,7 +9375,7 @@ function useNotInInserterPreview() {
 /**
  * Retrieve a table by ID and fetch it from the API if it is not already in the store.
  *
- * @since    1.3.2
+ * @since    1.4.0
  *
  * @param {string}  tableId           The ID of the table to retrieve
  * @param {Object}  args
@@ -10756,7 +10756,7 @@ const summaryTableRefreshCoordinator = {
 /**
  * Set the loading state for summary table refresh on each subscriber.
  *
- * @since 1.3.2
+ * @since 1.4.0
  *
  * @param {boolean} isRefreshing Whether the summary tables are currently being refreshed
  */
@@ -10771,7 +10771,7 @@ function setSummaryTableRefreshLoading(isRefreshing) {
 /**
  * Get the latest summary table refresh subscribers.
  *
- * @since 1.3.2
+ * @since 1.4.0
  *
  * @param {boolean} isRefreshing Whether the summary tables are currently being refreshed
  * @returns {Object|null} The current list of subscribers or null if there are no subscribers
@@ -10784,7 +10784,7 @@ function getSummaryTableRefreshSubscriber() {
 /**
  * Ensure summary table refresh listeners are added and set up.
  *
- * @since 1.3.2
+ * @since 1.4.0
  */
 function ensureSummaryTableRefreshListeners() {
   if (summaryTableRefreshCoordinator.intervalId !== null) {
@@ -10813,7 +10813,7 @@ function ensureSummaryTableRefreshListeners() {
 /**
  * Remove summary table refresh listeners as part of unmount cleanup.
  *
- * @since 1.3.2
+ * @since 1.4.0
  */
 function maybeRemoveSummaryTableRefreshListeners() {
   if (summaryTableRefreshCoordinator.subscribers.size > 0) {
@@ -10836,7 +10836,7 @@ function maybeRemoveSummaryTableRefreshListeners() {
 /**
  * Refresh summary tables store
  *
- * @since 1.3.2
+ * @since 1.4.0
  *
  * @param {Function} refreshSummaryTables Dispatch function to refresh summary tables store
  * @param {Function} createNotice         Dispatch function to create notices in the editor
@@ -10904,7 +10904,7 @@ function registerSummaryTableRefreshSubscriber({
  * Fetches summary tables and formats them for use as options in the table selection
  * dropdown when attaching a block to an existing table.
  *
- * @since 1.3.2
+ * @since 1.4.0
  *
  * @param {Object} allTables All summarized dynamic tables currently in state
  * @return {Array} Array of all tables available for block creation throught attachment

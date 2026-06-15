@@ -13,7 +13,7 @@ const summaryTableRefreshCoordinator = {
 /**
  * Set the loading state for summary table refresh on each subscriber.
  *
- * @since 1.3.2
+ * @since 1.4.0
  *
  * @param {boolean} isRefreshing Whether the summary tables are currently being refreshed
  */
@@ -26,7 +26,7 @@ function setSummaryTableRefreshLoading(isRefreshing) {
 /**
  * Get the latest summary table refresh subscribers.
  *
- * @since 1.3.2
+ * @since 1.4.0
  *
  * @param {boolean} isRefreshing Whether the summary tables are currently being refreshed
  * @returns {Object|null} The current list of subscribers or null if there are no subscribers
@@ -39,7 +39,7 @@ function getSummaryTableRefreshSubscriber() {
 /**
  * Ensure summary table refresh listeners are added and set up.
  *
- * @since 1.3.2
+ * @since 1.4.0
  */
 function ensureSummaryTableRefreshListeners() {
 	if (summaryTableRefreshCoordinator.intervalId !== null) {
@@ -78,7 +78,7 @@ function ensureSummaryTableRefreshListeners() {
 /**
  * Remove summary table refresh listeners as part of unmount cleanup.
  *
- * @since 1.3.2
+ * @since 1.4.0
  */
 function maybeRemoveSummaryTableRefreshListeners() {
 	if (summaryTableRefreshCoordinator.subscribers.size > 0) {
@@ -107,7 +107,7 @@ function maybeRemoveSummaryTableRefreshListeners() {
 /**
  * Refresh summary tables store
  *
- * @since 1.3.2
+ * @since 1.4.0
  *
  * @param {Function} refreshSummaryTables Dispatch function to refresh summary tables store
  * @param {Function} createNotice         Dispatch function to create notices in the editor
@@ -186,7 +186,7 @@ export function registerSummaryTableRefreshSubscriber({
  * Fetches summary tables and formats them for use as options in the table selection
  * dropdown when attaching a block to an existing table.
  *
- * @since 1.3.2
+ * @since 1.4.0
  *
  * @param {Object} allTables All summarized dynamic tables currently in state
  * @return {Array} Array of all tables available for block creation throught attachment

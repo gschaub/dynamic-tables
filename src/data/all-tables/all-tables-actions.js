@@ -9,7 +9,7 @@ const { RECEIVE_HYDRATE_ALL_TABLES, UPDATE_SUMMARY_TABLE } = TYPES;
  * Returns action object used in signalling a tables have been received
  * from REST service.
  *
- * @since 1.3.2
+ * @since 1.4.0
  *
  * @param {Array|Object} allTables Payload from dynamic tables API
  * @return {Object} Action object

@@ -4,7 +4,7 @@ import { fetchSummaryTablesFromApi, reconcileSummaryTablesWithLocalState } from 
 /**
  * Requests a summary tables from the REST API.
  *
- * @since    1.3.2
+ * @since    1.4.0
  *
  * @param {boolean} areTablesStale Whether the current state is stale
  */

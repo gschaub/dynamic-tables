@@ -113,7 +113,7 @@ export function useNotInInserterPreview() {
 /**
  * Retrieve a table by ID and fetch it from the API if it is not already in the store.
  *
- * @since    1.3.2
+ * @since    1.4.0
  *
  * @param {string}  tableId           The ID of the table to retrieve
  * @param {Object}  args
