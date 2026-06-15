@@ -6885,7 +6885,7 @@ function Edit(props) {
     }
 
     // Allow direct edit for printable keys that do not include a modifier
-    if (!navKeys.has(event.key) && !isAnyModifierKey && isPrintableKey(event) && canTypeToEdit) {
+    if (!navKeys.has(event.key) && (isPrimaryKeyOnly || isShiftOnly) && isPrintableKey(event) && canTypeToEdit) {
       // Enter edit mode
       onCellKeyDownEditing(event, activeCellEl, event.key, editDataType);
       return;
