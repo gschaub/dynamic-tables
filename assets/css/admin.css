@@ -34,6 +34,14 @@
   	margin: 10px 0; /* Add some margin above and below */
 }
 
+/* CSS Styles */
+.dtbk-disabled-link {
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.6;
+    color: #888888;
+}
+
 #dtbk_keep_tables_on_uninstall {
 	margin-left: 20px;
 }
@@ -47,9 +55,25 @@
 	opacity: 0.6;
 }
 
+/** Style display only field name/value pair**/
+.dtbk-field-pair-block {
+  margin-bottom: 10px;
+}
+
+.dtbk-field-pair-label {
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.dtbk-field-pair-value {
+  color: grey;
+  font-style: italic;
+  font-weight: 400;
+}
+
 /** Styles for View dialog **/
 .dtbk-view-table-data {
-	font-size: 14px;;
+	font-size: 14px;
 }
 
 .dtbk-view-table-data2 table {
@@ -61,6 +85,16 @@
 .dtbk-view-table-data thead,
 .dtbk-view-table-data p {
 	text-align: center;
+}
+
+.dtbk-change-table-status label {
+	display: block;
+	font-weight: 600;
+	margin-bottom: 6px;
+}
+
+.dtbk-change-table-status select {
+	min-width: 220px;
 }
 
 /** Styles for Import/Export dialog **/

@@ -17,6 +17,9 @@ class DTBK_Admin_Ajax {
 	 */
 	public function __construct() {
 		add_action( 'wp_ajax_dtbk_view_table', array( $this, 'view_table' ) );
+		add_action( 'wp_ajax_dtbk_get_table_status', array( $this, 'get_table_header' ) );
+		add_action( 'wp_ajax_dtbk_put_update_status', array( $this, 'update_table_status' ) );
+		add_action( 'wp_ajax_dtbk_delete_table', array( $this, 'delete_table' ) );
 		add_action( 'wp_ajax_dtbk_import_analyze', array( $this, 'import_analyze' ) );
 		add_action( 'wp_ajax_dtbk_import_commit', array( $this, 'import_commit' ) );
 	}
@@ -45,7 +48,7 @@ class DTBK_Admin_Ajax {
 		$method  = 'GET';
 		$request = new \WP_REST_Request( $method, $path );
 		$request->set_header( 'Content-Type', 'application/json' );
-		$request->set_query_params( array( 'context' => 'edit' ) );
+		$request->set_query_params( array( 'context' => 'view' ) );
 
 		// Execute the request
 		$response = rest_do_request( $request );
@@ -91,6 +94,215 @@ class DTBK_Admin_Ajax {
 		wp_send_json_success(
 			array(
 				'cells' => wp_json_encode( $view_table_rows ),
+			),
+			200
+		);
+
+		wp_die();
+	}
+
+	/**
+	 * Retrieve table meta data.
+	 *
+	 * @since 1.4.1
+	 *
+	 * @return void | /WP_Error
+	 */
+	public function get_table_header() {
+		// Check nonce
+		check_ajax_referer( 'dtbk-table-list' );
+
+		$cap = dtbk_get_setting( 'capability' );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'You are not allowed to manage tables.', 'dynamic-table-blocks' ),
+				),
+				403
+			);
+		}
+
+		$table_id = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0;
+		if ( empty( $table_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'No items selected.', 'dynamic-table-blocks' ) ), 400 );
+		}
+		$table = $this->fetch_dynamic_table( $table_id );
+		if ( is_wp_error( $table ) ) {
+			$this->send_status_error( $table );
+		}
+
+		wp_send_json_success(
+			array(
+				'table_meta' => wp_json_encode( $this->build_status_table_meta( $table ) ),
+			),
+			200
+		);
+
+		wp_die();
+	}
+
+	/**
+	 * Update status for a single table.
+	 *
+	 * @since 1.4.1
+	 *
+	 * @return void
+	 */
+	public function update_table_status() {
+		// Check nonce
+		check_ajax_referer( 'dtbk-table-list' );
+
+		$cap = dtbk_get_setting( 'capability' );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'You are not allowed to manage tables.', 'dynamic-table-blocks' ),
+				),
+				403
+			);
+		}
+
+		$table_id = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0;
+		if ( empty( $table_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'No items selected.', 'dynamic-table-blocks' ) ), 400 );
+		}
+
+		$new_status = isset( $_POST['newStatus'] ) ? sanitize_key( wp_unslash( $_POST['newStatus'] ) ) : '';
+		$table      = $this->fetch_dynamic_table( $table_id );
+
+		if ( is_wp_error( $table ) ) {
+			$this->send_status_error( $table );
+		}
+
+		$current_status = isset( $table['header']['status'] ) ? sanitize_key( (string) $table['header']['status'] ) : '';
+
+		if ( empty( $new_status ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'A new table status is required.', 'dynamic-table-blocks' ),
+				),
+				400
+			);
+		}
+
+		if ( $new_status === $current_status ) {
+			wp_send_json_success(
+				array(
+					'message'    => __( 'Table status updated successfully.', 'dynamic-table-blocks' ),
+					'table_meta' => wp_json_encode( $this->build_status_table_meta( $table ) ),
+				),
+				200
+			);
+		}
+
+		if ( 'loaded' !== $new_status ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Invalid table status.', 'dynamic-table-blocks' ),
+				),
+				400
+			);
+		}
+
+		$table_update = array(
+			'id'     => $table_id,
+			'header' => array(
+				'id'              => (int) $table_id,
+				'status'          => $new_status,
+				'post_id'         => 0,
+				'block_table_ref' => '',
+			),
+		);
+
+		$updated_table = $this->update_dynamic_table( $table_update );
+		if ( is_wp_error( $updated_table ) ) {
+			$this->send_status_error( $updated_table );
+		}
+
+		wp_send_json_success(
+			array(
+				'message'    => __( 'Table status updated successfully.', 'dynamic-table-blocks' ),
+				'table_meta' => wp_json_encode( $this->build_status_table_meta( $updated_table ) ),
+			),
+			200
+		);
+	}
+
+	/**
+	 * Build lightweight table metadata for the status dialog.
+	 *
+	 * @since 1.4.1
+	 *
+	 * @param array $table Full table response.
+	 * @return array
+	 */
+	private function build_status_table_meta( array $table ) {
+		$header = is_array( $table['header'] ?? null ) ? $table['header'] : array();
+
+		return array(
+			'name'    => isset( $header['table_name'] ) ? (string) $header['table_name'] : '',
+			'status'  => isset( $header['status'] ) ? (string) $header['status'] : '',
+			'post_id' => isset( $header['post_id'] ) ? (int) $header['post_id'] : 0,
+		);
+	}
+
+	/**
+	 * Return a WP_Error as a JSON error response for status actions.
+	 *
+	 * @since 1.4.1
+	 *
+	 * @param \WP_Error $error Error to return.
+	 * @return void
+	 */
+	private function send_status_error( \WP_Error $error ) {
+		$status = 400;
+		$data   = $error->get_error_data();
+
+		if ( is_int( $data ) ) {
+			$status = $data;
+		} elseif ( is_array( $data ) && isset( $data['status'] ) ) {
+			$status = (int) $data['status'];
+		}
+
+		wp_send_json_error(
+			array(
+				'message' => $error->get_error_message(),
+				'code'    => $error->get_error_code(),
+			),
+			$status
+		);
+	}
+
+	/**
+	 * Retrieve table meta data.
+	 *
+	 * @since 1.4.1
+	 *
+	 * @return void | /WP_Error
+	 */
+	public function delete_table() {
+		// Check nonce
+		check_ajax_referer( 'dtbk-table-list' );
+
+		$cap = dtbk_get_setting( 'capability' );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'You are not allowed to manage tables.', 'dynamic-table-blocks' ),
+				),
+				403
+			);
+		}
+
+		$table_id = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0;
+		if ( empty( $table_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'No items selected.', 'dynamic-table-blocks' ) ), 400 );
+		}
+
+		wp_send_json_success(
+			array(
+				'message'    => __( 'Table status updated successfully.', 'dynamic-table-blocks' ),
+				'table' => wp_json_encode( $this->delete_dynamic_table( $table_id ) ),
 			),
 			200
 		);
@@ -1029,6 +1241,18 @@ class DTBK_Admin_Ajax {
 	 * @return array|\WP_Error
 	 */
 	private function persist_import_table( $table ) {
+		return $this->update_dynamic_table( $table );
+	}
+
+	/**
+	 * Persist a table update via signed internal REST.
+	 *
+	 * @since 1.4.1
+	 *
+	 * @param array $table Table payload.
+	 * @return array|\WP_Error
+	 */
+	private function update_dynamic_table( $table ) {
 		wp_set_current_user( get_current_user_id() );
 
 		$path         = '/dynamic-table-blocks/v1/tables/' . (int) $table['id'];
@@ -1036,7 +1260,6 @@ class DTBK_Admin_Ajax {
 		$signature    = $this->build_internal_signature( 'PUT', $path, $request_body );
 		$request      = new \WP_REST_Request( 'PUT', $path );
 
-		// Keep replace-existing imports on the same internal authorization path as create-new imports.
 		$request->set_header( 'X-DTBK-Signature', $signature );
 		$request->set_header( 'Content-Type', 'application/json' );
 		$request->set_query_params( array( 'context' => 'edit' ) );
@@ -1044,7 +1267,34 @@ class DTBK_Admin_Ajax {
 		$request->set_body( $request_body );
 
 		$response = rest_do_request( $request );
+		if ( $response->is_error() ) {
+			return $response->as_error();
+		}
 
+		return $response->get_data();
+	}
+
+	/**
+	 * Persist a table update via signed internal REST.
+	 *
+	 * @since 1.4.1
+	 *
+	 * @param number $table_id Table ID to delete.
+	 * @return array|\WP_Error
+	 */
+	private function delete_dynamic_table( $table_id ) {
+
+		wp_set_current_user( get_current_user_id() );
+
+		$path         = '/dynamic-table-blocks/v1/tables/' . (int) $table_id;
+		$signature    = $this->build_internal_signature( 'DELETE', $path, '' );
+		$request      = new \WP_REST_Request( 'DELETE', $path );
+
+		$request->set_header( 'X-DTBK-Signature', $signature );
+		$request->set_header( 'Content-Type', 'application/json' );
+		// $request->set_query_params( array( 'context' => 'edit' ) );
+
+		$response = rest_do_request( $request );
 		if ( $response->is_error() ) {
 			return $response->as_error();
 		}
@@ -1326,27 +1576,6 @@ class DTBK_Admin_Ajax {
 		$text = preg_replace( '/\s+/u', ' ', wp_strip_all_tags( $this->normalize_import_text( $value ) ) );
 		return trim( (string) $text );
 	}
-
-	/**
-	 * Document function
-	 *
-	 * @todo Document function
-	 *
-	 * @since 1.4.0
-	 */
-	// private function index_target_cells( array $cells ) {
-	//  $indexed = array();
-
-	//  foreach ( $cells as $cell ) {
-	//      if ( ! isset( $cell['row_id'], $cell['column_id'] ) ) {
-	//          continue;
-	//      }
-
-	//      $indexed[ (int) $cell['row_id'] . ':' . (int) $cell['column_id'] ] = $cell;
-	//  }
-
-	//  return $indexed;
-	// }
 
 	/**
 	 * Return import errors

@@ -35,6 +35,15 @@ jQuery($ => {
 				width: 520,
 			};
 
+			this.changeStatusUI = {
+				title: DTBK_TABLE_LIST?.i18n?.statusTitle || 'Change Table Status',
+				current: DTBK_TABLE_LIST?.i18n?.statusCurrent || 'Current Status',
+			};
+
+			this.deleteTableUI = {
+				title: DTBK_TABLE_LIST?.i18n?.deleteTitle || 'Delete Table',
+			};
+
 			this.importUi = {
 				title: DTBK_TABLE_LIST?.i18n?.importTitle || 'Import Dynamic Table(s)',
 				prompt: DTBK_TABLE_LIST?.i18n?.importPrompt || 'Select import format:',
@@ -60,12 +69,18 @@ jQuery($ => {
 			// Prepare the dialog container
 			this.ensureViewDialog();
 			this.ensureExportDialog();
+			this.ensureChangeStatusDialog();
+			this.ensureDeleteDialog();
 			this.ensureImportDialog();
 
 			// Handle click on row "view" links
 			this.$doc.on('click', 'a[data-dtbk-action="view"]', e => this.prepareViewTable(e));
 			this.$doc.on('click', 'a[data-dtbk-action="export"]', e => this.prepareExportTable(e));
 			this.$doc.on('click', '#dtbk-import-table-trigger', e => this.prepareImportTable(e));
+			this.$doc.on('click', 'a[data-dtbk-action="change_status"]', e =>
+				this.prepareChangeTableStatus(e)
+			);
+			this.$doc.on('click', 'a[data-dtbk-action="delete"]', e => this.prepareDeleteTable(e));
 		}
 
 		// methods
@@ -425,6 +440,439 @@ jQuery($ => {
 		}
 
 		/**
+		 * Initialize Change Status dialog box.
+		 *
+		 * @since    1.4.1
+		 */
+		ensureChangeStatusDialog() {
+			if (this.$(`#${this.listRowId}`).length) {
+				return;
+			}
+
+			this.$('body').append(`<div id="${this.listRowId}" style="display:none"></div>`);
+		}
+
+		/**
+		 * Retrieve table id and prepare data retrieval.
+		 *
+		 * @since    1.4.1
+		 *
+		 * @param {Object} e Event object.
+		 */
+		prepareChangeTableStatus(e) {
+			e.preventDefault();
+
+			const $link = this.$(e.currentTarget);
+			const id = Number.parseInt($link.data('id'), 10);
+
+			if (!id) {
+				return;
+			}
+
+			this.openChangeTableStatus(id);
+		}
+
+		/**
+		 * Get table data and build HTML for display.
+		 *
+		 * @since    1.4.1
+		 *
+		 * @param {number} id Table ID.
+		 */
+		async openChangeTableStatus(id) {
+			this.openChangeTableStatusDialog('<p>Loading...</p>', id);
+
+			try {
+				const response = await this.getTableMeta(id);
+				const tableMeta = response?.data?.table_meta ? JSON.parse(response.data.table_meta) : null;
+
+				if (!response?.success || !tableMeta?.status) {
+					throw new Error(
+						DTBK_TABLE_LIST?.i18n?.unexpectedResponse ||
+							'The server returned an unexpected response.'
+					);
+				}
+
+				const currentTableStatus =
+					tableMeta.status.charAt(0).toUpperCase() + tableMeta.status.slice(1);
+				const statusOptions = [
+					`<option value="${this.escapeAttr(tableMeta.status)}">${this.escapeHtml(currentTableStatus)}</option>`,
+				];
+
+				if (tableMeta.status !== 'loaded') {
+					statusOptions.push('<option value="loaded">Loaded</option>');
+				}
+
+				const html = `
+					<form class="dtbk-change-table-status">
+						<div class="dtbk-field-pair-block">
+							<strong class="dtbk-field-pair-label">Current status for table "${this.escapeHtml(tableMeta.name)} (${id})":</strong>
+							<span class="dtbk-field-pair-value">${this.escapeHtml(currentTableStatus)}</span>
+						</div>
+
+						<label for="new-status">Select the new table status:</label>
+						<select name="new-status" id="new-status">
+							${statusOptions.join('')}
+						</select>
+					</form>
+				`;
+
+				this.openChangeTableStatusDialog(html, id);
+			} catch (error) {
+				const message = DTBK_TABLE_LIST?.i18n?.error || 'Request failed. Please try again.';
+
+				this.openChangeTableStatusDialog(
+					`<div class="notice notice-error"><p>${this.escapeHtml(message)}</p></div>`
+				);
+			}
+		}
+
+		/**
+		 * Fetch metadata for one table.
+		 *
+		 * @since    1.4.1
+		 *
+		 * @param {number} id Table ID.
+		 * @return {string} Formatted JSON of table data.
+		 */
+		async getTableMeta(id) {
+			// Create the request call
+			const fd = new FormData();
+			fd.append('action', 'dtbk_get_table_status');
+			fd.append('_ajax_nonce', DTBK_TABLE_LIST.nonce);
+			fd.append('id', id);
+
+			// Fetch the data
+			const res = await fetch(DTBK_TABLE_LIST.ajaxUrl, {
+				method: 'POST',
+				body: fd,
+				credentials: 'same-origin',
+			});
+
+			// Capture and return the JSON response
+			const json = await res.json();
+			return json;
+		}
+
+		/**
+		 * Open dialog for updating table status.
+		 *
+		 * @since    1.4.1
+		 *
+		 * @param {string} contentHtml Formatted HTML for the Change Stateus Dialog.
+		 * @param {number} id          Some desc
+		 */
+		async openChangeTableStatusDialog(contentHtml, id = 0) {
+			const title = this.changeStatusUI.title;
+			const $dlg = this.$(`#${this.listRowId}`);
+			const minWidth = Math.min(1000, this.$(window).width() - 80);
+			const tableWidth = $dlg.html(contentHtml).width;
+			$dlg.attr('title', this.escapeAttr(title)).html(contentHtml);
+
+			$dlg.html(contentHtml).dialog({
+				modal: true,
+				resizable: true,
+				draggable: true,
+				width: Math.min(minWidth, tableWidth),
+				position: { my: 'center', at: 'center', of: window },
+				buttons: [
+					{
+						text: DTBK_TABLE_LIST?.i18n?.close || 'Close',
+						class: 'secondary-btn',
+						click() {
+							$dlg.dialog('close');
+						},
+					},
+					{
+						text: DTBK_TABLE_LIST?.i18n?.submit || 'Submit',
+						id: 'dtbkDialogSubmit',
+						class: 'primary-btn custom-submit',
+						click: async () => {
+							await this.submitChangeTableStatus(id);
+						},
+					},
+				],
+				close() {
+					$dlg.dialog('destroy');
+				},
+			});
+		}
+
+		/**
+		 * Submit a status change request.
+		 *
+		 * @since    1.4.1
+		 *
+		 * @param {number} id Table ID.
+		 */
+		async submitChangeTableStatus(id) {
+			if (!id || !newStatus) {
+				return;
+			}
+
+			const $dlg = this.$(`#${this.listRowId}`);
+			const $submitButton = this.$('#dtbkDialogSubmit');
+			const newStatus = String($dlg.find('#new-status').val() || '');
+
+			$submitButton.prop('disabled', true).addClass('disabled');
+
+			try {
+				await this.updateTableStatus(id, newStatus);
+				$dlg.dialog('close');
+				window.location.reload();
+			} catch (error) {
+				const message =
+					error?.message || DTBK_TABLE_LIST?.i18n?.error || 'Request failed. Please try again.';
+				$dlg.find('.dtbk-status-error').remove();
+				$dlg
+					.find('.dtbk-change-table-status')
+					.prepend(
+						`<div class="notice notice-error dtbk-status-error"><p>${this.escapeHtml(message)}</p></div>`
+					);
+			} finally {
+				$submitButton.prop('disabled', false).removeClass('disabled');
+			}
+		}
+
+		/**
+		 * Update table status.
+		 *
+		 * @since    1.4.1
+		 *
+		 * @param {number} id        Table ID.
+		 * @param {string} newStatus Requested table status.
+		 * @return {string} Formatted JSON of table data.
+		 */
+		async updateTableStatus(id, newStatus) {
+			// Create the request call
+			const fd = new FormData();
+			fd.append('action', 'dtbk_put_update_status');
+			fd.append('_ajax_nonce', DTBK_TABLE_LIST.nonce);
+			fd.append('id', id);
+			fd.append('newStatus', newStatus);
+
+			// Fetch the data
+			const res = await fetch(DTBK_TABLE_LIST.ajaxUrl, {
+				method: 'POST',
+				body: fd,
+				credentials: 'same-origin',
+			});
+
+			const text = await res.text();
+			let json = null;
+
+			try {
+				json = text ? JSON.parse(text) : null;
+			} catch (err) {
+				throw new Error(
+					DTBK_TABLE_LIST?.i18n?.unexpectedResponse || 'The server returned an unexpected response.'
+				);
+			}
+
+			if (!json) {
+				throw new Error(
+					DTBK_TABLE_LIST?.i18n?.unexpectedResponse || 'The server returned an unexpected response.'
+				);
+			}
+
+			if (!res.ok || !json?.success) throw new Error(json?.data?.message || 'Request failed.');
+
+			return json;
+		}
+
+		/**
+		 * Initialize Change Status dialog box.
+		 *
+		 * @since    1.4.1
+		 */
+		ensureDeleteDialog() {
+			if (this.$(`#${this.listRowId}`).length) {
+				return;
+			}
+
+			this.$('body').append(`<div id="${this.listRowId}" style="display:none"></div>`);
+		}
+
+		/**
+		 * Retrieve table id and prepare delete.
+		 *
+		 * @since    1.4.1
+		 *
+		 * @param {Object} e Event object.
+		 */
+		prepareDeleteTable(e) {
+			e.preventDefault();
+
+			const $link = this.$(e.currentTarget);
+			const id = Number.parseInt($link.data('id'), 10);
+
+			if (!id) {
+				return;
+			}
+
+			this.openDeleteTable(id);
+		}
+
+		/**
+		 * Get table data and build HTML for display.
+		 *
+		 * @since    1.4.1
+		 *
+		 * @param {number} id Table ID.
+		 */
+		async openDeleteTable(id) {
+			this.openDeleteTableDialog('<p>Loading...</p>', id);
+
+			try {
+				const response = await this.getTableMeta(id);
+				const tableMeta = response?.data?.table_meta ? JSON.parse(response.data.table_meta) : null;
+
+				if (!response?.success || !tableMeta?.status) {
+					throw new Error(
+						DTBK_TABLE_LIST?.i18n?.unexpectedResponse ||
+							'The server returned an unexpected response.'
+					);
+				}
+
+				const html = `
+					<form class="dtbk-delete-table">
+						<strong>Confirm delete for table"${this.escapeHtml(tableMeta.name)} (${id})":</strong>
+						<p><em>This action cannot be undone.</em></p>
+					</form>
+				`;
+				this.openDeleteTableDialog(html, id);
+			} catch (error) {
+				const message = DTBK_TABLE_LIST?.i18n?.error || 'Request failed. Please try again.';
+
+				this.openDeleteTableDialog(
+					`<div class="notice notice-error"><p>${this.escapeHtml(message)}</p></div>`
+				);
+			}
+		}
+
+		/**
+		 * Open dialog for updating table status.
+		 *
+		 * @since    1.4.1
+		 *
+		 * @param {string} contentHtml Formatted HTML for the Change Stateus Dialog.
+		 * @param {number} id          Some desc
+		 */
+		async openDeleteTableDialog(contentHtml, id = 0) {
+			const title = this.deleteTableUI.title;
+			const $dlg = this.$(`#${this.listRowId}`);
+			const minWidth = Math.min(1000, this.$(window).width() - 80);
+			const tableWidth = $dlg.html(contentHtml).width;
+			$dlg.attr('title', this.escapeAttr(title)).html(contentHtml);
+
+			$dlg.html(contentHtml).dialog({
+				modal: true,
+				resizable: true,
+				draggable: true,
+				width: Math.min(minWidth, tableWidth),
+				position: { my: 'center', at: 'center', of: window },
+				buttons: [
+					{
+						text: DTBK_TABLE_LIST?.i18n?.close || 'Close',
+						class: 'secondary-btn',
+						click() {
+							$dlg.dialog('close');
+						},
+					},
+					{
+						text: DTBK_TABLE_LIST?.i18n?.delete || 'Delete',
+						id: 'dtbkDialogDelete',
+						class: 'primary-btn custom-submit',
+						click: async () => {
+							await this.submitDeleteTable(id);
+						},
+					},
+				],
+				close() {
+					$dlg.dialog('destroy');
+				},
+			});
+		}
+
+		/**
+		 * Submit a status change request.
+		 *
+		 * @since    1.4.1
+		 *
+		 * @param {number} id Table ID.
+		 */
+		async submitDeleteTable(id) {
+			if (!id) {
+				return;
+			}
+
+			const $dlg = this.$(`#${this.listRowId}`);
+			const $deleteButton = this.$('#dtbkDialogDelete');
+			$deleteButton.prop('disabled', true).addClass('disabled');
+
+			try {
+				await this.deleteTable(id);
+				$dlg.dialog('close');
+				window.location.reload();
+			} catch (error) {
+				const message =
+					error?.message || DTBK_TABLE_LIST?.i18n?.error || 'Request failed. Please try again.';
+				$dlg.find('.dtbk-status-error').remove();
+				$dlg
+					.find('.dtbk-change-table-status')
+					.prepend(
+						`<div class="notice notice-error dtbk-status-error"><p>${this.escapeHtml(message)}</p></div>`
+					);
+			} finally {
+				$deleteButton.prop('disabled', false).removeClass('disabled');
+			}
+		}
+
+		/**
+		 * Update table status.
+		 *
+		 * @since    1.4.1
+		 *
+		 * @param {number} id Table ID.
+		 * @return {string} Formatted JSON of table data.
+		 */
+		async deleteTable(id) {
+			// Create the request call
+			const fd = new FormData();
+			fd.append('action', 'dtbk_delete_table');
+			fd.append('_ajax_nonce', DTBK_TABLE_LIST.nonce);
+			fd.append('id', id);
+
+			// Fetch the data
+			const res = await fetch(DTBK_TABLE_LIST.ajaxUrl, {
+				method: 'POST',
+				body: fd,
+				credentials: 'same-origin',
+			});
+
+			const text = await res.text();
+			let json = null;
+
+			try {
+				json = text ? JSON.parse(text) : null;
+			} catch (err) {
+				throw new Error(
+					DTBK_TABLE_LIST?.i18n?.unexpectedResponse || 'The server returned an unexpected response.'
+				);
+			}
+
+			if (!json) {
+				throw new Error(
+					DTBK_TABLE_LIST?.i18n?.unexpectedResponse || 'The server returned an unexpected response.'
+				);
+			}
+
+			if (!res.ok || !json?.success) throw new Error(json?.data?.message || 'Request failed.');
+
+			return json;
+		}
+
+		/**
 		 * Initialize Export dialog box.
 		 *
 		 * @since    1.1.1
@@ -446,8 +894,6 @@ jQuery($ => {
 		 */
 		prepareImportTable(e) {
 			e.preventDefault();
-
-			// this.importState = this.getEmptyImportState();
 			this.openImportDialog();
 		}
 

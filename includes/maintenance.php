@@ -678,7 +678,6 @@ class DTBK_Maintenance {
 		$request = new \WP_REST_Request( $method, $path );
 		$request->set_header( 'X-DTBK-Signature', $signature );
 		$request->set_header( 'Content-Type', 'application/json' );
-		// $request->set_body( $body );
 
 		// Execute the request
 		rest_do_request( $request );

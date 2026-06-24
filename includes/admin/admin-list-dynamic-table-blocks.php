@@ -301,25 +301,39 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 	 */
 	protected function column_name( $item ) {
 		$export_nonce = wp_create_nonce( 'dtbk_export_download' );
+		$allow_delete = $item['status'] === 'orphan' || $item['status'] === 'loaded' || $item['status'] === 'corrupted';
+		$allow_status_change = in_array( $item['status'], array( 'loaded', 'orphan', 'corrupted' ), true );
 		$actions      = array(
 
-			'export' => sprintf(
+			'view'          => sprintf(
+				'<a href="#" data-dtbk-action="view" data-id="%d">%s</a>',
+				(int) $item['id'],
+				esc_html__( 'View', 'dynamic-table-blocks' )
+			),
+
+			'export'        => sprintf(
 				'<a href="#" data-dtbk-action="export" data-id="%d" data-nonce="%s">%s</a>',
 				(int) $item['id'],
 				esc_attr( $export_nonce ),
 				esc_html__( 'Export...', 'dynamic-table-blocks' )
 			),
 
-			'view'   => sprintf(
-				'<a href="#" data-dtbk-action="view" data-id="%d">%s</a>',
+			'change_status' => sprintf(
+				'<a href="#" %s data-dtbk-action="change_status" data-id="%d">%s</a>',
+				! $allow_status_change ? 'class="dtbk-disabled-link"' : '',
 				(int) $item['id'],
-				esc_html__( 'View', 'dynamic-table-blocks' )
+				esc_html__( 'Change Status', 'dynamic-table-blocks' )
 			),
-			// 'delete'        => sprintf('<a href="?page=%s&action=%s&element=%s">' . __('Delete', 'dynamic-table-blocks') . '</a>',
-			// $_REQUEST['page'],
-			// 'delete',
-			// $item['id']),
+
+			'delete'        => sprintf(
+				'<a href="#" %s data-dtbk-action="delete" data-id="%d">%s</a>',
+				! $allow_delete ? 'class="dtbk-disabled-link"' : '',
+				(int) $item['id'],
+				esc_html__( 'Delete', 'dynamic-table-blocks' )
+			),
 		);
+		error_log('Delete link: ' . $actions['change_status']);
+		error_log('Delete link: ' . $actions['delete']);
 		return sprintf( '%1$s %2$s', $item['name'], $this->row_actions( $actions ) );
 	}
 
