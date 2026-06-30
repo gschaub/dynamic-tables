@@ -395,7 +395,7 @@ function delete_table( $table_id = 0, $force = false ) {
 	$delete_table   = new PersistTableData();
 	$results        = $delete_table->delete_table_data( $table_id, $force );
 
-	if ( ! $results['success'] ) {
+	if ( ! isset( $results['success'] ) || 'True' !== $results['success'] ) {
 		return new \WP_Error( 'db_read_error', __( 'Database error retrieving table.', 'dynamic-table-blocks' ) );
 	}
 	return $existing_table;

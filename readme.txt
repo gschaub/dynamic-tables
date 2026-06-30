@@ -2,7 +2,7 @@
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, responsive tables, table block, gutenberg table
 Tested up to:      7.0
-Stable tag:        1.4.0
+Stable tag:        1.4.1
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -120,6 +120,12 @@ No. This plugin is free to use. However, we are planning for a premium version o
 10. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+= 1.4.1 =
+* Added support to delete table from the admin Table Maintenance
+* Added support to change a table's status from the admin Table Maintenance
+* Fixed bug that prevented import "choose file" button from opening file expolorer
+* Fixed bug that made table delete unreliable
+
 = 1.4.0 =
 * Added support for importing CSV files and loading them as Dynamic Tables
 * Updated table creation to attach loaded tables to new blocks

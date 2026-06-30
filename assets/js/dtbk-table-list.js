@@ -42,6 +42,7 @@ jQuery($ => {
 
 			this.deleteTableUI = {
 				title: DTBK_TABLE_LIST?.i18n?.deleteTitle || 'Delete Table',
+				success: DTBK_TABLE_LIST?.i18n?.deletedSuccess || 'Table successfully deleted',
 			};
 
 			this.importUi = {
@@ -429,7 +430,7 @@ jQuery($ => {
 				buttons: [
 					{
 						text: DTBK_TABLE_LIST?.i18n?.cancel || 'Cancel',
-						class: 'button dtbk-export-btn-cancel',
+						class: 'button',
 						click: () => $dlg.dialog('close'),
 					},
 				],
@@ -480,7 +481,7 @@ jQuery($ => {
 		 * @param {number} id Table ID.
 		 */
 		async openChangeTableStatus(id) {
-			this.openChangeTableStatusDialog('<p>Loading...</p>', id);
+			this.openChangeTableStatusDialog('<p>Loading...</p>', id, true);
 
 			try {
 				const response = await this.getTableMeta(id);
@@ -493,31 +494,58 @@ jQuery($ => {
 					);
 				}
 
+				let newStatus = '';
+				switch (tableMeta.status) {
+					case 'saved':
+						return;
+					case 'new':
+						if (tableMeta.link_status === 'Linked') {
+							newStatus = 'saved';
+						} else if (tableMeta.link_status === 'Unlinked' || tableMeta.link_status === 'Broken') {
+							newStatus = 'loaded';
+						} else {
+							return;
+						}
+						break;
+					case 'orphan':
+					case 'deleted':
+					case 'unknown':
+						if (tableMeta.link_status === 'Linked') {
+							newStatus = 'saved';
+						} else if (tableMeta.link_status === 'Unlinked' || tableMeta.link_status === 'Broken') {
+							newStatus = 'loaded';
+						} else {
+							return;
+						}
+						break;
+				}
+				console.log('Link status = ', tableMeta);
+
 				const currentTableStatus =
 					tableMeta.status.charAt(0).toUpperCase() + tableMeta.status.slice(1);
-				const statusOptions = [
-					`<option value="${this.escapeAttr(tableMeta.status)}">${this.escapeHtml(currentTableStatus)}</option>`,
-				];
-
-				if (tableMeta.status !== 'loaded') {
-					statusOptions.push('<option value="loaded">Loaded</option>');
-				}
+				const newTableStatus = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
 
 				const html = `
 					<form class="dtbk-change-table-status">
 						<div class="dtbk-field-pair-block">
-							<strong class="dtbk-field-pair-label">Current status for table "${this.escapeHtml(tableMeta.name)} (${id})":</strong>
+							<strong class="dtbk-field-pair-label">Current status for table: "${this.escapeHtml(tableMeta.name)} (${id})":</strong>
 							<span class="dtbk-field-pair-value">${this.escapeHtml(currentTableStatus)}</span>
 						</div>
 
-						<label for="new-status">Select the new table status:</label>
-						<select name="new-status" id="new-status">
-							${statusOptions.join('')}
-						</select>
+						<div class="dtbk-field-pair-block">
+							<strong class="dtbk-field-pair-label">Confirm you would like to change this table's status to: "${this.escapeHtml(tableMeta.name)} (${id})":</strong>
+							<span
+								class="dtbk-field-pair-value"
+								id="new-status"
+								data="newStatus"
+								>${this.escapeHtml(newTableStatus)}
+							</span>
+						</div>
 					</form>
 				`;
 
-				this.openChangeTableStatusDialog(html, id);
+				// this.openChangeTableStatusDialog(html, id);
+				this.openChangeTableStatusDialog(html, id, false, newStatus);
 			} catch (error) {
 				const message = DTBK_TABLE_LIST?.i18n?.error || 'Request failed. Please try again.';
 
@@ -559,26 +587,37 @@ jQuery($ => {
 		 *
 		 * @since    1.4.1
 		 *
-		 * @param {string} contentHtml Formatted HTML for the Change Stateus Dialog.
-		 * @param {number} id          Some desc
+		 * @param {string}  contentHtml      Formatted HTML for the Change Stateus Dialog.
+		 * @param {number}  id               Table ID
+		 * @param {boolean} isSubmitDisabled Disable the delete button
+		 * @param {string}  newStatus        New table status for update
 		 */
-		async openChangeTableStatusDialog(contentHtml, id = 0) {
+		// async openChangeTableStatusDialog(contentHtml, id = 0, isSubmitDisabled = false) {
+		async openChangeTableStatusDialog(
+			contentHtml,
+			id = 0,
+			isSubmitDisabled = false,
+			newStatus = ''
+		) {
 			const title = this.changeStatusUI.title;
 			const $dlg = this.$(`#${this.listRowId}`);
-			const minWidth = Math.min(1000, this.$(window).width() - 80);
-			const tableWidth = $dlg.html(contentHtml).width;
+			const maxWidth = Math.min(1000, this.$(window).width() - 80);
 			$dlg.attr('title', this.escapeAttr(title)).html(contentHtml);
+
+			const contentWidth = Math.ceil($dlg.get(0)?.scrollWidth || 0);
+			const dialogWidth = Math.max(400, Math.min(maxWidth, contentWidth + 40));
 
 			$dlg.html(contentHtml).dialog({
 				modal: true,
 				resizable: true,
 				draggable: true,
-				width: Math.min(minWidth, tableWidth),
+				width: dialogWidth,
+				minWidth: 400,
 				position: { my: 'center', at: 'center', of: window },
 				buttons: [
 					{
 						text: DTBK_TABLE_LIST?.i18n?.close || 'Close',
-						class: 'secondary-btn',
+						class: 'button',
 						click() {
 							$dlg.dialog('close');
 						},
@@ -586,9 +625,10 @@ jQuery($ => {
 					{
 						text: DTBK_TABLE_LIST?.i18n?.submit || 'Submit',
 						id: 'dtbkDialogSubmit',
-						class: 'primary-btn custom-submit',
+						class: 'button-primary',
 						click: async () => {
-							await this.submitChangeTableStatus(id);
+							// await this.submitChangeTableStatus(id);
+							await this.submitChangeTableStatus(id, newStatus);
 						},
 					},
 				],
@@ -596,6 +636,13 @@ jQuery($ => {
 					$dlg.dialog('destroy');
 				},
 			});
+
+			const $submitButton = this.$('#dtbkDialogSubmit');
+			const disableSubmit = isSubmitDisabled || !id || !newStatus;
+			// const disableSubmit = isSubmitDisabled || !id;
+
+			$submitButton.prop('disabled', disableSubmit);
+			$submitButton.toggleClass('disabled', disableSubmit);
 		}
 
 		/**
@@ -603,22 +650,30 @@ jQuery($ => {
 		 *
 		 * @since    1.4.1
 		 *
-		 * @param {number} id Table ID.
+		 * @param {number} id        Table ID.
+		 * @param {string} newStatus Status to set for table.
 		 */
-		async submitChangeTableStatus(id) {
-			if (!id || !newStatus) {
+		async submitChangeTableStatus(id, newStatus = '') {
+			const requestedStatus = String(newStatus || '').trim();
+
+			if (!id || !requestedStatus) {
 				return;
 			}
 
 			const $dlg = this.$(`#${this.listRowId}`);
 			const $submitButton = this.$('#dtbkDialogSubmit');
-			const newStatus = String($dlg.find('#new-status').val() || '');
 
 			$submitButton.prop('disabled', true).addClass('disabled');
 
 			try {
-				await this.updateTableStatus(id, newStatus);
+				const response = await this.updateTableStatus(id, requestedStatus);
+				const successMessage = response?.data?.message || 'Table status updated successfully.';
+
 				$dlg.dialog('close');
+				this.openViewDialog(
+					`<div class="notice notice-success"><p>${this.escapeHtml(successMessage)}</p></div>`
+				);
+				window.setTimeout(() => window.location.reload(), 700);
 				window.location.reload();
 			} catch (error) {
 				const message =
@@ -721,7 +776,7 @@ jQuery($ => {
 		 * @param {number} id Table ID.
 		 */
 		async openDeleteTable(id) {
-			this.openDeleteTableDialog('<p>Loading...</p>', id);
+			this.openDeleteTableDialog('<p>Loading...</p>', id, true);
 
 			try {
 				const response = await this.getTableMeta(id);
@@ -734,12 +789,50 @@ jQuery($ => {
 					);
 				}
 
-				const html = `
-					<form class="dtbk-delete-table">
-						<strong>Confirm delete for table"${this.escapeHtml(tableMeta.name)} (${id})":</strong>
-						<p><em>This action cannot be undone.</em></p>
-					</form>
-				`;
+				const multipleLinks =
+					tableMeta.link_status === 'Corrupted' && tableMeta.link_details.matched_block_count > 1
+						? true
+						: false;
+
+				console.log('Table meta returned: ', tableMeta);
+				let html = '';
+
+				switch (tableMeta.link_status) {
+					case 'Unlinked':
+					case 'Broken': // No matching block
+						html = `
+							<form class="dtbk-delete-table">
+								<strong>Confirm delete for table "${this.escapeHtml(tableMeta.name)} (${id})"</strong>
+								</br>
+								<p><em>This action cannot be undone.</em></p>
+							</form>
+						`;
+						break;
+					case 'Corrupted':
+						if (multipleLinks) {
+							html = `
+								<form class="dtbk-delete-table-corrupted-link">
+									<strong>Table "${this.escapeHtml(tableMeta.name)} (${id})"</strong> is linked to
+										multiple blocks.  Would you like to remove the related post blocks?  If so, note
+										this will change the appearance if the impacted posts.
+										</br>
+									<p><em>This action cannot be undone.</em></p>
+								</form>
+							`;
+							break;
+						} else {
+							html = `
+								<form class="dtbk-delete-table-corrupted-link">
+									<strong>Table "${this.escapeHtml(tableMeta.name)} (${id})"</strong> contains partially
+										linked blocks.  Would you like to remove the related post block?  If so, note
+										this will change the appearance if the impacted post.
+										</br>
+									<p><em>This action cannot be undone.</em></p>
+								</form>
+							`;
+							break;
+						}
+				}
 				this.openDeleteTableDialog(html, id);
 			} catch (error) {
 				const message = DTBK_TABLE_LIST?.i18n?.error || 'Request failed. Please try again.';
@@ -755,43 +848,80 @@ jQuery($ => {
 		 *
 		 * @since    1.4.1
 		 *
-		 * @param {string} contentHtml Formatted HTML for the Change Stateus Dialog.
-		 * @param {number} id          Some desc
+		 * @param {string}  contentHtml      Formatted HTML for the Change Stateus Dialog.
+		 * @param {number}  id               Table id
+		 * @param {boolean} isDeleteDisabled Disable the delete button
 		 */
-		async openDeleteTableDialog(contentHtml, id = 0) {
+		async openDeleteTableDialog(contentHtml, id = 0, isDeleteDisabled = false) {
 			const title = this.deleteTableUI.title;
 			const $dlg = this.$(`#${this.listRowId}`);
-			const minWidth = Math.min(1000, this.$(window).width() - 80);
-			const tableWidth = $dlg.html(contentHtml).width;
+
+			const hasCorruptedLinkForm =
+				this.$(contentHtml).filter('.dtbk-delete-table-corrupted-link').length > 0 ||
+				this.$(contentHtml).find('.dtbk-delete-table-corrupted-link').length > 0;
+
+			const deleteClass = hasCorruptedLinkForm ? 'button-secondary' : 'button-primary';
+
+			const buttons = [
+				{
+					text: DTBK_TABLE_LIST?.i18n?.close || 'Close',
+					class: 'button',
+					click() {
+						$dlg.dialog('close');
+					},
+				},
+				{
+					text: DTBK_TABLE_LIST?.i18n?.delete || 'Delete Table',
+					id: 'dtbkDialogDelete',
+					class: deleteClass,
+					click: async () => {
+						await this.submitDeleteTable(id, false);
+					},
+				},
+			];
+
+			if (hasCorruptedLinkForm) {
+				// if (true) {
+				buttons.push({
+					text: DTBK_TABLE_LIST?.i18n?.deleteWithBlock || 'Delete Table & Block',
+					id: 'dtbkDialogDeleteCorrupted',
+					class: 'button-primary',
+					click: async () => {
+						await this.submitDeleteTable(id, true);
+					},
+				});
+			}
+
+			const maxWidth = Math.min(1000, this.$(window).width() - 80);
+
 			$dlg.attr('title', this.escapeAttr(title)).html(contentHtml);
+			const contentWidth = Math.ceil($dlg.get(0)?.scrollWidth || 0);
+			const dialogWidth = Math.max(400, Math.min(maxWidth, contentWidth + 40));
 
 			$dlg.html(contentHtml).dialog({
 				modal: true,
 				resizable: true,
 				draggable: true,
-				width: Math.min(minWidth, tableWidth),
+				width: dialogWidth,
+				minWidth: 400,
 				position: { my: 'center', at: 'center', of: window },
-				buttons: [
-					{
-						text: DTBK_TABLE_LIST?.i18n?.close || 'Close',
-						class: 'secondary-btn',
-						click() {
-							$dlg.dialog('close');
-						},
-					},
-					{
-						text: DTBK_TABLE_LIST?.i18n?.delete || 'Delete',
-						id: 'dtbkDialogDelete',
-						class: 'primary-btn custom-submit',
-						click: async () => {
-							await this.submitDeleteTable(id);
-						},
-					},
-				],
+				buttons,
 				close() {
 					$dlg.dialog('destroy');
 				},
 			});
+
+			const $deleteButton = this.$('#dtbkDialogDelete');
+			const $deleteButtonAndBlock = this.$('#dtbkDialogDeleteCorrupted');
+			const disableDelete = isDeleteDisabled || !id;
+
+			$deleteButton.prop('disabled', disableDelete);
+			$deleteButton.toggleClass('disabled', disableDelete);
+
+			if (hasCorruptedLinkForm) {
+				$deleteButtonAndBlock.prop('disabled', disableDelete);
+				$deleteButtonAndBlock.toggleClass('disabled', disableDelete);
+			}
 		}
 
 		/**
@@ -799,49 +929,76 @@ jQuery($ => {
 		 *
 		 * @since    1.4.1
 		 *
-		 * @param {number} id Table ID.
+		 * @param {number}  id           Table ID.
+		 * @param {boolean} includeBlock Delete attached block(s) too
 		 */
-		async submitDeleteTable(id) {
+		async submitDeleteTable(id, includeBlock = false) {
 			if (!id) {
 				return;
 			}
 
 			const $dlg = this.$(`#${this.listRowId}`);
 			const $deleteButton = this.$('#dtbkDialogDelete');
+			const $deleteButtonCorrupted = this.$('#dtbkDialogDeleteCorrupted');
 			$deleteButton.prop('disabled', true).addClass('disabled');
+			$deleteButtonCorrupted.prop('disabled', true).addClass('disabled');
 
 			try {
-				await this.deleteTable(id);
+				const response = await this.deleteTable(id, includeBlock);
+
+				if (!response?.data?.deleted) {
+					throw new Error(
+						DTBK_TABLE_LIST?.i18n?.unexpectedResponse ||
+							'The server returned an unexpected response.'
+					);
+				}
+
+				const successMessage =
+					response?.data?.message || this.deleteTableUI.success || 'Table deleted.';
+
 				$dlg.dialog('close');
-				window.location.reload();
+				this.openViewDialog(
+					`<div class="notice notice-success"><p>${this.escapeHtml(successMessage)}</p></div>`
+				);
+
+				window.setTimeout(() => window.location.reload(), 700);
 			} catch (error) {
 				const message =
 					error?.message || DTBK_TABLE_LIST?.i18n?.error || 'Request failed. Please try again.';
+
 				$dlg.find('.dtbk-status-error').remove();
-				$dlg
-					.find('.dtbk-change-table-status')
-					.prepend(
-						`<div class="notice notice-error dtbk-status-error"><p>${this.escapeHtml(message)}</p></div>`
-					);
+
+				const errorNotice = `<div class="notice notice-error dtbk-status-error"><p>${this.escapeHtml(message)}</p></div>`;
+				const $form = $dlg.find('.dtbk-delete-table');
+
+				if ($form.length) {
+					$form.prepend(errorNotice);
+				} else {
+					$dlg.prepend(errorNotice);
+				}
 			} finally {
 				$deleteButton.prop('disabled', false).removeClass('disabled');
+				$deleteButtonCorrupted.prop('disabled', true).removeClass('disabled');
 			}
 		}
 
 		/**
-		 * Update table status.
+		 * Delete table AJAX call.
 		 *
 		 * @since    1.4.1
 		 *
-		 * @param {number} id Table ID.
+		 * @param {number}  id           Table ID.
+		 * @param {boolean} includeBlock Delete attached block(s) too
 		 * @return {string} Formatted JSON of table data.
 		 */
-		async deleteTable(id) {
+		async deleteTable(id, includeBlock = false) {
 			// Create the request call
 			const fd = new FormData();
 			fd.append('action', 'dtbk_delete_table');
 			fd.append('_ajax_nonce', DTBK_TABLE_LIST.nonce);
 			fd.append('id', id);
+			fd.append('id', id);
+			fd.append('delete_related_block', includeBlock);
 
 			// Fetch the data
 			const res = await fetch(DTBK_TABLE_LIST.ajaxUrl, {
@@ -1055,7 +1212,7 @@ jQuery($ => {
 				buttons: [
 					{
 						text: DTBK_TABLE_LIST?.i18n?.cancel || 'Cancel',
-						class: 'button dtbk-import-btn-cancel',
+						class: 'button',
 						click: () => $dlg.dialog('close'),
 					},
 				],
@@ -1179,12 +1336,19 @@ jQuery($ => {
 		 */
 		bindImportUploadEvents() {
 			const dialogSelector = `#${this.importDialogId}`;
+			const openImportFilePicker = () => {
+				const input = this.$(`${dialogSelector} .dtbk-import-file-input`).get(0);
+				if (input) {
+					// File inputs need the native DOM click here; jQuery trigger() is ignored.
+					input.click();
+				}
+			};
 
 			this.$doc.off('.dtbkImportUpload');
 
 			this.$doc.on('click.dtbkImportUpload', `${dialogSelector} [data-dtbk-import-browse]`, e => {
 				e.preventDefault();
-				this.$(`${dialogSelector} .dtbk-import-file-input`).trigger('click');
+				openImportFilePicker();
 			});
 
 			this.$doc.on('change.dtbkImportUpload', `${dialogSelector} .dtbk-import-file-input`, e => {
@@ -1267,7 +1431,7 @@ jQuery($ => {
 					return;
 				}
 
-				this.$(`${dialogSelector} .dtbk-import-file-input`).trigger('click');
+				openImportFilePicker();
 			});
 
 			this.$doc.on(
@@ -1279,7 +1443,7 @@ jQuery($ => {
 					}
 
 					e.preventDefault();
-					this.$(`${dialogSelector} .dtbk-import-file-input`).trigger('click');
+					openImportFilePicker();
 				}
 			);
 

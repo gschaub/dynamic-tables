@@ -152,6 +152,7 @@ class PersistTableData {
 	 *  Performs a SQL DELETE via the WordPress wpdb class and connection
 	 *
 	 * @since 1.0.0
+	 * @since 1.4.1  Fix malformed wpdb input that caused zero rows to be deleted
 	 *
 	 * @param string $db_table_name       Non-prefixed name of the table from which to delete rows
 	 * @return int:false Sdelete_result  wpdb rows deleted or FALSE on error
@@ -164,11 +165,11 @@ class PersistTableData {
 		if ( ! $where ) {
 			return false;
 		}
-		$query_string = $this->process_query_string( $this->request_args );
-		if ( ! $query_string ) {
-			return false;
+
+		$format = array();
+		foreach ( array_keys( $where ) as $field ) {
+			$format[] = $this->specific_query( 'value', $field );
 		}
-		$format = explode( ',', $query_string );
 
 		$this->delete_result = $wpdb->delete( $db_table, $where, $format );
 		return $this->delete_result;
@@ -1290,7 +1291,7 @@ class PersistTableData {
 		);
 
 		$query_returned_result = $this->delete_table( $db_table );
-		if ( ! $query_returned_result && ! $force ) {
+		if ( false === $query_returned_result || ( 0 === $query_returned_result && ! $force ) ) {
 			$wpdb->query( 'ROLLBACK' ); // rollback everything
 			$success = 'False';
 
@@ -1320,7 +1321,7 @@ class PersistTableData {
 		);
 
 		$query_returned_result = $this->delete_table( $db_table );
-		if ( ! $query_returned_result && ! $force ) {
+		if ( false === $query_returned_result || ( 0 === $query_returned_result && ! $force ) ) {
 			$wpdb->query( 'ROLLBACK' ); // rollback everything
 			$success = 'False';
 
@@ -1351,7 +1352,7 @@ class PersistTableData {
 		);
 
 		$query_returned_result = $this->delete_table( $db_table );
-		if ( ! $query_returned_result && ! $force ) {
+		if ( false === $query_returned_result || ( 0 === $query_returned_result && ! $force ) ) {
 			$wpdb->query( 'ROLLBACK' ); // rollback everything
 			$success = 'False';
 
@@ -1382,7 +1383,7 @@ class PersistTableData {
 		);
 
 		$query_returned_result = $this->delete_table( $db_table );
-		if ( ! $query_returned_result && ! $force ) {
+		if ( false === $query_returned_result || ( 0 === $query_returned_result && ! $force ) ) {
 			$wpdb->query( 'ROLLBACK' ); // rollback everything
 			$success = 'False';
 

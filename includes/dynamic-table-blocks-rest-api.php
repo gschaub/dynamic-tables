@@ -244,36 +244,6 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			return $table;
 		}
 
-		// Permissions for reading a table are based upon the underlying post to which
-		// it is attached.
-		// if ( isset( $table['header']['post_id'] ) ) {
-		//  $post_id = (int) $table['header']['post_id'];
-		//  if ( $post_id !== 0 ) {
-
-		//      $post = $this->get_post( $post_id );
-		//      if ( is_wp_error( $post ) ) {
-		//          return $post;
-		//      }
-
-		//      if ( 'edit' === $request['context'] && $post && ! $this->check_update_permission( $post ) ) {
-		//          return new \WP_Error(
-		//              'rest_forbidden_context',
-		//              __( 'Sorry, you are not allowed to edit this post.', 'dynamic-table-blocks' ),
-		//              array( 'status' => rest_authorization_required_code() )
-		//          );
-		//      }
-		//  }
-
-		//  if ( (int) $post_id === 0 ) {
-		//      if ( 'edit' === $request['context'] && ! current_user_can( 'edit_posts' ) ) {
-		//          return new \WP_Error(
-		//              'rest_forbidden_context',
-		//              __( 'Sorry, you are not allowed to edit this post.', 'dynamic-table-blocks' ),
-		//              array( 'status' => rest_authorization_required_code() )
-		//          );
-		//      }
-		//  }
-		// } else {
 		if ( ! isset( $table['header']['post_id'] ) ) {
 			return new \WP_Error(
 				'missing_post_id',
@@ -751,9 +721,15 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				'previous' => $previous->get_data(),
 			);
 		}
+
 		$result   = delete_table( $id, $this->maintenance_request );
+
 		$response = new \WP_REST_Response();
 		$response->set_data( $response_result );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
 
 		if ( ! $result ) {
 			return new \WP_Error(

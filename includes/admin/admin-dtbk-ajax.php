@@ -126,14 +126,73 @@ class DTBK_Admin_Ajax {
 		if ( empty( $table_id ) ) {
 			wp_send_json_error( array( 'message' => __( 'No items selected.', 'dynamic-table-blocks' ) ), 400 );
 		}
+
 		$table = $this->fetch_dynamic_table( $table_id );
 		if ( is_wp_error( $table ) ) {
 			$this->send_status_error( $table );
 		}
 
+		$header          = is_array( $table['header'] ?? null ) ? $table['header'] : array();
+		$post_id         = isset( $header['post_id'] ) ? (int) $header['post_id'] : 0;
+		$block_table_ref = isset( $header['block_table_ref'] ) ? (string) $header['block_table_ref'] : '';
+		$post            = null;
+		$matched_blocks  = array();
+
+		if ( $post_id > 0 ) {
+			$post = get_post( $post_id );
+		}
+
+		if ( $post instanceof \WP_Post ) {
+			$matched_blocks = $this->get_matching_table_blocks_for_post( $post, $table_id, $block_table_ref );
+		}
+
+		$matched_block = array();
+		$link_status = '';
+
+		/**
+		 * Valid statuses: Linked | Unlinked | Broken | Corrupt
+		 */
+		if ( $post_id <= 0 ) {
+			$link_status = 'Unlinked';
+		} elseif ( ! ( $post instanceof \WP_Post ) ) {
+			$link_status = 'Broken';
+		} elseif ( 0 === count( $matched_blocks ) ) {
+			$link_status = 'Broken';
+		} elseif ( count( $matched_blocks ) > 1 ) {
+			$link_status = 'Corrupt';
+		} else {
+			$matched_block = $matched_blocks[0];
+
+			if ( empty( $matched_block['table_id'] ) ) {
+				$link_status = 'Corrupt';
+			} elseif (
+				'' !== $block_table_ref &&
+				! empty( $matched_block['block_table_ref'] ) &&
+				$matched_block['block_table_ref'] !== $block_table_ref
+			) {
+				$link_status = 'Corrupt';
+			} else {
+				$link_status = 'Linked';
+			}
+		}
+
 		wp_send_json_success(
 			array(
-				'table_meta' => wp_json_encode( $this->build_status_table_meta( $table ) ),
+				'table_meta' => wp_json_encode(
+					array_merge(
+						$this->build_status_table_meta( $table ),
+						array(
+							'link_status'  => $link_status,
+							'link_details' => array(
+								'post_id'                 => $post_id,
+								'post_exists'             => $post instanceof \WP_Post,
+								'matching_block_count'    => count( $matched_blocks ),
+								'matched_table_id'        => isset( $matched_block['table_id'] ) ? (int) $matched_block['table_id'] : 0,
+								'matched_block_table_ref' => isset( $matched_block['block_table_ref'] ) ? (string) $matched_block['block_table_ref'] : '',
+							),
+						)
+					)
+				),
 			),
 			200
 		);
@@ -195,7 +254,7 @@ class DTBK_Admin_Ajax {
 			);
 		}
 
-		if ( 'loaded' !== $new_status ) {
+		if ( ! in_array( $new_status, array( 'loaded', 'saved' ), true ) ) {
 			wp_send_json_error(
 				array(
 					'message' => __( 'Invalid table status.', 'dynamic-table-blocks' ),
@@ -295,14 +354,29 @@ class DTBK_Admin_Ajax {
 		}
 
 		$table_id = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0;
+		$delete_related_block = isset( $_POST['delete_related_block'] ) ? absint( wp_unslash( $_POST['delete_related_block'] ) ) : false;
+
 		if ( empty( $table_id ) ) {
 			wp_send_json_error( array( 'message' => __( 'No items selected.', 'dynamic-table-blocks' ) ), 400 );
 		}
 
+		if ( $delete_related_block ) {
+			$deleted_table_blocks = $this->delete_table_blocks( $table_id );
+			if ( is_wp_error( $deleted_table_blocks ) ) {
+				$this->send_status_error( $deleted_table_blocks );
+			}
+		}
+
+		$deleted_table = $this->delete_dynamic_table( $table_id );
+		if ( is_wp_error( $deleted_table ) ) {
+			$this->send_status_error( $deleted_table );
+		}
+
 		wp_send_json_success(
 			array(
-				'message'    => __( 'Table status updated successfully.', 'dynamic-table-blocks' ),
-				'table' => wp_json_encode( $this->delete_dynamic_table( $table_id ) ),
+				'message' => __( 'Table successfully deleted.', 'dynamic-table-blocks' ),
+				'deleted' => ! empty( $deleted_table['deleted'] ),
+				'tableId' => $table_id,
 			),
 			200
 		);
@@ -1245,6 +1319,92 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
+	 * Extract matching Dynamic Table blocks from a post.
+	 *
+	 * @since 1.4.1
+	 *
+	 * @param \WP_Post $post Post containing block content.
+	 * @param int      $table_id Table ID to match.
+	 * @param string   $block_table_ref Block table reference to match.
+	 * @return array
+	 */
+	private function get_matching_table_blocks_for_post( \WP_Post $post, $table_id, $block_table_ref ) {
+		$content = isset( $post->post_content ) ? (string) $post->post_content : '';
+
+		if ( '' === $content ) {
+			return array();
+		}
+
+		$blocks = parse_blocks( $content );
+
+		if ( empty( $blocks ) ) {
+			return array();
+		}
+
+		return $this->get_matching_table_blocks( $blocks, $table_id, $block_table_ref );
+	}
+
+	/**
+	 * Extract matching Dynamic Table blocks from parsed post blocks.
+	 *
+	 * @since 1.4.1
+	 *
+	 * @param array  $blocks Parsed post blocks.
+	 * @param int    $table_id Table ID to match.
+	 * @param string $block_table_ref Block table reference to match.
+	 * @return array
+	 */
+	private function get_matching_table_blocks( array $blocks, $table_id, $block_table_ref ) {
+		$matched_blocks = array();
+
+		foreach ( $blocks as $block ) {
+			$matched_block = $this->get_matching_table_block_data( $block, $table_id, $block_table_ref );
+
+			if ( false === $matched_block ) {
+				continue;
+			}
+
+			$matched_blocks[] = $matched_block;
+		}
+
+		return $matched_blocks;
+	}
+
+	/**
+	 * Match a single parsed block to a Dynamic Table.
+	 *
+	 * @since 1.4.1
+	 *
+	 * @param array  $block Parsed block.
+	 * @param int    $table_id Table ID to match.
+	 * @param string $block_table_ref Block table reference to match.
+	 * @return array|false
+	 */
+	private function get_matching_table_block_data( array $block, $table_id, $block_table_ref ) {
+		if (
+			! isset( $block['blockName'] ) ||
+			'dynamic-table-blocks/dynamic-table-blocks' !== $block['blockName'] ||
+			empty( $block['attrs'] ) ||
+			! is_array( $block['attrs'] )
+		) {
+			return false;
+		}
+
+		$attrs            = $block['attrs'];
+		$matches_table_id = isset( $attrs['table_id'] ) && (int) $attrs['table_id'] === $table_id;
+		$matches_ref      = ! $matches_table_id && '' !== $block_table_ref && isset( $attrs['block_table_ref'] ) && (string) $attrs['block_table_ref'] === $block_table_ref;
+
+		if ( ! $matches_table_id && ! $matches_ref ) {
+			return false;
+		}
+
+		return array(
+			'table_id'        => isset( $attrs['table_id'] ) ? (int) $attrs['table_id'] : 0,
+			'block_table_ref' => isset( $attrs['block_table_ref'] ) ? (string) $attrs['block_table_ref'] : '',
+		);
+	}
+
+	/**
 	 * Persist a table update via signed internal REST.
 	 *
 	 * @since 1.4.1
@@ -1275,7 +1435,7 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
-	 * Persist a table update via signed internal REST.
+	 * Delete a table via signed internal REST.
 	 *
 	 * @since 1.4.1
 	 *
@@ -1292,7 +1452,7 @@ class DTBK_Admin_Ajax {
 
 		$request->set_header( 'X-DTBK-Signature', $signature );
 		$request->set_header( 'Content-Type', 'application/json' );
-		// $request->set_query_params( array( 'context' => 'edit' ) );
+		$request->set_query_params( array( 'context' => 'edit' ) );
 
 		$response = rest_do_request( $request );
 		if ( $response->is_error() ) {
@@ -1300,6 +1460,85 @@ class DTBK_Admin_Ajax {
 		}
 
 		return $response->get_data();
+	}
+
+	/**
+	 * Delete a table's block(s).
+	 *
+	 * @since 1.4.1
+	 *
+	 * @param number $table_id Table ID to delete.
+	 * @return array|\WP_Error
+	 */
+	private function delete_table_blocks( $table_id ) {
+		$table = $this->fetch_dynamic_table( $table_id );
+		if ( is_wp_error( $table ) ) {
+			return $table;
+		}
+
+		$header          = is_array( $table['header'] ?? null ) ? $table['header'] : array();
+		$post_id         = isset( $header['post_id'] ) ? (int) $header['post_id'] : 0;
+		$block_table_ref = isset( $header['block_table_ref'] ) ? (string) $header['block_table_ref'] : '';
+		$post            = $post_id > 0 ? get_post( $post_id ) : null;
+
+		if ( ! ( $post instanceof \WP_Post ) ) {
+			return array(
+				'deleted'             => false,
+				'deleted_block_count' => 0,
+				'post_id'             => $post_id,
+			);
+		}
+
+		$content = isset( $post->post_content ) ? (string) $post->post_content : '';
+		if ( '' === $content ) {
+			return array(
+				'deleted'             => false,
+				'deleted_block_count' => 0,
+				'post_id'             => $post_id,
+			);
+		}
+
+		$blocks         = parse_blocks( $content );
+		$matched_blocks = $this->get_matching_table_blocks( $blocks, $table_id, $block_table_ref );
+
+		if ( empty( $matched_blocks ) ) {
+			return array(
+				'deleted'             => false,
+				'deleted_block_count' => 0,
+				'post_id'             => $post_id,
+			);
+		}
+
+		$remaining_blocks = array();
+
+		foreach ( $blocks as $block ) {
+			if ( false !== $this->get_matching_table_block_data( $block, $table_id, $block_table_ref ) ) {
+				continue;
+			}
+			$remaining_blocks[] = $block;
+		}
+
+		$new_content = serialize_blocks( $remaining_blocks );
+
+		if ( $new_content !== (string) $post->post_content ) {
+			$updated_post = wp_update_post(
+				array(
+					'ID'           => $post->ID,
+					'post_content' => $new_content,
+				),
+				true
+			);
+
+			if ( is_wp_error( $updated_post ) ) {
+				return $updated_post;
+			}
+		}
+
+		return array(
+			'deleted'             => true,
+			'deleted_block_count' => count( $matched_blocks ),
+			'post_id'             => $post_id,
+		);
 	}
 
 	/**

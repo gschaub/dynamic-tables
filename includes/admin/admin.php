@@ -145,8 +145,8 @@ class DTBK_Admin {
 
 				'i18n'                => array(
 					'view'                     => __( 'Table Data ', 'dynamic-table-blocks' ),
-					'deleted'                  => __( 'Deleted successfully.', 'dynamic-table-blocks' ),
-					'delete'                   => __( 'Delete', 'dynamic-table-blocks' ),
+					'delete'                   => __( 'Delete Table', 'dynamic-table-blocks' ),
+					'deleteWithBlock'          => __( 'Delete Table & Block', 'dynamic-table-blocks' ),
 					'error'                    => __( 'Something went wrong.', 'dynamic-table-blocks' ),
 					'unexpectedResponse'       => __( 'The server returned an unexpected response.', 'dynamic-table-blocks' ),
 					'loading'                  => __( 'Loading...', 'dynamic-table-blocks' ),
@@ -157,7 +157,9 @@ class DTBK_Admin {
 					'submit'                   => __( 'Submit', 'dynamic-table-blocks' ),
 					'statusTitle'              => __( 'Change Table Status', 'dynamic-table-blocks' ),
 					'statusCurrent'            => __( 'Table Status ', 'dynamic-table-blocks' ),
+					'statusSuccess'            => __( 'Table status successfully updated', 'dynamic-table-blocks' ),
 					'deleteTitle'              => __( 'Delete Table', 'dynamic-table-blocks' ),
+					'deletedSuccess'           => __( 'Table successfully deleted', 'dynamic-table-blocks' ),
 					'exportTitle'              => __( 'Export Dynamic Table(s)', 'dynamic-table-blocks' ),
 					'exportPrompt'             => __( 'Select export format:', 'dynamic-table-blocks' ),
 					'exportJson'               => __( 'Backup (JSON)', 'dynamic-table-blocks' ),

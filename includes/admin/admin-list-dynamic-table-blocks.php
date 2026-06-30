@@ -302,7 +302,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 	protected function column_name( $item ) {
 		$export_nonce = wp_create_nonce( 'dtbk_export_download' );
 		$allow_delete = $item['status'] === 'orphan' || $item['status'] === 'loaded' || $item['status'] === 'corrupted';
-		$allow_status_change = in_array( $item['status'], array( 'loaded', 'orphan', 'corrupted' ), true );
+		$allow_status_change = in_array( $item['status'], array( 'orphan', 'new', 'unknown', 'deleted' ), true );
 		$actions      = array(
 
 			'view'          => sprintf(
@@ -332,8 +332,6 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 				esc_html__( 'Delete', 'dynamic-table-blocks' )
 			),
 		);
-		error_log('Delete link: ' . $actions['change_status']);
-		error_log('Delete link: ' . $actions['delete']);
 		return sprintf( '%1$s %2$s', $item['name'], $this->row_actions( $actions ) );
 	}
 
