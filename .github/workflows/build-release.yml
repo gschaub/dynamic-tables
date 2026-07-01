@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0 # we will create/push branch & tag
 
@@ -72,9 +72,9 @@ jobs:
           test "${WANT}" = "${STABLE_TAG}" || { echo "Mismatch: version != readme Stable tag"; exit 1; }
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Install deps (include dev)
@@ -176,7 +176,7 @@ jobs:
           rm -rf zipdir
 
       - name: Create GitHub Release & upload ZIP
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ env.TAG }}
           name: Release ${{ env.TAG }}

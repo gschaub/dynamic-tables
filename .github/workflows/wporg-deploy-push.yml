@@ -24,14 +24,14 @@ jobs:
     steps:
       # ---------- Checkout plugin code from selected tag ----------
       - name: Checkout source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.inputs.tag }}
           fetch-depth: 0
 
       # ---------- Checkout assets from main branch ----------
       - name: Checkout assets from main branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: main
           path: _assets
@@ -47,9 +47,10 @@ jobs:
 
       # ---------- Build plugin ----------
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '22'
+          cache: 'npm'
 
       - name: Build JS/CSS (if applicable)
         run: |

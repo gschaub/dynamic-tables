@@ -2,7 +2,7 @@
 **Contributors:** [glschaub](https://profiles.wordpress.org/glschaub/), [myfamilyweb](https://profiles.wordpress.org/myfamilyweb/)  
 **Tags:**              tables, data table, responsive tables, table block, gutenberg table  
 **Tested up to:**      7.0  
-**Stable tag:**        1.4.0  
+**Stable tag:**        1.4.1  
 **License:**           GPL-2.0-or-later  
 **License URI:**       https://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -108,15 +108,24 @@ No. This plugin is free to use. However, we are planning for a premium version o
 
 ## Screenshots ##
 
-1. Create a new Dynamic Table block
-2. Format specific table text
-3. Insert columns and rows
-4. Format header row if one exists
-5. Format header grid lines
-6. Format table body
-7. Set column width (corresponding configuration is available for rows too)
+1. Create a brand new Dynamic Table block
+2. Create a new Dynamic Table block from an existing unattached table
+3. Import and create a new table available for attachment
+4. Editor actions and navigation
+5. Header border menu options
+6. Format specific table text ("general" content type)
+7. Format header row if one exists
+8. Format header grid lines
+9. Format table body
+10. Set column width (corresponding configuration is available for rows too)
 
 ## Changelog ##
+### 1.4.1 ###
+* Added support to delete table from the admin Table Maintenance
+* Added support to change a table's status from the admin Table Maintenance
+* Fixed bug that prevented import "choose file" button from opening file expolorer
+* Fixed bug that made table delete unreliable
+
 ### 1.4.0 ###
 * Added support for importing CSV files and loading them as Dynamic Tables
 * Updated table creation to attach loaded tables to new blocks
