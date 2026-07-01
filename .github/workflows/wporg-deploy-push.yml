@@ -232,20 +232,20 @@ jobs:
 
       - name: Upload deploy dry-run ZIP artifact
         if: ${{ !inputs.deploy_to_svn }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ env.PLUGIN_SLUG }}-${{ steps.ver.outputs.version }}-dry-run
           path: ${{ steps.deploy_dry_run.outputs['zip-path'] }}
 
       - name: Upload deploy live ZIP artifact
         if: ${{ inputs.deploy_to_svn }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ env.PLUGIN_SLUG }}-${{ steps.ver.outputs.version }}-deploy
           path: ${{ steps.deploy_live.outputs['zip-path'] }}
 
       - name: Upload deploy manifest artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: deploy-manifest
           path: |
