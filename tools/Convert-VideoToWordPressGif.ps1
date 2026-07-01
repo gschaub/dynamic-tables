@@ -8,7 +8,10 @@ param(
     [int]$Fps = 8,
 
     [ValidateRange(320, 1920)]
-    [int]$Width = 960
+    [int]$Width = 960,
+
+    [ValidateRange(240, 1920)]
+    [int]$Height = 540
 )
 
 $ErrorActionPreference = 'Stop'
@@ -71,12 +74,12 @@ Then restart VS Code or your terminal and run this script again.
 }
 
 $gifskiPath = Get-CommandPath -Name 'gifski'
-$scaleFilter = "fps=$Fps,scale=${Width}:-1:flags=lanczos"
+$scaleFilter = "fps=$Fps,scale='min(iw,${Width})':'min(ih,${Height})':force_original_aspect_ratio=decrease:flags=lanczos,pad=${Width}:${Height}:(ow-iw)/2:(oh-ih)/2:white"
 
 Write-Host "Input:  $resolvedInput"
 Write-Host "Output: $OutputPath"
 Write-Host "FPS:    $Fps"
-Write-Host "Width:  $Width"
+Write-Host "Canvas: ${Width}x${Height}"
 
 if ($gifskiPath) {
     $tempRoot = Join-Path $env:TEMP ('dtbk-gif-' + [guid]::NewGuid().ToString('N'))
@@ -95,6 +98,7 @@ if ($gifskiPath) {
         Run-NativeCommand -FilePath $gifskiPath -Arguments @(
             '--fps', $Fps.ToString(),
             '--width', $Width.ToString(),
+            '--height', $Height.ToString(),
             '--output', $OutputPath,
             $framePattern
         )
