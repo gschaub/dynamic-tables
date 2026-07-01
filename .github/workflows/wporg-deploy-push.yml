@@ -47,19 +47,21 @@ jobs:
 
       # ---------- Build plugin ----------
       - name: Set up Node
+        if: ${{ hashFiles('package.json') != '' && hashFiles('package-lock.json') != '' }}
         uses: actions/setup-node@v6
         with:
           node-version: '22'
           cache: 'npm'
 
       - name: Build JS/CSS (if applicable)
+        if: ${{ hashFiles('package.json') != '' && hashFiles('package-lock.json') != '' }}
         run: |
-          if [ -f package.json ]; then
-            npm ci
-            npm run build
-          else
-            echo "No package.json found; skipping JS build."
-          fi
+          npm ci
+          npm run build
+
+      - name: Skip JS/CSS build for prebuilt release tags
+        if: ${{ hashFiles('package.json') == '' || hashFiles('package-lock.json') == '' }}
+        run: echo "No package.json/package-lock.json found in this tag; using prebuilt release assets."
 
       - name: Set up PHP & Composer
         uses: shivammathur/setup-php@v2
