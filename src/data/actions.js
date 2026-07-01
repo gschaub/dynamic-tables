@@ -276,12 +276,15 @@ export const saveTableEntity =
  * @since    1.0.0
  *
  * @param {*}      tableId                  Identifier key for the table
- * @param {string} [overrideTableStatus=''] Updates the table's status if populated
+ * @param {string} [overrideTableStatus] Updates the table's status if populated
+ * @param {string} [tableOverride]       Optionally updates table based on this source table.
  * @return  {Object} Action Object
  */
 export const updateTableEntity =
 	(tableId, overrideTableStatus = '', tableOverride = null) =>
 	({ select, registry }) => {
+
+		const sourceTable = tableOverride || select.getTable(tableId, false);
 
 		const {
 			table_id,
@@ -294,7 +297,7 @@ export const updateTableEntity =
 			rows,
 			columns,
 			cells,
-		} = select.getTable(tableId, false);
+		} = sourceTable;
 
 		const safeRows = Array.isArray(rows) ? rows : [];
 		const safeColumns = Array.isArray(columns) ? columns : [];

@@ -544,7 +544,6 @@ jQuery($ => {
 					</form>
 				`;
 
-				// this.openChangeTableStatusDialog(html, id);
 				this.openChangeTableStatusDialog(html, id, false, newStatus);
 			} catch (error) {
 				const message = DTBK_TABLE_LIST?.i18n?.error || 'Request failed. Please try again.';
@@ -592,7 +591,6 @@ jQuery($ => {
 		 * @param {boolean} isSubmitDisabled Disable the delete button
 		 * @param {string}  newStatus        New table status for update
 		 */
-		// async openChangeTableStatusDialog(contentHtml, id = 0, isSubmitDisabled = false) {
 		async openChangeTableStatusDialog(
 			contentHtml,
 			id = 0,
@@ -627,7 +625,6 @@ jQuery($ => {
 						id: 'dtbkDialogSubmit',
 						class: 'button-primary',
 						click: async () => {
-							// await this.submitChangeTableStatus(id);
 							await this.submitChangeTableStatus(id, newStatus);
 						},
 					},
@@ -639,7 +636,6 @@ jQuery($ => {
 
 			const $submitButton = this.$('#dtbkDialogSubmit');
 			const disableSubmit = isSubmitDisabled || !id || !newStatus;
-			// const disableSubmit = isSubmitDisabled || !id;
 
 			$submitButton.prop('disabled', disableSubmit);
 			$submitButton.toggleClass('disabled', disableSubmit);
@@ -881,7 +877,6 @@ jQuery($ => {
 			];
 
 			if (hasCorruptedLinkForm) {
-				// if (true) {
 				buttons.push({
 					text: DTBK_TABLE_LIST?.i18n?.deleteWithBlock || 'Delete Table & Block',
 					id: 'dtbkDialogDeleteCorrupted',

@@ -1264,7 +1264,7 @@ export default function Edit(props) {
 					 * tables from "new" to "saved" once the post is saved.
 					 */
 					if (table.table_status == 'new') {
-						setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
+						setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved', false)
 						updateTableEntity(table.table_id, 'saved', {
 							...table,
 							table_status: 'saved',
@@ -1968,8 +1968,14 @@ export default function Edit(props) {
 			error: null,
 		});
 		createTableEntity()
-			.then(() => {
-				setTableOperation(prev => ({ ...prev, kind: 'attaching' }));
+			.then(createdTableId => {
+				props.setAttributes({
+					original_post_type: postType,
+					original_post_id: Number(postId),
+					table_id: Number(createdTableId),
+				});
+
+				setTableOperation(prev => ({ ...prev, kind: 'ready', error: null }));
 			})
 			.catch(error => {
 				setTableOperation({
@@ -2363,6 +2369,7 @@ export default function Edit(props) {
 		const isCellMenuShortcut =
 			event.key === 'ContextMenu' ||
 			(!event.altKey && !event.ctrlKey && !event.metaKey && event.shiftKey && event.key === 'F10');
+			
 		// Support accessibility
 		if (isCellMenuShortcut) {
 			if (isContentOnlyMode) return;

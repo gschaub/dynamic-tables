@@ -263,13 +263,16 @@ class DTBK_Admin_Ajax {
 			);
 		}
 
+		$current_post_id         = isset( $table['header']['post_id'] ) ? (int) $table['header']['post_id'] : 0;
+		$current_block_table_ref = isset( $table['header']['block_table_ref'] ) ? (string) $table['header']['block_table_ref'] : '';
+
 		$table_update = array(
 			'id'     => $table_id,
 			'header' => array(
 				'id'              => (int) $table_id,
 				'status'          => $new_status,
-				'post_id'         => 0,
-				'block_table_ref' => '',
+				'post_id'         => $current_post_id,
+				'block_table_ref' => $current_block_table_ref,
 			),
 		);
 

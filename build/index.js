@@ -2929,13 +2929,15 @@ const saveTableEntity = tableId => async ({
  * @since    1.0.0
  *
  * @param {*}      tableId                  Identifier key for the table
- * @param {string} [overrideTableStatus=''] Updates the table's status if populated
+ * @param {string} [overrideTableStatus] Updates the table's status if populated
+ * @param {string} [tableOverride]       Optionally updates table based on this source table.
  * @return  {Object} Action Object
  */
 const updateTableEntity = (tableId, overrideTableStatus = '', tableOverride = null) => ({
   select,
   registry
 }) => {
+  const sourceTable = tableOverride || select.getTable(tableId, false);
   const {
     table_id,
     block_table_ref,
@@ -2947,7 +2949,7 @@ const updateTableEntity = (tableId, overrideTableStatus = '', tableOverride = nu
     rows,
     columns,
     cells
-  } = select.getTable(tableId, false);
+  } = sourceTable;
   const safeRows = Array.isArray(rows) ? rows : [];
   const safeColumns = Array.isArray(columns) ? columns : [];
   const safeCells = Array.isArray(cells) ? cells : [];
@@ -5885,7 +5887,7 @@ function Edit(props) {
            * tables from "new" to "saved" once the post is saved.
            */
           if (table.table_status == 'new') {
-            setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved');
+            setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved', false);
             updateTableEntity(table.table_id, 'saved', {
               ...table,
               table_status: 'saved'
@@ -6523,10 +6525,16 @@ function Edit(props) {
       sourceTableId: 0,
       error: null
     });
-    createTableEntity().then(() => {
+    createTableEntity().then(createdTableId => {
+      props.setAttributes({
+        original_post_type: postType,
+        original_post_id: Number(postId),
+        table_id: Number(createdTableId)
+      });
       setTableOperation(prev => ({
         ...prev,
-        kind: 'attaching'
+        kind: 'ready',
+        error: null
       }));
     }).catch(error => {
       setTableOperation({
@@ -6869,6 +6877,7 @@ function Edit(props) {
     const canUseStructureShortcuts = !isContentOnlyMode;
     const cellId = activeCellEl.getAttribute('data-cell-id');
     const isCellMenuShortcut = event.key === 'ContextMenu' || !event.altKey && !event.ctrlKey && !event.metaKey && event.shiftKey && event.key === 'F10';
+
     // Support accessibility
     if (isCellMenuShortcut) {
       if (isContentOnlyMode) return;
