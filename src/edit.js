@@ -1438,8 +1438,14 @@ export default function Edit(props) {
 		});
 
 		cloneTable(table.table_id, postId, cloneBlockTableRef)
-			.then(() => {
-				setTableOperation(prev => ({ ...prev, kind: 'attaching' }));
+			.then(clonedTableId => {
+				props.setAttributes({
+					original_post_type: postType,
+					original_post_id: Number(postId),
+					table_id: Number(clonedTableId),
+				});
+
+				setTableOperation(prev => ({ ...prev, kind: 'ready', error: null }));
 			})
 			.catch(error => {
 				setTableOperation({
@@ -2369,7 +2375,7 @@ export default function Edit(props) {
 		const isCellMenuShortcut =
 			event.key === 'ContextMenu' ||
 			(!event.altKey && !event.ctrlKey && !event.metaKey && event.shiftKey && event.key === 'F10');
-			
+
 		// Support accessibility
 		if (isCellMenuShortcut) {
 			if (isContentOnlyMode) return;

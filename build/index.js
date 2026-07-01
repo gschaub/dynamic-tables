@@ -6048,10 +6048,16 @@ function Edit(props) {
       sourceTableId: table.table_id,
       error: null
     });
-    cloneTable(table.table_id, postId, cloneBlockTableRef).then(() => {
+    cloneTable(table.table_id, postId, cloneBlockTableRef).then(clonedTableId => {
+      props.setAttributes({
+        original_post_type: postType,
+        original_post_id: Number(postId),
+        table_id: Number(clonedTableId)
+      });
       setTableOperation(prev => ({
         ...prev,
-        kind: 'attaching'
+        kind: 'ready',
+        error: null
       }));
     }).catch(error => {
       setTableOperation({
