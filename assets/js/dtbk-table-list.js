@@ -1070,7 +1070,7 @@ jQuery($ => {
 					iconKey: 'fileJSON',
 					label: this.importUi.formats.json,
 					isPro: false,
-					isComingSoon: true,
+					isComingSoon: false,
 					isBackup: true,
 				},
 				csv: {

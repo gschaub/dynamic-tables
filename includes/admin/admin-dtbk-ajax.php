@@ -949,8 +949,8 @@ class DTBK_Admin_Ajax {
 			$table_name = (string) ( $target_header['table_name'] ?? '' );
 		}
 
-		$source_header_attributes = is_array( $source_header['attributes'] ?? null ) ? $source_header['attributes'] : array();
-		$target_header_attributes = is_array( $target_header['attributes'] ?? null ) ? $target_header['attributes'] : array();
+		$source_header_attributes = $this->normalize_import_table_attributes( $source_header['attributes'] ?? array() );
+		$target_header_attributes = $this->normalize_import_table_attributes( $target_header['attributes'] ?? array() );
 		$header_attributes        = $is_create
 			? $source_header_attributes
 			: array_merge( $target_header_attributes, $source_header_attributes );
@@ -975,6 +975,48 @@ class DTBK_Admin_Ajax {
 			'columns' => $normalized_columns,
 			'cells'   => $normalized_cells,
 		);
+	}
+
+	/**
+	 * Normalize imported table attributes to current keys and defaults.
+	 *
+	 * Fix for known attribute name drifts
+	 *
+	 * @since 1.4.2
+	 *
+	 * @param array $attributes Imported table header attributes.
+	 * @return array
+	 */
+	private function normalize_import_table_attributes( $attributes ) {
+		$attributes = is_array( $attributes ) ? $attributes : array();
+		$defaults   = get_default_table_attributes();
+
+		if ( ! isset( $attributes['bandedRowBackgroundColor'] ) && ! empty( $attributes['bandedRowColor'] ) ) {
+			$attributes['bandedRowBackgroundColor'] = (string) $attributes['bandedRowColor'];
+		}
+
+		if ( ! isset( $attributes['bandedTextColor'] ) && ! empty( $attributes['bandedRowTextColor'] ) ) {
+			$attributes['bandedTextColor'] = (string) $attributes['bandedRowTextColor'];
+		}
+
+		foreach ( array( 'bandedRows', 'showGridLines', 'allowHorizontalScroll', 'enableHeaderRow', 'headerRowSticky', 'hideTitle' ) as $key ) {
+			if ( array_key_exists( $key, $attributes ) && is_string( $attributes[ $key ] ) ) {
+				$normalized = filter_var( $attributes[ $key ], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+				if ( null !== $normalized ) {
+					$attributes[ $key ] = $normalized;
+				}
+			}
+		}
+
+		if ( isset( $attributes['headerBorder'] ) && is_array( $attributes['headerBorder'] ) ) {
+			$attributes['headerBorder'] = array_merge( $defaults['headerBorder'], $attributes['headerBorder'] );
+		}
+
+		if ( isset( $attributes['bodyBorder'] ) && is_array( $attributes['bodyBorder'] ) ) {
+			$attributes['bodyBorder'] = array_merge( $defaults['bodyBorder'], $attributes['bodyBorder'] );
+		}
+
+		return $attributes;
 	}
 
 	/**

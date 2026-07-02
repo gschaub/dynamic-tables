@@ -181,16 +181,6 @@ function get_table_cell_tag_id( $table_id, $cell_id ) {
 	return get_table_tag_id_base( $table_id ) . '-cell-' . $normalized_cell_id;
 }
 
-
-
-
-
-
-
-
-
-
-
 /**
  * Retrieve attribute values for the table header.
  *
@@ -199,39 +189,16 @@ function get_table_cell_tag_id( $table_id, $cell_id ) {
  * as needed.
  *
  * @since 1.0.0
+ * @since 1.4.2 - Consolidate on single source for default attributes
  *
  * @param  array $table_header Metadata about the table
  * @return array Table attributes
  */
 function get_table_header_attributes( $table_header ) {
 
-	$table_default_attributes = array(
-		'showGridLines'            => false,
-		'bandedRows'               => false,
-		'bandedRowBackgroundColor' => '#d8dbda',
-		'bandedTextColor'          => '#d8dbda',
-		'gridLineWidth'            => 1,
-		'allowHorizontalScroll'    => true,
-		'enableHeaderRow'          => false,
-		'headerAlignment'          => 'center',
-		'headerRowSticky'          => false,
-		'headerBorder'             => array(
-			'color' => 'black',
-			'style' => 'solid',
-			'width' => '1px',
-		),
-		'horizontalAlignment'      => 'none',
-		'bodyAlignment'            => null,
-		'bodyBorder'               => array(
-			'color' => 'black',
-			'style' => 'solid',
-			'width' => '1px',
-		),
-		'verticalAlignment'        => 'none',
-		'hideTitle'                => false,
-	);
+	$table_default_attributes = get_default_table_attributes();
+	$table_header_attributes  = array_merge( $table_default_attributes, $table_header['attributes'] );
 
-	$table_header_attributes = array_merge( $table_default_attributes, $table_header['attributes'] );
 	return $table_header_attributes;
 }
 
