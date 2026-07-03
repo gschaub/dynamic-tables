@@ -299,8 +299,8 @@ jQuery($ => {
 				csv: {
 					iconKey: 'fileCSV',
 					label: this.exportUi.formats.csv,
-					isPro: true,
-					isComingSoon: true, // you can turn this off later even if still Pro
+					isPro: false,
+					isComingSoon: false, // you can turn this off later even if still Pro
 					isBackup: false,
 				},
 				xlsx: {
@@ -2041,6 +2041,20 @@ jQuery($ => {
 		}
 
 		/**
+		 * Normalize the selected export ids into integers for download requests.
+		 *
+		 * @since    1.4.2
+		 *
+		 * @return {Array<number>} Selected export table ids.
+		 */
+		getExportIdList() {
+			return String(this.exportIds || '')
+				.split(',')
+				.map(id => Number.parseInt(String(id).trim(), 10))
+				.filter(id => Number.isInteger(id) && id > 0);
+		}
+
+		/**
 		 * Initiate server side download stream.
 		 *
 		 * @since    1.1.1
@@ -2049,6 +2063,13 @@ jQuery($ => {
 		 */
 		startDownload(format) {
 			try {
+				if (format === 'csv' && this.getExportIdList().length !== 1) {
+					throw new Error(
+						DTBK_TABLE_LIST?.i18n?.exportSingleTableOnly ||
+							'CSV export currently supports one table at a time.'
+					);
+				}
+
 				const url = this.buildExportUrl(format);
 
 				// Close picker before navigation
@@ -2079,6 +2100,7 @@ jQuery($ => {
 		buildExportUrl(format) {
 			const adminPostUrl = DTBK_TABLE_LIST?.adminPostUrl;
 			const action = DTBK_TABLE_LIST?.exportAction;
+			const exportIds = this.getExportIdList();
 
 			if (!adminPostUrl || !action) {
 				// Hard fail to avoid silent no-op
@@ -2089,6 +2111,7 @@ jQuery($ => {
 			url.searchParams.set('action', action);
 			url.searchParams.set('format', format);
 			url.searchParams.set('ids', this.exportIds);
+			url.searchParams.set('ids', exportIds.join(','));
 
 			if (this.exportNonce) {
 				url.searchParams.set('_wpnonce', this.exportNonce);

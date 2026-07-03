@@ -2,7 +2,7 @@
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, responsive tables, table block, gutenberg table
 Tested up to:      7.0
-Stable tag:        1.4.1
+Stable tag:        1.4.2
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -120,6 +120,9 @@ No. This plugin is free to use. However, we are planning for a premium version o
 10. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+= 1.4.2 =
+* Added support restore backup files which contain full table formatting
+
 = 1.4.1 =
 * Added support to delete table from the admin Table Maintenance
 * Added support to change a table's status from the admin Table Maintenance

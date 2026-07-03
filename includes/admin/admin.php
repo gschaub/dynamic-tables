@@ -441,7 +441,7 @@ class DTBK_Admin {
 				break;
 
 			case 'csv':
-				wp_die( 'CSV export not implemented yet.', 501 );
+				$this->export_stream_csv( $ids );
 
 			case 'xlsx':
 				wp_die( 'XLSX export not implemented yet.', 501 );
@@ -499,6 +499,332 @@ class DTBK_Admin {
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Write to output stream.
 		fclose( $out );
 		exit;
+	}
+
+	private function export_stream_csv( array $ids ): void {
+		if ( 1 !== count( $ids ) ) {
+			wp_die(
+				esc_html__( 'CSV export currently supports one table at a time.', 'dynamic-table-blocks' ),
+				'',
+				array( 'response' => 400 )
+			);
+		}
+
+		$table = $this->fetch_table_via_rest( (int) $ids[0] );
+		if ( is_wp_error( $table ) || empty( $table ) ) {
+			wp_die(
+				esc_html__( 'The requested table could not be exported.', 'dynamic-table-blocks' ),
+				'',
+				array( 'response' => 404 )
+			);
+		}
+
+		$table_id      = isset( $table['id'] ) ? (int) $table['id'] : 0;
+		$table_name    = ! empty( $table['header']['table_name'] )
+			? $this->html_to_csv_text( $table['header']['table_name'] )
+			: $this->html_to_csv_text( $table['title'] ?? '' );
+		$filename      = 'dtbk-table' . ( $table_id > 0 ? '-' . $table_id : '' );
+		$filename_slug = sanitize_file_name( $table_name );
+
+		if ( '' !== $filename_slug ) {
+			$filename .= '-' . $filename_slug;
+		}
+
+		$filename .= '-' . gmdate( 'Y-m-d_H-i-s' ) . '.csv';
+
+		@set_time_limit( 0 );
+		ignore_user_abort( true );
+
+		nocache_headers();
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+		header( 'X-Content-Type-Options: nosniff' );
+
+		if ( function_exists( 'wp_ob_end_flush_all' ) ) {
+			wp_ob_end_flush_all();
+		}
+
+		$out = fopen( 'php://output', 'wb' );
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Write to output stream.
+		fwrite( $out, "\xEF\xBB\xBF" );
+
+		$this->stream_csv_table( $out, $table );
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Write to output stream.
+		fclose( $out );
+		exit;
+	}
+
+	private function stream_csv_table( $out, array $table ): void {
+		$rows    = isset( $table['rows'] ) && is_array( $table['rows'] ) ? array_values( $table['rows'] ) : array();
+		$columns = isset( $table['columns'] ) && is_array( $table['columns'] ) ? array_values( $table['columns'] ) : array();
+
+		usort(
+			$rows,
+			static function ( $a, $b ) {
+				return (int) ( $a['row_id'] ?? 0 ) <=> (int) ( $b['row_id'] ?? 0 );
+			}
+		);
+
+		usort(
+			$columns,
+			static function ( $a, $b ) {
+				return (int) ( $a['column_id'] ?? 0 ) <=> (int) ( $b['column_id'] ?? 0 );
+			}
+		);
+
+		$column_map = array();
+		foreach ( $columns as $column ) {
+			$column_id = isset( $column['column_id'] ) ? (int) $column['column_id'] : 0;
+			if ( $column_id > 0 ) {
+				$column_map[ $column_id ] = $column;
+			}
+		}
+
+		$cell_map = array();
+		foreach ( $table['cells'] ?? array() as $cell ) {
+			$row_id    = isset( $cell['row_id'] ) ? (int) $cell['row_id'] : 0;
+			$column_id = isset( $cell['column_id'] ) ? (int) $cell['column_id'] : 0;
+
+			if ( $row_id < 1 || $column_id < 1 ) {
+				continue;
+			}
+
+			$cell_map[ $row_id ][ $column_id ] = $this->get_csv_export_cell_value(
+				$cell,
+				$column_map[ $column_id ] ?? array()
+			);
+		}
+
+		foreach ( $rows as $row ) {
+			$row_id = isset( $row['row_id'] ) ? (int) $row['row_id'] : 0;
+			if ( $row_id < 1 ) {
+				continue;
+			}
+
+			$csv_row = array();
+			foreach ( $columns as $column ) {
+				$column_id = isset( $column['column_id'] ) ? (int) $column['column_id'] : 0;
+				if ( $column_id < 1 ) {
+					continue;
+				}
+
+				$csv_row[] = $cell_map[ $row_id ][ $column_id ] ?? '';
+			}
+
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fputcsv -- Write to output stream.
+			fputcsv( $out, $csv_row );
+		}
+	}
+
+	private function get_csv_export_cell_value( array $cell, array $column = array() ): string {
+		$column_data_type = isset( $column['attributes']['columnDataType'] ) && is_array( $column['attributes']['columnDataType'] )
+			? $column['attributes']['columnDataType']
+			: array( 'type' => 'general' );
+
+		$export_cell = array(
+			'content'    => isset( $cell['content'] ) ? (string) $cell['content'] : '',
+			'attributes' => isset( $cell['attributes'] ) && is_array( $cell['attributes'] ) ? $cell['attributes'] : array(),
+			'data_type'  => $column_data_type,
+		);
+
+		$type = isset( $column_data_type['type'] ) ? (string) $column_data_type['type'] : 'general';
+
+		if ( 'date-time' === $type && ! empty( $column_data_type['settings']['format'] ) ) {
+			$formatted_value = format_display_date( $export_cell );
+			if ( '' !== $formatted_value ) {
+				return $formatted_value;
+			}
+		}
+
+		if (
+			'number' === $type &&
+			! empty( $column_data_type['settings']['format'] ) &&
+			isset( $column_data_type['settings']['formatOptions'] ) &&
+			is_array( $column_data_type['settings']['formatOptions'] )
+		) {
+			$formatted_value = format_display_number( $export_cell );
+			if ( '' !== $formatted_value ) {
+				return $formatted_value;
+			}
+		}
+
+		$plain_text = $this->html_to_csv_text( $export_cell['content'] );
+		if ( '' !== $plain_text ) {
+			return $plain_text;
+		}
+
+		if ( isset( $export_cell['attributes']['value']['indexText'] ) ) {
+			return trim( (string) $export_cell['attributes']['value']['indexText'] );
+		}
+
+		return '';
+	}
+
+	private function html_to_csv_text( $value ): string {
+		$value = (string) $value;
+
+		if ( '' === $value ) {
+			return '';
+		}
+
+		$normalized_text = '';
+		if ( class_exists( '\DOMDocument' ) ) {
+			$normalized_text = $this->extract_csv_text_from_html( $value );
+		}
+
+		if ( '' === $normalized_text ) {
+			$contains_image = false !== stripos( $value, '<img' );
+			$value          = preg_replace( '#<br\s*/?>#i', "\n", $value );
+			$value          = preg_replace( '#</(?:blockquote|div|h[1-6]|li|ol|p|pre|table|tr|ul)>#i', "\n", $value );
+			$value          = wp_strip_all_tags( $value, false );
+			$value          = html_entity_decode( $value, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+			$normalized_text = $value;
+
+			if ( '' === trim( $normalized_text ) && $contains_image ) {
+				$normalized_text = '[image]';
+			}
+		}
+
+		return $this->normalize_csv_export_text( $normalized_text );
+	}
+
+
+	private function extract_csv_text_from_html( string $value ): string {
+		$dom   = new \DOMDocument();
+		$flags = 0;
+
+		if ( defined( 'LIBXML_HTML_NOIMPLIED' ) ) {
+			$flags |= LIBXML_HTML_NOIMPLIED;
+		}
+
+		if ( defined( 'LIBXML_HTML_NODEFDTD' ) ) {
+			$flags |= LIBXML_HTML_NODEFDTD;
+		}
+
+		$previous = libxml_use_internal_errors( true );
+		$loaded   = $dom->loadHTML( '<?xml encoding="utf-8" ?><div>' . $value . '</div>', $flags );
+		libxml_clear_errors();
+		libxml_use_internal_errors( $previous );
+
+		if ( ! $loaded ) {
+			return '';
+		}
+
+		$root = $dom->getElementsByTagName( 'div' )->item( 0 );
+		if ( ! $root ) {
+			$root = $dom->getElementsByTagName( 'body' )->item( 0 );
+		}
+
+		if ( ! $root ) {
+			return '';
+		}
+
+		$tokens = array();
+		foreach ( $root->childNodes as $child_node ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Native DOMDocument property.
+			$this->append_csv_node_text( $child_node, $tokens );
+		}
+
+		return implode( '', $tokens );
+	}
+
+	private function append_csv_node_text( \DOMNode $node, array &$tokens ): void {
+		if ( XML_TEXT_NODE === $node->nodeType || XML_CDATA_SECTION_NODE === $node->nodeType ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Native DOMDocument property.
+			$this->append_csv_text_token( $tokens, $node->textContent ?? '' ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Native DOMDocument property.
+			return;
+		}
+
+		if ( XML_ELEMENT_NODE !== $node->nodeType || ! ( $node instanceof \DOMElement ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Native DOMDocument property.
+			return;
+		}
+
+		$tag_name = strtoupper( $node->tagName ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Native DOMDocument property.
+
+		if ( 'BR' === $tag_name ) {
+			$this->append_csv_text_token( $tokens, "\n" );
+			return;
+		}
+
+		if ( 'IMG' === $tag_name ) {
+			$this->append_csv_text_token( $tokens, $this->get_csv_image_surrogate( $node ) );
+			return;
+		}
+
+		if ( 'A' === $tag_name ) {
+			$this->append_csv_text_token( $tokens, $this->get_csv_link_surrogate( $node ) );
+			return;
+		}
+
+		foreach ( $node->childNodes as $child_node ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Native DOMDocument property.
+			$this->append_csv_node_text( $child_node, $tokens );
+		}
+
+		if ( in_array( $tag_name, array( 'BLOCKQUOTE', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI', 'OL', 'P', 'PRE', 'TABLE', 'TR', 'UL' ), true ) ) {
+			$this->append_csv_text_token( $tokens, "\n" );
+		}
+	}
+
+	private function append_csv_text_token( array &$tokens, string $token ): void {
+		if ( '' === $token ) {
+			return;
+		}
+
+		$last_token = end( $tokens );
+		if ( false !== $last_token && "\n" === $token && "\n" === $last_token ) {
+			return;
+		}
+
+		$tokens[] = $token;
+	}
+
+	private function get_csv_link_surrogate( \DOMElement $node ): string {
+		$link_tokens = array();
+		foreach ( $node->childNodes as $child_node ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Native DOMDocument property.
+			$this->append_csv_node_text( $child_node, $link_tokens );
+		}
+
+		$link_text = $this->normalize_csv_export_text( implode( '', $link_tokens ) );
+		$href      = trim( html_entity_decode( (string) $node->getAttribute( 'href' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+
+		if ( '' === $href ) {
+			return $link_text;
+		}
+
+		if ( '' === $link_text ) {
+			return $href;
+		}
+
+		return $link_text === $href ? $link_text : $link_text . ' (' . $href . ')';
+	}
+
+	private function get_csv_image_surrogate( \DOMElement $node ): string {
+		$alt = trim( html_entity_decode( (string) $node->getAttribute( 'alt' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+		$src = trim( html_entity_decode( (string) $node->getAttribute( 'src' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+
+		if ( '' !== $alt && '' !== $src ) {
+			return $alt === $src ? $alt : $alt . ' (' . $src . ')';
+		}
+
+		if ( '' !== $alt ) {
+			return $alt;
+		}
+
+		if ( '' !== $src ) {
+			return $src;
+		}
+
+		return '[image]';
+	}
+
+	private function normalize_csv_export_text( string $value ): string {
+
+		$value = str_replace( array( "\r\n", "\r", "\xc2\xa0" ), array( "\n", "\n", ' ' ), $value );
+		$value = preg_replace( '/[^\S\n]+/u', ' ', $value );
+		$value = preg_replace( '/ *\n */u', "\n", $value );
+		$value = preg_replace( '/\n{3,}/u', "\n\n", $value );
+
+		return trim( (string) $value );
 	}
 
 	private function fetch_table_via_rest( int $table_id ) {
