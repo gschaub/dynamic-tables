@@ -17,6 +17,7 @@ Dynamic Tables is a powerful WordPress table block for creating responsive, pres
 * Navigate and edit cells using familiar, spreadsheet-style keyboard controls and contextual menus
 * Native Gutenberg block — no page builders or external dependencies required
 * Build structured tables directly in the block editor with full control over rows and columns
+* Board support for export and import of table data
 * Precisely control column widths, row heights, header rows, and grid line styling
 * Support for column-specific data types including text, numbers, and date/time values
 * Built with multisite in mind, with per-site activation support
@@ -31,7 +32,7 @@ Whether you're building comparison tables, product listings, directory lookup ta
 * Support for column specific content types (e.g., rich text, date, time, number, etc.)
 * Header row support with formatting independent from the table body
 * Inline editing of cell content
-* Import CSV files and allow them to be attached to new dynamic table blocks
+* Import CSV files and JSON backup restoration, allowing them to be attached to dynamic table blocks
 * Copy/cut/paste support for individual cells within a table
 * Fully responsive: tables scale, wrap and adapt to mobile screens
 * Clean semantic HTML output for SEO and accessibility
@@ -46,7 +47,6 @@ Some roadmap highlights include:
 
 * Adding more content types and formats for all rows in a column (e.g., checkboxes, images, links, buttons, etc.) without the need to format each cell
 * Undo/redo support
-* Importing in common formats (e.g., csv, xlsx)
 * Enhance copy/paste support
 * Enhanced responsive formatting for mobile devices
 * Integrating Dynamic Tables with WordPress search
@@ -73,10 +73,6 @@ Dynamic Tables uses a unique architecture designed to provide power and flexibil
 > **Important:** Deactivating and deleting the plugin does *not* auto-remove stored tables. However, there is a setting to support the removal of stored tables. Re-activating restores existing tables in posts.
 
 == Frequently Asked Questions ==
-= Can I import data from CSV or Excel? =
-
-Yes, you can import data from CSV files. Support for importing Excel files is still on the roadmap.
-
 = Will this work with any theme? =
 
 Yes. Dynamic Tables outputs semantic HTML and relies on standard CSS. It should be compatible with virtually all well-coded themes.
@@ -122,6 +118,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 == Changelog ==
 = 1.4.2 =
 * Added support restore backup files which contain full table formatting
+* Added support to export tables to csv files
 
 = 1.4.1 =
 * Added support to delete table from the admin Table Maintenance
