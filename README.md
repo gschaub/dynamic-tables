@@ -9,60 +9,129 @@
 Responsive table blocks with intuitive keyboard navigation, familiar spreadsheet-style interactions, and advanced formatting.
 
 ## Description ##
-Dynamic Tables is a powerful WordPress table block for creating responsive, presentation-focused tables with intuitive inline editing. Anyone familiar with spreadsheets will quickly understand how to navigate and format content.
 
+Dynamic Tables lets you create and edit WordPress tables as naturally as working in a spreadsheet.
 
-# Highlights: #
-* Fully responsive — tables maintain alignment and readability across all screen sizes
-* Navigate and edit cells using familiar, spreadsheet-style keyboard controls and contextual menus
-* Native Gutenberg block — no page builders or external dependencies required
-* Build structured tables directly in the block editor with full control over rows and columns
-* Precisely control column widths, row heights, header rows, and grid line styling
-* Support for column-specific data types including text, numbers, and date/time values
-* Built with multisite in mind, with per-site activation support
+Built as a native Gutenberg block, Dynamic Tables combines intuitive spreadsheet-style editing with a modern architecture that treats table data as structured information rather than embedded HTML. Content creators enjoy familiar keyboard navigation and inline editing, while developers benefit from clean, semantic output and a flexible data model designed for long-term growth.
 
-Whether you're building comparison tables, product listings, directory lookup tables or publishing data-rich content - Dynamic Tables gives you a simple, elegant solution.
+Whether you're creating comparison tables, pricing tables, product specifications, schedules, directories, or other presentation-focused content, Dynamic Tables makes building and maintaining tables faster, easier, and more reliable.
+
+# Why Dynamic Tables? #
+
+Unlike traditional table blocks that embed table content directly into post content, Dynamic Tables stores table data independently while the block itself simply references the table. This architecture allows tables to be managed as structured data while remaining fully integrated with the Gutenberg editor.
+
+That means:
+
+* Edit tables naturally using familiar spreadsheet interactions.
+* Keep structured table data independent from page content.
+* Publish responsive, semantic tables designed for accessibility and SEO.
+* Build on a foundation designed for future capabilities including search, front-end editing, filtering, sorting, and external integrations.
+
+# Designed for Everyone #
+
+Dynamic Tables was designed for two audiences simultaneously.
+
+**Content creators** want tables that are easy to build and maintain without needing HTML, shortcodes, or complicated configuration.
+
+**Developers and site administrators** want an architecture that is maintainable, extensible, and integrates naturally with modern WordPress development practices.
+
+Rather than forcing you to choose between ease of use and technical capability, Dynamic Tables delivers both.
+
+# Highlights #
+
+* Native Gutenberg block — no page builders or external dependencies
+* Spreadsheet-style editing with familiar keyboard navigation
+* Fully responsive tables that preserve alignment across screen sizes
+* Structured column data types including text, numbers, currency, percentages, and date/time values
+* Inline editing with contextual menus and keyboard shortcuts
+* Import CSV files or restore tables from JSON backups
+* Export tables for backup or interoperability
+* Precise control over column widths, row heights, borders, headers, and formatting
+* Semantic HTML output for accessibility and search engines
+* Built with multisite support in mind
 
 # Key Features #
-* Gutenberg native block: Dynamic Tables
-* Use arrow keys, tab, and enter to move between cells
-* Menus and keyboard shortcuts support the ability to add, move and delete columns and rows
-* Adjustable column widths and row heights
-* Support for column specific content types (e.g., rich text, date, time, number, etc.)
-* Header row support with formatting independent from the table body
-* Inline editing of cell content
-* Import CSV files and allow them to be attached to new dynamic table blocks
-* Copy/cut/paste support for individual cells within a table
-* Fully responsive: tables scale, wrap and adapt to mobile screens
-* Clean semantic HTML output for SEO and accessibility
-* Lightweight footprint and compatible with modern themes
-* Table export for backup purposes
 
-# Why Choose Dynamic Tables over other table blocks? #
-Dynamic Tables is designed specifically for tables that require ongoing updates, consistent structure, and reliable responsive behavior. It is an ideal option if your use case goes beyond basic layout tables and into repeatable, data-oriented content. Dynamic Tables provides a purpose-built solution that stays fully native to the block editor.
+**Spreadsheet-style Editing**
+
+Anyone familiar with a spreadsheet will feel immediately at home.
+
+* Navigate with Arrow keys, Tab, and Enter
+* Edit cells directly
+* Insert, move, and delete rows or columns using menus or keyboard shortcuts
+* Copy, cut, and paste individual cells
+* Adjust row heights and column widths visually
+
+**Structured Data Types**
+
+Columns understand the type of information they contain.
+
+Current supported data types include:
+
+* Rich text
+* Numbers
+* Currency
+* Percentages
+* Dates
+* Times
+* Date/Time
+
+Formatting is applied consistently across an entire column while preserving the underlying value.
+
+**Responsive by Design**
+
+Tables remain readable across desktop, tablet, and mobile devices without sacrificing structure.
+
+Rather than allowing rows and columns to become misaligned, Dynamic Tables was designed from the beginning with responsive presentation in mind.
+
+**Clean Semantic Output**
+
+Dynamic Tables generates semantic HTML that benefits:
+
+* Accessibility
+* Search engines
+* Theme compatibility
+* Performance
+
+Numbers remain numbers. Dates remain dates. Tables remain real tables.
+
+# Built on a Modern Architecture #
+
+Dynamic Tables is more than a visual table editor.
+
+Unlike many table blocks that store complete table markup inside post content, Dynamic Tables stores table definitions and content in dedicated WordPress database tables. Posts contain only lightweight references to those tables.
+
+This architecture provides several important advantages:
+
+* Cleaner separation between content and presentation
+* Structured data suitable for future capabilities
+* REST-based loading and saving of table content
+* Greater flexibility for import, export, search, and future integrations
+* Easier long-term maintenance
+
+Under the hood, Dynamic Tables includes:
+
+* Native Gutenberg block entities
+* RESTful APIs
+* An abstracted data layer built on WPDB
+* CSS Grid-based rendering
+* A design intended to support future external data sources
+
+The technical complexity remains invisible to content editors while providing developers with a robust foundation for building on the platform.
 
 # Roadmap #
-Some roadmap highlights include:
 
-* Adding more content types and formats for all rows in a column (e.g., checkboxes, images, links, buttons, etc.) without the need to format each cell
-* Undo/redo support
-* Importing in common formats (e.g., csv, xlsx)
-* Enhance copy/paste support
-* Enhanced responsive formatting for mobile devices
-* Integrating Dynamic Tables with WordPress search
-* Support for front end interactivity to sort and filter tables
-* Front end editing
+Dynamic Tables continues to evolve. Planned enhancements include:
 
-# For WordPress Developers #
-Dynamic Tables uses a unique architecture designed to provide power and flexibility for developers while remaining fully transparent to users. Table definitions and content are stored in custom WordPress database tables rather than post content, enabling a more structured and extensible data model. These are the primary building blocks:
-* Table data and definitions are abstracted through block entity types
-* Entities natively call RESTful APIs
-* An underlying WordPress REST API service supports the loading and saving of table data
-* The service interacts with a highly abstracted SQL layer which leverages WordPress WPDB
-* The tables themselves leverage the newer CSS grid framework
-  * Much of the flexibility is derived from grid functionality that has been incorporated into mainstream web browsers in the past few years
-  * This framework provides responsiveness that doesn't "break" table structure.  Misaligned rows and columns, unexpected wrapping, and otherwise indecipherable tables have been beaten down.
-* The API architecture will eventually support data stored in external files or web services. We're considering these capabilities in our roadmap.
+* Additional column content types such as links, buttons, images, checkboxes, and more
+* Undo and redo support
+* Expanded copy and paste capabilities
+* Additional responsive formatting options
+* Integration with WordPress search
+* Front-end sorting and filtering
+* Front-end editing
+* Additional REST API capabilities
+* Support for external data sources
 
 ## Installation ##
 1. In your WordPress dashboard, go to **Plugins -> Add New**, search for *Dynamic Tables*, click **Install Now** and then **Activate**.
@@ -73,10 +142,6 @@ Dynamic Tables uses a unique architecture designed to provide power and flexibil
 > **Important:** Deactivating and deleting the plugin does *not* auto-remove stored tables. However, there is a setting to support the removal of stored tables. Re-activating restores existing tables in posts.
 
 ## Frequently Asked Questions ##
-### Can I import data from CSV or Excel? ###
-
-Yes, you can import data from CSV files. Support for importing Excel files is still on the roadmap.
-
 ### Will this work with any theme? ###
 
 Yes. Dynamic Tables outputs semantic HTML and relies on standard CSS. It should be compatible with virtually all well-coded themes.
@@ -122,6 +187,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 ## Changelog ##
 ### 1.4.2 ###
 * Added support restore backup files which contain full table formatting
+* Added support to export tables to csv files
 
 ### 1.4.1 ###
 * Added support to delete table from the admin Table Maintenance

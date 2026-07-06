@@ -698,6 +698,11 @@ function ConfigureColumnDataType(props = {}) {
   const numberEntryValue = dataTypeFormat === 'percent' ? percentEntryValue ?? (0,_utils__WEBPACK_IMPORTED_MODULE_6__.toPercentEntryValue)(numberRawValue) : numberRawValue;
   const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.formattedNumber)(numberRawValue, dataTypeFormat, thousandSeparator, decimalPlaces, currency, bracketNegative);
 
+  // Checkbox specific attributes
+  const [checkboxHideIfEmpty, setCheckboxHideIfEmpty] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.hideIfEmpty || false);
+  const [checkboxDefaultToChecked, setCheckboxDefaultToChecked] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.defaultToChecked || false);
+  const isCheckboxDataType = normalizedColumnDataType?.type === 'checkbox' ? true : false;
+
   // Column width attributes
   const [columnWidthType, setColumnWidthType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes.columnWidthType);
   const [minWidth, setMinWidth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes.minWidth);
@@ -1078,6 +1083,86 @@ function ConfigureColumnDataType(props = {}) {
   }
 
   /**
+   * Update number format and set default options
+   *
+   * @since 1.4.2
+   *
+   * @param {string} checkboxFormat Checkbox format to set
+   */
+  function onCheckboxFormat(checkboxFormat) {
+    setDataTypeFormat(checkboxFormat);
+    setCheckboxHideIfEmpty(false);
+    setCheckboxDefaultToChecked(false);
+    setUpdateColumnStyle(true);
+    const formatOptions = {
+      hideIfEmpty: false,
+      defaultToChecked: false,
+      updateColumnStyle: true
+    };
+    const dataTypeSettings = {
+      format: checkboxFormat,
+      formatOptions: {
+        ...formatOptions
+      }
+    };
+
+    // let newColumnClassNames = new Set(columnClassNames);
+    // newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--number-align-right');
+    // setColumnClassNames(newColumnClassNames);
+
+    const updatedDataType = {
+      type: 'checkbox',
+      settings: dataTypeSettings
+    };
+    setDataType(updatedDataType);
+  }
+
+  /**
+   * Update number formatting options based on configuration input
+   *
+   * @since 1.2.4
+   *
+   * @param {Object} event  Formatting value to set
+   * @param {string} option Formatting option
+   */
+  function onCheckboxFormatOption(event, option) {
+    let newHideIfEmpty = checkboxHideIfEmpty;
+    let newDefaultToChecked = checkboxDefaultToChecked;
+    let newUpdateColumnStyle = updateColumnStyle;
+    let newColumnClassNames = new Set(columnClassNames);
+    switch (option) {
+      case 'hide-empty':
+        newHideIfEmpty = event;
+        break;
+      case 'default-checked':
+        newDefaultToChecked = event;
+        break;
+      case 'format-column':
+        newUpdateColumnStyle = event;
+        if (event) {
+          newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--number-align-right');
+        }
+        break;
+    }
+    setCheckboxHideIfEmpty(newHideIfEmpty);
+    setCheckboxDefaultToChecked(newDefaultToChecked);
+    setUpdateColumnStyle(newUpdateColumnStyle);
+    setColumnClassNames(newColumnClassNames);
+    const updatedDataType = {
+      ...dataType,
+      settings: {
+        format: dataType.settings.format,
+        formatOptions: {
+          hideIfEmpty: newHideIfEmpty,
+          defaultToChecked: newDefaultToChecked,
+          updateColumnStyle: newUpdateColumnStyle
+        }
+      }
+    };
+    setDataType(updatedDataType);
+  }
+
+  /**
    * Change column data types and set formatting defaults
    *
    * @since    1.2.0
@@ -1104,6 +1189,12 @@ function ConfigureColumnDataType(props = {}) {
       case 'number':
         setDataTypeFormat('number');
         onNumberFormat('number');
+        newColumnClassNames.delete('grid-control__body-columns--date-align-right');
+        return;
+      case 'checkbox':
+        setDataTypeFormat('checkbox');
+        onCheckboxFormat('standard');
+        newColumnClassNames.delete('grid-control__body-columns--number-align-right');
         newColumnClassNames.delete('grid-control__body-columns--date-align-right');
         return;
       default:
@@ -1211,10 +1302,12 @@ function ConfigureColumnDataType(props = {}) {
                     }, {
                       value: 'number',
                       label: 'Number'
+                    }, {
+                      value: 'checkbox',
+                      label: 'Check Box'
                     }
                     // { value: 'image', label: 'Image' },
                     // { value: 'link', label: 'Link' },
-                    // { value: 'checkbox', label: 'Check Box' },
                     // { value: 'rating', label: 'Rating' },
                     ],
                     __nextHasNoMarginBottom: true
@@ -1386,9 +1479,7 @@ function ConfigureColumnDataType(props = {}) {
                               className: `configure-column-modal__input-preview ${renderColumnClasses}`,
                               type: 'text',
                               inputMode: dataTypeFormat === 'integer' ? 'numeric' : 'decimal',
-                              label: 'Entry'
-                              // id={previewId}
-                              ,
+                              label: 'Entry',
                               id: `${previewId}-entry`,
                               __next40pxDefaultSize: true,
                               value: numberEntryValue,
@@ -1403,13 +1494,124 @@ function ConfigureColumnDataType(props = {}) {
                             type: 'text',
                             inputMode: dataTypeFormat === 'integer' ? 'numeric' : 'decimal',
                             label: 'Display',
-                            disabled: true
-                            // id={previewId}
-                            ,
+                            disabled: true,
                             id: `${previewId}-display`,
                             __next40pxDefaultSize: true,
                             value: numberDisplayValue
-                            // value={numberPreviewValue}numberDisplayValue
+                          })]
+                        })
+                      })
+                    })]
+                  })]
+                })
+              })]
+            }), dataType.type === 'checkbox' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("strong", {
+                  children: "Content settings"
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+                  spacing: 3,
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                    children: "Select the specific checkbox type."
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
+                    gap: 24,
+                    align: "stretch",
+                    className: "configure-column-modal__split",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                      className: "configure-column-modal__left",
+                      isBlock: true,
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+                        spacing: 3,
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                          label: "Checkbox Type",
+                          selected: dataTypeFormat,
+                          options: [{
+                            label: 'Standard',
+                            value: 'standard'
+                          }, {
+                            label: 'Slider',
+                            value: 'slider'
+                          }, {
+                            label: 'Icon',
+                            value: 'icon'
+                          }, {
+                            label: 'Other',
+                            value: 'other'
+                          }],
+                          onChange: value => onCheckboxFormat(value)
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                          className: "configure-column-modal__options",
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("strong", {
+                            children: "Formatting Options"
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                            className: "configure-column-modal__checkbox",
+                            label: 'Show checkbox when no value has been selected?',
+                            checked: checkboxHideIfEmpty,
+                            onChange: e => onCheckboxFormatOption(e, 'hide-empty')
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                            className: "configure-column-modal__checkbox",
+                            label: 'Default to "Checked"',
+                            checked: checkboxDefaultToChecked,
+                            onChange: e => onCheckboxFormatOption(e, 'default-checked')
+                          })]
+                        })]
+                      })
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                      className: "configure-column-modal__right",
+                      isBlock: true,
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                        className: "configure-column-modal__preview",
+                        style: {
+                          textAlign: 'center'
+                        },
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
+                          id: previewId,
+                          label: "Preview",
+                          style: {
+                            alignContent: 'center',
+                            flexWrap: 'wrap',
+                            height: '20%'
+                          },
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                            className: "temp-class",
+                            style: {
+                              display: 'flex',
+                              alignItems: 'center',
+                              flexWrap: 'wrap',
+                              flexDirection: 'column',
+                              justifyContent: 'center',
+                              height: '40%'
+                            },
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                              children: "When Checked"
+                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                              className: 'configure-column-modal__input-preview',
+                              style: {
+                                justifyContent: 'center'
+                              },
+                              checked: true
+                            })]
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                            className: "temp-class",
+                            style: {
+                              display: 'flex',
+                              alignItems: 'center',
+                              flexWrap: 'wrap',
+                              flexDirection: 'column',
+                              justifyContent: 'center',
+                              height: '40%'
+                            },
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+                              children: "When Unchecked"
+                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                              className: 'configure-column-modal__input-preview',
+                              style: {
+                                justifyContent: 'center'
+                              },
+                              checked: false
+                            })]
                           })]
                         })
                       })

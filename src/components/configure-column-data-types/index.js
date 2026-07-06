@@ -12,8 +12,6 @@ import {
 	TextControl,
 	__experimentalInputControl as InputControl,
 	__experimentalVStack as VStack,
-	__experimentalHStack as HStack,
-	__experimentalSpacer as Spacer,
 	Flex,
 	FlexItem,
 	Card,
@@ -132,6 +130,15 @@ function ConfigureColumnDataType(props = {}) {
 		currency,
 		bracketNegative
 	);
+
+	// Checkbox specific attributes
+	const [checkboxHideIfEmpty, setCheckboxHideIfEmpty] = useState(
+		normalizedColumnDataType?.settings?.formatOptions?.hideIfEmpty || false
+	);
+	const [checkboxDefaultToChecked, setCheckboxDefaultToChecked] = useState(
+		normalizedColumnDataType?.settings?.formatOptions?.defaultToChecked || false
+	);
+	const isCheckboxDataType = normalizedColumnDataType?.type === 'checkbox' ? true : false;
 
 	// Column width attributes
 	const [columnWidthType, setColumnWidthType] = useState(columnAttributes.columnWidthType);
@@ -573,6 +580,95 @@ function ConfigureColumnDataType(props = {}) {
 	}
 
 	/**
+	 * Update number format and set default options
+	 *
+	 * @since 1.4.2
+	 *
+	 * @param {string} checkboxFormat Checkbox format to set
+	 */
+	function onCheckboxFormat(checkboxFormat) {
+		setDataTypeFormat(checkboxFormat);
+		setCheckboxHideIfEmpty(false);
+		setCheckboxDefaultToChecked(false);
+		setUpdateColumnStyle(true);
+
+		const formatOptions = {
+			hideIfEmpty: false,
+			defaultToChecked: false,
+			updateColumnStyle: true,
+		};
+
+		const dataTypeSettings = {
+			format: checkboxFormat,
+			formatOptions: {
+				...formatOptions,
+			},
+		};
+
+		// let newColumnClassNames = new Set(columnClassNames);
+		// newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--number-align-right');
+		// setColumnClassNames(newColumnClassNames);
+
+		const updatedDataType = {
+			type: 'checkbox',
+			settings: dataTypeSettings,
+		};
+
+		setDataType(updatedDataType);
+	}
+
+	/**
+	 * Update number formatting options based on configuration input
+	 *
+	 * @since 1.2.4
+	 *
+	 * @param {Object} event  Formatting value to set
+	 * @param {string} option Formatting option
+	 */
+	function onCheckboxFormatOption(event, option) {
+		let newHideIfEmpty = checkboxHideIfEmpty;
+		let newDefaultToChecked = checkboxDefaultToChecked;
+		let newUpdateColumnStyle = updateColumnStyle;
+		let newColumnClassNames = new Set(columnClassNames);
+
+		switch (option) {
+			case 'hide-empty':
+				newHideIfEmpty = event;
+				break;
+			case 'default-checked':
+				newDefaultToChecked = event;
+				break;
+			case 'format-column':
+				newUpdateColumnStyle = event;
+				if (event) {
+					newColumnClassNames = newColumnClassNames.add(
+						'grid-control__body-columns--number-align-right'
+					);
+				}
+				break;
+		}
+
+		setCheckboxHideIfEmpty(newHideIfEmpty);
+		setCheckboxDefaultToChecked(newDefaultToChecked);
+		setUpdateColumnStyle(newUpdateColumnStyle);
+		setColumnClassNames(newColumnClassNames);
+
+		const updatedDataType = {
+			...dataType,
+			settings: {
+				format: dataType.settings.format,
+				formatOptions: {
+					hideIfEmpty: newHideIfEmpty,
+					defaultToChecked: newDefaultToChecked,
+					updateColumnStyle: newUpdateColumnStyle,
+				},
+			},
+		};
+
+		setDataType(updatedDataType);
+	}
+
+	/**
 	 * Change column data types and set formatting defaults
 	 *
 	 * @since    1.2.0
@@ -600,6 +696,12 @@ function ConfigureColumnDataType(props = {}) {
 			case 'number':
 				setDataTypeFormat('number');
 				onNumberFormat('number');
+				newColumnClassNames.delete('grid-control__body-columns--date-align-right');
+				return;
+			case 'checkbox':
+				setDataTypeFormat('checkbox');
+				onCheckboxFormat('standard');
+				newColumnClassNames.delete('grid-control__body-columns--number-align-right');
 				newColumnClassNames.delete('grid-control__body-columns--date-align-right');
 				return;
 			default:
@@ -720,9 +822,9 @@ function ConfigureColumnDataType(props = {}) {
 												{ value: 'general', label: 'General' },
 												{ value: 'date-time', label: 'Date/Time' },
 												{ value: 'number', label: 'Number' },
+												{ value: 'checkbox', label: 'Check Box' },
 												// { value: 'image', label: 'Image' },
 												// { value: 'link', label: 'Link' },
-												// { value: 'checkbox', label: 'Check Box' },
 												// { value: 'rating', label: 'Rating' },
 											]}
 											__nextHasNoMarginBottom
@@ -897,7 +999,6 @@ function ConfigureColumnDataType(props = {}) {
 																	type={'text'}
 																	inputMode={dataTypeFormat === 'integer' ? 'numeric' : 'decimal'}
 																	label={'Entry'}
-																	// id={previewId}
 																	id={`${previewId}-entry`}
 																	__next40pxDefaultSize
 																	value={numberEntryValue}
@@ -914,12 +1015,112 @@ function ConfigureColumnDataType(props = {}) {
 																inputMode={dataTypeFormat === 'integer' ? 'numeric' : 'decimal'}
 																label={'Display'}
 																disabled={true}
-																// id={previewId}
 																id={`${previewId}-display`}
 																__next40pxDefaultSize
 																value={numberDisplayValue}
-																// value={numberPreviewValue}numberDisplayValue
 															/>
+														</BaseControl>
+													</div>
+												</FlexItem>
+											</Flex>
+										</VStack>
+									</CardBody>
+								</Card>
+							)}
+
+							{/* Checkbox Settings */}
+							{dataType.type === 'checkbox' && (
+								<Card>
+									<CardHeader>
+										<strong>Content settings</strong>
+									</CardHeader>
+									<CardBody>
+										<VStack spacing={3}>
+											<div>Select the specific checkbox type.</div>
+
+											{/* True split layout */}
+											<Flex gap={24} align="stretch" className="configure-column-modal__split">
+												{/* Left column */}
+												<FlexItem className="configure-column-modal__left" isBlock>
+													<VStack spacing={3}>
+														<RadioControl
+															label="Checkbox Type"
+															selected={dataTypeFormat}
+															options={[
+																{ label: 'Standard', value: 'standard' },
+																{ label: 'Slider', value: 'slider' },
+																{ label: 'Icon', value: 'icon' },
+																{ label: 'Other', value: 'other' },
+															]}
+															onChange={value => onCheckboxFormat(value)}
+														/>
+
+														<div className="configure-column-modal__options">
+															<strong>Formatting Options</strong>
+															<CheckboxControl
+																className="configure-column-modal__checkbox"
+																label={'Show checkbox when no value has been selected?'}
+																checked={checkboxHideIfEmpty}
+																onChange={e => onCheckboxFormatOption(e, 'hide-empty')}
+															/>
+															<CheckboxControl
+																className="configure-column-modal__checkbox"
+																label={'Default to "Checked"'}
+																checked={checkboxDefaultToChecked}
+																onChange={e => onCheckboxFormatOption(e, 'default-checked')}
+															/>
+														</div>
+													</VStack>
+												</FlexItem>
+
+												{/* Right column */}
+												<FlexItem className="configure-column-modal__right" isBlock>
+													<div
+														className="configure-column-modal__preview"
+														style={{ textAlign: 'center' }}
+													>
+														<BaseControl
+															id={previewId}
+															label="Preview"
+															style={{ alignContent: 'center', flexWrap: 'wrap', height: '20%' }}
+														>
+															<div
+																className="temp-class"
+																style={{
+																	display: 'flex',
+																	alignItems: 'center',
+																	flexWrap: 'wrap',
+																	flexDirection: 'column',
+																	justifyContent: 'center',
+																	height: '40%',
+																}}
+															>
+																<div>When Checked</div>
+																<CheckboxControl
+																	className={'configure-column-modal__input-preview'}
+																	style={{ justifyContent: 'center' }}
+																	checked={true}
+																/>
+															</div>
+
+															<div
+																className="temp-class"
+																style={{
+																	display: 'flex',
+																	alignItems: 'center',
+																	flexWrap: 'wrap',
+																	flexDirection: 'column',
+																	justifyContent: 'center',
+																	height: '40%',
+																}}
+															>
+																<div>When Unchecked</div>
+																<CheckboxControl
+																	className={'configure-column-modal__input-preview'}
+																	style={{ justifyContent: 'center' }}
+																	checked={false}
+																/>
+															</div>
 														</BaseControl>
 													</div>
 												</FlexItem>
