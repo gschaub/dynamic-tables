@@ -380,6 +380,40 @@ fieldset {
   display: flex;
   flex-direction: column;
 }
+.configure-column-modal__preview--checkbox {
+  text-align: center;
+}
+.configure-column-modal__checkbox-preview-control.components-base-control {
+  align-content: center;
+  flex-wrap: wrap;
+  height: 20%;
+}
+.configure-column-modal__checkbox-preview-state {
+  font-variant: small-caps;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 8px;
+  height: 40%;
+  justify-content: center;
+}
+.configure-column-modal__checkbox-preview.components-base-control {
+  flex: 0 0 auto;
+  margin: 0;
+  pointer-events: none;
+}
+.configure-column-modal__checkbox-preview .components-base-control__field {
+  align-items: center;
+  flex: 0 0 auto;
+  justify-content: center;
+  margin-bottom: 0;
+}
+.configure-column-modal__checkbox-preview .components-base-control__label {
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: none;
+}
 .configure-column-modal__left,
 .configure-column-modal__right {
   flex: 1 1 50%;

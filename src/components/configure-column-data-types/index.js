@@ -10,6 +10,7 @@ import {
 	CheckboxControl,
 	RadioControl,
 	TextControl,
+	ToggleControl,
 	__experimentalInputControl as InputControl,
 	__experimentalVStack as VStack,
 	Flex,
@@ -24,7 +25,7 @@ import clsx from 'clsx';
  * Internal dependencies
  */
 import './style.scss';
-// import '../../style.scss';
+import { CartoonCheckboxIcon, StatusIcon } from '../formatted-display';
 import { settings } from '@wordpress/icons';
 import {
 	normalizeColumnDataType,
@@ -620,7 +621,7 @@ function ConfigureColumnDataType(props = {}) {
 	/**
 	 * Update number formatting options based on configuration input
 	 *
-	 * @since 1.2.4
+	 * @since 1.4.2
 	 *
 	 * @param {Object} event  Formatting value to set
 	 * @param {string} option Formatting option
@@ -673,6 +674,7 @@ function ConfigureColumnDataType(props = {}) {
 	 *
 	 * @since    1.2.0
 	 * @since    1.2.4  Add number format
+	 * @since    1.4.2  Add checkbox format
 	 *
 	 * @param {Object} event Event object to change data type
 	 * @return {void}
@@ -1048,9 +1050,9 @@ function ConfigureColumnDataType(props = {}) {
 															selected={dataTypeFormat}
 															options={[
 																{ label: 'Standard', value: 'standard' },
-																{ label: 'Slider', value: 'slider' },
+																{ label: 'Toggle', value: 'toggle' },
 																{ label: 'Icon', value: 'icon' },
-																{ label: 'Other', value: 'other' },
+																{ label: 'Cartoon', value: 'cartoon' },
 															]}
 															onChange={value => onCheckboxFormat(value)}
 														/>
@@ -1075,51 +1077,69 @@ function ConfigureColumnDataType(props = {}) {
 
 												{/* Right column */}
 												<FlexItem className="configure-column-modal__right" isBlock>
-													<div
-														className="configure-column-modal__preview"
-														style={{ textAlign: 'center' }}
-													>
+													<div className="configure-column-modal__preview configure-column-modal__preview--checkbox">
 														<BaseControl
 															id={previewId}
 															label="Preview"
 															style={{ alignContent: 'center', flexWrap: 'wrap', height: '20%' }}
+															className="configure-column-modal__checkbox-preview-control"
 														>
-															<div
-																className="temp-class"
-																style={{
-																	display: 'flex',
-																	alignItems: 'center',
-																	flexWrap: 'wrap',
-																	flexDirection: 'column',
-																	justifyContent: 'center',
-																	height: '40%',
-																}}
-															>
+															<div className="configure-column-modal__checkbox-preview-state">
 																<div>When Checked</div>
-																<CheckboxControl
-																	className={'configure-column-modal__input-preview'}
-																	style={{ justifyContent: 'center' }}
-																	checked={true}
-																/>
+																{dataTypeFormat === 'standard' && (
+																	<CheckboxControl
+																		className="configure-column-modal__checkbox-preview"
+																		checked={true}
+																	/>
+																)}
+																{dataTypeFormat === 'toggle' && (
+																	<ToggleControl
+																		className="configure-column-modal__checkbox-preview"
+																		checked={true}
+																	/>
+																)}
+																{dataTypeFormat === 'icon' && (
+																	<StatusIcon
+																		className="configure-column-modal__checkbox-preview"
+																		checked={true}
+																	/>
+																)}
+																{dataTypeFormat === 'cartoon' && (
+																	<CartoonCheckboxIcon
+																		className="configure-column-modal__checkbox-preview"
+																		checked={true}
+																		scale={0.6}
+																	/>
+																)}
 															</div>
 
-															<div
-																className="temp-class"
-																style={{
-																	display: 'flex',
-																	alignItems: 'center',
-																	flexWrap: 'wrap',
-																	flexDirection: 'column',
-																	justifyContent: 'center',
-																	height: '40%',
-																}}
-															>
+															<div className="configure-column-modal__checkbox-preview-state">
 																<div>When Unchecked</div>
-																<CheckboxControl
-																	className={'configure-column-modal__input-preview'}
-																	style={{ justifyContent: 'center' }}
-																	checked={false}
-																/>
+																{dataTypeFormat === 'standard' && (
+																	<CheckboxControl
+																		className="configure-column-modal__checkbox-preview"
+																		checked={false}
+																	/>
+																)}
+																{dataTypeFormat === 'toggle' && (
+																	<ToggleControl
+																		className="configure-column-modal__checkbox-preview"
+																		checked={false}
+																	/>
+																)}
+																{dataTypeFormat === 'icon' && (
+																	<StatusIcon
+																		className="configure-column-modal__checkbox-preview"
+																		checked={false}
+																	/>
+																)}
+																{dataTypeFormat === 'cartoon' && (
+																	<CartoonCheckboxIcon
+																		className="configure-column-modal__checkbox-preview"
+																		checked={false}
+																		scale={0.6}
+																	/>
+																)}
 															</div>
 														</BaseControl>
 													</div>
@@ -1148,5 +1168,104 @@ function ConfigureColumnDataType(props = {}) {
 		</Modal>
 	);
 }
+
+// function StatusIcon({ checked }) {
+// 	return checked ? (
+// 		<CheckCircleIcon size={24} weight="fill" style={{ color: 'green' }} aria-label="Checked" />
+// 	) : (
+// 		<XCircleIcon size={24} weight="fill" style={{ color: 'red' }} aria-label="Unchecked" />
+// 	);
+// }
+
+// function CartoonCheckboxIcon({ checked, scale = 1 }) {
+// 	const stroke = checked ? '#16a34a' : '#ef3340';
+// 	const boldScale = scale;
+// 	const boldBaseSize = 52;
+// 	const boldSize = boldBaseSize * boldScale;
+
+// 	return checked ? (
+// 		// <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true">
+// 		<svg width={boldSize} height={boldSize} viewBox="0 0 52 52" aria-hidden="true">
+// 			<path
+// 				d={`
+// 					M13.8 13.4
+// 					L36.7 12.6
+// 					Q40.4 12.4 41.7 15.5
+// 					Q42.3 17.0 42.3 19.1
+// 					L42.3 33.9
+// 					Q42.3 37.5 40.3 39.4
+// 					Q38.5 41.1 35.5 41.2
+// 					L15.0 41.9
+// 					Q11.4 42.0 9.5 40.0
+// 					Q7.8 38.2 7.7 34.8
+// 					L7.6 19.1
+// 					Q7.5 15.0 10.2 13.9
+// 					Q11.5 13.4 13.8 13.4
+// 					Z
+// 				`}
+// 				fill="#fff"
+// 			/>
+// 			<path
+// 				d={`
+// 					M32.3 13.2
+// 					C25.8 12.9 19.4 13.1 13.2 13.7
+// 					C10.1 14.0 8.9 15.7 8.9 18.4
+// 					L9.0 35.0
+// 					C9.1 38.6 11.1 40.4 14.6 40.4
+// 					L35.1 39.8
+// 					C38.8 39.7 41.3 37.8 41.3 34.5
+// 					L41.3 28.1						`}
+// 				fill="none"
+// 				stroke={stroke}
+// 				strokeWidth="4.6"
+// 				strokeLinecap="round"
+// 				strokeLinejoin="round"
+// 			/>
+// 			<path
+// 				d="M18.2 28.9 L23.9 34.0 L42.7 15.5"
+// 				fill="none"
+// 				stroke={stroke}
+// 				strokeWidth="8.2"
+// 				strokeLinecap="round"
+// 				strokeLinejoin="round"
+// 			/>
+// 		</svg>
+// 	) : (
+// 		// <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true">
+// 		<svg width={boldSize} height={boldSize} viewBox="0 0 52 52" aria-hidden="true">
+// 			<path
+// 				d={`
+// 					M14.1 13.0
+// 					L37.1 11.9
+// 					Q40.8 11.7 42.3 14.7
+// 					Q43.0 16.2 43.1 18.4
+// 					L43.7 34.8
+// 					Q43.9 38.5 41.9 40.5
+// 					Q40.1 42.2 36.9 42.4
+// 					L15.7 43.2
+// 					Q12.0 43.3 10.0 41.2
+// 					Q8.2 39.3 8.1 35.8
+// 					L7.7 18.3
+// 					Q7.6 14.6 10.1 13.4
+// 					Q11.4 13.0 14.1 13.0
+// 					Z
+// 				`}
+// 				fill="#fff"
+// 				stroke={stroke}
+// 				strokeWidth="4.8"
+// 				strokeLinecap="round"
+// 				strokeLinejoin="round"
+// 			/>
+// 			<path
+// 				d="M20.0 21.0 L31.4 32.2 M31.5 21.2 L20.1 32.0"
+// 				fill="none"
+// 				stroke={stroke}
+// 				strokeWidth="8.4"
+// 				strokeLinecap="round"
+// 				strokeLinejoin="round"
+// 			/>
+// 		</svg>
+// 	);
+// }
 
 export const ColumnDataTypeModal = memo(ConfigureColumnDataType);
