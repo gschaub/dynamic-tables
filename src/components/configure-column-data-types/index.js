@@ -583,21 +583,31 @@ function ConfigureColumnDataType(props = {}) {
 	/**
 	 * Update checkbox format and set default options
 	 *
-	 * @since 1.4.2
+	 * @since 1.4.3
 	 *
-	 * @param {string} checkboxFormat Checkbox format to set
+	 * @param {string} checkboxFormat   Checkbox format to set
+	 * @param {string} changeDataFormat Triggered by a change in column data type
 	 */
-	function onCheckboxFormat(checkboxFormat) {
+	function onCheckboxFormat(checkboxFormat, changeDataFormat = false) {
 		setDataTypeFormat(checkboxFormat);
-		setCheckboxHideIfEmpty(false);
-		setCheckboxDefaultToChecked(false);
-		setUpdateColumnStyle(true);
 
-		const formatOptions = {
-			hideIfEmpty: false,
-			defaultToChecked: false,
-			updateColumnStyle: true,
+		let formatOptions = {
+			hideIfEmpty: checkboxHideIfEmpty,
+			defaultToChecked: checkboxDefaultToChecked,
+			updateColumnStyle: updateColumnStyle,
 		};
+
+		if (changeDataFormat) {
+			setCheckboxHideIfEmpty(false);
+			setCheckboxDefaultToChecked(false);
+			setUpdateColumnStyle(true);
+
+			formatOptions = {
+				hideIfEmpty: false,
+				defaultToChecked: false,
+				updateColumnStyle: true,
+			};
+		}
 
 		const dataTypeSettings = {
 			format: checkboxFormat,
@@ -606,24 +616,18 @@ function ConfigureColumnDataType(props = {}) {
 			},
 		};
 
-		// let newColumnClassNames = new Set(columnClassNames);
-		// newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--number-align-right');
-		// setColumnClassNames(newColumnClassNames);
-
 		const updatedDataType = {
 			type: 'checkbox',
 			settings: dataTypeSettings,
 		};
 
-		console.log('updatedDataType from checkbox format', updatedDataType);
-
 		setDataType(updatedDataType);
 	}
 
 	/**
-	 * Update number formatting options based on configuration input
+	 * Update checkbox formatting options based on configuration input
 	 *
-	 * @since 1.4.2
+	 * @since 1.4.3
 	 *
 	 * @param {Object} event  Formatting value to set
 	 * @param {string} option Formatting option
@@ -632,7 +636,6 @@ function ConfigureColumnDataType(props = {}) {
 		let newHideIfEmpty = checkboxHideIfEmpty;
 		let newDefaultToChecked = checkboxDefaultToChecked;
 		let newUpdateColumnStyle = updateColumnStyle;
-		// let newColumnClassNames = new Set(columnClassNames);
 
 		switch (option) {
 			case 'hide-empty':
@@ -643,18 +646,12 @@ function ConfigureColumnDataType(props = {}) {
 				break;
 			case 'format-column':
 				newUpdateColumnStyle = event;
-				// if (event) {
-				// 	newColumnClassNames = newColumnClassNames.add(
-				// 		'grid-control__body-columns--number-align-right'
-				// 	);
-				// }
 				break;
 		}
 
 		setCheckboxHideIfEmpty(newHideIfEmpty);
 		setCheckboxDefaultToChecked(newDefaultToChecked);
 		setUpdateColumnStyle(newUpdateColumnStyle);
-		// setColumnClassNames(newColumnClassNames);
 
 		const updatedDataType = {
 			...dataType,
@@ -668,8 +665,6 @@ function ConfigureColumnDataType(props = {}) {
 			},
 		};
 
-		console.log('updatedDataType from checkbox format options', updatedDataType);
-
 		setDataType(updatedDataType);
 	}
 
@@ -678,7 +673,7 @@ function ConfigureColumnDataType(props = {}) {
 	 *
 	 * @since    1.2.0
 	 * @since    1.2.4  Add number format
-	 * @since    1.4.2  Add checkbox format
+	 * @since    1.4.3  Add checkbox format
 	 *
 	 * @param {Object} event Event object to change data type
 	 * @return {void}
@@ -686,8 +681,6 @@ function ConfigureColumnDataType(props = {}) {
 	function onUpdateDataType(event) {
 		let updatedDataType = {};
 		const newColumnClassNames = new Set(columnClassNames);
-
-		console.log('onUpdateDataType event', event);
 
 		switch (event) {
 			case 'date-time':
@@ -708,7 +701,7 @@ function ConfigureColumnDataType(props = {}) {
 				return;
 			case 'checkbox':
 				setDataTypeFormat('checkbox');
-				onCheckboxFormat('standard');
+				onCheckboxFormat('standard', true);
 				newColumnClassNames.delete('grid-control__body-columns--number-align-right');
 				newColumnClassNames.delete('grid-control__body-columns--date-align-right');
 				return;
@@ -728,6 +721,7 @@ function ConfigureColumnDataType(props = {}) {
 	 * Return new column data type settings.
 	 *
 	 * @since    1.2.0
+	 * @since    1.4.3 - Update for checkbox content type
 	 *
 	 * @param {Object} event Form submit
 	 */
@@ -774,9 +768,6 @@ function ConfigureColumnDataType(props = {}) {
 
 		setColumnClassNames(newColumnClassNames);
 		const updatedColumnClasses = prepareClassesForUse(newColumnClassNames);
-
-		console.log('updatedColumnAttributes', updatedColumnAttributes);
-		console.log('updatedColumnClasses', updatedColumnClasses);
 
 		updatedColumn(
 			event,

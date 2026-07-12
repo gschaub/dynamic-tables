@@ -1248,43 +1248,45 @@ function ConfigureColumnDataType(props = {}) {
   /**
    * Update checkbox format and set default options
    *
-   * @since 1.4.2
+   * @since 1.4.3
    *
-   * @param {string} checkboxFormat Checkbox format to set
+   * @param {string} checkboxFormat   Checkbox format to set
+   * @param {string} changeDataFormat Triggered by a change in column data type
    */
-  function onCheckboxFormat(checkboxFormat) {
+  function onCheckboxFormat(checkboxFormat, changeDataFormat = false) {
     setDataTypeFormat(checkboxFormat);
-    setCheckboxHideIfEmpty(false);
-    setCheckboxDefaultToChecked(false);
-    setUpdateColumnStyle(true);
-    const formatOptions = {
-      hideIfEmpty: false,
-      defaultToChecked: false,
-      updateColumnStyle: true
+    let formatOptions = {
+      hideIfEmpty: checkboxHideIfEmpty,
+      defaultToChecked: checkboxDefaultToChecked,
+      updateColumnStyle: updateColumnStyle
     };
+    if (changeDataFormat) {
+      setCheckboxHideIfEmpty(false);
+      setCheckboxDefaultToChecked(false);
+      setUpdateColumnStyle(true);
+      formatOptions = {
+        hideIfEmpty: false,
+        defaultToChecked: false,
+        updateColumnStyle: true
+      };
+    }
     const dataTypeSettings = {
       format: checkboxFormat,
       formatOptions: {
         ...formatOptions
       }
     };
-
-    // let newColumnClassNames = new Set(columnClassNames);
-    // newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--number-align-right');
-    // setColumnClassNames(newColumnClassNames);
-
     const updatedDataType = {
       type: 'checkbox',
       settings: dataTypeSettings
     };
-    console.log('updatedDataType from checkbox format', updatedDataType);
     setDataType(updatedDataType);
   }
 
   /**
-   * Update number formatting options based on configuration input
+   * Update checkbox formatting options based on configuration input
    *
-   * @since 1.4.2
+   * @since 1.4.3
    *
    * @param {Object} event  Formatting value to set
    * @param {string} option Formatting option
@@ -1293,8 +1295,6 @@ function ConfigureColumnDataType(props = {}) {
     let newHideIfEmpty = checkboxHideIfEmpty;
     let newDefaultToChecked = checkboxDefaultToChecked;
     let newUpdateColumnStyle = updateColumnStyle;
-    // let newColumnClassNames = new Set(columnClassNames);
-
     switch (option) {
       case 'hide-empty':
         newHideIfEmpty = event;
@@ -1304,18 +1304,11 @@ function ConfigureColumnDataType(props = {}) {
         break;
       case 'format-column':
         newUpdateColumnStyle = event;
-        // if (event) {
-        // 	newColumnClassNames = newColumnClassNames.add(
-        // 		'grid-control__body-columns--number-align-right'
-        // 	);
-        // }
         break;
     }
     setCheckboxHideIfEmpty(newHideIfEmpty);
     setCheckboxDefaultToChecked(newDefaultToChecked);
     setUpdateColumnStyle(newUpdateColumnStyle);
-    // setColumnClassNames(newColumnClassNames);
-
     const updatedDataType = {
       ...dataType,
       settings: {
@@ -1327,7 +1320,6 @@ function ConfigureColumnDataType(props = {}) {
         }
       }
     };
-    console.log('updatedDataType from checkbox format options', updatedDataType);
     setDataType(updatedDataType);
   }
 
@@ -1336,7 +1328,7 @@ function ConfigureColumnDataType(props = {}) {
    *
    * @since    1.2.0
    * @since    1.2.4  Add number format
-   * @since    1.4.2  Add checkbox format
+   * @since    1.4.3  Add checkbox format
    *
    * @param {Object} event Event object to change data type
    * @return {void}
@@ -1344,7 +1336,6 @@ function ConfigureColumnDataType(props = {}) {
   function onUpdateDataType(event) {
     let updatedDataType = {};
     const newColumnClassNames = new Set(columnClassNames);
-    console.log('onUpdateDataType event', event);
     switch (event) {
       case 'date-time':
         setDataTypeFormat('date');
@@ -1364,7 +1355,7 @@ function ConfigureColumnDataType(props = {}) {
         return;
       case 'checkbox':
         setDataTypeFormat('checkbox');
-        onCheckboxFormat('standard');
+        onCheckboxFormat('standard', true);
         newColumnClassNames.delete('grid-control__body-columns--number-align-right');
         newColumnClassNames.delete('grid-control__body-columns--date-align-right');
         return;
@@ -1384,6 +1375,7 @@ function ConfigureColumnDataType(props = {}) {
    * Return new column data type settings.
    *
    * @since    1.2.0
+   * @since    1.4.3 - Update for checkbox content type
    *
    * @param {Object} event Form submit
    */
@@ -1423,8 +1415,6 @@ function ConfigureColumnDataType(props = {}) {
     }
     setColumnClassNames(newColumnClassNames);
     const updatedColumnClasses = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.prepareClassesForUse)(newColumnClassNames);
-    console.log('updatedColumnAttributes', updatedColumnAttributes);
-    console.log('updatedColumnClasses', updatedColumnClasses);
     updatedColumn(event, 'dataType', tableId, columnId, columnName, updatedColumnAttributes, updatedColumnClasses);
     close();
   }
@@ -2709,6 +2699,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+/**
+ * Render checkbox image
+ *
+ * @since 1.4.3
+ *
+ * @param {string} src       Location of image to select
+ * @param {string} className Element classes
+ * @param {string} label     Whether the image should identify as checked or unchecked
+ * @param {number} width     Width to render image in px
+ * @param {number} height    Height to render image in px
+ * @return {string}  Image HTML to render
+ */
+
 function CheckboxAssetIcon({
   src,
   className,
@@ -2729,6 +2732,18 @@ function CheckboxAssetIcon({
     }
   });
 }
+
+/**
+ * Render checkbox as Icon
+ *
+ * @since 1.4.3
+ *
+ * @param {boolean} checked   Whether the icon is checked
+ * @param {string}  className Element classes
+ * @param {string}  size      Whether the image should identify as checked or unchecked
+ * @param {Object}  onChange  Action associated with checkbox update
+ * @return {string}  Icon type checkbox HTML element
+ */
 function StatusIcon({
   checked,
   className,
@@ -2757,6 +2772,18 @@ function StatusIcon({
     onClick: e => onHandleClick(e)
   });
 }
+
+/**
+ * Render checkbox as freeform icon
+ *
+ * @since 1.4.3
+ *
+ * @param {boolean} checked   Whether the icon is checked
+ * @param {string}  className Element classes
+ * @param {string}  scale     Factor by which to scale the checkbox size
+ * @param {Object}  onChange  Action associated with checkbox update
+ * @return {string}  Freeform type checkbox HTML element
+ */
 function FreeformCheckboxIcon({
   checked,
   className,
@@ -2787,6 +2814,19 @@ function FreeformCheckboxIcon({
     onClick: e => onHandleClick(e)
   });
 }
+
+/**
+ * Render the appropriate checkbox based on it type
+ *
+ * @since 1.4.3
+ *
+ * @param {boolean} checked   Whether the icon is checked
+ * @param {string}  variant   Checkbox type to render
+ * @param {Object}  onChange  Action associated with checkbox update
+ * @param {string}  className Element classes
+ * @param {string}  scale     Factor by which to scale the checkbox size
+ * @return {string}  Checkbox HTML element
+ */
 function TableCheckbox({
   checked,
   variant,
@@ -6031,7 +6071,6 @@ function Edit(props) {
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
     if (!Object.keys(unmountedTables).length) return;
     void processUnmountedTables(unmountedTables).catch(error => {
-      console.error('Error reconciling unmounted Dynamic Tables', error);
       (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'unmounted-reconcile-error');
     });
   }, [unmountedTables]);
@@ -6361,7 +6400,6 @@ function Edit(props) {
         await saveTableEntity(entityId);
       } catch (error) {
         if (!isActive) return;
-        console.error('Error saving attached Dynamic Table entity', error);
         (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'update-entity-error');
         setTableOperation({
           kind: 'error',
@@ -6457,7 +6495,6 @@ function Edit(props) {
       }
     };
     void finalizePostSaveTableChanges().catch(error => {
-      console.error('Error processing Dynamic Tables after post save', error);
       (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'post-save-sync-error');
     });
   }, [didJustFinishPostSave, deletedTables, tableLoaded, table.table_id, table.table_status, tableHasPendingEntityEdits, refreshSummaryTables, createNotice, updateTableEntity]);
@@ -6635,7 +6672,6 @@ function Edit(props) {
     if (Number(table.post_id) !== 0) return;
     setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId));
     void saveTableEntity(table.table_id).catch(error => {
-      console.error('Error synchronizing Dynamic Table post_id', error);
       (0,_messages__WEBPACK_IMPORTED_MODULE_15__.showMessageNotice)(createNotice, 'post-id-sync-error');
     });
   }, [tableHasStartedResolving, tableHasFinishedResolving, isAwaitingTableAttachment, props.context.postId, table.table_id, table.post_id]);
@@ -7265,7 +7301,6 @@ function Edit(props) {
    * @param {Object} patch    Update payload to store
    */
   function onChangeCellData(table_id, cell_id, patch) {
-    console.log('onChangeCellData', table_id, cell_id, patch);
     setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', patch.content);
     setTableAttributes(table_id, 'cell', cell_id, 'ATTRIBUTES', patch.attributes);
   }
@@ -7361,7 +7396,7 @@ function Edit(props) {
    * @since 1.2.3 - Add keyboard support for moving columns and rows
    * @since 1.2.5 - Add keyboard support for insert/delete columns and rows
    * @since 1.3.1 - Add keyboard support for cell copy/cut/paste
-   *
+   * @since 1.4.3 - Update for checkbox data entry
    * @param {Object} event onKeyDown event
    * @return {void}
    */
@@ -7673,6 +7708,7 @@ function Edit(props) {
    * Handle transition from navigation to editing on grid cell
    *
    * @since 1.2.0
+   * @since 1.4.3 - Update for checkbox data entry
    *
    * @param {Object} event          onKeyDown event
    * @param {Object} activeCellEl   Current cell element
@@ -7810,8 +7846,6 @@ function Edit(props) {
     if (isContentOnlyMode) {
       return;
     }
-    console.log('Updating column for type: ' + updateType);
-    console.log('Updated attributes:', updatedColumnAttributes);
     switch (updateType) {
       case 'attributes':
         {
@@ -9406,9 +9440,27 @@ function Cell(props) {
   const redNegativeNumber = settings?.formatOptions?.redNegative && sanitizedNumber !== '' && sanitizedNumber !== '-' && Number(sanitizedNumber) < 0;
   const checkboxVariant = settings?.format || inputType || 'standard';
   const shouldHideCheckbox = !isEditing && settings?.formatOptions?.hideIfEmpty && isEmptyCheckboxValue(cellContent);
+
+  /**
+   * Identify whether checkbox cell value is empty
+   *
+   * @since 1.4.3
+   *
+   * @param {boolean} value Checkbox cell value
+   * @return {boolean}  Is cell content empty?
+   */
   function isEmptyCheckboxValue(value) {
     return value === '' || value === null || value === undefined;
   }
+
+  /**
+   * Identify whether checkbox value should be true or false
+   *
+   * @since 1.4.3
+   *
+   * @param {boolean} value Checkbox cell value
+   * @return {boolean} Checkbox value to render
+   */
   function getCheckboxCheckedState(value) {
     const normalizedValue = typeof value === 'string' ? value.trim().toLowerCase() : value;
     if (normalizedValue === true || normalizedValue === 'true' || normalizedValue === 1 || normalizedValue === '1') {
@@ -9424,6 +9476,12 @@ function Cell(props) {
   function serializeCheckboxValue(value) {
     return value ? 'true' : 'false';
   }
+
+  /**
+   * Return markup for checkbox being edited
+   *
+   * @since 1.4.3
+   */
   function checkboxEditValue() {
     const isChecked = getCheckboxCheckedState(cellContent);
     const scale = checkboxVariant === 'freeform' ? 0.6 : 1;
@@ -9518,7 +9576,6 @@ function Cell(props) {
    * @param {Object} patch event data
    */
   function updateCellData(patch) {
-    console.log('updateCellData patch:', patch);
     initialCellValue.current = patch.content;
     if (patch.content !== undefined) setCellContent(patch.content);
     if (patch.attributes !== undefined) setCellAttributes(patch.attributes);
@@ -9625,8 +9682,6 @@ function Cell(props) {
    * @param {string} nextIndexText Updated plain text conent for the cell
    */
   function persistCellEdit(nextContent, nextIndexText) {
-    console.log('persistCellEdit nextContent:', nextContent);
-    console.log('persistCellEdit nextIndexText:', nextIndexText);
     updateCellData({
       content: nextContent,
       attributes: {

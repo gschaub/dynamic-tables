@@ -5,6 +5,18 @@ import freeformUncheckedIcon from '../../../assets/icons/checkbox/freeform-unche
 import statusCheckedIcon from '../../../assets/icons/checkbox/status-icon-checked.svg';
 import statusUncheckedIcon from '../../../assets/icons/checkbox/status-icon-unchecked.svg';
 
+/**
+ * Render checkbox image
+ *
+ * @since 1.4.3
+ *
+ * @param {string} src       Location of image to select
+ * @param {string} className Element classes
+ * @param {string} label     Whether the image should identify as checked or unchecked
+ * @param {number} width     Width to render image in px
+ * @param {number} height    Height to render image in px
+ * @return {string}  Image HTML to render
+ */
 function CheckboxAssetIcon({ src, className, label, width, height }) {
 	return (
 		<img
@@ -21,6 +33,18 @@ function CheckboxAssetIcon({ src, className, label, width, height }) {
 		/>
 	);
 }
+
+/**
+ * Render checkbox as Icon
+ *
+ * @since 1.4.3
+ *
+ * @param {boolean} checked   Whether the icon is checked
+ * @param {string}  className Element classes
+ * @param {string}  size      Whether the image should identify as checked or unchecked
+ * @param {Object}  onChange  Action associated with checkbox update
+ * @return {string}  Icon type checkbox HTML element
+ */
 export function StatusIcon({ checked, className, size = 24, onChange }) {
 	const label = checked ? 'Checked' : 'Unchecked';
 	const src = checked ? statusCheckedIcon : statusUncheckedIcon;
@@ -52,6 +76,17 @@ export function StatusIcon({ checked, className, size = 24, onChange }) {
 	);
 }
 
+/**
+ * Render checkbox as freeform icon
+ *
+ * @since 1.4.3
+ *
+ * @param {boolean} checked   Whether the icon is checked
+ * @param {string}  className Element classes
+ * @param {string}  scale     Factor by which to scale the checkbox size
+ * @param {Object}  onChange  Action associated with checkbox update
+ * @return {string}  Freeform type checkbox HTML element
+ */
 export function FreeformCheckboxIcon({ checked, className, scale = 1, onChange }) {
 	const label = checked ? 'Checked' : 'Unchecked';
 	const baseSize = 52;
@@ -85,6 +120,18 @@ export function FreeformCheckboxIcon({ checked, className, scale = 1, onChange }
 	);
 }
 
+/**
+ * Render the appropriate checkbox based on it type
+ *
+ * @since 1.4.3
+ *
+ * @param {boolean} checked   Whether the icon is checked
+ * @param {string}  variant   Checkbox type to render
+ * @param {Object}  onChange  Action associated with checkbox update
+ * @param {string}  className Element classes
+ * @param {string}  scale     Factor by which to scale the checkbox size
+ * @return {string}  Checkbox HTML element
+ */
 export function TableCheckbox({ checked, variant, onChange, className = '', scale = 1 }) {
 	const isInteractive = typeof onChange === 'function';
 	const newChecked = !checked;

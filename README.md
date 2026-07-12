@@ -2,7 +2,7 @@
 **Contributors:** [glschaub](https://profiles.wordpress.org/glschaub/), [myfamilyweb](https://profiles.wordpress.org/myfamilyweb/)  
 **Tags:**              tables, data table, responsive tables, table block, gutenberg table  
 **Tested up to:**      7.0  
-**Stable tag:**        1.4.2  
+**Stable tag:**        1.4.3  
 **License:**           GPL-2.0-or-later  
 **License URI:**       https://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -68,13 +68,10 @@ Columns understand the type of information they contain.
 
 Current supported data types include:
 
-* Rich text
-* Numbers
-* Currency
-* Percentages
-* Dates
-* Times
-* Date/Time
+* General (rich) text
+* Numbers (float, currency, percentages, integers)
+* Date/Time (date, time, date/time)
+* Checkbox (standard, toggle, icon, freeform)
 
 Formatting is applied consistently across an entire column while preserving the underlying value.
 
@@ -123,7 +120,7 @@ The technical complexity remains invisible to content editors while providing de
 
 Dynamic Tables continues to evolve. Planned enhancements include:
 
-* Additional column content types such as links, buttons, images, checkboxes, and more
+* Additional column content types such as links, buttons, images, and more
 * Undo and redo support
 * Expanded copy and paste capabilities
 * Additional responsive formatting options
@@ -185,6 +182,9 @@ No. This plugin is free to use. However, we are planning for a premium version o
 10. Set column width (corresponding configuration is available for rows too)
 
 ## Changelog ##
+### 1.4.2 ###
+* Added checkbox column content type
+
 ### 1.4.2 ###
 * Added support restore backup files which contain full table formatting
 * Added support to export tables to csv files

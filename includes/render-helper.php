@@ -227,6 +227,7 @@ function get_table_header_attributes( $table_header ) {
  * each row in the filter.
  *
  * @since 1.0.0
+ * @since 1.2.0 Update to support cell data type based on column data type attribute.
  *
  * @param  array  $rows All table rows
  * @param  string $filter identifies whether process table header vs. body rows.
@@ -862,13 +863,14 @@ function render_checkbox_cell( $cell, $grid_show_inner_lines, $grid_inner_line_w
 	if ( $editable ) {
 		// Front End Edit.
 		?>
-		<!-- <input id="<?php echo esc_attr( $cell['cell_tag_id'] ); ?>"
-			type=<?php echo esc_attr( $cell['data_type']['settings']['format'] ); ?>
-			class="grid-control__body-cells"
+		<div id="<?php echo esc_attr( $cell['cell_tag_id'] ); ?>"
+			role="cell"
+			class="<?php echo esc_attr( trim( $cell_render_classes ) ); ?>"
 			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
 				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
-			value="<?php echo esc_attr( $cell['content'] ); ?>">
-		</input> -->
+		>
+			<?php echo format_display_checkbox( $cell ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</div>
 		<?php
 	} else {
 		// Display only.
@@ -1048,7 +1050,7 @@ function get_checkbox_control_markup( $checked, $variant ) {
 				/>
 			</button>
 			<?php
-			return ob_get_clean();
+				return ob_get_clean();
 	}
 	return '';
 }

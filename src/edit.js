@@ -788,7 +788,6 @@ export default function Edit(props) {
 	useEffect(() => {
 		if (!Object.keys(unmountedTables).length) return;
 		void processUnmountedTables(unmountedTables).catch(error => {
-			console.error('Error reconciling unmounted Dynamic Tables', error);
 			showMessageNotice(createNotice, 'unmounted-reconcile-error');
 		});
 	}, [unmountedTables]);
@@ -1163,7 +1162,6 @@ export default function Edit(props) {
 				await saveTableEntity(entityId);
 			} catch (error) {
 				if (!isActive) return;
-				console.error('Error saving attached Dynamic Table entity', error);
 				showMessageNotice(createNotice, 'update-entity-error');
 				setTableOperation({
 					kind: 'error',
@@ -1288,7 +1286,6 @@ export default function Edit(props) {
 		};
 
 		void finalizePostSaveTableChanges().catch(error => {
-			console.error('Error processing Dynamic Tables after post save', error);
 			showMessageNotice(createNotice, 'post-save-sync-error');
 		});
 	}, [
@@ -1487,7 +1484,6 @@ export default function Edit(props) {
 
 		setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId));
 		void saveTableEntity(table.table_id).catch(error => {
-			console.error('Error synchronizing Dynamic Table post_id', error);
 			showMessageNotice(createNotice, 'post-id-sync-error');
 		});
 	}, [
@@ -2163,7 +2159,6 @@ export default function Edit(props) {
 	 * @param {Object} patch    Update payload to store
 	 */
 	function onChangeCellData(table_id, cell_id, patch) {
-		console.log('onChangeCellData', table_id, cell_id, patch);
 		setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', patch.content);
 		setTableAttributes(table_id, 'cell', cell_id, 'ATTRIBUTES', patch.attributes);
 	}
@@ -2269,7 +2264,7 @@ export default function Edit(props) {
 	 * @since 1.2.3 - Add keyboard support for moving columns and rows
 	 * @since 1.2.5 - Add keyboard support for insert/delete columns and rows
 	 * @since 1.3.1 - Add keyboard support for cell copy/cut/paste
-	 *
+	 * @since 1.4.3 - Update for checkbox data entry
 	 * @param {Object} event onKeyDown event
 	 * @return {void}
 	 */
@@ -2639,6 +2634,7 @@ export default function Edit(props) {
 	 * Handle transition from navigation to editing on grid cell
 	 *
 	 * @since 1.2.0
+	 * @since 1.4.3 - Update for checkbox data entry
 	 *
 	 * @param {Object} event          onKeyDown event
 	 * @param {Object} activeCellEl   Current cell element
@@ -2802,8 +2798,6 @@ export default function Edit(props) {
 		if (isContentOnlyMode) {
 			return;
 		}
-		console.log('Updating column for type: ' + updateType);
-		console.log('Updated attributes:', updatedColumnAttributes);
 
 		switch (updateType) {
 			case 'attributes': {
@@ -4773,10 +4767,26 @@ function Cell(props) {
 		settings?.formatOptions?.hideIfEmpty &&
 		isEmptyCheckboxValue(cellContent);
 
+	/**
+	 * Identify whether checkbox cell value is empty
+	 *
+	 * @since 1.4.3
+	 *
+	 * @param {boolean} value Checkbox cell value
+	 * @return {boolean}  Is cell content empty?
+	 */
 	function isEmptyCheckboxValue(value) {
 		return value === '' || value === null || value === undefined;
 	}
 
+	/**
+	 * Identify whether checkbox value should be true or false
+	 *
+	 * @since 1.4.3
+	 *
+	 * @param {boolean} value Checkbox cell value
+	 * @return {boolean} Checkbox value to render
+	 */
 	function getCheckboxCheckedState(value) {
 		const normalizedValue =
 			typeof value === 'string' ? value.trim().toLowerCase() : value;
@@ -4797,6 +4807,11 @@ function Cell(props) {
 		return value ? 'true' : 'false';
 	}
 
+	/**
+	 * Return markup for checkbox being edited
+	 *
+	 * @since 1.4.3
+	 */
 	function checkboxEditValue() {
 		const isChecked = getCheckboxCheckedState(cellContent);
 		const scale = checkboxVariant === 'freeform' ? 0.6 : 1;
@@ -4909,7 +4924,6 @@ function Cell(props) {
 	 * @param {Object} patch event data
 	 */
 	function updateCellData(patch) {
-		console.log('updateCellData patch:', patch);
 		initialCellValue.current = patch.content;
 
 		if (patch.content !== undefined) setCellContent(patch.content);
@@ -5039,8 +5053,6 @@ function Cell(props) {
 	 * @param {string} nextIndexText Updated plain text conent for the cell
 	 */
 	function persistCellEdit(nextContent, nextIndexText) {
-		console.log('persistCellEdit nextContent:', nextContent);
-		console.log('persistCellEdit nextIndexText:', nextIndexText);
 		updateCellData({
 			content: nextContent,
 			attributes: {
