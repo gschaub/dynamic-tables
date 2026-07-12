@@ -23,6 +23,7 @@ import {
 	Placeholder,
 	SelectControl,
 	CheckboxControl,
+	ToggleControl,
 	TextControl,
 	__experimentalInputControl as InputControl,
 	BorderBoxControl,
@@ -108,7 +109,11 @@ import {
 	ColumnWidthModal,
 	ColumnDataTypeModal,
 	CellMenu,
+	FreeformCheckboxIcon,
+	StatusIcon,
+	TableCheckbox
 } from './components';
+// import { FreeformCheckboxIcon, StatusIcon } from '../formatted-display';
 import './editor.scss';
 
 /* Create Dynamic Tables entity in WordPress core-data */
@@ -2158,6 +2163,7 @@ export default function Edit(props) {
 	 * @param {Object} patch    Update payload to store
 	 */
 	function onChangeCellData(table_id, cell_id, patch) {
+		console.log('onChangeCellData', table_id, cell_id, patch);
 		setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', patch.content);
 		setTableAttributes(table_id, 'cell', cell_id, 'ATTRIBUTES', patch.attributes);
 	}
@@ -2362,7 +2368,10 @@ export default function Edit(props) {
 			isHeaderRow ||
 			editDataType === 'general' ||
 			editDataType === 'date-time' ||
-			editDataType === 'number';
+			editDataType === 'number' ||
+			editDataType === 'checkbox';
+		const canStartEditFromPrintableKey =
+			canTypeToEdit && (editDataType !== 'checkbox' || event.key === ' ');
 		const isAltOnly = event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
 		const isShiftOnly = !event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
 		const isAltShiftOnly = event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
@@ -2401,7 +2410,13 @@ export default function Edit(props) {
 		}
 
 		// Allow direct edit for printable keys that do not include a modifier
-		if (!navKeys.has(event.key) && (isPrimaryKeyOnly || isShiftOnly) && isPrintableKey(event) && canTypeToEdit) {
+		// if (!navKeys.has(event.key) && (isPrimaryKeyOnly || isShiftOnly) && isPrintableKey(event) && canTypeToEdit) {
+		if (
+			!navKeys.has(event.key) &&
+			(isPrimaryKeyOnly || isShiftOnly) &&
+			isPrintableKey(event) &&
+			canStartEditFromPrintableKey
+		) {
 			// Enter edit mode
 			onCellKeyDownEditing(event, activeCellEl, event.key, editDataType);
 			return;
@@ -2413,7 +2428,8 @@ export default function Edit(props) {
 			event.stopPropagation();
 			startEditingCell(cellId);
 			window.requestAnimationFrame(() => {
-				activeCellEl?.querySelector?.('[contenteditable="true"], input, textarea')?.focus?.();
+				// activeCellEl?.querySelector?.('[contenteditable="true"], input, textarea')?.focus?.();
+				activeCellEl?.querySelector?.('[contenteditable="true"], input, textarea, button')?.focus?.();
 			});
 			return;
 		}
@@ -2634,14 +2650,26 @@ export default function Edit(props) {
 
 		// For input-backed editors, mount synchronously so the initiating
 		// printable key can be handled by the input itself.
-		if (columnDataType === 'date-time' || columnDataType === 'number') {
+		// if (columnDataType === 'date-time' || columnDataType === 'number') {
+		if (
+			columnDataType === 'date-time' ||
+			columnDataType === 'number' ||
+			columnDataType === 'checkbox'
+		) {
+			if (columnDataType === 'checkbox' && char === ' ') {
+				event.preventDefault();
+				event.stopPropagation();
+			}
+
 			flushSync(() => {
 				startEditingCell(id);
 			});
 
 			const focusInputEditor = () => {
 				const mountedCellEl = gridRef.current?.querySelector(`[data-cell-id="${CSS.escape(id)}"]`);
-				const input = mountedCellEl?.querySelector?.('input, textarea');
+				// const input = mountedCellEl?.querySelector?.('input, textarea');
+				const control = mountedCellEl?.querySelector?.('input, textarea, button');
+				const input = control?.tagName === 'INPUT' ? control : null;
 
 				// Clear existing date-time value when entering edit mode
 				if (columnDataType === 'date-time' && input) {
@@ -2657,7 +2685,8 @@ export default function Edit(props) {
 					}
 				}
 
-				input?.focus?.();
+				// input?.focus?.();
+				control?.focus?.();
 
 				if (columnDataType === 'date-time' && input) {
 					input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -2666,7 +2695,13 @@ export default function Edit(props) {
 				if (columnDataType === 'number' && input) {
 					input.setSelectionRange?.(0, input.value.length);
 				}
-				return !!input;
+
+				// return !!input;
+				if (columnDataType === 'checkbox' && char === ' ') {
+					control?.click?.();
+				}
+
+				return !!control;
 			};
 
 			// Try immediately (same key event), then fallback next frame.
@@ -2767,6 +2802,8 @@ export default function Edit(props) {
 		if (isContentOnlyMode) {
 			return;
 		}
+		console.log('Updating column for type: ' + updateType);
+		console.log('Updated attributes:', updatedColumnAttributes);
 
 		switch (updateType) {
 			case 'attributes': {
@@ -4178,7 +4215,7 @@ export default function Edit(props) {
 																						);
 																						wrapper
 																							?.querySelector?.(
-																								'[contenteditable="true"], input, textarea'
+																								'[contenteditable="true"], input, textarea, button'
 																							)
 																							?.focus?.();
 																					});
@@ -4290,7 +4327,10 @@ export default function Edit(props) {
 																	 */
 																	calculatedClasses = '';
 																	const isFirstColumn = column_id === '1' ? true : false;
-																	const isBorder = attributes.border;
+																	if (attributes?.border === null) {
+																		console.log(`Cell ${cell_id} has a null border attribute. This may cause rendering issues. Please check the cell attributes.`);
+																	}
+																	const isBorder = attributes?.border;
 																	const borderContent = setBorderContent(
 																		row_id,
 																		column_id,
@@ -4408,7 +4448,7 @@ export default function Edit(props) {
 																							);
 																							wrapper
 																								?.querySelector?.(
-																									'[contenteditable="true"], input, textarea'
+																									'[contenteditable="true"], input, textarea, button'
 																								)
 																								?.focus?.();
 																						});
@@ -4727,6 +4767,51 @@ function Cell(props) {
 		sanitizedNumber !== '' &&
 		sanitizedNumber !== '-' &&
 		Number(sanitizedNumber) < 0;
+	const checkboxVariant = settings?.format || inputType || 'standard';
+	const shouldHideCheckbox =
+		!isEditing &&
+		settings?.formatOptions?.hideIfEmpty &&
+		isEmptyCheckboxValue(cellContent);
+
+	function isEmptyCheckboxValue(value) {
+		return value === '' || value === null || value === undefined;
+	}
+
+	function getCheckboxCheckedState(value) {
+		const normalizedValue =
+			typeof value === 'string' ? value.trim().toLowerCase() : value;
+
+		if (normalizedValue === true || normalizedValue === 'true' || normalizedValue === 1 || normalizedValue === '1') {
+			return true;
+		}
+
+		if (normalizedValue === false || normalizedValue === 'false' || normalizedValue === 0 || normalizedValue === '0') {
+			return false;
+		}
+
+		return !!(settings?.formatOptions?.defaultToChecked && isEmptyCheckboxValue(value));
+	}
+
+	// Keep checkbox content string-based so it continues to match the REST schema.
+	function serializeCheckboxValue(value) {
+		return value ? 'true' : 'false';
+	}
+
+	function checkboxEditValue() {
+		const isChecked = getCheckboxCheckedState(cellContent);
+		const scale = checkboxVariant === 'freeform' ? 0.6 : 1;
+
+		return (
+			<TableCheckbox
+				checked = {isChecked}
+				variant = {checkboxVariant}
+				scale = {scale}
+				onChange={processBooleanCellEdit}
+			/>
+		)
+	}
+
+
 
 	/**
 	 * Process effect of changes to cell level attributes
@@ -4824,6 +4909,7 @@ function Cell(props) {
 	 * @param {Object} patch event data
 	 */
 	function updateCellData(patch) {
+		console.log('updateCellData patch:', patch);
 		initialCellValue.current = patch.content;
 
 		if (patch.content !== undefined) setCellContent(patch.content);
@@ -4953,6 +5039,8 @@ function Cell(props) {
 	 * @param {string} nextIndexText Updated plain text conent for the cell
 	 */
 	function persistCellEdit(nextContent, nextIndexText) {
+		console.log('persistCellEdit nextContent:', nextContent);
+		console.log('persistCellEdit nextIndexText:', nextIndexText);
 		updateCellData({
 			content: nextContent,
 			attributes: {
@@ -4963,6 +5051,10 @@ function Cell(props) {
 				},
 			},
 		});
+	}
+
+	function processBooleanCellEdit(updatedValue) {
+		persistCellEdit(updatedValue, updatedValue ? 'true' : 'false');
 	}
 
 	/**
@@ -5106,6 +5198,35 @@ function Cell(props) {
 				</div>
 			);
 		},
+		checkbox: () => {
+			if (shouldHideCheckbox) {
+				return null;
+			}
+
+			if (!isEditing) {
+				if (settings?.formatOptions?.hideIfEmpty && isEmptyCheckboxValue(cellContent)) {
+					return null;
+				}
+
+				const isChecked = getCheckboxCheckedState(cellContent);
+
+				const scale = checkboxVariant === 'freeform' ? 0.6 : 1;
+
+				return (
+					<TableCheckbox
+						checked = {isChecked}
+						variant = {checkboxVariant}
+						scale = {scale}
+					/>
+				)
+			}
+
+			const editedCheckbox = checkboxEditValue();
+
+			return (
+				<div>{editedCheckbox}</div>
+			);
+		},
 	};
 
 	let renderPipeline = [];
@@ -5131,6 +5252,9 @@ function Cell(props) {
 				case 'number':
 					renderPipeline = ['number'];
 					break;
+				case 'checkbox':
+					renderPipeline = ['checkbox'];
+					break;
 				default:
 					break;
 			}
@@ -5141,11 +5265,13 @@ function Cell(props) {
 
 	const renderClassesDisplay = clsx(columnClassNames, cellClassNames, {
 		'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
+		'grid-control__body-cells--checkbox': type === 'checkbox',
 		'grid-control__body-columns--number-red': redNegativeNumber,
 	});
 
 	const renderClassesEdit = clsx(columnClassNames, {
 		'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
+		'grid-control__body-cells--checkbox': type === 'checkbox',
 		'grid-control__body-columns--number-red': redNegativeNumber,
 	});
 

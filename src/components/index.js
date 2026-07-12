@@ -9,3 +9,6 @@ export { RowHeightModal } from './configure-row-height';
 
 /* Export table cell react components */
 export { CellMenu } from './cell-dropdown-menu';
+
+/* Export custom display react components */
+export * from './formatted-display';

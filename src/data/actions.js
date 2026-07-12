@@ -322,7 +322,7 @@ export const updateTableEntity =
 				row_id,
 				attributes,
 				classes,
-				content,
+				content: typeof content === 'boolean' ? String(content) : (content ?? ''),
 			})
 		);
 

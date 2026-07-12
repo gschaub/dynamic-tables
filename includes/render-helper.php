@@ -16,6 +16,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use NumberFormatter;
+add_action( 'enqueue_scripts', array( $this, 'enqueue_images' ) );
+
+/**
+ * Returns plugin image URLs for use in PHP rendering.
+ *
+ * @since 1.4.3
+ *
+ * @return array
+ */
+function get_image_urls() {
+	return array(
+		'checkboxFreeformChecked'   => dtbk_get_setting( 'url' ) . 'assets/icons/checkbox/freeform-checked.svg',
+		'checkboxFreeformUnchecked' => dtbk_get_setting( 'url' ) . 'assets/icons/checkbox/freeform-unchecked.svg',
+		'checkboxIconChecked'       => dtbk_get_setting( 'url' ) . 'assets/icons/checkbox/status-icon-checked.svg',
+		'checkboxIconUnchecked'     => dtbk_get_setting( 'url' ) . 'assets/icons/checkbox/status-icon-unchecked.svg',
+	);
+}
 
 /**
  * Converts a column id (number) to the column id letter
@@ -668,7 +685,7 @@ function format_display_date( $cell ) {
 }
 
 /**
- * Render Date-Time cell data types
+ * Render number cell data types
  *
  * @since 1.2.4
  *
@@ -721,7 +738,7 @@ function render_number_cell( $cell, $grid_show_inner_lines, $grid_inner_line_wid
 }
 
 /**
- * Format a cell date for display.
+ * Format a cell numeric for display.
  *
  * Description - The cell contains the data type and number format.  Applies formatting
  *               rules and returns a formatted string representation of the number.
@@ -815,4 +832,223 @@ function format_display_number( $cell ) {
 	} else {
 		return $formatted_number->format( $number_value );
 	}
+}
+
+/**
+ * Render Checkbox cell data types
+ *
+ * @since 1.4.3
+ *
+ * @param  array  $cell                   Cell data and attributes to be rendered
+ * @param  string $grid_show_inner_lines  Show inner grid lines for cell?
+ * @param  string $grid_inner_line_width  Width for inner grid lines if present
+ * @return void
+ */
+function render_checkbox_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width ) {
+	$format_options      = $cell['data_type']['settings']['formatOptions'] ?? array();
+	$should_hide         = should_hide_checkbox( $cell['content'], $format_options );
+	$conditional_classes = array();
+	$cell_classes        = 'grid-control__body-cells grid-control__body-cells--checkbox ' . $cell['classes'];
+	$cell_render_classes = get_cell_classes( $cell_classes, $cell['column_classes'], $conditional_classes );
+
+	if ( $should_hide ) {
+		$cell_render_classes .= ' grid-control__body-cells--checkbox-hidden';
+	}
+
+	$conditional_classes = array();
+
+	// Prep for future front end editing.
+	$editable = false;
+	if ( $editable ) {
+		// Front End Edit.
+		?>
+		<!-- <input id="<?php echo esc_attr( $cell['cell_tag_id'] ); ?>"
+			type=<?php echo esc_attr( $cell['data_type']['settings']['format'] ); ?>
+			class="grid-control__body-cells"
+			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
+				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
+			value="<?php echo esc_attr( $cell['content'] ); ?>">
+		</input> -->
+		<?php
+	} else {
+		// Display only.
+		?>
+		<div id="<?php echo esc_attr( $cell['cell_tag_id'] ); ?>"
+			role="cell"
+			class="<?php echo esc_attr( trim( $cell_render_classes ) ); ?>"
+			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
+				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
+		>
+			<?php echo format_display_checkbox( $cell ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</div>
+		<?php
+	}
+}
+
+/**
+ * Format a checkbox cell for display.
+ *
+ * Description - The cell contains the checkbox variant and format options.
+ *               Returns safe markup for standard, icon, or freeform display.
+ *
+ * @since 1.4.3
+ *
+ * @param  array $cell  Cell data
+ * @return string       Formatted checkbox markup
+ */
+function format_display_checkbox( $cell ) {
+	$checkbox_format         = $cell['data_type']['settings']['format'] ?? 'standard';
+	$checkbox_format_options = $cell['data_type']['settings']['formatOptions'] ?? array();
+	$checkbox_value          = $cell['content'];
+
+	if ( should_hide_checkbox( $checkbox_value, $checkbox_format_options ) ) {
+		return '';
+	}
+
+	switch ( $checkbox_format ) {
+		case 'standard':
+		case 'toggle':
+		case 'icon':
+		case 'freeform':
+			$is_checked = get_checkbox_checked_state( $checkbox_value, $checkbox_format_options );
+			return get_checkbox_control_markup( $is_checked, $checkbox_format );
+		default:
+			return '';
+	}
+}
+
+/**
+ * Determine whether a checkbox value should be treated as empty.
+ *
+ * @since 1.4.3
+ *
+ * @param mixed $value Raw checkbox value.
+ * @return bool
+ */
+function is_empty_checkbox_value( $value ) {
+	return '' === $value || null === $value;
+}
+
+/**
+ * Resolve a checkbox value to a checked state.
+ *
+ * Mirrors the editor-side checkbox normalization for standard, icon, and
+ * freeform checkbox variants.
+ *
+ * @since 1.4.3
+ *
+ * @param mixed $value          Raw checkbox value.
+ * @param array $format_options Checkbox format options.
+ * @return bool
+ */
+function get_checkbox_checked_state( $value, $format_options = array() ) {
+	$normalized_value = is_string( $value ) ? strtolower( trim( $value ) ) : $value;
+
+	if ( true === $normalized_value || 'true' === $normalized_value || 1 === $normalized_value || '1' === $normalized_value ) {
+		return true;
+	}
+
+	if ( false === $normalized_value || 'false' === $normalized_value || 0 === $normalized_value || '0' === $normalized_value ) {
+		return false;
+	}
+
+	return ! empty( $format_options['defaultToChecked'] ) && is_empty_checkbox_value( $value );
+}
+
+/**
+ * Determine whether the checkbox control should be hidden for an empty value.
+ *
+ * @since 1.4.3
+ *
+ * @param mixed $value          Raw checkbox value.
+ * @param array $format_options Checkbox format options.
+ * @return bool
+ */
+function should_hide_checkbox( $value, $format_options = array() ) {
+	return ! empty( $format_options['hideIfEmpty'] ) && is_empty_checkbox_value( $value );
+}
+
+/**
+ * Return the rendered checkbox control markup.
+ *
+ * @since 1.4.3
+ *
+ * @param bool   $checked Checkbox checked state.
+ * @param string $variant Checkbox variant.
+ * @return string
+ */
+function get_checkbox_control_markup( $checked, $variant ) {
+	$images         = get_image_urls();
+	$checkbox_label = $checked ? __( 'Checked', 'dynamic-table-blocks' ) : __( 'Unchecked', 'dynamic-table-blocks' );
+
+	switch ( $variant ) {
+		case 'standard':
+			ob_start();
+			?>
+			<span class="grid-control__checkbox-control grid-control__checkbox-control--static">
+				<input
+					class="grid-control__checkbox-input"
+					type="checkbox"
+					aria-label="<?php echo esc_attr( $checkbox_label ); ?>"
+					tabindex="-1"
+					<?php checked( $checked ); ?>
+				/>
+			</span>
+			<?php
+			return ob_get_clean();
+		case 'toggle':
+			ob_start();
+			?>
+			<span
+				class="grid-control__toggle-control grid-control__checkbox-control--static components-form-toggle<?php echo $checked ? ' is-checked' : ''; ?>"
+				role="switch"
+				aria-label="<?php echo esc_attr( $checkbox_label ); ?>"
+				aria-checked="<?php echo $checked ? 'true' : 'false'; ?>"
+			>
+				<input
+					class="components-form-toggle__input"
+					type="checkbox"
+					tabindex="-1"
+					aria-hidden="true"
+					<?php checked( $checked ); ?>
+				/>
+				<span class="components-form-toggle__track" aria-hidden="true"></span>
+				<span class="components-form-toggle__thumb" aria-hidden="true"></span>
+			</span>
+			<?php
+			return ob_get_clean();
+
+			case 'icon':
+		case 'freeform':
+			$icon_key = $checked
+				? ( 'freeform' === $variant ? 'checkboxFreeformChecked' : 'checkboxIconChecked' )
+				: ( 'freeform' === $variant ? 'checkboxFreeformUnchecked' : 'checkboxIconUnchecked' );
+
+			$size = 24;
+			if ( $variant === 'freeform' ) {
+				$base_size = 52;
+				$scale = 0.6;
+				$size = $base_size * $scale;
+			}
+
+			ob_start();
+			?>
+			<button
+				type="button"
+				class="grid-control__checkbox-button"
+				aria-label="<?php echo esc_attr( $checkbox_label ); ?>"
+				disabled
+			>
+				<img
+					class="grid-control__checkbox-icon grid-control__checkbox-icon--<?php echo esc_attr( $variant ); ?>"
+					src="<?php echo esc_url( $images[ $icon_key ] ); ?>"
+					alt="<?php echo esc_attr( $checkbox_label ); ?>"
+					width="<?php echo esc_attr( $size ); ?>"
+					height="<?php echo esc_attr( $size ); ?>"
+				/>
+			</button>
+			<?php
+			return ob_get_clean();
+	}
+	return '';
 }

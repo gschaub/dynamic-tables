@@ -2,6 +2,168 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./assets/icons/checkbox/freeform-checked.svg"
+/*!****************************************************!*\
+  !*** ./assets/icons/checkbox/freeform-checked.svg ***!
+  \****************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ReactComponent: () => (/* binding */ SvgFreeformChecked),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+var _path, _path2, _path3;
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+
+var SvgFreeformChecked = function SvgFreeformChecked(props) {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("svg", _extends({
+    xmlns: "http://www.w3.org/2000/svg",
+    width: 52,
+    height: 52,
+    fill: "none"
+  }, props), _path || (_path = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", {
+    fill: "#FFF",
+    d: "m13.8 13.4 22.9-.8q3.7-.2 5 2.9.6 1.5.6 3.6v14.8q0 3.6-2 5.5-1.8 1.7-4.8 1.8l-20.5.7q-3.6.1-5.5-1.9-1.7-1.8-1.8-5.2l-.1-15.7q-.1-4.1 2.6-5.2 1.3-.5 3.6-.5"
+  })), _path2 || (_path2 = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", {
+    stroke: "#16A34A",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: 4.6,
+    d: "M32.3 13.2c-6.5-.3-12.9-.1-19.1.5-3.1.3-4.3 2-4.3 4.7L9 35c.1 3.6 2.1 5.4 5.6 5.4l20.5-.6c3.7-.1 6.2-2 6.2-5.3v-6.4"
+  })), _path3 || (_path3 = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", {
+    stroke: "#16A34A",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: 8.2,
+    d: "m18.2 28.9 5.7 5.1 18.8-18.5"
+  })));
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTIiIGhlaWdodD0iNTIiIHZpZXdCb3g9IjAgMCA1MiA1MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEzLjggMTMuNEwzNi43IDEyLjZRNDAuNCAxMi40IDQxLjcgMTUuNVE0Mi4zIDE3LjAgNDIuMyAxOS4xTDQyLjMgMzMuOVE0Mi4zIDM3LjUgNDAuMyAzOS40UTM4LjUgNDEuMSAzNS41IDQxLjJMMTUuMCA0MS45UTExLjQgNDIuMCA5LjUgNDAuMFE3LjggMzguMiA3LjcgMzQuOEw3LjYgMTkuMVE3LjUgMTUuMCAxMC4yIDEzLjlRMTEuNSAxMy40IDEzLjggMTMuNFoiIGZpbGw9IiNGRkZGRkYiLz4KPHBhdGggZD0iTTMyLjMgMTMuMkMyNS44IDEyLjkgMTkuNCAxMy4xIDEzLjIgMTMuN0MxMC4xIDE0LjAgOC45IDE1LjcgOC45IDE4LjRMOS4wIDM1LjBDOS4xIDM4LjYgMTEuMSA0MC40IDE0LjYgNDAuNEwzNS4xIDM5LjhDMzguOCAzOS43IDQxLjMgMzcuOCA0MS4zIDM0LjVMNDEuMyAyOC4xIiBmaWxsPSJub25lIiBzdHJva2U9IiMxNkEzNEEiIHN0cm9rZS13aWR0aD0iNC42IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE4LjIgMjguOUwyMy45IDM0LjBMNDIuNyAxNS41IiBmaWxsPSJub25lIiBzdHJva2U9IiMxNkEzNEEiIHN0cm9rZS13aWR0aD0iOC4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==");
+
+/***/ },
+
+/***/ "./assets/icons/checkbox/freeform-unchecked.svg"
+/*!******************************************************!*\
+  !*** ./assets/icons/checkbox/freeform-unchecked.svg ***!
+  \******************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ReactComponent: () => (/* binding */ SvgFreeformUnchecked),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+var _path, _path2;
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+
+var SvgFreeformUnchecked = function SvgFreeformUnchecked(props) {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("svg", _extends({
+    xmlns: "http://www.w3.org/2000/svg",
+    width: 52,
+    height: 52,
+    fill: "none"
+  }, props), _path || (_path = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", {
+    fill: "#FFF",
+    stroke: "#EF3340",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: 4.8,
+    d: "m14.1 13 23-1.1q3.7-.2 5.2 2.8.7 1.5.8 3.7l.6 16.4q.2 3.7-1.8 5.7-1.8 1.7-5 1.9l-21.2.8q-3.7.1-5.7-2-1.8-1.9-1.9-5.4l-.4-17.5q-.1-3.7 2.4-4.9 1.3-.4 4-.4"
+  })), _path2 || (_path2 = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", {
+    stroke: "#EF3340",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: 8.4,
+    d: "m20 21 11.4 11.2m.1-11L20.1 32"
+  })));
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTIiIGhlaWdodD0iNTIiIHZpZXdCb3g9IjAgMCA1MiA1MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE0LjEgMTMuMEwzNy4xIDExLjlRNDAuOCAxMS43IDQyLjMgMTQuN1E0My4wIDE2LjIgNDMuMSAxOC40TDQzLjcgMzQuOFE0My45IDM4LjUgNDEuOSA0MC41UTQwLjEgNDIuMiAzNi45IDQyLjRMMTUuNyA0My4yUTEyLjAgNDMuMyAxMC4wIDQxLjJROC4yIDM5LjMgOC4xIDM1LjhMNy43IDE4LjNRNy42IDE0LjYgMTAuMSAxMy40UTExLjQgMTMuMCAxNC4xIDEzLjBaIiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiNFRjMzNDAiIHN0cm9rZS13aWR0aD0iNC44IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTIwLjAgMjEuMEwzMS40IDMyLjJNMzEuNSAyMS4yTDIwLjEgMzIuMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRUYzMzQwIiBzdHJva2Utd2lkdGg9IjguNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=");
+
+/***/ },
+
+/***/ "./assets/icons/checkbox/status-icon-checked.svg"
+/*!*******************************************************!*\
+  !*** ./assets/icons/checkbox/status-icon-checked.svg ***!
+  \*******************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ReactComponent: () => (/* binding */ SvgStatusIconChecked),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+var _circle, _path;
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+
+var SvgStatusIconChecked = function SvgStatusIconChecked(props) {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("svg", _extends({
+    xmlns: "http://www.w3.org/2000/svg",
+    width: 24,
+    height: 24,
+    fill: "none",
+    viewBox: "0 0 256 256"
+  }, props), _circle || (_circle = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("circle", {
+    cx: 128,
+    cy: 128,
+    r: 112,
+    fill: "#2F9E44"
+  })), _path || (_path = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", {
+    fill: "#FFF",
+    d: "m232.49 80.49-128 128a12 12 0 0 1-17 0l-56-56a12 12 0 1 1 17-17L96 183 215.51 63.51a12 12 0 0 1 17 17Z"
+  })));
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNTYgMjU2IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8Y2lyY2xlIGN4PSIxMjgiIGN5PSIxMjgiIHI9IjExMiIgZmlsbD0iIzJGOUU0NCIvPgo8cGF0aCBkPSJNMjMyLjQ5LDgwLjQ5bC0xMjgsMTI4YTEyLDEyLDAsMCwxLTE3LDBsLTU2LTU2YTEyLDEyLDAsMSwxLDE3LTE3TDk2LDE4MywyMTUuNTEsNjMuNTFhMTIsMTIsMCwwLDEsMTcsMTdaIiBmaWxsPSIjRkZGRkZGIi8+Cjwvc3ZnPgo=");
+
+/***/ },
+
+/***/ "./assets/icons/checkbox/status-icon-unchecked.svg"
+/*!*********************************************************!*\
+  !*** ./assets/icons/checkbox/status-icon-unchecked.svg ***!
+  \*********************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ReactComponent: () => (/* binding */ SvgStatusIconUnchecked),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+var _circle, _path;
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+
+var SvgStatusIconUnchecked = function SvgStatusIconUnchecked(props) {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("svg", _extends({
+    xmlns: "http://www.w3.org/2000/svg",
+    width: 24,
+    height: 24,
+    fill: "none",
+    viewBox: "0 0 256 256"
+  }, props), _circle || (_circle = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("circle", {
+    cx: 128,
+    cy: 128,
+    r: 112,
+    fill: "#D64545"
+  })), _path || (_path = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", {
+    fill: "#FFF",
+    d: "M208.49 191.51a12 12 0 0 1-17 17L128 145l-63.51 63.49a12 12 0 0 1-17-17L111 128 47.51 64.49a12 12 0 0 1 17-17L128 111l63.51-63.52a12 12 0 0 1 17 17L145 128Z"
+  })));
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNTYgMjU2IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8Y2lyY2xlIGN4PSIxMjgiIGN5PSIxMjgiIHI9IjExMiIgZmlsbD0iI0Q2NDU0NSIvPgo8cGF0aCBkPSJNMjA4LjQ5LDE5MS41MWExMiwxMiwwLDAsMS0xNywxN0wxMjgsMTQ1LDY0LjQ5LDIwOC40OWExMiwxMiwwLDAsMS0xNy0xN0wxMTEsMTI4LDQ3LjUxLDY0LjQ5YTEyLDEyLDAsMCwxLDE3LTE3TDEyOCwxMTFsNjMuNTEtNjMuNTJhMTIsMTIsMCwwLDEsMTcsMTdMMTQ1LDEyOFoiIGZpbGw9IiNGRkZGRkYiLz4KPC9zdmc+Cg==");
+
+/***/ },
+
 /***/ "./src/components/cell-dropdown-menu/index.js"
 /*!****************************************************!*\
   !*** ./src/components/cell-dropdown-menu/index.js ***!
@@ -1084,7 +1246,7 @@ function ConfigureColumnDataType(props = {}) {
   }
 
   /**
-   * Update number format and set default options
+   * Update checkbox format and set default options
    *
    * @since 1.4.2
    *
@@ -1115,6 +1277,7 @@ function ConfigureColumnDataType(props = {}) {
       type: 'checkbox',
       settings: dataTypeSettings
     };
+    console.log('updatedDataType from checkbox format', updatedDataType);
     setDataType(updatedDataType);
   }
 
@@ -1130,7 +1293,8 @@ function ConfigureColumnDataType(props = {}) {
     let newHideIfEmpty = checkboxHideIfEmpty;
     let newDefaultToChecked = checkboxDefaultToChecked;
     let newUpdateColumnStyle = updateColumnStyle;
-    let newColumnClassNames = new Set(columnClassNames);
+    // let newColumnClassNames = new Set(columnClassNames);
+
     switch (option) {
       case 'hide-empty':
         newHideIfEmpty = event;
@@ -1140,15 +1304,18 @@ function ConfigureColumnDataType(props = {}) {
         break;
       case 'format-column':
         newUpdateColumnStyle = event;
-        if (event) {
-          newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--number-align-right');
-        }
+        // if (event) {
+        // 	newColumnClassNames = newColumnClassNames.add(
+        // 		'grid-control__body-columns--number-align-right'
+        // 	);
+        // }
         break;
     }
     setCheckboxHideIfEmpty(newHideIfEmpty);
     setCheckboxDefaultToChecked(newDefaultToChecked);
     setUpdateColumnStyle(newUpdateColumnStyle);
-    setColumnClassNames(newColumnClassNames);
+    // setColumnClassNames(newColumnClassNames);
+
     const updatedDataType = {
       ...dataType,
       settings: {
@@ -1160,6 +1327,7 @@ function ConfigureColumnDataType(props = {}) {
         }
       }
     };
+    console.log('updatedDataType from checkbox format options', updatedDataType);
     setDataType(updatedDataType);
   }
 
@@ -1176,6 +1344,7 @@ function ConfigureColumnDataType(props = {}) {
   function onUpdateDataType(event) {
     let updatedDataType = {};
     const newColumnClassNames = new Set(columnClassNames);
+    console.log('onUpdateDataType event', event);
     switch (event) {
       case 'date-time':
         setDataTypeFormat('date');
@@ -1249,9 +1418,13 @@ function ConfigureColumnDataType(props = {}) {
       case 'number':
         newColumnClassNames = newColumnClassNames.add('grid-control__body-columns--number-align-right');
         break;
+      case 'checkbox':
+        break;
     }
     setColumnClassNames(newColumnClassNames);
     const updatedColumnClasses = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.prepareClassesForUse)(newColumnClassNames);
+    console.log('updatedColumnAttributes', updatedColumnAttributes);
+    console.log('updatedColumnClasses', updatedColumnClasses);
     updatedColumn(event, 'dataType', tableId, columnId, columnName, updatedColumnAttributes, updatedColumnClasses);
     close();
   }
@@ -1539,8 +1712,8 @@ function ConfigureColumnDataType(props = {}) {
                             label: 'Icon',
                             value: 'icon'
                           }, {
-                            label: 'Cartoon',
-                            value: 'cartoon'
+                            label: 'Free Form',
+                            value: 'freeform'
                           }],
                           onChange: value => onCheckboxFormat(value)
                         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
@@ -1549,14 +1722,19 @@ function ConfigureColumnDataType(props = {}) {
                             children: "Formatting Options"
                           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
-                            label: 'Show checkbox when no value has been selected?',
+                            label: 'Hide checkbox when no value exists?',
                             checked: checkboxHideIfEmpty,
-                            onChange: e => onCheckboxFormatOption(e, 'hide-empty')
+                            onChange: e => onCheckboxFormatOption(e, 'hideEmpty')
                           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Default to "Checked"',
                             checked: checkboxDefaultToChecked,
                             onChange: e => onCheckboxFormatOption(e, 'default-checked')
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                            className: "configure-column-modal__checkbox",
+                            label: 'Auto format column?',
+                            checked: updateColumnStyle,
+                            onChange: e => onCheckboxFormatOption(e, 'format-column')
                           })]
                         })]
                       })
@@ -1587,7 +1765,7 @@ function ConfigureColumnDataType(props = {}) {
                             }), dataTypeFormat === 'icon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_formatted_display__WEBPACK_IMPORTED_MODULE_6__.StatusIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: true
-                            }), dataTypeFormat === 'cartoon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_formatted_display__WEBPACK_IMPORTED_MODULE_6__.CartoonCheckboxIcon, {
+                            }), dataTypeFormat === 'freeform' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_formatted_display__WEBPACK_IMPORTED_MODULE_6__.FreeformCheckboxIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: true,
                               scale: 0.6
@@ -1605,7 +1783,7 @@ function ConfigureColumnDataType(props = {}) {
                             }), dataTypeFormat === 'icon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_formatted_display__WEBPACK_IMPORTED_MODULE_6__.StatusIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: false
-                            }), dataTypeFormat === 'cartoon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_formatted_display__WEBPACK_IMPORTED_MODULE_6__.CartoonCheckboxIcon, {
+                            }), dataTypeFormat === 'freeform' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_formatted_display__WEBPACK_IMPORTED_MODULE_6__.FreeformCheckboxIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: false,
                               scale: 0.6
@@ -1638,106 +1816,6 @@ function ConfigureColumnDataType(props = {}) {
     })
   });
 }
-
-// function StatusIcon({ checked }) {
-// 	return checked ? (
-// 		<CheckCircleIcon size={24} weight="fill" style={{ color: 'green' }} aria-label="Checked" />
-// 	) : (
-// 		<XCircleIcon size={24} weight="fill" style={{ color: 'red' }} aria-label="Unchecked" />
-// 	);
-// }
-
-// function CartoonCheckboxIcon({ checked, scale = 1 }) {
-// 	const stroke = checked ? '#16a34a' : '#ef3340';
-// 	const boldScale = scale;
-// 	const boldBaseSize = 52;
-// 	const boldSize = boldBaseSize * boldScale;
-
-// 	return checked ? (
-// 		// <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true">
-// 		<svg width={boldSize} height={boldSize} viewBox="0 0 52 52" aria-hidden="true">
-// 			<path
-// 				d={`
-// 					M13.8 13.4
-// 					L36.7 12.6
-// 					Q40.4 12.4 41.7 15.5
-// 					Q42.3 17.0 42.3 19.1
-// 					L42.3 33.9
-// 					Q42.3 37.5 40.3 39.4
-// 					Q38.5 41.1 35.5 41.2
-// 					L15.0 41.9
-// 					Q11.4 42.0 9.5 40.0
-// 					Q7.8 38.2 7.7 34.8
-// 					L7.6 19.1
-// 					Q7.5 15.0 10.2 13.9
-// 					Q11.5 13.4 13.8 13.4
-// 					Z
-// 				`}
-// 				fill="#fff"
-// 			/>
-// 			<path
-// 				d={`
-// 					M32.3 13.2
-// 					C25.8 12.9 19.4 13.1 13.2 13.7
-// 					C10.1 14.0 8.9 15.7 8.9 18.4
-// 					L9.0 35.0
-// 					C9.1 38.6 11.1 40.4 14.6 40.4
-// 					L35.1 39.8
-// 					C38.8 39.7 41.3 37.8 41.3 34.5
-// 					L41.3 28.1						`}
-// 				fill="none"
-// 				stroke={stroke}
-// 				strokeWidth="4.6"
-// 				strokeLinecap="round"
-// 				strokeLinejoin="round"
-// 			/>
-// 			<path
-// 				d="M18.2 28.9 L23.9 34.0 L42.7 15.5"
-// 				fill="none"
-// 				stroke={stroke}
-// 				strokeWidth="8.2"
-// 				strokeLinecap="round"
-// 				strokeLinejoin="round"
-// 			/>
-// 		</svg>
-// 	) : (
-// 		// <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true">
-// 		<svg width={boldSize} height={boldSize} viewBox="0 0 52 52" aria-hidden="true">
-// 			<path
-// 				d={`
-// 					M14.1 13.0
-// 					L37.1 11.9
-// 					Q40.8 11.7 42.3 14.7
-// 					Q43.0 16.2 43.1 18.4
-// 					L43.7 34.8
-// 					Q43.9 38.5 41.9 40.5
-// 					Q40.1 42.2 36.9 42.4
-// 					L15.7 43.2
-// 					Q12.0 43.3 10.0 41.2
-// 					Q8.2 39.3 8.1 35.8
-// 					L7.7 18.3
-// 					Q7.6 14.6 10.1 13.4
-// 					Q11.4 13.0 14.1 13.0
-// 					Z
-// 				`}
-// 				fill="#fff"
-// 				stroke={stroke}
-// 				strokeWidth="4.8"
-// 				strokeLinecap="round"
-// 				strokeLinejoin="round"
-// 			/>
-// 			<path
-// 				d="M20.0 21.0 L31.4 32.2 M31.5 21.2 L20.1 32.0"
-// 				fill="none"
-// 				stroke={stroke}
-// 				strokeWidth="8.4"
-// 				strokeLinecap="round"
-// 				strokeLinejoin="round"
-// 			/>
-// 		</svg>
-// 	);
-// }
-
 const ColumnDataTypeModal = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.memo)(ConfigureColumnDataType);
 
 /***/ },
@@ -2612,141 +2690,161 @@ const RowHeightModal = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.memo)(
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   CartoonCheckboxIcon: () => (/* binding */ CartoonCheckboxIcon),
-/* harmony export */   StatusIcon: () => (/* binding */ StatusIcon)
+/* harmony export */   FreeformCheckboxIcon: () => (/* binding */ FreeformCheckboxIcon),
+/* harmony export */   StatusIcon: () => (/* binding */ StatusIcon),
+/* harmony export */   TableCheckbox: () => (/* binding */ TableCheckbox)
 /* harmony export */ });
-/* harmony import */ var _phosphor_icons_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @phosphor-icons/react */ "./node_modules/@phosphor-icons/react/dist/csr/Check.es.js");
-/* harmony import */ var _phosphor_icons_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @phosphor-icons/react */ "./node_modules/@phosphor-icons/react/dist/csr/X.es.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _assets_icons_checkbox_freeform_checked_svg__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../assets/icons/checkbox/freeform-checked.svg */ "./assets/icons/checkbox/freeform-checked.svg");
+/* harmony import */ var _assets_icons_checkbox_freeform_unchecked_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../assets/icons/checkbox/freeform-unchecked.svg */ "./assets/icons/checkbox/freeform-unchecked.svg");
+/* harmony import */ var _assets_icons_checkbox_status_icon_checked_svg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../assets/icons/checkbox/status-icon-checked.svg */ "./assets/icons/checkbox/status-icon-checked.svg");
+/* harmony import */ var _assets_icons_checkbox_status_icon_unchecked_svg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../assets/icons/checkbox/status-icon-unchecked.svg */ "./assets/icons/checkbox/status-icon-unchecked.svg");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
 /* External dependencies */
 
 
+
+
+
+
+function CheckboxAssetIcon({
+  src,
+  className,
+  label,
+  width,
+  height
+}) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
+    className: className,
+    src: src,
+    alt: label,
+    width: width,
+    height: height,
+    style: {
+      display: 'inline-block',
+      flexShrink: 0,
+      verticalAlign: 'middle'
+    }
+  });
+}
 function StatusIcon({
   checked,
   className,
-  size = 24
+  size = 24,
+  onChange
 }) {
-  const Icon = checked ? _phosphor_icons_react__WEBPACK_IMPORTED_MODULE_0__.CheckIcon : _phosphor_icons_react__WEBPACK_IMPORTED_MODULE_1__.XIcon;
-  const backgroundColor = checked ? '#2f9e44' : '#d64545';
   const label = checked ? 'Checked' : 'Unchecked';
-  const glyphSize = Math.max(12, size - 6);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+  const src = checked ? _assets_icons_checkbox_status_icon_checked_svg__WEBPACK_IMPORTED_MODULE_3__["default"] : _assets_icons_checkbox_status_icon_unchecked_svg__WEBPACK_IMPORTED_MODULE_4__["default"];
+  function onHandleClick(event) {
+    if (typeof onChange !== 'function') {
+      return;
+    }
+    return onChange(event);
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
     className: className,
-    role: "img",
-    "aria-label": label,
-    style: {
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+    label: label,
+    icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(CheckboxAssetIcon, {
+      src: src,
+      className: className,
+      label: label,
       width: size,
-      height: size,
-      borderRadius: '999px',
-      backgroundColor,
-      color: '#fff',
-      lineHeight: 0,
-      flexShrink: 0
-    },
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Icon, {
-      size: glyphSize,
-      weight: "bold",
-      "aria-hidden": "true"
-    })
+      height: size
+    }),
+    iconSize: size,
+    onClick: e => onHandleClick(e)
   });
 }
-function CartoonCheckboxIcon({
+function FreeformCheckboxIcon({
   checked,
   className,
-  scale = 1
+  scale = 1,
+  onChange
 }) {
-  const stroke = checked ? '#16a34a' : '#ef3340';
+  const label = checked ? 'Checked' : 'Unchecked';
   const baseSize = 52;
   const size = baseSize * scale;
-  return checked ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("svg", {
+  const src = checked ? _assets_icons_checkbox_freeform_checked_svg__WEBPACK_IMPORTED_MODULE_1__["default"] : _assets_icons_checkbox_freeform_unchecked_svg__WEBPACK_IMPORTED_MODULE_2__["default"];
+  function onHandleClick(event) {
+    if (typeof onChange !== 'function') {
+      return;
+    }
+    return onChange(event);
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
     className: className,
-    width: size,
-    height: size,
-    viewBox: "0 0 52 52",
-    "aria-hidden": "true",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
-      d: `
-					M13.8 13.4
-					L36.7 12.6
-					Q40.4 12.4 41.7 15.5
-					Q42.3 17.0 42.3 19.1
-					L42.3 33.9
-					Q42.3 37.5 40.3 39.4
-					Q38.5 41.1 35.5 41.2
-					L15.0 41.9
-					Q11.4 42.0 9.5 40.0
-					Q7.8 38.2 7.7 34.8
-					L7.6 19.1
-					Q7.5 15.0 10.2 13.9
-					Q11.5 13.4 13.8 13.4
-					Z
-				`,
-      fill: "#fff"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
-      d: `
-					M32.3 13.2
-					C25.8 12.9 19.4 13.1 13.2 13.7
-					C10.1 14.0 8.9 15.7 8.9 18.4
-					L9.0 35.0
-					C9.1 38.6 11.1 40.4 14.6 40.4
-					L35.1 39.8
-					C38.8 39.7 41.3 37.8 41.3 34.5
-					L41.3 28.1
-				`,
-      fill: "none",
-      stroke: stroke,
-      strokeWidth: "4.6",
-      strokeLinecap: "round",
-      strokeLinejoin: "round"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
-      d: "M18.2 28.9 L23.9 34.0 L42.7 15.5",
-      fill: "none",
-      stroke: stroke,
-      strokeWidth: "8.2",
-      strokeLinecap: "round",
-      strokeLinejoin: "round"
-    })]
-  }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("svg", {
-    className: className,
-    width: size,
-    height: size,
-    viewBox: "0 0 52 52",
-    "aria-hidden": "true",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
-      d: `
-					M14.1 13.0
-					L37.1 11.9
-					Q40.8 11.7 42.3 14.7
-					Q43.0 16.2 43.1 18.4
-					L43.7 34.8
-					Q43.9 38.5 41.9 40.5
-					Q40.1 42.2 36.9 42.4
-					L15.7 43.2
-					Q12.0 43.3 10.0 41.2
-					Q8.2 39.3 8.1 35.8
-					L7.7 18.3
-					Q7.6 14.6 10.1 13.4
-					Q11.4 13.0 14.1 13.0
-					Z
-				`,
-      fill: "#fff",
-      stroke: stroke,
-      strokeWidth: "4.8",
-      strokeLinecap: "round",
-      strokeLinejoin: "round"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
-      d: "M20.0 21.0 L31.4 32.2 M31.5 21.2 L20.1 32.0",
-      fill: "none",
-      stroke: stroke,
-      strokeWidth: "8.4",
-      strokeLinecap: "round",
-      strokeLinejoin: "round"
-    })]
+    label: label,
+    icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(CheckboxAssetIcon, {
+      src: src,
+      className: className,
+      label: label,
+      width: size,
+      height: size
+    }),
+    iconSize: size,
+    onClick: e => onHandleClick(e)
   });
+}
+function TableCheckbox({
+  checked,
+  variant,
+  onChange,
+  className = '',
+  scale = 1
+}) {
+  const isInteractive = typeof onChange === 'function';
+  const newChecked = !checked;
+  function onUpdateValue(updatedValue) {
+    if (!isInteractive) {
+      return;
+    }
+    onChange(updatedValue);
+  }
+  switch (variant) {
+    case 'standard':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.CheckboxControl, {
+        checked: !!checked,
+        onChange: nextChecked => {
+          if (!isInteractive) {
+            return;
+          }
+          onUpdateValue(!!nextChecked);
+        }
+      });
+    case 'toggle':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.ToggleControl, {
+        checked: !!checked,
+        onChange: nextChecked => {
+          if (!isInteractive) {
+            return;
+          }
+          onUpdateValue(!!nextChecked);
+        },
+        label: ''
+      });
+    case 'icon':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(StatusIcon, {
+        checked: !!checked,
+        className: className,
+        size: 24,
+        onChange: () => {
+          onUpdateValue(newChecked);
+        }
+      });
+    case 'freeform':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(FreeformCheckboxIcon, {
+        checked: !!checked,
+        className: className,
+        scale: scale,
+        onChange: () => {
+          onUpdateValue(newChecked);
+        }
+      });
+    default:
+      return null;
+  }
 }
 
 /***/ },
@@ -2763,8 +2861,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   ColumnDataTypeModal: () => (/* reexport safe */ _configure_column_data_types__WEBPACK_IMPORTED_MODULE_2__.ColumnDataTypeModal),
 /* harmony export */   ColumnMenu: () => (/* reexport safe */ _column_dropdown_menu__WEBPACK_IMPORTED_MODULE_0__.ColumnMenu),
 /* harmony export */   ColumnWidthModal: () => (/* reexport safe */ _configure_column_width__WEBPACK_IMPORTED_MODULE_1__.ColumnWidthModal),
+/* harmony export */   FreeformCheckboxIcon: () => (/* reexport safe */ _formatted_display__WEBPACK_IMPORTED_MODULE_6__.FreeformCheckboxIcon),
 /* harmony export */   RowHeightModal: () => (/* reexport safe */ _configure_row_height__WEBPACK_IMPORTED_MODULE_4__.RowHeightModal),
-/* harmony export */   RowMenu: () => (/* reexport safe */ _row_dropdown_menu__WEBPACK_IMPORTED_MODULE_3__.RowMenu)
+/* harmony export */   RowMenu: () => (/* reexport safe */ _row_dropdown_menu__WEBPACK_IMPORTED_MODULE_3__.RowMenu),
+/* harmony export */   StatusIcon: () => (/* reexport safe */ _formatted_display__WEBPACK_IMPORTED_MODULE_6__.StatusIcon),
+/* harmony export */   TableCheckbox: () => (/* reexport safe */ _formatted_display__WEBPACK_IMPORTED_MODULE_6__.TableCheckbox)
 /* harmony export */ });
 /* harmony import */ var _column_dropdown_menu__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./column-dropdown-menu */ "./src/components/column-dropdown-menu/index.js");
 /* harmony import */ var _configure_column_width__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./configure-column-width */ "./src/components/configure-column-width/index.js");
@@ -2772,6 +2873,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _row_dropdown_menu__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./row-dropdown-menu */ "./src/components/row-dropdown-menu/index.js");
 /* harmony import */ var _configure_row_height__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./configure-row-height */ "./src/components/configure-row-height/index.js");
 /* harmony import */ var _cell_dropdown_menu__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./cell-dropdown-menu */ "./src/components/cell-dropdown-menu/index.js");
+/* harmony import */ var _formatted_display__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./formatted-display */ "./src/components/formatted-display/index.js");
 /* Export table column react components */
 
 
@@ -2782,6 +2884,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* Export table cell react components */
+
+
+/* Export custom display react components */
 
 
 /***/ },
@@ -3424,7 +3529,7 @@ const updateTableEntity = (tableId, overrideTableStatus = '', tableOverride = nu
     row_id,
     attributes,
     classes,
-    content
+    content: typeof content === 'boolean' ? String(content) : content ?? ''
   }));
   const tableStatus = (overrideTableStatus, table_status) => {
     if (overrideTableStatus) {
@@ -5205,6 +5310,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+// import { FreeformCheckboxIcon, StatusIcon } from '../formatted-display';
 
 
 /* Create Dynamic Tables entity in WordPress core-data */
@@ -7159,6 +7265,7 @@ function Edit(props) {
    * @param {Object} patch    Update payload to store
    */
   function onChangeCellData(table_id, cell_id, patch) {
+    console.log('onChangeCellData', table_id, cell_id, patch);
     setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', patch.content);
     setTableAttributes(table_id, 'cell', cell_id, 'ATTRIBUTES', patch.attributes);
   }
@@ -7319,7 +7426,8 @@ function Edit(props) {
     const activeRow = table.rows.find(r => Number(r.row_id) === row);
     const isHeaderRow = activeRow?.attributes?.isHeader === true;
     const editDataType = isHeaderRow ? 'general' : columnDataType;
-    const canTypeToEdit = isHeaderRow || editDataType === 'general' || editDataType === 'date-time' || editDataType === 'number';
+    const canTypeToEdit = isHeaderRow || editDataType === 'general' || editDataType === 'date-time' || editDataType === 'number' || editDataType === 'checkbox';
+    const canStartEditFromPrintableKey = canTypeToEdit && (editDataType !== 'checkbox' || event.key === ' ');
     const isAltOnly = event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
     const isShiftOnly = !event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
     const isAltShiftOnly = event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
@@ -7347,7 +7455,8 @@ function Edit(props) {
     }
 
     // Allow direct edit for printable keys that do not include a modifier
-    if (!navKeys.has(event.key) && (isPrimaryKeyOnly || isShiftOnly) && isPrintableKey(event) && canTypeToEdit) {
+    // if (!navKeys.has(event.key) && (isPrimaryKeyOnly || isShiftOnly) && isPrintableKey(event) && canTypeToEdit) {
+    if (!navKeys.has(event.key) && (isPrimaryKeyOnly || isShiftOnly) && isPrintableKey(event) && canStartEditFromPrintableKey) {
       // Enter edit mode
       onCellKeyDownEditing(event, activeCellEl, event.key, editDataType);
       return;
@@ -7359,7 +7468,8 @@ function Edit(props) {
       event.stopPropagation();
       startEditingCell(cellId);
       window.requestAnimationFrame(() => {
-        activeCellEl?.querySelector?.('[contenteditable="true"], input, textarea')?.focus?.();
+        // activeCellEl?.querySelector?.('[contenteditable="true"], input, textarea')?.focus?.();
+        activeCellEl?.querySelector?.('[contenteditable="true"], input, textarea, button')?.focus?.();
       });
       return;
     }
@@ -7574,13 +7684,20 @@ function Edit(props) {
 
     // For input-backed editors, mount synchronously so the initiating
     // printable key can be handled by the input itself.
-    if (columnDataType === 'date-time' || columnDataType === 'number') {
+    // if (columnDataType === 'date-time' || columnDataType === 'number') {
+    if (columnDataType === 'date-time' || columnDataType === 'number' || columnDataType === 'checkbox') {
+      if (columnDataType === 'checkbox' && char === ' ') {
+        event.preventDefault();
+        event.stopPropagation();
+      }
       (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.flushSync)(() => {
         startEditingCell(id);
       });
       const focusInputEditor = () => {
         const mountedCellEl = gridRef.current?.querySelector(`[data-cell-id="${CSS.escape(id)}"]`);
-        const input = mountedCellEl?.querySelector?.('input, textarea');
+        // const input = mountedCellEl?.querySelector?.('input, textarea');
+        const control = mountedCellEl?.querySelector?.('input, textarea, button');
+        const input = control?.tagName === 'INPUT' ? control : null;
 
         // Clear existing date-time value when entering edit mode
         if (columnDataType === 'date-time' && input) {
@@ -7591,7 +7708,9 @@ function Edit(props) {
             input.value = '';
           }
         }
-        input?.focus?.();
+
+        // input?.focus?.();
+        control?.focus?.();
         if (columnDataType === 'date-time' && input) {
           input.dispatchEvent(new Event('input', {
             bubbles: true
@@ -7600,7 +7719,12 @@ function Edit(props) {
         if (columnDataType === 'number' && input) {
           input.setSelectionRange?.(0, input.value.length);
         }
-        return !!input;
+
+        // return !!input;
+        if (columnDataType === 'checkbox' && char === ' ') {
+          control?.click?.();
+        }
+        return !!control;
       };
 
       // Try immediately (same key event), then fallback next frame.
@@ -7686,6 +7810,8 @@ function Edit(props) {
     if (isContentOnlyMode) {
       return;
     }
+    console.log('Updating column for type: ' + updateType);
+    console.log('Updated attributes:', updatedColumnAttributes);
     switch (updateType) {
       case 'attributes':
         {
@@ -8876,7 +9002,7 @@ function Edit(props) {
                           startEditingCell(id);
                           window.requestAnimationFrame(() => {
                             const wrapper = gridRef.current?.querySelector(`[data-cell-id="${CSS.escape(id)}"]`);
-                            wrapper?.querySelector?.('[contenteditable="true"], input, textarea')?.focus?.();
+                            wrapper?.querySelector?.('[contenteditable="true"], input, textarea, button')?.focus?.();
                           });
                         },
                         onRequestStopEdit: () => {
@@ -8954,7 +9080,10 @@ function Edit(props) {
                        */
                       calculatedClasses = '';
                       const isFirstColumn = column_id === '1' ? true : false;
-                      const isBorder = attributes.border;
+                      if (attributes?.border === null) {
+                        console.log(`Cell ${cell_id} has a null border attribute. This may cause rendering issues. Please check the cell attributes.`);
+                      }
+                      const isBorder = attributes?.border;
                       const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_17__.setBorderContent)(row_id, column_id, content);
                       const showGridLinesCSS = gridShowInnerLines;
                       const gridLineWidthCSS = gridInnerLineWidth;
@@ -9029,7 +9158,7 @@ function Edit(props) {
                             startEditingCell(id);
                             window.requestAnimationFrame(() => {
                               const wrapper = gridRef.current?.querySelector(`[data-cell-id="${CSS.escape(id)}"]`);
-                              wrapper?.querySelector?.('[contenteditable="true"], input, textarea')?.focus?.();
+                              wrapper?.querySelector?.('[contenteditable="true"], input, textarea, button')?.focus?.();
                             });
                           },
                           onRequestStopEdit: () => {
@@ -9275,6 +9404,36 @@ function Cell(props) {
   const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_17__.formattedNumber)(cellContent, inputType, settings?.formatOptions?.thousandSeparator, settings?.formatOptions?.decimalPlaces, settings?.formatOptions?.showCurrencySymbol, settings?.formatOptions?.bracketNegative);
   const sanitizedNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_17__.sanitizeNumberInput)(cellContent, inputType);
   const redNegativeNumber = settings?.formatOptions?.redNegative && sanitizedNumber !== '' && sanitizedNumber !== '-' && Number(sanitizedNumber) < 0;
+  const checkboxVariant = settings?.format || inputType || 'standard';
+  const shouldHideCheckbox = !isEditing && settings?.formatOptions?.hideIfEmpty && isEmptyCheckboxValue(cellContent);
+  function isEmptyCheckboxValue(value) {
+    return value === '' || value === null || value === undefined;
+  }
+  function getCheckboxCheckedState(value) {
+    const normalizedValue = typeof value === 'string' ? value.trim().toLowerCase() : value;
+    if (normalizedValue === true || normalizedValue === 'true' || normalizedValue === 1 || normalizedValue === '1') {
+      return true;
+    }
+    if (normalizedValue === false || normalizedValue === 'false' || normalizedValue === 0 || normalizedValue === '0') {
+      return false;
+    }
+    return !!(settings?.formatOptions?.defaultToChecked && isEmptyCheckboxValue(value));
+  }
+
+  // Keep checkbox content string-based so it continues to match the REST schema.
+  function serializeCheckboxValue(value) {
+    return value ? 'true' : 'false';
+  }
+  function checkboxEditValue() {
+    const isChecked = getCheckboxCheckedState(cellContent);
+    const scale = checkboxVariant === 'freeform' ? 0.6 : 1;
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_components__WEBPACK_IMPORTED_MODULE_20__.TableCheckbox, {
+      checked: isChecked,
+      variant: checkboxVariant,
+      scale: scale,
+      onChange: processBooleanCellEdit
+    });
+  }
 
   /**
    * Process effect of changes to cell level attributes
@@ -9359,6 +9518,7 @@ function Cell(props) {
    * @param {Object} patch event data
    */
   function updateCellData(patch) {
+    console.log('updateCellData patch:', patch);
     initialCellValue.current = patch.content;
     if (patch.content !== undefined) setCellContent(patch.content);
     if (patch.attributes !== undefined) setCellAttributes(patch.attributes);
@@ -9465,6 +9625,8 @@ function Cell(props) {
    * @param {string} nextIndexText Updated plain text conent for the cell
    */
   function persistCellEdit(nextContent, nextIndexText) {
+    console.log('persistCellEdit nextContent:', nextContent);
+    console.log('persistCellEdit nextIndexText:', nextIndexText);
     updateCellData({
       content: nextContent,
       attributes: {
@@ -9475,6 +9637,9 @@ function Cell(props) {
         }
       }
     });
+  }
+  function processBooleanCellEdit(updatedValue) {
+    persistCellEdit(updatedValue, updatedValue ? 'true' : 'false');
   }
 
   /**
@@ -9604,6 +9769,27 @@ function Cell(props) {
           }
         })
       });
+    },
+    checkbox: () => {
+      if (shouldHideCheckbox) {
+        return null;
+      }
+      if (!isEditing) {
+        if (settings?.formatOptions?.hideIfEmpty && isEmptyCheckboxValue(cellContent)) {
+          return null;
+        }
+        const isChecked = getCheckboxCheckedState(cellContent);
+        const scale = checkboxVariant === 'freeform' ? 0.6 : 1;
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)(_components__WEBPACK_IMPORTED_MODULE_20__.TableCheckbox, {
+          checked: isChecked,
+          variant: checkboxVariant,
+          scale: scale
+        });
+      }
+      const editedCheckbox = checkboxEditValue();
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_22__.jsx)("div", {
+        children: editedCheckbox
+      });
     }
   };
   let renderPipeline = [];
@@ -9628,6 +9814,9 @@ function Cell(props) {
         case 'number':
           renderPipeline = ['number'];
           break;
+        case 'checkbox':
+          renderPipeline = ['checkbox'];
+          break;
         default:
           break;
       }
@@ -9637,10 +9826,12 @@ function Cell(props) {
   }
   const renderClassesDisplay = (0,clsx__WEBPACK_IMPORTED_MODULE_12__["default"])(columnClassNames, cellClassNames, {
     'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
+    'grid-control__body-cells--checkbox': type === 'checkbox',
     'grid-control__body-columns--number-red': redNegativeNumber
   });
   const renderClassesEdit = (0,clsx__WEBPACK_IMPORTED_MODULE_12__["default"])(columnClassNames, {
     'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
+    'grid-control__body-cells--checkbox': type === 'checkbox',
     'grid-control__body-columns--number-red': redNegativeNumber
   });
   const isBorderCell = cellType === 'border';
@@ -12847,31 +13038,6 @@ module.exports = window["wp"]["url"];
 
 /***/ },
 
-/***/ "./node_modules/@phosphor-icons/react/dist/csr/Check.es.js"
-/*!*****************************************************************!*\
-  !*** ./node_modules/@phosphor-icons/react/dist/csr/Check.es.js ***!
-  \*****************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Check: () => (/* binding */ n),
-/* harmony export */   CheckIcon: () => (/* binding */ o)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var _lib_IconBase_es_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lib/IconBase.es.js */ "./node_modules/@phosphor-icons/react/dist/lib/IconBase.es.js");
-/* harmony import */ var _defs_Check_es_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../defs/Check.es.js */ "./node_modules/@phosphor-icons/react/dist/defs/Check.es.js");
-
-
-
-const o = react__WEBPACK_IMPORTED_MODULE_0__.forwardRef((c, r) => /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(_lib_IconBase_es_js__WEBPACK_IMPORTED_MODULE_1__["default"], { ref: r, ...c, weights: _defs_Check_es_js__WEBPACK_IMPORTED_MODULE_2__["default"] }));
-o.displayName = "CheckIcon";
-const n = o;
-
-
-
-/***/ },
-
 /***/ "./node_modules/@phosphor-icons/react/dist/csr/Clipboard.es.js"
 /*!*********************************************************************!*\
   !*** ./node_modules/@phosphor-icons/react/dist/csr/Clipboard.es.js ***!
@@ -12942,80 +13108,6 @@ __webpack_require__.r(__webpack_exports__);
 const s = react__WEBPACK_IMPORTED_MODULE_0__.forwardRef((r, c) => /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(_lib_IconBase_es_js__WEBPACK_IMPORTED_MODULE_1__["default"], { ref: c, ...r, weights: _defs_Scissors_es_js__WEBPACK_IMPORTED_MODULE_2__["default"] }));
 s.displayName = "ScissorsIcon";
 const m = s;
-
-
-
-/***/ },
-
-/***/ "./node_modules/@phosphor-icons/react/dist/csr/X.es.js"
-/*!*************************************************************!*\
-  !*** ./node_modules/@phosphor-icons/react/dist/csr/X.es.js ***!
-  \*************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   X: () => (/* binding */ n),
-/* harmony export */   XIcon: () => (/* binding */ e)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var _lib_IconBase_es_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lib/IconBase.es.js */ "./node_modules/@phosphor-icons/react/dist/lib/IconBase.es.js");
-/* harmony import */ var _defs_X_es_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../defs/X.es.js */ "./node_modules/@phosphor-icons/react/dist/defs/X.es.js");
-
-
-
-const e = react__WEBPACK_IMPORTED_MODULE_0__.forwardRef((r, t) => /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(_lib_IconBase_es_js__WEBPACK_IMPORTED_MODULE_1__["default"], { ref: t, ...r, weights: _defs_X_es_js__WEBPACK_IMPORTED_MODULE_2__["default"] }));
-e.displayName = "XIcon";
-const n = e;
-
-
-
-/***/ },
-
-/***/ "./node_modules/@phosphor-icons/react/dist/defs/Check.es.js"
-/*!******************************************************************!*\
-  !*** ./node_modules/@phosphor-icons/react/dist/defs/Check.es.js ***!
-  \******************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ a)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-
-const a = /* @__PURE__ */ new Map([
-  [
-    "bold",
-    /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", { d: "M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z" }))
-  ],
-  [
-    "duotone",
-    /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(
-      "path",
-      {
-        d: "M232,56V200a16,16,0,0,1-16,16H40a16,16,0,0,1-16-16V56A16,16,0,0,1,40,40H216A16,16,0,0,1,232,56Z",
-        opacity: "0.2"
-      }
-    ), /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", { d: "M205.66,85.66l-96,96a8,8,0,0,1-11.32,0l-40-40a8,8,0,0,1,11.32-11.32L104,164.69l90.34-90.35a8,8,0,0,1,11.32,11.32Z" }))
-  ],
-  [
-    "fill",
-    /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", { d: "M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM205.66,85.66l-96,96a8,8,0,0,1-11.32,0l-40-40a8,8,0,0,1,11.32-11.32L104,164.69l90.34-90.35a8,8,0,0,1,11.32,11.32Z" }))
-  ],
-  [
-    "light",
-    /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", { d: "M228.24,76.24l-128,128a6,6,0,0,1-8.48,0l-56-56a6,6,0,0,1,8.48-8.48L96,191.51,219.76,67.76a6,6,0,0,1,8.48,8.48Z" }))
-  ],
-  [
-    "regular",
-    /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", { d: "M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" }))
-  ],
-  [
-    "thin",
-    /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", { d: "M226.83,74.83l-128,128a4,4,0,0,1-5.66,0l-56-56a4,4,0,0,1,5.66-5.66L96,194.34,221.17,69.17a4,4,0,1,1,5.66,5.66Z" }))
-  ]
-]);
 
 
 
@@ -13155,55 +13247,6 @@ const e = /* @__PURE__ */ new Map([
   [
     "thin",
     /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", { d: "M161,110.87a4,4,0,0,1,1.05-5.56L229.74,59a4,4,0,0,1,4.52,6.61l-67.67,46.3a4,4,0,0,1-5.56-1ZM235.3,196a4,4,0,0,1-5.56,1L136,132.85,88.47,165.38a32,32,0,1,1-5.84-8c.45.45.89.92,1.31,1.4l45-30.78-45-30.78c-.42.48-.86,1-1.31,1.4a31.86,31.86,0,1,1,5.84-8l49.69,34h0l96.09,65.76A4,4,0,0,1,235.3,196ZM77,93a24.42,24.42,0,0,0,2.82-3.38s0,0,0,0l0,0A24,24,0,1,0,77,93ZM84,180a23.75,23.75,0,0,0-4.15-13.49l0-.06,0,0A24.5,24.5,0,0,0,77,163,24,24,0,1,0,77,197h0A23.85,23.85,0,0,0,84,180Z" }))
-  ]
-]);
-
-
-
-/***/ },
-
-/***/ "./node_modules/@phosphor-icons/react/dist/defs/X.es.js"
-/*!**************************************************************!*\
-  !*** ./node_modules/@phosphor-icons/react/dist/defs/X.es.js ***!
-  \**************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ a)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-
-const a = /* @__PURE__ */ new Map([
-  [
-    "bold",
-    /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", { d: "M208.49,191.51a12,12,0,0,1-17,17L128,145,64.49,208.49a12,12,0,0,1-17-17L111,128,47.51,64.49a12,12,0,0,1,17-17L128,111l63.51-63.52a12,12,0,0,1,17,17L145,128Z" }))
-  ],
-  [
-    "duotone",
-    /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(
-      "path",
-      {
-        d: "M216,56V200a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V56A16,16,0,0,1,56,40H200A16,16,0,0,1,216,56Z",
-        opacity: "0.2"
-      }
-    ), /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", { d: "M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z" }))
-  ],
-  [
-    "fill",
-    /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", { d: "M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM181.66,170.34a8,8,0,0,1-11.32,11.32L128,139.31,85.66,181.66a8,8,0,0,1-11.32-11.32L116.69,128,74.34,85.66A8,8,0,0,1,85.66,74.34L128,116.69l42.34-42.35a8,8,0,0,1,11.32,11.32L139.31,128Z" }))
-  ],
-  [
-    "light",
-    /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", { d: "M204.24,195.76a6,6,0,1,1-8.48,8.48L128,136.49,60.24,204.24a6,6,0,0,1-8.48-8.48L119.51,128,51.76,60.24a6,6,0,0,1,8.48-8.48L128,119.51l67.76-67.75a6,6,0,0,1,8.48,8.48L136.49,128Z" }))
-  ],
-  [
-    "regular",
-    /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", { d: "M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z" }))
-  ],
-  [
-    "thin",
-    /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, /* @__PURE__ */ react__WEBPACK_IMPORTED_MODULE_0__.createElement("path", { d: "M202.83,197.17a4,4,0,0,1-5.66,5.66L128,133.66,58.83,202.83a4,4,0,0,1-5.66-5.66L122.34,128,53.17,58.83a4,4,0,0,1,5.66-5.66L128,122.34l69.17-69.17a4,4,0,1,1,5.66,5.66L133.66,128Z" }))
   ]
 ]);
 
