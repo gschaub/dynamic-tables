@@ -16,7 +16,7 @@ Built as a native Gutenberg block, Dynamic Tables combines intuitive spreadsheet
 
 Whether you're creating comparison tables, pricing tables, product specifications, schedules, directories, or other presentation-focused content, Dynamic Tables makes building and maintaining tables faster, easier, and more reliable.
 
-=== Why Dynamic Tables? ==
+=== Why Dynamic Tables? ===
 
 Unlike traditional table blocks that embed table content directly into post content, Dynamic Tables stores table data independently while the block itself simply references the table. This architecture allows tables to be managed as structured data while remaining fully integrated with the Gutenberg editor.
 
