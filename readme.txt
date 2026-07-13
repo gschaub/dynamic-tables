@@ -42,7 +42,7 @@ Rather than forcing you to choose between ease of use and technical capability, 
 * Native Gutenberg block — no page builders or external dependencies
 * Spreadsheet-style editing with familiar keyboard navigation
 * Fully responsive tables that preserve alignment across screen sizes
-* Structured column data types including text, numbers, currency, percentages, and date/time values
+* Structured column data types including rich text, numbers, date/time, and checkbox values
 * Inline editing with contextual menus and keyboard shortcuts
 * Import CSV files or restore tables from JSON backups
 * Export tables for backup or interoperability
@@ -182,7 +182,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 10. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
-= 1.4.2 =
+= 1.4.3 =
 * Added checkbox column content type
 
 = 1.4.2 =
