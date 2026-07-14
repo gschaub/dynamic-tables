@@ -47,7 +47,7 @@ import clsx from 'clsx';
 
 /* Internal dependencies */
 import { store as tableStore } from './data';
-import { usePostChangesSaved, useEditorIdentity, useNotInInserterPreview, useGetTable } from './hooks';
+import { usePostChangesSaved, useEditorIdentity, useNotInInserterPreview, useGetTable, useTableUndoRedoEffect } from './hooks';
 
 import {
 	MESSAGE_TARGETS,
@@ -1216,6 +1216,14 @@ export default function Edit(props) {
 		},
 		[table?.block_table_ref, table.table_id]
 	);
+
+	useTableUndoRedoEffect(table.table_id, ({ editedTable, hasEdits }) => {
+		// Respond to undo/redo here.
+		// Example uses:
+		// - restore local UI derived from entity state
+		// - clear stale per-cell editing state
+		// - re-sync transient controls with editedTable
+	});
 
 	/**
 	 * Set table attributes and attach table to block when table is created or

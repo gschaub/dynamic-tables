@@ -166,3 +166,64 @@ export function useGetTable(tableId, { isTableStale = false, shouldFetch = true 
 		[tableId, isTableStale, shouldResolveTable]
 	);
 }
+
+/**
+ * Observe history-driven table entity changes such as undo/redo.
+ *
+ * @since    1.4.4
+ *
+ * @param {number|string} tableId
+ * @param {Function}      onHistoryChange
+ */
+export function useTableUndoRedoEffect(tableId, onHistoryChange) {
+	const { editedTable, hasEdits, isSavingPost, isAutosavingPost } = useSelect(
+		select => {
+			const core = select(coreStore);
+			const editor = select('core/editor');
+			const numericTableId = Number(tableId);
+
+			if (numericTableId <= 0) {
+				return {
+					editedTable: null,
+					hasEdits: false,
+					isSavingPost: false,
+					isAutosavingPost: false,
+				};
+			}
+
+			return {
+				editedTable:
+					core?.getEditedEntityRecord?.('dynamic-table-blocks', 'table', numericTableId) ?? null,
+				hasEdits:
+					core?.hasEditsForEntityRecord?.('dynamic-table-blocks', 'table', numericTableId) ?? false,
+				isSavingPost: editor?.isSavingPost?.() ?? false,
+				isAutosavingPost: editor?.isAutosavingPost?.() ?? false,
+			};
+		},
+		[tableId]
+	);
+
+	const previousRef = useRef(null);
+
+	useEffect(() => {
+		const nextSnapshot = JSON.stringify({
+			editedTable,
+			hasEdits,
+		});
+
+		if (previousRef.current === null) {
+			previousRef.current = nextSnapshot;
+			return;
+		}
+
+		if (nextSnapshot !== previousRef.current && !isSavingPost && !isAutosavingPost) {
+			onHistoryChange?.({
+				tableId: Number(tableId),
+				editedTable,
+				hasEdits,
+			});
+		}
+
+		previousRef.current = nextSnapshot;
+	}, [tableId, editedTable, hasEdits, isSavingPost, isAutosavingPost, onHistoryChange]);
+}

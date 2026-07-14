@@ -6431,6 +6431,16 @@ function Edit(props) {
     }
     return select(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_3__.store)?.hasEditsForEntityRecord?.('dynamic-table-blocks', 'table', Number(table.table_id)) ?? false;
   }, [table?.block_table_ref, table.table_id]);
+  (0,_hooks__WEBPACK_IMPORTED_MODULE_14__.useTableUndoRedoEffect)(table.table_id, ({
+    editedTable,
+    hasEdits
+  }) => {
+    // Respond to undo/redo here.
+    // Example uses:
+    // - restore local UI derived from entity state
+    // - clear stale per-cell editing state
+    // - re-sync transient controls with editedTable
+  });
 
   /**
    * Set table attributes and attach table to block when table is created or
@@ -9964,7 +9974,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   useEditorIdentity: () => (/* binding */ useEditorIdentity),
 /* harmony export */   useGetTable: () => (/* binding */ useGetTable),
 /* harmony export */   useNotInInserterPreview: () => (/* binding */ useNotInInserterPreview),
-/* harmony export */   usePostChangesSaved: () => (/* binding */ usePostChangesSaved)
+/* harmony export */   usePostChangesSaved: () => (/* binding */ usePostChangesSaved),
+/* harmony export */   useTableUndoRedoEffect: () => (/* binding */ useTableUndoRedoEffect)
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
@@ -10143,6 +10154,60 @@ function useGetTable(tableId, {
       isResolving: tableIsResolving || entityIsResolving
     };
   }, [tableId, isTableStale, shouldResolveTable]);
+}
+
+/**
+ * Observe history-driven table entity changes such as undo/redo.
+ *
+ * @since    1.4.4
+ *
+ * @param {number|string} tableId
+ * @param {Function}      onHistoryChange
+ */
+function useTableUndoRedoEffect(tableId, onHistoryChange) {
+  const {
+    editedTable,
+    hasEdits,
+    isSavingPost,
+    isAutosavingPost
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => {
+    const core = select(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_3__.store);
+    const editor = select('core/editor');
+    const numericTableId = Number(tableId);
+    if (numericTableId <= 0) {
+      return {
+        editedTable: null,
+        hasEdits: false,
+        isSavingPost: false,
+        isAutosavingPost: false
+      };
+    }
+    return {
+      editedTable: core?.getEditedEntityRecord?.('dynamic-table-blocks', 'table', numericTableId) ?? null,
+      hasEdits: core?.hasEditsForEntityRecord?.('dynamic-table-blocks', 'table', numericTableId) ?? false,
+      isSavingPost: editor?.isSavingPost?.() ?? false,
+      isAutosavingPost: editor?.isAutosavingPost?.() ?? false
+    };
+  }, [tableId]);
+  const previousRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const nextSnapshot = JSON.stringify({
+      editedTable,
+      hasEdits
+    });
+    if (previousRef.current === null) {
+      previousRef.current = nextSnapshot;
+      return;
+    }
+    if (nextSnapshot !== previousRef.current && !isSavingPost && !isAutosavingPost) {
+      onHistoryChange?.({
+        tableId: Number(tableId),
+        editedTable,
+        hasEdits
+      });
+    }
+    previousRef.current = nextSnapshot;
+  }, [tableId, editedTable, hasEdits, isSavingPost, isAutosavingPost, onHistoryChange]);
 }
 
 /***/ },
