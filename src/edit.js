@@ -1109,7 +1109,8 @@ export default function Edit(props) {
 			attachedTable.classes,
 			attachedTable.rows,
 			attachedTable.columns,
-			attachedTable.cells		);
+			attachedTable.cells
+		);
 
 		props.setAttributes({
 			original_post_type: postType,
@@ -1147,11 +1148,15 @@ export default function Edit(props) {
 	 * Attach existing table to block when table is ready for attachment.
 	 *
 	 * @since 1.4.0
+	 * @since 1.4.4 - Show borders when table is attached
 	 */
 	useEffect(() => {
 		if (tableRequest.action !== 'attach') return;
-
 		if (Number(table.table_id) <= 0) return;
+
+		if (!showBorders) {
+			onToggleBorders(table, true);
+		}
 
 		let isActive = true;
 
@@ -1189,6 +1194,7 @@ export default function Edit(props) {
 		tableRequest.action,
 		tableRequest.blockTableRef,
 		table.table_id,
+		showBorders,
 		saveTableEntity,
 		updateTableEntity,
 		createNotice,
@@ -1902,6 +1908,7 @@ export default function Edit(props) {
 	 * Show or hide column and row borders to support updates to them.
 	 *
 	 * @since 1.0.0
+	 * @since 1.4.4 - Update to use table id from table object
 	 *
 	 * @param {Object}  table     Dynamic Table
 	 * @param {boolean} isChecked Are borders being toggled on?
@@ -1910,6 +1917,10 @@ export default function Edit(props) {
 		let updatedRows;
 		let updatedColumns;
 		let updatedCells;
+
+		const currentTableId = table.table_id;
+		const currentNumColumns = table.columns.filter(column => column.column_id !== '0').length;
+		const currentNumRows = table.rows.filter(row => row.row_id !== '0').length;
 
 		/**
 		 * Remove borders if unchecked
@@ -1922,21 +1933,21 @@ export default function Edit(props) {
 		} else {
 			/**  Create header row border at top of table */
 			const rowBorder = [];
-			rowBorder.push(getDefaultRow(table_id, 0, 'Border'));
+			rowBorder.push(getDefaultRow(currentTableId, 0, 'Border'));
 
 			const rowCells = [];
-			for (let i = 0; i <= liveNumColumns; i++) {
-				const cell = getDefaultCell(table_id, i, 0, 'Border');
+			for (let i = 0; i <= currentNumColumns; i++) {
+				const cell = getDefaultCell(currentTableId, i, 0, 'Border');
 				rowCells.push(cell);
 			}
 
 			/** Create column border down left side of table */
 			const columnBorder = [];
-			columnBorder.push(getDefaultColumn(table_id, 0, 'Border'));
+			columnBorder.push(getDefaultColumn(currentTableId, 0, 'Border'));
 
 			const columnCells = [];
-			for (let i = 1; i <= liveNumRows; i++) {
-				const cell = getDefaultCell(table_id, 0, i, 'Border');
+			for (let i = 1; i <= currentNumRows; i++) {
+				const cell = getDefaultCell(currentTableId, 0, i, 'Border');
 				columnCells.push(cell);
 			}
 
@@ -1955,7 +1966,8 @@ export default function Edit(props) {
 	 * Create new table and related table entity.
 	 *
 	 * @since 1.0.0
-	 * @since 1.3.0  Refactor to support WordPress RTC
+	 * @since 1.3.0 - Refactor to support WordPress RTC
+	 * @since 1.4.4 - Show borders when table is created
 	 *
 	 * @param {number} columnCount Number of columns in table
 	 * @param {number} rowCount    Number of rows in table
@@ -1968,6 +1980,7 @@ export default function Edit(props) {
 
 		props.setAttributes({ block_table_ref: newBlockTableRef });
 		receiveNewTable(newTable);
+		onToggleBorders(newTable.table, true);
 		setTableOperation({
 			kind: 'creating',
 			blockTableRef: newBlockTableRef,

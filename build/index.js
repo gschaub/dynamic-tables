@@ -6388,10 +6388,14 @@ function Edit(props) {
    * Attach existing table to block when table is ready for attachment.
    *
    * @since 1.4.0
+   * @since 1.4.4 - Show borders when table is attached
    */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
     if (tableRequest.action !== 'attach') return;
     if (Number(table.table_id) <= 0) return;
+    if (!showBorders) {
+      onToggleBorders(table, true);
+    }
     let isActive = true;
     async function persistAttachedTable() {
       try {
@@ -6420,7 +6424,7 @@ function Edit(props) {
     return () => {
       isActive = false;
     };
-  }, [tableRequest.action, tableRequest.blockTableRef, table.table_id, saveTableEntity, updateTableEntity, createNotice]);
+  }, [tableRequest.action, tableRequest.blockTableRef, table.table_id, showBorders, saveTableEntity, updateTableEntity, createNotice]);
   const tableHasPendingEntityEdits = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
     if (!table?.block_table_ref || Number(table.table_id) <= 0) {
       return false;
@@ -7050,6 +7054,7 @@ function Edit(props) {
    * Show or hide column and row borders to support updates to them.
    *
    * @since 1.0.0
+   * @since 1.4.4 - Update to use table id from table object
    *
    * @param {Object}  table     Dynamic Table
    * @param {boolean} isChecked Are borders being toggled on?
@@ -7058,6 +7063,9 @@ function Edit(props) {
     let updatedRows;
     let updatedColumns;
     let updatedCells;
+    const currentTableId = table.table_id;
+    const currentNumColumns = table.columns.filter(column => column.column_id !== '0').length;
+    const currentNumRows = table.rows.filter(row => row.row_id !== '0').length;
 
     /**
      * Remove borders if unchecked
@@ -7070,19 +7078,19 @@ function Edit(props) {
     } else {
       /**  Create header row border at top of table */
       const rowBorder = [];
-      rowBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_18__.getDefaultRow)(table_id, 0, 'Border'));
+      rowBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_18__.getDefaultRow)(currentTableId, 0, 'Border'));
       const rowCells = [];
-      for (let i = 0; i <= liveNumColumns; i++) {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_18__.getDefaultCell)(table_id, i, 0, 'Border');
+      for (let i = 0; i <= currentNumColumns; i++) {
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_18__.getDefaultCell)(currentTableId, i, 0, 'Border');
         rowCells.push(cell);
       }
 
       /** Create column border down left side of table */
       const columnBorder = [];
-      columnBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_18__.getDefaultColumn)(table_id, 0, 'Border'));
+      columnBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_18__.getDefaultColumn)(currentTableId, 0, 'Border'));
       const columnCells = [];
-      for (let i = 1; i <= liveNumRows; i++) {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_18__.getDefaultCell)(table_id, 0, i, 'Border');
+      for (let i = 1; i <= currentNumRows; i++) {
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_18__.getDefaultCell)(currentTableId, 0, i, 'Border');
         columnCells.push(cell);
       }
 
@@ -7100,7 +7108,8 @@ function Edit(props) {
    * Create new table and related table entity.
    *
    * @since 1.0.0
-   * @since 1.3.0  Refactor to support WordPress RTC
+   * @since 1.3.0 - Refactor to support WordPress RTC
+   * @since 1.4.4 - Show borders when table is created
    *
    * @param {number} columnCount Number of columns in table
    * @param {number} rowCount    Number of rows in table
@@ -7114,6 +7123,7 @@ function Edit(props) {
       block_table_ref: newBlockTableRef
     });
     receiveNewTable(newTable);
+    onToggleBorders(newTable.table, true);
     setTableOperation({
       kind: 'creating',
       blockTableRef: newBlockTableRef,
