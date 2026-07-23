@@ -184,6 +184,8 @@ No. This plugin is free to use. However, we are planning for a premium version o
 == Changelog ==
 = 1.4.4 =
 * Show borders when table is created
+* Fix bug that prevents allowing checkbox to be hidden when no content is found.
+* Initial foundation for undo/redo feature
 
 = 1.4.3 =
 * Added checkbox column content type

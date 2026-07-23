@@ -2,7 +2,7 @@
 **Contributors:** [glschaub](https://profiles.wordpress.org/glschaub/), [myfamilyweb](https://profiles.wordpress.org/myfamilyweb/)  
 **Tags:**              tables, data table, responsive tables, table block, gutenberg table  
 **Tested up to:**      7.0  
-**Stable tag:**        1.4.3  
+**Stable tag:**        1.4.4  
 **License:**           GPL-2.0-or-later  
 **License URI:**       https://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -182,6 +182,11 @@ No. This plugin is free to use. However, we are planning for a premium version o
 10. Set column width (corresponding configuration is available for rows too)
 
 ## Changelog ##
+### 1.4.4 ###
+* Show borders when table is created
+* Fix bug that prevents allowing checkbox to be hidden when no content is found.
+* Initial foundation for undo/redo feature
+
 ### 1.4.3 ###
 * Added checkbox column content type
 

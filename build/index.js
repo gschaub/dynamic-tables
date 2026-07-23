@@ -1295,8 +1295,9 @@ function ConfigureColumnDataType(props = {}) {
     let newHideIfEmpty = checkboxHideIfEmpty;
     let newDefaultToChecked = checkboxDefaultToChecked;
     let newUpdateColumnStyle = updateColumnStyle;
+    console.log('Checkbox Format: Event & Option: :', event, option);
     switch (option) {
-      case 'hide-empty':
+      case 'hideEmpty':
         newHideIfEmpty = event;
         break;
       case 'default-checked':
