@@ -47,6 +47,11 @@ import clsx from 'clsx';
 
 /* Internal dependencies */
 import { store as tableStore } from './data';
+import {
+	areTableAndEntityRecordsEqual,
+	entityRecordToTable,
+} from './data/table-entity-adapter';
+
 import { usePostChangesSaved, useEditorIdentity, useNotInInserterPreview, useGetTable, useTableUndoRedoEffect } from './hooks';
 
 import {
@@ -1217,12 +1222,89 @@ export default function Edit(props) {
 		[table?.block_table_ref, table.table_id]
 	);
 
-	useTableUndoRedoEffect(table.table_id, ({ editedTable, hasEdits }) => {
-		// Respond to undo/redo here.
-		// Example uses:
-		// - restore local UI derived from entity state
-		// - clear stale per-cell editing state
-		// - re-sync transient controls with editedTable
+	/*
+ 	 * Listen for changes triggered by the block editor's undo/redo
+	 * stack and role the table state forward or backward as appropriate.
+	 *
+	 * @since 1.4.5
+	 */
+	useTableUndoRedoEffect(table.table_id, ({ editedTable }) => {
+		if (areTableAndEntityRecordsEqual(table, editedTable)) {
+			return;
+		}
+
+		const reconciledTable = entityRecordToTable(editedTable, {
+			includeBorders: showBorders,
+		});
+
+		if (!reconciledTable) {
+			return;
+		}
+
+		/*
+		 * Reconciliation intentionally updates only the table store. Writing
+		 * the restored value back to core-data would create a feedback path
+		 * during undo/redo.
+		 */
+		receiveTable(
+			reconciledTable.table_id,
+			reconciledTable.block_table_ref,
+			reconciledTable.table_status,
+			reconciledTable.post_id,
+			reconciledTable.table_name,
+			reconciledTable.attributes,
+			reconciledTable.classes,
+			reconciledTable.rows,
+			reconciledTable.columns,
+			reconciledTable.cells
+		);
+
+		/*
+		 * Prevent an active cell editor or settings control from writing its
+		 * pre-history value back into the newly reconciled entity state.
+		 */
+		stopEditingCell(false);
+		setRowMenu(prev => ({ ...prev, isOpen: false, anchorEl: null }));
+		setRowHeightModal(prev => ({ ...prev, isOpen: false }));
+		setColumnMenu(prev => ({ ...prev, isOpen: false, anchorEl: null }));
+		setColumnWidthModal(prev => ({ ...prev, isOpen: false }));
+		setColumnDataTypeModal(prev => ({ ...prev, isOpen: false }));
+		setCellMenu(prev => ({ ...prev, isOpen: false, anchorEl: null }));
+
+		lastInvokerElRef.current = null;
+		lastInvokerWasKeyboardRef.current = false;
+		suppressNextInvokerRestoreRef.current = false;
+
+		const clipboardSourceExists =
+			!cellClipboard.inUse ||
+			reconciledTable.cells.some(
+				cell => String(cell.cell_id) === String(cellClipboard.sourceCellId)
+			);
+
+		if (!clipboardSourceExists) {
+			resetCellClipboard();
+		}
+
+		const maxColumn = Math.max(
+			1,
+			...reconciledTable.columns
+				.map(column => Number(column.column_id))
+				.filter(columnId => Number.isFinite(columnId) && columnId > 0)
+		);
+
+		const maxRow = Math.max(
+			1,
+			...reconciledTable.rows
+				.map(row => Number(row.row_id))
+				.filter(rowId => Number.isFinite(rowId) && rowId > 0)
+		);
+
+		setFocusedCell(previous => ({
+			col: Math.min(Math.max(Number(previous.col) || 1, 1), maxColumn),
+			row: Math.min(Math.max(Number(previous.row) || 1, 1), maxRow),
+		}));
+
+		setTableStale(false);
 	});
 
 	/**

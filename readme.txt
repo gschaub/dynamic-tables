@@ -154,6 +154,13 @@ Known WordPress RTC constraints may affect the editor experience:
 
 If your site needs broader RTC support, check your WordPress/Gutenberg version and hosting configuration, and review the current WordPress RTC developer notes.
 
+= Why isn't Undo/Redo working for me? =
+
+Changes made to a Dynamic Table may not be available for undo/redo if the Gutenberg plugin's experimental Real-Time Collaboration feature is enabled.
+- Dynamic Tables stores table content separately from the post and WordPress does not yet provide a supported way to include those changes in its Real-Time Collaboration Undo/Redo history.
+- You can still edit and save your table changes, but Undo and Redo may remain unavailable for those changes.
+- You can restore Undo/Redo for Dynamic Tables by either disabling Real-Time Collaboration under **Settings -> Writing** or deactivating the Gutenberg plugin.
+
 = Does this work on mobile devices? =
 
 Yes. The responsive behavior ensures tables resize, wrap or scroll appropriately to maintain readability on smaller screens.
@@ -182,6 +189,9 @@ No. This plugin is free to use. However, we are planning for a premium version o
 10. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+= 1.4.5 =
+* Add support for undo/redo within Dynamic Tables
+
 = 1.4.4 =
 * Show borders when table is created
 * Fix bug that prevents allowing checkbox to be hidden when no content is found.

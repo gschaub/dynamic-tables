@@ -168,26 +168,28 @@ export function useGetTable(tableId, { isTableStale = false, shouldFetch = true 
 }
 
 /**
- * Observe history-driven table entity changes such as undo/redo.
+ * Observe edited table entity changes that may require local reconciliation.
+ *
+ * Core-data updates the edited record for normal edits, undo, redo, and save
+ * transitions. The consumer is responsible for determining whether the entity
+ * and local table values have actually diverged.
  *
  * @since    1.4.4
+ * @since    1.4.5 Refactored to look at changes that may require undo/redo rather than history
  *
  * @param {number|string} tableId
  * @param {Function}      onHistoryChange
  */
 export function useTableUndoRedoEffect(tableId, onHistoryChange) {
-	const { editedTable, hasEdits, isSavingPost, isAutosavingPost } = useSelect(
+	const { editedTable, hasEdits } = useSelect(
 		select => {
 			const core = select(coreStore);
-			const editor = select('core/editor');
 			const numericTableId = Number(tableId);
 
 			if (numericTableId <= 0) {
 				return {
 					editedTable: null,
 					hasEdits: false,
-					isSavingPost: false,
-					isAutosavingPost: false,
 				};
 			}
 
@@ -196,34 +198,45 @@ export function useTableUndoRedoEffect(tableId, onHistoryChange) {
 					core?.getEditedEntityRecord?.('dynamic-table-blocks', 'table', numericTableId) ?? null,
 				hasEdits:
 					core?.hasEditsForEntityRecord?.('dynamic-table-blocks', 'table', numericTableId) ?? false,
-				isSavingPost: editor?.isSavingPost?.() ?? false,
-				isAutosavingPost: editor?.isAutosavingPost?.() ?? false,
 			};
 		},
 		[tableId]
 	);
 
-	const previousRef = useRef(null);
+	const onHistoryChangeRef = useRef(onHistoryChange);
+	const previousRef = useRef({
+		tableId: null,
+		editedTable: null,
+	});
 
 	useEffect(() => {
-		const nextSnapshot = JSON.stringify({
-			editedTable,
-			hasEdits,
-		});
+		onHistoryChangeRef.current = onHistoryChange;
+	}, [onHistoryChange]);
 
-		if (previousRef.current === null) {
-			previousRef.current = nextSnapshot;
+	useEffect(() => {
+		const numericTableId = Number(tableId);
+		const previous = previousRef.current;
+
+		previousRef.current = {
+			tableId: numericTableId,
+			editedTable,
+		};
+
+		if (
+			numericTableId <= 0 ||
+			!editedTable ||
+			previous.tableId !== numericTableId ||
+			!previous.editedTable
+		) {
 			return;
 		}
 
-		if (nextSnapshot !== previousRef.current && !isSavingPost && !isAutosavingPost) {
-			onHistoryChange?.({
-				tableId: Number(tableId),
+		if (editedTable !== previous.editedTable) {
+			onHistoryChangeRef.current?.({
+				tableId: numericTableId,
 				editedTable,
 				hasEdits,
 			});
 		}
-
-		previousRef.current = nextSnapshot;
-	}, [tableId, editedTable, hasEdits, isSavingPost, isAutosavingPost, onHistoryChange]);
+	}, [tableId, editedTable, hasEdits]);
 }

@@ -274,14 +274,22 @@ export const saveTableEntity =
  * not persist changes, only queues them for when the post is saved/published.
  *
  * @since    1.0.0
+ * @since    1.4.5 - Add undo/redo support
  *
- * @param {*}      tableId                  Identifier key for the table
- * @param {string} [overrideTableStatus] Updates the table's status if populated
- * @param {string} [tableOverride]       Optionally updates table based on this source table.
+ * @param {*}           tableId                   Identifier key for the table
+ * @param {string}      [overrideTableStatus]     Updates the table's status if populated
+ * @param {Object|null} [tableOverride]            Optionally uses this source table
+ * @param {Object}      [options]                  Entity update options
+ * @param {'record'|'cache'|'ignore'} [options.history='record'] Undo history behavior
  * @return  {Object} Action Object
  */
 export const updateTableEntity =
-	(tableId, overrideTableStatus = '', tableOverride = null) =>
+	(
+		tableId,
+		overrideTableStatus = '',
+		tableOverride = null,
+		{ history = 'record' } = {}
+	) =>
 	({ select, registry }) => {
 
 		const sourceTable = tableOverride || select.getTable(tableId, false);
@@ -314,7 +322,7 @@ export const updateTableEntity =
 			cell => cell.row_id !== '0' && cell.column_id !== '0'
 		);
 
-		// Remove cell_id from cells.  They don't go back to the webservice
+		// Remove cell_id from cells. They don't go back to the webservice
 		const transformedCells = filteredCells.map(
 			({ table_id, column_id, row_id, attributes, classes, content }) => ({
 				table_id,
@@ -351,14 +359,42 @@ export const updateTableEntity =
 		};
 
 		/**
-		 * Options: isCached: Bool
-		 *          undoIgnore: Bool
+		 * Options: isCached: Coalesce a series of updates, default false
+		 *          undoIgnore: default false
 		 */
 		try {
+			let entityEditOptions = {};
+
+			switch (history) {
+				case 'record':
+					break;
+
+			case 'cache':
+					entityEditOptions = {
+						isCached: true,
+					};
+					break;
+
+				case 'ignore':
+					entityEditOptions = {
+						undoIgnore: true,
+					};
+					break;
+
+				default:
+					throw new Error(`Unsupported entity history mode: ${history}`);
+			}
+
 			return registry
 				.dispatch(coreStore)
-				.editEntityRecord('dynamic-table-blocks', 'table', table_id, updatedTable);
-		} catch (error) {
+				.editEntityRecord(
+					'dynamic-table-blocks',
+					'table',
+					table_id,
+					updatedTable,
+					entityEditOptions
+				);
+			} catch (error) {
 			console.error('Error in updateTableEntity - Table ID - ' + table_id, error);
 			showMessageNotice(
 				registry.dispatch(noticeStore).createNotice,
