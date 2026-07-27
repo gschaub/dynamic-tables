@@ -2,7 +2,7 @@
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, responsive tables, table block, gutenberg table
 Tested up to:      7.0
-Stable tag:        1.4.4
+Stable tag:        1.4.5
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,7 +121,6 @@ The technical complexity remains invisible to content editors while providing de
 Dynamic Tables continues to evolve. Planned enhancements include:
 
 * Additional column content types such as links, buttons, images, and more
-* Undo and redo support
 * Expanded copy and paste capabilities
 * Additional responsive formatting options
 * Integration with WordPress search
