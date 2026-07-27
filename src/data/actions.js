@@ -8,6 +8,7 @@ import { __ } from '@wordpress/i18n';
 import TYPES from './action-types.js';
 import { showMessageNotice } from '../messages';
 import { computeCellIds } from '../utils';
+import { isDeepEqual } from './table-entity-adapter';
 
 /* Load constants */
 const {
@@ -385,13 +386,52 @@ export const updateTableEntity =
 					throw new Error(`Unsupported entity history mode: ${history}`);
 			}
 
+			const currentEntity = registry
+				.select(coreStore)
+				.getEditedEntityRecord(
+					'dynamic-table-blocks',
+					'table',
+					table_id
+				);
+			const currentEntityTitle =
+				typeof currentEntity?.title === 'string'
+					? currentEntity.title
+					: (currentEntity?.title?.raw ?? currentEntity?.title?.rendered ?? '');
+			const comparableCurrentEntity = currentEntity
+				? {
+						...currentEntity,
+						title: currentEntityTitle,
+					}
+				: {};
+
+			/* Limit entity and persistence updates to specific changes rather than replacing the
+			 * the entire table content
+			 */
+			const entityEdits = Object.entries(updatedTable).reduce(
+				(edits, [key, value]) => {
+					if (
+						key !== 'id' &&
+						!isDeepEqual(comparableCurrentEntity[key], value)
+					) {
+						edits[key] = value;
+					}
+
+					return edits;
+				},
+				{}
+			);
+
+			if (Object.keys(entityEdits).length === 0) {
+				return;
+			}
+
 			return registry
 				.dispatch(coreStore)
 				.editEntityRecord(
 					'dynamic-table-blocks',
 					'table',
 					table_id,
-					updatedTable,
+					entityEdits,
 					entityEditOptions
 				);
 			} catch (error) {
@@ -460,6 +500,7 @@ export const processDeletedTables =
  *
  * @since    1.0.0
  * @since    1.1.0  Refactored to use table_id and block_table_ref for matching
+ * @since    1.4.5  Add support for undo/redo management
  *
  * @param {Object} unmountedTables Object of currently unmounted tables
  * @return  {Object} Action object
@@ -479,16 +520,31 @@ export const processUnmountedTables =
 					dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', priorStatus);
 					dispatch.removeTableProp(unmountedTables[key].table_id, 'prior_status');
 					dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_block');
-					dispatch.updateTableEntity(unmountedTables[key].table_id);
+					dispatch.updateTableEntity(
+						unmountedTables[key].table_id,
+						undefined,
+						undefined,
+						{ history: 'ignore' }
+					);
 					await dispatch.saveTableEntity(unmountedTables[key].table_id);
 				} else if (isBlockPattern) {
 					dispatch.removeTableProp(unmountedTables[key].table_id, 'isPattern');
-					dispatch.updateTableEntity(unmountedTables[key].table_id);
+					dispatch.updateTableEntity(
+						unmountedTables[key].table_id,
+						undefined,
+						undefined,
+						{ history: 'ignore' }
+					);
 					await dispatch.saveTableEntity(unmountedTables[key].table_id);
 				} else {
 					dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', 'deleted');
 					dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_block');
-					dispatch.updateTableEntity(unmountedTables[key].table_id, 'deleted');
+					dispatch.updateTableEntity(
+						unmountedTables[key].table_id,
+						'deleted',
+						undefined,
+						{ history: 'ignore' }
+					);
 					await dispatch.saveTableEntity(unmountedTables[key].table_id);
 				}
 			})

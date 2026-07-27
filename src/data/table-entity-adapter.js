@@ -11,7 +11,7 @@ import { numberToLetter, tableSort } from '../utils';
  * @param {*} right Second value
  * @return {boolean} Whether the values are equal
  */
-function isDeepEqual(left, right) {
+export function isDeepEqual(left, right) {
 	if (Object.is(left, right)) {
 		return true;
 	}

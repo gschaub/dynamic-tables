@@ -3275,6 +3275,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _action_types_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./action-types.js */ "./src/data/action-types.js");
 /* harmony import */ var _messages__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../messages */ "./src/messages.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _table_entity_adapter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./table-entity-adapter */ "./src/data/table-entity-adapter.js");
 /* External dependencies */
 
 
@@ -3282,6 +3283,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* Internal dependencies */
+
 
 
 
@@ -3622,7 +3624,26 @@ const updateTableEntity = (tableId, overrideTableStatus = '', tableOverride = nu
       default:
         throw new Error(`Unsupported entity history mode: ${history}`);
     }
-    return registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).editEntityRecord('dynamic-table-blocks', 'table', table_id, updatedTable, entityEditOptions);
+    const currentEntity = registry.select(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).getEditedEntityRecord('dynamic-table-blocks', 'table', table_id);
+    const currentEntityTitle = typeof currentEntity?.title === 'string' ? currentEntity.title : currentEntity?.title?.raw ?? currentEntity?.title?.rendered ?? '';
+    const comparableCurrentEntity = currentEntity ? {
+      ...currentEntity,
+      title: currentEntityTitle
+    } : {};
+
+    /* Limit entity and persistence updates to specific changes rather than replacing the
+     * the entire table content
+     */
+    const entityEdits = Object.entries(updatedTable).reduce((edits, [key, value]) => {
+      if (key !== 'id' && !(0,_table_entity_adapter__WEBPACK_IMPORTED_MODULE_7__.isDeepEqual)(comparableCurrentEntity[key], value)) {
+        edits[key] = value;
+      }
+      return edits;
+    }, {});
+    if (Object.keys(entityEdits).length === 0) {
+      return;
+    }
+    return registry.dispatch(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).editEntityRecord('dynamic-table-blocks', 'table', table_id, entityEdits, entityEditOptions);
   } catch (error) {
     console.error('Error in updateTableEntity - Table ID - ' + table_id, error);
     (0,_messages__WEBPACK_IMPORTED_MODULE_5__.showMessageNotice)(registry.dispatch(_wordpress_notices__WEBPACK_IMPORTED_MODULE_2__.store).createNotice, 'update-entity-error');
@@ -3680,6 +3701,7 @@ const processDeletedTables = deletedTables => async ({
  *
  * @since    1.0.0
  * @since    1.1.0  Refactored to use table_id and block_table_ref for matching
+ * @since    1.4.5  Add support for undo/redo management
  *
  * @param {Object} unmountedTables Object of currently unmounted tables
  * @return  {Object} Action object
@@ -3698,16 +3720,22 @@ const processUnmountedTables = unmountedTables => async ({
       dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', priorStatus);
       dispatch.removeTableProp(unmountedTables[key].table_id, 'prior_status');
       dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_block');
-      dispatch.updateTableEntity(unmountedTables[key].table_id);
+      dispatch.updateTableEntity(unmountedTables[key].table_id, undefined, undefined, {
+        history: 'ignore'
+      });
       await dispatch.saveTableEntity(unmountedTables[key].table_id);
     } else if (isBlockPattern) {
       dispatch.removeTableProp(unmountedTables[key].table_id, 'isPattern');
-      dispatch.updateTableEntity(unmountedTables[key].table_id);
+      dispatch.updateTableEntity(unmountedTables[key].table_id, undefined, undefined, {
+        history: 'ignore'
+      });
       await dispatch.saveTableEntity(unmountedTables[key].table_id);
     } else {
       dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', 'deleted');
       dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_block');
-      dispatch.updateTableEntity(unmountedTables[key].table_id, 'deleted');
+      dispatch.updateTableEntity(unmountedTables[key].table_id, 'deleted', undefined, {
+        history: 'ignore'
+      });
       await dispatch.saveTableEntity(unmountedTables[key].table_id);
     }
   }));
@@ -5315,7 +5343,8 @@ function getUnsavedTables(state) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   areTableAndEntityRecordsEqual: () => (/* binding */ areTableAndEntityRecordsEqual),
-/* harmony export */   entityRecordToTable: () => (/* binding */ entityRecordToTable)
+/* harmony export */   entityRecordToTable: () => (/* binding */ entityRecordToTable),
+/* harmony export */   isDeepEqual: () => (/* binding */ isDeepEqual)
 /* harmony export */ });
 /* harmony import */ var _table_defaults__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../table-defaults */ "./src/table-defaults.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
@@ -5681,7 +5710,7 @@ function Edit(props) {
     updateCell
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
-    updateTableEntity
+    updateTableEntity: dispatchUpdateTableEntity
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_13__.store);
   const {
     updateTableBorder
@@ -5701,6 +5730,23 @@ function Edit(props) {
   const [isTableStale, setTableStale] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(true);
   const [isRefreshingAllTables, setIsRefreshingAllTables] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
   const [showBorders, setShowBorders] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
+
+  /**
+   * Support the ability to coalesce user activity into batches for
+   * undo/redo management.
+   *
+   * @since 1.4.5
+   */
+  const cacheUndoEdits = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(false);
+
+  // Pre-processor to integrate caching into table entity updates.
+  const updateTableEntity = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useCallback)((tableId, overrideTableStatus, tableOverride, options) => {
+    const history = options?.history ?? 'record';
+    if (history === 'record') {
+      cacheUndoEdits.current = false;
+    }
+    return dispatchUpdateTableEntity(tableId, overrideTableStatus, tableOverride, options);
+  }, [dispatchUpdateTableEntity]);
 
   /* Table Operation declarations */
   const [tableOperation, setTableOperation] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)({
@@ -5782,6 +5828,7 @@ function Edit(props) {
    * Identify and announce that a cell is being edited when entering edit mode
    *
    * @since 1.2.5
+   * @since 1.4.5 - Add support for undo/redo management
    *
    * @param {string} id Cell being edited
    */
@@ -5793,14 +5840,20 @@ function Edit(props) {
           cellId: nextId
         }
       });
+      cacheUndoEdits.current = false;
     }
     setCurrentEditingCellId(nextId);
+    // cacheUndoEdits.current = {
+    // 	firstPass:true,
+    // 	cacheEdits: true,
+    // }
   }
 
   /**
    * Identify and optionally announce that we are leaving edit mode
    *
    * @since 1.2.5
+   * @since 1.4.5 - Add support for undo/redo management
    *
    * @param {boolean} announce Whether exiting edit mode should be announced
    */
@@ -5814,6 +5867,11 @@ function Edit(props) {
       });
     }
     setCurrentEditingCellId(null);
+    // cacheUndoEdits.current = {
+    // 	firstPass:false,
+    // 	cacheEdits: false,
+    // }
+    cacheUndoEdits.current = false;
   }
 
   /**
@@ -6630,7 +6688,9 @@ function Edit(props) {
     async function persistAttachedTable() {
       try {
         const entityId = Number(table.table_id);
-        updateTableEntity(entityId);
+        updateTableEntity(entityId, undefined, undefined, {
+          history: 'ignore'
+        });
         await saveTableEntity(entityId);
       } catch (error) {
         if (!isActive) return;
@@ -6790,6 +6850,8 @@ function Edit(props) {
             updateTableEntity(table.table_id, 'saved', {
               ...table,
               table_status: 'saved'
+            }, {
+              history: 'ignore'
             });
           }
           await saveTableEntity(table.table_id);
@@ -6978,7 +7040,7 @@ function Edit(props) {
     if (isAwaitingTableAttachment) return;
     if (Number(props.context.postId) === 0) return;
     if (Number(table.post_id) !== 0) return;
-    setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId));
+    setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId), true, 'ignore');
     void saveTableEntity(table.table_id).catch(error => {
       (0,_messages__WEBPACK_IMPORTED_MODULE_16__.showMessageNotice)(createNotice, 'post-id-sync-error');
     });
@@ -7040,7 +7102,7 @@ function Edit(props) {
 
       // Mark table as a pattern block type
       if (wasInserterPreview || originalPostType === 'wp_block') {
-        setTableAttributes(tableId, 'isPattern', '', 'PROP', true);
+        setTableAttributes(tableId, 'isPattern', '', 'PROP', true, true, 'ignore');
         return;
       }
 
@@ -7052,7 +7114,9 @@ function Edit(props) {
       // its status to unknown to signify that we won't know what is happening during the
       // time the block is unmounted
       setTableAttributes(tableId, 'unmounted_block', '', 'PROP', true, false);
-      updateTableEntity(tableId, 'unknown');
+      updateTableEntity(tableId, 'unknown', undefined, {
+        history: 'ignore'
+      });
 
       // Persist the table with its "unknown" status
       void saveTableEntity(tableId).catch(error => {
@@ -7293,14 +7357,15 @@ function Edit(props) {
    *
    * @since 1.0.0
    *
-   * @param {number}                  tableId        Identifier key for the table
-   * @param {string}                  attribute      (table, column, row, cell)
-   * @param {number | null}           id             Column and/or row id
-   * @param {string}                  type           (CONTENT, ATTRIBUTES, CLASSES, PROP)
-   * @param {string | number | Array} value          New value that will replace existing config
-   * @param {boolean}                 [persist=true] Update table entity (not just the table store)
+   * @param {number}                    tableId        Identifier key for the table
+   * @param {string}                    attribute      (table, column, row, cell)
+   * @param {number | null}             id             Column and/or row id
+   * @param {string}                    type           (CONTENT, ATTRIBUTES, CLASSES, PROP)
+   * @param {string | number | Array}   value          New value that will replace existing config
+   * @param {boolean}                   [persist=true] Update table entity (not just the table store)
+   * @param {'record'|'cache'|'ignore'} [history='record'] Entity undo-history behavior
    */
-  function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
+  function setTableAttributes(tableId, attribute, id, type, value, persist = true, history = 'record') {
     switch (type) {
       case 'CONTENT':
         {
@@ -7350,7 +7415,9 @@ function Edit(props) {
      * call must bypass the regular persist (persist === false)
      */
     if (persist) {
-      return updateTableEntity(tableId);
+      return updateTableEntity(tableId, undefined, undefined, {
+        history
+      });
     }
   }
 
@@ -7609,14 +7676,20 @@ function Edit(props) {
    * Update cell data when changed.
    *
    * @since 1.2.0
+   * @since 1.4.5 - Add support for undo/redo cacheing
    *
    * @param {number} table_id Current table id
    * @param {number} cell_id  Updated cell id
    * @param {Object} patch    Update payload to store
    */
   function onChangeCellData(table_id, cell_id, patch) {
-    setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', patch.content);
-    setTableAttributes(table_id, 'cell', cell_id, 'ATTRIBUTES', patch.attributes);
+    const history = cacheUndoEdits.current ? 'cache' : 'record';
+    setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', patch.content, false);
+    setTableAttributes(table_id, 'cell', cell_id, 'ATTRIBUTES', patch.attributes, false);
+    updateTableEntity(table_id, undefined, undefined, {
+      history
+    });
+    cacheUndoEdits.current = true;
   }
 
   /**
@@ -7711,10 +7784,22 @@ function Edit(props) {
    * @since 1.2.5 - Add keyboard support for insert/delete columns and rows
    * @since 1.3.1 - Add keyboard support for cell copy/cut/paste
    * @since 1.4.3 - Update for checkbox data entry
+   * @since 1.4.5 - Add support for standard keyboard undo/redo shortcuts
+   *
    * @param {Object} event onKeyDown event
    * @return {void}
    */
   function onCellKeyDown(event) {
+    const key = String(event.key || '').toLowerCase();
+    const hasPrimaryModifier = (event.ctrlKey || event.metaKey) && !event.altKey;
+    const isUndoRedoShortcut = hasPrimaryModifier && (key === 'z' || !event.shiftKey && key === 'y');
+
+    // Allow WordPress to process its global Undo/Redo shortcuts.
+    if (isUndoRedoShortcut) {
+      cacheUndoEdits.current = false;
+      return;
+    }
+
     // While editing, allow Tab/arrow keys to exit edit mode and continue with grid navigation.
     if (editingCellId) {
       const editExitNavKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab']);
@@ -7983,10 +8068,11 @@ function Edit(props) {
    *
    * @since 1.2.5
    *
-   * @param {number} columnId Column ID of cell to delete data
-   * @param {number} rowId    Row ID of cell to delete data
+   * @param {number}  columnId Column ID of cell to delete data
+   * @param {number}  rowId    Row ID of cell to delete data
+   * @param {boolean} persist  Whether to update the table entity
    */
-  function processCellDelete(columnId, rowId) {
+  function processCellDelete(columnId, rowId, persist = true) {
     const cellData = table.cells.find(c => Number(c.column_id) === columnId && Number(c.row_id) === rowId);
     if (cellData) {
       const attrs = {
@@ -7996,8 +8082,11 @@ function Edit(props) {
           indexText: ''
         }
       };
-      setTableAttributes(table_id, 'cell', cellData.cell_id, 'CONTENT', '');
-      setTableAttributes(table_id, 'cell', cellData.cell_id, 'ATTRIBUTES', attrs);
+      setTableAttributes(table_id, 'cell', cellData.cell_id, 'CONTENT', '', false);
+      setTableAttributes(table_id, 'cell', cellData.cell_id, 'ATTRIBUTES', attrs, false);
+      if (persist) {
+        updateTableEntity(table_id);
+      }
     }
   }
 
@@ -8182,9 +8271,13 @@ function Edit(props) {
             const classes = clickedColumn?.classes || '';
             openColumnDataTypeModal(e, String(columnId), columnLabel, attrs, classes);
           } else {
-            setTableAttributes(tableId, 'column_name', String(columnId), 'PROP', columnName);
-            setTableAttributes(tableId, 'column', String(columnId), 'ATTRIBUTES', updatedColumnAttributes);
-            setTableAttributes(tableId, 'column', String(columnId), 'CLASSES', updatedColumnClasses);
+            // setTableAttributes(tableId, 'column_name', String(columnId), 'PROP', columnName);
+            // setTableAttributes(tableId, 'column', String(columnId), 'ATTRIBUTES', updatedColumnAttributes);
+            // setTableAttributes(tableId, 'column', String(columnId), 'CLASSES', updatedColumnClasses);
+            setTableAttributes(tableId, 'column_name', String(columnId), 'PROP', columnName, false);
+            setTableAttributes(tableId, 'column', String(columnId), 'ATTRIBUTES', updatedColumnAttributes, false);
+            setTableAttributes(tableId, 'column', String(columnId), 'CLASSES', updatedColumnClasses, false);
+            updateTableEntity(tableId);
           }
           break;
         }
@@ -8398,6 +8491,7 @@ function Edit(props) {
    * Paste data to the current cell from clipboard.
    *
    * @since 1.3.1
+   * @since 1.4.5 Add support undo/redo
    *
    * @param {number} cellId Identifier for the table cell
    */
@@ -8435,12 +8529,13 @@ function Edit(props) {
       ...currentCellValueAttr,
       value: cellValueAttr
     };
-    setTableAttributes(table_id, 'cell', cellId, 'CONTENT', cellContent);
-    setTableAttributes(table_id, 'cell', cellId, 'ATTRIBUTES', updatedCellAttrs);
+    setTableAttributes(table_id, 'cell', cellId, 'CONTENT', cellContent, false);
+    setTableAttributes(table_id, 'cell', cellId, 'ATTRIBUTES', updatedCellAttrs, false);
     if (clipboardAction === 'cut') {
-      processCellDelete(columnId, rowId);
+      processCellDelete(columnId, rowId, false);
       resetCellClipboard();
     }
+    updateTableEntity(table_id);
     (0,_messages__WEBPACK_IMPORTED_MODULE_16__.speakMessage)('cell-pasted');
   }
 
@@ -8674,12 +8769,13 @@ function Edit(props) {
       enableHeaderRow: isChecked,
       headerRowSticky: false
     };
-    setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+    setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes, false);
     const updatedRowAttributes = {
       ...table.rows.find(x => x.row_id === '1').attributes,
       isHeader: isChecked ? true : false
     };
-    setTableAttributes(table.table_id, 'row', '1', 'ATTRIBUTES', updatedRowAttributes);
+    setTableAttributes(table.table_id, 'row', '1', 'ATTRIBUTES', updatedRowAttributes, false);
+    updateTableEntity(table.table_id);
   }
 
   /**
@@ -9174,7 +9270,17 @@ function Edit(props) {
           },
           tagName: "p",
           allowedFormats: ['core/bold', 'core/italic'],
-          onChange: e => setTableAttributes(table_id, 'table_name', '', 'PROP', e),
+          onBlur: () => {
+            cacheUndoEdits.current = false;
+          },
+          onChange: value => {
+            const history = cacheUndoEdits.current ? 'cache' : 'record';
+            setTableAttributes(table_id, 'table_name', '', 'PROP', value, true, history);
+            cacheUndoEdits.current = true;
+          },
+          onFocus: () => {
+            cacheUndoEdits.current = false;
+          },
           value: table.table_name
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_23__.jsx)("p", {
           id: editorGridHelpTagId,

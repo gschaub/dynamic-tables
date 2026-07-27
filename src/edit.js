@@ -7,6 +7,7 @@ import {
 	useLayoutEffect,
 	useRef,
 	useMemo,
+	useCallback,
 	Fragment,
 	flushSync,
 } from '@wordpress/element';
@@ -178,7 +179,7 @@ export default function Edit(props) {
 	const { updateRow } = useDispatch(tableStore);
 	const { updateColumn } = useDispatch(tableStore);
 	const { updateCell } = useDispatch(tableStore);
-	const { updateTableEntity } = useDispatch(tableStore);
+	const { updateTableEntity: dispatchUpdateTableEntity } = useDispatch(tableStore);
 	const { updateTableBorder } = useDispatch(tableStore);
 	const { processUnmountedTables } = useDispatch(tableStore);
 	const { processDeletedTables } = useDispatch(tableStore);
@@ -188,6 +189,33 @@ export default function Edit(props) {
 	const [isTableStale, setTableStale] = useState(true);
 	const [isRefreshingAllTables, setIsRefreshingAllTables] = useState(false);
 	const [showBorders, setShowBorders] = useState(false);
+
+	/**
+	 * Support the ability to coalesce user activity into batches for
+	 * undo/redo management.
+	 *
+	 * @since 1.4.5
+	 */
+	const cacheUndoEdits = useRef(false);
+
+	// Pre-processor to integrate caching into table entity updates.
+	const updateTableEntity = useCallback(
+		(tableId, overrideTableStatus, tableOverride, options) => {
+			const history = options?.history ?? 'record';
+
+			if (history === 'record') {
+				cacheUndoEdits.current = false;
+			}
+
+			return dispatchUpdateTableEntity(
+				tableId,
+				overrideTableStatus,
+				tableOverride,
+				options
+			);
+		},
+		[dispatchUpdateTableEntity]
+	);
 
 	/* Table Operation declarations */
 	const [tableOperation, setTableOperation] = useState({
@@ -280,6 +308,7 @@ export default function Edit(props) {
 	 * Identify and announce that a cell is being edited when entering edit mode
 	 *
 	 * @since 1.2.5
+	 * @since 1.4.5 - Add support for undo/redo management
 	 *
 	 * @param {string} id Cell being edited
 	 */
@@ -290,15 +319,21 @@ export default function Edit(props) {
 			speakMessage('editing-cell', {
 				args: { cellId: nextId },
 			});
+			cacheUndoEdits.current = false;
 		}
 
 		setCurrentEditingCellId(nextId);
+		// cacheUndoEdits.current = {
+		// 	firstPass:true,
+		// 	cacheEdits: true,
+		// }
 	}
 
 	/**
 	 * Identify and optionally announce that we are leaving edit mode
 	 *
 	 * @since 1.2.5
+	 * @since 1.4.5 - Add support for undo/redo management
 	 *
 	 * @param {boolean} announce Whether exiting edit mode should be announced
 	 */
@@ -311,6 +346,11 @@ export default function Edit(props) {
 			});
 		}
 		setCurrentEditingCellId(null);
+		// cacheUndoEdits.current = {
+		// 	firstPass:false,
+		// 	cacheEdits: false,
+		// }
+		cacheUndoEdits.current = false;
 	}
 
 	/**
@@ -1168,7 +1208,7 @@ export default function Edit(props) {
 		async function persistAttachedTable() {
 			try {
 				const entityId = Number(table.table_id);
-				updateTableEntity(entityId);
+				updateTableEntity(entityId, undefined, undefined, {history: 'ignore'});
 				await saveTableEntity(entityId);
 			} catch (error) {
 				if (!isActive) return;
@@ -1367,7 +1407,8 @@ export default function Edit(props) {
 						updateTableEntity(table.table_id, 'saved', {
 							...table,
 							table_status: 'saved',
-						});
+						}, {history: 'ignore'}
+						);
 					}
 
 					await saveTableEntity(table.table_id);
@@ -1578,7 +1619,7 @@ export default function Edit(props) {
 		if (Number(props.context.postId) === 0) return;
 		if (Number(table.post_id) !== 0) return;
 
-		setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId));
+		setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId), true, 'ignore');
 		void saveTableEntity(table.table_id).catch(error => {
 			showMessageNotice(createNotice, 'post-id-sync-error');
 		});
@@ -1655,7 +1696,7 @@ export default function Edit(props) {
 
 			// Mark table as a pattern block type
 			if (wasInserterPreview || originalPostType === 'wp_block') {
-				setTableAttributes(tableId, 'isPattern', '', 'PROP', true);
+				setTableAttributes(tableId, 'isPattern', '', 'PROP', true, true, 'ignore');
 				return;
 			}
 
@@ -1667,7 +1708,7 @@ export default function Edit(props) {
 			// its status to unknown to signify that we won't know what is happening during the
 			// time the block is unmounted
 			setTableAttributes(tableId, 'unmounted_block', '', 'PROP', true, false);
- 			updateTableEntity(tableId, 'unknown');
+ 			updateTableEntity(tableId, 'unknown', undefined, {history: 'ignore'});
 
 			// Persist the table with its "unknown" status
 			void saveTableEntity(tableId).catch(error => {
@@ -1936,14 +1977,15 @@ export default function Edit(props) {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param {number}                  tableId        Identifier key for the table
-	 * @param {string}                  attribute      (table, column, row, cell)
-	 * @param {number | null}           id             Column and/or row id
-	 * @param {string}                  type           (CONTENT, ATTRIBUTES, CLASSES, PROP)
-	 * @param {string | number | Array} value          New value that will replace existing config
-	 * @param {boolean}                 [persist=true] Update table entity (not just the table store)
+	 * @param {number}                    tableId        Identifier key for the table
+	 * @param {string}                    attribute      (table, column, row, cell)
+	 * @param {number | null}             id             Column and/or row id
+	 * @param {string}                    type           (CONTENT, ATTRIBUTES, CLASSES, PROP)
+	 * @param {string | number | Array}   value          New value that will replace existing config
+	 * @param {boolean}                   [persist=true] Update table entity (not just the table store)
+	 * @param {'record'|'cache'|'ignore'} [history='record'] Entity undo-history behavior
 	 */
-	function setTableAttributes(tableId, attribute, id, type, value, persist = true) {
+	function setTableAttributes(tableId, attribute, id, type, value, persist = true, history = 'record') {
 		switch (type) {
 			case 'CONTENT': {
 				if (attribute === 'cell') {
@@ -1990,7 +2032,7 @@ export default function Edit(props) {
 		 * call must bypass the regular persist (persist === false)
 		 */
 		if (persist) {
-			return updateTableEntity(tableId);
+			return updateTableEntity(tableId, undefined, undefined, { history });
 		}
 	}
 
@@ -2256,14 +2298,20 @@ export default function Edit(props) {
 	 * Update cell data when changed.
 	 *
 	 * @since 1.2.0
+	 * @since 1.4.5 - Add support for undo/redo cacheing
 	 *
 	 * @param {number} table_id Current table id
 	 * @param {number} cell_id  Updated cell id
 	 * @param {Object} patch    Update payload to store
 	 */
 	function onChangeCellData(table_id, cell_id, patch) {
-		setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', patch.content);
-		setTableAttributes(table_id, 'cell', cell_id, 'ATTRIBUTES', patch.attributes);
+		const history = cacheUndoEdits.current ? 'cache' : 'record';
+
+		setTableAttributes(table_id, 'cell', cell_id, 'CONTENT', patch.content, false);
+		setTableAttributes(table_id, 'cell', cell_id, 'ATTRIBUTES', patch.attributes, false);
+		updateTableEntity(table_id, undefined, undefined, { history });
+
+		cacheUndoEdits.current = true;
 	}
 
 	/**
@@ -2368,10 +2416,25 @@ export default function Edit(props) {
 	 * @since 1.2.5 - Add keyboard support for insert/delete columns and rows
 	 * @since 1.3.1 - Add keyboard support for cell copy/cut/paste
 	 * @since 1.4.3 - Update for checkbox data entry
+	 * @since 1.4.5 - Add support for standard keyboard undo/redo shortcuts
+	 *
 	 * @param {Object} event onKeyDown event
 	 * @return {void}
 	 */
 	function onCellKeyDown(event) {
+		const key = String(event.key || '').toLowerCase();
+		const hasPrimaryModifier =
+			(event.ctrlKey || event.metaKey) && !event.altKey;
+		const isUndoRedoShortcut =
+			hasPrimaryModifier &&
+			(key === 'z' || (!event.shiftKey && key === 'y'));
+
+		// Allow WordPress to process its global Undo/Redo shortcuts.
+		if (isUndoRedoShortcut) {
+			cacheUndoEdits.current = false;
+			return;
+		}
+
 		// While editing, allow Tab/arrow keys to exit edit mode and continue with grid navigation.
 		if (editingCellId) {
 			const editExitNavKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab']);
@@ -2695,10 +2758,11 @@ export default function Edit(props) {
 	 *
 	 * @since 1.2.5
 	 *
-	 * @param {number} columnId Column ID of cell to delete data
-	 * @param {number} rowId    Row ID of cell to delete data
+	 * @param {number}  columnId Column ID of cell to delete data
+	 * @param {number}  rowId    Row ID of cell to delete data
+	 * @param {boolean} persist  Whether to update the table entity
 	 */
-	function processCellDelete(columnId, rowId) {
+	function processCellDelete(columnId, rowId, persist = true) {
 		const cellData = table.cells.find(
 			c => Number(c.column_id) === columnId && Number(c.row_id) === rowId
 		);
@@ -2711,8 +2775,12 @@ export default function Edit(props) {
 					indexText: '',
 				},
 			};
-			setTableAttributes(table_id, 'cell', cellData.cell_id, 'CONTENT', '');
-			setTableAttributes(table_id, 'cell', cellData.cell_id, 'ATTRIBUTES', attrs);
+			setTableAttributes(table_id, 'cell', cellData.cell_id, 'CONTENT', '', false);
+			setTableAttributes(table_id, 'cell', cellData.cell_id, 'ATTRIBUTES', attrs, false);
+
+			if (persist) {
+				updateTableEntity(table_id);
+			}
 		}
 	}
 
@@ -2922,9 +2990,13 @@ export default function Edit(props) {
 					const classes = clickedColumn?.classes || '';
 					openColumnDataTypeModal(e, String(columnId), columnLabel, attrs, classes);
 				} else {
-					setTableAttributes(tableId, 'column_name', String(columnId), 'PROP', columnName);
-					setTableAttributes(tableId, 'column', String(columnId), 'ATTRIBUTES', updatedColumnAttributes);
-					setTableAttributes(tableId, 'column', String(columnId), 'CLASSES', updatedColumnClasses);
+					// setTableAttributes(tableId, 'column_name', String(columnId), 'PROP', columnName);
+					// setTableAttributes(tableId, 'column', String(columnId), 'ATTRIBUTES', updatedColumnAttributes);
+					// setTableAttributes(tableId, 'column', String(columnId), 'CLASSES', updatedColumnClasses);
+					setTableAttributes(tableId, 'column_name', String(columnId), 'PROP', columnName, false);
+					setTableAttributes(tableId, 'column', String(columnId), 'ATTRIBUTES', updatedColumnAttributes, false);
+					setTableAttributes(tableId, 'column', String(columnId), 'CLASSES', updatedColumnClasses, false);
+					updateTableEntity(tableId);
 				}
 				break;
 			}
@@ -3118,6 +3190,7 @@ export default function Edit(props) {
 	 * Paste data to the current cell from clipboard.
 	 *
 	 * @since 1.3.1
+	 * @since 1.4.5 Add support undo/redo
 	 *
 	 * @param {number} cellId Identifier for the table cell
 	 */
@@ -3160,13 +3233,14 @@ export default function Edit(props) {
 			value: cellValueAttr,
 		};
 
-		setTableAttributes(table_id, 'cell', cellId, 'CONTENT', cellContent);
-		setTableAttributes(table_id, 'cell', cellId, 'ATTRIBUTES', updatedCellAttrs);
+		setTableAttributes(table_id, 'cell', cellId, 'CONTENT', cellContent, false);
+		setTableAttributes(table_id, 'cell', cellId, 'ATTRIBUTES', updatedCellAttrs, false);
 
 		if (clipboardAction === 'cut') {
-			processCellDelete(columnId, rowId);
+			processCellDelete(columnId, rowId, false);
 			resetCellClipboard();
 		}
+		updateTableEntity(table_id);
 		speakMessage('cell-pasted');
 	}
 
@@ -3415,13 +3489,14 @@ export default function Edit(props) {
 			enableHeaderRow: isChecked,
 			headerRowSticky: false,
 		};
-		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes, false);
 
 		const updatedRowAttributes = {
 			...table.rows.find(x => x.row_id === '1').attributes,
 			isHeader: isChecked ? true : false,
 		};
-		setTableAttributes(table.table_id, 'row', '1', 'ATTRIBUTES', updatedRowAttributes);
+		setTableAttributes(table.table_id, 'row', '1', 'ATTRIBUTES', updatedRowAttributes, false);
+		updateTableEntity(table.table_id);
 	}
 
 	/**
@@ -4073,7 +4148,19 @@ export default function Edit(props) {
 								style={{ '--gridAlignment': gridAlignment }}
 								tagName="p"
 								allowedFormats={['core/bold', 'core/italic']}
-								onChange={e => setTableAttributes(table_id, 'table_name', '', 'PROP', e)}
+								onBlur={() => {
+									cacheUndoEdits.current = false;
+								}}
+								onChange={value => {
+									const history = cacheUndoEdits.current ? 'cache' : 'record';
+
+									setTableAttributes(table_id, 'table_name', '', 'PROP', value, true, history);
+									cacheUndoEdits.current = true;
+								}}
+								onFocus={() => {
+									cacheUndoEdits.current = false;
+								}}
+
 								value={table.table_name}
 							></RichText>
 						)}
