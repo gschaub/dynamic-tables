@@ -24,7 +24,6 @@ import {
 	Placeholder,
 	SelectControl,
 	CheckboxControl,
-	ToggleControl,
 	TextControl,
 	__experimentalInputControl as InputControl,
 	BorderBoxControl,
@@ -43,17 +42,20 @@ import {
 	PanelColorSettings,
 } from '@wordpress/block-editor';
 import { create, getTextContent } from '@wordpress/rich-text';
-import { search, blockTable as icon, column } from '@wordpress/icons';
+import { search, blockTable as icon, pencil as edit } from '@wordpress/icons';
 import clsx from 'clsx';
 
 /* Internal dependencies */
 import { store as tableStore } from './data';
-import {
-	areTableAndEntityRecordsEqual,
-	entityRecordToTable,
-} from './data/table-entity-adapter';
+import { areTableAndEntityRecordsEqual, entityRecordToTable } from './data/table-entity-adapter';
 
-import { usePostChangesSaved, useEditorIdentity, useNotInInserterPreview, useGetTable, useTableUndoRedoEffect } from './hooks';
+import {
+	usePostChangesSaved,
+	useEditorIdentity,
+	useNotInInserterPreview,
+	useGetTable,
+	useTableUndoRedoEffect,
+} from './hooks';
 
 import {
 	MESSAGE_TARGETS,
@@ -115,9 +117,8 @@ import {
 	ColumnWidthModal,
 	ColumnDataTypeModal,
 	CellMenu,
-	FreeformCheckboxIcon,
-	StatusIcon,
-	TableCheckbox
+	TableCheckbox,
+	EditCellContentModal,
 } from './components';
 // import { FreeformCheckboxIcon, StatusIcon } from '../formatted-display';
 import './editor.scss';
@@ -207,12 +208,7 @@ export default function Edit(props) {
 				cacheUndoEdits.current = false;
 			}
 
-			return dispatchUpdateTableEntity(
-				tableId,
-				overrideTableStatus,
-				tableOverride,
-				options
-			);
+			return dispatchUpdateTableEntity(tableId, overrideTableStatus, tableOverride, options);
 		},
 		[dispatchUpdateTableEntity]
 	);
@@ -248,13 +244,10 @@ export default function Edit(props) {
 		hasEntityRecord: requestedTableHasEntity,
 		hasFinishedResolving: requestedTableHasFinishedResolving,
 		isResolving: requestedTableIsResolving,
-	} = useGetTable(
-		tableRequest.tableId,
-		{
-			isTableStale: true,
-			shouldFetch: shouldFetchRequestedTable,
-		}
-	);
+	} = useGetTable(tableRequest.tableId, {
+		isTableStale: true,
+		shouldFetch: shouldFetchRequestedTable,
+	});
 
 	const [editingCellId, setEditingCellId] = useState(null);
 	const editingCellIdRef = useRef(null);
@@ -323,10 +316,6 @@ export default function Edit(props) {
 		}
 
 		setCurrentEditingCellId(nextId);
-		// cacheUndoEdits.current = {
-		// 	firstPass:true,
-		// 	cacheEdits: true,
-		// }
 	}
 
 	/**
@@ -346,10 +335,6 @@ export default function Edit(props) {
 			});
 		}
 		setCurrentEditingCellId(null);
-		// cacheUndoEdits.current = {
-		// 	firstPass:false,
-		// 	cacheEdits: false,
-		// }
 		cacheUndoEdits.current = false;
 	}
 
@@ -669,6 +654,76 @@ export default function Edit(props) {
 	 */
 	const closeCellMenu = () => {
 		setCellMenu(prev => ({ ...prev, isOpen: false, anchorEl: null }));
+		const shouldRestoreFocus = !suppressNextInvokerRestoreRef.current;
+		suppressNextInvokerRestoreRef.current = false;
+
+		if (shouldRestoreFocus) {
+			restoreFocusAfterOverlayClose();
+		}
+	};
+
+	/**
+	 * Support cell drop down menu and settings
+	 * dialog boxes
+	 */
+	const [editCellContentModal, setEditCellContentModal] = useState({
+		isOpen: false,
+		cellId: null,
+		cellContent: null,
+		cellAttributes: null,
+		cellClasses: '',
+		cellContentType: null,
+	});
+
+	/**
+	 * Open cell advanced edit dialog box.
+	 *
+	 * @since 1.4.6
+	 *
+	 * @param {Object} e               Cell menu click event
+	 * @param {string} cellId          Cell number to update
+	 * @param {string} cellContent     Cell content
+	 * @param {Object} cellAttributes  Cell attributes
+	 * @param {Object} cellClasses     Cell classes
+	 * @param {Object} cellContentType Cell content type and formatting options
+	 */
+	const openCellEditContent = (
+		table_id,
+		cell_id,
+		cellContent,
+		cellAttributes,
+		cellClassNames,
+		dataFormat,
+		e
+	) => {
+		console.log('in OpenCellEditContent');
+		e?.preventDefault?.();
+		e?.stopPropagation?.();
+
+		/* Capture a real element, not the synthetic event */
+		const el = e?.currentTarget || null;
+		lastInvokerElRef.current = el;
+		lastInvokerWasKeyboardRef.current = Number(e?.detail) === 0;
+		suppressNextInvokerRestoreRef.current = false;
+
+		setEditCellContentModal({
+			isOpen: true,
+			anchorEl: el,
+			cellId: cell_id,
+			cellContent: cellContent,
+			cellAttributes: cellAttributes,
+			cellClasses: cellClassNames,
+			cellContentType: dataFormat,
+		});
+	};
+
+	/**
+	 * Close cell advanced edit dialog boxes.
+	 *
+	 * @since 1.3.1
+	 */
+	const closeCellEditContent = () => {
+		setEditCellContentModal(prev => ({ ...prev, isOpen: false, anchorEl: null }));
 		const shouldRestoreFocus = !suppressNextInvokerRestoreRef.current;
 		suppressNextInvokerRestoreRef.current = false;
 
@@ -1012,25 +1067,19 @@ export default function Edit(props) {
 	 *
 	 * @since 1.4.0
 	 */
-	const {
-		allTables,
-		allTablesIsResolving,
-	} = useSelect(
-		select => {
-			const { getSummaryTables, isResolving } = select(tableStore);
+	const { allTables, allTablesIsResolving } = useSelect(select => {
+		const { getSummaryTables, isResolving } = select(tableStore);
 
-			const selectorArgs = [true];
+		const selectorArgs = [true];
 
-			const allTables = getSummaryTables(true);
-			const allTablesIsResolving = isResolving('getSummaryTables', selectorArgs);
+		const allTables = getSummaryTables(true);
+		const allTablesIsResolving = isResolving('getSummaryTables', selectorArgs);
 
-			return {
-				allTables: allTables,
-				allTablesIsResolving: allTablesIsResolving,
-			};
-		},
-		[]
-	);
+		return {
+			allTables: allTables,
+			allTablesIsResolving: allTablesIsResolving,
+		};
+	}, []);
 
 	const activeExistingTableOptions = useMemo(() => {
 		if (tableCreationMethod !== 'existing-table') {
@@ -1043,9 +1092,7 @@ export default function Edit(props) {
 			return nextExistingTableOptions;
 		}
 
-		return allTablesIsResolving || isRefreshingAllTables
-			? null
-			: nextExistingTableOptions;
+		return allTablesIsResolving || isRefreshingAllTables ? null : nextExistingTableOptions;
 	}, [tableCreationMethod, allTables, allTablesIsResolving, isRefreshingAllTables]);
 
 	/**
@@ -1062,7 +1109,6 @@ export default function Edit(props) {
 			setIsRefreshingAllTables,
 			subscriberId: summaryTableRefreshSubscriberIdRef.current,
 		});
-
 	}, [tableCreationMethod, refreshSummaryTables, createNotice]);
 
 	/**
@@ -1168,7 +1214,6 @@ export default function Edit(props) {
 			...prev,
 			action: 'attach',
 		}));
-
 	}, [
 		tableRequest.action,
 		tableRequest.blockTableRef,
@@ -1208,7 +1253,7 @@ export default function Edit(props) {
 		async function persistAttachedTable() {
 			try {
 				const entityId = Number(table.table_id);
-				updateTableEntity(entityId, undefined, undefined, {history: 'ignore'});
+				updateTableEntity(entityId, undefined, undefined, { history: 'ignore' });
 				await saveTableEntity(entityId);
 			} catch (error) {
 				if (!isActive) return;
@@ -1234,7 +1279,6 @@ export default function Edit(props) {
 		return () => {
 			isActive = false;
 		};
-
 	}, [
 		tableRequest.action,
 		tableRequest.blockTableRef,
@@ -1263,7 +1307,7 @@ export default function Edit(props) {
 	);
 
 	/*
- 	 * Listen for changes triggered by the block editor's undo/redo
+	 * Listen for changes triggered by the block editor's undo/redo
 	 * stack and role the table state forward or backward as appropriate.
 	 *
 	 * @since 1.4.5
@@ -1382,7 +1426,6 @@ export default function Edit(props) {
 	useEffect(() => {
 		if (!didJustFinishPostSave) return;
 		const finalizePostSaveTableChanges = async () => {
-
 			try {
 				/**
 				 * Remove deleted tables from persisted store
@@ -1403,11 +1446,15 @@ export default function Edit(props) {
 					 * tables from "new" to "saved" once the post is saved.
 					 */
 					if (table.table_status == 'new') {
-						setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved', false)
-						updateTableEntity(table.table_id, 'saved', {
-							...table,
-							table_status: 'saved',
-						}, {history: 'ignore'}
+						setTableAttributes(table.table_id, 'table_status', '', 'PROP', 'saved', false);
+						updateTableEntity(
+							table.table_id,
+							'saved',
+							{
+								...table,
+								table_status: 'saved',
+							},
+							{ history: 'ignore' }
 						);
 					}
 
@@ -1619,7 +1666,15 @@ export default function Edit(props) {
 		if (Number(props.context.postId) === 0) return;
 		if (Number(table.post_id) !== 0) return;
 
-		setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId), true, 'ignore');
+		setTableAttributes(
+			table.table_id,
+			'post_id',
+			'',
+			'PROP',
+			String(props.context.postId),
+			true,
+			'ignore'
+		);
 		void saveTableEntity(table.table_id).catch(error => {
 			showMessageNotice(createNotice, 'post-id-sync-error');
 		});
@@ -1708,7 +1763,7 @@ export default function Edit(props) {
 			// its status to unknown to signify that we won't know what is happening during the
 			// time the block is unmounted
 			setTableAttributes(tableId, 'unmounted_block', '', 'PROP', true, false);
- 			updateTableEntity(tableId, 'unknown', undefined, {history: 'ignore'});
+			updateTableEntity(tableId, 'unknown', undefined, { history: 'ignore' });
 
 			// Persist the table with its "unknown" status
 			void saveTableEntity(tableId).catch(error => {
@@ -1833,12 +1888,9 @@ export default function Edit(props) {
 		setTableStale(false);
 
 		// Accessibility announcement
-		speakMessage(
-			direction === 'right' ? 'column-inserted-right' : 'column-inserted-left',
-			{
-				args: { columnLabel: newColumnLabel },
-			}
-		);
+		speakMessage(direction === 'right' ? 'column-inserted-right' : 'column-inserted-left', {
+			args: { columnLabel: newColumnLabel },
+		});
 
 		return updateTableEntity(tableId);
 	}
@@ -1872,12 +1924,9 @@ export default function Edit(props) {
 		setTableStale(false);
 
 		// Accessibility announcement
-		speakMessage(
-			direction === 'below' ? 'row-inserted-below' : 'row-inserted-above',
-			{
-				args: { rowNumber: newRowId },
-			}
-		);
+		speakMessage(direction === 'below' ? 'row-inserted-below' : 'row-inserted-above', {
+			args: { rowNumber: newRowId },
+		});
 
 		return updateTableEntity(tableId);
 	}
@@ -1937,12 +1986,9 @@ export default function Edit(props) {
 		setTableStale(false);
 
 		// Accessibility announcement
-		speakMessage(
-			direction === 'right' ? 'column-moved-right' : 'column-moved-left',
-			{
-				args: { columnLabel: numberToLetter(Number(columnId)) },
-			}
-		);
+		speakMessage(direction === 'right' ? 'column-moved-right' : 'column-moved-left', {
+			args: { columnLabel: numberToLetter(Number(columnId)) },
+		});
 
 		return updateTableEntity(tableId);
 	}
@@ -1962,12 +2008,9 @@ export default function Edit(props) {
 		setTableStale(false);
 
 		// Accessibility announcement
-		speakMessage(
-			direction === 'down' ? 'row-moved-down' : 'row-moved-up',
-			{
-				args: { rowNumber: Number(rowId) },
-			}
-		);
+		speakMessage(direction === 'down' ? 'row-moved-down' : 'row-moved-up', {
+			args: { rowNumber: Number(rowId) },
+		});
 
 		return updateTableEntity(tableId);
 	}
@@ -1985,7 +2028,15 @@ export default function Edit(props) {
 	 * @param {boolean}                   [persist=true] Update table entity (not just the table store)
 	 * @param {'record'|'cache'|'ignore'} [history='record'] Entity undo-history behavior
 	 */
-	function setTableAttributes(tableId, attribute, id, type, value, persist = true, history = 'record') {
+	function setTableAttributes(
+		tableId,
+		attribute,
+		id,
+		type,
+		value,
+		persist = true,
+		history = 'record'
+	) {
 		switch (type) {
 			case 'CONTENT': {
 				if (attribute === 'cell') {
@@ -2180,7 +2231,11 @@ export default function Edit(props) {
 			case 'choose':
 				break;
 			case 'new':
-				createTable(createDraftTable.numColumns, createDraftTable.numRows, createDraftTable.tableName);
+				createTable(
+					createDraftTable.numColumns,
+					createDraftTable.numRows,
+					createDraftTable.tableName
+				);
 				break;
 			case 'existing-table':
 				attachLoadedTable();
@@ -2423,11 +2478,9 @@ export default function Edit(props) {
 	 */
 	function onCellKeyDown(event) {
 		const key = String(event.key || '').toLowerCase();
-		const hasPrimaryModifier =
-			(event.ctrlKey || event.metaKey) && !event.altKey;
+		const hasPrimaryModifier = (event.ctrlKey || event.metaKey) && !event.altKey;
 		const isUndoRedoShortcut =
-			hasPrimaryModifier &&
-			(key === 'z' || (!event.shiftKey && key === 'y'));
+			hasPrimaryModifier && (key === 'z' || (!event.shiftKey && key === 'y'));
 
 		// Allow WordPress to process its global Undo/Redo shortcuts.
 		if (isUndoRedoShortcut) {
@@ -2590,7 +2643,9 @@ export default function Edit(props) {
 			startEditingCell(cellId);
 			window.requestAnimationFrame(() => {
 				// activeCellEl?.querySelector?.('[contenteditable="true"], input, textarea')?.focus?.();
-				activeCellEl?.querySelector?.('[contenteditable="true"], input, textarea, button')?.focus?.();
+				activeCellEl
+					?.querySelector?.('[contenteditable="true"], input, textarea, button')
+					?.focus?.();
 			});
 			return;
 		}
@@ -2978,7 +3033,13 @@ export default function Edit(props) {
 					const columnLabel = clickedColumn?.column_name || String(columnId);
 					openColumnWidthModal(e, String(columnId), columnLabel, attrs);
 				} else {
-					setTableAttributes(tableId, 'column', String(columnId), 'ATTRIBUTES', updatedColumnAttributes);
+					setTableAttributes(
+						tableId,
+						'column',
+						String(columnId),
+						'ATTRIBUTES',
+						updatedColumnAttributes
+					);
 				}
 				break;
 			}
@@ -2994,8 +3055,22 @@ export default function Edit(props) {
 					// setTableAttributes(tableId, 'column', String(columnId), 'ATTRIBUTES', updatedColumnAttributes);
 					// setTableAttributes(tableId, 'column', String(columnId), 'CLASSES', updatedColumnClasses);
 					setTableAttributes(tableId, 'column_name', String(columnId), 'PROP', columnName, false);
-					setTableAttributes(tableId, 'column', String(columnId), 'ATTRIBUTES', updatedColumnAttributes, false);
-					setTableAttributes(tableId, 'column', String(columnId), 'CLASSES', updatedColumnClasses, false);
+					setTableAttributes(
+						tableId,
+						'column',
+						String(columnId),
+						'ATTRIBUTES',
+						updatedColumnAttributes,
+						false
+					);
+					setTableAttributes(
+						tableId,
+						'column',
+						String(columnId),
+						'CLASSES',
+						updatedColumnClasses,
+						false
+					);
 					updateTableEntity(tableId);
 				}
 				break;
@@ -3133,6 +3208,10 @@ export default function Edit(props) {
 			}
 			case 'move-down': {
 				reorderRows(tableId, row_id, 'down');
+				break;
+			}
+			case 'editedCellContent': {
+				console.log('Future processing of edited cell content');
 				break;
 			}
 			default:
@@ -3275,9 +3354,7 @@ export default function Edit(props) {
 	 */
 	function copyCellToSystemClipboard(formattedText, plainText) {
 		if (typeof window !== 'undefined' && window.ClipboardItem && navigator?.clipboard?.write) {
-
-			const clipboardFormattedText =
-			`<!--StartFragment-->${formattedText}<!--EndFragment-->`;
+			const clipboardFormattedText = `<!--StartFragment-->${formattedText}<!--EndFragment-->`;
 
 			const clipboardItem = new window.ClipboardItem({
 				'text/html': new window.Blob([clipboardFormattedText], { type: 'text/html' }),
@@ -3795,7 +3872,6 @@ export default function Edit(props) {
 		(tableCreationMethod === 'existing-table' &&
 			(!tableRequest.tableId || requestedTableIsResolving));
 
-
 	/**
 	 * Render clickable row menu
 	 *
@@ -3922,6 +3998,29 @@ export default function Edit(props) {
 					canPaste={cellClipboard.inUse}
 					updatedCell={onUpdateCell}
 					onRequestClose={closeCellMenu}
+				/>
+			)}
+		</>
+	);
+
+	/**
+	 * Render column data content type menu
+	 *
+	 * @since 1.4.6
+	 */
+	const renderEditCellContentModal = (
+		<>
+			{!isContentOnlyMode && editCellContentModal.isOpen && (
+				<EditCellContentModal
+					tableId={table_id}
+					cellId={editCellContentModal.cellId}
+					cellContent={editCellContentModal.cellContent}
+					cellAttributes={editCellContentModal.cellAttributes}
+					cellClasses={editCellContentModal.cellClasses}
+					cellContentType={editCellContentModal.cellContentType}
+					enableProFeatures={enableProFeatures}
+					updatedCell={onUpdateCell}
+					onRequestClose={closeCellEditContent}
 				/>
 			)}
 		</>
@@ -4138,6 +4237,7 @@ export default function Edit(props) {
 					{renderColumnDataTypeModal}
 					{renderColumnWidthModal}
 					{renderCellMenu}
+					{renderEditCellContentModal}
 					{renderControls}
 
 					<div style={{ display: 'block' }}>
@@ -4160,7 +4260,6 @@ export default function Edit(props) {
 								onFocus={() => {
 									cacheUndoEdits.current = false;
 								}}
-
 								value={table.table_name}
 							></RichText>
 						)}
@@ -4421,7 +4520,7 @@ export default function Edit(props) {
 																					});
 																				}}
 																				onChange={onChangeCellData}
-																				onMouseDown={onMouseMenuClick}
+																				onMouseDown={openCellEditContent}
 																			></Cell>
 																		)}
 																	</Fragment>
@@ -4512,7 +4611,9 @@ export default function Edit(props) {
 																	calculatedClasses = '';
 																	const isFirstColumn = column_id === '1' ? true : false;
 																	if (attributes?.border === null) {
-																		console.log(`Cell ${cell_id} has a null border attribute. This may cause rendering issues. Please check the cell attributes.`);
+																		console.log(
+																			`Cell ${cell_id} has a null border attribute. This may cause rendering issues. Please check the cell attributes.`
+																		);
 																	}
 																	const isBorder = attributes?.border;
 																	const borderContent = setBorderContent(
@@ -4654,7 +4755,7 @@ export default function Edit(props) {
 																						});
 																					}}
 																					onChange={onChangeCellData}
-																					onMouseDown={onMouseMenuClick}
+																					onMouseDown={openCellEditContent}
 																				></Cell>
 																			)}
 																		</Fragment>
@@ -4674,9 +4775,7 @@ export default function Edit(props) {
 
 			{/* Show a spinner while the table is being fetcheds */}
 			{!isNewBlock && tableIsResolving && (
-				<span
-					className={'dtbk-spinner-message'}
-				>
+				<span className={'dtbk-spinner-message'}>
 					{__('Loading Dynamic Table...', 'dynamic-table-blocks')}
 					<Spinner />
 				</span>
@@ -4689,7 +4788,6 @@ export default function Edit(props) {
 					icon={<BlockIcon icon={icon} showColors />}
 					instructions={__('Create a new dynamic table.', 'dynamic-table-blocks')}
 				>
-
 					<form className="blocks-table__placeholder-form" onSubmit={onCreateTable}>
 						{tableCreationMethod === 'choose' && (
 							<SelectControl
@@ -4706,19 +4804,15 @@ export default function Edit(props) {
 
 						{tableCreationMethod !== 'choose' && (
 							<>
-								<p>
-									Table creation method: {tableCreationMethod}
-								</p>
+								<p>Table creation method: {tableCreationMethod}</p>
 								<hr
-									style={
-										{
-											alignSelf: 'stretch',
-											width: '100%',
-											margin: '8px 0 12px',
-											border: 0,
-											borderTop: '1px solid #dcdcde',
-										}
-									}
+									style={{
+										alignSelf: 'stretch',
+										width: '100%',
+										margin: '8px 0 12px',
+										border: 0,
+										borderTop: '1px solid #dcdcde',
+									}}
 								/>
 							</>
 						)}
@@ -4726,16 +4820,13 @@ export default function Edit(props) {
 						{tableCreationMethod === 'existing-table' &&
 							activeExistingTableOptions === null &&
 							(allTablesIsResolving || isRefreshingAllTables) && (
-							<span
-								className={'dtbk-spinner-message'}
-							>
-								{__('Retrieving table list...', 'dynamic-table-blocks')}
-								<Spinner />
-							</span>
-						)}
+								<span className={'dtbk-spinner-message'}>
+									{__('Retrieving table list...', 'dynamic-table-blocks')}
+									<Spinner />
+								</span>
+							)}
 
-						{tableCreationMethod === 'existing-table' &&
-							activeExistingTableOptions !== null && (
+						{tableCreationMethod === 'existing-table' && activeExistingTableOptions !== null && (
 							<>
 								<SelectControl
 									label={__('Select table:', 'dynamic-table-blocks')}
@@ -4792,32 +4883,22 @@ export default function Edit(props) {
 						)}
 
 						<hr
-							style={
-								{
-									alignSelf: 'stretch',
-									width: '100%',
-									margin: '8px 0 12px',
-									border: 0,
-									borderTop: '1px solid #dcdcde',
-								}
-							}
+							style={{
+								alignSelf: 'stretch',
+								width: '100%',
+								margin: '8px 0 12px',
+								border: 0,
+								borderTop: '1px solid #dcdcde',
+							}}
 						/>
 
 						<div className="dtbk-modal__footer">
 							<div className="dtbk-modal__button-group">
-								<Button
-									variant="secondary"
-									type="button"
-									onClick={onCancelNewBlock}
-								>
+								<Button variant="secondary" type="button" onClick={onCancelNewBlock}>
 									{__('Cancel', 'dynamic-table-blocks')}
 								</Button>
 
-								<Button
-									disabled={createTableDisabled}
-									variant="primary"
-									type="submit"
-								>
+								<Button disabled={createTableDisabled} variant="primary" type="submit">
 									{__('Create Table', 'dynamic-table-blocks')}
 								</Button>
 							</div>
@@ -4953,9 +5034,7 @@ function Cell(props) {
 		Number(sanitizedNumber) < 0;
 	const checkboxVariant = settings?.format || inputType || 'standard';
 	const shouldHideCheckbox =
-		!isEditing &&
-		settings?.formatOptions?.hideIfEmpty &&
-		isEmptyCheckboxValue(cellContent);
+		!isEditing && settings?.formatOptions?.hideIfEmpty && isEmptyCheckboxValue(cellContent);
 
 	/**
 	 * Identify whether checkbox cell value is empty
@@ -4978,14 +5057,23 @@ function Cell(props) {
 	 * @return {boolean} Checkbox value to render
 	 */
 	function getCheckboxCheckedState(value) {
-		const normalizedValue =
-			typeof value === 'string' ? value.trim().toLowerCase() : value;
+		const normalizedValue = typeof value === 'string' ? value.trim().toLowerCase() : value;
 
-		if (normalizedValue === true || normalizedValue === 'true' || normalizedValue === 1 || normalizedValue === '1') {
+		if (
+			normalizedValue === true ||
+			normalizedValue === 'true' ||
+			normalizedValue === 1 ||
+			normalizedValue === '1'
+		) {
 			return true;
 		}
 
-		if (normalizedValue === false || normalizedValue === 'false' || normalizedValue === 0 || normalizedValue === '0') {
+		if (
+			normalizedValue === false ||
+			normalizedValue === 'false' ||
+			normalizedValue === 0 ||
+			normalizedValue === '0'
+		) {
 			return false;
 		}
 
@@ -5008,15 +5096,13 @@ function Cell(props) {
 
 		return (
 			<TableCheckbox
-				checked = {isChecked}
-				variant = {checkboxVariant}
-				scale = {scale}
+				checked={isChecked}
+				variant={checkboxVariant}
+				scale={scale}
 				onChange={processBooleanCellEdit}
 			/>
-		)
+		);
 	}
-
-
 
 	/**
 	 * Process effect of changes to cell level attributes
@@ -5274,6 +5360,29 @@ function Cell(props) {
 	}
 
 	/**
+	 * Relay mouse down event for cell editing
+	 *
+	 * @since 1.4.6
+	 *
+	 * @param {number} table_id Clicked table column
+	 * @param {string} cell_id    Clicked table row
+	 * @param {Object} cellContent     Current Dynamic Table
+	 * @param {Object} e         Border click event object
+	 */
+	function passMouseEditClick(
+		table_id,
+		cell_id,
+		cellContent,
+		cellAttributes,
+		cellClassNames,
+		dataFormat,
+		e
+	) {
+		console.log('in passMouseEditClick');
+		onMouseDown(table_id, cell_id, cellContent, cellAttributes, cellClassNames, dataFormat, e);
+	}
+
+	/**
 	 * React HTML to render a cell based on its type
 	 *
 	 * @since 1.1.1
@@ -5414,20 +5523,53 @@ function Cell(props) {
 
 				const scale = checkboxVariant === 'freeform' ? 0.6 : 1;
 
-				return (
-					<TableCheckbox
-						checked = {isChecked}
-						variant = {checkboxVariant}
-						scale = {scale}
-					/>
-				)
+				return <TableCheckbox checked={isChecked} variant={checkboxVariant} scale={scale} />;
 			}
 
 			const editedCheckbox = checkboxEditValue();
 
-			return (
-				<div>{editedCheckbox}</div>
-			);
+			return <div>{editedCheckbox}</div>;
+		},
+		link: () => {
+			if (!isEditing) {
+				<>
+					<RichText
+						tagName="div"
+						value={cellContent}
+						readOnly={!isEditing}
+						onChange={
+							!isEditing
+								? undefined
+								: next => {
+										const indexText = htmlToIndexText(next);
+										persistCellEdit(next, indexText);
+									}
+						}
+					></RichText>
+					<Button
+						icon={edit}
+						iconSize={24}
+						label="edit..."
+						onMouseDown={e => {
+							e.preventDefault();
+						}}
+						onClick={e => {
+							passMouseEditClick(
+								table_id,
+								cell_id,
+								cellContent,
+								cellAttributes,
+								cellClassNames,
+								dataFormat,
+								e
+							);
+						}}
+						showTooltip
+					></Button>
+				</>;
+			}
+
+			return <div>Placeholder</div>;
 		},
 	};
 
@@ -5456,6 +5598,9 @@ function Cell(props) {
 					break;
 				case 'checkbox':
 					renderPipeline = ['checkbox'];
+					break;
+				case 'link':
+					renderPipeline = ['link'];
 					break;
 				default:
 					break;

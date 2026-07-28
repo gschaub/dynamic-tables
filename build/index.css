@@ -153,9 +153,7 @@
   font: inherit;
   font-weight: inherit;
   line-height: inherit;
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
+  appearance: none;
   cursor: pointer;
 }
 .grid-control__border-button:focus-visible {
