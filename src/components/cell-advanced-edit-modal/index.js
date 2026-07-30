@@ -63,6 +63,16 @@ function EditCellContent(props = {}) {
 	} = props;
 
 	console.log('In Edit Cell Modal');
+
+	const { type: contentType, settings } = cellContentType;
+	const { format: contentFormat } = settings?.format || '';
+
+	const [currentCellContent, setCurrentCellContent] = useState(cellContent);
+	const [currentCellValueAttributes, setCurrentCellValueAttributes] = useState(
+		cellAttributes || {}
+	);
+	const [currentCellClasses, setCurrentCellClasses] = useState(cellClasses);
+
 	/**
 	 * Stop event processing in favor of custom processing.
 	 *
@@ -92,6 +102,61 @@ function EditCellContent(props = {}) {
 		onRequestClose?.();
 	}
 
+	function onUpdateCellValue(event, attribute) {
+		let content = currentCellContent;
+		let attributes = currentCellValueAttributes;
+
+		switch (contentType) {
+			case 'link':
+				if (!attributes) {
+					console.log('Resetting attributes. Prior:', attributes);
+					attributes = {
+						cannonical: {
+							url: '#',
+							label: '',
+						},
+						indexText: '',
+					};
+				}
+
+				switch (attribute) {
+					case 'url':
+						attributes = {
+							...attributes,
+							cannonical: {
+								...attributes?.cannonical,
+								url: event,
+							},
+						};
+						console.log('Attributes from URL', attributes);
+						break;
+					case 'label':
+						attributes = {
+							...attributes,
+							cannonical: {
+								...attributes?.cannonical,
+								label: event,
+							},
+						};
+						console.log('Attributes from Label', attributes);
+						break;
+					default:
+						break;
+				}
+				const url = attributes.cannonical?.url;
+				const label = attributes.cannonical?.label;
+				content =
+					'<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
+				break;
+			default:
+				break;
+		}
+		console.log('Attributes: ', attributes);
+		console.log('Content: ', content);
+
+		setCurrentCellContent(content);
+		setCurrentCellValueAttributes(attributes);
+	}
 	/**
 	 * Return new column data type settings.
 	 *
@@ -102,22 +167,25 @@ function EditCellContent(props = {}) {
 	function onUpdate(event) {
 		event?.preventDefault?.();
 
+		const updatedCellContent = currentCellContent;
+		const updatedCellValueAttributes = currentCellValueAttributes;
+		const updateCellClasses = currentCellClasses;
+
 		updatedCell(
 			event,
 			'editedCellContent',
 			tableId,
 			cellId,
-			cellContent,
-			cellAttributes,
-			cellClasses,
-			cellContentType
+			updatedCellContent,
+			updatedCellValueAttributes,
+			updateCellClasses,
 		);
 		close();
 	}
 
 	return (
 		<Modal
-			title="Configure Column Content Type"
+			title="Edit Cell Content"
 			onRequestClose={handleCancel}
 			focusOnMount="firstContentElement"
 			isDismissible={false}
@@ -136,12 +204,35 @@ function EditCellContent(props = {}) {
 							<p>Heading</p>
 
 							{/* Cell Content Type */}
-							{true && (
+							{cellContentType.type === 'link' && (
 								<Card>
 									<CardHeader>
 										<strong>Content settings</strong>
 									</CardHeader>
-									<CardBody></CardBody>
+									<CardBody>
+										<TextControl
+											// className={renderColumnClasses}
+											type="url"
+											label="Link URL"
+											placeholder="http://"
+											// id={previewId}
+											// step={60}
+											__next40pxDefaultSize
+											value={currentCellValueAttributes?.cannonical?.url || ''}
+											onChange={e => onUpdateCellValue(e, 'url')}
+										></TextControl>
+										<TextControl
+											// className={renderColumnClasses}
+											type="text"
+											label="Link Label"
+											// placeholder="http://"
+											// id={previewId}
+											// step={60}
+											__next40pxDefaultSize
+											value={currentCellValueAttributes?.cannonical?.label || ''}
+											onChange={e => onUpdateCellValue(e, 'label')}
+										></TextControl>
+									</CardBody>
 								</Card>
 							)}
 						</VStack>

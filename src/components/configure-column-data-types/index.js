@@ -26,7 +26,6 @@ import clsx from 'clsx';
  */
 import './style.scss';
 import { FreeformCheckboxIcon, StatusIcon } from '../formatted-display';
-import { settings } from '@wordpress/icons';
 import {
 	normalizeColumnDataType,
 	stageClassesForEdit,
@@ -63,6 +62,7 @@ function ConfigureColumnDataType(props = {}) {
 	} = props;
 
 	const normalizedColumnDataType = normalizeColumnDataType(columnAttributes?.columnDataType);
+	console.log('Normalized Column Data Type Outbound = ', normalizedColumnDataType);
 
 	const [columnName, setColumnName] = useState(columnLabel);
 	const [dataType, setDataType] = useState(normalizedColumnDataType);
@@ -706,6 +706,15 @@ function ConfigureColumnDataType(props = {}) {
 				newColumnClassNames.delete('grid-control__body-columns--number-align-right');
 				newColumnClassNames.delete('grid-control__body-columns--date-align-right');
 				return;
+			case 'link':
+				setDataTypeFormat('link');
+				// onCheckboxFormat('standard', true);
+				updatedDataType = {
+					type: 'link',
+				};
+				newColumnClassNames.delete('grid-control__body-columns--number-align-right');
+				newColumnClassNames.delete('grid-control__body-columns--date-align-right');
+				break;
 			default:
 				updatedDataType = {
 					type: event,
@@ -714,6 +723,7 @@ function ConfigureColumnDataType(props = {}) {
 				newColumnClassNames.delete('grid-control__body-columns--number-align-right');
 				break;
 		}
+		console.log('New data type: ', updatedDataType);
 		setColumnClassNames(newColumnClassNames);
 		setDataType(updatedDataType);
 	}
@@ -765,6 +775,8 @@ function ConfigureColumnDataType(props = {}) {
 				break;
 			case 'checkbox':
 				break;
+			case 'link':
+				break;
 		}
 
 		setColumnClassNames(newColumnClassNames);
@@ -785,6 +797,8 @@ function ConfigureColumnDataType(props = {}) {
 	const renderColumnClasses = clsx(columnClassNamesRender, {
 		'grid-control__body-columns--number-red': showNegativeNumberPreview,
 	});
+
+	console.log('Column Content Type: ', dataType);
 
 	return (
 		<Modal
@@ -828,8 +842,8 @@ function ConfigureColumnDataType(props = {}) {
 												{ value: 'date-time', label: 'Date/Time' },
 												{ value: 'number', label: 'Number' },
 												{ value: 'checkbox', label: 'Check Box' },
+												{ value: 'link', label: 'Link' },
 												// { value: 'image', label: 'Image' },
-												// { value: 'link', label: 'Link' },
 												// { value: 'rating', label: 'Rating' },
 											]}
 											__nextHasNoMarginBottom

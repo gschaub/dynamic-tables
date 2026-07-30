@@ -258,7 +258,9 @@ export const createTableEntity =
 export const saveTableEntity =
 	tableId =>
 	async ({ registry }) => {
-		const editedTableData = registry.select(coreStore).getEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
+		const editedTableData = registry
+			.select(coreStore)
+			.getEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
 
 		try {
 			return await registry
@@ -277,22 +279,16 @@ export const saveTableEntity =
  * @since    1.0.0
  * @since    1.4.5 - Add undo/redo support
  *
- * @param {*}           tableId                   Identifier key for the table
- * @param {string}      [overrideTableStatus]     Updates the table's status if populated
- * @param {Object|null} [tableOverride]            Optionally uses this source table
- * @param {Object}      [options]                  Entity update options
+ * @param {*}                         tableId                    Identifier key for the table
+ * @param {string}                    [overrideTableStatus]      Updates the table's status if populated
+ * @param {Object|null}               [tableOverride]            Optionally uses this source table
+ * @param {Object}                    [options]                  Entity update options
  * @param {'record'|'cache'|'ignore'} [options.history='record'] Undo history behavior
  * @return  {Object} Action Object
  */
 export const updateTableEntity =
-	(
-		tableId,
-		overrideTableStatus = '',
-		tableOverride = null,
-		{ history = 'record' } = {}
-	) =>
+	(tableId, overrideTableStatus = '', tableOverride = null, { history = 'record' } = {}) =>
 	({ select, registry }) => {
-
 		const sourceTable = tableOverride || select.getTable(tableId, false);
 
 		const {
@@ -319,9 +315,7 @@ export const updateTableEntity =
 		const filteredColumns = safeColumns.filter(column => column.column_id !== '0');
 
 		// Remove border cells if they exists
-		const filteredCells = safeCells.filter(
-			cell => cell.row_id !== '0' && cell.column_id !== '0'
-		);
+		const filteredCells = safeCells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
 
 		// Remove cell_id from cells. They don't go back to the webservice
 		const transformedCells = filteredCells.map(
@@ -370,7 +364,7 @@ export const updateTableEntity =
 				case 'record':
 					break;
 
-			case 'cache':
+				case 'cache':
 					entityEditOptions = {
 						isCached: true,
 					};
@@ -388,11 +382,7 @@ export const updateTableEntity =
 
 			const currentEntity = registry
 				.select(coreStore)
-				.getEditedEntityRecord(
-					'dynamic-table-blocks',
-					'table',
-					table_id
-				);
+				.getEditedEntityRecord('dynamic-table-blocks', 'table', table_id);
 			const currentEntityTitle =
 				typeof currentEntity?.title === 'string'
 					? currentEntity.title
@@ -407,19 +397,13 @@ export const updateTableEntity =
 			/* Limit entity and persistence updates to specific changes rather than replacing the
 			 * the entire table content
 			 */
-			const entityEdits = Object.entries(updatedTable).reduce(
-				(edits, [key, value]) => {
-					if (
-						key !== 'id' &&
-						!isDeepEqual(comparableCurrentEntity[key], value)
-					) {
-						edits[key] = value;
-					}
+			const entityEdits = Object.entries(updatedTable).reduce((edits, [key, value]) => {
+				if (key !== 'id' && !isDeepEqual(comparableCurrentEntity[key], value)) {
+					edits[key] = value;
+				}
 
-					return edits;
-				},
-				{}
-			);
+				return edits;
+			}, {});
 
 			if (Object.keys(entityEdits).length === 0) {
 				return;
@@ -434,12 +418,9 @@ export const updateTableEntity =
 					entityEdits,
 					entityEditOptions
 				);
-			} catch (error) {
+		} catch (error) {
 			console.error('Error in updateTableEntity - Table ID - ' + table_id, error);
-			showMessageNotice(
-				registry.dispatch(noticeStore).createNotice,
-				'update-entity-error'
-			);
+			showMessageNotice(registry.dispatch(noticeStore).createNotice, 'update-entity-error');
 			return false;
 		}
 	};
@@ -520,31 +501,22 @@ export const processUnmountedTables =
 					dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', priorStatus);
 					dispatch.removeTableProp(unmountedTables[key].table_id, 'prior_status');
 					dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_block');
-					dispatch.updateTableEntity(
-						unmountedTables[key].table_id,
-						undefined,
-						undefined,
-						{ history: 'ignore' }
-					);
+					dispatch.updateTableEntity(unmountedTables[key].table_id, undefined, undefined, {
+						history: 'ignore',
+					});
 					await dispatch.saveTableEntity(unmountedTables[key].table_id);
 				} else if (isBlockPattern) {
 					dispatch.removeTableProp(unmountedTables[key].table_id, 'isPattern');
-					dispatch.updateTableEntity(
-						unmountedTables[key].table_id,
-						undefined,
-						undefined,
-						{ history: 'ignore' }
-					);
+					dispatch.updateTableEntity(unmountedTables[key].table_id, undefined, undefined, {
+						history: 'ignore',
+					});
 					await dispatch.saveTableEntity(unmountedTables[key].table_id);
 				} else {
 					dispatch.updateTableProp(unmountedTables[key].table_id, 'table_status', 'deleted');
 					dispatch.removeTableProp(unmountedTables[key].table_id, 'unmounted_block');
-					dispatch.updateTableEntity(
-						unmountedTables[key].table_id,
-						'deleted',
-						undefined,
-						{ history: 'ignore' }
-					);
+					dispatch.updateTableEntity(unmountedTables[key].table_id, 'deleted', undefined, {
+						history: 'ignore',
+					});
 					await dispatch.saveTableEntity(unmountedTables[key].table_id);
 				}
 			})

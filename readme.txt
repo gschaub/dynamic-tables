@@ -20,12 +20,12 @@ Whether you're creating comparison tables, pricing tables, product specification
 
 Unlike traditional table blocks that embed table content directly into post content, Dynamic Tables stores table data independently while the block itself simply references the table. This architecture allows tables to be managed as structured data while remaining fully integrated with the Gutenberg editor.
 
-That means:
+That means your tables:
 
-* Edit tables naturally using familiar spreadsheet interactions.
-* Keep structured table data independent from page content.
-* Publish responsive, semantic tables designed for accessibility and SEO.
-* Build on a foundation designed for future capabilities including search, front-end editing, filtering, sorting, and external integrations.
+* Can be edited naturally using familiar spreadsheet interactions.
+* Will contain structured data that will be kept independent from page content.
+* Will be responsive, semantic tables designed for accessibility and SEO.
+* Are built on a foundation designed for future capabilities including search, front-end editing, filtering, sorting, and external integrations.
 
 === Designed for Everyone ===
 
@@ -170,7 +170,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 
 = What happens if I deactivate or delete the plugin? =
 
-* Dynamic Tables block will render while the plugin is disabled or deleted.
+* Dynamic Tables block will not render while the plugin is disabled or deleted.
 * Data may be retained or deleted when the plugin is uninstalled. The default is to retain the data.
 * Reinstallation and activation will make all tables reappear if the data has not been purged.
 
@@ -189,7 +189,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 
 == Changelog ==
 = 1.4.5 =
-* Add support for undo/redo within Dynamic Tables
+* Added support for undo/redo within Dynamic Tables
 
 = 1.4.4 =
 * Show borders when table is created

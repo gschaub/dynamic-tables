@@ -240,6 +240,51 @@
   box-shadow: inherit
 }
 
+/* Style cell edit button */
+.grid-control__cell-edit-content {
+	display: block;
+	flex: 1 1 auto;
+	min-inline-size: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.grid-control__cell-edit-button {
+	display: none;
+	position: absolute;
+	inset-block-start: 0;
+	inset-inline-end: 0;
+	z-index: 1;
+	box-sizing: border-box;
+	inline-size: 24px;
+	min-inline-size: 24px;
+	block-size: 24px;
+	min-block-size: 24px;
+	padding: 3px;
+	border: 1px solid gray;
+	border-radius: 50%;
+	background-color: rgba(255, 255, 255, 0.9);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+	color: dimgray;
+	cursor: pointer;
+	line-height: 1;
+	appearance: none;
+}
+
+.grid-control__cellEditor:hover .grid-control__cell-edit-button,
+.grid-control__cellEditor:focus .grid-control__cell-edit-button,
+.grid-control__cellEditor:focus-within .grid-control__cell-edit-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.grid-control__cell-edit-button:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 1px;
+}
+
 /* Date/Time editor input (TextControl) styling in Gutenberg editor */
 .grid-control__cellEditor--dateTimeInput,
 .grid-control__cellEditor--dateTimeInput .components-base-control,

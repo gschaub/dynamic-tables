@@ -42,7 +42,7 @@ import {
 	PanelColorSettings,
 } from '@wordpress/block-editor';
 import { create, getTextContent } from '@wordpress/rich-text';
-import { search, blockTable as icon, pencil as edit } from '@wordpress/icons';
+import { Icon, search, blockTable as icon, pencil as edit } from '@wordpress/icons';
 import clsx from 'clsx';
 
 /* Internal dependencies */
@@ -2020,12 +2020,12 @@ export default function Edit(props) {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param {number}                    tableId        Identifier key for the table
-	 * @param {string}                    attribute      (table, column, row, cell)
-	 * @param {number | null}             id             Column and/or row id
-	 * @param {string}                    type           (CONTENT, ATTRIBUTES, CLASSES, PROP)
-	 * @param {string | number | Array}   value          New value that will replace existing config
-	 * @param {boolean}                   [persist=true] Update table entity (not just the table store)
+	 * @param {number}                    tableId            Identifier key for the table
+	 * @param {string}                    attribute          (table, column, row, cell)
+	 * @param {number | null}             id                 Column and/or row id
+	 * @param {string}                    type               (CONTENT, ATTRIBUTES, CLASSES, PROP)
+	 * @param {string | number | Array}   value              New value that will replace existing config
+	 * @param {boolean}                   [persist=true]     Update table entity (not just the table store)
 	 * @param {'record'|'cache'|'ignore'} [history='record'] Entity undo-history behavior
 	 */
 	function setTableAttributes(
@@ -3163,13 +3163,23 @@ export default function Edit(props) {
 	 *
 	 * @since 1.3.1
 	 *
-	 * @param {Object} e                     Table Creation Event
-	 * @param {string} updateType            Action to perform
-	 * @param {number} tableId               Identifier key for the table
-	 * @param {number} cellId                Identifier for the table cell
-	 * @param {Array}  updatedCellAttributes Cell attribute values
+	 * @param {Object} e                          Table Creation Event
+	 * @param {string} updateType                 Action to perform
+	 * @param {number} tableId                    Identifier key for the table
+	 * @param {number} cellId                     Identifier for the table cell
+	 * @param {string} updatedCellContent         Cell attribute values
+	 * @param {Object} updatedCellValueAttributes Cell attribute values
+	 * @param {string} updateCellClasses          Cell attribute values
 	 */
-	function onUpdateCell(e, updateType, tableId, cellId, updatedCellAttributes) {
+	function onUpdateCell(
+		e,
+		updateType,
+		tableId,
+		cellId,
+		updatedCellContent = '',
+		updatedCellValueAttributes = {},
+		updateCellClasses = ''
+	) {
 		if (isContentOnlyMode && !isContentOnlyRowAction(updateType)) {
 			return;
 		}
@@ -3211,7 +3221,21 @@ export default function Edit(props) {
 				break;
 			}
 			case 'editedCellContent': {
-				console.log('Future processing of edited cell content');
+				const currentCellData = table.cells.find(
+					c => c.column_id === Number(column_id) && Number(c.row_id) === Number(row_id)
+				);
+
+				const currentCellValueAttr = currentCellData?.attributes || {};
+				const updatedCellAttrs = {
+					...currentCellValueAttr,
+					value: updatedCellValueAttributes,
+				};
+
+				setTableAttributes(table_id, 'cell', cellId, 'CONTENT', updatedCellContent, false);
+				setTableAttributes(table_id, 'cell', cellId, 'ATTRIBUTES', updatedCellAttrs, false);
+				setTableAttributes(table_id, 'cell', cellId, 'CLASSES', updateCellClasses, false);
+				updateTableEntity(tableId);
+				// speakMessage('cell-pasted');
 				break;
 			}
 			default:
@@ -3350,7 +3374,7 @@ export default function Edit(props) {
 	 * @since 1.3.1
 	 *
 	 * @param {string} formattedText Copied formatted text
-	 * @param {string} plainText Copied plain text
+	 * @param {string} plainText     Copied plain text
 	 */
 	function copyCellToSystemClipboard(formattedText, plainText) {
 		if (typeof window !== 'undefined' && window.ClipboardItem && navigator?.clipboard?.write) {
@@ -5360,14 +5384,47 @@ function Cell(props) {
 	}
 
 	/**
+	 * Render the common control for cell types edited in a modal.
+	 *
+	 * @since 1.4.6
+	 *
+	 * @param {string} label Accessible label and native tooltip text.
+	 * @return {Object} Cell edit button.
+	 */
+	const renderCellEditButton = (label = __('Edit cell', 'dynamic-table-blocks')) => (
+		<button
+			type="button"
+			className="grid-control__cell-edit-button"
+			aria-label={label}
+			title={label}
+			onMouseDown={e => {
+				e.preventDefault();
+			}}
+			onClick={e => {
+				passMouseEditClick(
+					table_id,
+					cell_id,
+					cellContent,
+					cellAttributes,
+					cellClassNames,
+					dataFormat,
+					e
+				);
+			}}
+		>
+			<Icon icon={edit} size={16} />
+		</button>
+	);
+
+	/**
 	 * Relay mouse down event for cell editing
 	 *
 	 * @since 1.4.6
 	 *
-	 * @param {number} table_id Clicked table column
-	 * @param {string} cell_id    Clicked table row
-	 * @param {Object} cellContent     Current Dynamic Table
-	 * @param {Object} e         Border click event object
+	 * @param {number} table_id    Clicked table column
+	 * @param {string} cell_id     Clicked table row
+	 * @param {Object} cellContent Current Dynamic Table
+	 * @param {Object} e           Border click event object
 	 */
 	function passMouseEditClick(
 		table_id,
@@ -5379,7 +5436,8 @@ function Cell(props) {
 		e
 	) {
 		console.log('in passMouseEditClick');
-		onMouseDown(table_id, cell_id, cellContent, cellAttributes, cellClassNames, dataFormat, e);
+		const cellValueAttributes = cellAttributes?.value || {};
+		onMouseDown(table_id, cell_id, cellContent, cellValueAttributes, cellClassNames, dataFormat, e);
 	}
 
 	/**
@@ -5532,43 +5590,17 @@ function Cell(props) {
 		},
 		link: () => {
 			if (!isEditing) {
-				<>
-					<RichText
-						tagName="div"
-						value={cellContent}
-						readOnly={!isEditing}
-						onChange={
-							!isEditing
-								? undefined
-								: next => {
-										const indexText = htmlToIndexText(next);
-										persistCellEdit(next, indexText);
-									}
-						}
-					></RichText>
-					<Button
-						icon={edit}
-						iconSize={24}
-						label="edit..."
-						onMouseDown={e => {
-							e.preventDefault();
-						}}
-						onClick={e => {
-							passMouseEditClick(
-								table_id,
-								cell_id,
-								cellContent,
-								cellAttributes,
-								cellClassNames,
-								dataFormat,
-								e
-							);
-						}}
-						showTooltip
-					></Button>
-				</>;
+				return (
+					<>
+						<RichText.Content
+							tagName="span"
+							className="grid-control__cell-edit-content"
+							value={cellContent}
+						/>
+						{renderCellEditButton(__('Edit link cell', 'dynamic-table-blocks'))}
+					</>
+				);
 			}
-
 			return <div>Placeholder</div>;
 		},
 	};
