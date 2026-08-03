@@ -692,7 +692,7 @@ export default function Edit(props) {
 		cell_id,
 		cellContent,
 		cellAttributes,
-		cellClassNames,
+		cellBaseClasses,
 		dataFormat,
 		e
 	) => {
@@ -712,7 +712,7 @@ export default function Edit(props) {
 			cellId: cell_id,
 			cellContent: cellContent,
 			cellAttributes: cellAttributes,
-			cellClasses: cellClassNames,
+			cellClasses: cellBaseClasses,
 			cellContentType: dataFormat,
 		});
 	};
@@ -2826,12 +2826,13 @@ export default function Edit(props) {
 			const attrs = {
 				...(cellData.attributes || {}),
 				value: {
-					...((cellData.attributes && cellData.attributes.value) || {}),
+					// ...((cellData.attributes && cellData.attributes.value) || {}),
 					indexText: '',
 				},
 			};
 			setTableAttributes(table_id, 'cell', cellData.cell_id, 'CONTENT', '', false);
 			setTableAttributes(table_id, 'cell', cellData.cell_id, 'ATTRIBUTES', attrs, false);
+			setTableAttributes(table_id, 'cell', cellData.cell_id, 'CLASSES', '', false);
 
 			if (persist) {
 				updateTableEntity(table_id);
@@ -4355,6 +4356,7 @@ export default function Edit(props) {
 																	content={borderContent}
 																	attributes={attributes}
 																	columnClassNames={''}
+																	cellBaseClasses={classes}
 																	cellClassNames={classes}
 																	borderHandleProps={{
 																		ariaLabel: `Column ${numberToLetter(Number(column_id))} options`,
@@ -4457,6 +4459,7 @@ export default function Edit(props) {
 																				content={borderContent}
 																				attributes={attributes}
 																				columnClassNames={''}
+																				cellBaseClasses={classes}
 																				cellClassNames={classes}
 																				borderHandleProps={{
 																					ariaLabel: `Row ${String(row_id)} options`,
@@ -4490,6 +4493,7 @@ export default function Edit(props) {
 																				attributes={attributes}
 																				isFocused={isFocused}
 																				columnClassNames={''}
+																				cellBaseClasses={classes}
 																				cellClassNames={
 																					'grid-control__header-cells ' +
 																					'grid-control__cellEditor ' +
@@ -4632,7 +4636,7 @@ export default function Edit(props) {
 																	/**
 																	 * Set general processing variables
 																	 */
-																	calculatedClasses = '';
+																	let calculatedClasses = '';
 																	const isFirstColumn = column_id === '1' ? true : false;
 																	if (attributes?.border === null) {
 																		console.log(
@@ -4684,6 +4688,7 @@ export default function Edit(props) {
 																					content={borderContent}
 																					attributes={attributes}
 																					columnClassNames={''}
+																					cellBaseClasses={classes}
 																					cellClassNames={classes}
 																					borderHandleProps={{
 																						ariaLabel: `Row ${String(row_id)} options`,
@@ -4725,6 +4730,7 @@ export default function Edit(props) {
 																					attributes={attributes}
 																					isFocused={isFocused}
 																					columnClassNames={columnClasses[column_id]}
+																					cellBaseClasses={classes}
 																					cellClassNames={
 																						'grid-control__body-cells ' +
 																						'grid-control__cellEditor ' +
@@ -5006,6 +5012,7 @@ function Cell(props) {
 		attributes,
 		isFocused,
 		columnClassNames,
+		cellBaseClasses,
 		cellClassNames,
 		showGridLinesCSS,
 		gridLineWidthCSS,
@@ -5406,7 +5413,7 @@ function Cell(props) {
 					cell_id,
 					cellContent,
 					cellAttributes,
-					cellClassNames,
+					cellBaseClasses,
 					dataFormat,
 					e
 				);
@@ -5431,13 +5438,21 @@ function Cell(props) {
 		cell_id,
 		cellContent,
 		cellAttributes,
-		cellClassNames,
+		cellBaseClasses,
 		dataFormat,
 		e
 	) {
 		console.log('in passMouseEditClick');
 		const cellValueAttributes = cellAttributes?.value || {};
-		onMouseDown(table_id, cell_id, cellContent, cellValueAttributes, cellClassNames, dataFormat, e);
+		onMouseDown(
+			table_id,
+			cell_id,
+			cellContent,
+			cellValueAttributes,
+			cellBaseClasses,
+			dataFormat,
+			e
+		);
 	}
 
 	/**

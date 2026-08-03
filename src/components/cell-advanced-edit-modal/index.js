@@ -127,6 +127,7 @@ function EditCellContent(props = {}) {
 								...attributes?.cannonical,
 								url: event,
 							},
+							indexText: attributes?.indexText || '',
 						};
 						console.log('Attributes from URL', attributes);
 						break;
@@ -137,6 +138,18 @@ function EditCellContent(props = {}) {
 								...attributes?.cannonical,
 								label: event,
 							},
+							indexText: event,
+						};
+						console.log('Attributes from Label', attributes);
+						break;
+					case 'newTab':
+						attributes = {
+							...attributes,
+							cannonical: {
+								...attributes?.cannonical,
+								newTab: event,
+							},
+							indexText: attributes?.indexText || '',
 						};
 						console.log('Attributes from Label', attributes);
 						break;
@@ -145,8 +158,13 @@ function EditCellContent(props = {}) {
 				}
 				const url = attributes.cannonical?.url;
 				const label = attributes.cannonical?.label;
-				content =
-					'<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
+
+				if (attributes.cannonical?.newTab) {
+					content =
+						'<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
+				} else {
+					content = '<a href="' + url + '" target="_top">' + label + '</a>';
+				}
 				break;
 			default:
 				break;
@@ -178,7 +196,7 @@ function EditCellContent(props = {}) {
 			cellId,
 			updatedCellContent,
 			updatedCellValueAttributes,
-			updateCellClasses,
+			updateCellClasses
 		);
 		close();
 	}
@@ -215,8 +233,6 @@ function EditCellContent(props = {}) {
 											type="url"
 											label="Link URL"
 											placeholder="http://"
-											// id={previewId}
-											// step={60}
 											__next40pxDefaultSize
 											value={currentCellValueAttributes?.cannonical?.url || ''}
 											onChange={e => onUpdateCellValue(e, 'url')}
@@ -225,13 +241,16 @@ function EditCellContent(props = {}) {
 											// className={renderColumnClasses}
 											type="text"
 											label="Link Label"
-											// placeholder="http://"
-											// id={previewId}
-											// step={60}
 											__next40pxDefaultSize
 											value={currentCellValueAttributes?.cannonical?.label || ''}
 											onChange={e => onUpdateCellValue(e, 'label')}
 										></TextControl>
+										<CheckboxControl
+											// className="configure-column-modal__checkbox"
+											label={'Open in new tab?'}
+											checked={currentCellValueAttributes?.cannonical?.newTab || false}
+											onChange={e => onUpdateCellValue(e, 'newTab')}
+										/>
 									</CardBody>
 								</Card>
 							)}

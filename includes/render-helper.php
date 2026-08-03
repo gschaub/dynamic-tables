@@ -1054,3 +1054,50 @@ function get_checkbox_control_markup( $checked, $variant ) {
 	}
 	return '';
 }
+
+/**
+ * Render LInk cell data types
+ *
+ * @since 1.4.6
+ *
+ * @param  array  $cell                   Cell data and attributes to be rendered
+ * @param  string $grid_show_inner_lines  Show inner grid lines for cell?
+ * @param  string $grid_inner_line_width  Width for inner grid lines if present
+ * @return void
+ */
+function render_link_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width ) {
+	// $format_options      = $cell['data_type']['settings']['formatOptions'] ?? array();
+	$conditional_classes = array();
+	$cell_classes        = 'grid-control__body-cells ' . $cell['classes'];
+	$cell_render_classes = get_cell_classes( $cell_classes, $cell['column_classes'], $conditional_classes );
+
+	$conditional_classes = array();
+
+	// Prep for future front end editing.
+	$editable = false;
+	if ( $editable ) {
+		// Front End Edit.
+		?>
+		<div id="<?php echo esc_attr( $cell['cell_tag_id'] ); ?>"
+			role="cell"
+			class="<?php echo esc_attr( trim( $cell_render_classes ) ); ?>"
+			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
+				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
+		>
+			<?php echo ( $cell['content'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</div>
+		<?php
+	} else {
+		// Display only.
+		?>
+		<div id="<?php echo esc_attr( $cell['cell_tag_id'] ); ?>"
+			role="cell"
+			class="<?php echo esc_attr( trim( $cell_render_classes ) ); ?>"
+			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
+				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
+		>
+			<?php echo ( $cell['content'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</div>
+		<?php
+	}
+}

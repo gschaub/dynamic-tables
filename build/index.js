@@ -286,7 +286,8 @@ function EditCellContent(props = {}) {
               cannonical: {
                 ...attributes?.cannonical,
                 url: event
-              }
+              },
+              indexText: attributes?.indexText || ''
             };
             console.log('Attributes from URL', attributes);
             break;
@@ -296,7 +297,19 @@ function EditCellContent(props = {}) {
               cannonical: {
                 ...attributes?.cannonical,
                 label: event
-              }
+              },
+              indexText: event
+            };
+            console.log('Attributes from Label', attributes);
+            break;
+          case 'newTab':
+            attributes = {
+              ...attributes,
+              cannonical: {
+                ...attributes?.cannonical,
+                newTab: event
+              },
+              indexText: attributes?.indexText || ''
             };
             console.log('Attributes from Label', attributes);
             break;
@@ -305,7 +318,11 @@ function EditCellContent(props = {}) {
         }
         const url = attributes.cannonical?.url;
         const label = attributes.cannonical?.label;
-        content = '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
+        if (attributes.cannonical?.newTab) {
+          content = '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
+        } else {
+          content = '<a href="' + url + '" target="_top">' + label + '</a>';
+        }
         break;
       default:
         break;
@@ -360,10 +377,7 @@ function EditCellContent(props = {}) {
                 , {
                   type: "url",
                   label: "Link URL",
-                  placeholder: "http://"
-                  // id={previewId}
-                  // step={60}
-                  ,
+                  placeholder: "http://",
                   __next40pxDefaultSize: true,
                   value: currentCellValueAttributes?.cannonical?.url || '',
                   onChange: e => onUpdateCellValue(e, 'url')
@@ -371,14 +385,16 @@ function EditCellContent(props = {}) {
                 // className={renderColumnClasses}
                 , {
                   type: "text",
-                  label: "Link Label"
-                  // placeholder="http://"
-                  // id={previewId}
-                  // step={60}
-                  ,
+                  label: "Link Label",
                   __next40pxDefaultSize: true,
                   value: currentCellValueAttributes?.cannonical?.label || '',
                   onChange: e => onUpdateCellValue(e, 'label')
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl
+                // className="configure-column-modal__checkbox"
+                , {
+                  label: 'Open in new tab?',
+                  checked: currentCellValueAttributes?.cannonical?.newTab || false,
+                  onChange: e => onUpdateCellValue(e, 'newTab')
                 })]
               })]
             })]
@@ -6485,7 +6501,7 @@ function Edit(props) {
    * @param {Object} cellClasses     Cell classes
    * @param {Object} cellContentType Cell content type and formatting options
    */
-  const openCellEditContent = (table_id, cell_id, cellContent, cellAttributes, cellClassNames, dataFormat, e) => {
+  const openCellEditContent = (table_id, cell_id, cellContent, cellAttributes, cellBaseClasses, dataFormat, e) => {
     console.log('in OpenCellEditContent');
     e?.preventDefault?.();
     e?.stopPropagation?.();
@@ -6501,7 +6517,7 @@ function Edit(props) {
       cellId: cell_id,
       cellContent: cellContent,
       cellAttributes: cellAttributes,
-      cellClasses: cellClassNames,
+      cellClasses: cellBaseClasses,
       cellContentType: dataFormat
     });
   };
@@ -8396,12 +8412,13 @@ function Edit(props) {
       const attrs = {
         ...(cellData.attributes || {}),
         value: {
-          ...(cellData.attributes && cellData.attributes.value || {}),
+          // ...((cellData.attributes && cellData.attributes.value) || {}),
           indexText: ''
         }
       };
       setTableAttributes(table_id, 'cell', cellData.cell_id, 'CONTENT', '', false);
       setTableAttributes(table_id, 'cell', cellData.cell_id, 'ATTRIBUTES', attrs, false);
+      setTableAttributes(table_id, 'cell', cellData.cell_id, 'CLASSES', '', false);
       if (persist) {
         updateTableEntity(table_id);
       }
@@ -9694,6 +9711,7 @@ function Edit(props) {
                       content: borderContent,
                       attributes: attributes,
                       columnClassNames: '',
+                      cellBaseClasses: classes,
                       cellClassNames: classes,
                       borderHandleProps: {
                         ariaLabel: `Column ${(0,_utils__WEBPACK_IMPORTED_MODULE_20__.numberToLetter)(Number(column_id))} options`,
@@ -9767,6 +9785,7 @@ function Edit(props) {
                         content: borderContent,
                         attributes: attributes,
                         columnClassNames: '',
+                        cellBaseClasses: classes,
                         cellClassNames: classes,
                         borderHandleProps: {
                           ariaLabel: `Row ${String(row_id)} options`,
@@ -9790,6 +9809,7 @@ function Edit(props) {
                         attributes: attributes,
                         isFocused: isFocused,
                         columnClassNames: '',
+                        cellBaseClasses: classes,
                         cellClassNames: 'grid-control__header-cells ' + 'grid-control__cellEditor ' + classes + calculatedClasses,
                         showGridLinesCSS: showGridLinesCSS,
                         gridLineWidthCSS: gridLineWidthCSS,
@@ -9886,7 +9906,7 @@ function Edit(props) {
                       /**
                        * Set general processing variables
                        */
-                      calculatedClasses = '';
+                      let calculatedClasses = '';
                       const isFirstColumn = column_id === '1' ? true : false;
                       if (attributes?.border === null) {
                         console.log(`Cell ${cell_id} has a null border attribute. This may cause rendering issues. Please check the cell attributes.`);
@@ -9917,6 +9937,7 @@ function Edit(props) {
                           content: borderContent,
                           attributes: attributes,
                           columnClassNames: '',
+                          cellBaseClasses: classes,
                           cellClassNames: classes,
                           borderHandleProps: {
                             ariaLabel: `Row ${String(row_id)} options`,
@@ -9946,6 +9967,7 @@ function Edit(props) {
                           attributes: attributes,
                           isFocused: isFocused,
                           columnClassNames: columnClasses[column_id],
+                          cellBaseClasses: classes,
                           cellClassNames: 'grid-control__body-cells ' + 'grid-control__cellEditor ' + classes + calculatedClasses,
                           showGridLinesCSS: showGridLinesCSS,
                           gridLineWidthCSS: gridLineWidthCSS,
@@ -10174,6 +10196,7 @@ function Cell(props) {
     attributes,
     isFocused,
     columnClassNames,
+    cellBaseClasses,
     cellClassNames,
     showGridLinesCSS,
     gridLineWidthCSS,
@@ -10502,7 +10525,7 @@ function Cell(props) {
       e.preventDefault();
     },
     onClick: e => {
-      passMouseEditClick(table_id, cell_id, cellContent, cellAttributes, cellClassNames, dataFormat, e);
+      passMouseEditClick(table_id, cell_id, cellContent, cellAttributes, cellBaseClasses, dataFormat, e);
     },
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)(_wordpress_icons__WEBPACK_IMPORTED_MODULE_10__["default"], {
       icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_12__["default"],
@@ -10520,10 +10543,10 @@ function Cell(props) {
    * @param {Object} cellContent Current Dynamic Table
    * @param {Object} e           Border click event object
    */
-  function passMouseEditClick(table_id, cell_id, cellContent, cellAttributes, cellClassNames, dataFormat, e) {
+  function passMouseEditClick(table_id, cell_id, cellContent, cellAttributes, cellBaseClasses, dataFormat, e) {
     console.log('in passMouseEditClick');
     const cellValueAttributes = cellAttributes?.value || {};
-    onMouseDown(table_id, cell_id, cellContent, cellValueAttributes, cellClassNames, dataFormat, e);
+    onMouseDown(table_id, cell_id, cellContent, cellValueAttributes, cellBaseClasses, dataFormat, e);
   }
 
   /**

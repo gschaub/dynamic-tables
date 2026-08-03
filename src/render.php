@@ -267,6 +267,9 @@ if ( is_wp_error( $table ) ) {
 										case 'checkbox':
 											render_checkbox_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width );
 											break;
+										case 'link':
+											render_link_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width );
+											break;
 										default:
 											$cell_text_alignment = 'left';
 									}
