@@ -1,20 +1,15 @@
 /* External dependencies */
+import apiFetch from '@wordpress/api-fetch';
 import { useInstanceId } from '@wordpress/compose';
 import { useLayoutEffect, useRef, useState, memo } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
 	Modal,
-	BaseControl,
 	Button,
-	SelectControl,
 	CheckboxControl,
-	RadioControl,
 	TextControl,
-	ToggleControl,
-	__experimentalInputControl as InputControl,
+	Notice,
 	__experimentalVStack as VStack,
-	Flex,
-	FlexItem,
 	Card,
 	CardBody,
 	CardHeader,
@@ -25,21 +20,6 @@ import clsx from 'clsx';
  * Internal dependencies
  */
 import './style.scss';
-import { FreeformCheckboxIcon, StatusIcon } from '../formatted-display';
-import { settings } from '@wordpress/icons';
-import {
-	normalizeColumnDataType,
-	stageClassesForEdit,
-	prepareClassesForUse,
-	sanitizeNumberInput,
-	formattedNumber,
-	toPercentEntryValue,
-	fromPercentEntryValue,
-	countCaretTokens,
-	getCaretIndexFromTokenCount,
-	getFirstNumericIndex,
-	normalizeCaretForPresentationPrefix,
-} from '../../utils';
 
 /**
  * React component to configure data types for a column.
@@ -72,6 +52,9 @@ function EditCellContent(props = {}) {
 		cellAttributes || {}
 	);
 	const [currentCellClasses, setCurrentCellClasses] = useState(cellClasses);
+	const [linkResolutionError, setLinkResolutionError] = useState('');
+	const initialLinkUrlRef = useRef(String(cellAttributes?.cannonical?.url || ''));
+	const [isResolvingLink, setIsResolvingLink] = useState(false);
 
 	/**
 	 * Stop event processing in favor of custom processing.
@@ -121,6 +104,7 @@ function EditCellContent(props = {}) {
 
 				switch (attribute) {
 					case 'url':
+						setLinkResolutionError('');
 						attributes = {
 							...attributes,
 							cannonical: {
@@ -182,12 +166,68 @@ function EditCellContent(props = {}) {
 	 *
 	 * @param {Object} event Form submit
 	 */
-	function onUpdate(event) {
+	async function onUpdate(event) {
 		event?.preventDefault?.();
 
-		const updatedCellContent = currentCellContent;
-		const updatedCellValueAttributes = currentCellValueAttributes;
+		let updatedCellContent = currentCellContent;
+		let updatedCellValueAttributes = currentCellValueAttributes;
 		const updateCellClasses = currentCellClasses;
+
+		const currentLabel = currentCellValueAttributes?.cannonical?.label || '';
+		const currentLinkUrl = String(currentCellValueAttributes?.cannonical?.url || '');
+		const shouldResolveLink =
+			contentType === 'link' && currentLinkUrl !== initialLinkUrlRef.current;
+
+		if (!currentLabel || currentLabel.trim() === '') {
+			setLinkResolutionError(__('The link label cannot be empty.', 'dynamic-table-blocks'));
+			return;
+		}
+
+		if (shouldResolveLink) {
+			setIsResolvingLink(true);
+			setLinkResolutionError('');
+
+			try {
+				const { resolvedUrl } = await apiFetch({
+					path: '/dynamic-table-blocks/v1/resolve-link',
+					method: 'POST',
+					data: {
+						url: currentCellValueAttributes?.cannonical?.url || '',
+					},
+				});
+
+				if (typeof resolvedUrl !== 'string' || !resolvedUrl) {
+					throw new Error(
+						__('The link resolver did not return a valid URL.', 'dynamic-table-blocks')
+					);
+				}
+
+				updatedCellValueAttributes = {
+					...currentCellValueAttributes,
+					cannonical: {
+						...currentCellValueAttributes?.cannonical,
+						url: resolvedUrl,
+					},
+				};
+
+				const label = updatedCellValueAttributes.cannonical?.label || '';
+
+				updatedCellContent = updatedCellValueAttributes.cannonical?.newTab
+					? '<a href="' +
+						resolvedUrl +
+						'" target="_blank" rel="noopener noreferrer">' +
+						label +
+						'</a>'
+					: '<a href="' + resolvedUrl + '" target="_top">' + label + '</a>';
+			} catch (error) {
+				setLinkResolutionError(
+					error?.message || __('We could not reach this web address.', 'dynamic-table-blocks')
+				);
+				return;
+			} finally {
+				setIsResolvingLink(false);
+			}
+		}
 
 		updatedCell(
 			event,
@@ -228,29 +268,42 @@ function EditCellContent(props = {}) {
 										<strong>Content settings</strong>
 									</CardHeader>
 									<CardBody>
-										<TextControl
-											// className={renderColumnClasses}
-											type="url"
-											label="Link URL"
-											placeholder="http://"
-											__next40pxDefaultSize
-											value={currentCellValueAttributes?.cannonical?.url || ''}
-											onChange={e => onUpdateCellValue(e, 'url')}
-										></TextControl>
-										<TextControl
-											// className={renderColumnClasses}
-											type="text"
-											label="Link Label"
-											__next40pxDefaultSize
-											value={currentCellValueAttributes?.cannonical?.label || ''}
-											onChange={e => onUpdateCellValue(e, 'label')}
-										></TextControl>
-										<CheckboxControl
-											// className="configure-column-modal__checkbox"
-											label={'Open in new tab?'}
-											checked={currentCellValueAttributes?.cannonical?.newTab || false}
-											onChange={e => onUpdateCellValue(e, 'newTab')}
-										/>
+										<VStack spacing={4}>
+											{linkResolutionError && (
+												<Notice status="error" isDismissible={false}>
+													{linkResolutionError}
+												</Notice>
+											)}
+
+											<TextControl
+												// className={renderColumnClasses}
+												type="text"
+												inputMode="url"
+												label="Link URL"
+												placeholder="https://www.example.com"
+												__next40pxDefaultSize
+												value={currentCellValueAttributes?.cannonical?.url || ''}
+												onChange={e => onUpdateCellValue(e, 'url')}
+												help={linkResolutionError || undefined}
+												aria-invalid={linkResolutionError ? 'true' : undefined}
+											></TextControl>
+
+											<TextControl
+												// className={renderColumnClasses}
+												type="text"
+												label="Link Label"
+												__next40pxDefaultSize
+												value={currentCellValueAttributes?.cannonical?.label || ''}
+												onChange={e => onUpdateCellValue(e, 'label')}
+											></TextControl>
+
+											<CheckboxControl
+												// className="configure-column-modal__checkbox"
+												label={'Open in new tab?'}
+												checked={currentCellValueAttributes?.cannonical?.newTab || false}
+												onChange={e => onUpdateCellValue(e, 'newTab')}
+											/>
+										</VStack>
 									</CardBody>
 								</Card>
 							)}
@@ -264,8 +317,16 @@ function EditCellContent(props = {}) {
 						<Button variant="secondary" onClick={handleCancel}>
 							{__('Cancel', 'dynamic-table-blocks')}
 						</Button>
-						<Button variant="primary" type="submit">
-							{__('Update', 'dynamic-table-blocks')}
+
+						<Button
+							variant="primary"
+							type="submit"
+							isBusy={isResolvingLink}
+							disabled={isResolvingLink}
+						>
+							{isResolvingLink
+								? __('Verifying link…', 'dynamic-table-blocks')
+								: __('Update', 'dynamic-table-blocks')}
 						</Button>
 					</div>
 				</div>

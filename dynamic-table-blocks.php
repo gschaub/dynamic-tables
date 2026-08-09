@@ -114,6 +114,8 @@ final class DynamicTableBlocks {
 		require_once plugin_dir_path( __FILE__ ) . 'includes/render-helper.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/table-defaults.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/utility-functions.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-table-blocks-global-styles.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/rest-endpoints/link-resolver.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/api/dynamic-table-blocks-api.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/api/api-helpers.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/cron-trait-schedulable.php';
@@ -200,12 +202,14 @@ final class DynamicTableBlocks {
 	 * structured tables in JSON format
 	 *
 	 * @since 1.0.0
+	 * @since 1.4.6 Add support for ancillary link resolution endpoint.
 	 *
 	 * @return void
 	 */
 	public function establish_services() {
 		$controller = new Dynamic_Tables_REST_Controller();
 		$controller->register_routes();
+		dtbk_register_link_resolver_route();
 	}
 
 	/**

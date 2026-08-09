@@ -188,6 +188,11 @@ No. This plugin is free to use. However, we are planning for a premium version o
 10. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+= 1.4.6 =
+* Added link column content type
+* Added support multi-part edits via an edit dialog for specific cell content types
+* Added block global style defaults that can be optionally applied
+
 = 1.4.5 =
 * Added support for undo/redo within Dynamic Tables
 

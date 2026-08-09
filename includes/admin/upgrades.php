@@ -131,6 +131,7 @@ class DynamicTableBlocksVersionManagement {
 	 * Create Dynamic Tables database entries if they do not already exist
 	 *
 	 * @since 1.0.0
+	 * @since 1.4.6 - Added option to enable default block styles.
 	 *
 	 * @return void
 	 */
@@ -154,6 +155,10 @@ class DynamicTableBlocksVersionManagement {
 
 		if ( false === get_option( 'dtbk_cron_enabled', false ) ) {
 			update_option( 'dtbk_cron_enabled', 1 );
+		}
+
+		if ( false === get_option( 'dtbk_enable_block_defaults', false ) ) {
+			add_option( 'dtbk_enable_block_defaults', '1' );
 		}
 
 		if ( $maintenance->is_enabled() ) {

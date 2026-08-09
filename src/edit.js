@@ -2640,6 +2640,14 @@ export default function Edit(props) {
 		if (event.key === 'Enter' || event.key === 'F2') {
 			event.preventDefault();
 			event.stopPropagation();
+
+			// Open the modal editor based on the cell type
+			const modalEditButton = activeCellEl.querySelector('[data-dtbk-cell-edit-button]');
+			if (modalEditButton) {
+				modalEditButton.click();
+				return;
+			}
+
 			startEditingCell(cellId);
 			window.requestAnimationFrame(() => {
 				// activeCellEl?.querySelector?.('[contenteditable="true"], input, textarea')?.focus?.();
@@ -4549,6 +4557,7 @@ export default function Edit(props) {
 																				}}
 																				onChange={onChangeCellData}
 																				onMouseDown={openCellEditContent}
+																				onContextMenu={onMouseMenuClick}
 																			></Cell>
 																		)}
 																	</Fragment>
@@ -4786,6 +4795,7 @@ export default function Edit(props) {
 																					}}
 																					onChange={onChangeCellData}
 																					onMouseDown={openCellEditContent}
+																					onContextMenu={onMouseMenuClick}
 																				></Cell>
 																			)}
 																		</Fragment>
@@ -5018,6 +5028,7 @@ function Cell(props) {
 		gridLineWidthCSS,
 		onChange,
 		onMouseDown,
+		onContextMenu,
 		borderHandleProps = {},
 		cellTagId,
 		isEditing,
@@ -5387,7 +5398,12 @@ function Cell(props) {
 	 * @param {Object} e         Border click event object
 	 */
 	function passMouseMenuClick(column_id, row_id, table, e) {
-		onMouseDown(column_id, row_id, table, e);
+		console.log('in passMouseMenuClick');
+		if (e.button !== 0) {
+			onContextMenu(column_id, row_id, table, e);
+		} else {
+			onMouseDown(column_id, row_id, table, e);
+		}
 	}
 
 	/**
@@ -5403,6 +5419,7 @@ function Cell(props) {
 			type="button"
 			className="grid-control__cell-edit-button"
 			aria-label={label}
+			data-dtbk-cell-edit-button
 			title={label}
 			onMouseDown={e => {
 				e.preventDefault();
@@ -5701,19 +5718,28 @@ function Cell(props) {
 						}
 			}
 			onMouseDown={e => {
+				console.log('in onMouseDown, e = ', e);
 				if (cellType === 'border') return;
 				if (isEditing) return;
+				if (e.button !== 0) {
+					return;
+				}
+				console.log('Executing onMouseDown');
 				e.preventDefault();
 				e.stopPropagation();
 				onRequestFocus?.(Number(column_id), Number(row_id));
 			}}
 			onDoubleClick={e => {
+				console.log('in onMouseDown, e = ', e);
 				if (cellType === 'border') return;
+				console.log('Executing onDoubleClick');
 				e.preventDefault();
 				onRequestEdit?.(cell_id);
 			}}
 			onContextMenu={e => {
+				console.log('in onContextMenu, e = ', e);
 				if (cellType === 'border' || !canOpenContextMenu) return;
+				console.log('Executing onContextMenu');
 				e.preventDefault();
 				passMouseMenuClick(column_id, row_id, table, e);
 				onRequestFocus?.(Number(column_id), Number(row_id));

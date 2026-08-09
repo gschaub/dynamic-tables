@@ -206,6 +206,7 @@ class DTBK_Admin {
 	 * Perform updates upon form submit
 	 *
 	 * @since   1.0.0
+	 * @since   1.4.6 - Added option to enable default block styles.
 	 *
 	 * @return void
 	 */
@@ -218,6 +219,9 @@ class DTBK_Admin {
 		$enable_cron = isset( $_POST['dtbk_cron_enabled'] ) ? '1' : '0'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing -- Checked elsewhere.
 		update_option( 'dtbk_cron_enabled', $enable_cron );
 
+		$enable_block_defaults = isset( $_POST['dtbk_enable_block_defaults'] ) ? '1' : '0'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing -- Checked elsewhere.
+		update_option( 'dtbk_enable_block_defaults', $enable_block_defaults );
+
 		echo $notices->admin_notice_library( 'save-success' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML
 
 		if ( $keep_tables_value === '0' ) {
@@ -229,6 +233,7 @@ class DTBK_Admin {
 	 * Register all output admin main page
 	 *
 	 * @since   1.0.0
+	 * @since   1.4.6 - Added option to enable default block styles.
 	 */
 	public function plugin_main_admin() {
 		$notices     = new DTBK_Admin_Notices();
@@ -303,6 +308,20 @@ class DTBK_Admin {
 						?>
 					</p>
 
+				</div>
+
+				<hr>
+
+				<div class="admin-checkbox">
+					<span>
+						<label for="dtbk_enable_block_defaults">Enable default Dynamic Tables block styles?</label>
+						<input name="dtbk_enable_block_defaults" id="dtbk_enable_block_defaults" type="checkbox" value="1"
+							<?php checked( '1', get_option( 'dtbk_enable_block_defaults', '1' ) ); ?>></input>
+					</span>
+
+					<p class="description">
+						<?php esc_html_e( 'Apply the default link colors, link states, keyboard focus indicator, and medium font size. Theme, Site Editor, and individual block styles can override these defaults.', 'dynamic-table-blocks' ); ?>
+					</p>
 				</div>
 
 				<div>

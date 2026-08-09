@@ -174,21 +174,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   EditCellContentModal: () => (/* binding */ EditCellContentModal)
 /* harmony export */ });
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
-/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./style.scss */ "./src/components/cell-advanced-edit-modal/style.scss");
-/* harmony import */ var _formatted_display__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../formatted-display */ "./src/components/formatted-display/index.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../utils */ "./src/utils.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./style.scss */ "./src/components/cell-advanced-edit-modal/style.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__);
 /* External dependencies */
+
 
 
 
@@ -198,9 +199,6 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Internal dependencies
  */
-
-
-
 
 
 /**
@@ -232,9 +230,12 @@ function EditCellContent(props = {}) {
   const {
     format: contentFormat
   } = settings?.format || '';
-  const [currentCellContent, setCurrentCellContent] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(cellContent);
-  const [currentCellValueAttributes, setCurrentCellValueAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(cellAttributes || {});
-  const [currentCellClasses, setCurrentCellClasses] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(cellClasses);
+  const [currentCellContent, setCurrentCellContent] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(cellContent);
+  const [currentCellValueAttributes, setCurrentCellValueAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(cellAttributes || {});
+  const [currentCellClasses, setCurrentCellClasses] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(cellClasses);
+  const [linkResolutionError, setLinkResolutionError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)('');
+  const initialLinkUrlRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(String(cellAttributes?.cannonical?.url || ''));
+  const [isResolvingLink, setIsResolvingLink] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
 
   /**
    * Stop event processing in favor of custom processing.
@@ -281,6 +282,7 @@ function EditCellContent(props = {}) {
         }
         switch (attribute) {
           case 'url':
+            setLinkResolutionError('');
             attributes = {
               ...attributes,
               cannonical: {
@@ -339,86 +341,137 @@ function EditCellContent(props = {}) {
    *
    * @param {Object} event Form submit
    */
-  function onUpdate(event) {
+  async function onUpdate(event) {
     event?.preventDefault?.();
-    const updatedCellContent = currentCellContent;
-    const updatedCellValueAttributes = currentCellValueAttributes;
+    let updatedCellContent = currentCellContent;
+    let updatedCellValueAttributes = currentCellValueAttributes;
     const updateCellClasses = currentCellClasses;
+    const currentLabel = currentCellValueAttributes?.cannonical?.label || '';
+    const currentLinkUrl = String(currentCellValueAttributes?.cannonical?.url || '');
+    const shouldResolveLink = contentType === 'link' && currentLinkUrl !== initialLinkUrlRef.current;
+    if (!currentLabel || currentLabel.trim() === '') {
+      setLinkResolutionError((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('The link label cannot be empty.', 'dynamic-table-blocks'));
+      return;
+    }
+    if (shouldResolveLink) {
+      setIsResolvingLink(true);
+      setLinkResolutionError('');
+      try {
+        const {
+          resolvedUrl
+        } = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default()({
+          path: '/dynamic-table-blocks/v1/resolve-link',
+          method: 'POST',
+          data: {
+            url: currentCellValueAttributes?.cannonical?.url || ''
+          }
+        });
+        if (typeof resolvedUrl !== 'string' || !resolvedUrl) {
+          throw new Error((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('The link resolver did not return a valid URL.', 'dynamic-table-blocks'));
+        }
+        updatedCellValueAttributes = {
+          ...currentCellValueAttributes,
+          cannonical: {
+            ...currentCellValueAttributes?.cannonical,
+            url: resolvedUrl
+          }
+        };
+        const label = updatedCellValueAttributes.cannonical?.label || '';
+        updatedCellContent = updatedCellValueAttributes.cannonical?.newTab ? '<a href="' + resolvedUrl + '" target="_blank" rel="noopener noreferrer">' + label + '</a>' : '<a href="' + resolvedUrl + '" target="_top">' + label + '</a>';
+      } catch (error) {
+        setLinkResolutionError(error?.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('We could not reach this web address.', 'dynamic-table-blocks'));
+        return;
+      } finally {
+        setIsResolvingLink(false);
+      }
+    }
     updatedCell(event, 'editedCellContent', tableId, cellId, updatedCellContent, updatedCellValueAttributes, updateCellClasses);
     close();
   }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Modal, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Modal, {
     title: "Edit Cell Content",
     onRequestClose: handleCancel,
     focusOnMount: "firstContentElement",
     isDismissible: false,
     shouldCloseOnClickOutside: false,
     size: "large",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("form", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("form", {
       className: "configure-data-type--form configure-column-modal__form",
       onSubmit: onUpdate,
       onMouseDown: stopProp,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
         className: "configure-column-modal__body",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
           className: "configure-column-modal__body-inner",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalVStack, {
             spacing: 4,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
               children: "Heading"
-            }), cellContentType.type === 'link' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("strong", {
+            }), cellContentType.type === 'link' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("strong", {
                   children: "Content settings"
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl
-                // className={renderColumnClasses}
-                , {
-                  type: "url",
-                  label: "Link URL",
-                  placeholder: "http://",
-                  __next40pxDefaultSize: true,
-                  value: currentCellValueAttributes?.cannonical?.url || '',
-                  onChange: e => onUpdateCellValue(e, 'url')
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl
-                // className={renderColumnClasses}
-                , {
-                  type: "text",
-                  label: "Link Label",
-                  __next40pxDefaultSize: true,
-                  value: currentCellValueAttributes?.cannonical?.label || '',
-                  onChange: e => onUpdateCellValue(e, 'label')
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl
-                // className="configure-column-modal__checkbox"
-                , {
-                  label: 'Open in new tab?',
-                  checked: currentCellValueAttributes?.cannonical?.newTab || false,
-                  onChange: e => onUpdateCellValue(e, 'newTab')
-                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalVStack, {
+                  spacing: 4,
+                  children: [linkResolutionError && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Notice, {
+                    status: "error",
+                    isDismissible: false,
+                    children: linkResolutionError
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.TextControl
+                  // className={renderColumnClasses}
+                  , {
+                    type: "text",
+                    inputMode: "url",
+                    label: "Link URL",
+                    placeholder: "https://www.example.com",
+                    __next40pxDefaultSize: true,
+                    value: currentCellValueAttributes?.cannonical?.url || '',
+                    onChange: e => onUpdateCellValue(e, 'url'),
+                    help: linkResolutionError || undefined,
+                    "aria-invalid": linkResolutionError ? 'true' : undefined
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.TextControl
+                  // className={renderColumnClasses}
+                  , {
+                    type: "text",
+                    label: "Link Label",
+                    __next40pxDefaultSize: true,
+                    value: currentCellValueAttributes?.cannonical?.label || '',
+                    onChange: e => onUpdateCellValue(e, 'label')
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.CheckboxControl
+                  // className="configure-column-modal__checkbox"
+                  , {
+                    label: 'Open in new tab?',
+                    checked: currentCellValueAttributes?.cannonical?.newTab || false,
+                    onChange: e => onUpdateCellValue(e, 'newTab')
+                  })]
+                })
               })]
             })]
           })
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
         className: "configure-column-modal__footer",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
           className: "configure-column-modal__button-group",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
             variant: "secondary",
             onClick: handleCancel,
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Cancel', 'dynamic-table-blocks')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Cancel', 'dynamic-table-blocks')
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
             variant: "primary",
             type: "submit",
-            children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Update', 'dynamic-table-blocks')
+            isBusy: isResolvingLink,
+            disabled: isResolvingLink,
+            children: isResolvingLink ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Verifying link…', 'dynamic-table-blocks') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Update', 'dynamic-table-blocks')
           })]
         })
       })]
     })
   });
 }
-const EditCellContentModal = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.memo)(EditCellContent);
+const EditCellContentModal = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.memo)(EditCellContent);
 
 /***/ },
 
@@ -8234,6 +8287,13 @@ function Edit(props) {
     if (event.key === 'Enter' || event.key === 'F2') {
       event.preventDefault();
       event.stopPropagation();
+
+      // Open the modal editor based on the cell type
+      const modalEditButton = activeCellEl.querySelector('[data-dtbk-cell-edit-button]');
+      if (modalEditButton) {
+        modalEditButton.click();
+        return;
+      }
       startEditingCell(cellId);
       window.requestAnimationFrame(() => {
         // activeCellEl?.querySelector?.('[contenteditable="true"], input, textarea')?.focus?.();
@@ -9844,7 +9904,8 @@ function Edit(props) {
                           });
                         },
                         onChange: onChangeCellData,
-                        onMouseDown: openCellEditContent
+                        onMouseDown: openCellEditContent,
+                        onContextMenu: onMouseMenuClick
                       })]
                     }, `header-cell:${cell_id}`);
                   })
@@ -10002,7 +10063,8 @@ function Edit(props) {
                             });
                           },
                           onChange: onChangeCellData,
-                          onMouseDown: openCellEditContent
+                          onMouseDown: openCellEditContent,
+                          onContextMenu: onMouseMenuClick
                         })]
                       }, `body-cell:${cell_id}`);
                     })
@@ -10202,6 +10264,7 @@ function Cell(props) {
     gridLineWidthCSS,
     onChange,
     onMouseDown,
+    onContextMenu,
     borderHandleProps = {},
     cellTagId,
     isEditing,
@@ -10505,7 +10568,12 @@ function Cell(props) {
    * @param {Object} e         Border click event object
    */
   function passMouseMenuClick(column_id, row_id, table, e) {
-    onMouseDown(column_id, row_id, table, e);
+    console.log('in passMouseMenuClick');
+    if (e.button !== 0) {
+      onContextMenu(column_id, row_id, table, e);
+    } else {
+      onMouseDown(column_id, row_id, table, e);
+    }
   }
 
   /**
@@ -10520,6 +10588,7 @@ function Cell(props) {
     type: "button",
     className: "grid-control__cell-edit-button",
     "aria-label": label,
+    "data-dtbk-cell-edit-button": true,
     title: label,
     onMouseDown: e => {
       e.preventDefault();
@@ -10765,19 +10834,28 @@ function Cell(props) {
       '--gridLineWidth': gridLineWidthCSS
     },
     onMouseDown: e => {
+      console.log('in onMouseDown, e = ', e);
       if (cellType === 'border') return;
       if (isEditing) return;
+      if (e.button !== 0) {
+        return;
+      }
+      console.log('Executing onMouseDown');
       e.preventDefault();
       e.stopPropagation();
       onRequestFocus?.(Number(column_id), Number(row_id));
     },
     onDoubleClick: e => {
+      console.log('in onMouseDown, e = ', e);
       if (cellType === 'border') return;
+      console.log('Executing onDoubleClick');
       e.preventDefault();
       onRequestEdit?.(cell_id);
     },
     onContextMenu: e => {
+      console.log('in onContextMenu, e = ', e);
       if (cellType === 'border' || !canOpenContextMenu) return;
+      console.log('Executing onContextMenu');
       e.preventDefault();
       passMouseMenuClick(column_id, row_id, table, e);
       onRequestFocus?.(Number(column_id), Number(row_id));
