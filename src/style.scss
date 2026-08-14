@@ -18,6 +18,10 @@
 	text-align: var(--gridAlignment);
 }
 
+:where(.wp-block-dynamic-table-blocks-dynamic-table-blocks) :where(strong, b) {
+	font-weight: var(--dtbk-strong-font-weight, 700);
+}
+
 .grid-scroller {
 	display: grid;
 	gap: 0px;

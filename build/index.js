@@ -11078,6 +11078,7 @@ function useGetTable(tableId, {
  *
  * @since    1.4.4
  * @since    1.4.5 Refactored to look at changes that may require undo/redo rather than history
+ * @since    1.4.6 Fixed bug that causes updates to editedTable from unrelated activity.
  *
  * @param {number|string} tableId
  * @param {Function}      onHistoryChange
@@ -11085,25 +11086,36 @@ function useGetTable(tableId, {
 function useTableUndoRedoEffect(tableId, onHistoryChange) {
   const {
     editedTable,
-    hasEdits
+    entityEdits,
+    hasEdits,
+    isSavingPost,
+    isAutosavingPost
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => {
     const core = select(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_3__.store);
+    const editor = select('core/editor');
     const numericTableId = Number(tableId);
     if (numericTableId <= 0) {
       return {
         editedTable: null,
-        hasEdits: false
+        hasEdits: false,
+        entityEdits: null,
+        isSavingPost: false,
+        isAutosavingPost: false
       };
     }
     return {
       editedTable: core?.getEditedEntityRecord?.('dynamic-table-blocks', 'table', numericTableId) ?? null,
-      hasEdits: core?.hasEditsForEntityRecord?.('dynamic-table-blocks', 'table', numericTableId) ?? false
+      hasEdits: core?.hasEditsForEntityRecord?.('dynamic-table-blocks', 'table', numericTableId) ?? false,
+      entityEdits: core?.getEntityRecordEdits?.('dynamic-table-blocks', 'table', numericTableId) ?? null,
+      isSavingPost: editor?.isSavingPost?.() ?? false,
+      isAutosavingPost: editor?.isAutosavingPost?.() ?? false
     };
   }, [tableId]);
   const onHistoryChangeRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(onHistoryChange);
   const previousRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)({
     tableId: null,
-    editedTable: null
+    editedTable: null,
+    entityEdits: null
   });
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     onHistoryChangeRef.current = onHistoryChange;
@@ -11113,19 +11125,20 @@ function useTableUndoRedoEffect(tableId, onHistoryChange) {
     const previous = previousRef.current;
     previousRef.current = {
       tableId: numericTableId,
-      editedTable
+      editedTable,
+      entityEdits
     };
     if (numericTableId <= 0 || !editedTable || previous.tableId !== numericTableId || !previous.editedTable) {
       return;
     }
-    if (editedTable !== previous.editedTable) {
+    if (entityEdits !== previous.entityEdits && !isSavingPost && !isAutosavingPost) {
       onHistoryChangeRef.current?.({
         tableId: numericTableId,
         editedTable,
         hasEdits
       });
     }
-  }, [tableId, editedTable, hasEdits]);
+  }, [tableId, editedTable, entityEdits, hasEdits, isSavingPost, isAutosavingPost]);
 }
 
 /***/ },

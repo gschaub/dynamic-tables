@@ -176,20 +176,25 @@ export function useGetTable(tableId, { isTableStale = false, shouldFetch = true 
  *
  * @since    1.4.4
  * @since    1.4.5 Refactored to look at changes that may require undo/redo rather than history
+ * @since    1.4.6 Fixed bug that causes updates to editedTable from unrelated activity.
  *
  * @param {number|string} tableId
  * @param {Function}      onHistoryChange
  */
 export function useTableUndoRedoEffect(tableId, onHistoryChange) {
-	const { editedTable, hasEdits } = useSelect(
+	const { editedTable, entityEdits, hasEdits, isSavingPost, isAutosavingPost } = useSelect(
 		select => {
 			const core = select(coreStore);
+			const editor = select('core/editor');
 			const numericTableId = Number(tableId);
 
 			if (numericTableId <= 0) {
 				return {
 					editedTable: null,
 					hasEdits: false,
+					entityEdits: null,
+					isSavingPost: false,
+					isAutosavingPost: false,
 				};
 			}
 
@@ -198,6 +203,10 @@ export function useTableUndoRedoEffect(tableId, onHistoryChange) {
 					core?.getEditedEntityRecord?.('dynamic-table-blocks', 'table', numericTableId) ?? null,
 				hasEdits:
 					core?.hasEditsForEntityRecord?.('dynamic-table-blocks', 'table', numericTableId) ?? false,
+				entityEdits:
+					core?.getEntityRecordEdits?.('dynamic-table-blocks', 'table', numericTableId) ?? null,
+				isSavingPost: editor?.isSavingPost?.() ?? false,
+				isAutosavingPost: editor?.isAutosavingPost?.() ?? false,
 			};
 		},
 		[tableId]
@@ -207,6 +216,7 @@ export function useTableUndoRedoEffect(tableId, onHistoryChange) {
 	const previousRef = useRef({
 		tableId: null,
 		editedTable: null,
+		entityEdits: null,
 	});
 
 	useEffect(() => {
@@ -220,6 +230,7 @@ export function useTableUndoRedoEffect(tableId, onHistoryChange) {
 		previousRef.current = {
 			tableId: numericTableId,
 			editedTable,
+			entityEdits,
 		};
 
 		if (
@@ -231,12 +242,12 @@ export function useTableUndoRedoEffect(tableId, onHistoryChange) {
 			return;
 		}
 
-		if (editedTable !== previous.editedTable) {
+		if (entityEdits !== previous.entityEdits && !isSavingPost && !isAutosavingPost) {
 			onHistoryChangeRef.current?.({
 				tableId: numericTableId,
 				editedTable,
 				hasEdits,
 			});
 		}
-	}, [tableId, editedTable, hasEdits]);
+	}, [tableId, editedTable, entityEdits, hasEdits, isSavingPost, isAutosavingPost]);
 }

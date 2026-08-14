@@ -138,8 +138,7 @@ if ( is_wp_error( $table ) ) {
 			<?php if ( ! $hide_title ) { ?>
 			<p id="<?php echo esc_attr( $table_title_tag_id ); ?>"
 				class="dtbk-table-title"
-				style="--gridAlignment: <?php echo esc_attr( $grid_alignment ); ?>;
-					white-space:pre-wrap">
+				style="--gridAlignment: <?php echo esc_attr( $grid_alignment ); ?>;">
 				<?php echo wp_kses_post( $table_name ); ?>
 			</p>
 			<?php } ?>

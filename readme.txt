@@ -2,7 +2,7 @@
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, responsive tables, table block, gutenberg table
 Tested up to:      7.0
-Stable tag:        1.4.5
+Stable tag:        1.4.6
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,7 +42,7 @@ Rather than forcing you to choose between ease of use and technical capability, 
 * Native Gutenberg block — no page builders or external dependencies
 * Spreadsheet-style editing with familiar keyboard navigation
 * Fully responsive tables that preserve alignment across screen sizes
-* Structured column data types including rich text, numbers, date/time, and checkbox values
+* Structured column data types including rich text, numbers, date/time, checkboxs, and links
 * Inline editing with contextual menus and keyboard shortcuts
 * Import CSV files or restore tables from JSON backups
 * Export tables for backup or interoperability
@@ -192,6 +192,8 @@ No. This plugin is free to use. However, we are planning for a premium version o
 * Added link column content type
 * Added support multi-part edits via an edit dialog for specific cell content types
 * Added block global style defaults that can be optionally applied
+* Fixed bug that caused formatting issues for other blocks in a post when adding a new Dynamic Tables block
+* Fixed bug that caused alignment issues of the table title on the front end
 
 = 1.4.5 =
 * Added support for undo/redo within Dynamic Tables

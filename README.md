@@ -2,7 +2,7 @@
 **Contributors:** [glschaub](https://profiles.wordpress.org/glschaub/), [myfamilyweb](https://profiles.wordpress.org/myfamilyweb/)  
 **Tags:**              tables, data table, responsive tables, table block, gutenberg table  
 **Tested up to:**      7.0  
-**Stable tag:**        1.4.5  
+**Stable tag:**        1.4.6  
 **License:**           GPL-2.0-or-later  
 **License URI:**       https://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -20,12 +20,12 @@ Whether you're creating comparison tables, pricing tables, product specification
 
 Unlike traditional table blocks that embed table content directly into post content, Dynamic Tables stores table data independently while the block itself simply references the table. This architecture allows tables to be managed as structured data while remaining fully integrated with the Gutenberg editor.
 
-That means:
+That means your tables:
 
-* Edit tables naturally using familiar spreadsheet interactions.
-* Keep structured table data independent from page content.
-* Publish responsive, semantic tables designed for accessibility and SEO.
-* Build on a foundation designed for future capabilities including search, front-end editing, filtering, sorting, and external integrations.
+* Can be edited naturally using familiar spreadsheet interactions.
+* Will contain structured data that will be kept independent from page content.
+* Will be responsive, semantic tables designed for accessibility and SEO.
+* Are built on a foundation designed for future capabilities including search, front-end editing, filtering, sorting, and external integrations.
 
 # Designed for Everyone #
 
@@ -42,7 +42,7 @@ Rather than forcing you to choose between ease of use and technical capability, 
 * Native Gutenberg block — no page builders or external dependencies
 * Spreadsheet-style editing with familiar keyboard navigation
 * Fully responsive tables that preserve alignment across screen sizes
-* Structured column data types including rich text, numbers, date/time, and checkbox values
+* Structured column data types including rich text, numbers, date/time, checkboxs, and links
 * Inline editing with contextual menus and keyboard shortcuts
 * Import CSV files or restore tables from JSON backups
 * Export tables for backup or interoperability
@@ -170,7 +170,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 
 ### What happens if I deactivate or delete the plugin? ###
 
-* Dynamic Tables block will render while the plugin is disabled or deleted.
+* Dynamic Tables block will not render while the plugin is disabled or deleted.
 * Data may be retained or deleted when the plugin is uninstalled. The default is to retain the data.
 * Reinstallation and activation will make all tables reappear if the data has not been purged.
 
@@ -188,8 +188,15 @@ No. This plugin is free to use. However, we are planning for a premium version o
 10. Set column width (corresponding configuration is available for rows too)
 
 ## Changelog ##
+### 1.4.6 ###
+* Added link column content type
+* Added support multi-part edits via an edit dialog for specific cell content types
+* Added block global style defaults that can be optionally applied
+* Fixed bug that caused formatting issues for other blocks in a post when adding a new Dynamic Tables block
+* Fixed bug that caused alignment issues of the table title on the front end
+
 ### 1.4.5 ###
-* Add support for undo/redo within Dynamic Tables
+* Added support for undo/redo within Dynamic Tables
 
 ### 1.4.4 ###
 * Show borders when table is created
