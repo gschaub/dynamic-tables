@@ -5956,6 +5956,7 @@ __webpack_require__.r(__webpack_exports__);
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table'),
   getTitle: record => record?.title || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Unnamed Table')
 }]);
+const DYNAMIC_TAG_ELEMENTS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'];
 
 /**
  * Exports main logic for Dynamic Tables block.
@@ -6069,6 +6070,26 @@ function Edit(props) {
    * @since 1.4.5
    */
   const cacheUndoEdits = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(false);
+
+  /**
+   * Retrieve styles associated with the current site/theme elements.
+   *
+   * @since 1.4.7
+   */
+  const h1Ref = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
+  const h2Ref = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
+  const h3Ref = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
+  const h4Ref = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
+  const h5Ref = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
+  const h6Ref = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
+  const paragraphRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
+  const h1Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_17__.useGetElementStyles)(h1Ref);
+  const h2Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_17__.useGetElementStyles)(h2Ref);
+  const h3Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_17__.useGetElementStyles)(h3Ref);
+  const h4Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_17__.useGetElementStyles)(h4Ref);
+  const h5Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_17__.useGetElementStyles)(h5Ref);
+  const h6Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_17__.useGetElementStyles)(h6Ref);
+  const paragraphStyles = (0,_hooks__WEBPACK_IMPORTED_MODULE_17__.useGetElementStyles)(paragraphRef);
 
   // Pre-processor to integrate caching into table entity updates.
   const updateTableEntity = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useCallback)((tableId, overrideTableStatus, tableOverride, options) => {
@@ -7551,6 +7572,8 @@ function Edit(props) {
   const horizontalAlignment = getTablePropAttribute(table.attributes, 'horizontalAlignment');
   const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment');
   const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle');
+  const storedTitleTagElement = getTablePropAttribute(table.attributes, 'titleTagElement');
+  const titleTagElement = DYNAMIC_TAG_ELEMENTS.includes(storedTitleTagElement) ? storedTitleTagElement : 'p';
 
   /**
    * Identify column data types for each column
@@ -9111,6 +9134,24 @@ function Edit(props) {
   }
 
   /**
+   * Update the HTML element used for the table title.
+   *
+   * @since 1.4.7
+   *
+   * @param {Object} table      Dynamic Table.
+   * @param {string} tagElement Selected title element name.
+   */
+  function onTitleTagElementChange(table, tagElement) {
+    if (!DYNAMIC_TAG_ELEMENTS.includes(tagElement)) {
+      return;
+    }
+    const updatedTableAttributes = {
+      ...table.attributes,
+      titleTagElement: tagElement
+    };
+    setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+  }
+  /**
    * Process request to allow the table to scroll horizontally
    *
    * @since 1.0.0
@@ -9511,8 +9552,7 @@ function Edit(props) {
    * Render inspector controls side panel
    *
    * @since 1.2.0
-   *
-   * @param {Object} e Change event
+   * @since 1.4.7 Add support to identify title element type
    */
   const renderControls = !isContentOnlyMode && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_8__.BlockControls, {
@@ -9556,6 +9596,53 @@ function Edit(props) {
               __nextHasNoMarginBottom: true,
               checked: hideTitle,
               onChange: e => onHideTitle(table, e)
+            })
+          }), !hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)("div", {
+              className: "dtbk-title-element-control",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CustomSelectControl, {
+                className: "dtbk-title-element-select",
+                label: "Table Title Format",
+                __nextHasNoMarginBottom: true,
+                value: {
+                  key: titleTagElement,
+                  name: titleTagElement === 'p' ? 'Paragraph' : `Heading ${titleTagElement.slice(1)}`
+                },
+                onChange: ({
+                  selectedItem
+                }) => {
+                  onTitleTagElementChange(table, selectedItem.key);
+                },
+                options: [{
+                  key: 'h1',
+                  name: 'Heading 1',
+                  style: h1Styles
+                }, {
+                  key: 'h2',
+                  name: 'Heading 2',
+                  style: h2Styles
+                }, {
+                  key: 'h3',
+                  name: 'Heading 3',
+                  style: h3Styles
+                }, {
+                  key: 'h4',
+                  name: 'Heading 4',
+                  style: h4Styles
+                }, {
+                  key: 'h5',
+                  name: 'Heading 5',
+                  style: h5Styles
+                }, {
+                  key: 'h6',
+                  name: 'Heading 6',
+                  style: h6Styles
+                }, {
+                  key: 'p',
+                  name: 'Paragraph',
+                  style: paragraphStyles
+                }]
+              })
             })
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
@@ -9686,10 +9773,42 @@ function Edit(props) {
       group: "typography"
     })]
   });
+
+  /**
+   *  Render references for element styles
+   *
+   * @since 1.4.7
+   */
+  const renderElementStyleRefs = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsxs)("div", {
+    "aria-hidden": "true",
+    style: {
+      position: 'absolute',
+      width: '1px',
+      height: '1px',
+      overflow: 'hidden',
+      clipPath: 'inset(50%)',
+      whiteSpace: 'nowrap'
+    },
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)("h1", {
+      ref: h1Ref
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)("h2", {
+      ref: h2Ref
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)("h3", {
+      ref: h3Ref
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)("h4", {
+      ref: h4Ref
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)("h5", {
+      ref: h5Ref
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)("h6", {
+      ref: h6Ref
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)("p", {
+      ref: paragraphRef
+    })]
+  });
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsxs)("div", {
     ...blockProps,
     children: [!isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.Fragment, {
-      children: [renderRowMenu, renderRowHeightModal, renderColumnMenu, renderColumnDataTypeModal, renderColumnWidthModal, renderCellMenu, renderEditCellContentModal, renderControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsxs)("div", {
+      children: [renderRowMenu, renderRowHeightModal, renderColumnMenu, renderColumnDataTypeModal, renderColumnWidthModal, renderCellMenu, renderEditCellContentModal, renderElementStyleRefs, renderControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsxs)("div", {
         style: {
           display: 'block'
         },
@@ -9699,7 +9818,7 @@ function Edit(props) {
           style: {
             '--gridAlignment': gridAlignment
           },
-          tagName: "p",
+          tagName: titleTagElement,
           allowedFormats: ['core/bold', 'core/italic'],
           onBlur: () => {
             cacheUndoEdits.current = false;
@@ -10885,6 +11004,7 @@ function Cell(props) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   useEditorIdentity: () => (/* binding */ useEditorIdentity),
+/* harmony export */   useGetElementStyles: () => (/* binding */ useGetElementStyles),
 /* harmony export */   useGetTable: () => (/* binding */ useGetTable),
 /* harmony export */   useNotInInserterPreview: () => (/* binding */ useNotInInserterPreview),
 /* harmony export */   usePostChangesSaved: () => (/* binding */ usePostChangesSaved),
@@ -11139,6 +11259,35 @@ function useTableUndoRedoEffect(tableId, onHistoryChange) {
       });
     }
   }, [tableId, editedTable, entityEdits, hasEdits, isSavingPost, isAutosavingPost]);
+}
+
+/**
+ * Returns typography styles computed by the browser for a referenced element.
+ *
+ * @since 1.4.7
+ *
+ * @param {Object} elementRef React ref attached to a rendered DOM element.
+ * @return {Object} Typography styles suitable for CustomSelectControl options.
+ */
+function useGetElementStyles(elementRef) {
+  const [styles, setStyles] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)({});
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const element = elementRef.current;
+    if (!element) {
+      return;
+    }
+    const computed = window.getComputedStyle(element);
+    setStyles({
+      fontFamily: computed.fontFamily,
+      fontSize: computed.fontSize,
+      fontWeight: computed.fontWeight,
+      fontStyle: computed.fontStyle,
+      lineHeight: computed.lineHeight,
+      letterSpacing: computed.letterSpacing,
+      textTransform: computed.textTransform
+    });
+  }, [elementRef]);
+  return styles;
 }
 
 /***/ },
@@ -12864,7 +13013,8 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
       width: '1px'
     },
     verticalAlignment: 'none',
-    hideTitle: true
+    hideTitle: true,
+    titleTagElement: 'p'
   };
   const columnAttributes = {
     columnDataType: {

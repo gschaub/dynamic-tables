@@ -61,6 +61,7 @@ if ( is_wp_error( $table ) ) {
 		'bodyBorder' => $body_border,
 		'verticalAlignment' => $table_vertical_alignment,
 		'hideTitle' => $hide_title,
+		'titleTagElement' => $title_tag_element,
 	) = $table_header_attributes;
 
 	$header_row_sticky_style = $header_row_sticky ? 'auto' : 'hidden';
@@ -79,7 +80,7 @@ if ( is_wp_error( $table ) ) {
 	$body_rows             = process_rows( $table_rows, 'is_body' );
 	$rendered_row_count    = count( $body_rows['rows'] ) + ( $enable_header_row ? count( $header_rows['rows'] ) : 0 );
 
-
+	$title_tag_element = sanitize_table_title_tag_element( $title_tag_element );
 
 	$block_wrapper               = get_block_wrapper_attributes();
 	$block_wrapper_sticky_header = str_replace( '"', '', str_replace( 'class=', '', $block_wrapper ) ) . ' ';
@@ -136,11 +137,11 @@ if ( is_wp_error( $table ) ) {
 	<section <?php echo $block_wrapper; ?>>  <!-- Escaping WordPress defined variable breaks the page. -->
 		<div style="display:block";>
 			<?php if ( ! $hide_title ) { ?>
-			<p id="<?php echo esc_attr( $table_title_tag_id ); ?>"
+			<<?php echo esc_attr( $title_tag_element ); ?> id="<?php echo esc_attr( $table_title_tag_id ); ?>"
 				class="dtbk-table-title"
 				style="--gridAlignment: <?php echo esc_attr( $grid_alignment ); ?>;">
 				<?php echo wp_kses_post( $table_name ); ?>
-			</p>
+			</<?php echo esc_attr( $title_tag_element ); ?>>
 			<?php } ?>
 
 			<div class="grid-scroller"

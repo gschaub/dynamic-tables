@@ -983,6 +983,7 @@ class DTBK_Admin_Ajax {
 	 * Fix for known attribute name drifts
 	 *
 	 * @since 1.4.2
+	 * @since 1.4.7 - Sanitize new title element attribute
 	 *
 	 * @param array $attributes Imported table header attributes.
 	 * @return array
@@ -1007,6 +1008,10 @@ class DTBK_Admin_Ajax {
 				}
 			}
 		}
+
+		$attributes['titleTagElement'] = sanitize_table_title_tag_element(
+			$attributes['titleTagElement'] ?? $defaults['titleTagElement']
+		);
 
 		if ( isset( $attributes['headerBorder'] ) && is_array( $attributes['headerBorder'] ) ) {
 			$attributes['headerBorder'] = array_merge( $defaults['headerBorder'], $attributes['headerBorder'] );

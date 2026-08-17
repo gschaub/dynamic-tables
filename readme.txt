@@ -120,7 +120,7 @@ The technical complexity remains invisible to content editors while providing de
 
 Dynamic Tables continues to evolve. Planned enhancements include:
 
-* Additional column content types such as links, buttons, images, and more
+* Additional column content types such as buttons, images, and more
 * Expanded copy and paste capabilities
 * Additional responsive formatting options
 * Integration with WordPress search

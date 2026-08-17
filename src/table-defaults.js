@@ -206,6 +206,7 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
 		bodyBorder: { color: 'black', style: 'solid', width: '1px' },
 		verticalAlignment: 'none',
 		hideTitle: true,
+		titleTagElement: 'p',
 	};
 
 	const columnAttributes = {

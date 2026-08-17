@@ -23,6 +23,7 @@ import {
 	Spinner,
 	Placeholder,
 	SelectControl,
+	CustomSelectControl,
 	CheckboxControl,
 	TextControl,
 	__experimentalInputControl as InputControl,
@@ -55,6 +56,7 @@ import {
 	useNotInInserterPreview,
 	useGetTable,
 	useTableUndoRedoEffect,
+	useGetElementStyles,
 } from './hooks';
 
 import {
@@ -136,6 +138,8 @@ dispatch('core').addEntities([
 	},
 ]);
 
+const DYNAMIC_TAG_ELEMENTS = [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p' ];
+
 /**
  * Exports main logic for Dynamic Tables block.
  *
@@ -198,6 +202,27 @@ export default function Edit(props) {
 	 * @since 1.4.5
 	 */
 	const cacheUndoEdits = useRef(false);
+
+	/**
+	 * Retrieve styles associated with the current site/theme elements.
+	 *
+	 * @since 1.4.7
+	 */
+	const h1Ref = useRef(null);
+	const h2Ref = useRef(null);
+	const h3Ref = useRef(null);
+	const h4Ref = useRef(null);
+	const h5Ref = useRef(null);
+	const h6Ref = useRef(null);
+	const paragraphRef = useRef(null);
+
+	const h1Styles = useGetElementStyles(h1Ref);
+	const h2Styles = useGetElementStyles(h2Ref);
+	const h3Styles = useGetElementStyles(h3Ref);
+	const h4Styles = useGetElementStyles(h4Ref);
+	const h5Styles = useGetElementStyles(h5Ref);
+	const h6Styles = useGetElementStyles(h6Ref);
+	const paragraphStyles = useGetElementStyles(paragraphRef);
 
 	// Pre-processor to integrate caching into table entity updates.
 	const updateTableEntity = useCallback(
@@ -1821,6 +1846,11 @@ export default function Edit(props) {
 	const horizontalAlignment = getTablePropAttribute(table.attributes, 'horizontalAlignment');
 	const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment');
 	const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle');
+
+	const storedTitleTagElement = getTablePropAttribute(table.attributes, 'titleTagElement');
+	const titleTagElement = DYNAMIC_TAG_ELEMENTS.includes(storedTitleTagElement)
+		? storedTitleTagElement
+		: 'p';
 
 	/**
 	 * Identify column data types for each column
@@ -3528,6 +3558,26 @@ export default function Edit(props) {
 	}
 
 	/**
+	 * Update the HTML element used for the table title.
+	 *
+	 * @since 1.4.7
+	 *
+	 * @param {Object} table      Dynamic Table.
+	 * @param {string} tagElement Selected title element name.
+	 */
+	function onTitleTagElementChange(table, tagElement) {
+		if (!DYNAMIC_TAG_ELEMENTS.includes(tagElement)) {
+			return;
+		}
+
+		const updatedTableAttributes = {
+			...table.attributes,
+			titleTagElement: tagElement,
+		};
+
+		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+	}
+	/**
 	 * Process request to allow the table to scroll horizontally
 	 *
 	 * @since 1.0.0
@@ -4063,8 +4113,7 @@ export default function Edit(props) {
 	 * Render inspector controls side panel
 	 *
 	 * @since 1.2.0
-	 *
-	 * @param {Object} e Change event
+	 * @since 1.4.7 Add support to identify title element type
 	 */
 	const renderControls = !isContentOnlyMode && (
 		<>
@@ -4113,6 +4162,65 @@ export default function Edit(props) {
 								onChange={e => onHideTitle(table, e)}
 							/>
 						</PanelRow>
+
+						{!hideTitle && (
+							<PanelRow>
+								<div className="dtbk-title-element-control">
+									<CustomSelectControl
+										className="dtbk-title-element-select"
+										label="Table Title Format"
+										__nextHasNoMarginBottom
+										value={{
+											key: titleTagElement,
+											name:
+												titleTagElement === 'p'
+													? 'Paragraph'
+													: `Heading ${titleTagElement.slice(1)}`,
+										}}
+										onChange={({ selectedItem }) => {
+											onTitleTagElementChange(table, selectedItem.key);
+										}}
+										options={[
+											{
+												key: 'h1',
+												name: 'Heading 1',
+												style: h1Styles,
+											},
+											{
+												key: 'h2',
+												name: 'Heading 2',
+												style: h2Styles,
+											},
+											{
+												key: 'h3',
+												name: 'Heading 3',
+												style: h3Styles,
+											},
+											{
+												key: 'h4',
+												name: 'Heading 4',
+												style: h4Styles,
+											},
+											{
+												key: 'h5',
+												name: 'Heading 5',
+												style: h5Styles,
+											},
+											{
+												key: 'h6',
+												name: 'Heading 6',
+												style: h6Styles,
+											},
+											{
+												key: 'p',
+												name: 'Paragraph',
+												style: paragraphStyles,
+											},
+										]}
+									/>
+								</div>
+							</PanelRow>
+						)}
 					</PanelBody>
 
 					<PanelBody title="Table Header" initialOpen={false}>
@@ -4259,6 +4367,33 @@ export default function Edit(props) {
 		</>
 	);
 
+	/**
+	 *  Render references for element styles
+	 *
+	 * @since 1.4.7
+	 */
+	const renderElementStyleRefs = (
+		<div
+			aria-hidden="true"
+			style={{
+				position: 'absolute',
+				width: '1px',
+				height: '1px',
+				overflow: 'hidden',
+				clipPath: 'inset(50%)',
+				whiteSpace: 'nowrap',
+			}}
+		>
+			<h1 ref={h1Ref} />
+			<h2 ref={h2Ref} />
+			<h3 ref={h3Ref} />
+			<h4 ref={h4Ref} />
+			<h5 ref={h5Ref} />
+			<h6 ref={h6Ref} />
+			<p ref={paragraphRef} />
+		</div>
+	);
+
 	return (
 		<div {...blockProps}>
 			{/* Render an existing table after it has been fetched  */}
@@ -4271,6 +4406,7 @@ export default function Edit(props) {
 					{renderColumnWidthModal}
 					{renderCellMenu}
 					{renderEditCellContentModal}
+					{renderElementStyleRefs}
 					{renderControls}
 
 					<div style={{ display: 'block' }}>
@@ -4279,7 +4415,7 @@ export default function Edit(props) {
 								id={editorTitleTagId}
 								className="dtbk-table-title"
 								style={{ '--gridAlignment': gridAlignment }}
-								tagName="p"
+								tagName={titleTagElement}
 								allowedFormats={['core/bold', 'core/italic']}
 								onBlur={() => {
 									cacheUndoEdits.current = false;

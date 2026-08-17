@@ -251,3 +251,37 @@ export function useTableUndoRedoEffect(tableId, onHistoryChange) {
 		}
 	}, [tableId, editedTable, entityEdits, hasEdits, isSavingPost, isAutosavingPost]);
 }
+
+/**
+ * Returns typography styles computed by the browser for a referenced element.
+ *
+ * @since 1.4.7
+ *
+ * @param {Object} elementRef React ref attached to a rendered DOM element.
+ * @return {Object} Typography styles suitable for CustomSelectControl options.
+ */
+export function useGetElementStyles(elementRef) {
+	const [styles, setStyles] = useState({});
+
+	useEffect(() => {
+		const element = elementRef.current;
+
+		if (!element) {
+			return;
+		}
+
+		const computed = window.getComputedStyle(element);
+
+		setStyles({
+			fontFamily: computed.fontFamily,
+			fontSize: computed.fontSize,
+			fontWeight: computed.fontWeight,
+			fontStyle: computed.fontStyle,
+			lineHeight: computed.lineHeight,
+			letterSpacing: computed.letterSpacing,
+			textTransform: computed.textTransform,
+		});
+	}, [elementRef]);
+
+	return styles;
+}

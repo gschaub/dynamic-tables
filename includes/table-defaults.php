@@ -43,7 +43,26 @@ function get_default_table_attributes() {
 		),
 		'verticalAlignment'        => 'none',
 		'hideTitle'                => true,
+		'titleTagElement'          => 'p',
 	);
+}
+
+/**
+ * Return an allowed HTML element name for a table title.
+ *
+ * @since 1.4.7
+ *
+ * @param mixed $tag_element Requested table title element.
+ * @return string Allowed table title element.
+ */
+function sanitize_table_title_tag_element( $tag_element ) {
+	$allowed_tag_elements = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p' );
+
+	if ( is_string( $tag_element ) && in_array( $tag_element, $allowed_tag_elements, true ) ) {
+		return $tag_element;
+	}
+
+	return 'p';
 }
 
 /**
