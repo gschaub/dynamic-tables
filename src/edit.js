@@ -138,7 +138,32 @@ dispatch('core').addEntities([
 	},
 ]);
 
-const DYNAMIC_TAG_ELEMENTS = [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p' ];
+/**
+ * Selectable HTML element options.
+ *
+ * @since 1.4.7
+ */
+const DYNAMIC_TAG_ELEMENTS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'];
+
+/**
+ * Selectable list item styles options.
+ *
+ * @since 1.4.7
+ */
+const UNORDERED_LIST_ITEM_STYLE_OPTIONS = [
+	{ value: 'disc', label: '● Filled circle' },
+	{ value: 'circle', label: '○ Hollow circle' },
+	{ value: 'square', label: '■ Square' },
+];
+
+const ORDERED_LIST_ITEM_STYLE_OPTIONS = [
+	{ value: 'decimal', label: '1. Numbers' },
+	{ value: 'decimal-leading-zero', label: '01. Leading-zero numbers' },
+	{ value: 'lower-alpha', label: 'a. Lowercase letters' },
+	{ value: 'upper-alpha', label: 'A. Uppercase letters' },
+	{ value: 'lower-roman', label: 'i. Lowercase Roman numerals' },
+	{ value: 'upper-roman', label: 'I. Uppercase Roman numerals' },
+];
 
 /**
  * Exports main logic for Dynamic Tables block.
@@ -223,6 +248,16 @@ export default function Edit(props) {
 	const h5Styles = useGetElementStyles(h5Ref);
 	const h6Styles = useGetElementStyles(h6Ref);
 	const paragraphStyles = useGetElementStyles(paragraphRef);
+
+	const dynamicHtmlElementStyles = [
+		{ key: 'h1', name: 'Heading 1', style: h1Styles },
+		{ key: 'h2', name: 'Heading 2', style: h2Styles },
+		{ key: 'h3', name: 'Heading 3', style: h3Styles },
+		{ key: 'h4', name: 'Heading 4', style: h4Styles },
+		{ key: 'h5', name: 'Heading 5', style: h5Styles },
+		{ key: 'h6', name: 'Heading 6', style: h6Styles },
+		{ key: 'p', name: 'Heading 1', style: paragraphStyles },
+	];
 
 	// Pre-processor to integrate caching into table entity updates.
 	const updateTableEntity = useCallback(
@@ -1848,10 +1883,25 @@ export default function Edit(props) {
 	const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle');
 
 	const storedTitleTagElement = getTablePropAttribute(table.attributes, 'titleTagElement');
-	const titleTagElement = DYNAMIC_TAG_ELEMENTS.includes(storedTitleTagElement)
+	const titleTagElement = dynamicHtmlElementStyles.some(
+		option => option.key === storedTitleTagElement
+	)
 		? storedTitleTagElement
 		: 'p';
 
+	const renderMode =
+		getTablePropAttribute(table.attributes?.frontEndOptions, 'renderMode') || 'table';
+	const renderListItemStyleType =
+		getTablePropAttribute(table.attributes?.frontEndOptions, 'listItemStyleType') || '';
+
+	const listItemStyleOptions =
+		renderMode === 'ol' ? ORDERED_LIST_ITEM_STYLE_OPTIONS : UNORDERED_LIST_ITEM_STYLE_OPTIONS;
+
+	const selectedListItemStyleType = listItemStyleOptions.some(
+		option => option.value === renderListItemStyleType
+	)
+		? renderListItemStyleType
+		: listItemStyleOptions[0].value;
 	/**
 	 * Identify column data types for each column
 	 *
@@ -3566,7 +3616,7 @@ export default function Edit(props) {
 	 * @param {string} tagElement Selected title element name.
 	 */
 	function onTitleTagElementChange(table, tagElement) {
-		if (!DYNAMIC_TAG_ELEMENTS.includes(tagElement)) {
+		if (!dynamicHtmlElementStyles.some(option => option.key === tagElement)) {
 			return;
 		}
 
@@ -3577,6 +3627,65 @@ export default function Edit(props) {
 
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
+
+	/**
+	 * Update the front-end display format.
+	 *
+	 * @since 1.4.7
+	 *
+	 * @param {Object} table      Dynamic Table.
+	 * @param {string} renderMode Selected front-end render format.
+	 */
+	function onRenderModeChange(table, renderMode) {
+		let listItemStyleType = '';
+
+		switch (renderMode) {
+			case 'table':
+				listItemStyleType = '';
+				break;
+			case 'ul':
+				listItemStyleType = 'disc';
+				break;
+			case 'ol':
+				listItemStyleType = 'decimal';
+				break;
+			default:
+				break;
+		}
+
+		const updatedTableAttributes = {
+			...table.attributes,
+			frontEndOptions: {
+				...(table.attributes.frontEndOptions || {}),
+				renderMode: renderMode,
+				listItemStyleType: listItemStyleType,
+			},
+		};
+		console.log('Updated Render Attributes: ', updatedTableAttributes);
+
+		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+	}
+
+	/**
+	 * Update the front-end display format.
+	 *
+	 * @since 1.4.7
+	 *
+	 * @param {Object} table             Dynamic Table.
+	 * @param {string} listItemStyleType Selected front-end render format.
+	 */
+	function onRenderListStyleTypeChange(table, listItemStyleType) {
+		const updatedTableAttributes = {
+			...table.attributes,
+			frontEndOptions: {
+				...(table.attributes.frontEndOptions || {}),
+				listItemStyleType: listItemStyleType,
+			},
+		};
+
+		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+	}
+
 	/**
 	 * Process request to allow the table to scroll horizontally
 	 *
@@ -4165,9 +4274,9 @@ export default function Edit(props) {
 
 						{!hideTitle && (
 							<PanelRow>
-								<div className="dtbk-title-element-control">
+								<div className="dtbk-panel-indent-control">
 									<CustomSelectControl
-										className="dtbk-title-element-select"
+										className="dtbk-inspector-select-control dtbk-inspector-custom-select-control"
 										label="Table Title Format"
 										__nextHasNoMarginBottom
 										value={{
@@ -4180,46 +4289,54 @@ export default function Edit(props) {
 										onChange={({ selectedItem }) => {
 											onTitleTagElementChange(table, selectedItem.key);
 										}}
-										options={[
-											{
-												key: 'h1',
-												name: 'Heading 1',
-												style: h1Styles,
-											},
-											{
-												key: 'h2',
-												name: 'Heading 2',
-												style: h2Styles,
-											},
-											{
-												key: 'h3',
-												name: 'Heading 3',
-												style: h3Styles,
-											},
-											{
-												key: 'h4',
-												name: 'Heading 4',
-												style: h4Styles,
-											},
-											{
-												key: 'h5',
-												name: 'Heading 5',
-												style: h5Styles,
-											},
-											{
-												key: 'h6',
-												name: 'Heading 6',
-												style: h6Styles,
-											},
-											{
-												key: 'p',
-												name: 'Paragraph',
-												style: paragraphStyles,
-											},
-										]}
+										options={dynamicHtmlElementStyles}
 									/>
 								</div>
 							</PanelRow>
+						)}
+					</PanelBody>
+
+					<PanelBody title="Front End" initialOpen={false}>
+						<PanelRow>
+							<div className="dtbk-inspector-select-control">
+								<span className="dtbk-inspector-select-control__label">
+									Front End Display Format
+								</span>
+								<SelectControl
+									label="Front End Display Format"
+									hideLabelFromVision
+									__nextHasNoMarginBottom
+									value={renderMode}
+									onChange={value => {
+										onRenderModeChange(table, value);
+									}}
+									options={[
+										{ value: 'table', label: 'Default' },
+										{ value: 'ul', label: 'Bulleted List' },
+										{ value: 'ol', label: 'Numbered List' },
+									]}
+								/>
+							</div>
+						</PanelRow>
+
+						{renderMode !== 'table' && (
+							<div className="dtbk-panel-indent-control">
+								<PanelRow>
+									<div className="dtbk-inspector-select-control">
+										<span className="dtbk-inspector-select-control__label">Item Style</span>
+										<SelectControl
+											label="Item Style"
+											hideLabelFromVision
+											__nextHasNoMarginBottom
+											value={selectedListItemStyleType}
+											onChange={value => {
+												onRenderListStyleTypeChange(table, value);
+											}}
+											options={listItemStyleOptions}
+										/>
+									</div>
+								</PanelRow>
+							</div>
 						)}
 					</PanelBody>
 

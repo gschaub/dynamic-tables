@@ -344,30 +344,41 @@
 	justify-content: flex-end !important;
 }
 
-/* Title format select control styles */
-.dtbk-title-element-control {
+/* Inspector select control styles */
+.dtbk-panel-indent-control {
 	margin-left: 24px; // Aligns with the text after the checkbox.
+	margin-top: 8px;
 	position: relative;
 	width: calc(100% - 24px);
 }
 
 // Gutenberg gives this panel z-index: 0. Raise its stacking context while the
 // custom select is open so the Advanced inspector panel stays behind it.
-.components-panel:has(.dtbk-title-element-control:focus-within) {
+.components-panel:has(.dtbk-inspector-custom-select-control:focus-within) {
 	z-index: 1;
 }
 
-.dtbk-title-element-select {
+.dtbk-inspector-select-control {
 	width: 100%;
 }
 
-.dtbk-title-element-select [role="listbox"] {
+.dtbk-inspector-custom-select-control [role="listbox"] {
 	background-color: #fff;
 	opacity: 1;
 }
 
-.dtbk-title-element-select label,
-.dtbk-title-element-select .components-base-control__label {
+.dtbk-inspector-custom-select-control label,
+.dtbk-inspector-custom-select-control .components-base-control__label {
+	color: inherit;
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 1.4;
+	text-transform: none;
+}
+
+.dtbk-inspector-select-control__label {
+	display: block;
+	margin-bottom: 8px;
 	color: inherit;
 	font-size: 13px;
 	font-weight: 400;

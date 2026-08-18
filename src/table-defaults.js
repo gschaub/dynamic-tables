@@ -184,6 +184,7 @@ export function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') 
  * Get default attributes for a specific table part.
  *
  * @since    1.0.0
+ * @since    1.4.7 Add title tag and front end options
  *
  * @param {string} tableComponent    table header, rows, column, cell
  * @param {string} componentLocation Border or another value, default = body
@@ -207,6 +208,13 @@ export function getDefaultTableAttributes(tableComponent, componentLocation = 'B
 		verticalAlignment: 'none',
 		hideTitle: true,
 		titleTagElement: 'p',
+		frontEndOptions: {
+			renderMode: 'table',
+			listItemStyleType: '',
+			allowFiltering: true,
+			allowSorting: true,
+			allowEditing: false,
+		},
 	};
 
 	const columnAttributes = {

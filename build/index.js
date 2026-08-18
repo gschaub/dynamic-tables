@@ -5956,7 +5956,48 @@ __webpack_require__.r(__webpack_exports__);
   label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table'),
   getTitle: record => record?.title || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Unnamed Table')
 }]);
+
+/**
+ * Selectable HTML element options.
+ *
+ * @since 1.4.7
+ */
 const DYNAMIC_TAG_ELEMENTS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'];
+
+/**
+ * Selectable list item styles options.
+ *
+ * @since 1.4.7
+ */
+const UNORDERED_LIST_ITEM_STYLE_OPTIONS = [{
+  value: 'disc',
+  label: '● Filled circle'
+}, {
+  value: 'circle',
+  label: '○ Hollow circle'
+}, {
+  value: 'square',
+  label: '■ Square'
+}];
+const ORDERED_LIST_ITEM_STYLE_OPTIONS = [{
+  value: 'decimal',
+  label: '1. Numbers'
+}, {
+  value: 'decimal-leading-zero',
+  label: '01. Leading-zero numbers'
+}, {
+  value: 'lower-alpha',
+  label: 'a. Lowercase letters'
+}, {
+  value: 'upper-alpha',
+  label: 'A. Uppercase letters'
+}, {
+  value: 'lower-roman',
+  label: 'i. Lowercase Roman numerals'
+}, {
+  value: 'upper-roman',
+  label: 'I. Uppercase Roman numerals'
+}];
 
 /**
  * Exports main logic for Dynamic Tables block.
@@ -6090,6 +6131,35 @@ function Edit(props) {
   const h5Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_17__.useGetElementStyles)(h5Ref);
   const h6Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_17__.useGetElementStyles)(h6Ref);
   const paragraphStyles = (0,_hooks__WEBPACK_IMPORTED_MODULE_17__.useGetElementStyles)(paragraphRef);
+  const dynamicHtmlElementStyles = [{
+    key: 'h1',
+    name: 'Heading 1',
+    style: h1Styles
+  }, {
+    key: 'h2',
+    name: 'Heading 2',
+    style: h2Styles
+  }, {
+    key: 'h3',
+    name: 'Heading 3',
+    style: h3Styles
+  }, {
+    key: 'h4',
+    name: 'Heading 4',
+    style: h4Styles
+  }, {
+    key: 'h5',
+    name: 'Heading 5',
+    style: h5Styles
+  }, {
+    key: 'h6',
+    name: 'Heading 6',
+    style: h6Styles
+  }, {
+    key: 'p',
+    name: 'Heading 1',
+    style: paragraphStyles
+  }];
 
   // Pre-processor to integrate caching into table entity updates.
   const updateTableEntity = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useCallback)((tableId, overrideTableStatus, tableOverride, options) => {
@@ -7573,8 +7643,11 @@ function Edit(props) {
   const verticalAlignment = getTablePropAttribute(table.attributes, 'verticalAlignment');
   const hideTitle = getTablePropAttribute(table.attributes, 'hideTitle');
   const storedTitleTagElement = getTablePropAttribute(table.attributes, 'titleTagElement');
-  const titleTagElement = DYNAMIC_TAG_ELEMENTS.includes(storedTitleTagElement) ? storedTitleTagElement : 'p';
-
+  const titleTagElement = dynamicHtmlElementStyles.some(option => option.key === storedTitleTagElement) ? storedTitleTagElement : 'p';
+  const renderMode = getTablePropAttribute(table.attributes?.frontEndOptions, 'renderMode') || 'table';
+  const renderListItemStyleType = getTablePropAttribute(table.attributes?.frontEndOptions, 'listItemStyleType') || '';
+  const listItemStyleOptions = renderMode === 'ol' ? ORDERED_LIST_ITEM_STYLE_OPTIONS : UNORDERED_LIST_ITEM_STYLE_OPTIONS;
+  const selectedListItemStyleType = listItemStyleOptions.some(option => option.value === renderListItemStyleType) ? renderListItemStyleType : listItemStyleOptions[0].value;
   /**
    * Identify column data types for each column
    *
@@ -9142,7 +9215,7 @@ function Edit(props) {
    * @param {string} tagElement Selected title element name.
    */
   function onTitleTagElementChange(table, tagElement) {
-    if (!DYNAMIC_TAG_ELEMENTS.includes(tagElement)) {
+    if (!dynamicHtmlElementStyles.some(option => option.key === tagElement)) {
       return;
     }
     const updatedTableAttributes = {
@@ -9151,6 +9224,61 @@ function Edit(props) {
     };
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
   }
+
+  /**
+   * Update the front-end display format.
+   *
+   * @since 1.4.7
+   *
+   * @param {Object} table      Dynamic Table.
+   * @param {string} renderMode Selected front-end render format.
+   */
+  function onRenderModeChange(table, renderMode) {
+    let listItemStyleType = '';
+    switch (renderMode) {
+      case 'table':
+        listItemStyleType = '';
+        break;
+      case 'ul':
+        listItemStyleType = 'disc';
+        break;
+      case 'ol':
+        listItemStyleType = 'decimal';
+        break;
+      default:
+        break;
+    }
+    const updatedTableAttributes = {
+      ...table.attributes,
+      frontEndOptions: {
+        ...(table.attributes.frontEndOptions || {}),
+        renderMode: renderMode,
+        listItemStyleType: listItemStyleType
+      }
+    };
+    console.log('Updated Render Attributes: ', updatedTableAttributes);
+    setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+  }
+
+  /**
+   * Update the front-end display format.
+   *
+   * @since 1.4.7
+   *
+   * @param {Object} table             Dynamic Table.
+   * @param {string} listItemStyleType Selected front-end render format.
+   */
+  function onRenderListStyleTypeChange(table, listItemStyleType) {
+    const updatedTableAttributes = {
+      ...table.attributes,
+      frontEndOptions: {
+        ...(table.attributes.frontEndOptions || {}),
+        listItemStyleType: listItemStyleType
+      }
+    };
+    setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
+  }
+
   /**
    * Process request to allow the table to scroll horizontally
    *
@@ -9599,9 +9727,9 @@ function Edit(props) {
             })
           }), !hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)("div", {
-              className: "dtbk-title-element-control",
+              className: "dtbk-panel-indent-control",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CustomSelectControl, {
-                className: "dtbk-title-element-select",
+                className: "dtbk-inspector-select-control dtbk-inspector-custom-select-control",
                 label: "Table Title Format",
                 __nextHasNoMarginBottom: true,
                 value: {
@@ -9613,35 +9741,57 @@ function Edit(props) {
                 }) => {
                   onTitleTagElementChange(table, selectedItem.key);
                 },
+                options: dynamicHtmlElementStyles
+              })
+            })
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
+          title: "Front End",
+          initialOpen: false,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsxs)("div", {
+              className: "dtbk-inspector-select-control",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)("span", {
+                className: "dtbk-inspector-select-control__label",
+                children: "Front End Display Format"
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
+                label: "Front End Display Format",
+                hideLabelFromVision: true,
+                __nextHasNoMarginBottom: true,
+                value: renderMode,
+                onChange: value => {
+                  onRenderModeChange(table, value);
+                },
                 options: [{
-                  key: 'h1',
-                  name: 'Heading 1',
-                  style: h1Styles
+                  value: 'table',
+                  label: 'Default'
                 }, {
-                  key: 'h2',
-                  name: 'Heading 2',
-                  style: h2Styles
+                  value: 'ul',
+                  label: 'Bulleted List'
                 }, {
-                  key: 'h3',
-                  name: 'Heading 3',
-                  style: h3Styles
-                }, {
-                  key: 'h4',
-                  name: 'Heading 4',
-                  style: h4Styles
-                }, {
-                  key: 'h5',
-                  name: 'Heading 5',
-                  style: h5Styles
-                }, {
-                  key: 'h6',
-                  name: 'Heading 6',
-                  style: h6Styles
-                }, {
-                  key: 'p',
-                  name: 'Paragraph',
-                  style: paragraphStyles
+                  value: 'ol',
+                  label: 'Numbered List'
                 }]
+              })]
+            })
+          }), renderMode !== 'table' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)("div", {
+            className: "dtbk-panel-indent-control",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsxs)("div", {
+                className: "dtbk-inspector-select-control",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)("span", {
+                  className: "dtbk-inspector-select-control__label",
+                  children: "Item Style"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
+                  label: "Item Style",
+                  hideLabelFromVision: true,
+                  __nextHasNoMarginBottom: true,
+                  value: selectedListItemStyleType,
+                  onChange: value => {
+                    onRenderListStyleTypeChange(table, value);
+                  },
+                  options: listItemStyleOptions
+                })]
               })
             })
           })]
@@ -12984,6 +13134,7 @@ function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') {
  * Get default attributes for a specific table part.
  *
  * @since    1.0.0
+ * @since    1.4.7 Add title tag and front end options
  *
  * @param {string} tableComponent    table header, rows, column, cell
  * @param {string} componentLocation Border or another value, default = body
@@ -13014,7 +13165,14 @@ function getDefaultTableAttributes(tableComponent, componentLocation = 'Body') {
     },
     verticalAlignment: 'none',
     hideTitle: true,
-    titleTagElement: 'p'
+    titleTagElement: 'p',
+    frontEndOptions: {
+      renderMode: 'table',
+      listItemStyleType: '',
+      allowFiltering: true,
+      allowSorting: true,
+      allowEditing: false
+    }
   };
   const columnAttributes = {
     columnDataType: {

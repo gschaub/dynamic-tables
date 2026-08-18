@@ -112,6 +112,7 @@ final class DynamicTableBlocks {
 		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-table-blocks-db-persist.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/admin/upgrades.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/render-helper.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/render-body.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/table-defaults.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/utility-functions.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-table-blocks-global-styles.php';

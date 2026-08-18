@@ -44,6 +44,13 @@ function get_default_table_attributes() {
 		'verticalAlignment'        => 'none',
 		'hideTitle'                => true,
 		'titleTagElement'          => 'p',
+		'frontEndOptions'          => array(
+			'renderMode'        => 'table',
+			'listItemStyleType' => '',
+			'allowFiltering'    => true,
+			'allowSorting'      => true,
+			'allowEditing'      => false,
+		),
 	);
 }
 

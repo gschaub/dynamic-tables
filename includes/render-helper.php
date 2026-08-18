@@ -214,7 +214,19 @@ function get_table_cell_tag_id( $table_id, $cell_id ) {
 function get_table_header_attributes( $table_header ) {
 
 	$table_default_attributes = get_default_table_attributes();
-	$table_header_attributes  = array_merge( $table_default_attributes, $table_header['attributes'] );
+
+	$stored_table_attributes  = is_array( $table_header['attributes'] ?? null )
+		? $table_header['attributes']
+		: array();
+	$table_header_attributes  = array_merge( $table_default_attributes, $stored_table_attributes );
+
+	$table_header_attributes['frontEndOptions'] = array_merge(
+		$table_default_attributes['frontEndOptions'],
+		is_array( $stored_table_attributes['frontEndOptions'] ?? null )
+			? $stored_table_attributes['frontEndOptions']
+			: array()
+	);
+
 
 	return $table_header_attributes;
 }
@@ -393,9 +405,9 @@ function process_columns( $columns ) {
  * @since 1.0.0
  * @since 1.2.0  Update to return cell data type based on column data type attribute.
  *
- * @param  Array $table_cells All cells for the table
+ * @param  array $table_cells All cells for the table
  * @param  int   $row_id Current row id
- * @param  Array $table_columns All columns for the table
+ * @param  array $table_columns All columns for the table
  * @return array Transformed cells for the current row
  */
 function process_cells( $table_cells, $row_id, $table_columns ) {
@@ -443,6 +455,7 @@ function process_cells( $table_cells, $row_id, $table_columns ) {
  * Return CSS class for banded row formatting if the row should be banded.
  *
  * @since 1.0.0
+ *
  * @param  int  $row_id
  * @param  bool $banded_rows Does this table use banded rows?
  * @param  bool $enable_header_row Does this table have a header row?
@@ -602,13 +615,16 @@ function get_cell_classes( $cell_classes, $column_classes, $conditional_classes 
  * Render Date-Time cell data types
  *
  * @since 1.2.0
+ * @since 1.4.7  Add support to output a string only
  *
- * @param  array  $cell                   Cell data and attributes to be rendered
- * @param  string $grid_show_inner_lines  Show inner grid lines for cell?
- * @param  string $grid_inner_line_width  Width for inner grid lines if present
+ *
+ * @param  array   $cell                   Cell data and attributes to be rendered
+ * @param  string  $grid_show_inner_lines  Show inner grid lines for cell?
+ * @param  string  $grid_inner_line_width  Width for inner grid lines if present
+ * @param  boolean $content_only           Output formatted content only
  * @return void
  */
-function render_date_time_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width ) {
+function render_date_time_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width, $content_only = false ) {
 	$conditional_classes = array();
 	// No conditional classes currently exist for date-time
 
@@ -638,6 +654,8 @@ function render_date_time_cell( $cell, $grid_show_inner_lines, $grid_inner_line_
 		>
 		</input>
 		<?php
+	} elseif ( $content_only ) {
+		echo esc_html( format_display_date( $cell ) );
 	} else {
 		// Display only.
 		?>
@@ -689,13 +707,15 @@ function format_display_date( $cell ) {
  * Render number cell data types
  *
  * @since 1.2.4
+ * @since 1.4.7  Add support to output a string only
  *
- * @param  array  $cell                   Cell data and attributes to be rendered
- * @param  string $grid_show_inner_lines  Show inner grid lines for cell?
- * @param  string $grid_inner_line_width  Width for inner grid lines if present
+ * @param  array   $cell                   Cell data and attributes to be rendered
+ * @param  string  $grid_show_inner_lines  Show inner grid lines for cell?
+ * @param  string  $grid_inner_line_width  Width for inner grid lines if present
+ * @param  boolean $content_only           Output formatted content only
  * @return void
  */
-function render_number_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width ) {
+function render_number_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width, $content_only = false ) {
 	$conditional_classes = array();
 
 	// Build array conditions
@@ -722,6 +742,8 @@ function render_number_cell( $cell, $grid_show_inner_lines, $grid_inner_line_wid
 			value="<?php echo esc_attr( $cell['content'] ); ?>">
 		</input>
 		<?php
+	} elseif ( $content_only ) {
+		echo esc_html( format_display_number( $cell ) );
 	} else {
 		// Display only.
 		?>
@@ -839,13 +861,15 @@ function format_display_number( $cell ) {
  * Render Checkbox cell data types
  *
  * @since 1.4.3
+ * @since 1.4.7  Add support to output a string only
  *
- * @param  array  $cell                   Cell data and attributes to be rendered
- * @param  string $grid_show_inner_lines  Show inner grid lines for cell?
- * @param  string $grid_inner_line_width  Width for inner grid lines if present
+ * @param  array   $cell                   Cell data and attributes to be rendered
+ * @param  string  $grid_show_inner_lines  Show inner grid lines for cell?
+ * @param  string  $grid_inner_line_width  Width for inner grid lines if present
+ * @param  boolean $content_only           Output formatted content only
  * @return void
  */
-function render_checkbox_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width ) {
+function render_checkbox_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width, $content_only = false ) {
 	$format_options      = $cell['data_type']['settings']['formatOptions'] ?? array();
 	$should_hide         = should_hide_checkbox( $cell['content'], $format_options );
 	$conditional_classes = array();
@@ -872,6 +896,8 @@ function render_checkbox_cell( $cell, $grid_show_inner_lines, $grid_inner_line_w
 			<?php echo format_display_checkbox( $cell ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</div>
 		<?php
+	} elseif ( $content_only ) {
+		echo esc_html( format_display_checkbox( $cell ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	} else {
 		// Display only.
 		?>
@@ -1059,13 +1085,15 @@ function get_checkbox_control_markup( $checked, $variant ) {
  * Render LInk cell data types
  *
  * @since 1.4.6
+ * @since 1.4.7  Add support to output a string only
  *
- * @param  array  $cell                   Cell data and attributes to be rendered
- * @param  string $grid_show_inner_lines  Show inner grid lines for cell?
- * @param  string $grid_inner_line_width  Width for inner grid lines if present
+ * @param  array   $cell                   Cell data and attributes to be rendered
+ * @param  string  $grid_show_inner_lines  Show inner grid lines for cell?
+ * @param  string  $grid_inner_line_width  Width for inner grid lines if present
+ * @param  boolean $content_only           Output formatted content only
  * @return void
  */
-function render_link_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width ) {
+function render_link_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width, $content_only = false ) {
 	// $format_options      = $cell['data_type']['settings']['formatOptions'] ?? array();
 	$conditional_classes = array();
 	$cell_classes        = 'grid-control__body-cells ' . $cell['classes'];
@@ -1087,6 +1115,8 @@ function render_link_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width
 			<?php echo ( $cell['content'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</div>
 		<?php
+	} elseif ( $content_only ) {
+		echo ( $cell['content'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	} else {
 		// Display only.
 		?>

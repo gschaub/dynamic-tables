@@ -64,6 +64,19 @@ if ( is_wp_error( $table ) ) {
 		'titleTagElement' => $title_tag_element,
 	) = $table_header_attributes;
 
+	list( 'renderMode' => $render_mode,
+			'listItemStyleType' => $list_item_style_type,
+			'allowFiltering' => $allow_filtering,
+			'allowSorting' => $allow_sorting,
+			'allowEditing' => $allow_editing,
+	) = $table_header_attributes['frontEndOptions'];
+
+	$allowed_render_modes = array( 'table', 'ol', 'ul' );
+	$render_mode          = in_array( $render_mode, $allowed_render_modes, true )
+		? $render_mode
+		: 'table';
+
+
 	$header_row_sticky_style = $header_row_sticky ? 'auto' : 'hidden';
 	$header_row_sticky_class = $header_row_sticky ? 'grid-control grid-control__header--sticky' : 'grid-control';
 	$horizontal_scroll_style = $allow_horizontal_scroll ? 'auto' : 'hidden';
@@ -132,7 +145,56 @@ if ( is_wp_error( $table ) ) {
 	$body_border_left_color = get_border_style( $body_border, 'left', 'color', $body_border_style_type );
 	$body_border_left_style = get_border_style( $body_border, 'left', 'style', $body_border_style_type );
 	$body_border_left_width = get_border_style( $body_border, 'left', 'width', $body_border_style_type );
-	?>
+
+	$render_context = array(
+		'banded_rows'                  => $banded_rows,
+		'body_alignment'               => $body_alignment,
+		'body_border_bottom_color'     => $body_border_bottom_color,
+		'body_border_bottom_style'     => $body_border_bottom_style,
+		'body_border_bottom_width'     => $body_border_bottom_width,
+		'body_border_left_color'       => $body_border_left_color,
+		'body_border_left_style'       => $body_border_left_style,
+		'body_border_left_width'       => $body_border_left_width,
+		'body_border_right_color'      => $body_border_right_color,
+		'body_border_right_style'      => $body_border_right_style,
+		'body_border_right_width'      => $body_border_right_width,
+		'body_border_top_color'        => $body_border_top_color,
+		'body_border_top_style'        => $body_border_top_style,
+		'body_border_top_width'        => $body_border_top_width,
+		'body_rows'                    => $body_rows,
+		'enable_header_row'            => $enable_header_row,
+		'grid_alignment'               => $grid_alignment,
+		'grid_banded_background_color' => $grid_banded_background_color,
+		'grid_banded_text_color'       => $grid_banded_text_color,
+		'grid_column_style'            => $grid_column_style,
+		'grid_inner_line_width'        => $grid_inner_line_width,
+		'grid_show_inner_lines'        => $grid_show_inner_lines,
+		'header_alignment'             => $header_alignment,
+		'header_border_bottom_color'   => $header_border_bottom_color,
+		'header_border_bottom_style'   => $header_border_bottom_style,
+		'header_border_bottom_width'   => $header_border_bottom_width,
+		'header_border_left_color'     => $header_border_left_color,
+		'header_border_left_style'     => $header_border_left_style,
+		'header_border_left_width'     => $header_border_left_width,
+		'header_border_right_color'    => $header_border_right_color,
+		'header_border_right_style'    => $header_border_right_style,
+		'header_border_right_width'    => $header_border_right_width,
+		'header_border_top_color'      => $header_border_top_color,
+		'header_border_top_style'      => $header_border_top_style,
+		'header_border_top_width'      => $header_border_top_width,
+		'header_row_sticky_class'      => $header_row_sticky_class,
+		'header_row_sticky_style'      => $header_row_sticky_style,
+		'header_rows'                  => $header_rows,
+		'horizontal_scroll_style'      => $horizontal_scroll_style,
+		'num_columns'                  => $num_columns,
+		'num_rows'                     => $num_rows,
+		'rendered_row_count'           => $rendered_row_count,
+		'table_accessible_name'        => $table_accessible_name,
+		'table_cells'                  => $table_cells,
+		'table_columns'                => $table_columns,
+		'table_grid_tag_id'            => $table_grid_tag_id,
+		'table_labelledby'             => $table_labelledby,
+	); ?>
 
 	<section <?php echo $block_wrapper; ?>>  <!-- Escaping WordPress defined variable breaks the page. -->
 		<div style="display:block";>
@@ -142,146 +204,14 @@ if ( is_wp_error( $table ) ) {
 				style="--gridAlignment: <?php echo esc_attr( $grid_alignment ); ?>;">
 				<?php echo wp_kses_post( $table_name ); ?>
 			</<?php echo esc_attr( $title_tag_element ); ?>>
-			<?php } ?>
+			<?php }
 
-			<div class="grid-scroller"
-				style="--headerRowSticky: <?php echo esc_attr( $header_row_sticky_style ); ?>">
-
-				<div id="<?php echo esc_attr( $table_grid_tag_id ); ?>"
-					role="table"
-					aria-rowcount="<?php echo esc_attr( $rendered_row_count ); ?>"
-					aria-colcount="<?php echo esc_attr( $num_columns ); ?>"
-					<?php if ( $table_labelledby ) { ?>
-						aria-labelledby="<?php echo esc_attr( $table_labelledby ); ?>"
-					<?php } else { ?>
-						aria-label="<?php echo esc_attr( $table_accessible_name ); ?>"
-					<?php } ?>
-					class="<?php echo esc_attr( $header_row_sticky_class ); ?>"
-					style="--gridTemplateColumns: <?php echo esc_attr( $grid_column_style ); ?>;
-						--horizontalScroll: <?php echo esc_attr( $horizontal_scroll_style ); ?>;
-						--headerRowSticky: <?php echo esc_attr( $header_row_sticky_style ); ?>;
-						--gridNumColumns: <?php echo esc_attr( $num_columns ); ?>;
-						--gridNumRows: <?php echo esc_attr( $num_rows ); ?>;
-						--gridAlignment: <?php echo esc_attr( $grid_alignment ); ?>">
-
-					<?php
-					if ( $enable_header_row ) {
-						foreach ( $header_rows['rows'] as $index => $header_row ) {
-							?>
-							<div class="grid-control__header"
-								role="row"
-								style="--gridTemplateHeaderRows: <?php echo esc_attr( $header_row['gridRowStyle'] ); ?>;
-									--startGridHeaderRowNbr: 1;
-									--endGridHeaderRowNbr: 2;
-									--headerBorderTopColor: <?php echo esc_attr( $header_border_top_color ); ?>;
-									--headerBorderTopStyle: <?php echo esc_attr( $header_border_top_style ); ?>;
-									--headerBorderTopWidth: <?php echo esc_attr( $header_border_top_width ); ?>;
-									--headerBorderRightColor: <?php echo esc_attr( $header_border_right_color ); ?>;
-									--headerBorderRightStyle: <?php echo esc_attr( $header_border_right_style ); ?>;
-									--headerBorderRightWidth: <?php echo esc_attr( $header_border_right_width ); ?>;
-									--headerBorderBottomColor: <?php echo esc_attr( $header_border_bottom_color ); ?>;
-									--headerBorderBottomStyle: <?php echo esc_attr( $header_border_bottom_style ); ?>;
-									--headerBorderBottomWidth: <?php echo esc_attr( $header_border_bottom_width ); ?>;
-									--headerBorderLeftColor: <?php echo esc_attr( $header_border_left_color ); ?>;
-									--headerBorderLeftStyle: <?php echo esc_attr( $header_border_left_style ); ?>;
-									--headerBorderLeftWidth: <?php echo esc_attr( $header_border_left_width ); ?>;
-									--headerTextAlignment: <?php echo esc_attr( $header_alignment ); ?>">
-							<?php
-							$header_row_cells = process_cells( $table_cells, $header_row['row_id'], $table_columns );
-							foreach ( $header_row_cells as $index => $header_cell ) {
-								?>
-									<div id="<?php echo esc_attr( $header_cell['cell_tag_id'] ); ?>"
-										role="columnheader"
-										class="grid-control__header-cells"
-										style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
-										--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>;">
-									<?php echo wp_kses_post( $header_cell['content'] ); ?>
-									</div>
-								<?php
-							}
-							?>
-							</div>
-							<?php
-						}
-					}
-					$body_start_grid_line = $enable_header_row ? 1 + count( $header_rows['rows'] ) : 1;
-					$body_end_grid_line   = $enable_header_row ?
-						$body_start_grid_line + $num_rows - 1 :
-						$body_start_grid_line + $num_rows;
-					?>
-
-					<div class="grid-control__body"
-						role="rowgroup"
-						style="--gridTemplateBodyRows: <?php echo esc_attr( $body_rows['grid_row_style'] ); ?>;
-							--startGridBodyRowNbr: <?php echo esc_attr( $body_start_grid_line ); ?>;
-							--endGridBodyRowNbr: <?php echo esc_attr( $body_end_grid_line ); ?>;
-							--bodyBorderTopColor: <?php echo esc_attr( $body_border_top_color ); ?>;
-							--bodyBorderTopStyle: <?php echo esc_attr( $body_border_top_style ); ?>;
-							--bodyBorderTopWidth: <?php echo esc_attr( $body_border_top_width ); ?>;
-							--bodyBorderRightColor: <?php echo esc_attr( $body_border_right_color ); ?>;
-							--bodyBorderRightStyle: <?php echo esc_attr( $body_border_right_style ); ?>;
-							--bodyBorderRightWidth: <?php echo esc_attr( $body_border_right_width ); ?>;
-							--bodyBorderBottomColor: <?php echo esc_attr( $body_border_bottom_color ); ?>;
-							--bodyBorderBottomStyle: <?php echo esc_attr( $body_border_bottom_style ); ?>;
-							--bodyBorderBottomWidth: <?php echo esc_attr( $body_border_bottom_width ); ?>;
-							--bodyBorderLeftColor: <?php echo esc_attr( $body_border_left_color ); ?>;
-							--bodyBorderLeftStyle: <?php echo esc_attr( $body_border_left_style ); ?>;
-							--bodyBorderLeftWidth: <?php echo esc_attr( $body_border_left_width ); ?>;
-							--bodyTextAlignment: <?php echo esc_attr( $body_alignment ); ?>">
-
-						<?php
-						foreach ( $body_rows['rows'] as $index => $body_row ) {
-							$calculated_classes = get_calculated_classes( $body_row['row_id'], $banded_rows, $enable_header_row );
-							?>
-							<div class="grid-control__body-row <?php echo esc_attr( $calculated_classes ); ?>"
-								role="row"
-								style="--bandedRowTextColor: <?php echo esc_attr( $grid_banded_text_color ); ?>;
-									--bandedRowBackgroundColor: <?php echo esc_attr( $grid_banded_background_color ); ?>">
-
-								<?php
-								$body_row_cells = process_cells( $table_cells, $body_row['row_id'], $table_columns );
-								foreach ( $body_row_cells as $index => $body_cell ) {
-									/**
-									 * Added swith to identify and render each cell according to its data type
-									 *
-									 * @since 1.2
-									 */
-									switch ( $body_cell['data_type']['type'] ) {
-										case 'general':
-											?>
-											<div id="<?php echo esc_attr( $body_cell['cell_tag_id'] ); ?>"
-												role="cell"
-												class="grid-control__body-cells"
-												style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
-													--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>">
-												<?php echo wp_kses_post( $body_cell['content'] ); ?>
-											</div>
-											<?php
-											break;
-										case 'date-time':
-											render_date_time_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width );
-											break;
-										case 'number':
-											render_number_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width );
-											break;
-										case 'checkbox':
-											render_checkbox_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width );
-											break;
-										case 'link':
-											render_link_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width );
-											break;
-										default:
-											$cell_text_alignment = 'left';
-									}
-								}
-								?>
-							</div>
-							<?php
-						}
-						?>
-					</div>
-				</div>
-			</div>
+			if ( $render_mode === 'table' ) {
+				render_table_body($render_context);
+			} else {
+				render_list_body($render_mode, $list_item_style_type, $render_context);
+			}
+			?>
 		</div>
 	</section>
 	<?php
