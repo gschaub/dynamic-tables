@@ -270,7 +270,8 @@ export function useGetElementStyles(elementRef) {
 			return;
 		}
 
-		const computed = window.getComputedStyle(element);
+		const elementWindow = element.ownerDocument?.defaultView || window;
+		const computed = elementWindow.getComputedStyle(element);
 
 		setStyles({
 			fontFamily: computed.fontFamily,

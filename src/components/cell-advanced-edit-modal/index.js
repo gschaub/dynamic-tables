@@ -281,7 +281,6 @@ function EditCellContent(props = {}) {
 												inputMode="url"
 												label="Link URL"
 												placeholder="https://www.example.com"
-												__next40pxDefaultSize
 												value={currentCellValueAttributes?.cannonical?.url || ''}
 												onChange={e => onUpdateCellValue(e, 'url')}
 												help={linkResolutionError || undefined}
@@ -292,7 +291,6 @@ function EditCellContent(props = {}) {
 												// className={renderColumnClasses}
 												type="text"
 												label="Link Label"
-												__next40pxDefaultSize
 												value={currentCellValueAttributes?.cannonical?.label || ''}
 												onChange={e => onUpdateCellValue(e, 'label')}
 											></TextControl>

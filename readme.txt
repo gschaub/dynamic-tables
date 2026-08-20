@@ -1,8 +1,8 @@
 === Dynamic Tables ===
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, responsive tables, table block, gutenberg table
-Tested up to:      7.0
-Stable tag:        1.4.6
+Tested up to:      7.1
+Stable tag:        1.4.7
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -189,7 +189,9 @@ No. This plugin is free to use. However, we are planning for a premium version o
 
 == Changelog ==
 = 1.4.7 =
+* Bump support for WordPress 7.1
 * Provide format options for table titles
+* Allow table to be output as a bulleted or numbered list instead of a table
 
 = 1.4.6 =
 * Added link column content type

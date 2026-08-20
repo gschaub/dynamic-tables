@@ -426,7 +426,6 @@ function EditCellContent(props = {}) {
                     inputMode: "url",
                     label: "Link URL",
                     placeholder: "https://www.example.com",
-                    __next40pxDefaultSize: true,
                     value: currentCellValueAttributes?.cannonical?.url || '',
                     onChange: e => onUpdateCellValue(e, 'url'),
                     help: linkResolutionError || undefined,
@@ -436,7 +435,6 @@ function EditCellContent(props = {}) {
                   , {
                     type: "text",
                     label: "Link Label",
-                    __next40pxDefaultSize: true,
                     value: currentCellValueAttributes?.cannonical?.label || '',
                     onChange: e => onUpdateCellValue(e, 'label')
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.CheckboxControl
@@ -1871,7 +1869,6 @@ function ConfigureColumnDataType(props = {}) {
                             label: '',
                             id: previewId,
                             step: 60,
-                            __next40pxDefaultSize: true,
                             value: datePreviewValue,
                             onChange: setDatePreviewValue
                           })
@@ -1925,7 +1922,6 @@ function ConfigureColumnDataType(props = {}) {
                             className: "configure-column-modal__input",
                             type: 'number',
                             label: 'Decimal Places',
-                            __next40pxDefaultSize: true,
                             value: decimalPlaces,
                             onChange: e => onNumberFormatOption(e, 'decimal')
                           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
@@ -1973,7 +1969,6 @@ function ConfigureColumnDataType(props = {}) {
                               inputMode: dataTypeFormat === 'integer' ? 'numeric' : 'decimal',
                               label: 'Entry',
                               id: `${previewId}-entry`,
-                              __next40pxDefaultSize: true,
                               value: numberEntryValue,
                               onChange: e => onNumberPreviewChange(e),
                               onBlur: () => {
@@ -1988,7 +1983,6 @@ function ConfigureColumnDataType(props = {}) {
                             label: 'Display',
                             disabled: true,
                             id: `${previewId}-display`,
-                            __next40pxDefaultSize: true,
                             value: numberDisplayValue
                           })]
                         })
@@ -9829,7 +9823,6 @@ function Edit(props) {
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.BorderBoxControl, {
               className: "border-box-workaround",
-              __next40pxDefaultSize: true,
               __experimentalIsRenderedInSidebar: true,
               label: "Borders",
               isCompact: "true",
@@ -10901,6 +10894,7 @@ function Cell(props) {
       tagName: "div",
       value: cellContent,
       readOnly: !isEditing,
+      spellCheck: true,
       onChange: !isEditing ? undefined : next => {
         const indexText = (0,_utils__WEBPACK_IMPORTED_MODULE_20__.htmlToIndexText)(next);
         persistCellEdit(next, indexText);
@@ -10947,7 +10941,6 @@ function Cell(props) {
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_25__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.TextControl, {
         className: renderClassesEdit,
         type: inputType,
-        __next40pxDefaultSize: true,
         value: cellContent,
         onKeyDown: event => {
           onDateTimeKeyDown(event);
@@ -10981,7 +10974,6 @@ function Cell(props) {
           className: renderClassesEdit,
           type: 'text',
           inputMode: inputType === 'integer' ? 'numeric' : 'decimal',
-          __next40pxDefaultSize: true,
           value: numberEntryValue,
           onChange: event => {
             onNumberChange(event);
@@ -11426,7 +11418,8 @@ function useGetElementStyles(elementRef) {
     if (!element) {
       return;
     }
-    const computed = window.getComputedStyle(element);
+    const elementWindow = element.ownerDocument?.defaultView || window;
+    const computed = elementWindow.getComputedStyle(element);
     setStyles({
       fontFamily: computed.fontFamily,
       fontSize: computed.fontSize,

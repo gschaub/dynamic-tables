@@ -983,7 +983,7 @@ class DTBK_Admin_Ajax {
 	 * Fix for known attribute name drifts
 	 *
 	 * @since 1.4.2
-	 * @since 1.4.7 - Sanitize new title element attribute
+	 * @since 1.4.7 - Sanitize new title element attribute and front-end options
 	 *
 	 * @param array $attributes Imported table header attributes.
 	 * @return array
@@ -991,6 +991,9 @@ class DTBK_Admin_Ajax {
 	private function normalize_import_table_attributes( $attributes ) {
 		$attributes = is_array( $attributes ) ? $attributes : array();
 		$defaults   = get_default_table_attributes();
+		$front_end_options = is_array( $attributes['frontEndOptions'] ?? null )
+			? $attributes['frontEndOptions']
+			: array();
 
 		if ( ! isset( $attributes['bandedRowBackgroundColor'] ) && ! empty( $attributes['bandedRowColor'] ) ) {
 			$attributes['bandedRowBackgroundColor'] = (string) $attributes['bandedRowColor'];
@@ -1009,8 +1012,14 @@ class DTBK_Admin_Ajax {
 			}
 		}
 
+		$attributes = array_merge( $defaults, $attributes );
+		$attributes['frontEndOptions'] = array_merge(
+			$defaults['frontEndOptions'],
+			$front_end_options
+		);
+
 		$attributes['titleTagElement'] = sanitize_table_title_tag_element(
-			$attributes['titleTagElement'] ?? $defaults['titleTagElement']
+			$attributes['titleTagElement']
 		);
 
 		if ( isset( $attributes['headerBorder'] ) && is_array( $attributes['headerBorder'] ) ) {

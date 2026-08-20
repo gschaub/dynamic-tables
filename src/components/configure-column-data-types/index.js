@@ -910,7 +910,6 @@ function ConfigureColumnDataType(props = {}) {
 																label={''}
 																id={previewId}
 																step={60}
-																__next40pxDefaultSize
 																value={datePreviewValue}
 																onChange={setDatePreviewValue}
 															/>
@@ -959,7 +958,6 @@ function ConfigureColumnDataType(props = {}) {
 																	className="configure-column-modal__input"
 																	type={'number'}
 																	label={'Decimal Places'}
-																	__next40pxDefaultSize
 																	value={decimalPlaces}
 																	onChange={e => onNumberFormatOption(e, 'decimal')}
 																/>
@@ -1019,7 +1017,6 @@ function ConfigureColumnDataType(props = {}) {
 																	inputMode={dataTypeFormat === 'integer' ? 'numeric' : 'decimal'}
 																	label={'Entry'}
 																	id={`${previewId}-entry`}
-																	__next40pxDefaultSize
 																	value={numberEntryValue}
 																	onChange={e => onNumberPreviewChange(e)}
 																	onBlur={() => {
@@ -1035,7 +1032,6 @@ function ConfigureColumnDataType(props = {}) {
 																label={'Display'}
 																disabled={true}
 																id={`${previewId}-display`}
-																__next40pxDefaultSize
 																value={numberDisplayValue}
 															/>
 														</BaseControl>

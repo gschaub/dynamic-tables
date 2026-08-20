@@ -4379,7 +4379,6 @@ export default function Edit(props) {
 						<PanelRow>
 							<BorderBoxControl
 								className="border-box-workaround"
-								__next40pxDefaultSize
 								__experimentalIsRenderedInSidebar
 								label="Borders"
 								isCompact="true"
@@ -5740,6 +5739,7 @@ function Cell(props) {
 				tagName="div"
 				value={cellContent}
 				readOnly={!isEditing}
+				spellCheck={true}
 				onChange={
 					!isEditing
 						? undefined
@@ -5794,7 +5794,6 @@ function Cell(props) {
 				<TextControl
 					className={renderClassesEdit}
 					type={inputType}
-					__next40pxDefaultSize
 					value={cellContent}
 					onKeyDown={event => {
 						onDateTimeKeyDown(event);
@@ -5829,7 +5828,6 @@ function Cell(props) {
 						className={renderClassesEdit}
 						type={'text'}
 						inputMode={inputType === 'integer' ? 'numeric' : 'decimal'}
-						__next40pxDefaultSize
 						value={numberEntryValue}
 						onChange={event => {
 							onNumberChange(event);

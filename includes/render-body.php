@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.4.7
  *
  * @param array $render_context output content and props required to format it.
- * @return null
+ * @return void
  */
 function render_table_body(array $render_context) {
 	extract( $render_context, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract -- Internal, explicitly constructed render context.
@@ -172,9 +172,9 @@ function render_table_body(array $render_context) {
  * @param string $render_mode Target output type to display (ordered/unordered list).
  * @param string $list_item_style_type Style to use for numbering/bullet.
  * @param array $render_context output Content and props required to format it.
- * @return null
+ * @return void
  */
-function render_list_body($render_mode, $list_item_style_type, array $render_context) {
+function render_list_body( $render_mode, $list_item_style_type, array $render_context ) {
 	extract( $render_context, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract -- Internal, explicitly constructed render context.
 
 	$list_tag = 'ol' === $render_mode ? 'ol' : 'ul';
@@ -196,16 +196,17 @@ function render_list_body($render_mode, $list_item_style_type, array $render_con
 	?>
 
 	<<?php echo esc_attr( $list_tag ); ?>
+		class="dtbk-table-list"
 		style="list-style-type: <?php echo esc_attr( $list_item_style_type ); ?>;">
 
-	<?php foreach ( $body_rows['rows'] as $index => $body_row ) {
+		<?php foreach ( $body_rows['rows'] as $index => $body_row ) {
 		?>
 		<li> <?php
 			$body_row_cells = process_cells( $table_cells, $body_row['row_id'], $table_columns );
-			foreach ( $body_row_cells as $index => $body_cell ) {
-				// echo $index;
-				// echo json_encode($body_row_cells);
-				$last_cell_in_row = $index === count($body_row_cells) - 1 ? true : false;
+			$cell_count = count( $body_row_cells );
+
+			foreach ( $body_row_cells as $cell_index => $body_cell ) {
+				$last_cell_in_row = $cell_index === $cell_count - 1;
 				switch ( $body_cell['data_type']['type'] ) {
 					case 'general':
 						echo wp_kses_post( $body_cell['content'] );
@@ -217,7 +218,7 @@ function render_list_body($render_mode, $list_item_style_type, array $render_con
 						render_number_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width, true );
 						break;
 					case 'checkbox':
-						render_checkbox_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width, true );
+						// Do not display checkbox columns in list view
 						break;
 					case 'link':
 						render_link_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width, true );
