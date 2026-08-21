@@ -1,6 +1,9 @@
 /* Internal dependencies */
 import TYPES from './all-tables-action-types.js';
-import { fetchSummaryTablesFromApi, reconcileSummaryTablesWithLocalState } from './all-tables-apis.js';
+import {
+	fetchSummaryTablesFromApi,
+	reconcileSummaryTablesWithLocalState,
+} from './all-tables-apis.js';
 
 /* Load constants */
 const { RECEIVE_HYDRATE_ALL_TABLES, UPDATE_SUMMARY_TABLE } = TYPES;

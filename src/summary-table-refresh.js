@@ -28,8 +28,7 @@ function setSummaryTableRefreshLoading(isRefreshing) {
  *
  * @since 1.4.0
  *
- * @param {boolean} isRefreshing Whether the summary tables are currently being refreshed
- * @returns {Object|null} The current list of subscribers or null if there are no subscribers
+ * @return {Object|null} The current list of subscribers or null if there are no subscribers
  */
 function getSummaryTableRefreshSubscriber() {
 	const subscribers = Array.from(summaryTableRefreshCoordinator.subscribers.values());
@@ -69,10 +68,7 @@ function ensureSummaryTableRefreshListeners() {
 		SUMMARY_TABLE_REFRESH_INTERVAL
 	);
 	window.addEventListener('focus', summaryTableRefreshCoordinator.focusHandler);
-	document.addEventListener(
-		'visibilitychange',
-		summaryTableRefreshCoordinator.visibilityHandler
-	);
+	document.addEventListener('visibilitychange', summaryTableRefreshCoordinator.visibilityHandler);
 }
 
 /**
@@ -109,16 +105,15 @@ function maybeRemoveSummaryTableRefreshListeners() {
  *
  * @since 1.4.0
  *
- * @param {Function} refreshSummaryTables Dispatch function to refresh summary tables store
- * @param {Function} createNotice         Dispatch function to create notices in the editor
- * @param {boolean} showErrorNotice       Whether to show an error notice if the refresh fails
+ * @param {Object}                               options
+ * @param {function(): Promise<*>}               options.refreshSummaryTables    Dispatches the refresh.
+ * @param {function(string, string, Object=): *} options.createNotice            Creates an editor notice.
+ * @param {boolean}                              [options.showErrorNotice=false] Shows an error notice on failure.
  * @return {Promise} Promise resolving to the refreshed summary tables
  */
-export async function runSummaryTableRefresh({
-	refreshSummaryTables,
-	createNotice,
-	showErrorNotice = false,
-}) {
+export async function runSummaryTableRefresh(options) {
+	const { refreshSummaryTables, createNotice, showErrorNotice = false } = options;
+
 	summaryTableRefreshCoordinator.showErrorNotice =
 		summaryTableRefreshCoordinator.showErrorNotice || showErrorNotice;
 
@@ -150,13 +145,28 @@ export async function runSummaryTableRefresh({
 	return refreshPromise;
 }
 
-export function registerSummaryTableRefreshSubscriber({
-	tableCreationMethod,
-	refreshSummaryTables,
-	createNotice,
-	setIsRefreshingAllTables,
-	subscriberId,
-}) {
+/**
+ * Register a summary-table refresh subscriber.
+ *
+ * @since 1.4.0
+ *
+ * @param {Object}                               options                          Subscriber configuration.
+ * @param {string}                               options.tableCreationMethod      Selected table creation method.
+ * @param {function(): Promise<Object>}          options.refreshSummaryTables     Dispatches a summary-table refresh.
+ * @param {function(string, string, Object=): *} options.createNotice             Creates an editor notice.
+ * @param {function(boolean): void}              options.setIsRefreshingAllTables Sets the refresh loading state.
+ * @param {symbol}                               options.subscriberId             Unique identifier for this subscriber.
+ * @return {function(): void|undefined} Cleanup function, or undefined when no subscriber is registered.
+ */
+export function registerSummaryTableRefreshSubscriber(options) {
+	const {
+		tableCreationMethod,
+		refreshSummaryTables,
+		createNotice,
+		setIsRefreshingAllTables,
+		subscriberId,
+	} = options;
+
 	if (tableCreationMethod !== 'existing-table') {
 		setIsRefreshingAllTables(false);
 		return undefined;

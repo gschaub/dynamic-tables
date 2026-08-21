@@ -756,7 +756,6 @@ export default function Edit(props) {
 		dataFormat,
 		e
 	) => {
-		console.log('in OpenCellEditContent');
 		e?.preventDefault?.();
 		e?.stopPropagation?.();
 
@@ -3441,7 +3440,9 @@ export default function Edit(props) {
 	 *
 	 * @since 1.3.1
 	 *
-	 * @param {number} cellId Identifier for the table cell
+	 * @param {number} columnId Identifier for the table cell's column
+	 * @param {number} rowId    Identifier for the table cell's row
+	 * @return {string} Cell's data type
 	 */
 	function getClipboardDataType(columnId, rowId) {
 		const isHeaderRow =
@@ -3661,7 +3662,6 @@ export default function Edit(props) {
 				listItemStyleType: listItemStyleType,
 			},
 		};
-		console.log('Updated Render Attributes: ', updatedTableAttributes);
 
 		setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 	}
@@ -4899,11 +4899,6 @@ export default function Edit(props) {
 																	 */
 																	let calculatedClasses = '';
 																	const isFirstColumn = column_id === '1' ? true : false;
-																	if (attributes?.border === null) {
-																		console.log(
-																			`Cell ${cell_id} has a null border attribute. This may cause rendering issues. Please check the cell attributes.`
-																		);
-																	}
 																	const isBorder = attributes?.border;
 																	const borderContent = setBorderContent(
 																		row_id,
@@ -5650,7 +5645,6 @@ function Cell(props) {
 	 * @param {Object} e         Border click event object
 	 */
 	function passMouseMenuClick(column_id, row_id, table, e) {
-		console.log('in passMouseMenuClick');
 		if (e.button !== 0) {
 			onContextMenu(column_id, row_id, table, e);
 		} else {
@@ -5711,7 +5705,6 @@ function Cell(props) {
 		dataFormat,
 		e
 	) {
-		console.log('in passMouseEditClick');
 		const cellValueAttributes = cellAttributes?.value || {};
 		onMouseDown(
 			table_id,
@@ -5969,28 +5962,22 @@ function Cell(props) {
 						}
 			}
 			onMouseDown={e => {
-				console.log('in onMouseDown, e = ', e);
 				if (cellType === 'border') return;
 				if (isEditing) return;
 				if (e.button !== 0) {
 					return;
 				}
-				console.log('Executing onMouseDown');
 				e.preventDefault();
 				e.stopPropagation();
 				onRequestFocus?.(Number(column_id), Number(row_id));
 			}}
 			onDoubleClick={e => {
-				console.log('in onMouseDown, e = ', e);
 				if (cellType === 'border') return;
-				console.log('Executing onDoubleClick');
 				e.preventDefault();
 				onRequestEdit?.(cell_id);
 			}}
 			onContextMenu={e => {
-				console.log('in onContextMenu, e = ', e);
 				if (cellType === 'border' || !canOpenContextMenu) return;
-				console.log('Executing onContextMenu');
 				e.preventDefault();
 				passMouseMenuClick(column_id, row_id, table, e);
 				onRequestFocus?.(Number(column_id), Number(row_id));

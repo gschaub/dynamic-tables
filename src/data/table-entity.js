@@ -13,7 +13,5 @@ export const loadTableEntityConfig = () => {
 	};
 
 	dispatch('core').addEntities(tableConfig);
-	console.log(tableConfig);
-
 	return tableConfig;
 };

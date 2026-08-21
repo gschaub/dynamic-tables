@@ -1,5 +1,8 @@
 /* Internal dependencies */
-import { fetchSummaryTablesFromApi, reconcileSummaryTablesWithLocalState } from './all-tables-apis.js';
+import {
+	fetchSummaryTablesFromApi,
+	reconcileSummaryTablesWithLocalState,
+} from './all-tables-apis.js';
 
 /**
  * Requests a summary tables from the REST API.

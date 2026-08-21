@@ -234,7 +234,6 @@ function CellMenuImpl(props = {}) {
 		onRequestClose?.();
 	}, [onRequestClose]);
 
-	console.log('Cell attributes', cellAttributes);
 	const canShowRowInsertDelete = !cellAttributes?.isRowHeader;
 	const canShowRowMove = !isContentOnlyMode && !cellAttributes?.isRowHeader;
 

@@ -42,8 +42,6 @@ function EditCellContent(props = {}) {
 		onRequestClose,
 	} = props;
 
-	console.log('In Edit Cell Modal');
-
 	const { type: contentType, settings } = cellContentType;
 	const { format: contentFormat } = settings?.format || '';
 
@@ -92,7 +90,6 @@ function EditCellContent(props = {}) {
 		switch (contentType) {
 			case 'link':
 				if (!attributes) {
-					console.log('Resetting attributes. Prior:', attributes);
 					attributes = {
 						cannonical: {
 							url: '#',
@@ -113,7 +110,6 @@ function EditCellContent(props = {}) {
 							},
 							indexText: attributes?.indexText || '',
 						};
-						console.log('Attributes from URL', attributes);
 						break;
 					case 'label':
 						attributes = {
@@ -124,7 +120,6 @@ function EditCellContent(props = {}) {
 							},
 							indexText: event,
 						};
-						console.log('Attributes from Label', attributes);
 						break;
 					case 'newTab':
 						attributes = {
@@ -135,7 +130,6 @@ function EditCellContent(props = {}) {
 							},
 							indexText: attributes?.indexText || '',
 						};
-						console.log('Attributes from Label', attributes);
 						break;
 					default:
 						break;
@@ -153,8 +147,6 @@ function EditCellContent(props = {}) {
 			default:
 				break;
 		}
-		console.log('Attributes: ', attributes);
-		console.log('Content: ', content);
 
 		setCurrentCellContent(content);
 		setCurrentCellValueAttributes(attributes);

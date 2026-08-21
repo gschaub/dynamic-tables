@@ -222,7 +222,6 @@ function EditCellContent(props = {}) {
     updatedCell,
     onRequestClose
   } = props;
-  console.log('In Edit Cell Modal');
   const {
     type: contentType,
     settings
@@ -271,7 +270,6 @@ function EditCellContent(props = {}) {
     switch (contentType) {
       case 'link':
         if (!attributes) {
-          console.log('Resetting attributes. Prior:', attributes);
           attributes = {
             cannonical: {
               url: '#',
@@ -291,7 +289,6 @@ function EditCellContent(props = {}) {
               },
               indexText: attributes?.indexText || ''
             };
-            console.log('Attributes from URL', attributes);
             break;
           case 'label':
             attributes = {
@@ -302,7 +299,6 @@ function EditCellContent(props = {}) {
               },
               indexText: event
             };
-            console.log('Attributes from Label', attributes);
             break;
           case 'newTab':
             attributes = {
@@ -313,7 +309,6 @@ function EditCellContent(props = {}) {
               },
               indexText: attributes?.indexText || ''
             };
-            console.log('Attributes from Label', attributes);
             break;
           default:
             break;
@@ -329,8 +324,6 @@ function EditCellContent(props = {}) {
       default:
         break;
     }
-    console.log('Attributes: ', attributes);
-    console.log('Content: ', content);
     setCurrentCellContent(content);
     setCurrentCellValueAttributes(attributes);
   }
@@ -692,7 +685,6 @@ function CellMenuImpl(props = {}) {
   const handlePopoverClose = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(() => {
     onRequestClose?.();
   }, [onRequestClose]);
-  console.log('Cell attributes', cellAttributes);
   const canShowRowInsertDelete = !cellAttributes?.isRowHeader;
   const canShowRowMove = !isContentOnlyMode && !cellAttributes?.isRowHeader;
   const hasTableId = tableId !== null && tableId !== undefined;
@@ -6640,7 +6632,6 @@ function Edit(props) {
    * @param {Object} cellContentType Cell content type and formatting options
    */
   const openCellEditContent = (table_id, cell_id, cellContent, cellAttributes, cellBaseClasses, dataFormat, e) => {
-    console.log('in OpenCellEditContent');
     e?.preventDefault?.();
     e?.stopPropagation?.();
 
@@ -9046,7 +9037,9 @@ function Edit(props) {
    *
    * @since 1.3.1
    *
-   * @param {number} cellId Identifier for the table cell
+   * @param {number} columnId Identifier for the table cell's column
+   * @param {number} rowId    Identifier for the table cell's row
+   * @return {string} Cell's data type
    */
   function getClipboardDataType(columnId, rowId) {
     const isHeaderRow = table?.rows?.find(r => Number(r.row_id) === Number(rowId))?.attributes?.isHeader === true;
@@ -9250,7 +9243,6 @@ function Edit(props) {
         listItemStyleType: listItemStyleType
       }
     };
-    console.log('Updated Render Attributes: ', updatedTableAttributes);
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
   }
 
@@ -10231,9 +10223,6 @@ function Edit(props) {
                        */
                       let calculatedClasses = '';
                       const isFirstColumn = column_id === '1' ? true : false;
-                      if (attributes?.border === null) {
-                        console.log(`Cell ${cell_id} has a null border attribute. This may cause rendering issues. Please check the cell attributes.`);
-                      }
                       const isBorder = attributes?.border;
                       const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_20__.setBorderContent)(row_id, column_id, content);
                       const showGridLinesCSS = gridShowInnerLines;
@@ -10830,7 +10819,6 @@ function Cell(props) {
    * @param {Object} e         Border click event object
    */
   function passMouseMenuClick(column_id, row_id, table, e) {
-    console.log('in passMouseMenuClick');
     if (e.button !== 0) {
       onContextMenu(column_id, row_id, table, e);
     } else {
@@ -10875,7 +10863,6 @@ function Cell(props) {
    * @param {Object} e           Border click event object
    */
   function passMouseEditClick(table_id, cell_id, cellContent, cellAttributes, cellBaseClasses, dataFormat, e) {
-    console.log('in passMouseEditClick');
     const cellValueAttributes = cellAttributes?.value || {};
     onMouseDown(table_id, cell_id, cellContent, cellValueAttributes, cellBaseClasses, dataFormat, e);
   }
@@ -11095,28 +11082,22 @@ function Cell(props) {
       '--gridLineWidth': gridLineWidthCSS
     },
     onMouseDown: e => {
-      console.log('in onMouseDown, e = ', e);
       if (cellType === 'border') return;
       if (isEditing) return;
       if (e.button !== 0) {
         return;
       }
-      console.log('Executing onMouseDown');
       e.preventDefault();
       e.stopPropagation();
       onRequestFocus?.(Number(column_id), Number(row_id));
     },
     onDoubleClick: e => {
-      console.log('in onMouseDown, e = ', e);
       if (cellType === 'border') return;
-      console.log('Executing onDoubleClick');
       e.preventDefault();
       onRequestEdit?.(cell_id);
     },
     onContextMenu: e => {
-      console.log('in onContextMenu, e = ', e);
       if (cellType === 'border' || !canOpenContextMenu) return;
-      console.log('Executing onContextMenu');
       e.preventDefault();
       passMouseMenuClick(column_id, row_id, table, e);
       onRequestFocus?.(Number(column_id), Number(row_id));
@@ -12779,8 +12760,7 @@ function setSummaryTableRefreshLoading(isRefreshing) {
  *
  * @since 1.4.0
  *
- * @param {boolean} isRefreshing Whether the summary tables are currently being refreshed
- * @returns {Object|null} The current list of subscribers or null if there are no subscribers
+ * @return {Object|null} The current list of subscribers or null if there are no subscribers
  */
 function getSummaryTableRefreshSubscriber() {
   const subscribers = Array.from(summaryTableRefreshCoordinator.subscribers.values());
@@ -12844,16 +12824,18 @@ function maybeRemoveSummaryTableRefreshListeners() {
  *
  * @since 1.4.0
  *
- * @param {Function} refreshSummaryTables Dispatch function to refresh summary tables store
- * @param {Function} createNotice         Dispatch function to create notices in the editor
- * @param {boolean} showErrorNotice       Whether to show an error notice if the refresh fails
+ * @param {Object}                               options
+ * @param {function(): Promise<*>}               options.refreshSummaryTables    Dispatches the refresh.
+ * @param {function(string, string, Object=): *} options.createNotice            Creates an editor notice.
+ * @param {boolean}                              [options.showErrorNotice=false] Shows an error notice on failure.
  * @return {Promise} Promise resolving to the refreshed summary tables
  */
-async function runSummaryTableRefresh({
-  refreshSummaryTables,
-  createNotice,
-  showErrorNotice = false
-}) {
+async function runSummaryTableRefresh(options) {
+  const {
+    refreshSummaryTables,
+    createNotice,
+    showErrorNotice = false
+  } = options;
   summaryTableRefreshCoordinator.showErrorNotice = summaryTableRefreshCoordinator.showErrorNotice || showErrorNotice;
   if (summaryTableRefreshCoordinator.inFlightPromise) {
     return summaryTableRefreshCoordinator.inFlightPromise;
@@ -12877,13 +12859,28 @@ async function runSummaryTableRefresh({
   summaryTableRefreshCoordinator.inFlightPromise = refreshPromise;
   return refreshPromise;
 }
-function registerSummaryTableRefreshSubscriber({
-  tableCreationMethod,
-  refreshSummaryTables,
-  createNotice,
-  setIsRefreshingAllTables,
-  subscriberId
-}) {
+
+/**
+ * Register a summary-table refresh subscriber.
+ *
+ * @since 1.4.0
+ *
+ * @param {Object}                               options                          Subscriber configuration.
+ * @param {string}                               options.tableCreationMethod      Selected table creation method.
+ * @param {function(): Promise<Object>}          options.refreshSummaryTables     Dispatches a summary-table refresh.
+ * @param {function(string, string, Object=): *} options.createNotice             Creates an editor notice.
+ * @param {function(boolean): void}              options.setIsRefreshingAllTables Sets the refresh loading state.
+ * @param {symbol}                               options.subscriberId             Unique identifier for this subscriber.
+ * @return {function(): void|undefined} Cleanup function, or undefined when no subscriber is registered.
+ */
+function registerSummaryTableRefreshSubscriber(options) {
+  const {
+    tableCreationMethod,
+    refreshSummaryTables,
+    createNotice,
+    setIsRefreshingAllTables,
+    subscriberId
+  } = options;
   if (tableCreationMethod !== 'existing-table') {
     setIsRefreshingAllTables(false);
     return undefined;
