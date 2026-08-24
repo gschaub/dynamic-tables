@@ -288,7 +288,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * @since 1.0.0
 	 *
 	 * @param int $id Supplied ID.
-	 * @return WP_Post|WP_Error Post object if ID is valid, WP_Error otherwise.
+	 * @return array|\WP_Error|\WP_Post Post object if ID is valid, WP_Error otherwise.
 	 */
 	protected function get_table( $id, $validate_header_only = false ) {
 		$error_header = new \WP_Error(
@@ -691,6 +691,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * Deletes a single table.
 	 *
 	 * @since 1.0.0
+	 * @since 1.4.8 Added check for transient unmount events.
 	 *
 	 * @param \WP_REST_Request $request Full details about the request.
 	 * @return \WP_REST_Response|\WP_Error Response object on success, or WP_Error object on failure.
@@ -705,6 +706,33 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 		if ( is_wp_error( $table ) ) {
 			return $table;
+		}
+
+		/*
+		 * @since 1.4.8
+		 *
+		 * A client-side unmount can be transient. Do not physically delete a
+		 * table while its owning post still contains the same block reference.
+		 * Signed maintenance requests intentionally bypass this check because
+		 * they handle explicit post deletion and admin maintenance.
+		 */
+		if ( ! $this->maintenance_request && $this->is_table_referenced_by_owning_post( $table ) ) {
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log(
+					sprintf(
+						'[DTBK] Blocked table deletion because its owning post still references it. table_id=%d post_id=%d block_table_ref=%s',
+						(int) $table['id'],
+						(int) $table['header']['post_id'],
+						(string) $table['header']['block_table_ref']
+					)
+				);
+			}
+
+			return new \WP_Error(
+				'rest_table_still_referenced',
+				__( 'The table is still referenced by its post and cannot be deleted.', 'dynamic-table-blocks' ),
+				array( 'status' => 409 )
+			);
 		}
 
 		$id = $request['id'];
@@ -739,6 +767,66 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			);
 		}
 		return rest_ensure_response( $response );
+	}
+
+	/**
+	 * Check whether the table remains referenced by its owning post.
+	 *
+	 * @since 1.4.8
+	 *
+	 * @param array $table Table data.
+	 * @return bool True when the saved post still contains the table block.
+	 */
+	protected function is_table_referenced_by_owning_post( $table ) {
+		$table_id       = (int) ( $table['id'] ?? 0 );
+		$post_id        = (int) ( $table['header']['post_id'] ?? 0 );
+		$block_table_ref = (string) ( $table['header']['block_table_ref'] ?? '' );
+
+		if ( $table_id <= 0 || $post_id <= 0 || '' === $block_table_ref ) {
+			return false;
+		}
+
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			return false;
+		}
+
+		return $this->block_tree_has_table_reference(
+			parse_blocks( $post->post_content ),
+			$table_id,
+			$block_table_ref
+		);
+	}
+
+	/**
+	 * Recursively search a parsed block tree for a specific table reference.
+	 *
+	 * @since 1.4.8
+	 *
+	 * @param array  $blocks          Parsed blocks.
+	 * @param int    $table_id        Table ID.
+	 * @param string $block_table_ref Stable block reference.
+	 * @return bool Whether the table block is present.
+	 */
+	protected function block_tree_has_table_reference( $blocks, $table_id, $block_table_ref ) {
+		foreach ( $blocks as $block ) {
+			$attrs = $block['attrs'] ?? array();
+
+			if (
+				'dynamic-table-blocks/dynamic-table-blocks' === ( $block['blockName'] ?? '' ) &&
+				(int) ( $attrs['table_id'] ?? 0 ) === $table_id &&
+				(string) ( $attrs['block_table_ref'] ?? '' ) === $block_table_ref
+			) {
+				return true;
+			}
+
+			if ( ! empty( $block['innerBlocks'] ) &&
+				$this->block_tree_has_table_reference( $block['innerBlocks'], $table_id, $block_table_ref ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

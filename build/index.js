@@ -3995,15 +3995,44 @@ const deleteTableEntity = tableId => async ({
 /**
  * Signals a delete of table entities for all local tables with a status of 'deleted'.
  *
- * @since    1.0.0
+ * @since   1.0.0
+ * @since   1.4.8  Address bug that incorrectly deletes blocks that have unmounted
+ *
+ * A block can temporarily unmount while Gutenberg replaces or restores blocks.
+ * Recheck the current block tree immediately before deleting so a stale unmount
+ * classification cannot remove a table that has since remounted.
  *
  * @param {Object} deletedTables Object of deleted tables
  * @return  {Object} Action object
  */
 const processDeletedTables = deletedTables => async ({
-  dispatch
+  dispatch,
+  registry
 }) => {
-  const deleteResults = await Promise.allSettled(Object.keys(deletedTables).map(key => dispatch.deleteTableEntity(deletedTables[key].table_id)));
+  const stillMountedTables = Object.values(deletedTables).filter(table => hasDynamicTableBlock(registry, table));
+  stillMountedTables.forEach(table => {
+    console.warn('[DTBK] Cancelled pending table deletion because the block is still mounted.', {
+      tableId: table.table_id,
+      blockTableRef: table.block_table_ref,
+      priorStatus: table.prior_status
+    });
+  });
+  const tablesToDelete = Object.values(deletedTables).filter(table => !hasDynamicTableBlock(registry, table));
+  const restoreResults = await Promise.allSettled(stillMountedTables.map(async table => {
+    const tableId = table.table_id;
+    const restoredStatus = table.prior_status || 'saved';
+    dispatch.updateTableProp(tableId, 'table_status', restoredStatus);
+    dispatch.removeTableProp(tableId, 'prior_status');
+    dispatch.updateTableEntity(tableId, restoredStatus, undefined, {
+      history: 'ignore'
+    });
+    await dispatch.saveTableEntity(tableId);
+  }));
+  const failedRestores = restoreResults.filter(result => result.status === 'rejected');
+  if (failedRestores.length > 0) {
+    throw failedRestores[0].reason;
+  }
+  const deleteResults = await Promise.allSettled(tablesToDelete.map(table => dispatch.deleteTableEntity(table.table_id)));
   const failedDeletes = deleteResults.filter(result => result.status === 'rejected');
   if (failedDeletes.length > 0) {
     throw failedDeletes[0].reason;

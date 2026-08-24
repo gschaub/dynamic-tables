@@ -259,7 +259,7 @@ class DTBK_Maintenance {
 			} else {
 				// If no match is found, search historical post states.
 				// Table data will be maintained if there is a historical match.
-				$matching_post_history = $this->perform_indexed_and_search( $post_blocks, $post_history_blocks_index, $post_search_criteria );
+				$matching_post_history = $this->perform_indexed_and_search( $post_history_blocks, $post_history_blocks_index, $post_search_criteria );
 				if ( $matching_post_history ) {
 					$this->process_table_post_matches( $matching_post_history, $table );
 				} elseif (

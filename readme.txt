@@ -192,6 +192,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 == Changelog ==
 = 1.4.7 =
 * Made the green border for the current cell turn off when focus shifts to anotehr block and turn on when focus returns
+* Fixed bug that may cause table deletion upon transient unmounting of its block
 
 = 1.4.7 =
 * Bump support for WordPress 7.1
