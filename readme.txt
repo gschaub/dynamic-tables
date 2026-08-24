@@ -47,6 +47,7 @@ Rather than forcing you to choose between ease of use and technical capability, 
 * Import CSV files or restore tables from JSON backups
 * Export tables for backup or interoperability
 * Precise control over column widths, row heights, borders, headers, and formatting
+* Optionally render as a bulleted or numbered list on the front end
 * Semantic HTML output for accessibility and search engines
 * Built with multisite support in mind
 
@@ -72,6 +73,7 @@ Current supported data types include:
 * Numbers (float, currency, percentages, integers)
 * Date/Time (date, time, date/time)
 * Checkbox (standard, toggle, icon, freeform)
+* Links
 
 Formatting is applied consistently across an entire column while preserving the underlying value.
 
@@ -188,6 +190,9 @@ No. This plugin is free to use. However, we are planning for a premium version o
 10. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+= 1.4.7 =
+* Made the green border for the current cell turn off when focus shifts to anotehr block and turn on when focus returns
+
 = 1.4.7 =
 * Bump support for WordPress 7.1
 * Provide format options for table titles

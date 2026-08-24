@@ -10082,7 +10082,7 @@ function Edit(props) {
                       // Animate cell when it is the clipboard source
                       calculatedClasses = calculatedClasses + 'grid-control__cell--copied ';
                     }
-                    const isFocused = focusedCell.col === Number(column_id) && focusedCell.row === Number(row_id);
+                    const isFocused = props.isSelected && focusedCell.col === Number(column_id) && focusedCell.row === Number(row_id);
                     if (isFocused) {
                       // Show distinct border when cell has focus
                       calculatedClasses = calculatedClasses + 'grid-control__body-cells--focused ';
@@ -10232,7 +10232,7 @@ function Edit(props) {
                         // Animate cell when it is the clipboard source
                         calculatedClasses = calculatedClasses + 'grid-control__cell--copied ';
                       }
-                      const isFocused = focusedCell.col === Number(column_id) && focusedCell.row === Number(row_id);
+                      const isFocused = props.isSelected && focusedCell.col === Number(column_id) && focusedCell.row === Number(row_id);
                       if (isFocused) {
                         // Show distinct border when cell has focus
                         calculatedClasses = calculatedClasses + 'grid-control__body-cells--focused ';

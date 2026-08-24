@@ -4694,6 +4694,7 @@ export default function Edit(props) {
 																}
 
 																const isFocused =
+																	props.isSelected &&
 																	focusedCell.col === Number(column_id) &&
 																	focusedCell.row === Number(row_id);
 																if (isFocused) {
@@ -4919,6 +4920,7 @@ export default function Edit(props) {
 																	}
 
 																	const isFocused =
+																		props.isSelected &&
 																		focusedCell.col === Number(column_id) &&
 																		focusedCell.row === Number(row_id);
 																	if (isFocused) {
