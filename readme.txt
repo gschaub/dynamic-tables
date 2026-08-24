@@ -2,7 +2,7 @@
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, responsive tables, table block, gutenberg table
 Tested up to:      7.1
-Stable tag:        1.4.7
+Stable tag:        1.4.8
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -190,7 +190,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 10. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
-= 1.4.7 =
+= 1.4.8 =
 * Made the green border for the current cell turn off when focus shifts to anotehr block and turn on when focus returns
 * Fixed bug that may cause table deletion upon transient unmounting of its block
 
