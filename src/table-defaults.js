@@ -5,14 +5,16 @@ import { numberToLetter } from './utils';
  * Create a new dynamic table
  *
  * @since    1.0.0
+ * @since 1.4.9 - Bring user defined columns into table creation
  *
  * @param {string} newBlockTableRef Block table cross reference unique string
  * @param {number} columnCount      Number of columns to include in the table
  * @param {number} rowCount         Number of rows to include in the table
  * @param {string} tableName        Name of the new table
+ * @param {Array}  columns          Table columns
  * @return  {Object} New Dynamic Table
  */
-export function initTable(newBlockTableRef, columnCount, rowCount, tableName) {
+export function initTable(newBlockTableRef, columnCount, rowCount, tableName, columns) {
 	const tableCells = initTableCells(Number(columnCount), Number(rowCount));
 	const rowArray = [];
 
@@ -25,6 +27,8 @@ export function initTable(newBlockTableRef, columnCount, rowCount, tableName) {
 
 	for (let i = 1; i <= columnCount; i++) {
 		const column = getDefaultColumn('0', i);
+		const columnInputName = columns[i - 1]?.column_name || '';
+		column.column_name = columnInputName !== '' ? columnInputName : column.column_name;
 		columnArray.push(column);
 	}
 
@@ -112,6 +116,7 @@ export function getDefaultRow(tableId, rowId, rowLocation = 'Body') {
  * Get a new column with default values.
  *
  * @since    1.0.0
+ * @since    1.4.9 - Updated default column name
  *
  * @param {number} tableId        Table id to assign to column
  * @param {number} columnId       Column id to assign to column
@@ -124,7 +129,7 @@ export function getDefaultColumn(tableId, columnId, columnLocation = 'Body') {
 		column = {
 			table_id: String(tableId),
 			column_id: String(columnId),
-			column_name: 'Border',
+			column_name: 'Border Column ' + String(columnId),
 			attributes: getDefaultTableAttributes('columns', columnLocation),
 			classes: '',
 		};
@@ -132,7 +137,7 @@ export function getDefaultColumn(tableId, columnId, columnLocation = 'Body') {
 		column = {
 			table_id: String(tableId),
 			column_id: String(columnId),
-			column_name: 'Comments',
+			column_name: 'Column ' + String(columnId),
 			attributes: getDefaultTableAttributes('columns', columnLocation),
 			classes: getDefaultTableClasses('columns'),
 		};

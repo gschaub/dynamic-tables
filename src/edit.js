@@ -30,7 +30,7 @@ import {
 	BorderBoxControl,
 	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
-
+import { Card, Stack } from '@wordpress/ui';
 import {
 	RichText,
 	useBlockProps,
@@ -93,6 +93,7 @@ import {
 	normalizeCaretForPresentationPrefix,
 	formatClipboardContent,
 	htmlToIndexText,
+	coerceCellData,
 } from './utils';
 
 import { initTable, getDefaultRow, getDefaultColumn, getDefaultCell } from './table-defaults';
@@ -289,6 +290,7 @@ export default function Edit(props) {
 		tableName: '',
 		numColumns: 1,
 		numRows: 1,
+		columns: [{ column_id: 1, column_name: '' }],
 	});
 	const [tableRequest, setTableRequest] = useState({
 		tableId: 0,
@@ -740,12 +742,13 @@ export default function Edit(props) {
 	 *
 	 * @since 1.4.6
 	 *
-	 * @param {Object} e               Cell menu click event
-	 * @param {string} cellId          Cell number to update
+	 * @param {string} table_id        Identifier for current table
+	 * @param {string} cell_id         Cell number to update
 	 * @param {string} cellContent     Cell content
 	 * @param {Object} cellAttributes  Cell attributes
-	 * @param {Object} cellClasses     Cell classes
-	 * @param {Object} cellContentType Cell content type and formatting options
+	 * @param {Object} cellBaseClasses Cell classes
+	 * @param {Object} dataFormat      Cell content type and formatting options
+	 * @param {Object} e               Cell menu click event
 	 */
 	const openCellEditContent = (
 		table_id,
@@ -2230,15 +2233,17 @@ export default function Edit(props) {
 	 * @since 1.0.0
 	 * @since 1.3.0 - Refactor to support WordPress RTC
 	 * @since 1.4.4 - Show borders when table is created
+	 * @since 1.4.9 - Bring user defined columns into table creation
 	 *
 	 * @param {number} columnCount Number of columns in table
 	 * @param {number} rowCount    Number of rows in table
 	 * @param {string} tableName   Name of new table
+	 * @param {Array}  columns     Table columns
 	 */
-	function createTable(columnCount, rowCount, tableName) {
+	function createTable(columnCount, rowCount, tableName, columns) {
 		setTableStale(false);
 		const newBlockTableRef = generateBlockTableRef();
-		const newTable = initTable(newBlockTableRef, columnCount, rowCount, tableName);
+		const newTable = initTable(newBlockTableRef, columnCount, rowCount, tableName, columns);
 
 		props.setAttributes({ block_table_ref: newBlockTableRef });
 		receiveNewTable(newTable);
@@ -2313,7 +2318,8 @@ export default function Edit(props) {
 				createTable(
 					createDraftTable.numColumns,
 					createDraftTable.numRows,
-					createDraftTable.tableName
+					createDraftTable.tableName,
+					createDraftTable.columns
 				);
 				break;
 			case 'existing-table':
@@ -2384,6 +2390,7 @@ export default function Edit(props) {
 	 * Process changes for the column count when defining a new table creation.
 	 *
 	 * @since 1.0.0
+	 * @since 1.4.8 - Manage column array when the column count changes
 	 *
 	 * @param {number} num_columns Number of columns entered in form
 	 */
@@ -2398,9 +2405,29 @@ export default function Edit(props) {
 		} else {
 			removeMessageNotice(removeNotice, 'invalid-num-columns');
 		}
+
+		const priorColumns = createDraftTable.columns;
+		const priorColumnCount = priorColumns.length;
+		const columnCountDifference = newNumColumns - priorColumnCount;
+
+		const newColumns = priorColumns;
+
+		if (columnCountDifference > 0) {
+			for (let i = 1; i <= columnCountDifference; i++) {
+				const columnId = priorColumnCount + i;
+				const newColumn = { column_id: columnId, column_name: '' };
+				newColumns.push(newColumn);
+			}
+		}
+
+		if (columnCountDifference < 0) {
+			newColumns.length = newColumns.length + columnCountDifference;
+		}
+
 		setCreateDraftTable(prev => ({
 			...prev,
 			numColumns: newNumColumns,
+			columns: newColumns,
 		}));
 	}
 
@@ -3139,9 +3166,6 @@ export default function Edit(props) {
 					const classes = clickedColumn?.classes || '';
 					openColumnDataTypeModal(e, String(columnId), columnLabel, attrs, classes);
 				} else {
-					// setTableAttributes(tableId, 'column_name', String(columnId), 'PROP', columnName);
-					// setTableAttributes(tableId, 'column', String(columnId), 'ATTRIBUTES', updatedColumnAttributes);
-					// setTableAttributes(tableId, 'column', String(columnId), 'CLASSES', updatedColumnClasses);
 					setTableAttributes(tableId, 'column_name', String(columnId), 'PROP', columnName, false);
 					setTableAttributes(
 						tableId,
@@ -3345,7 +3369,8 @@ export default function Edit(props) {
 			c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id)
 		);
 		if (cellData) {
-			const columnDataType = getClipboardDataType(column_id, row_id);
+			const columnDataTypeObject = getClipboardDataType(column_id, row_id);
+			const columnDataType = columnDataTypeObject?.type || 'general';
 			const columnDataTypeSettings =
 				columnDataType === 'general' ? { type: 'general' } : columnDataTypes[column_id];
 			const cellContent = cellData?.content || '';
@@ -3404,9 +3429,35 @@ export default function Edit(props) {
 			return;
 		}
 
-		const currentColumnDataType = getClipboardDataType(column_id, row_id);
+		const currentColumnDataTypeObject = getClipboardDataType(column_id, row_id);
+		const currentCellData = table.cells.find(
+			c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id)
+		);
 
-		if (columnDataType !== currentColumnDataType) {
+		console.log('Clipboard data type', columnDataType);
+		console.log('Clipboard data: ' + cellContent, cellValueAttr);
+		console.log('Current cell contents:', currentCellData);
+
+		const matchedDataTypes = currentColumnDataTypeObject?.type === columnDataType ? true : false;
+		let convertedCellContent = {
+			incompatibleDataTypes: false,
+			updatedCellContent: cellContent,
+			updatedCellValueAttr: cellValueAttr,
+		};
+
+		if (!matchedDataTypes) {
+			convertedCellContent = coerceCellData(
+				cellContent,
+				cellValueAttr,
+				currentColumnDataTypeObject,
+				columnDataType
+			);
+		}
+
+		const { incompatibleDataTypes, updatedCellContent, updatedCellValueAttr } =
+			convertedCellContent;
+
+		if (incompatibleDataTypes) {
 			publishMessage(createNotice, 'paste-content-type-mismatch', {
 				target: MESSAGE_TARGETS.STORE_SNACKBAR,
 				announceMode: 'manual',
@@ -3414,17 +3465,13 @@ export default function Edit(props) {
 			return;
 		}
 
-		const currentCellData = table.cells.find(
-			c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id)
-		);
-
-		const currentCellValueAttr = currentCellData?.attributes || {};
+		const currentCellAttributes = currentCellData?.attributes || {};
 		const updatedCellAttrs = {
-			...currentCellValueAttr,
-			value: cellValueAttr,
+			...currentCellAttributes,
+			value: updatedCellValueAttr,
 		};
 
-		setTableAttributes(table_id, 'cell', cellId, 'CONTENT', cellContent, false);
+		setTableAttributes(table_id, 'cell', cellId, 'CONTENT', updatedCellContent, false);
 		setTableAttributes(table_id, 'cell', cellId, 'ATTRIBUTES', updatedCellAttrs, false);
 
 		if (clipboardAction === 'cut') {
@@ -3452,10 +3499,8 @@ export default function Edit(props) {
 			return 'general';
 		}
 
-		return (
-			table?.columns?.find(c => Number(c.column_id) === Number(columnId))?.attributes
-				?.columnDataType?.type || 'general'
-		);
+		return table?.columns?.find(c => Number(c.column_id) === Number(columnId))?.attributes
+			?.columnDataType;
 	}
 
 	/**
@@ -5135,39 +5180,89 @@ export default function Edit(props) {
 
 						{tableCreationMethod === 'new' && (
 							<>
-								<InputControl
-									label={__('Table Name', 'dynamic-table-blocks')}
-									placeholder="New Table"
-									required="true"
-									onChange={value =>
-										setCreateDraftTable(prev => ({
-											...prev,
-											tableName: value,
-										}))
-									}
-									value={createDraftTable.tableName}
-									className="blocks-table__placeholder-input"
-								/>
+								<Card.Root>
+									<Card.Header>
+										<Card.Title>New Table Definition</Card.Title>
+									</Card.Header>
+									<Card.Content>
+										<Stack direction="row" gap="24px">
+											{/* Left column */}
+											<Stack direction="column" className="dtbk-configure-column-split">
+												<InputControl
+													label={__('Table Name', 'dynamic-table-blocks')}
+													placeholder="New Table"
+													required="true"
+													onChange={value =>
+														setCreateDraftTable(prev => ({
+															...prev,
+															tableName: value,
+														}))
+													}
+													value={createDraftTable.tableName}
+													className="blocks-table__placeholder-input"
+												/>
 
-								<NumberControl
-									__nextHasNoMarginBottom
-									label={__('Table Columns', 'dynamic-table-blocks')}
-									min={1}
-									required="true"
-									value={createDraftTable.numColumns}
-									onChange={e => onChangeInitialColumnCount(e)}
-									className="blocks-table__placeholder-input"
-								/>
+												<NumberControl
+													__nextHasNoMarginBottom
+													label={__('Table Columns', 'dynamic-table-blocks')}
+													min={1}
+													required="true"
+													value={createDraftTable.numColumns}
+													onChange={e => onChangeInitialColumnCount(e)}
+													className="blocks-table__placeholder-input"
+												/>
 
-								<NumberControl
-									__nextHasNoMarginBottom
-									label={__('Table Rows', 'dynamic-table-blocks')}
-									required="true"
-									min={1}
-									value={createDraftTable.numRows}
-									onChange={e => onChangeInitialRowCount(e)}
-									className="blocks-table__placeholder-input"
-								/>
+												<NumberControl
+													__nextHasNoMarginBottom
+													label={__('Table Rows', 'dynamic-table-blocks')}
+													required="true"
+													min={1}
+													value={createDraftTable.numRows}
+													onChange={e => onChangeInitialRowCount(e)}
+													className="blocks-table__placeholder-input"
+												/>
+											</Stack>
+
+											{/* Right column */}
+											<Stack direction="column" className="dtbk-configure-column-split">
+												<table>
+													<caption>Column Definitions</caption>
+													<thead>
+														<tr>
+															<th>Number</th>
+															<th>Name</th>
+														</tr>
+													</thead>
+													<tbody>
+														{createDraftTable.columns.map(({ column_id, column_name }) => {
+															return (
+																<tr key={column_id}>
+																	<td className="dtbk-create-table">{column_id}</td>
+																	<td>
+																		<InputControl
+																			placeholder="New Column"
+																			onChange={value =>
+																				setCreateDraftTable(prev => ({
+																					...prev,
+																					columns: prev.columns.map(column =>
+																						column.column_id === column_id
+																							? { ...column, column_name: value }
+																							: column
+																					),
+																				}))
+																			}
+																			value={column_name}
+																		/>
+																	</td>
+																</tr>
+															);
+														})}
+													</tbody>
+												</table>
+											</Stack>
+										</Stack>
+									</Card.Content>
+								</Card.Root>
 							</>
 						)}
 
@@ -5693,10 +5788,13 @@ function Cell(props) {
 	 *
 	 * @since 1.4.6
 	 *
-	 * @param {number} table_id    Clicked table column
-	 * @param {string} cell_id     Clicked table row
-	 * @param {Object} cellContent Current Dynamic Table
-	 * @param {Object} e           Border click event object
+	 * @param {number} table_id        Table identifier
+	 * @param {string} cell_id         Clicked table cell for editing
+	 * @param {Object} cellContent     Cell content
+	 * @param {Object} cellAttributes  Cell attributes
+	 * @param {string} cellBaseClasses Cell space delimited class names
+	 * @param {Object} dataFormat      Column data format
+	 * @param {Object} e               Border click event object
 	 */
 	function passMouseEditClick(
 		table_id,

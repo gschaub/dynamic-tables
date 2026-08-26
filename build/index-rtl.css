@@ -23,7 +23,7 @@
 .blocks-table__placeholder-form.blocks-table__placeholder-form {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
 }
 .blocks-table__placeholder-input {
   margin-bottom: 0;
@@ -309,4 +309,25 @@
   font-weight: 400;
   line-height: 1.4;
   text-transform: none;
+}
+.dtbk-configure-column-split {
+  flex: 1 1 0;
+  min-width: 0;
+}
+table {
+  width: 100%;
+}
+caption {
+  caption-side: top;
+  text-align: center;
+  padding-bottom: 10px;
+  font-weight: bold;
+}
+th {
+  text-align: center;
+  text-decoration: underline;
+  font-weight: bold;
+}
+td.dtbk-create-table {
+  text-align: center;
 }

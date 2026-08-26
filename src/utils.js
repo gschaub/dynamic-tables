@@ -51,6 +51,10 @@ const READABLE_LINE_BREAK_TAGS = new Set([
 
 const READABLE_TAB_BREAK_TAGS = new Set(['TD', 'TH']);
 
+const TWO_DIGIT_YEAR_CURRENT_CENTURY = 2000;
+const TWO_DIGIT_YEAR_CURRENT_CENTURY_END = 49;
+const TWO_DIGIT_YEAR_PREVIOUS_CENTURY = 1900;
+
 /**
  * Replace html tags with readable equivalents.
  *
@@ -910,4 +914,431 @@ export function formatClipboardContent(
 		formattedText,
 		plainText,
 	};
+}
+
+/**
+ * Coerce data between from one type to another
+ *
+ * @since 1.4.9
+ *
+ * @param {string} cellContent                 The content of the table cell
+ * @param {string} cellValueAttr               The value attribute of the table cell
+ * @param {Object} currentColumnDataTypeObject The data type object for the current column
+ * @param {string} columnDataType              The data type of the target column
+ * @return {Object}  Coerced cell content
+ */
+export function coerceCellData(
+	cellContent,
+	cellValueAttr,
+	currentColumnDataTypeObject,
+	columnDataType
+) {
+	const currentColumnDataType = currentColumnDataTypeObject?.type || 'general';
+	const dataTypeFormat = currentColumnDataTypeObject?.settings || '';
+
+	let incompatibleDataTypes = false;
+	let updatedCellContent = cellContent;
+	let updatedCellValueAttr = cellValueAttr;
+
+	switch (currentColumnDataType) {
+		// Target Data Type
+		case 'general':
+			switch (columnDataType) {
+				case 'checkbox':
+					if (cellContent !== '') {
+						updatedCellContent = cellContent === 1 || cellContent === true ? 'True' : 'False';
+						updatedCellValueAttr = { indexText: updatedCellContent };
+					} else {
+						updatedCellContent = '';
+						updatedCellValueAttr = { indexText: '' };
+					}
+					break;
+				case 'number':
+					break;
+				case 'date-time':
+					break;
+				default:
+					incompatibleDataTypes = true;
+					break;
+			}
+			break;
+		case 'number':
+			switch (columnDataType) {
+				case 'general':
+					const convertedNumber = coerceNumberFromGeneral(cellContent, dataTypeFormat);
+					if (!convertedNumber) {
+						incompatibleDataTypes = true;
+						break;
+					}
+					updatedCellContent = convertedNumber;
+					updatedCellValueAttr = { indexText: convertedNumber };
+					break;
+				default:
+					incompatibleDataTypes = true;
+					break;
+			}
+			break;
+		case 'date-time':
+			switch (columnDataType) {
+				case 'general':
+					const convertedDate = coerceDateTimeFromGeneral(cellContent, dataTypeFormat);
+					if (!convertedDate) {
+						incompatibleDataTypes = true;
+						break;
+					}
+					updatedCellContent = convertedDate;
+					updatedCellValueAttr = { indexText: convertedDate };
+					break;
+				default:
+					incompatibleDataTypes = true;
+					break;
+			}
+			break;
+		case 'checkbox':
+			switch (columnDataType) {
+				case 'general':
+					if (cellContent.toLocaleLowerCase() === 'true' || Number(cellContent) === 1) {
+						updatedCellContent = 1;
+						updatedCellValueAttr = { indexText: true };
+					} else if (cellContent.toLocaleLowerCase() === 'false' || Number(cellContent) === 0) {
+						updatedCellContent = 0;
+						updatedCellValueAttr = { indexText: false };
+					} else {
+						incompatibleDataTypes = true;
+					}
+					break;
+				default:
+					incompatibleDataTypes = true;
+					break;
+			}
+			break;
+		case 'link':
+			switch (columnDataType) {
+				case 'general':
+					incompatibleDataTypes = true;
+					break;
+				default:
+					incompatibleDataTypes = true;
+					break;
+			}
+			break;
+		default:
+			incompatibleDataTypes = true;
+			break;
+	}
+
+	return {
+		incompatibleDataTypes,
+		updatedCellContent,
+		updatedCellValueAttr,
+	};
+}
+
+/**
+ * Coerce general text to a number if possible, otherwise return false
+ *
+ * @since 1.4.9
+ *
+ * @param {string} cellContent    Value of the cell content to be copied
+ * @param {Object} dataTypeFormat Column data settings
+ * @return {string|false}         The coerced number or false if conversion is not possible
+ */
+function coerceNumberFromGeneral(cellContent, dataTypeFormat) {
+	const dataFormat = dataTypeFormat?.format;
+	const sanitizedNumber = sanitizeNumberInput(
+		cellContent,
+		dataFormat === 'percent' ? 'number' : dataFormat
+	);
+	const isValidNumber = isNaN(Number(sanitizedNumber)) ? false : true;
+
+	if (!isValidNumber) {
+		return false;
+	}
+
+	let nextRawValue = sanitizedNumber;
+	let revisedDecimalPlaces = dataTypeFormat?.formatOptions?.decimalPlaces ?? 0;
+
+	if (dataFormat === 'percent') {
+		const [integerPart, fractionPart = ''] = sanitizedNumber.split('.');
+		const nextEntryValue =
+			fractionPart.length > revisedDecimalPlaces
+				? `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}`
+				: sanitizedNumber;
+
+		revisedDecimalPlaces += 2;
+		nextRawValue = fromPercentEntryValue(nextEntryValue);
+	}
+
+	return nextRawValue;
+}
+
+/**
+ * Coerce general text to a number if possible, otherwise return false
+ *
+ * @since 1.4.9
+ *
+ * @param {string} cellContent    Value of the cell content to be copied
+ * @param {Object} dataTypeFormat Column data settings
+ * @return {string|false}         The coerced number or false if conversion is not possible
+ */
+function coerceDateTimeFromGeneral(cellContent, dataTypeFormat) {
+	// Valid values: date | time | datetime-local
+	const format = dataTypeFormat?.format;
+
+	const validMonthsSpelled = {
+		January: 1,
+		Jan: 1,
+		February: 2,
+		Feb: 2,
+		March: 3,
+		Mar: 3,
+		April: 4,
+		Apr: 4,
+		May: 5,
+		June: 6,
+		Jun: 6,
+		July: 7,
+		Jul: 7,
+		August: 8,
+		Aug: 8,
+		September: 9,
+		Sep: 9,
+		Sept: 9,
+		October: 10,
+		Oct: 10,
+		November: 11,
+		Nov: 11,
+		December: 12,
+		Dec: 12,
+	};
+
+	const validDelimiters = {
+		'-': '-',
+		'/': '-',
+		'.': '-',
+	};
+	const validTimeDelimiters = {
+		':': ':',
+		'.': ':',
+	};
+
+	// const normalizedDateTime = 'calculate date based on matching replacements and regular expression';
+
+	const normalizedCellContent = htmlToIndexText(String(cellContent ?? ''))
+		.replace(/[^\dA-Za-z:./\-\s]/g, ' ')
+		.replace(/\s+/g, ' ')
+		.trim();
+
+	if (!normalizedCellContent) {
+		return false;
+	}
+
+	// Preserve already-valid values, including their existing canonical format.
+	const existingRawDateTime = formattedIsoDate(normalizedCellContent, format);
+	if (existingRawDateTime) {
+		return existingRawDateTime;
+	}
+
+	const escapeForCharacterClass = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const dateDelimiterPattern = Object.keys(validDelimiters).map(escapeForCharacterClass).join('');
+	const timeDelimiterPattern = Object.keys(validTimeDelimiters)
+		.map(escapeForCharacterClass)
+		.join('');
+	const monthNamePattern = Object.keys(validMonthsSpelled)
+		.sort((first, second) => second.length - first.length)
+		.join('|');
+
+	/*
+	 * A four-digit leading value is treated as ISO year-month-day. Otherwise,
+	 * ambiguous pairs are month/day; values greater than 12 identify a day.
+	 */
+	const numericDatePattern = new RegExp(
+		`\\b(?:` +
+			`\\d{4}\\s*[${dateDelimiterPattern}]\\s*\\d{1,2}\\s*[${dateDelimiterPattern}]\\s*\\d{1,2}` +
+			`|\\d{1,2}\\s*[${dateDelimiterPattern}]\\s*\\d{1,2}` +
+			`(?:\\s*[${dateDelimiterPattern}]\\s*(?:\\d{2}|\\d{4}))?` +
+			`)\\b`
+	);
+	const monthFirstDatePattern = new RegExp(
+		`\\b(${monthNamePattern})\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?` + `(?:\\s+(\\d{2}|\\d{4}))?\\b`,
+		'i'
+	);
+	const dayFirstDatePattern = new RegExp(
+		`\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+(${monthNamePattern})\\.?` + `(?:\\s+(\\d{2}|\\d{4}))?\\b`,
+		'i'
+	);
+	const monthFirstShortYearTimePattern = new RegExp(
+		`\\b((${monthNamePattern})\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?)` +
+			`\\s+(\\d{2})(?=\\s*[${timeDelimiterPattern}]\\s*\\d{1,2}\\b)`,
+		'i'
+	);
+	const dayFirstShortYearTimePattern = new RegExp(
+		`\\b((\\d{1,2})(?:st|nd|rd|th)?\\s+(${monthNamePattern})\\.?)` +
+			`\\s+(\\d{2})(?=\\s*[${timeDelimiterPattern}]\\s*\\d{1,2}\\b)`,
+		'i'
+	);
+	const timePattern = new RegExp(
+		`(?:^|\\s)(\\d{1,2})` +
+			`(?:\\s*([${timeDelimiterPattern}])\\s*(\\d{1,2}))?` +
+			`(?:\\s*\\2\\s*(\\d{1,2}))?` +
+			`\\s*(a\\.?m\\.?|p\\.?m\\.?)?\\b`,
+		'i'
+	);
+
+	const normalizedYear = year => {
+		if (!year) {
+			return new Date().getFullYear();
+		}
+
+		const numericYear = Number(year);
+		if (String(year).length === 4) {
+			return numericYear;
+		}
+
+		return numericYear <= TWO_DIGIT_YEAR_CURRENT_CENTURY_END
+			? TWO_DIGIT_YEAR_CURRENT_CENTURY + numericYear
+			: TWO_DIGIT_YEAR_PREVIOUS_CENTURY + numericYear;
+	};
+
+	const padDateTimePart = value => String(value).padStart(2, '0');
+	const normalizedMonthNumber = monthName => {
+		const monthKey = Object.keys(validMonthsSpelled).find(
+			key => key.toLowerCase() === monthName.toLowerCase()
+		);
+		return validMonthsSpelled[monthKey];
+	};
+	const createDateValue = (year, month, day) =>
+		`${normalizedYear(year)}-${padDateTimePart(month)}-${padDateTimePart(day)}`;
+
+	let normalizedDate = '';
+	let matchedDateText = '';
+	const numericDateMatch = numericDatePattern.exec(normalizedCellContent);
+
+	/*
+	 * Do not interpret "1.30 pm" as a numeric date. It is a time using an
+	 * allowed time delimiter.
+	 */
+	const numericDateIsTime =
+		numericDateMatch &&
+		/^\s*(?:a\.?m\.?|p\.?m\.?)\b/i.test(
+			normalizedCellContent.slice(numericDateMatch.index + numericDateMatch[0].length)
+		);
+
+	if (numericDateMatch && !numericDateIsTime) {
+		// Process yyyymmdd and mmddyyy date patterns
+		const numericDateParts = numericDateMatch[0]
+			.replace(
+				new RegExp(`[${dateDelimiterPattern}]`, 'g'),
+				delimiter => validDelimiters[delimiter]
+			)
+			.split('-')
+			.map(value => value.trim());
+
+		let year;
+		let month;
+		let day;
+
+		if (numericDateParts[0].length === 4) {
+			[year, month, day] = numericDateParts;
+		} else {
+			const [first, second, suppliedYear] = numericDateParts;
+
+			if (Number(first) > 12 && Number(second) <= 12) {
+				[day, month] = [first, second];
+			} else {
+				[month, day] = [first, second];
+			}
+
+			year = suppliedYear;
+		}
+
+		normalizedDate = createDateValue(year, month, day);
+		matchedDateText = numericDateMatch[0];
+	} else {
+		const monthFirstShortYearTimeMatch = monthFirstShortYearTimePattern.exec(normalizedCellContent);
+		const dayFirstShortYearTimeMatch = dayFirstShortYearTimePattern.exec(normalizedCellContent);
+		const monthFirstDateMatch = monthFirstDatePattern.exec(normalizedCellContent);
+		const dayFirstDateMatch = dayFirstDatePattern.exec(normalizedCellContent);
+
+		if (monthFirstShortYearTimeMatch) {
+			normalizedDate = createDateValue(
+				monthFirstShortYearTimeMatch[4],
+				normalizedMonthNumber(monthFirstShortYearTimeMatch[2]),
+				monthFirstShortYearTimeMatch[3]
+			);
+			matchedDateText = monthFirstShortYearTimeMatch[1];
+		} else if (dayFirstShortYearTimeMatch) {
+			normalizedDate = createDateValue(
+				dayFirstShortYearTimeMatch[4],
+				normalizedMonthNumber(dayFirstShortYearTimeMatch[3]),
+				dayFirstShortYearTimeMatch[2]
+			);
+			matchedDateText = dayFirstShortYearTimeMatch[1];
+		} else if (monthFirstDateMatch) {
+			normalizedDate = createDateValue(
+				monthFirstDateMatch[3],
+				normalizedMonthNumber(monthFirstDateMatch[1]),
+				monthFirstDateMatch[2]
+			);
+			matchedDateText = monthFirstDateMatch[0];
+		} else if (dayFirstDateMatch) {
+			// Process spelled month in second position (ddmmyyyy) date pattern
+			normalizedDate = createDateValue(
+				dayFirstDateMatch[3],
+				normalizedMonthNumber(dayFirstDateMatch[2]),
+				dayFirstDateMatch[1]
+			);
+			matchedDateText = dayFirstDateMatch[0];
+		}
+	}
+
+	const timeSource = matchedDateText
+		? normalizedCellContent.replace(matchedDateText, ' ')
+		: normalizedCellContent;
+	const timeMatch = timePattern.exec(timeSource);
+	let normalizedTime = '';
+
+	if (timeMatch) {
+		let hour = Number(timeMatch[1]);
+		const minute = Number(timeMatch[3] ?? 0);
+		const second = timeMatch[4] === undefined ? null : Number(timeMatch[4]);
+		const meridiem = timeMatch[5]?.replace(/\./g, '').toLowerCase();
+
+		if (meridiem) {
+			if (hour < 1 || hour > 12) {
+				return false;
+			}
+
+			hour = (hour % 12) + (meridiem === 'pm' ? 12 : 0);
+		}
+
+		const timeDelimiter = validTimeDelimiters[timeMatch[2]] || ':';
+		normalizedTime = `${padDateTimePart(hour)}${timeDelimiter}${padDateTimePart(minute)}`;
+
+		if (second !== null) {
+			normalizedTime += `${timeDelimiter}${padDateTimePart(second)}`;
+		}
+	}
+
+	let normalizedDateTime = '';
+
+	if (format === 'date') {
+		normalizedDateTime = normalizedDate;
+	} else if (format === 'time') {
+		normalizedDateTime = normalizedTime;
+	} else if (normalizedDate) {
+		normalizedDateTime = `${normalizedDate}T${normalizedTime || '00:00'}`;
+	}
+
+	if (!normalizedDateTime) {
+		return false;
+	}
+
+	const rawDateTime = formattedIsoDate(normalizedDateTime, format);
+
+	if (rawDateTime === '') {
+		return false;
+	}
+
+	return rawDateTime;
 }

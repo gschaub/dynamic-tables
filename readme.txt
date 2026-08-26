@@ -190,8 +190,12 @@ No. This plugin is free to use. However, we are planning for a premium version o
 10. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+= 1.4.9 =
+* Allow for specification of column names during table creation
+* Allow for copy/paste across different content types where possible
+
 = 1.4.8 =
-* Made the green border for the current cell turn off when focus shifts to anotehr block and turn on when focus returns
+* Made the green border for the current cell turn off when focus shifts to another block and turn on when focus returns
 * Fixed bug that may cause table deletion upon transient unmounting of its block
 
 = 1.4.7 =
