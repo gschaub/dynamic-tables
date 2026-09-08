@@ -5911,31 +5911,36 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/stack/stack.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/root.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/header.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/title.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/content.mjs");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var _wordpress_rich_text__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @wordpress/rich-text */ "@wordpress/rich-text");
-/* harmony import */ var _wordpress_rich_text__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_14__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/icon/index.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/block-table.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/pencil.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/search.mjs");
-/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
-/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./data */ "./src/data/index.js");
-/* harmony import */ var _data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./data/table-entity-adapter */ "./src/data/table-entity-adapter.js");
-/* harmony import */ var _hooks__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./hooks */ "./src/hooks.js");
-/* harmony import */ var _messages__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./messages */ "./src/messages.js");
-/* harmony import */ var _summary_table_refresh__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./summary-table-refresh */ "./src/summary-table-refresh.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
-/* harmony import */ var _table_defaults__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./table-defaults */ "./src/table-defaults.js");
-/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./style */ "./src/style.js");
-/* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./components */ "./src/components/index.js");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__);
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/form/input-control/input-control.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/icon-button/icon-button.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/root.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/header.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/title.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/content.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/form/primitives/input-layout/index.mjs");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__);
+/* harmony import */ var _wordpress_rich_text__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @wordpress/rich-text */ "@wordpress/rich-text");
+/* harmony import */ var _wordpress_rich_text__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_17__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/icon/index.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/block-table.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/pencil.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/plus.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/reset.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/search.mjs");
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./data */ "./src/data/index.js");
+/* harmony import */ var _data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./data/table-entity-adapter */ "./src/data/table-entity-adapter.js");
+/* harmony import */ var _hooks__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./hooks */ "./src/hooks.js");
+/* harmony import */ var _messages__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./messages */ "./src/messages.js");
+/* harmony import */ var _summary_table_refresh__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./summary-table-refresh */ "./src/summary-table-refresh.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
+/* harmony import */ var _table_defaults__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./table-defaults */ "./src/table-defaults.js");
+/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./style */ "./src/style.js");
+/* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./components */ "./src/components/index.js");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__);
 /* External dependencies */
 
 
@@ -6028,7 +6033,7 @@ const ORDERED_LIST_ITEM_STYLE_OPTIONS = [{
  * @param {Object} props
  */
 function Edit(props) {
-  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__.useBlockProps)({
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.useBlockProps)({
     className: 'dynamic-table-edit-block'
   });
   /* External Store Action useDispatch declarations */
@@ -6054,67 +6059,67 @@ function Edit(props) {
   /* Table Store Action useDispatch declarations */
   const {
     receiveTable
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     receiveNewTable
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     updateSummaryTable
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     refreshSummaryTables
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     cloneTable
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     createTableEntity
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     saveTableEntity
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     addColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     addRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     removeColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     removeRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     moveColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     moveRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     updateTableProp
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     updateRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     updateColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     updateCell
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     updateTableEntity: dispatchUpdateTableEntity
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     updateTableBorder
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     processUnmountedTables
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     processDeletedTables
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_25__.store);
   const {
     createNotice,
     removeNotice
@@ -6145,13 +6150,13 @@ function Edit(props) {
   const h5Ref = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
   const h6Ref = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
   const paragraphRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
-  const h1Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_22__.useGetElementStyles)(h1Ref);
-  const h2Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_22__.useGetElementStyles)(h2Ref);
-  const h3Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_22__.useGetElementStyles)(h3Ref);
-  const h4Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_22__.useGetElementStyles)(h4Ref);
-  const h5Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_22__.useGetElementStyles)(h5Ref);
-  const h6Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_22__.useGetElementStyles)(h6Ref);
-  const paragraphStyles = (0,_hooks__WEBPACK_IMPORTED_MODULE_22__.useGetElementStyles)(paragraphRef);
+  const h1Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_27__.useGetElementStyles)(h1Ref);
+  const h2Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_27__.useGetElementStyles)(h2Ref);
+  const h3Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_27__.useGetElementStyles)(h3Ref);
+  const h4Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_27__.useGetElementStyles)(h4Ref);
+  const h5Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_27__.useGetElementStyles)(h5Ref);
+  const h6Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_27__.useGetElementStyles)(h6Ref);
+  const paragraphStyles = (0,_hooks__WEBPACK_IMPORTED_MODULE_27__.useGetElementStyles)(paragraphRef);
   const dynamicHtmlElementStyles = [{
     key: 'h1',
     name: 'Heading 1',
@@ -6222,7 +6227,7 @@ function Edit(props) {
     hasEntityRecord: requestedTableHasEntity,
     hasFinishedResolving: requestedTableHasFinishedResolving,
     isResolving: requestedTableIsResolving
-  } = (0,_hooks__WEBPACK_IMPORTED_MODULE_22__.useGetTable)(tableRequest.tableId, {
+  } = (0,_hooks__WEBPACK_IMPORTED_MODULE_27__.useGetTable)(tableRequest.tableId, {
     isTableStale: true,
     shouldFetch: shouldFetchRequestedTable
   });
@@ -6282,7 +6287,7 @@ function Edit(props) {
   function startEditingCell(id) {
     const nextId = String(id);
     if (String(editingCellIdRef.current ?? '') !== nextId) {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_23__.speakMessage)('editing-cell', {
+      (0,_messages__WEBPACK_IMPORTED_MODULE_28__.speakMessage)('editing-cell', {
         args: {
           cellId: nextId
         }
@@ -6303,7 +6308,7 @@ function Edit(props) {
   function stopEditingCell(announce = true) {
     const currentId = editingCellIdRef.current;
     if (announce && currentId) {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_23__.speakMessage)('stopped-editing-cell', {
+      (0,_messages__WEBPACK_IMPORTED_MODULE_28__.speakMessage)('stopped-editing-cell', {
         args: {
           cellId: currentId
         }
@@ -6759,7 +6764,7 @@ function Edit(props) {
   const editorColumnMenuTagId = `${editorTableTagIdBase}-column-menu`;
   const getEditorColumnHeaderTagId = columnId => `${editorTableTagIdBase}-column-${String(columnId).trim()}-header`;
   const editorCellMenuTagId = `${editorTableTagIdBase}-cell-menu`;
-  const [themeColors = []] = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__.useSettings)('color.palette');
+  const [themeColors = []] = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.useSettings)('color.palette');
   const borderBoxColors = themeColors.map(({
     color,
     name
@@ -6779,7 +6784,7 @@ function Edit(props) {
   const currentTableId = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
     const {
       getTableIdByBlock
-    } = select(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_25__.store);
     return getTableIdByBlock(block_table_ref);
   }, [block_table_ref]);
 
@@ -6848,7 +6853,7 @@ function Edit(props) {
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
     const {
       getUnmountedTables
-    } = select(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_25__.store);
     return {
       unmountedTables: getUnmountedTables()
     };
@@ -6862,7 +6867,7 @@ function Edit(props) {
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
     if (!Object.keys(unmountedTables).length) return;
     void processUnmountedTables(unmountedTables).catch(error => {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_23__.showMessageNotice)(createNotice, 'unmounted-reconcile-error');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_28__.showMessageNotice)(createNotice, 'unmounted-reconcile-error');
     });
   }, [unmountedTables]);
 
@@ -6878,7 +6883,7 @@ function Edit(props) {
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
     const {
       getDeletedTables
-    } = select(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_25__.store);
     return {
       deletedTables: getDeletedTables()
     };
@@ -6892,7 +6897,7 @@ function Edit(props) {
    *
    * @type {boolean} Post changes have been saved
    */
-  const postChangesAreSaved = (0,_hooks__WEBPACK_IMPORTED_MODULE_22__.usePostChangesSaved)();
+  const postChangesAreSaved = (0,_hooks__WEBPACK_IMPORTED_MODULE_27__.usePostChangesSaved)();
   const previousPostChangesAreSaved = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__.usePrevious)(postChangesAreSaved);
   const didJustFinishPostSave = postChangesAreSaved && !previousPostChangesAreSaved;
 
@@ -6954,8 +6959,8 @@ function Edit(props) {
   const {
     postId,
     postType
-  } = (0,_hooks__WEBPACK_IMPORTED_MODULE_22__.useEditorIdentity)(props);
-  const inInserterBlock = !(0,_hooks__WEBPACK_IMPORTED_MODULE_22__.useNotInInserterPreview)();
+  } = (0,_hooks__WEBPACK_IMPORTED_MODULE_27__.useEditorIdentity)(props);
+  const inInserterBlock = !(0,_hooks__WEBPACK_IMPORTED_MODULE_27__.useNotInInserterPreview)();
   const blockEditingMode = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => select('core/block-editor')?.getBlockEditingMode?.(props.clientId) ?? 'default', [props.clientId]);
   const isContentOnlyMode = blockEditingMode === 'contentOnly';
 
@@ -7053,7 +7058,7 @@ function Edit(props) {
     const {
       getSummaryTables,
       isResolving
-    } = select(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_25__.store);
     const selectorArgs = [true];
     const allTables = getSummaryTables(true);
     const allTablesIsResolving = isResolving('getSummaryTables', selectorArgs);
@@ -7066,7 +7071,7 @@ function Edit(props) {
     if (tableCreationMethod !== 'existing-table') {
       return null;
     }
-    const nextExistingTableOptions = (0,_summary_table_refresh__WEBPACK_IMPORTED_MODULE_24__.getLoadedSummaryTableOptions)(allTables);
+    const nextExistingTableOptions = (0,_summary_table_refresh__WEBPACK_IMPORTED_MODULE_29__.getLoadedSummaryTableOptions)(allTables);
     if (nextExistingTableOptions.length > 1) {
       return nextExistingTableOptions;
     }
@@ -7080,7 +7085,7 @@ function Edit(props) {
    * @since 1.4.0
    */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
-    return (0,_summary_table_refresh__WEBPACK_IMPORTED_MODULE_24__.registerSummaryTableRefreshSubscriber)({
+    return (0,_summary_table_refresh__WEBPACK_IMPORTED_MODULE_29__.registerSummaryTableRefreshSubscriber)({
       tableCreationMethod,
       refreshSummaryTables,
       createNotice,
@@ -7107,7 +7112,7 @@ function Edit(props) {
       hasStartedResolution,
       hasFinishedResolution,
       isResolving
-    } = select(_data__WEBPACK_IMPORTED_MODULE_20__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_25__.store);
     const selectorArgs = [table_id, isTableStale];
     if (block_table_ref === '') {
       return {
@@ -7197,7 +7202,7 @@ function Edit(props) {
         await saveTableEntity(entityId);
       } catch (error) {
         if (!isActive) return;
-        (0,_messages__WEBPACK_IMPORTED_MODULE_23__.showMessageNotice)(createNotice, 'update-entity-error');
+        (0,_messages__WEBPACK_IMPORTED_MODULE_28__.showMessageNotice)(createNotice, 'update-entity-error');
         setTableOperation({
           kind: 'error',
           blockTableRef: tableRequest.blockTableRef,
@@ -7231,13 +7236,13 @@ function Edit(props) {
    *
    * @since 1.4.5
    */
-  (0,_hooks__WEBPACK_IMPORTED_MODULE_22__.useTableUndoRedoEffect)(table.table_id, ({
+  (0,_hooks__WEBPACK_IMPORTED_MODULE_27__.useTableUndoRedoEffect)(table.table_id, ({
     editedTable
   }) => {
-    if ((0,_data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_21__.areTableAndEntityRecordsEqual)(table, editedTable)) {
+    if ((0,_data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_26__.areTableAndEntityRecordsEqual)(table, editedTable)) {
       return;
     }
-    const reconciledTable = (0,_data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_21__.entityRecordToTable)(editedTable, {
+    const reconciledTable = (0,_data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_26__.entityRecordToTable)(editedTable, {
       includeBorders: showBorders
     });
     if (!reconciledTable) {
@@ -7360,7 +7365,7 @@ function Edit(props) {
           await saveTableEntity(table.table_id);
         }
       } finally {
-        await (0,_summary_table_refresh__WEBPACK_IMPORTED_MODULE_24__.runSummaryTableRefresh)({
+        await (0,_summary_table_refresh__WEBPACK_IMPORTED_MODULE_29__.runSummaryTableRefresh)({
           refreshSummaryTables,
           createNotice,
           showErrorNotice: true
@@ -7368,7 +7373,7 @@ function Edit(props) {
       }
     };
     void finalizePostSaveTableChanges().catch(error => {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_23__.showMessageNotice)(createNotice, 'post-save-sync-error');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_28__.showMessageNotice)(createNotice, 'post-save-sync-error');
     });
   }, [didJustFinishPostSave, deletedTables, tableLoaded, table.table_id, table.table_status, tableHasPendingEntityEdits, refreshSummaryTables, createNotice, updateTableEntity]);
 
@@ -7500,7 +7505,7 @@ function Edit(props) {
     if (locked) {
       return;
     }
-    const cloneBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.generateBlockTableRef)();
+    const cloneBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.generateBlockTableRef)();
     props.setAttributes({
       block_table_ref: cloneBlockTableRef
     });
@@ -7545,7 +7550,7 @@ function Edit(props) {
     if (Number(table.post_id) !== 0) return;
     setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId), true, 'ignore');
     void saveTableEntity(table.table_id).catch(error => {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_23__.showMessageNotice)(createNotice, 'post-id-sync-error');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_28__.showMessageNotice)(createNotice, 'post-id-sync-error');
     });
   }, [tableHasStartedResolving, tableHasFinishedResolving, isAwaitingTableAttachment, props.context.postId, table.table_id, table.post_id]);
 
@@ -7624,7 +7629,7 @@ function Edit(props) {
       // Persist the table with its "unknown" status
       void saveTableEntity(tableId).catch(error => {
         console.error('Error saving Dynamic Table state during unmount cleanup', error);
-        (0,_messages__WEBPACK_IMPORTED_MODULE_23__.showMessageNotice)(createNotice, 'unmount-save-error');
+        (0,_messages__WEBPACK_IMPORTED_MODULE_28__.showMessageNotice)(createNotice, 'unmount-save-error');
       });
     };
   }, []);
@@ -7687,7 +7692,7 @@ function Edit(props) {
         column_id,
         attributes
       }) => {
-        map[column_id] = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.normalizeColumnDataType)(attributes?.columnDataType);
+        map[column_id] = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.normalizeColumnDataType)(attributes?.columnDataType);
       });
     }
     return map;
@@ -7726,16 +7731,16 @@ function Edit(props) {
    */
   function insertColumn(tableId, columnId, direction) {
     const newColumnId = direction === 'right' ? Number(columnId) + 1 : Number(columnId);
-    const newColumn = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_26__.getDefaultColumn)(tableId, newColumnId);
-    const newColumnLabel = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.numberToLetter)(newColumnId);
+    const newColumn = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_31__.getDefaultColumn)(tableId, newColumnId);
+    const newColumnLabel = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.numberToLetter)(newColumnId);
     const tableCells = table.rows.map(({
       row_id
-    }) => Number(row_id)).filter(rowId => Number.isFinite(rowId)).sort((a, b) => a - b).map(rowId => rowId === 0 ? (0,_table_defaults__WEBPACK_IMPORTED_MODULE_26__.getDefaultCell)(tableId, newColumnId, rowId, 'Border') : (0,_table_defaults__WEBPACK_IMPORTED_MODULE_26__.getDefaultCell)(tableId, newColumnId, rowId));
+    }) => Number(row_id)).filter(rowId => Number.isFinite(rowId)).sort((a, b) => a - b).map(rowId => rowId === 0 ? (0,_table_defaults__WEBPACK_IMPORTED_MODULE_31__.getDefaultCell)(tableId, newColumnId, rowId, 'Border') : (0,_table_defaults__WEBPACK_IMPORTED_MODULE_31__.getDefaultCell)(tableId, newColumnId, rowId));
     addColumn(tableId, columnId, direction, newColumn, tableCells);
     setTableStale(false);
 
     // Accessibility announcement
-    (0,_messages__WEBPACK_IMPORTED_MODULE_23__.speakMessage)(direction === 'right' ? 'column-inserted-right' : 'column-inserted-left', {
+    (0,_messages__WEBPACK_IMPORTED_MODULE_28__.speakMessage)(direction === 'right' ? 'column-inserted-right' : 'column-inserted-left', {
       args: {
         columnLabel: newColumnLabel
       }
@@ -7756,15 +7761,15 @@ function Edit(props) {
    */
   function insertRow(tableId, rowId, direction) {
     const newRowId = direction === 'below' ? Number(rowId) + 1 : Number(rowId);
-    const newRow = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_26__.getDefaultRow)(tableId, newRowId);
+    const newRow = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_31__.getDefaultRow)(tableId, newRowId);
     const tableCells = table.columns.map(({
       column_id
-    }) => Number(column_id)).filter(columnId => Number.isFinite(columnId)).sort((a, b) => a - b).map(columnId => columnId === 0 ? (0,_table_defaults__WEBPACK_IMPORTED_MODULE_26__.getDefaultCell)(tableId, columnId, newRowId, 'Border') : (0,_table_defaults__WEBPACK_IMPORTED_MODULE_26__.getDefaultCell)(tableId, columnId, newRowId));
+    }) => Number(column_id)).filter(columnId => Number.isFinite(columnId)).sort((a, b) => a - b).map(columnId => columnId === 0 ? (0,_table_defaults__WEBPACK_IMPORTED_MODULE_31__.getDefaultCell)(tableId, columnId, newRowId, 'Border') : (0,_table_defaults__WEBPACK_IMPORTED_MODULE_31__.getDefaultCell)(tableId, columnId, newRowId));
     addRow(tableId, rowId, direction, newRow, tableCells);
     setTableStale(false);
 
     // Accessibility announcement
-    (0,_messages__WEBPACK_IMPORTED_MODULE_23__.speakMessage)(direction === 'below' ? 'row-inserted-below' : 'row-inserted-above', {
+    (0,_messages__WEBPACK_IMPORTED_MODULE_28__.speakMessage)(direction === 'below' ? 'row-inserted-below' : 'row-inserted-above', {
       args: {
         rowNumber: newRowId
       }
@@ -7784,9 +7789,9 @@ function Edit(props) {
     setTableStale(false);
 
     // Accessibility announcement
-    (0,_messages__WEBPACK_IMPORTED_MODULE_23__.speakMessage)('column-deleted', {
+    (0,_messages__WEBPACK_IMPORTED_MODULE_28__.speakMessage)('column-deleted', {
       args: {
-        columnLabel: (0,_utils__WEBPACK_IMPORTED_MODULE_25__.numberToLetter)(Number(columnId))
+        columnLabel: (0,_utils__WEBPACK_IMPORTED_MODULE_30__.numberToLetter)(Number(columnId))
       }
     });
     return updateTableEntity(tableId);
@@ -7806,7 +7811,7 @@ function Edit(props) {
     setTableStale(false);
 
     // Accessibility announcement
-    (0,_messages__WEBPACK_IMPORTED_MODULE_23__.speakMessage)('row-deleted', {
+    (0,_messages__WEBPACK_IMPORTED_MODULE_28__.speakMessage)('row-deleted', {
       args: {
         rowNumber: Number(rowId)
       }
@@ -7829,9 +7834,9 @@ function Edit(props) {
     setTableStale(false);
 
     // Accessibility announcement
-    (0,_messages__WEBPACK_IMPORTED_MODULE_23__.speakMessage)(direction === 'right' ? 'column-moved-right' : 'column-moved-left', {
+    (0,_messages__WEBPACK_IMPORTED_MODULE_28__.speakMessage)(direction === 'right' ? 'column-moved-right' : 'column-moved-left', {
       args: {
-        columnLabel: (0,_utils__WEBPACK_IMPORTED_MODULE_25__.numberToLetter)(Number(columnId))
+        columnLabel: (0,_utils__WEBPACK_IMPORTED_MODULE_30__.numberToLetter)(Number(columnId))
       }
     });
     return updateTableEntity(tableId);
@@ -7852,7 +7857,7 @@ function Edit(props) {
     setTableStale(false);
 
     // Accessibility announcement
-    (0,_messages__WEBPACK_IMPORTED_MODULE_23__.speakMessage)(direction === 'down' ? 'row-moved-down' : 'row-moved-up', {
+    (0,_messages__WEBPACK_IMPORTED_MODULE_28__.speakMessage)(direction === 'down' ? 'row-moved-down' : 'row-moved-up', {
       args: {
         rowNumber: Number(rowId)
       }
@@ -7957,26 +7962,26 @@ function Edit(props) {
     } else {
       /**  Create header row border at top of table */
       const rowBorder = [];
-      rowBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_26__.getDefaultRow)(currentTableId, 0, 'Border'));
+      rowBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_31__.getDefaultRow)(currentTableId, 0, 'Border'));
       const rowCells = [];
       for (let i = 0; i <= currentNumColumns; i++) {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_26__.getDefaultCell)(currentTableId, i, 0, 'Border');
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_31__.getDefaultCell)(currentTableId, i, 0, 'Border');
         rowCells.push(cell);
       }
 
       /** Create column border down left side of table */
       const columnBorder = [];
-      columnBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_26__.getDefaultColumn)(currentTableId, 0, 'Border'));
+      columnBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_31__.getDefaultColumn)(currentTableId, 0, 'Border'));
       const columnCells = [];
       for (let i = 1; i <= currentNumRows; i++) {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_26__.getDefaultCell)(currentTableId, 0, i, 'Border');
+        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_31__.getDefaultCell)(currentTableId, 0, i, 'Border');
         columnCells.push(cell);
       }
 
       /** Sort table parts */
-      updatedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.tableSort)('rows', [...table.rows, ...rowBorder]);
-      updatedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.tableSort)('columns', [...table.columns, ...columnBorder]);
-      updatedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.tableSort)('cells', [...table.cells, ...rowCells, ...columnCells]);
+      updatedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.tableSort)('rows', [...table.rows, ...rowBorder]);
+      updatedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.tableSort)('columns', [...table.columns, ...columnBorder]);
+      updatedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.tableSort)('cells', [...table.cells, ...rowCells, ...columnCells]);
       updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
     }
     setShowBorders(isChecked);
@@ -7998,8 +8003,8 @@ function Edit(props) {
    */
   function createTable(columnCount, rowCount, tableName, columns) {
     setTableStale(false);
-    const newBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.generateBlockTableRef)();
-    const newTable = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_26__.initTable)(newBlockTableRef, columnCount, rowCount, tableName, columns);
+    const newBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.generateBlockTableRef)();
+    const newTable = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_31__.initTable)(newBlockTableRef, columnCount, rowCount, tableName, columns);
     props.setAttributes({
       block_table_ref: newBlockTableRef
     });
@@ -8041,7 +8046,7 @@ function Edit(props) {
     if (!tableRequest.tableId || requestedTableIsResolving) {
       return;
     }
-    const nextBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.generateBlockTableRef)();
+    const nextBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.generateBlockTableRef)();
     setTableOperation({
       kind: 'attaching',
       blockTableRef: nextBlockTableRef,
@@ -8088,8 +8093,8 @@ function Edit(props) {
     if (!props.clientId || !isNewBlock) {
       return;
     }
-    ;(0,_messages__WEBPACK_IMPORTED_MODULE_23__.removeMessageNotice)(removeNotice, 'invalid-num-columns');
-    (0,_messages__WEBPACK_IMPORTED_MODULE_23__.removeMessageNotice)(removeNotice, 'invalid-num-rows');
+    ;(0,_messages__WEBPACK_IMPORTED_MODULE_28__.removeMessageNotice)(removeNotice, 'invalid-num-columns');
+    (0,_messages__WEBPACK_IMPORTED_MODULE_28__.removeMessageNotice)(removeNotice, 'invalid-num-rows');
     const blockEditorDispatch = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.dispatch)('core/block-editor');
     if (typeof blockEditorDispatch?.removeBlock !== 'function') {
       return;
@@ -8142,20 +8147,20 @@ function Edit(props) {
    */
   function onChangeInitialColumnCount(num_columns) {
     let newNumColumns = num_columns;
-    if (num_columns < 1 || num_columns > 50) {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_23__.showMessageNotice)(createNotice, 'invalid-num-columns', {
+    if (!Number.isInteger(num_columns) || num_columns < 1 || num_columns > 50) {
+      (0,_messages__WEBPACK_IMPORTED_MODULE_28__.showMessageNotice)(createNotice, 'invalid-num-columns', {
         args: {
           count: num_columns
         }
       });
       newNumColumns = Number(createDraftTable.numColumns);
     } else {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_23__.removeMessageNotice)(removeNotice, 'invalid-num-columns');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_28__.removeMessageNotice)(removeNotice, 'invalid-num-columns');
     }
     const priorColumns = createDraftTable.columns;
     const priorColumnCount = priorColumns.length;
     const columnCountDifference = newNumColumns - priorColumnCount;
-    const newColumns = priorColumns;
+    const newColumns = [...priorColumns];
     if (columnCountDifference > 0) {
       for (let i = 1; i <= columnCountDifference; i++) {
         const columnId = priorColumnCount + i;
@@ -8185,15 +8190,15 @@ function Edit(props) {
    */
   function onChangeInitialRowCount(num_rows) {
     let newNumRows = num_rows;
-    if (num_rows < 1 || num_rows > 1000) {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_23__.showMessageNotice)(createNotice, 'invalid-num-rows', {
+    if (!Number.isInteger(num_rows) || num_rows < 1 || num_rows > 1000) {
+      (0,_messages__WEBPACK_IMPORTED_MODULE_28__.showMessageNotice)(createNotice, 'invalid-num-rows', {
         args: {
           count: num_rows
         }
       });
       newNumRows = Number(createDraftTable.numRows);
     } else {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_23__.removeMessageNotice)(removeNotice, 'invalid-num-rows');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_28__.removeMessageNotice)(removeNotice, 'invalid-num-rows');
     }
     setCreateDraftTable(prev => ({
       ...prev,
@@ -8232,7 +8237,7 @@ function Edit(props) {
   function onGridFocusCapture(event) {
     if (!hasAnnouncedGridHelpRef.current) {
       hasAnnouncedGridHelpRef.current = true;
-      (0,_messages__WEBPACK_IMPORTED_MODULE_23__.speakMessage)('editor-grid-help');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_28__.speakMessage)('editor-grid-help');
     }
     const el = event.target.closest?.('[data-cell-id]');
     if (!el) return;
@@ -8314,11 +8319,18 @@ function Edit(props) {
    * @since 1.3.1 - Add keyboard support for cell copy/cut/paste
    * @since 1.4.3 - Update for checkbox data entry
    * @since 1.4.5 - Add support for standard keyboard undo/redo shortcuts
+   * @since 1.4.9 - Enter key (but not alt/enter) ends edit mode for RichText
    *
    * @param {Object} event onKeyDown event
    * @return {void}
    */
   function onCellKeyDown(event) {
+    const isAltOnly = event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
+    const isShiftOnly = !event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
+    const isAltShiftOnly = event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
+    const isCtlOnly = !event.altKey && !event.shiftKey && (event.ctrlKey || event.metaKey);
+    const isAnyModifierKey = event.altKey || event.shiftKey || event.ctrlKey || event.metaKey;
+    const isPrimaryKeyOnly = !event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
     const key = String(event.key || '').toLowerCase();
     const hasPrimaryModifier = (event.ctrlKey || event.metaKey) && !event.altKey;
     const isUndoRedoShortcut = hasPrimaryModifier && (key === 'z' || !event.shiftKey && key === 'y');
@@ -8335,6 +8347,8 @@ function Edit(props) {
       const editTarget = gridRef.current?.ownerDocument?.activeElement;
       const editTargetInputType = editTarget?.tagName === 'INPUT' ? String(editTarget.type || '').toLowerCase() : '';
       const editTargetInputMode = editTarget?.tagName === 'INPUT' ? String(editTarget.inputMode || '').toLowerCase() : '';
+      const generalContentEditor = editTarget?.closest?.('.dtbk-cell-general-content');
+      const isGeneralContentEditor = generalContentEditor?.isContentEditable === true && generalContentEditor.closest?.('[data-cell-id]')?.dataset.cellId === String(editingCellId);
       const isNumberEditor = ['number', 'integer', 'percent', 'currency'].includes(editTargetInputType) || ['numeric', 'decimal'].includes(editTargetInputMode);
       const isDateTimeEditor = ['date', 'time', 'datetime-local'].includes(editTargetInputType);
       if (cellClipboard.inUse) resetCellClipboard();
@@ -8354,8 +8368,10 @@ function Edit(props) {
         return;
       }
 
+      // ENTER exits RichText editing except for exactly ALT+ENTER.
       // For native date/time editors, Enter should commit via blur and exit edit mode.
-      if (event.key === 'Enter' && (isDateTimeEditor || isNumberEditor)) {
+      if (event.key === 'Enter' && !event.isComposing && (isGeneralContentEditor && !isAltOnly || isDateTimeEditor || isNumberEditor)) {
+        console.log('Event Target Variable', editTarget);
         event.preventDefault();
         event.stopPropagation();
         editTarget?.blur?.();
@@ -8391,12 +8407,6 @@ function Edit(props) {
     const editDataType = isHeaderRow ? 'general' : columnDataType;
     const canTypeToEdit = isHeaderRow || editDataType === 'general' || editDataType === 'date-time' || editDataType === 'number' || editDataType === 'checkbox';
     const canStartEditFromPrintableKey = canTypeToEdit && (editDataType !== 'checkbox' || event.key === ' ');
-    const isAltOnly = event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
-    const isShiftOnly = !event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
-    const isAltShiftOnly = event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
-    const isCtlOnly = !event.altKey && !event.shiftKey && (event.ctrlKey || event.metaKey);
-    const isAnyModifierKey = event.altKey || event.shiftKey || event.ctrlKey || event.metaKey;
-    const isPrimaryKeyOnly = !event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
     const canUseRowInsertDeleteShortcuts = !isHeaderRow;
     const canUseStructureShortcuts = !isContentOnlyMode;
     const cellId = activeCellEl.getAttribute('data-cell-id');
@@ -8660,7 +8670,6 @@ function Edit(props) {
 
     // For input-backed editors, mount synchronously so the initiating
     // printable key can be handled by the input itself.
-    // if (columnDataType === 'date-time' || columnDataType === 'number') {
     if (columnDataType === 'date-time' || columnDataType === 'number' || columnDataType === 'checkbox') {
       if (columnDataType === 'checkbox' && char === ' ') {
         event.preventDefault();
@@ -8928,7 +8937,7 @@ function Edit(props) {
     const {
       column_id,
       row_id
-    } = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.getCellIdCoordinates)(cellId);
+    } = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.getCellIdCoordinates)(cellId);
     switch (updateType) {
       case 'copyCell':
       case 'cutCell':
@@ -9003,7 +9012,7 @@ function Edit(props) {
     const {
       column_id,
       row_id
-    } = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.getCellIdCoordinates)(cellId);
+    } = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.getCellIdCoordinates)(cellId);
     const cellData = table.cells.find(c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id));
     if (cellData) {
       const columnDataTypeObject = getClipboardDataType(column_id, row_id);
@@ -9016,7 +9025,7 @@ function Edit(props) {
       const {
         formattedText,
         plainText
-      } = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.formatClipboardContent)(cellContent, cellValueAttr, columnDataTypeSettings);
+      } = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.formatClipboardContent)(cellContent, cellValueAttr, columnDataTypeSettings);
       const clipboardPayload = {
         inUse: true,
         clipboardAction: updateType === 'copyCell' ? 'copy' : 'cut',
@@ -9034,7 +9043,7 @@ function Edit(props) {
       setCellClipboard({
         ...clipboardPayload
       });
-      (0,_messages__WEBPACK_IMPORTED_MODULE_23__.speakMessage)(updateType === 'cutCell' ? 'cell-cut' : 'cell-copied');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_28__.speakMessage)(updateType === 'cutCell' ? 'cell-cut' : 'cell-copied');
       copyCellToSystemClipboard(formattedText, plainText);
     }
   }
@@ -9051,7 +9060,7 @@ function Edit(props) {
     const {
       column_id,
       row_id
-    } = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.getCellIdCoordinates)(cellId);
+    } = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.getCellIdCoordinates)(cellId);
     const {
       inUse,
       clipboardAction,
@@ -9060,7 +9069,8 @@ function Edit(props) {
       rowId,
       columnDataType,
       cellContent,
-      cellValueAttr
+      cellValueAttr,
+      cellFormattedText
     } = cellClipboard;
     if (!inUse) return;
     if (clipboardAction === 'cut' && sourceCellId === cellId) {
@@ -9079,7 +9089,7 @@ function Edit(props) {
       updatedCellValueAttr: cellValueAttr
     };
     if (!matchedDataTypes) {
-      convertedCellContent = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.coerceCellData)(cellContent, cellValueAttr, currentColumnDataTypeObject, columnDataType);
+      convertedCellContent = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.coerceCellData)(cellContent, cellValueAttr, currentColumnDataTypeObject, columnDataType, cellFormattedText);
     }
     const {
       incompatibleDataTypes,
@@ -9087,8 +9097,8 @@ function Edit(props) {
       updatedCellValueAttr
     } = convertedCellContent;
     if (incompatibleDataTypes) {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_23__.publishMessage)(createNotice, 'paste-content-type-mismatch', {
-        target: _messages__WEBPACK_IMPORTED_MODULE_23__.MESSAGE_TARGETS.STORE_SNACKBAR,
+      (0,_messages__WEBPACK_IMPORTED_MODULE_28__.publishMessage)(createNotice, 'paste-content-type-mismatch', {
+        target: _messages__WEBPACK_IMPORTED_MODULE_28__.MESSAGE_TARGETS.STORE_SNACKBAR,
         announceMode: 'manual'
       });
       return;
@@ -9105,7 +9115,7 @@ function Edit(props) {
       resetCellClipboard();
     }
     updateTableEntity(table_id);
-    (0,_messages__WEBPACK_IMPORTED_MODULE_23__.speakMessage)('cell-pasted');
+    (0,_messages__WEBPACK_IMPORTED_MODULE_28__.speakMessage)('cell-pasted');
   }
 
   /**
@@ -9223,7 +9233,7 @@ function Edit(props) {
       }
       const clickedColumn = table.columns.find(c => String(c.column_id) === String(column_id));
       const attrs = clickedColumn?.attributes || {};
-      const columnLabel = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.numberToLetter)(Number(column_id));
+      const columnLabel = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.numberToLetter)(Number(column_id));
       openColumnMenu(e, String(column_id), columnLabel, attrs);
     }
     if (Number(row_id) !== 0 && Number(column_id) === 0) {
@@ -9237,7 +9247,7 @@ function Edit(props) {
     if (Number(row_id) !== 0 && Number(column_id) !== 0) {
       const clickedCell = table?.cells?.find(c => Number(c.row_id) === Number(row_id) && Number(c.column_id) === Number(column_id));
       const relatedRow = table?.rows?.find(r => Number(r.row_id) === Number(row_id));
-      const cellId = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.numberToLetter)(Number(column_id)) + row_id;
+      const cellId = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.numberToLetter)(Number(column_id)) + row_id;
       if (isContentOnlyMode) {
         return;
       }
@@ -9266,7 +9276,7 @@ function Edit(props) {
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 
     // Accessibility announcement
-    (0,_messages__WEBPACK_IMPORTED_MODULE_23__.speakMessage)(isChecked ? 'table-title-hidden' : 'table-title-shown');
+    (0,_messages__WEBPACK_IMPORTED_MODULE_28__.speakMessage)(isChecked ? 'table-title-hidden' : 'table-title-shown');
   }
 
   /**
@@ -9536,78 +9546,78 @@ function Edit(props) {
   /**
    * Set variables used to render the dynamic table
    */
-  const gridColumnStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.processColumns)(isNewBlock, tableIsResolving, enableFutureFeatures, table.columns);
-  const gridHeaderRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.processHeaderRow)(isNewBlock, tableIsResolving, table.rows);
-  const gridBodyRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.processBodyRows)(isNewBlock, tableIsResolving, table.rows);
+  const gridColumnStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.processColumns)(isNewBlock, tableIsResolving, enableFutureFeatures, table.columns);
+  const gridHeaderRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.processHeaderRow)(isNewBlock, tableIsResolving, table.rows);
+  const gridBodyRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.processBodyRows)(isNewBlock, tableIsResolving, table.rows);
   const startGridHeaderRowNbrStyle = showBorders ? 2 : 1;
-  const endGridHeaderRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.endGridRowNbr)(1, 'Header', liveNumRows, enableHeaderRow, showBorders, false);
-  const startGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.startGridRowNbr)(enableHeaderRow, showBorders);
-  const endGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.endGridRowNbr)(startGridBodyRowNbrStyle, 'Body', liveNumRows, enableHeaderRow, showBorders, false);
+  const endGridHeaderRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.endGridRowNbr)(1, 'Header', liveNumRows, enableHeaderRow, showBorders, false);
+  const startGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.startGridRowNbr)(enableHeaderRow, showBorders);
+  const endGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.endGridRowNbr)(startGridBodyRowNbrStyle, 'Body', liveNumRows, enableHeaderRow, showBorders, false);
   const horizontalScrollStyle = allowHorizontalScroll ? 'auto' : 'hidden';
-  const gridBandedRowTextColor = (0,_style__WEBPACK_IMPORTED_MODULE_27__.gridBandedRowTextColorStyle)(isNewBlock, tableIsResolving, bandedTextColor);
-  const gridBandedRowBackgroundColor = (0,_style__WEBPACK_IMPORTED_MODULE_27__.gridBandedRowBackgroundColorStyle)(isNewBlock, tableIsResolving, bandedRowBackgroundColor);
-  const gridShowInnerLines = (0,_style__WEBPACK_IMPORTED_MODULE_27__.gridInnerBorderStyle)(isNewBlock, tableIsResolving, showGridLines);
-  const gridInnerLineWidth = (0,_style__WEBPACK_IMPORTED_MODULE_27__.gridInnerBorderWidthStyle)(isNewBlock, tableIsResolving, showGridLines, gridLineWidth);
+  const gridBandedRowTextColor = (0,_style__WEBPACK_IMPORTED_MODULE_32__.gridBandedRowTextColorStyle)(isNewBlock, tableIsResolving, bandedTextColor);
+  const gridBandedRowBackgroundColor = (0,_style__WEBPACK_IMPORTED_MODULE_32__.gridBandedRowBackgroundColorStyle)(isNewBlock, tableIsResolving, bandedRowBackgroundColor);
+  const gridShowInnerLines = (0,_style__WEBPACK_IMPORTED_MODULE_32__.gridInnerBorderStyle)(isNewBlock, tableIsResolving, showGridLines);
+  const gridInnerLineWidth = (0,_style__WEBPACK_IMPORTED_MODULE_32__.gridInnerBorderWidthStyle)(isNewBlock, tableIsResolving, showGridLines, gridLineWidth);
   const headerRowStickyStyle = headerRowSticky ? 'auto' : 'hidden';
   const headerRowStickyClass = headerRowSticky ? 'grid-control__header--sticky ' : '';
-  const gridHeaderBackgroundColorStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getGridHeaderBackgroundColorStyle)(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor);
+  const gridHeaderBackgroundColorStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getGridHeaderBackgroundColorStyle)(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor);
 
   /**
    * Header Styling
    */
-  const headerTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, headerAlignment);
-  const headerBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyleType)(headerBorder);
+  const headerTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, headerAlignment);
+  const headerBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyleType)(headerBorder);
 
   // Top header border
-  const headerBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(headerBorder, 'top', 'color', headerBorderStyleType);
-  const headerBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(headerBorder, 'top', 'style', headerBorderStyleType);
-  const headerBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(headerBorder, 'top', 'width', headerBorderStyleType);
+  const headerBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(headerBorder, 'top', 'color', headerBorderStyleType);
+  const headerBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(headerBorder, 'top', 'style', headerBorderStyleType);
+  const headerBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(headerBorder, 'top', 'width', headerBorderStyleType);
 
   // Right header border
-  const headerBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(headerBorder, 'right', 'color', headerBorderStyleType);
-  const headerBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(headerBorder, 'right', 'style', headerBorderStyleType);
-  const headerBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(headerBorder, 'right', 'width', headerBorderStyleType);
+  const headerBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(headerBorder, 'right', 'color', headerBorderStyleType);
+  const headerBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(headerBorder, 'right', 'style', headerBorderStyleType);
+  const headerBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(headerBorder, 'right', 'width', headerBorderStyleType);
 
   // Bottom header border
-  const headerBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(headerBorder, 'bottom', 'color', headerBorderStyleType);
-  const headerBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(headerBorder, 'bottom', 'style', headerBorderStyleType);
-  const headerBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(headerBorder, 'bottom', 'width', headerBorderStyleType);
+  const headerBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(headerBorder, 'bottom', 'color', headerBorderStyleType);
+  const headerBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(headerBorder, 'bottom', 'style', headerBorderStyleType);
+  const headerBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(headerBorder, 'bottom', 'width', headerBorderStyleType);
 
   // Left header border
-  const headerBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(headerBorder, 'left', 'color', headerBorderStyleType);
-  const headerBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(headerBorder, 'left', 'style', headerBorderStyleType);
-  const headerBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(headerBorder, 'left', 'width', headerBorderStyleType);
+  const headerBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(headerBorder, 'left', 'color', headerBorderStyleType);
+  const headerBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(headerBorder, 'left', 'style', headerBorderStyleType);
+  const headerBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(headerBorder, 'left', 'width', headerBorderStyleType);
 
   /**
    * Body Styling
    */
-  const bodyTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, bodyAlignment);
-  const bodyBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyleType)(bodyBorder);
+  const bodyTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, bodyAlignment);
+  const bodyBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyleType)(bodyBorder);
   // Top body border
-  const bodyBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(bodyBorder, 'top', 'color', bodyBorderStyleType);
-  const bodyBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(bodyBorder, 'top', 'style', bodyBorderStyleType);
-  const bodyBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(bodyBorder, 'top', 'width', bodyBorderStyleType);
+  const bodyBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(bodyBorder, 'top', 'color', bodyBorderStyleType);
+  const bodyBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(bodyBorder, 'top', 'style', bodyBorderStyleType);
+  const bodyBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(bodyBorder, 'top', 'width', bodyBorderStyleType);
 
   // Right body border
-  const bodyBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(bodyBorder, 'right', 'color', bodyBorderStyleType);
-  const bodyBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(bodyBorder, 'right', 'style', bodyBorderStyleType);
-  const bodyBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(bodyBorder, 'right', 'width', bodyBorderStyleType);
+  const bodyBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(bodyBorder, 'right', 'color', bodyBorderStyleType);
+  const bodyBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(bodyBorder, 'right', 'style', bodyBorderStyleType);
+  const bodyBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(bodyBorder, 'right', 'width', bodyBorderStyleType);
 
   // Bottom body border
-  const bodyBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(bodyBorder, 'bottom', 'color', bodyBorderStyleType);
-  const bodyBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(bodyBorder, 'bottom', 'style', bodyBorderStyleType);
-  const bodyBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(bodyBorder, 'bottom', 'width', bodyBorderStyleType);
+  const bodyBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(bodyBorder, 'bottom', 'color', bodyBorderStyleType);
+  const bodyBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(bodyBorder, 'bottom', 'style', bodyBorderStyleType);
+  const bodyBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(bodyBorder, 'bottom', 'width', bodyBorderStyleType);
 
   // Left body border
-  const bodyBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(bodyBorder, 'left', 'color', bodyBorderStyleType);
-  const bodyBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(bodyBorder, 'left', 'style', bodyBorderStyleType);
-  const bodyBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_27__.getBorderStyle)(bodyBorder, 'left', 'width', bodyBorderStyleType);
+  const bodyBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(bodyBorder, 'left', 'color', bodyBorderStyleType);
+  const bodyBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(bodyBorder, 'left', 'style', bodyBorderStyleType);
+  const bodyBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_32__.getBorderStyle)(bodyBorder, 'left', 'width', bodyBorderStyleType);
 
   // Accessibility support
-  const editorGridTitleText = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.htmlToIndexText)(table?.table_name || '').trim();
+  const editorGridTitleText = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.htmlToIndexText)(table?.table_name || '').trim();
   const editorGridAccessibleName = editorGridTitleText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Dynamic table');
   const editorGridLabelledBy = !hideTitle && editorGridTitleText ? editorTitleTagId : undefined;
-  const editorGridHelpText = (0,_messages__WEBPACK_IMPORTED_MODULE_23__.getMessageText)('editor-grid-help');
+  const editorGridHelpText = (0,_messages__WEBPACK_IMPORTED_MODULE_28__.getMessageText)('editor-grid-help');
 
   // Create table settings
   const createTableDisabled = tableCreationMethod === 'choose' || isAwaitingTableAttachment || tableCreationMethod === 'existing-table' && (!tableRequest.tableId || requestedTableIsResolving);
@@ -9617,8 +9627,8 @@ function Edit(props) {
    *
    * @since 1.2.0
    */
-  const renderRowMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.Fragment, {
-    children: rowMenu.isOpen && rowMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_components__WEBPACK_IMPORTED_MODULE_28__.RowMenu, {
+  const renderRowMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.Fragment, {
+    children: rowMenu.isOpen && rowMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_components__WEBPACK_IMPORTED_MODULE_33__.RowMenu, {
       menuId: editorRowMenuTagId,
       anchor: rowMenu.anchorEl,
       table: table,
@@ -9636,8 +9646,8 @@ function Edit(props) {
    *
    * @since 1.2.0
    */
-  const renderRowHeightModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.Fragment, {
-    children: !isContentOnlyMode && rowHeightModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_components__WEBPACK_IMPORTED_MODULE_28__.RowHeightModal, {
+  const renderRowHeightModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.Fragment, {
+    children: !isContentOnlyMode && rowHeightModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_components__WEBPACK_IMPORTED_MODULE_33__.RowHeightModal, {
       tableId: table_id,
       rowId: rowHeightModal.rowId,
       rowLabel: rowHeightModal.rowLabel,
@@ -9652,8 +9662,8 @@ function Edit(props) {
    *
    * @since 1.2.0
    */
-  const renderColumnMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.Fragment, {
-    children: !isContentOnlyMode && columnMenu.isOpen && columnMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_components__WEBPACK_IMPORTED_MODULE_28__.ColumnMenu, {
+  const renderColumnMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.Fragment, {
+    children: !isContentOnlyMode && columnMenu.isOpen && columnMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_components__WEBPACK_IMPORTED_MODULE_33__.ColumnMenu, {
       menuId: editorColumnMenuTagId,
       anchor: columnMenu.anchorEl,
       table: table,
@@ -9670,8 +9680,8 @@ function Edit(props) {
    *
    * @since 1.2.0
    */
-  const renderColumnDataTypeModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.Fragment, {
-    children: !isContentOnlyMode && columnDataTypeModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_components__WEBPACK_IMPORTED_MODULE_28__.ColumnDataTypeModal, {
+  const renderColumnDataTypeModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.Fragment, {
+    children: !isContentOnlyMode && columnDataTypeModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_components__WEBPACK_IMPORTED_MODULE_33__.ColumnDataTypeModal, {
       tableId: table_id,
       columnId: columnDataTypeModal.columnId,
       columnLabel: columnDataTypeModal.columnLabel,
@@ -9688,8 +9698,8 @@ function Edit(props) {
    *
    * @since 1.2.0
    */
-  const renderColumnWidthModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.Fragment, {
-    children: !isContentOnlyMode && columnWidthModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_components__WEBPACK_IMPORTED_MODULE_28__.ColumnWidthModal, {
+  const renderColumnWidthModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.Fragment, {
+    children: !isContentOnlyMode && columnWidthModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_components__WEBPACK_IMPORTED_MODULE_33__.ColumnWidthModal, {
       tableId: table_id,
       columnId: columnWidthModal.columnId,
       columnLabel: columnWidthModal.columnLabel,
@@ -9705,8 +9715,8 @@ function Edit(props) {
    *
    * @since 1.3.1
    */
-  const renderCellMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.Fragment, {
-    children: !isContentOnlyMode && cellMenu.isOpen && cellMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_components__WEBPACK_IMPORTED_MODULE_28__.CellMenu, {
+  const renderCellMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.Fragment, {
+    children: !isContentOnlyMode && cellMenu.isOpen && cellMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_components__WEBPACK_IMPORTED_MODULE_33__.CellMenu, {
       menuId: editorCellMenuTagId,
       anchor: cellMenu.anchorEl,
       table: table,
@@ -9724,8 +9734,8 @@ function Edit(props) {
    *
    * @since 1.4.6
    */
-  const renderEditCellContentModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.Fragment, {
-    children: !isContentOnlyMode && editCellContentModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_components__WEBPACK_IMPORTED_MODULE_28__.EditCellContentModal, {
+  const renderEditCellContentModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.Fragment, {
+    children: !isContentOnlyMode && editCellContentModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_components__WEBPACK_IMPORTED_MODULE_33__.EditCellContentModal, {
       tableId: table_id,
       cellId: editCellContentModal.cellId,
       cellContent: editCellContentModal.cellContent,
@@ -9744,53 +9754,53 @@ function Edit(props) {
    * @since 1.2.0
    * @since 1.4.7 Add support to identify title element type
    */
-  const renderControls = !isContentOnlyMode && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__.BlockControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__.BlockAlignmentToolbar, {
+  const renderControls = !isContentOnlyMode && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.BlockControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.BlockAlignmentToolbar, {
         value: block_alignment,
         onChange: e => props.setAttributes({
           block_alignment: e
         })
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__.InspectorControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Panel, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.InspectorControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Panel, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
           title: "Definition",
           initialOpen: true,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("div", {
               className: "grid-control__inspector-controls--read-only",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("span", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("span", {
                 className: "grid-control__inspector-controls--read-only-label",
                 children: "Table Name:"
-              }), (0,_utils__WEBPACK_IMPORTED_MODULE_25__.htmlToIndexText)(table.table_name)]
+              }), (0,_utils__WEBPACK_IMPORTED_MODULE_30__.htmlToIndexText)(table.table_name)]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("div", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("div", {
               className: "grid-control__inspector-controls--read-only",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("span", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("span", {
                 className: "grid-control__inspector-controls--read-only-label",
                 children: "Table Columns/Rows:"
               }), liveNumColumns, "/", liveNumRows]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
               label: "Show table borders",
               __nextHasNoMarginBottom: true,
               checked: showBorders,
               onChange: e => onToggleBorders(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
               label: "Hide Table Title",
               __nextHasNoMarginBottom: true,
               checked: hideTitle,
               onChange: e => onHideTitle(table, e)
             })
-          }), !hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+          }), !hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
               className: "dtbk-panel-indent-control",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CustomSelectControl, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CustomSelectControl, {
                 className: "dtbk-inspector-select-control dtbk-inspector-custom-select-control",
                 label: "Table Title Format",
                 __nextHasNoMarginBottom: true,
@@ -9807,16 +9817,16 @@ function Edit(props) {
               })
             })
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
           title: "Front End",
           initialOpen: false,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("div", {
               className: "dtbk-inspector-select-control",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("span", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("span", {
                 className: "dtbk-inspector-select-control__label",
                 children: "Front End Display Format"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
                 label: "Front End Display Format",
                 hideLabelFromVision: true,
                 __nextHasNoMarginBottom: true,
@@ -9836,15 +9846,15 @@ function Edit(props) {
                 }]
               })]
             })
-          }), renderMode !== 'table' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+          }), renderMode !== 'table' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
             className: "dtbk-panel-indent-control",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("div", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("div", {
                 className: "dtbk-inspector-select-control",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("span", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("span", {
                   className: "dtbk-inspector-select-control__label",
                   children: "Item Style"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
                   label: "Item Style",
                   hideLabelFromVision: true,
                   __nextHasNoMarginBottom: true,
@@ -9857,39 +9867,39 @@ function Edit(props) {
               })
             })
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
           title: "Table Header",
           initialOpen: false,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
               label: "First Row as Header?",
               __nextHasNoMarginBottom: true,
               checked: enableHeaderRow,
               onChange: e => onEnableHeaderRow(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
               label: "Freeze Header Row?",
               __nextHasNoMarginBottom: true,
               disabled: !enableHeaderRow,
               checked: headerRowSticky,
               onChange: e => onHeaderRowSticky(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("span", {
               className: "inspector-controls-menu__header-alignment--middle",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__.AlignmentControl, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.AlignmentControl, {
                 id: editorHeaderAlignmentTagId,
                 value: headerAlignment,
                 onChange: e => onAlignHeader(table, e)
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("label", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("label", {
                 className: "inspector-controls-nemu__label--left-margin",
                 htmlFor: editorHeaderAlignmentTagId,
                 children: "Text Alignment"
               })]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.BorderBoxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.BorderBoxControl, {
               className: "border-box-workaround",
               __experimentalIsRenderedInSidebar: true,
               label: "Borders",
@@ -9899,31 +9909,31 @@ function Edit(props) {
               onChange: e => onHeaderBorder(table, e)
             })
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
           title: "Table Body",
           initialOpen: false,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
               label: "Allow Horizontal Scroll?",
               __nextHasNoMarginBottom: true,
               checked: allowHorizontalScroll,
               onChange: e => onAllowHorizontalScroll(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("span", {
               className: "inspector-controls-menu__header-alignment--middle",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__.AlignmentControl, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.AlignmentControl, {
                 id: editorBodyAlignmentTagId,
                 value: bodyAlignment,
                 onChange: e => onAlignBody(table, e)
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("label", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("label", {
                 className: "inspector-controls-menu__label--left-margin",
                 htmlFor: editorBodyAlignmentTagId,
                 children: "Text Alignment"
               })]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.BorderBoxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.BorderBoxControl, {
               className: "border-box-workaround",
               label: "Borders",
               hideLabelFromVision: "false",
@@ -9935,19 +9945,19 @@ function Edit(props) {
           })]
         })]
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__.InspectorControls, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.InspectorControls, {
       group: "styles",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
         title: "Banded Table Rows",
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
             label: "Display Banded Rows",
             __nextHasNoMarginBottom: true,
             checked: bandedRows,
             onChange: e => onShowBandedRows(table, e)
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__.PanelColorSettings, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.PanelColorSettings, {
           __experimentalIsRenderedInSidebar: true,
           title: 'Banded Row Color',
           colors: themeColors,
@@ -9961,18 +9971,18 @@ function Edit(props) {
             label: 'Background'
           }]
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
         title: "Grid Lines",
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
             label: "Display Inner Grid Lines",
             __nextHasNoMarginBottom: true,
             checked: showGridLines,
             onChange: e => onShowGridLines(table, e)
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalNumberControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalNumberControl, {
             label: "Inner Grid Line Width",
             value: gridLineWidth,
             labelPosition: "side",
@@ -9980,7 +9990,7 @@ function Edit(props) {
           })
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__.InspectorControls, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.InspectorControls, {
       group: "typography"
     })]
   });
@@ -9990,7 +10000,7 @@ function Edit(props) {
    *
    * @since 1.4.7
    */
-  const renderElementStyleRefs = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("div", {
+  const renderElementStyleRefs = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("div", {
     "aria-hidden": "true",
     style: {
       position: 'absolute',
@@ -10000,30 +10010,31 @@ function Edit(props) {
       clipPath: 'inset(50%)',
       whiteSpace: 'nowrap'
     },
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("h1", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("h1", {
       ref: h1Ref
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("h2", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("h2", {
       ref: h2Ref
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("h3", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("h3", {
       ref: h3Ref
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("h4", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("h4", {
       ref: h4Ref
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("h5", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("h5", {
       ref: h5Ref
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("h6", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("h6", {
       ref: h6Ref
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("p", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("p", {
       ref: paragraphRef
     })]
   });
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("div", {
+  const tableCreationMethodLabel = tableCreationMethod === 'new' ? 'New' : 'Existing';
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("div", {
     ...blockProps,
-    children: [!isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.Fragment, {
-      children: [renderRowMenu, renderRowHeightModal, renderColumnMenu, renderColumnDataTypeModal, renderColumnWidthModal, renderCellMenu, renderEditCellContentModal, renderElementStyleRefs, renderControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("div", {
+    children: [!isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.Fragment, {
+      children: [renderRowMenu, renderRowHeightModal, renderColumnMenu, renderColumnDataTypeModal, renderColumnWidthModal, renderCellMenu, renderEditCellContentModal, renderElementStyleRefs, renderControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("div", {
         style: {
           display: 'block'
         },
-        children: [!hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__.RichText, {
+        children: [!hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.RichText, {
           id: editorTitleTagId,
           className: "dtbk-table-title",
           style: {
@@ -10043,11 +10054,11 @@ function Edit(props) {
             cacheUndoEdits.current = false;
           },
           value: table.table_name
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("p", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("p", {
           id: editorGridHelpTagId,
           className: "screen-reader-text",
           children: editorGridHelpText
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
           id: editorGridTagId,
           role: "grid",
           "aria-rowcount": Number(navMaxRow),
@@ -10060,12 +10071,12 @@ function Edit(props) {
           ,
           onFocusCapture: onGridFocusCapture,
           tabIndex: 0,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
             className: "grid-scroller",
             style: {
               '--headerRowSticky': headerRowStickyStyle
             },
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("div", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("div", {
               className: 'grid-control ' + headerRowStickyClass,
               style: {
                 '--gridTemplateColumns': gridColumnStyle,
@@ -10075,7 +10086,7 @@ function Edit(props) {
                 '--gridNumRows': liveNumRows,
                 '--gridAlignment': gridAlignment
               },
-              children: [showBorders && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+              children: [showBorders && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
                 className: 'grid-control__border',
                 role: "presentation",
                 children: table.cells.filter(cell => cell.attributes.border && cell.row_id === '0').map(({
@@ -10087,12 +10098,12 @@ function Edit(props) {
                   attributes,
                   classes
                 }) => {
-                  const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.setBorderContent)(row_id, column_id, content);
+                  const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.setBorderContent)(row_id, column_id, content);
                   const isFirstColumn = column_id === '1' ? true : false;
-                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
-                    children: [isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+                    children: [isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
                       className: 'grid-control__border-cells'
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(Cell, {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(Cell, {
                       cellType: "border",
                       isContentOnlyMode: isContentOnlyMode,
                       dataFormat: columnDataTypes[column_id],
@@ -10104,7 +10115,7 @@ function Edit(props) {
                       cellBaseClasses: classes,
                       cellClassNames: classes,
                       borderHandleProps: {
-                        ariaLabel: `Column ${(0,_utils__WEBPACK_IMPORTED_MODULE_25__.numberToLetter)(Number(column_id))} options`,
+                        ariaLabel: `Column ${(0,_utils__WEBPACK_IMPORTED_MODULE_30__.numberToLetter)(Number(column_id))} options`,
                         controls: editorColumnMenuTagId,
                         expanded: columnMenu.isOpen && String(columnMenu.columnId) === String(column_id)
                       },
@@ -10116,7 +10127,7 @@ function Edit(props) {
                 row_id
               }) => {
                 const renderedRow = row_id;
-                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
                   className: "grid-control__header",
                   role: "row",
                   "aria-rowindex": Number(row_id),
@@ -10150,7 +10161,7 @@ function Edit(props) {
                     let calculatedClasses = '';
                     const isFirstColumn = column_id === '1' ? true : false;
                     const isBorder = attributes.border;
-                    const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.setBorderContent)(row_id, column_id, content);
+                    const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.setBorderContent)(row_id, column_id, content);
                     const showGridLinesCSS = gridShowInnerLines;
                     const gridLineWidthCSS = gridInnerLineWidth;
                     const isClipboard = cellClipboard.inUse && cellClipboard.columnId === Number(column_id) && cellClipboard.rowId === Number(row_id);
@@ -10163,10 +10174,10 @@ function Edit(props) {
                       // Show distinct border when cell has focus
                       calculatedClasses = calculatedClasses + 'grid-control__body-cells--focused ';
                     }
-                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
-                      children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+                      children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
                         className: 'grid-control__border-cells'
-                      }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(Cell, {
+                      }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(Cell, {
                         cellType: "border",
                         isContentOnlyMode: isContentOnlyMode,
                         dataFormat: columnDataTypes[column_id],
@@ -10183,13 +10194,13 @@ function Edit(props) {
                           expanded: rowMenu.isOpen && String(rowMenu.rowId) === String(row_id)
                         },
                         onMouseDown: onMouseMenuClick
-                      }), isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+                      }), isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
                         className: 'grid-control__header-cells',
                         style: {
                           '--showGridLines': showGridLinesCSS,
                           '--gridLineWidth': gridLineWidthCSS
                         }
-                      }), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(Cell, {
+                      }), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(Cell, {
                         cellType: 'header',
                         dataFormat: columnDataTypes[column_id],
                         cell_id: cell_id,
@@ -10240,7 +10251,7 @@ function Edit(props) {
                     }, `header-cell:${cell_id}`);
                   })
                 }, `header-row:${row_id}`);
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
                 className: 'grid-control__body',
                 role: "rowgroup",
                 style: {
@@ -10277,7 +10288,7 @@ function Edit(props) {
                   if (bandedRows && bandedRowOffset == 1 && Number(row_id) > 1 && (Number(row_id) + bandedRowOffset) % 2 === 0) {
                     calculatedClasses = calculatedClasses + 'grid-control__body-rows--banded-row ';
                   }
-                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
                     className: 'grid-control__body-row ' + calculatedClasses,
                     role: "row",
                     "aria-rowindex": Number(row_id),
@@ -10300,7 +10311,7 @@ function Edit(props) {
                       let calculatedClasses = '';
                       const isFirstColumn = column_id === '1' ? true : false;
                       const isBorder = attributes?.border;
-                      const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.setBorderContent)(row_id, column_id, content);
+                      const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.setBorderContent)(row_id, column_id, content);
                       const showGridLinesCSS = gridShowInnerLines;
                       const gridLineWidthCSS = gridInnerLineWidth;
                       const isClipboard = cellClipboard.inUse && cellClipboard.columnId === Number(column_id) && cellClipboard.rowId === Number(row_id);
@@ -10313,10 +10324,10 @@ function Edit(props) {
                         // Show distinct border when cell has focus
                         calculatedClasses = calculatedClasses + 'grid-control__body-cells--focused ';
                       }
-                      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
-                        children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+                      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+                        children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
                           className: 'grid-control__border-cells'
-                        }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(Cell, {
+                        }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(Cell, {
                           cellType: "border",
                           isContentOnlyMode: isContentOnlyMode,
                           dataFormat: columnDataTypes[column_id],
@@ -10333,7 +10344,7 @@ function Edit(props) {
                             expanded: rowMenu.isOpen && String(rowMenu.rowId) === String(row_id)
                           },
                           onMouseDown: onMouseMenuClick
-                        }), isFirstColumn && !isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+                        }), isFirstColumn && !isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
                           className: 'grid-control__body-cells grid-control__body-cells--zoom',
                           style: {
                             '--showGridLines': showGridLinesCSS,
@@ -10342,11 +10353,11 @@ function Edit(props) {
                           "data-col": Number(column_id),
                           "data-row": Number(row_id),
                           tabIndex: isFocused ? 0 : -1,
-                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
                             href: "#",
-                            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_18__["default"]
+                            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_23__["default"]
                           })
-                        }, cell_id), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(Cell, {
+                        }, cell_id), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(Cell, {
                           cellType: 'body',
                           dataFormat: columnDataTypes[column_id],
                           cell_id: cell_id,
@@ -10402,20 +10413,20 @@ function Edit(props) {
           })
         })]
       })]
-    }), !isNewBlock && tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("span", {
+    }), !isNewBlock && tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("span", {
       className: 'dtbk-spinner-message',
-      children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Loading Dynamic Table...', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
-    }), isNewBlock && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Placeholder, {
+      children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Loading Dynamic Table...', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
+    }), isNewBlock && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Placeholder, {
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Dynamic Table', 'dynamic-table-blocks'),
-      icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__.BlockIcon, {
-        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_16__["default"],
+      icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.BlockIcon, {
+        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_19__["default"],
         showColors: true
       }),
       instructions: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Create a new dynamic table.', 'dynamic-table-blocks'),
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("form", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("form", {
         className: "blocks-table__placeholder-form",
         onSubmit: onCreateTable,
-        children: [tableCreationMethod === 'choose' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
+        children: [tableCreationMethod === 'choose' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table creation method:', 'dynamic-table-blocks'),
           onChange: onCreateTableMethod,
           options: [{
@@ -10429,10 +10440,14 @@ function Edit(props) {
             label: 'Existing Table'
           }],
           __nextHasNoMarginBottom: true
-        }), tableCreationMethod !== 'choose' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("p", {
-            children: ["Table creation method: ", tableCreationMethod]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("hr", {
+        }), tableCreationMethod !== 'choose' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("p", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("strong", {
+              children: ["Table creation method: ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("em", {
+                children: tableCreationMethodLabel
+              })]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("hr", {
             style: {
               alignSelf: 'stretch',
               width: '100%',
@@ -10441,94 +10456,167 @@ function Edit(props) {
               borderTop: '1px solid #dcdcde'
             }
           })]
-        }), tableCreationMethod === 'existing-table' && activeExistingTableOptions === null && (allTablesIsResolving || isRefreshingAllTables) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("span", {
+        }), tableCreationMethod === 'existing-table' && activeExistingTableOptions === null && (allTablesIsResolving || isRefreshingAllTables) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("span", {
           className: 'dtbk-spinner-message',
-          children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Retrieving table list...', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
-        }), tableCreationMethod === 'existing-table' && activeExistingTableOptions !== null && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
+          children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Retrieving table list...', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
+        }), tableCreationMethod === 'existing-table' && activeExistingTableOptions !== null && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Select table:', 'dynamic-table-blocks'),
             onChange: onAssignRequestedTableId,
             value: tableRequest.tableId || '',
             options: activeExistingTableOptions,
             __nextHasNoMarginBottom: true
-          }), tableRequest.action !== 'idle' && requestedTableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("span", {
+          }), tableRequest.action !== 'idle' && requestedTableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("span", {
             className: 'dtbk-spinner-message',
-            children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Retrieving selected table...', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
+            children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Retrieving selected table…', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
           })]
-        }), tableCreationMethod === 'new' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.Fragment, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.Root, {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_10__.Header, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_11__.Title, {
+        }), tableCreationMethod === 'new' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.Fragment, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_11__.Root, {
+            className: "dtbk-new-dt",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_12__.Header, {
+              className: "dtbk-new-dt_header",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_13__.Title, {
                 children: "New Table Definition"
               })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_12__.Content, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_14__.Content, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
                 direction: "row",
                 gap: "24px",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
                   direction: "column",
-                  className: "dtbk-configure-column-split",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalInputControl, {
+                  className: "dtbk-configure-column-split__left",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
                     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Name', 'dynamic-table-blocks'),
                     placeholder: "New Table",
-                    required: "true",
-                    onChange: value => setCreateDraftTable(prev => ({
+                    required: true,
+                    onValueChange: value => setCreateDraftTable(prev => ({
                       ...prev,
                       tableName: value
                     })),
                     value: createDraftTable.tableName,
-                    className: "blocks-table__placeholder-input"
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalNumberControl, {
-                    __nextHasNoMarginBottom: true,
+                    className: "blocks-table__placeholder-input dtbk-full-width-input",
+                    size: "compact"
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
                     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Columns', 'dynamic-table-blocks'),
                     min: 1,
-                    required: "true",
+                    max: 50,
+                    step: 1,
+                    required: true,
                     value: createDraftTable.numColumns,
-                    onChange: e => onChangeInitialColumnCount(e),
-                    className: "blocks-table__placeholder-input"
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalNumberControl, {
-                    __nextHasNoMarginBottom: true,
+                    onValueChange: value => onChangeInitialColumnCount(Number(value)),
+                    className: "blocks-table__placeholder-input",
+                    type: "number",
+                    size: "compact",
+                    suffix: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_15__.InputLayout.Slot, {
+                      padding: "minimal",
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
+                        direction: "row",
+                        align: "center",
+                        className: "dtbk-increment-steppers",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_10__.IconButton, {
+                          className: "dtbk-increment-steppers__button",
+                          type: "button",
+                          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Increment columns', 'dynamic-table-blocks'),
+                          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_21__["default"],
+                          size: "small",
+                          variant: "minimal",
+                          disabled: Number(createDraftTable.numColumns) >= 50,
+                          onClick: () => onChangeInitialColumnCount(Number(createDraftTable.numColumns) + 1)
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("span", {
+                          className: "dtbk-increment-steppers__separator",
+                          "aria-hidden": "true",
+                          children: "/"
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_10__.IconButton, {
+                          className: "dtbk-increment-steppers__button",
+                          type: "button",
+                          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Decrement columns', 'dynamic-table-blocks'),
+                          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_22__["default"],
+                          size: "small",
+                          variant: "minimal",
+                          disabled: Number(createDraftTable.numColumns) <= 1,
+                          onClick: () => onChangeInitialColumnCount(Number(createDraftTable.numColumns) - 1)
+                        })]
+                      })
+                    })
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
                     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Rows', 'dynamic-table-blocks'),
-                    required: "true",
                     min: 1,
+                    max: 1000,
+                    step: 1,
+                    required: true,
                     value: createDraftTable.numRows,
-                    onChange: e => onChangeInitialRowCount(e),
-                    className: "blocks-table__placeholder-input"
+                    onValueChange: value => onChangeInitialRowCount(Number(value)),
+                    className: "blocks-table__placeholder-input",
+                    type: "number",
+                    size: "compact",
+                    suffix: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_15__.InputLayout.Slot, {
+                      padding: "minimal",
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
+                        direction: "row",
+                        align: "center",
+                        className: "dtbk-increment-steppers",
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_10__.IconButton, {
+                          className: "dtbk-increment-steppers__button",
+                          type: "button",
+                          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Increment rows', 'dynamic-table-blocks'),
+                          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_21__["default"],
+                          size: "small",
+                          variant: "minimal",
+                          disabled: Number(createDraftTable.numRows) >= 1000,
+                          onClick: () => onChangeInitialRowCount(Number(createDraftTable.numRows) + 1)
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("span", {
+                          className: "dtbk-increment-steppers__separator",
+                          "aria-hidden": "true",
+                          children: "/"
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_10__.IconButton, {
+                          className: "dtbk-increment-steppers__button",
+                          type: "button",
+                          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Decrement columns', 'dynamic-table-blocks'),
+                          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_22__["default"],
+                          size: "small",
+                          variant: "minimal",
+                          disabled: Number(createDraftTable.numRows) <= 1,
+                          onClick: () => onChangeInitialColumnCount(Number(createDraftTable.numRows) - 1)
+                        })]
+                      })
+                    })
                   })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
                   direction: "column",
-                  className: "dtbk-configure-column-split",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("table", {
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("caption", {
+                  className: "dtbk-configure-column-split__right",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("table", {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("caption", {
                       children: "Column Definitions"
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("thead", {
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("tr", {
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("th", {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("thead", {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("tr", {
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("th", {
                           children: "Number"
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("th", {
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("th", {
                           children: "Name"
                         })]
                       })
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("tbody", {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("tbody", {
                       children: createDraftTable.columns.map(({
                         column_id,
                         column_name
                       }) => {
-                        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("tr", {
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("td", {
+                        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("tr", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("td", {
                             className: "dtbk-create-table",
                             children: column_id
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("td", {
-                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalInputControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("td", {
+                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
                               placeholder: "New Column",
-                              onChange: value => setCreateDraftTable(prev => ({
+                              onValueChange: value => setCreateDraftTable(prev => ({
                                 ...prev,
                                 columns: prev.columns.map(column => column.column_id === column_id ? {
                                   ...column,
                                   column_name: value
                                 } : column)
                               })),
-                              value: column_name
+                              defaultValue: 'Column ' + (0,_utils__WEBPACK_IMPORTED_MODULE_30__.numberToLetter)(Number(column_id)),
+                              value: column_name,
+                              size: "compact"
                             })
                           })]
                         }, column_id);
@@ -10539,7 +10627,7 @@ function Edit(props) {
               })
             })]
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("hr", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("hr", {
           style: {
             alignSelf: 'stretch',
             width: '100%',
@@ -10547,16 +10635,16 @@ function Edit(props) {
             border: 0,
             borderTop: '1px solid #dcdcde'
           }
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
           className: "dtbk-modal__footer",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("div", {
             className: "dtbk-modal__button-group",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
               variant: "secondary",
               type: "button",
               onClick: onCancelNewBlock,
               children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Cancel', 'dynamic-table-blocks')
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
               disabled: createTableDisabled,
               variant: "primary",
               type: "submit",
@@ -10660,26 +10748,26 @@ function Cell(props) {
   const {
     column_id,
     row_id
-  } = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.getCellIdCoordinates)(cell_id);
+  } = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.getCellIdCoordinates)(cell_id);
   const table_id = table?.table_id;
   const {
     type,
     settings
-  } = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.normalizeColumnDataType)(dataFormat);
+  } = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.normalizeColumnDataType)(dataFormat);
   const [inputType, setInputType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(() => settings?.format || '');
   const [cellContent, setCellContent] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)();
   const initialCellValue = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(content);
   const [cellAttributes, setCellAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(attributes);
-  const htmlToText = (html = '') => (0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_14__.getTextContent)((0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_14__.create)({
+  const htmlToText = (html = '') => (0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_17__.getTextContent)((0,_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_17__.create)({
     html
   })).replace(/\s+/g, ' ').trim();
   const numberEntryWrapperRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
   const numberEntryInputRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
   const pendingCaretRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
   const [percentEntryValue, setPercentEntryValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(null);
-  const numberEntryValue = inputType === 'percent' ? percentEntryValue ?? (0,_utils__WEBPACK_IMPORTED_MODULE_25__.toPercentEntryValue)(cellContent) : cellContent ?? '';
-  const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.formattedNumber)(cellContent, inputType, settings?.formatOptions?.thousandSeparator, settings?.formatOptions?.decimalPlaces, settings?.formatOptions?.showCurrencySymbol, settings?.formatOptions?.bracketNegative);
-  const sanitizedNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.sanitizeNumberInput)(cellContent, inputType);
+  const numberEntryValue = inputType === 'percent' ? percentEntryValue ?? (0,_utils__WEBPACK_IMPORTED_MODULE_30__.toPercentEntryValue)(cellContent) : cellContent ?? '';
+  const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.formattedNumber)(cellContent, inputType, settings?.formatOptions?.thousandSeparator, settings?.formatOptions?.decimalPlaces, settings?.formatOptions?.showCurrencySymbol, settings?.formatOptions?.bracketNegative);
+  const sanitizedNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.sanitizeNumberInput)(cellContent, inputType);
   const redNegativeNumber = settings?.formatOptions?.redNegative && sanitizedNumber !== '' && sanitizedNumber !== '-' && Number(sanitizedNumber) < 0;
   const checkboxVariant = settings?.format || inputType || 'standard';
   const shouldHideCheckbox = !isEditing && settings?.formatOptions?.hideIfEmpty && isEmptyCheckboxValue(cellContent);
@@ -10728,7 +10816,7 @@ function Cell(props) {
   function checkboxEditValue() {
     const isChecked = getCheckboxCheckedState(cellContent);
     const scale = checkboxVariant === 'freeform' ? 0.6 : 1;
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_components__WEBPACK_IMPORTED_MODULE_28__.TableCheckbox, {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_components__WEBPACK_IMPORTED_MODULE_33__.TableCheckbox, {
       checked: isChecked,
       variant: checkboxVariant,
       scale: scale,
@@ -10762,9 +10850,9 @@ function Cell(props) {
       if (cellType === 'body' && type === 'date-time') {
         const raw = content ?? initialCellValue.current ?? '';
         if (raw) {
-          setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_25__.formattedIsoDate)(raw, resolvedFormat));
+          setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_30__.formattedIsoDate)(raw, resolvedFormat));
         } else if (settings?.defaultToToday) {
-          setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_25__.formattedIsoDate)('', resolvedFormat));
+          setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_30__.formattedIsoDate)('', resolvedFormat));
         } else {
           setCellContent('');
         }
@@ -10778,7 +10866,7 @@ function Cell(props) {
     } else {
       const raw = content ?? '';
       if (cellType === 'body' && type === 'date-time') {
-        setCellContent(raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_25__.formatedDisplayDate)(raw, resolvedFormat) : '');
+        setCellContent(raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_30__.formatedDisplayDate)(raw, resolvedFormat) : '');
       }
       if (cellType === 'body' && type === 'number') {
         setCellContent(raw);
@@ -10804,8 +10892,8 @@ function Cell(props) {
       pendingCaretRef.current = null;
       return;
     }
-    let nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.getCaretIndexFromTokenCount)(input.value, pendingCaretRef.current.tokenCount);
-    nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.normalizeCaretForPresentationPrefix)(input.value, nextCaret, pendingCaretRef.current);
+    let nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.getCaretIndexFromTokenCount)(input.value, pendingCaretRef.current.tokenCount);
+    nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.normalizeCaretForPresentationPrefix)(input.value, nextCaret, pendingCaretRef.current);
     input.setSelectionRange(nextCaret, nextCaret);
     pendingCaretRef.current = null;
   }, [numberEntryValue]);
@@ -10887,11 +10975,11 @@ function Cell(props) {
    */
   function onNumberChange(event) {
     const input = numberEntryInputRef.current;
-    const entryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.sanitizeNumberInput)(event, inputType === 'percent' ? 'number' : inputType);
+    const entryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.sanitizeNumberInput)(event, inputType === 'percent' ? 'number' : inputType);
     const selectionStart = input?.selectionStart ?? entryValue.length;
-    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.getFirstNumericIndex)(entryValue);
+    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.getFirstNumericIndex)(entryValue);
     pendingCaretRef.current = {
-      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_25__.countCaretTokens)(entryValue, selectionStart),
+      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_30__.countCaretTokens)(entryValue, selectionStart),
       wasAtStart: selectionStart === 0,
       wasInPrefixZone: firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex
     };
@@ -10902,7 +10990,7 @@ function Cell(props) {
       const nextEntryValue = fractionPart.length > revisedDecimalPlaces ? `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}` : entryValue;
       setPercentEntryValue(nextEntryValue);
       revisedDecimalPlaces += 2;
-      nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.fromPercentEntryValue)(nextEntryValue);
+      nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.fromPercentEntryValue)(nextEntryValue);
     } else {
       setPercentEntryValue(null);
     }
@@ -10966,7 +11054,7 @@ function Cell(props) {
    * @param {string} label Accessible label and native tooltip text.
    * @return {Object} Cell edit button.
    */
-  const renderCellEditButton = (label = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Edit cell', 'dynamic-table-blocks')) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("button", {
+  const renderCellEditButton = (label = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Edit cell', 'dynamic-table-blocks')) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("button", {
     type: "button",
     className: "grid-control__cell-edit-button",
     "aria-label": label,
@@ -10978,8 +11066,8 @@ function Cell(props) {
     onClick: e => {
       passMouseEditClick(table_id, cell_id, cellContent, cellAttributes, cellBaseClasses, dataFormat, e);
     },
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_icons__WEBPACK_IMPORTED_MODULE_15__["default"], {
-      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_17__["default"],
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_icons__WEBPACK_IMPORTED_MODULE_18__["default"], {
+      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_20__["default"],
       size: 16
     })
   });
@@ -11012,13 +11100,19 @@ function Cell(props) {
    * @return {void}
    */
   const renderTypes = {
-    richText: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__.RichText, {
+    richText: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.RichText, {
       tagName: "div",
+      className: "dtbk-cell-general-content",
       value: cellContent,
       readOnly: !isEditing,
       spellCheck: true,
+      onBlur: () => {
+        if (isEditing) {
+          onRequestStopEdit?.();
+        }
+      },
       onChange: !isEditing ? undefined : next => {
-        const indexText = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.htmlToIndexText)(next);
+        const indexText = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.htmlToIndexText)(next);
         persistCellEdit(next, indexText);
       }
     }),
@@ -11030,12 +11124,12 @@ function Cell(props) {
       const isHeaderRowHandle = currentRow?.attributes?.isHeader === true;
       const canOpenBorderMenu = !isContentOnlyMode || isRowHandle && !isHeaderRowHandle;
       if (!isBorderHandle || !canOpenBorderMenu) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
           "aria-hidden": "true",
           children: cellContent
         });
       }
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("button", {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("button", {
         type: "button",
         className: "grid-control__border-button",
         "aria-label": borderHandleProps.ariaLabel,
@@ -11048,7 +11142,7 @@ function Cell(props) {
         onClick: e => {
           passMouseMenuClick(column_id, row_id, table, e);
         },
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("span", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("span", {
           "aria-hidden": "true",
           children: cellContent
         })
@@ -11056,11 +11150,11 @@ function Cell(props) {
     },
     dateTime: () => {
       if (!isEditing) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
           children: cellContent
         });
       }
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.TextControl, {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.TextControl, {
         className: renderClassesEdit,
         type: inputType,
         value: cellContent,
@@ -11078,7 +11172,7 @@ function Cell(props) {
           }
           const format = settings?.format || inputType || 'date';
           const next = event?.target?.value ?? cellContent ?? '';
-          const formattedContent = (0,_utils__WEBPACK_IMPORTED_MODULE_25__.formattedIsoDate)(next, format);
+          const formattedContent = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.formattedIsoDate)(next, format);
           persistCellEdit(next, formattedContent);
           onRequestStopEdit?.();
         }
@@ -11086,13 +11180,13 @@ function Cell(props) {
     },
     number: () => {
       if (!isEditing) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
           children: numberDisplayValue
         });
       }
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
         ref: numberEntryWrapperRef,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.TextControl, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.TextControl, {
           className: renderClassesEdit,
           type: 'text',
           inputMode: inputType === 'integer' ? 'numeric' : 'decimal',
@@ -11125,28 +11219,28 @@ function Cell(props) {
         }
         const isChecked = getCheckboxCheckedState(cellContent);
         const scale = checkboxVariant === 'freeform' ? 0.6 : 1;
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_components__WEBPACK_IMPORTED_MODULE_28__.TableCheckbox, {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_components__WEBPACK_IMPORTED_MODULE_33__.TableCheckbox, {
           checked: isChecked,
           variant: checkboxVariant,
           scale: scale
         });
       }
       const editedCheckbox = checkboxEditValue();
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
         children: editedCheckbox
       });
     },
     link: () => {
       if (!isEditing) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_13__.RichText.Content, {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.RichText.Content, {
             tagName: "span",
             className: "grid-control__cell-edit-content",
             value: cellContent
           }), renderCellEditButton((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Edit link cell', 'dynamic-table-blocks'))]
         });
       }
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
         children: "Placeholder"
       });
     }
@@ -11186,12 +11280,12 @@ function Cell(props) {
     default:
       break;
   }
-  const renderClassesDisplay = (0,clsx__WEBPACK_IMPORTED_MODULE_19__["default"])(columnClassNames, cellClassNames, {
+  const renderClassesDisplay = (0,clsx__WEBPACK_IMPORTED_MODULE_24__["default"])(columnClassNames, cellClassNames, {
     'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
     'grid-control__body-cells--checkbox': type === 'checkbox',
     'grid-control__body-columns--number-red': redNegativeNumber
   });
-  const renderClassesEdit = (0,clsx__WEBPACK_IMPORTED_MODULE_19__["default"])(columnClassNames, {
+  const renderClassesEdit = (0,clsx__WEBPACK_IMPORTED_MODULE_24__["default"])(columnClassNames, {
     'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
     'grid-control__body-cells--checkbox': type === 'checkbox',
     'grid-control__body-columns--number-red': redNegativeNumber
@@ -11200,7 +11294,7 @@ function Cell(props) {
   const cellRole = cellType === 'header' ? 'columnheader' : cellType === 'body' ? 'gridcell' : 'presentation';
   const ariaColIndex = !isBorderCell ? Number(column_id) : undefined;
   const computedTabIndex = !isBorderCell && isFocused ? 0 : -1;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)("div", {
     id: cellTagId,
     role: cellRole,
     "aria-colindex": ariaColIndex,
@@ -11244,7 +11338,7 @@ function Cell(props) {
       }
 
       // Stable key in React list:
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
         children: renderPart()
       }, key);
     })
@@ -13433,6 +13527,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   formattedNumber: () => (/* binding */ formattedNumber),
 /* harmony export */   fromPercentEntryValue: () => (/* binding */ fromPercentEntryValue),
 /* harmony export */   generateBlockTableRef: () => (/* binding */ generateBlockTableRef),
+/* harmony export */   generateTablePartRef: () => (/* binding */ generateTablePartRef),
 /* harmony export */   getCaretIndexFromTokenCount: () => (/* binding */ getCaretIndexFromTokenCount),
 /* harmony export */   getCellIdCoordinates: () => (/* binding */ getCellIdCoordinates),
 /* harmony export */   getFirstNumericIndex: () => (/* binding */ getFirstNumericIndex),
@@ -13709,6 +13804,19 @@ function prepareClassesForUse(classSet) {
 function generateBlockTableRef() {
   const timestamp = Date.now();
   return timestamp.toString(16);
+}
+
+/**
+ * Create a unique identifyier for reference use
+ *
+ * @since 1.4.9
+ *
+ * @return  {string} Unique reference identifier
+ */
+function generateTablePartRef() {
+  const bytes = new Uint8Array(16);
+  window.crypto.getRandomValues(bytes);
+  return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
 /**
@@ -14272,9 +14380,10 @@ function formatClipboardContent(cellContent, cellValueAttr, columnDataType = DEF
  * @param {string} cellValueAttr               The value attribute of the table cell
  * @param {Object} currentColumnDataTypeObject The data type object for the current column
  * @param {string} columnDataType              The data type of the target column
+ * @param {string} cellFormattedText           Formatted clipboard value
  * @return {Object}  Coerced cell content
  */
-function coerceCellData(cellContent, cellValueAttr, currentColumnDataTypeObject, columnDataType) {
+function coerceCellData(cellContent, cellValueAttr, currentColumnDataTypeObject, columnDataType, cellFormattedText) {
   const currentColumnDataType = currentColumnDataTypeObject?.type || 'general';
   const dataTypeFormat = currentColumnDataTypeObject?.settings || '';
   let incompatibleDataTypes = false;
@@ -14298,8 +14407,16 @@ function coerceCellData(cellContent, cellValueAttr, currentColumnDataTypeObject,
           }
           break;
         case 'number':
+          updatedCellContent = cellFormattedText;
+          updatedCellValueAttr = {
+            indexText: updatedCellContent
+          };
           break;
         case 'date-time':
+          updatedCellContent = cellFormattedText;
+          updatedCellValueAttr = {
+            indexText: updatedCellContent
+          };
           break;
         default:
           incompatibleDataTypes = true;
@@ -14699,6 +14816,250 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ },
 
+/***/ "./node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.development.js"
+/*!**********************************************************************************************!*\
+  !*** ./node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.development.js ***!
+  \**********************************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+/**
+ * @license React
+ * use-sync-external-store-shim.development.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+ true &&
+  (function () {
+    function is(x, y) {
+      return (x === y && (0 !== x || 1 / x === 1 / y)) || (x !== x && y !== y);
+    }
+    function useSyncExternalStore$2(subscribe, getSnapshot) {
+      didWarnOld18Alpha ||
+        void 0 === React.startTransition ||
+        ((didWarnOld18Alpha = !0),
+        console.error(
+          "You are using an outdated, pre-release alpha of React 18 that does not support useSyncExternalStore. The use-sync-external-store shim will not work correctly. Upgrade to a newer pre-release."
+        ));
+      var value = getSnapshot();
+      if (!didWarnUncachedGetSnapshot) {
+        var cachedValue = getSnapshot();
+        objectIs(value, cachedValue) ||
+          (console.error(
+            "The result of getSnapshot should be cached to avoid an infinite loop"
+          ),
+          (didWarnUncachedGetSnapshot = !0));
+      }
+      cachedValue = useState({
+        inst: { value: value, getSnapshot: getSnapshot }
+      });
+      var inst = cachedValue[0].inst,
+        forceUpdate = cachedValue[1];
+      useLayoutEffect(
+        function () {
+          inst.value = value;
+          inst.getSnapshot = getSnapshot;
+          checkIfSnapshotChanged(inst) && forceUpdate({ inst: inst });
+        },
+        [subscribe, value, getSnapshot]
+      );
+      useEffect(
+        function () {
+          checkIfSnapshotChanged(inst) && forceUpdate({ inst: inst });
+          return subscribe(function () {
+            checkIfSnapshotChanged(inst) && forceUpdate({ inst: inst });
+          });
+        },
+        [subscribe]
+      );
+      useDebugValue(value);
+      return value;
+    }
+    function checkIfSnapshotChanged(inst) {
+      var latestGetSnapshot = inst.getSnapshot;
+      inst = inst.value;
+      try {
+        var nextValue = latestGetSnapshot();
+        return !objectIs(inst, nextValue);
+      } catch (error) {
+        return !0;
+      }
+    }
+    function useSyncExternalStore$1(subscribe, getSnapshot) {
+      return getSnapshot();
+    }
+    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ &&
+      "function" ===
+        typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart &&
+      __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
+    var React = __webpack_require__(/*! react */ "react"),
+      objectIs = "function" === typeof Object.is ? Object.is : is,
+      useState = React.useState,
+      useEffect = React.useEffect,
+      useLayoutEffect = React.useLayoutEffect,
+      useDebugValue = React.useDebugValue,
+      didWarnOld18Alpha = !1,
+      didWarnUncachedGetSnapshot = !1,
+      shim =
+        "undefined" === typeof window ||
+        "undefined" === typeof window.document ||
+        "undefined" === typeof window.document.createElement
+          ? useSyncExternalStore$1
+          : useSyncExternalStore$2;
+    exports.useSyncExternalStore =
+      void 0 !== React.useSyncExternalStore ? React.useSyncExternalStore : shim;
+    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ &&
+      "function" ===
+        typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop &&
+      __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
+  })();
+
+
+/***/ },
+
+/***/ "./node_modules/use-sync-external-store/cjs/use-sync-external-store-shim/with-selector.development.js"
+/*!************************************************************************************************************!*\
+  !*** ./node_modules/use-sync-external-store/cjs/use-sync-external-store-shim/with-selector.development.js ***!
+  \************************************************************************************************************/
+(__unused_webpack_module, exports, __webpack_require__) {
+
+/**
+ * @license React
+ * use-sync-external-store-shim/with-selector.development.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+ true &&
+  (function () {
+    function is(x, y) {
+      return (x === y && (0 !== x || 1 / x === 1 / y)) || (x !== x && y !== y);
+    }
+    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ &&
+      "function" ===
+        typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart &&
+      __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
+    var React = __webpack_require__(/*! react */ "react"),
+      shim = __webpack_require__(/*! use-sync-external-store/shim */ "./node_modules/use-sync-external-store/shim/index.js"),
+      objectIs = "function" === typeof Object.is ? Object.is : is,
+      useSyncExternalStore = shim.useSyncExternalStore,
+      useRef = React.useRef,
+      useEffect = React.useEffect,
+      useMemo = React.useMemo,
+      useDebugValue = React.useDebugValue;
+    exports.useSyncExternalStoreWithSelector = function (
+      subscribe,
+      getSnapshot,
+      getServerSnapshot,
+      selector,
+      isEqual
+    ) {
+      var instRef = useRef(null);
+      if (null === instRef.current) {
+        var inst = { hasValue: !1, value: null };
+        instRef.current = inst;
+      } else inst = instRef.current;
+      instRef = useMemo(
+        function () {
+          function memoizedSelector(nextSnapshot) {
+            if (!hasMemo) {
+              hasMemo = !0;
+              memoizedSnapshot = nextSnapshot;
+              nextSnapshot = selector(nextSnapshot);
+              if (void 0 !== isEqual && inst.hasValue) {
+                var currentSelection = inst.value;
+                if (isEqual(currentSelection, nextSnapshot))
+                  return (memoizedSelection = currentSelection);
+              }
+              return (memoizedSelection = nextSnapshot);
+            }
+            currentSelection = memoizedSelection;
+            if (objectIs(memoizedSnapshot, nextSnapshot))
+              return currentSelection;
+            var nextSelection = selector(nextSnapshot);
+            if (void 0 !== isEqual && isEqual(currentSelection, nextSelection))
+              return (memoizedSnapshot = nextSnapshot), currentSelection;
+            memoizedSnapshot = nextSnapshot;
+            return (memoizedSelection = nextSelection);
+          }
+          var hasMemo = !1,
+            memoizedSnapshot,
+            memoizedSelection,
+            maybeGetServerSnapshot =
+              void 0 === getServerSnapshot ? null : getServerSnapshot;
+          return [
+            function () {
+              return memoizedSelector(getSnapshot());
+            },
+            null === maybeGetServerSnapshot
+              ? void 0
+              : function () {
+                  return memoizedSelector(maybeGetServerSnapshot());
+                }
+          ];
+        },
+        [getSnapshot, getServerSnapshot, selector, isEqual]
+      );
+      var value = useSyncExternalStore(subscribe, instRef[0], instRef[1]);
+      useEffect(
+        function () {
+          inst.hasValue = !0;
+          inst.value = value;
+        },
+        [value]
+      );
+      useDebugValue(value);
+      return value;
+    };
+    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ &&
+      "function" ===
+        typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop &&
+      __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
+  })();
+
+
+/***/ },
+
+/***/ "./node_modules/use-sync-external-store/shim/index.js"
+/*!************************************************************!*\
+  !*** ./node_modules/use-sync-external-store/shim/index.js ***!
+  \************************************************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+
+
+if (false) // removed by dead control flow
+{} else {
+  module.exports = __webpack_require__(/*! ../cjs/use-sync-external-store-shim.development.js */ "./node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.development.js");
+}
+
+
+/***/ },
+
+/***/ "./node_modules/use-sync-external-store/shim/with-selector.js"
+/*!********************************************************************!*\
+  !*** ./node_modules/use-sync-external-store/shim/with-selector.js ***!
+  \********************************************************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+
+
+if (false) // removed by dead control flow
+{} else {
+  module.exports = __webpack_require__(/*! ../cjs/use-sync-external-store-shim/with-selector.development.js */ "./node_modules/use-sync-external-store/cjs/use-sync-external-store-shim/with-selector.development.js");
+}
+
+
+/***/ },
+
 /***/ "react"
 /*!************************!*\
   !*** external "React" ***!
@@ -14706,6 +15067,16 @@ __webpack_require__.r(__webpack_exports__);
 (module) {
 
 module.exports = window["React"];
+
+/***/ },
+
+/***/ "react-dom"
+/*!***************************!*\
+  !*** external "ReactDOM" ***!
+  \***************************/
+(module) {
+
+module.exports = window["ReactDOM"];
 
 /***/ },
 
@@ -14859,6 +15230,16 @@ module.exports = window["wp"]["primitives"];
 
 /***/ },
 
+/***/ "@wordpress/private-apis"
+/*!*************************************!*\
+  !*** external ["wp","privateApis"] ***!
+  \*************************************/
+(module) {
+
+module.exports = window["wp"]["privateApis"];
+
+/***/ },
+
 /***/ "@wordpress/rich-text"
 /*!**********************************!*\
   !*** external ["wp","richText"] ***!
@@ -14869,6 +15250,16 @@ module.exports = window["wp"]["richText"];
 
 /***/ },
 
+/***/ "@wordpress/theme"
+/*!*******************************!*\
+  !*** external ["wp","theme"] ***!
+  \*******************************/
+(module) {
+
+module.exports = window["wp"]["theme"];
+
+/***/ },
+
 /***/ "@wordpress/url"
 /*!*****************************!*\
   !*** external ["wp","url"] ***!
@@ -14876,6 +15267,5509 @@ module.exports = window["wp"]["richText"];
 (module) {
 
 module.exports = window["wp"]["url"];
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/button/Button.mjs"
+/*!*******************************************************!*\
+  !*** ./node_modules/@base-ui/react/button/Button.mjs ***!
+  \*******************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Button: () => (/* binding */ Button)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _internals_use_button_useButton_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../internals/use-button/useButton.mjs */ "./node_modules/@base-ui/react/internals/use-button/useButton.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+'use client';
+
+
+
+
+/**
+ * A button component that can be used to trigger actions.
+ * Renders a `<button>` element.
+ *
+ * Documentation: [Base UI Button](https://base-ui.com/react/components/button)
+ */
+const Button = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function Button(componentProps, forwardedRef) {
+  const {
+    render,
+    className,
+    disabled = false,
+    focusableWhenDisabled = false,
+    nativeButton = true,
+    style,
+    ...elementProps
+  } = componentProps;
+  const {
+    getButtonProps,
+    buttonRef
+  } = (0,_internals_use_button_useButton_mjs__WEBPACK_IMPORTED_MODULE_1__.useButton)({
+    disabled,
+    focusableWhenDisabled,
+    native: nativeButton
+  });
+  const state = {
+    disabled
+  };
+  return (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_2__.useRenderElement)('button', componentProps, {
+    state,
+    ref: [forwardedRef, buttonRef],
+    props: [elementProps, getButtonProps]
+  });
+});
+if (true) Button.displayName = "Button";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/direction-provider/DirectionProvider.mjs"
+/*!******************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/direction-provider/DirectionProvider.mjs ***!
+  \******************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DirectionProvider: () => (/* binding */ DirectionProvider)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _internals_direction_context_DirectionContext_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../internals/direction-context/DirectionContext.mjs */ "./node_modules/@base-ui/react/internals/direction-context/DirectionContext.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+/**
+ * Enables RTL behavior for Base UI components.
+ *
+ * Documentation: [Base UI Direction Provider](https://base-ui.com/react/utils/direction-provider)
+ */
+
+const DirectionProvider = function DirectionProvider(props) {
+  const {
+    direction = 'ltr'
+  } = props;
+  const contextValue = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    direction
+  }), [direction]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_internals_direction_context_DirectionContext_mjs__WEBPACK_IMPORTED_MODULE_1__.DirectionContext.Provider, {
+    value: contextValue,
+    children: props.children
+  });
+};
+if (true) DirectionProvider.displayName = "DirectionProvider";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/field/control/FieldControl.mjs"
+/*!********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/field/control/FieldControl.mjs ***!
+  \********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FieldControl: () => (/* binding */ FieldControl)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useControlled__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useControlled */ "./node_modules/@base-ui/utils/useControlled.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@base-ui/utils/owner.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _internals_field_root_context_FieldRootContext_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../internals/field-root-context/FieldRootContext.mjs */ "./node_modules/@base-ui/react/internals/field-root-context/FieldRootContext.mjs");
+/* harmony import */ var _internals_field_register_control_useRegisterFieldControl_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../internals/field-register-control/useRegisterFieldControl.mjs */ "./node_modules/@base-ui/react/internals/field-register-control/useRegisterFieldControl.mjs");
+/* harmony import */ var _internals_form_context_FormContext_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../internals/form-context/FormContext.mjs */ "./node_modules/@base-ui/react/internals/form-context/FormContext.mjs");
+/* harmony import */ var _internals_labelable_provider_LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../internals/labelable-provider/LabelableContext.mjs */ "./node_modules/@base-ui/react/internals/labelable-provider/LabelableContext.mjs");
+/* harmony import */ var _internals_labelable_provider_useLabelableId_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../internals/labelable-provider/useLabelableId.mjs */ "./node_modules/@base-ui/react/internals/labelable-provider/useLabelableId.mjs");
+/* harmony import */ var _internals_field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../internals/field-constants/constants.mjs */ "./node_modules/@base-ui/react/internals/field-constants/constants.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var _floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../floating-ui-react/utils.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * The form control to label and validate.
+ * Renders an `<input>` element.
+ *
+ * You can omit this part and use any Base UI input component instead. For example,
+ * [Input](https://base-ui.com/react/components/input), [Checkbox](https://base-ui.com/react/components/checkbox),
+ * or [Select](https://base-ui.com/react/components/select), among others, will work with Field out of the box.
+ *
+ * Documentation: [Base UI Field](https://base-ui.com/react/components/field)
+ */
+const FieldControl = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function FieldControl(componentProps, forwardedRef) {
+  const {
+    render,
+    className,
+    id: idProp,
+    name: nameProp,
+    value: valueProp,
+    disabled: disabledProp = false,
+    onValueChange,
+    defaultValue,
+    autoFocus = false,
+    style,
+    ...elementProps
+  } = componentProps;
+  const {
+    state: fieldState,
+    name: fieldName,
+    disabled: fieldDisabled,
+    setTouched,
+    setDirty,
+    validityData,
+    setFocused,
+    setFilled,
+    validationMode,
+    validation
+  } = (0,_internals_field_root_context_FieldRootContext_mjs__WEBPACK_IMPORTED_MODULE_5__.useFieldRootContext)();
+  const {
+    clearErrors
+  } = (0,_internals_form_context_FormContext_mjs__WEBPACK_IMPORTED_MODULE_7__.useFormContext)();
+  const disabled = fieldDisabled || disabledProp;
+  const name = fieldName ?? nameProp;
+  const state = {
+    ...fieldState,
+    disabled
+  };
+  const {
+    labelId
+  } = (0,_internals_labelable_provider_LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_8__.useLabelableContext)();
+  const id = (0,_internals_labelable_provider_useLabelableId_mjs__WEBPACK_IMPORTED_MODULE_9__.useLabelableId)({
+    id: idProp
+  });
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    const hasExternalValue = valueProp != null;
+    if (validation.inputRef.current?.value || hasExternalValue && valueProp !== '') {
+      setFilled(true);
+    } else if (hasExternalValue && valueProp === '') {
+      setFilled(false);
+    }
+  }, [validation.inputRef, setFilled, valueProp]);
+  const inputRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    if (autoFocus && inputRef.current === (0,_floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_14__.activeElement)((0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_3__.ownerDocument)(inputRef.current))) {
+      setFocused(true);
+    }
+  }, [autoFocus, setFocused]);
+  const [valueUnwrapped] = (0,_base_ui_utils_useControlled__WEBPACK_IMPORTED_MODULE_1__.useControlled)({
+    controlled: valueProp,
+    default: defaultValue,
+    name: 'FieldControl',
+    state: 'value'
+  });
+  const isControlled = valueProp !== undefined;
+  const value = isControlled ? valueUnwrapped : undefined;
+  const getValueFromInput = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(() => validation.inputRef.current?.value);
+  (0,_internals_field_register_control_useRegisterFieldControl_mjs__WEBPACK_IMPORTED_MODULE_6__.useRegisterFieldControl)(validation.inputRef, id, value, getValueFromInput, !disabled, nameProp);
+  const element = (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_11__.useRenderElement)('input', componentProps, {
+    ref: [forwardedRef, inputRef],
+    state,
+    props: [{
+      id,
+      disabled,
+      name,
+      ref: validation.inputRef,
+      'aria-labelledby': labelId,
+      autoFocus,
+      ...(isControlled ? {
+        value
+      } : {
+        defaultValue
+      }),
+      onChange(event) {
+        const inputValue = event.currentTarget.value;
+        onValueChange?.(inputValue, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_12__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_13__.none, event.nativeEvent));
+        // `validation.change` reads `markedDirtyRef`, so update dirty before validating.
+        setDirty(inputValue !== (validityData.initialValue ?? ''));
+        setFilled(inputValue !== '');
+
+        // Workaround for https://github.com/react/react/issues/9023
+        if (!event.nativeEvent.defaultPrevented) {
+          clearErrors(name);
+          validation.change(inputValue);
+        }
+      },
+      onFocus() {
+        setFocused(true);
+      },
+      onBlur(event) {
+        setTouched(true);
+        setFocused(false);
+        if (validationMode === 'onBlur') {
+          validation.commit(event.currentTarget.value);
+        }
+      },
+      onKeyDown(event) {
+        if (event.currentTarget.tagName === 'INPUT' && event.key === 'Enter') {
+          setTouched(true);
+          validation.commit(event.currentTarget.value);
+        }
+      }
+    }, elementProps, props => validation.getValidationProps(disabled, props)],
+    stateAttributesMapping: _internals_field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_10__.fieldValidityMapping
+  });
+  return element;
+});
+if (true) FieldControl.displayName = "FieldControl";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/field/description/FieldDescription.mjs"
+/*!****************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/field/description/FieldDescription.mjs ***!
+  \****************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FieldDescription: () => (/* binding */ FieldDescription)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _internals_field_root_context_FieldRootContext_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../internals/field-root-context/FieldRootContext.mjs */ "./node_modules/@base-ui/react/internals/field-root-context/FieldRootContext.mjs");
+/* harmony import */ var _internals_labelable_provider_LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../internals/labelable-provider/LabelableContext.mjs */ "./node_modules/@base-ui/react/internals/labelable-provider/LabelableContext.mjs");
+/* harmony import */ var _internals_field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../internals/field-constants/constants.mjs */ "./node_modules/@base-ui/react/internals/field-constants/constants.mjs");
+/* harmony import */ var _internals_useBaseUiId_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../internals/useBaseUiId.mjs */ "./node_modules/@base-ui/react/internals/useBaseUiId.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+/* harmony import */ var _item_FieldItemContext_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../item/FieldItemContext.mjs */ "./node_modules/@base-ui/react/field/item/FieldItemContext.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+
+/**
+ * A paragraph with additional information about the field.
+ * Renders a `<p>` element.
+ *
+ * Documentation: [Base UI Field](https://base-ui.com/react/components/field)
+ */
+const FieldDescription = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function FieldDescription(componentProps, forwardedRef) {
+  const {
+    render,
+    id: idProp,
+    className,
+    style,
+    ...elementProps
+  } = componentProps;
+  const id = (0,_internals_useBaseUiId_mjs__WEBPACK_IMPORTED_MODULE_5__.useBaseUiId)(idProp);
+  const fieldRootContext = (0,_internals_field_root_context_FieldRootContext_mjs__WEBPACK_IMPORTED_MODULE_2__.useFieldRootContext)(false);
+  const fieldItemContext = (0,_item_FieldItemContext_mjs__WEBPACK_IMPORTED_MODULE_7__.useFieldItemContext)();
+  const {
+    setMessageIds
+  } = (0,_internals_labelable_provider_LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_3__.useLabelableContext)();
+  const state = {
+    ...fieldRootContext.state,
+    disabled: fieldRootContext.disabled || fieldItemContext.disabled
+  };
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    if (!id) {
+      return undefined;
+    }
+    setMessageIds(v => v.concat(id));
+    return () => {
+      setMessageIds(v => v.filter(item => item !== id));
+    };
+  }, [id, setMessageIds]);
+  const element = (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_6__.useRenderElement)('p', componentProps, {
+    ref: forwardedRef,
+    state,
+    props: [{
+      id
+    }, elementProps],
+    stateAttributesMapping: _internals_field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_4__.fieldValidityMapping
+  });
+  return element;
+});
+if (true) FieldDescription.displayName = "FieldDescription";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/field/item/FieldItemContext.mjs"
+/*!*********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/field/item/FieldItemContext.mjs ***!
+  \*********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FieldItemContext: () => (/* binding */ FieldItemContext),
+/* harmony export */   useFieldItemContext: () => (/* binding */ useFieldItemContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+const FieldItemContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext({
+  disabled: false
+});
+if (true) FieldItemContext.displayName = "FieldItemContext";
+function useFieldItemContext() {
+  const context = react__WEBPACK_IMPORTED_MODULE_0__.useContext(FieldItemContext);
+  return context;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/field/label/FieldLabel.mjs"
+/*!****************************************************************!*\
+  !*** ./node_modules/@base-ui/react/field/label/FieldLabel.mjs ***!
+  \****************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FieldLabel: () => (/* binding */ FieldLabel)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_error__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/error */ "./node_modules/@base-ui/utils/error.mjs");
+/* harmony import */ var _base_ui_utils_safeReact__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/safeReact */ "./node_modules/@base-ui/utils/safeReact.mjs");
+/* harmony import */ var _internals_field_root_context_FieldRootContext_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../internals/field-root-context/FieldRootContext.mjs */ "./node_modules/@base-ui/react/internals/field-root-context/FieldRootContext.mjs");
+/* harmony import */ var _internals_field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../internals/field-constants/constants.mjs */ "./node_modules/@base-ui/react/internals/field-constants/constants.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+/* harmony import */ var _internals_labelable_provider_LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../internals/labelable-provider/LabelableContext.mjs */ "./node_modules/@base-ui/react/internals/labelable-provider/LabelableContext.mjs");
+/* harmony import */ var _internals_labelable_provider_useLabel_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../internals/labelable-provider/useLabel.mjs */ "./node_modules/@base-ui/react/internals/labelable-provider/useLabel.mjs");
+/* harmony import */ var _item_FieldItemContext_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../item/FieldItemContext.mjs */ "./node_modules/@base-ui/react/field/item/FieldItemContext.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * An accessible label that is automatically associated with the field control.
+ * Renders a `<label>` element.
+ *
+ * Documentation: [Base UI Field](https://base-ui.com/react/components/field)
+ */
+const FieldLabel = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function FieldLabel(componentProps, forwardedRef) {
+  const {
+    render,
+    className,
+    style,
+    id: idProp,
+    nativeLabel = true,
+    ...elementProps
+  } = componentProps;
+  const fieldRootContext = (0,_internals_field_root_context_FieldRootContext_mjs__WEBPACK_IMPORTED_MODULE_3__.useFieldRootContext)(false);
+  const fieldItemContext = (0,_item_FieldItemContext_mjs__WEBPACK_IMPORTED_MODULE_8__.useFieldItemContext)();
+  const {
+    labelId
+  } = (0,_internals_labelable_provider_LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_6__.useLabelableContext)();
+  const state = {
+    ...fieldRootContext.state,
+    disabled: fieldRootContext.disabled || fieldItemContext.disabled
+  };
+  const labelRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const labelProps = (0,_internals_labelable_provider_useLabel_mjs__WEBPACK_IMPORTED_MODULE_7__.useLabel)({
+    id: labelId ?? idProp,
+    native: nativeLabel
+  });
+  if (true) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+      if (!labelRef.current) {
+        return;
+      }
+      const isLabelTag = labelRef.current.tagName === 'LABEL';
+      if (nativeLabel) {
+        if (!isLabelTag) {
+          const ownerStackMessage = _base_ui_utils_safeReact__WEBPACK_IMPORTED_MODULE_2__.SafeReact.captureOwnerStack?.() || '';
+          const message = '<Field.Label> expected a <label> element because the `nativeLabel` prop is true. ' + 'Rendering a non-<label> disables native label association, so `htmlFor` will not ' + 'work. Use a real <label> in the `render` prop, or set `nativeLabel` to `false`.';
+          (0,_base_ui_utils_error__WEBPACK_IMPORTED_MODULE_1__.error)(`${message}${ownerStackMessage}`);
+        }
+      } else if (isLabelTag) {
+        const ownerStackMessage = _base_ui_utils_safeReact__WEBPACK_IMPORTED_MODULE_2__.SafeReact.captureOwnerStack?.() || '';
+        const message = '<Field.Label> expected a non-<label> element because the `nativeLabel` prop is false. ' + 'Rendering a <label> assumes native label behavior while Base UI treats it as ' + 'non-native, which can cause unexpected pointer behavior. Use a non-<label> in the ' + '`render` prop, or set `nativeLabel` to `true`.';
+        (0,_base_ui_utils_error__WEBPACK_IMPORTED_MODULE_1__.error)(`${message}${ownerStackMessage}`);
+      }
+    }, [nativeLabel]);
+  }
+  const element = (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_5__.useRenderElement)('label', componentProps, {
+    ref: [forwardedRef, labelRef],
+    state,
+    props: [labelProps, elementProps],
+    stateAttributesMapping: _internals_field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_4__.fieldValidityMapping
+  });
+  return element;
+});
+if (true) FieldLabel.displayName = "FieldLabel";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/field/root/FieldRoot.mjs"
+/*!**************************************************************!*\
+  !*** ./node_modules/@base-ui/react/field/root/FieldRoot.mjs ***!
+  \**************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FieldRoot: () => (/* binding */ FieldRoot)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _internals_field_root_context_FieldRootContext_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../internals/field-root-context/FieldRootContext.mjs */ "./node_modules/@base-ui/react/internals/field-root-context/FieldRootContext.mjs");
+/* harmony import */ var _internals_field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../internals/field-constants/constants.mjs */ "./node_modules/@base-ui/react/internals/field-constants/constants.mjs");
+/* harmony import */ var _fieldset_root_FieldsetRootContext_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../fieldset/root/FieldsetRootContext.mjs */ "./node_modules/@base-ui/react/fieldset/root/FieldsetRootContext.mjs");
+/* harmony import */ var _internals_form_context_FormContext_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../internals/form-context/FormContext.mjs */ "./node_modules/@base-ui/react/internals/form-context/FormContext.mjs");
+/* harmony import */ var _internals_labelable_provider_index_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../internals/labelable-provider/index.mjs */ "./node_modules/@base-ui/react/internals/labelable-provider/LabelableProvider.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+/* harmony import */ var _useFieldValidation_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./useFieldValidation.mjs */ "./node_modules/@base-ui/react/field/root/useFieldValidation.mjs");
+/* harmony import */ var _internals_field_register_control_useFieldControlRegistration_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../internals/field-register-control/useFieldControlRegistration.mjs */ "./node_modules/@base-ui/react/internals/field-register-control/useFieldControlRegistration.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * @internal
+ */
+
+const FieldRootInner = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function FieldRootInner(componentProps, forwardedRef) {
+  const {
+    errors,
+    validationMode: formValidationMode,
+    submitAttemptedRef
+  } = (0,_internals_form_context_FormContext_mjs__WEBPACK_IMPORTED_MODULE_6__.useFormContext)();
+  const {
+    render,
+    className,
+    validate: validateProp,
+    validationDebounceTime = 0,
+    validationMode = formValidationMode,
+    name,
+    disabled: disabledProp = false,
+    invalid: invalidProp,
+    dirty: dirtyProp,
+    touched: touchedProp,
+    actionsRef,
+    style,
+    ...elementProps
+  } = componentProps;
+  const disabledFieldset = (0,_fieldset_root_FieldsetRootContext_mjs__WEBPACK_IMPORTED_MODULE_5__.useFieldsetRootContext)(true)?.disabled;
+  const validate = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(validateProp || (() => null));
+  const disabled = disabledFieldset || disabledProp;
+  const [touchedState, setTouchedUnwrapped] = react__WEBPACK_IMPORTED_MODULE_0__.useState(false);
+  const [dirtyState, setDirtyUnwrapped] = react__WEBPACK_IMPORTED_MODULE_0__.useState(false);
+  const [filled, setFilled] = react__WEBPACK_IMPORTED_MODULE_0__.useState(false);
+  const [focused, setFocused] = react__WEBPACK_IMPORTED_MODULE_0__.useState(false);
+  const dirty = dirtyProp ?? dirtyState;
+  const touched = touchedProp ?? touchedState;
+  const markedDirtyRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(dirty);
+  const registeredFieldIdRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(undefined);
+  const [registeredFieldName, setRegisteredFieldName] = react__WEBPACK_IMPORTED_MODULE_0__.useState();
+  const effectiveName = name ?? registeredFieldName;
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    if (dirtyProp !== undefined) {
+      markedDirtyRef.current = dirtyProp;
+    }
+  }, [dirtyProp]);
+  const setDirty = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(value => {
+    if (dirtyProp !== undefined) {
+      return;
+    }
+    if (value) {
+      markedDirtyRef.current = true;
+    }
+    setDirtyUnwrapped(value);
+  });
+  const setTouched = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(value => {
+    if (touchedProp !== undefined) {
+      return;
+    }
+    setTouchedUnwrapped(value);
+  });
+  const shouldValidateOnChange = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(() => validationMode === 'onChange' || validationMode === 'onSubmit' && submitAttemptedRef.current);
+  const formError = effectiveName && Object.hasOwn(errors, effectiveName) ? errors[effectiveName] : null;
+  const hasFormError = !!(Array.isArray(formError) ? formError.length : formError);
+  const invalid = invalidProp === true || hasFormError;
+  const [validityData, setValidityData] = react__WEBPACK_IMPORTED_MODULE_0__.useState({
+    state: _internals_field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_4__.DEFAULT_VALIDITY_STATE,
+    error: '',
+    errors: [],
+    value: null,
+    initialValue: null
+  });
+
+  // App-controlled invalidity (the `invalid` prop and `<Form>` errors) keeps the field marked
+  // invalid even while disabled. Only computed validity (native constraints and `validate`)
+  // is suppressed when disabled, matching `:disabled` not participating in constraint validation.
+  const valid = !invalid && (disabled ? null : validityData.state.valid);
+  const state = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    disabled,
+    touched,
+    dirty,
+    valid,
+    filled,
+    focused
+  }), [disabled, touched, dirty, valid, filled, focused]);
+  const validation = (0,_useFieldValidation_mjs__WEBPACK_IMPORTED_MODULE_9__.useFieldValidation)({
+    setValidityData,
+    validate,
+    validityData,
+    validationDebounceTime,
+    invalid,
+    markedDirtyRef,
+    state,
+    shouldValidateOnChange,
+    registeredFieldIdRef
+  });
+  const [validateFieldControl, registerFieldControl] = (0,_internals_field_register_control_useFieldControlRegistration_mjs__WEBPACK_IMPORTED_MODULE_10__.useFieldControlRegistration)({
+    commit: validation.commit,
+    invalid,
+    markedDirtyRef,
+    name,
+    setRegisteredFieldName,
+    registeredFieldIdRef,
+    setValidityData,
+    validityData
+  });
+  react__WEBPACK_IMPORTED_MODULE_0__.useImperativeHandle(actionsRef, () => ({
+    validate: validateFieldControl
+  }), [validateFieldControl]);
+  const contextValue = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    invalid,
+    name: effectiveName,
+    validityData,
+    setValidityData,
+    disabled,
+    setTouched,
+    setDirty,
+    setFilled,
+    setFocused,
+    validationMode,
+    shouldValidateOnChange,
+    state,
+    registerFieldControl,
+    validation
+  }), [invalid, effectiveName, validityData, disabled, setTouched, setDirty, setFilled, setFocused, validationMode, shouldValidateOnChange, state, registerFieldControl, validation]);
+  const element = (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_8__.useRenderElement)('div', componentProps, {
+    ref: forwardedRef,
+    state,
+    props: elementProps,
+    stateAttributesMapping: _internals_field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_4__.fieldValidityMapping
+  });
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_internals_field_root_context_FieldRootContext_mjs__WEBPACK_IMPORTED_MODULE_3__.FieldRootContext.Provider, {
+    value: contextValue,
+    children: element
+  });
+});
+
+/**
+ * Groups all parts of the field.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Field](https://base-ui.com/react/components/field)
+ */
+if (true) FieldRootInner.displayName = "FieldRootInner";
+const FieldRoot = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function FieldRoot(componentProps, forwardedRef) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_internals_labelable_provider_index_mjs__WEBPACK_IMPORTED_MODULE_7__.LabelableProvider, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(FieldRootInner, {
+      ...componentProps,
+      ref: forwardedRef
+    })
+  });
+});
+if (true) FieldRoot.displayName = "FieldRoot";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/field/root/useFieldValidation.mjs"
+/*!***********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/field/root/useFieldValidation.mjs ***!
+  \***********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   isEligibleInput: () => (/* binding */ isEligibleInput),
+/* harmony export */   useFieldValidation: () => (/* binding */ useFieldValidation)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/empty */ "./node_modules/@base-ui/utils/empty.mjs");
+/* harmony import */ var _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useTimeout */ "./node_modules/@base-ui/utils/useTimeout.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/useRefWithInit */ "./node_modules/@base-ui/utils/useRefWithInit.mjs");
+/* harmony import */ var _internals_labelable_provider_LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../internals/labelable-provider/LabelableContext.mjs */ "./node_modules/@base-ui/react/internals/labelable-provider/LabelableContext.mjs");
+/* harmony import */ var _merge_props_index_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../merge-props/index.mjs */ "./node_modules/@base-ui/react/merge-props/mergeProps.mjs");
+/* harmony import */ var _internals_field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../internals/field-constants/constants.mjs */ "./node_modules/@base-ui/react/internals/field-constants/constants.mjs");
+/* harmony import */ var _internals_form_context_FormContext_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../internals/form-context/FormContext.mjs */ "./node_modules/@base-ui/react/internals/form-context/FormContext.mjs");
+/* harmony import */ var _utils_getCombinedFieldValidityData_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/getCombinedFieldValidityData.mjs */ "./node_modules/@base-ui/react/field/utils/getCombinedFieldValidityData.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+const validityKeys = Object.keys(_internals_field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_7__.DEFAULT_VALIDITY_STATE);
+/**
+ * Whether an input participates in the surrounding Base UI Form. Inputs that are effectively
+ * disabled, or whose `form` attribute explicitly associates them with another form, are excluded.
+ * DOM position only matters when it associates the input with a different form. Otherwise, field
+ * registration is context-driven, so portaled inputs (for example inside a dialog) still belong to
+ * the form for both validation and values projected into `onFormSubmit`.
+ */
+function isEligibleInput(input, formElement) {
+  if (input.matches(':disabled')) {
+    return false;
+  }
+  if (!formElement || input.form === formElement) {
+    return true;
+  }
+
+  // React context crosses portal boundaries. An unassociated portaled input still participates in
+  // contextual validation, unless an explicit `form` attribute opts it out of the surrounding Form.
+  return input.form === null && !input.hasAttribute('form');
+}
+
+/**
+ * Picks the input whose native validity should represent a field that owns several inputs (such as a
+ * checkbox or radio group). Prefers the first eligible currently-invalid input, where "first" follows
+ * registration order (mount order), and otherwise returns the first eligible input.
+ */
+function findRepresentativeInput(inputs, formElement) {
+  let fallback = null;
+  for (const input of inputs.keys()) {
+    if (!isEligibleInput(input, formElement)) {
+      continue;
+    }
+    if (!input.validity.valid) {
+      return input;
+    }
+    fallback ??= input;
+  }
+  return fallback;
+}
+function clearCustomValidity(element, inputs) {
+  for (const input of inputs.keys()) {
+    input.setCustomValidity('');
+  }
+  element?.setCustomValidity('');
+}
+function useFieldValidation(params) {
+  const {
+    elementRef,
+    formRef
+  } = (0,_internals_form_context_FormContext_mjs__WEBPACK_IMPORTED_MODULE_8__.useFormContext)();
+  const {
+    setValidityData,
+    validate,
+    validityData,
+    validationDebounceTime,
+    invalid,
+    markedDirtyRef,
+    state,
+    shouldValidateOnChange,
+    registeredFieldIdRef
+  } = params;
+  const {
+    controlId,
+    getDescriptionProps
+  } = (0,_internals_labelable_provider_LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_5__.useLabelableContext)();
+  const timeout = (0,_base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_2__.useTimeout)();
+  const inputRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const registeredInputs = (0,_base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_4__.useRefWithInit)(() => new Map()).current;
+  const validationCommitIdRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(0);
+
+  // Groups register several inputs against a single field so focus, validation, and form-value
+  // projection can use the same live controls. This also ensures a `required` checkbox can't be
+  // satisfied by another input in the group, matching native per-checkbox behavior.
+  const registerInput = react__WEBPACK_IMPORTED_MODULE_0__.useCallback((element, registration) => {
+    registeredInputs.set(element, registration);
+    return () => {
+      registeredInputs.delete(element);
+    };
+  }, [registeredInputs]);
+  const getInputControl = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_3__.useStableCallback)(() => {
+    const element = findRepresentativeInput(registeredInputs, elementRef.current);
+    return element && registeredInputs.get(element)?.controlRef.current || null;
+  });
+  const commit = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_3__.useStableCallback)(async (value, revalidate = false) => {
+    validationCommitIdRef.current += 1;
+    const validationCommitId = validationCommitIdRef.current;
+    function updateRegisteredFieldValidity(nextValidityData, externalInvalid = invalid) {
+      const fieldId = registeredFieldIdRef.current ?? controlId;
+      if (fieldId == null) {
+        return;
+      }
+      const currentFieldData = formRef.current.fields.get(fieldId);
+      if (!currentFieldData) {
+        return;
+      }
+      const validityDataWithFormErrors = (0,_utils_getCombinedFieldValidityData_mjs__WEBPACK_IMPORTED_MODULE_9__.getCombinedFieldValidityData)(nextValidityData, externalInvalid);
+      formRef.current.fields.set(fieldId, {
+        ...currentFieldData,
+        validityData: validityDataWithFormErrors
+      });
+    }
+    function publishAllValid(input, externalInvalid) {
+      const nextValidityData = {
+        value,
+        state: {
+          ..._internals_field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_7__.DEFAULT_VALIDITY_STATE,
+          valid: true
+        },
+        error: '',
+        errors: [],
+        initialValue: validityData.initialValue
+      };
+      clearCustomValidity(input, registeredInputs);
+      updateRegisteredFieldValidity(nextValidityData, externalInvalid);
+      setValidityData(nextValidityData);
+    }
+
+    // A field can own several inputs (such as a checkbox or radio group), but only the last-mounted
+    // one wins the shared `inputRef`. Validate against the registry instead so every input counts;
+    // `inputRef` is the fallback only when no inputs are registered.
+    const element = registeredInputs.size > 0 ? findRepresentativeInput(registeredInputs, elementRef.current) : inputRef.current;
+    // A field with no eligible input has no native constraint, but its custom validator still
+    // applies to the logical value at the configured validation boundary.
+
+    if (revalidate) {
+      if (state.valid !== false || !element) {
+        return;
+      }
+      const currentNativeValidity = element.validity;
+      if (!currentNativeValidity.valueMissing) {
+        // The 'valueMissing' (required) condition has been resolved by the user typing.
+        // Temporarily mark the field as valid for this onChange event.
+        // Other native errors (e.g., typeMismatch) will be caught by full validation on blur or submit.
+        // The required value is now present; ignore stale external invalid state for this pass.
+        publishAllValid(element, false);
+        return;
+      }
+
+      // A stale custom error can coexist with valueMissing, but defer any other native errors.
+      for (const key of validityKeys) {
+        if (key !== 'valid' && key !== 'valueMissing' && key !== 'customError' && currentNativeValidity[key]) {
+          return;
+        }
+      }
+
+      // Value is still missing: publish the current native state so valueMissing and the changed
+      // value are observable immediately. Full custom validation still waits for its boundary.
+    }
+    function getState(el) {
+      const computedState = validityKeys.reduce((acc, key) => {
+        acc[key] = el.validity[key];
+        return acc;
+      }, {});
+      let hasOnlyValueMissingError = false;
+      for (const key of validityKeys) {
+        if (key === 'valid') {
+          continue;
+        }
+        if (key === 'valueMissing' && computedState[key]) {
+          hasOnlyValueMissingError = true;
+        } else if (computedState[key]) {
+          return computedState;
+        }
+      }
+
+      // Only make `valueMissing` mark the field invalid if it's been changed
+      // to reduce error noise.
+      if (hasOnlyValueMissingError && !markedDirtyRef.current) {
+        computedState.valid = true;
+        computedState.valueMissing = false;
+      }
+      return computedState;
+    }
+    timeout.clear();
+    let result = null;
+    let validationErrors = [];
+
+    // With no representative input the field carries no native constraint, so start from an
+    // all-valid native state and let the custom `validate` result below decide the outcome.
+    const nextState = element ? getState(element) : {
+      ..._internals_field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_7__.DEFAULT_VALIDITY_STATE,
+      valid: true
+    };
+    let defaultValidationMessage;
+    const isValidatingOnChange = shouldValidateOnChange();
+    if (element && element.validationMessage && !isValidatingOnChange) {
+      // not validating on change, if there is a `validationMessage` from
+      // native validity, set errors and skip calling the custom validate fn
+      defaultValidationMessage = element.validationMessage;
+      validationErrors = [element.validationMessage];
+    } else {
+      // call the validate function because either
+      // - validating on change, or
+      // - native constraint validations passed, custom validity check is next
+      const formValues = Array.from(formRef.current.fields.values()).reduce((acc, field) => {
+        if (field.name) {
+          acc[field.name] = field.getValue();
+        }
+        return acc;
+      }, {});
+      const resultOrPromise = validate(value, formValues);
+      if (typeof resultOrPromise === 'object' && resultOrPromise !== null && 'then' in resultOrPromise) {
+        result = await resultOrPromise;
+        if (validationCommitId !== validationCommitIdRef.current) {
+          return;
+        }
+      } else {
+        result = resultOrPromise;
+      }
+      if (result !== null) {
+        nextState.valid = false;
+        nextState.customError = true;
+        if (Array.isArray(result)) {
+          validationErrors = result;
+          element?.setCustomValidity(result.join('\n'));
+        } else if (result) {
+          validationErrors = [result];
+          element?.setCustomValidity(result);
+        }
+      } else if (isValidatingOnChange) {
+        // validate function returned no errors, if validating on change
+        // we need to clear the custom validity state
+        clearCustomValidity(element, registeredInputs);
+        nextState.customError = false;
+        if (element && element.validationMessage) {
+          defaultValidationMessage = element.validationMessage;
+          validationErrors = [element.validationMessage];
+        } else if ((!element || element.validity.valid) && !nextState.valid) {
+          nextState.valid = true;
+        }
+      }
+    }
+    const nextValidityData = {
+      value,
+      state: nextState,
+      error: defaultValidationMessage ?? (Array.isArray(result) ? result[0] : result ?? ''),
+      errors: validationErrors,
+      initialValue: validityData.initialValue
+    };
+
+    // Keep Form-level errors part of overall field validity for submit blocking/focus logic.
+    updateRegisteredFieldValidity(nextValidityData);
+    setValidityData(nextValidityData);
+  });
+  const change = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_3__.useStableCallback)(value => {
+    timeout.clear();
+    const validateOnChange = shouldValidateOnChange();
+    if (validateOnChange && value !== '' && validationDebounceTime) {
+      validationCommitIdRef.current += 1;
+      timeout.start(validationDebounceTime, () => {
+        commit(value);
+      });
+    } else {
+      commit(value, !validateOnChange);
+    }
+  });
+  const getValidationProps = react__WEBPACK_IMPORTED_MODULE_0__.useCallback((disabled, externalProps = {}) => (0,_merge_props_index_mjs__WEBPACK_IMPORTED_MODULE_6__.mergeProps)(getDescriptionProps(externalProps), state.valid === false && !state.disabled && !disabled ? {
+    'aria-invalid': true
+  } : _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_1__.EMPTY_OBJECT), [getDescriptionProps, state.disabled, state.valid]);
+  return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    getValidationProps,
+    inputRef,
+    registeredInputs,
+    registerInput,
+    getInputControl,
+    commit,
+    change
+  }), [getValidationProps, registeredInputs, registerInput, getInputControl, commit, change]);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/field/utils/getCombinedFieldValidityData.mjs"
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/field/utils/getCombinedFieldValidityData.mjs ***!
+  \**********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getCombinedFieldValidityData: () => (/* binding */ getCombinedFieldValidityData)
+/* harmony export */ });
+/**
+ * Combines the field's client-side, stateful validity data with the external invalid state to
+ * determine the field's true validity.
+ */
+function getCombinedFieldValidityData(validityData, invalid) {
+  return {
+    ...validityData,
+    state: {
+      ...validityData.state,
+      valid: !invalid && validityData.state.valid
+    }
+  };
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/fieldset/root/FieldsetRootContext.mjs"
+/*!***************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/fieldset/root/FieldsetRootContext.mjs ***!
+  \***************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FieldsetRootContext: () => (/* binding */ FieldsetRootContext),
+/* harmony export */   useFieldsetRootContext: () => (/* binding */ useFieldsetRootContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+
+const FieldsetRootContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(undefined);
+if (true) FieldsetRootContext.displayName = "FieldsetRootContext";
+function useFieldsetRootContext(optional = false) {
+  const context = react__WEBPACK_IMPORTED_MODULE_0__.useContext(FieldsetRootContext);
+  if (!context && !optional) {
+    throw new Error( true ? 'Base UI: FieldsetRootContext is missing. Fieldset parts must be placed within <Fieldset.Root>.' : 0);
+  }
+  return context;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingDelayGroup.mjs"
+/*!*****************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/components/FloatingDelayGroup.mjs ***!
+  \*****************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FloatingDelayGroup: () => (/* binding */ FloatingDelayGroup),
+/* harmony export */   useDelayGroup: () => (/* binding */ useDelayGroup)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useTimeout */ "./node_modules/@base-ui/utils/useTimeout.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _hooks_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../hooks/useHoverShared.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverShared.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+
+
+
+const FloatingDelayGroupContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext({
+  hasProvider: false,
+  timeoutMs: 0,
+  delayRef: {
+    current: 0
+  },
+  initialDelayRef: {
+    current: 0
+  },
+  timeout: new _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_1__.Timeout(),
+  currentIdRef: {
+    current: null
+  },
+  currentContextRef: {
+    current: null
+  }
+});
+if (true) FloatingDelayGroupContext.displayName = "FloatingDelayGroupContext";
+function resetDelayRef(delayRef, initialDelayRef) {
+  delayRef.current = initialDelayRef.current;
+}
+/**
+ * Experimental next version of `FloatingDelayGroup` to become the default
+ * in the future. This component is not yet stable.
+ * Provides context for a group of floating elements that should share a
+ * `delay`. Unlike `FloatingDelayGroup`, `useDelayGroup` with this
+ * component does not cause a re-render of unrelated consumers of the
+ * context when the delay changes.
+ * @see https://floating-ui.com/docs/FloatingDelayGroup
+ * @internal
+ */
+function FloatingDelayGroup(props) {
+  const {
+    children,
+    delay,
+    timeoutMs = 0
+  } = props;
+  const delayRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(delay);
+  const initialDelayRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(delay);
+  const currentIdRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const currentContextRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const timeout = (0,_base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_1__.useTimeout)();
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    initialDelayRef.current = delay;
+    if (!currentIdRef.current) {
+      delayRef.current = delay;
+      return;
+    }
+    delayRef.current = {
+      open: (0,_hooks_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_3__.getDelay)(delayRef.current, 'open'),
+      close: (0,_hooks_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_3__.getDelay)(delay, 'close')
+    };
+  }, [delay, currentIdRef, delayRef, initialDelayRef]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(FloatingDelayGroupContext.Provider, {
+    value: react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+      hasProvider: true,
+      delayRef,
+      initialDelayRef,
+      currentIdRef,
+      timeoutMs,
+      currentContextRef,
+      timeout
+    }), [timeoutMs, timeout]),
+    children: children
+  });
+}
+/**
+ * Enables grouping when called inside a component that's a child of a
+ * `FloatingDelayGroup`.
+ * @see https://floating-ui.com/docs/FloatingDelayGroup
+ * @internal
+ */
+function useDelayGroup(context, options = {
+  open: false
+}) {
+  const {
+    open
+  } = options;
+  const store = 'rootStore' in context ? context.rootStore : context;
+  const floatingId = store.useState('floatingId');
+  const groupContext = react__WEBPACK_IMPORTED_MODULE_0__.useContext(FloatingDelayGroupContext);
+  const {
+    currentIdRef,
+    delayRef,
+    timeoutMs,
+    initialDelayRef,
+    currentContextRef,
+    hasProvider,
+    timeout
+  } = groupContext;
+  const [isInstantPhase, setIsInstantPhase] = react__WEBPACK_IMPORTED_MODULE_0__.useState(false);
+  const openRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(open);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    openRef.current = open;
+  }, [open]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    function unset() {
+      currentContextRef.current?.setIsInstantPhase(false);
+      currentIdRef.current = null;
+      currentContextRef.current = null;
+      delayRef.current = initialDelayRef.current;
+      timeout.clear();
+    }
+    if (!currentIdRef.current) {
+      return undefined;
+    }
+    if (!open && currentIdRef.current === floatingId) {
+      setIsInstantPhase(false);
+      if (timeoutMs) {
+        const closingId = floatingId;
+        timeout.start(timeoutMs, () => {
+          // If another tooltip has taken over the group, skip resetting.
+          if (store.select('open') || currentIdRef.current && currentIdRef.current !== closingId) {
+            return;
+          }
+          unset();
+        });
+        return () => {
+          if (openRef.current || currentIdRef.current !== closingId) {
+            timeout.clear();
+          }
+        };
+      }
+      unset();
+    }
+    return undefined;
+  }, [open, floatingId, currentIdRef, delayRef, timeoutMs, initialDelayRef, currentContextRef, timeout, store]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    if (!open) {
+      return;
+    }
+    const prevContext = currentContextRef.current;
+    const prevId = currentIdRef.current;
+
+    // A new tooltip is opening, so cancel any pending timeout that would reset
+    // the group's delay back to the initial value.
+    timeout.clear();
+    currentContextRef.current = {
+      onOpenChange: store.setOpen,
+      setIsInstantPhase
+    };
+    currentIdRef.current = floatingId;
+    delayRef.current = {
+      open: 0,
+      close: (0,_hooks_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_3__.getDelay)(initialDelayRef.current, 'close')
+    };
+    if (prevId !== null && prevId !== floatingId) {
+      setIsInstantPhase(true);
+      prevContext?.setIsInstantPhase(true);
+      prevContext?.onOpenChange(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_4__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_5__.none));
+    } else {
+      setIsInstantPhase(false);
+      prevContext?.setIsInstantPhase(false);
+    }
+  }, [open, floatingId, store, currentIdRef, delayRef, initialDelayRef, currentContextRef, timeout]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    return () => {
+      if (currentIdRef.current === floatingId) {
+        currentContextRef.current = null;
+        if (!openRef.current) {
+          return;
+        }
+        currentIdRef.current = null;
+        resetDelayRef(delayRef, initialDelayRef);
+        timeout.clear();
+      }
+    };
+  }, [currentContextRef, currentIdRef, delayRef, floatingId, initialDelayRef, timeout]);
+  return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    hasProvider,
+    delayRef,
+    isInstantPhase
+  }), [hasProvider, delayRef, isInstantPhase]);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingPortal.mjs"
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/components/FloatingPortal.mjs ***!
+  \*************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FloatingPortal: () => (/* binding */ FloatingPortal),
+/* harmony export */   useFloatingPortalNode: () => (/* binding */ useFloatingPortalNode),
+/* harmony export */   usePortalContext: () => (/* binding */ usePortalContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "react-dom");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/addEventListener */ "./node_modules/@base-ui/utils/addEventListener.mjs");
+/* harmony import */ var _base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/mergeCleanups */ "./node_modules/@base-ui/utils/mergeCleanups.mjs");
+/* harmony import */ var _base_ui_utils_useId__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @base-ui/utils/useId */ "./node_modules/@base-ui/utils/useId.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @base-ui/utils/empty */ "./node_modules/@base-ui/utils/empty.mjs");
+/* harmony import */ var _utils_FocusGuard_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../utils/FocusGuard.mjs */ "./node_modules/@base-ui/react/utils/FocusGuard.mjs");
+/* harmony import */ var _utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../utils/tabbable.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/tabbable.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var _utils_createAttribute_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../utils/createAttribute.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/createAttribute.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+/* harmony import */ var _internals_constants_mjs__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../internals/constants.mjs */ "./node_modules/@base-ui/react/internals/constants.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const PortalContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(null);
+if (true) PortalContext.displayName = "PortalContext";
+const usePortalContext = () => react__WEBPACK_IMPORTED_MODULE_0__.useContext(PortalContext);
+const attr = (0,_utils_createAttribute_mjs__WEBPACK_IMPORTED_MODULE_13__.createAttribute)('portal');
+function useFloatingPortalNode(props = {}) {
+  const {
+    ref,
+    container: containerProp,
+    componentProps = _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_8__.EMPTY_OBJECT,
+    elementProps
+  } = props;
+  const uniqueId = (0,_base_ui_utils_useId__WEBPACK_IMPORTED_MODULE_5__.useId)();
+  const portalContext = usePortalContext();
+  const parentPortalNode = portalContext?.portalNode;
+  const [containerElement, setContainerElement] = react__WEBPACK_IMPORTED_MODULE_0__.useState(null);
+  const [portalNode, setPortalNode] = react__WEBPACK_IMPORTED_MODULE_0__.useState(null);
+  const setPortalNodeRef = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_7__.useStableCallback)(node => {
+    if (node !== null) {
+      // the useIsoLayoutEffect below watching containerProp / parentPortalNode
+      // sets setPortalNode(null) when the container becomes null or changes.
+      // So even though the ref callback now ignores null, the portal node still gets cleared.
+      setPortalNode(node);
+    }
+  });
+  const containerRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_6__.useIsoLayoutEffect)(() => {
+    // Wait for the container to be resolved if explicitly `null`.
+    if (containerProp === null) {
+      if (containerRef.current) {
+        containerRef.current = null;
+        setPortalNode(null);
+        setContainerElement(null);
+      }
+      return;
+    }
+    const resolvedContainer = (containerProp && ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isNode)(containerProp) ? containerProp : containerProp.current)) ?? parentPortalNode ?? document.body;
+    if (resolvedContainer == null) {
+      if (containerRef.current) {
+        containerRef.current = null;
+        setPortalNode(null);
+        setContainerElement(null);
+      }
+      return;
+    }
+    if (containerRef.current !== resolvedContainer) {
+      containerRef.current = resolvedContainer;
+      setPortalNode(null);
+      setContainerElement(resolvedContainer);
+    }
+  }, [containerProp, parentPortalNode]);
+  const portalElement = (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_14__.useRenderElement)('div', componentProps, {
+    ref: [ref, setPortalNodeRef],
+    props: [{
+      id: uniqueId,
+      [attr]: ''
+    }, elementProps]
+  });
+
+  // This `createPortal` call injects `portalElement` into the `container`.
+  // Another call inside `FloatingPortal`/`FloatingPortalLite` then injects the children into `portalElement`.
+  const portalSubtree = containerElement && portalElement ? /*#__PURE__*/react_dom__WEBPACK_IMPORTED_MODULE_1__.createPortal(portalElement, containerElement) : null;
+  return {
+    node: portalNode,
+    // `id` and `render` props can override or remove the generated ID. Use the exact
+    // rendered value so `aria-owns` never points at an ID absent from the DOM.
+    nodeId: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.isValidElement(portalElement) ? portalElement.props.id : undefined,
+    subtree: portalSubtree
+  };
+}
+
+/**
+ * Portals the floating element into a given container element — by default,
+ * outside of the app root and into the body.
+ * This is necessary to ensure the floating element can appear outside any
+ * potential parent containers that cause clipping (such as `overflow: hidden`),
+ * while retaining its location in the React tree.
+ * @see https://floating-ui.com/docs/FloatingPortal
+ * @internal
+ */
+const FloatingPortal = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function FloatingPortal(componentProps, forwardedRef) {
+  const {
+    render,
+    className,
+    style,
+    children,
+    container,
+    ...elementProps
+  } = componentProps;
+  const {
+    node: portalNode,
+    nodeId: portalNodeId,
+    subtree: portalSubtree
+  } = useFloatingPortalNode({
+    container,
+    ref: forwardedRef,
+    componentProps,
+    elementProps
+  });
+  const beforeOutsideRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const afterOutsideRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const beforeInsideRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const afterInsideRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const [focusManagerState, setFocusManagerState] = react__WEBPACK_IMPORTED_MODULE_0__.useState(null);
+  const focusInsideDisabledRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const modal = focusManagerState?.modal;
+  const open = focusManagerState?.open;
+  const shouldRenderGuards = !!focusManagerState && !focusManagerState.modal && focusManagerState.open && !!portalNode;
+
+  // https://codesandbox.io/s/tabbable-portal-f4tng?file=/src/TabbablePortal.tsx
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (!portalNode || modal) {
+      return undefined;
+    }
+
+    // Make sure elements inside the portal element are tabbable only when the
+    // portal has already been focused, either by tabbing into a focus trap
+    // element outside or using the mouse.
+    function onFocus(event) {
+      if (portalNode && event.relatedTarget && (0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_10__.isOutsideEvent)(event)) {
+        if (event.type === 'focusin') {
+          if (focusInsideDisabledRef.current) {
+            (0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_10__.enableFocusInside)(portalNode);
+            focusInsideDisabledRef.current = false;
+          }
+        } else {
+          (0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_10__.disableFocusInside)(portalNode);
+          focusInsideDisabledRef.current = true;
+        }
+      }
+    }
+
+    // Listen to the event on the capture phase so they run before the focus
+    // trap elements onFocus prop is called.
+    return (0,_base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_4__.mergeCleanups)((0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_3__.addEventListener)(portalNode, 'focusin', onFocus, true), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_3__.addEventListener)(portalNode, 'focusout', onFocus, true));
+  }, [portalNode, modal]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_6__.useIsoLayoutEffect)(() => {
+    if (!portalNode || open !== true || !focusInsideDisabledRef.current) {
+      return;
+    }
+
+    // Restore tabbability before the focus manager's queued focus-on-open step runs.
+    ;(0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_10__.enableFocusInside)(portalNode);
+    focusInsideDisabledRef.current = false;
+  }, [open, portalNode]);
+  const portalContextValue = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    beforeOutsideRef,
+    afterOutsideRef,
+    beforeInsideRef,
+    afterInsideRef,
+    portalNode,
+    setFocusManagerState
+  }), [portalNode]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__.jsxs)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    children: [portalSubtree, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__.jsxs)(PortalContext.Provider, {
+      value: portalContextValue,
+      children: [shouldRenderGuards && portalNode && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__.jsx)(_utils_FocusGuard_mjs__WEBPACK_IMPORTED_MODULE_9__.FocusGuard, {
+        "data-type": "outside",
+        ref: beforeOutsideRef,
+        onFocus: event => {
+          if ((0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_10__.isOutsideEvent)(event, portalNode)) {
+            beforeInsideRef.current?.focus();
+          } else {
+            const domReference = focusManagerState ? focusManagerState.domReference : null;
+            const prevTabbable = (0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_10__.getPreviousTabbable)(domReference);
+            prevTabbable?.focus();
+          }
+        }
+      }), shouldRenderGuards && portalNode && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__.jsx)("span", {
+        "aria-owns": portalNodeId,
+        style: _internals_constants_mjs__WEBPACK_IMPORTED_MODULE_15__.ownerVisuallyHidden
+      }), portalNode && /*#__PURE__*/react_dom__WEBPACK_IMPORTED_MODULE_1__.createPortal(children, portalNode), shouldRenderGuards && portalNode && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_16__.jsx)(_utils_FocusGuard_mjs__WEBPACK_IMPORTED_MODULE_9__.FocusGuard, {
+        "data-type": "outside",
+        ref: afterOutsideRef,
+        onFocus: event => {
+          if ((0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_10__.isOutsideEvent)(event, portalNode)) {
+            afterInsideRef.current?.focus();
+          } else {
+            const domReference = focusManagerState ? focusManagerState.domReference : null;
+            const nextTabbable = (0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_10__.getNextTabbable)(domReference);
+            nextTabbable?.focus();
+            if (focusManagerState?.closeOnFocusOut) {
+              focusManagerState?.onOpenChange(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_11__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_12__.focusOut, event.nativeEvent));
+            }
+          }
+        }
+      })]
+    })]
+  });
+});
+if (true) FloatingPortal.displayName = "FloatingPortal";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingRootStore.mjs"
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/components/FloatingRootStore.mjs ***!
+  \****************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FloatingRootStore: () => (/* binding */ FloatingRootStore)
+/* harmony export */ });
+/* harmony import */ var _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/utils/store */ "./node_modules/@base-ui/utils/store/ReactStore.mjs");
+/* harmony import */ var _utils_createEventEmitter_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/createEventEmitter.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/createEventEmitter.mjs");
+/* harmony import */ var _utils_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs");
+
+
+
+const selectors = {
+  open: state => state.open,
+  transitionStatus: state => state.transitionStatus,
+  domReferenceElement: state => state.domReferenceElement,
+  referenceElement: state => state.positionReference ?? state.referenceElement,
+  floatingElement: state => state.floatingElement,
+  floatingId: state => state.floatingId
+};
+class FloatingRootStore extends _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_0__.ReactStore {
+  constructor(options) {
+    const {
+      syncOnly,
+      nested,
+      onOpenChange,
+      triggerElements,
+      ...initialState
+    } = options;
+    super({
+      ...initialState,
+      positionReference: initialState.referenceElement,
+      domReferenceElement: initialState.referenceElement
+    }, {
+      onOpenChange,
+      dataRef: {
+        current: {}
+      },
+      events: (0,_utils_createEventEmitter_mjs__WEBPACK_IMPORTED_MODULE_1__.createEventEmitter)(),
+      nested,
+      triggerElements
+    }, selectors);
+    this.syncOnly = syncOnly;
+  }
+
+  /**
+   * Syncs the event used by hover logic to distinguish hover-open from click-like interaction.
+   */
+  syncOpenEvent = (newOpen, event) => {
+    if (!newOpen || !this.state.open ||
+    // Prevent a pending hover-open from overwriting a click-open event, while allowing
+    // click events to upgrade a hover-open.
+    event != null && (0,_utils_mjs__WEBPACK_IMPORTED_MODULE_2__.isClickLikeEvent)(event)) {
+      this.context.dataRef.current.openEvent = newOpen ? event : undefined;
+    }
+  };
+
+  /**
+   * Runs the root-owned side effects for an open state change.
+   */
+  dispatchOpenChange = (newOpen, eventDetails) => {
+    this.syncOpenEvent(newOpen, eventDetails.event);
+    const details = {
+      open: newOpen,
+      reason: eventDetails.reason,
+      nativeEvent: eventDetails.event,
+      nested: this.context.nested,
+      triggerElement: eventDetails.trigger
+    };
+    this.context.events.emit('openchange', details);
+  };
+
+  /**
+   * Emits the `openchange` event through the internal event emitter and calls the `onOpenChange` handler with the provided arguments.
+   *
+   * @param newOpen The new open state.
+   * @param eventDetails Details about the event that triggered the open state change.
+   */
+  setOpen = (newOpen, eventDetails) => {
+    if (this.syncOnly) {
+      this.context.onOpenChange?.(newOpen, eventDetails);
+      return;
+    }
+    this.dispatchOpenChange(newOpen, eventDetails);
+    this.context.onOpenChange?.(newOpen, eventDetails);
+  };
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingTree.mjs"
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/components/FloatingTree.mjs ***!
+  \***********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FloatingNode: () => (/* binding */ FloatingNode),
+/* harmony export */   FloatingTree: () => (/* binding */ FloatingTree),
+/* harmony export */   useFloatingNodeId: () => (/* binding */ useFloatingNodeId),
+/* harmony export */   useFloatingParentNodeId: () => (/* binding */ useFloatingParentNodeId),
+/* harmony export */   useFloatingTree: () => (/* binding */ useFloatingTree)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useId__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useId */ "./node_modules/@base-ui/utils/useId.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/useRefWithInit */ "./node_modules/@base-ui/utils/useRefWithInit.mjs");
+/* harmony import */ var _FloatingTreeStore_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./FloatingTreeStore.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingTreeStore.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+
+
+const FloatingNodeContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(null);
+if (true) FloatingNodeContext.displayName = "FloatingNodeContext";
+const FloatingTreeContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(null);
+
+/**
+ * Returns the parent node id for nested floating elements, if available.
+ * Returns `null` for top-level floating elements.
+ */
+if (true) FloatingTreeContext.displayName = "FloatingTreeContext";
+const useFloatingParentNodeId = () => react__WEBPACK_IMPORTED_MODULE_0__.useContext(FloatingNodeContext)?.id || null;
+
+/**
+ * Returns the nearest floating tree context, if available.
+ */
+const useFloatingTree = externalTree => {
+  const contextTree = react__WEBPACK_IMPORTED_MODULE_0__.useContext(FloatingTreeContext);
+  return externalTree ?? contextTree;
+};
+
+/**
+ * Registers a node into the `FloatingTree`, returning its id.
+ * @see https://floating-ui.com/docs/FloatingTree
+ */
+function useFloatingNodeId(externalTree) {
+  const id = (0,_base_ui_utils_useId__WEBPACK_IMPORTED_MODULE_1__.useId)();
+  const tree = useFloatingTree(externalTree);
+  const parentId = useFloatingParentNodeId();
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    if (!id) {
+      return undefined;
+    }
+    const node = {
+      id,
+      parentId
+    };
+    tree?.addNode(node);
+    return () => {
+      tree?.removeNode(node);
+    };
+  }, [tree, id, parentId]);
+  return id;
+}
+/**
+ * Provides parent node context for nested floating elements.
+ * @see https://floating-ui.com/docs/FloatingTree
+ * @internal
+ */
+function FloatingNode(props) {
+  const {
+    children,
+    id
+  } = props;
+  const parentId = useFloatingParentNodeId();
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(FloatingNodeContext.Provider, {
+    value: react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+      id,
+      parentId
+    }), [id, parentId]),
+    children: children
+  });
+}
+/**
+ * Provides context for nested floating elements when they are not children of
+ * each other on the DOM.
+ * This is not necessary in all cases, except when there must be explicit communication between parent and child floating elements. It is necessary for:
+ * - The `bubbles` option in the `useDismiss()` Hook
+ * - Nested virtual list navigation
+ * - Nested floating elements that each open on hover
+ * - Custom communication between parent and child floating elements
+ * @see https://floating-ui.com/docs/FloatingTree
+ * @internal
+ */
+function FloatingTree(props) {
+  const {
+    children,
+    externalTree
+  } = props;
+  const tree = (0,_base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_3__.useRefWithInit)(() => externalTree ?? new _FloatingTreeStore_mjs__WEBPACK_IMPORTED_MODULE_4__.FloatingTreeStore()).current;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(FloatingTreeContext.Provider, {
+    value: tree,
+    children: children
+  });
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingTreeStore.mjs"
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/components/FloatingTreeStore.mjs ***!
+  \****************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FloatingTreeStore: () => (/* binding */ FloatingTreeStore)
+/* harmony export */ });
+/* harmony import */ var _utils_createEventEmitter_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/createEventEmitter.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/createEventEmitter.mjs");
+
+
+/**
+ * Stores and manages floating elements in a tree structure.
+ * This is a backing store for the `FloatingTree` component.
+ */
+class FloatingTreeStore {
+  nodesRef = {
+    current: []
+  };
+  events = (0,_utils_createEventEmitter_mjs__WEBPACK_IMPORTED_MODULE_0__.createEventEmitter)();
+  addNode(node) {
+    this.nodesRef.current.push(node);
+  }
+  removeNode(node) {
+    const index = this.nodesRef.current.findIndex(n => n === node);
+    if (index !== -1) {
+      this.nodesRef.current.splice(index, 1);
+    }
+  }
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/hooks/useClientPoint.mjs"
+/*!********************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/hooks/useClientPoint.mjs ***!
+  \********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useClientPoint: () => (/* binding */ useClientPoint)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/addEventListener */ "./node_modules/@base-ui/utils/addEventListener.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/element.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+/* harmony import */ var _utils_event_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/event.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs");
+'use client';
+
+
+
+
+
+
+
+function createVirtualElement(domElement, data) {
+  let offsetX = null;
+  let offsetY = null;
+  let isAutoUpdateEvent = false;
+  return {
+    contextElement: domElement || undefined,
+    getBoundingClientRect() {
+      const domRect = domElement?.getBoundingClientRect() || {
+        width: 0,
+        height: 0,
+        x: 0,
+        y: 0
+      };
+      const isXAxis = data.axis === 'x' || data.axis === 'both';
+      const isYAxis = data.axis === 'y' || data.axis === 'both';
+      const canTrackCursorOnAutoUpdate = ['mouseenter', 'mousemove'].includes(data.dataRef.current.openEvent?.type || '') && data.pointerType !== 'touch';
+      let width = domRect.width;
+      let height = domRect.height;
+      let x = domRect.x;
+      let y = domRect.y;
+      if (offsetX == null && data.x && isXAxis) {
+        offsetX = domRect.x - data.x;
+      }
+      if (offsetY == null && data.y && isYAxis) {
+        offsetY = domRect.y - data.y;
+      }
+      x -= offsetX || 0;
+      y -= offsetY || 0;
+      width = 0;
+      height = 0;
+      if (!isAutoUpdateEvent || canTrackCursorOnAutoUpdate) {
+        width = data.axis === 'y' ? domRect.width : 0;
+        height = data.axis === 'x' ? domRect.height : 0;
+        x = isXAxis && data.x != null ? data.x : x;
+        y = isYAxis && data.y != null ? data.y : y;
+      } else if (isAutoUpdateEvent && !canTrackCursorOnAutoUpdate) {
+        height = data.axis === 'x' ? domRect.height : height;
+        width = data.axis === 'y' ? domRect.width : width;
+      }
+      isAutoUpdateEvent = true;
+      return {
+        width,
+        height,
+        x,
+        y,
+        top: y,
+        right: x + width,
+        bottom: y + height,
+        left: x
+      };
+    }
+  };
+}
+function isMouseBasedEvent(event) {
+  return event != null && event.clientX != null;
+}
+/**
+ * Positions the floating element relative to a client point (in the viewport),
+ * such as the mouse position. By default, it follows the mouse cursor.
+ * @see https://floating-ui.com/docs/useClientPoint
+ */
+function useClientPoint(context, props = {}) {
+  const {
+    enabled = true,
+    axis = 'both'
+  } = props;
+  const store = 'rootStore' in context ? context.rootStore : context;
+  const open = store.useState('open');
+  const floating = store.useState('floatingElement');
+  const domReference = store.useState('domReferenceElement');
+  const dataRef = store.context.dataRef;
+  const initialRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const cleanupListenerRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const [pointerType, setPointerType] = react__WEBPACK_IMPORTED_MODULE_0__.useState();
+  const [reactive, setReactive] = react__WEBPACK_IMPORTED_MODULE_0__.useState([]);
+  const resetReference = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(reference => {
+    store.set('positionReference', reference);
+  });
+  const setReference = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)((newX, newY, referenceElement) => {
+    if (initialRef.current) {
+      return;
+    }
+
+    // Prevent setting if the open event was not a mouse-like one
+    // (e.g. focus to open, then hover over the reference element).
+    // Only apply if the event exists.
+    if (dataRef.current.openEvent && !isMouseBasedEvent(dataRef.current.openEvent)) {
+      return;
+    }
+    store.set('positionReference', createVirtualElement(referenceElement ?? domReference, {
+      x: newX,
+      y: newY,
+      axis,
+      dataRef,
+      pointerType
+    }));
+  });
+  const handleReferenceEnterOrMove = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(event => {
+    if (!open) {
+      setReference(event.clientX, event.clientY, event.currentTarget);
+    } else if (!cleanupListenerRef.current) {
+      // If there's no cleanup, there's no listener, but we want to ensure
+      // we add the listener if the cursor landed on the floating element and
+      // then back on the reference (i.e. it's interactive).
+      setReference(event.clientX, event.clientY, event.currentTarget);
+      setReactive([]);
+    }
+  });
+
+  // If the pointer is a mouse-like pointer, we want to continue following the
+  // mouse even if the floating element is transitioning out. On touch
+  // devices, this is undesirable because the floating element will move to
+  // the dismissal touch point.
+  const openCheck = (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_5__.isMouseLikePointerType)(pointerType) ? floating : open;
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (!enabled) {
+      resetReference(domReference);
+      return undefined;
+    }
+    if (!openCheck) {
+      return undefined;
+    }
+    function cleanupListener() {
+      cleanupListenerRef.current?.();
+      cleanupListenerRef.current = null;
+    }
+    const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_3__.getWindow)(floating);
+    function handleMouseMove(event) {
+      const target = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_4__.getTarget)(event);
+      if (!(0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_4__.contains)(floating, target)) {
+        setReference(event.clientX, event.clientY);
+      } else {
+        cleanupListener();
+      }
+    }
+    if (!dataRef.current.openEvent || isMouseBasedEvent(dataRef.current.openEvent)) {
+      cleanupListenerRef.current = (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(win, 'mousemove', handleMouseMove);
+    } else {
+      resetReference(domReference);
+    }
+    return cleanupListener;
+  }, [openCheck, enabled, floating, dataRef, domReference, store, setReference, resetReference, reactive]);
+
+  // Clear virtual cursor references when the hook unmounts. Enabled flips are handled above.
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => () => {
+    store.set('positionReference', null);
+  }, [store]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (enabled && !floating) {
+      initialRef.current = false;
+    }
+  }, [enabled, floating]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (!enabled && open) {
+      initialRef.current = true;
+    }
+  }, [enabled, open]);
+  const reference = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => {
+    function setPointerTypeRef(event) {
+      setPointerType(event.pointerType);
+    }
+    return {
+      onPointerDown: setPointerTypeRef,
+      onPointerEnter: setPointerTypeRef,
+      onMouseMove: handleReferenceEnterOrMove,
+      onMouseEnter: handleReferenceEnterOrMove
+    };
+  }, [handleReferenceEnterOrMove]);
+  return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => enabled ? {
+    reference,
+    trigger: reference
+  } : {}, [enabled, reference]);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/hooks/useDismiss.mjs"
+/*!****************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/hooks/useDismiss.mjs ***!
+  \****************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   normalizeProp: () => (/* binding */ normalizeProp),
+/* harmony export */   useDismiss: () => (/* binding */ useDismiss)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/addEventListener */ "./node_modules/@base-ui/utils/addEventListener.mjs");
+/* harmony import */ var _base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/mergeCleanups */ "./node_modules/@base-ui/utils/mergeCleanups.mjs");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@base-ui/utils/owner.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @base-ui/utils/useTimeout */ "./node_modules/@base-ui/utils/useTimeout.mjs");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @base-ui/utils/platform */ "./node_modules/@base-ui/utils/platform/engine.mjs");
+/* harmony import */ var _components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/FloatingTree.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingTree.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var _utils_createAttribute_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../utils/createAttribute.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/createAttribute.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../utils/element.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/element.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../utils/element.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+/* harmony import */ var _utils_event_mjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../utils/event.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs");
+/* harmony import */ var _utils_nodes_mjs__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../utils/nodes.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/nodes.mjs");
+'use client';
+
+/* eslint-disable no-underscore-dangle */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function alwaysFalse() {
+  return false;
+}
+function normalizeProp(normalizable) {
+  return {
+    escapeKey: typeof normalizable === 'boolean' ? normalizable : normalizable?.escapeKey ?? false,
+    outsidePress: typeof normalizable === 'boolean' ? normalizable : normalizable?.outsidePress ?? true
+  };
+}
+/**
+ * Closes the floating element when a dismissal is requested — by default, when
+ * the user presses the `escape` key or outside of the floating element.
+ * @see https://floating-ui.com/docs/useDismiss
+ */
+function useDismiss(context, props = {}) {
+  const {
+    enabled = true,
+    escapeKey = true,
+    outsidePress: outsidePressProp = true,
+    outsidePressEvent = 'sloppy',
+    referencePress = alwaysFalse,
+    bubbles,
+    externalTree
+  } = props;
+  const store = 'rootStore' in context ? context.rootStore : context;
+  const open = store.useState('open');
+  const floatingElement = store.useState('floatingElement');
+  const {
+    dataRef
+  } = store.context;
+  const tree = (0,_components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_8__.useFloatingTree)(externalTree);
+  const outsidePressFn = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(typeof outsidePressProp === 'function' ? outsidePressProp : () => false);
+  const outsidePress = typeof outsidePressProp === 'function' ? outsidePressFn : outsidePressProp;
+  const outsidePressEnabled = outsidePress !== false;
+  const getOutsidePressEventProp = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(() => outsidePressEvent);
+  const {
+    escapeKey: escapeKeyBubbles,
+    outsidePress: outsidePressBubbles
+  } = normalizeProp(bubbles);
+  const pressStartedInsideRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const pressStartPreventedRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  // Ignore only the very next outside click after dragging from inside to outside.
+  const suppressNextOutsideClickRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const isComposingRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const currentPointerTypeRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef('');
+  const touchStateRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const cancelDismissOnEndTimeout = (0,_base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_5__.useTimeout)();
+  const clearInsideReactTreeTimeout = (0,_base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_5__.useTimeout)();
+  const clearInsideReactTree = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(() => {
+    clearInsideReactTreeTimeout.clear();
+    dataRef.current.insideReactTree = false;
+  });
+  const hasBlockingChild = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(bubbleKey => {
+    const nodeId = dataRef.current.floatingContext?.nodeId;
+    const children = tree ? (0,_utils_nodes_mjs__WEBPACK_IMPORTED_MODULE_15__.getNodeChildren)(tree.nodesRef.current, nodeId) : [];
+    return children.some(child => child.context?.open && !child.context.dataRef.current[bubbleKey]);
+  });
+  const isEventWithinOwnElements = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(event => {
+    return (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_12__.isEventTargetWithin)(event, store.select('floatingElement')) || (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_12__.isEventTargetWithin)(event, store.select('domReferenceElement'));
+  });
+  const closeOnReferencePress = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(event => {
+    if (!referencePress()) {
+      return;
+    }
+    store.setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_9__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_10__.triggerPress, event.nativeEvent));
+  });
+  const closeOnEscapeKeyDown = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(event => {
+    if (!open || !enabled || !escapeKey || event.key !== 'Escape') {
+      return;
+    }
+
+    // Wait until IME is settled. Pressing `Escape` while composing should
+    // close the compose menu, but not the floating element.
+    if (isComposingRef.current) {
+      return;
+    }
+    if (!escapeKeyBubbles && hasBlockingChild('__escapeKeyBubbles')) {
+      return;
+    }
+    const native = (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_14__.isReactEvent)(event) ? event.nativeEvent : event;
+    const eventDetails = (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_9__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_10__.escapeKey, native);
+    store.setOpen(false, eventDetails);
+    if (!eventDetails.isCanceled) {
+      event.preventDefault();
+    }
+    if (!escapeKeyBubbles && !eventDetails.isPropagationAllowed) {
+      event.stopPropagation();
+    }
+  });
+  const markInsideReactTree = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(() => {
+    dataRef.current.insideReactTree = true;
+    clearInsideReactTreeTimeout.start(0, clearInsideReactTree);
+  });
+  const markPressStartedInsideReactTree = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(event => {
+    if (!open || !enabled || event.button !== 0) {
+      return;
+    }
+    const target = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__.getTarget)(event.nativeEvent);
+
+    // Only treat presses that start within the floating DOM subtree as inside.
+    // This avoids suppressing parent dismissal when interacting with nested portals.
+    if (!(0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__.contains)(store.select('floatingElement'), target)) {
+      return;
+    }
+    if (!pressStartedInsideRef.current) {
+      pressStartedInsideRef.current = true;
+      pressStartPreventedRef.current = false;
+    }
+  });
+  const markInsidePressStartPrevented = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(event => {
+    if (!open || !enabled) {
+      return;
+    }
+    if (!(event.defaultPrevented || event.nativeEvent.defaultPrevented)) {
+      return;
+    }
+    if (pressStartedInsideRef.current) {
+      pressStartPreventedRef.current = true;
+    }
+  });
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (!open || !enabled) {
+      return clearInsideReactTree;
+    }
+    dataRef.current.__escapeKeyBubbles = escapeKeyBubbles;
+    dataRef.current.__outsidePressBubbles = outsidePressBubbles;
+    const compositionTimeout = new _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_5__.Timeout();
+    const preventedPressSuppressionTimeout = new _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_5__.Timeout();
+    function handleCompositionStart() {
+      compositionTimeout.clear();
+      isComposingRef.current = true;
+    }
+    function handleCompositionEnd() {
+      // Safari fires `compositionend` before `keydown`, so we need to wait
+      // until the next tick to set `isComposing` to `false`.
+      // https://bugs.webkit.org/show_bug.cgi?id=165004
+      compositionTimeout.start(
+      // 0ms or 1ms don't work in Safari. 5ms appears to consistently work.
+      // Only apply to WebKit for the test to remain 0ms.
+      _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_7__.webkit ? 5 : 0, () => {
+        isComposingRef.current = false;
+      });
+    }
+    function suppressImmediateOutsideClickAfterPreventedStart() {
+      suppressNextOutsideClickRef.current = true;
+      // Firefox can emit the synthetic outside click in a later task after
+      // pointer lock exit, so microtask clearing is too early here.
+      preventedPressSuppressionTimeout.start(0, () => {
+        suppressNextOutsideClickRef.current = false;
+      });
+    }
+    function resetPressStartState() {
+      pressStartedInsideRef.current = false;
+      pressStartPreventedRef.current = false;
+    }
+    function getOutsidePressEvent() {
+      const type = currentPointerTypeRef.current;
+      const computedType = type === 'pen' || !type ? 'mouse' : type;
+      const outsidePressEventValue = getOutsidePressEventProp();
+      const resolved = typeof outsidePressEventValue === 'function' ? outsidePressEventValue() : outsidePressEventValue;
+      if (typeof resolved === 'string') {
+        return resolved;
+      }
+      return resolved[computedType];
+    }
+    function shouldIgnoreEvent(event) {
+      const computedOutsidePressEvent = getOutsidePressEvent();
+      return computedOutsidePressEvent === 'intentional' && event.type !== 'click' || computedOutsidePressEvent === 'sloppy' && event.type === 'click';
+    }
+    function isEventWithinFloatingTree(event) {
+      const nodeId = dataRef.current.floatingContext?.nodeId;
+      const targetIsInsideChildren = tree && (0,_utils_nodes_mjs__WEBPACK_IMPORTED_MODULE_15__.getNodeChildren)(tree.nodesRef.current, nodeId).some(node => (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_12__.isEventTargetWithin)(event, node.context?.elements.floating));
+      return isEventWithinOwnElements(event) || targetIsInsideChildren;
+    }
+    function closeOnPressOutside(event) {
+      if (shouldIgnoreEvent(event)) {
+        // A new press began outside the floating element and its trigger. Clear any
+        // leftover drag-out suppression so this press's eventual click can dismiss.
+        if (event.type !== 'click' && !isEventWithinOwnElements(event)) {
+          preventedPressSuppressionTimeout.clear();
+          suppressNextOutsideClickRef.current = false;
+        }
+        clearInsideReactTree();
+        return;
+      }
+      if (dataRef.current.insideReactTree) {
+        clearInsideReactTree();
+        return;
+      }
+      const target = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__.getTarget)(event);
+      const inertSelector = `[${(0,_utils_createAttribute_mjs__WEBPACK_IMPORTED_MODULE_11__.createAttribute)('inert')}]`;
+      const targetRoot = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_6__.isElement)(target) ? target.getRootNode() : null;
+      const markers = Array.from(((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_6__.isShadowRoot)(targetRoot) ? targetRoot : (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_3__.ownerDocument)(store.select('floatingElement'))).querySelectorAll(inertSelector));
+      const triggers = store.context.triggerElements;
+
+      // If another trigger is clicked, don't close the floating element.
+      if (target && (triggers.hasElement(target) || triggers.hasMatchingElement(trigger => (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__.contains)(trigger, target)))) {
+        return;
+      }
+      let targetRootAncestor = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_6__.isElement)(target) ? target : null;
+      while (targetRootAncestor && !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_6__.isLastTraversableNode)(targetRootAncestor)) {
+        const nextParent = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_6__.getParentNode)(targetRootAncestor);
+        if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_6__.isLastTraversableNode)(nextParent) || !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_6__.isElement)(nextParent)) {
+          break;
+        }
+        targetRootAncestor = nextParent;
+      }
+
+      // Check if the click occurred on a third-party element injected after the
+      // floating element rendered.
+      if (markers.length && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_6__.isElement)(target) && !(0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_12__.isRootElement)(target) &&
+      // Clicked on a direct ancestor (e.g. FloatingOverlay).
+      !(0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__.contains)(target, store.select('floatingElement')) &&
+      // If the target root element contains none of the markers, then the
+      // element was injected after the floating element rendered.
+      markers.every(marker => !(0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__.contains)(targetRootAncestor, marker))) {
+        return;
+      }
+
+      // Check if the click occurred on the scrollbar
+      // Skip for touch events: scrollbars don't receive touch events on most platforms
+      if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_6__.isHTMLElement)(target) && !('touches' in event)) {
+        const lastTraversableNode = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_6__.isLastTraversableNode)(target);
+        const style = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_6__.getComputedStyle)(target);
+        const scrollRe = /auto|scroll/;
+        const isScrollableX = lastTraversableNode || scrollRe.test(style.overflowX);
+        const isScrollableY = lastTraversableNode || scrollRe.test(style.overflowY);
+        const canScrollX = isScrollableX && target.clientWidth > 0 && target.scrollWidth > target.clientWidth;
+        const canScrollY = isScrollableY && target.clientHeight > 0 && target.scrollHeight > target.clientHeight;
+        const isRTL = style.direction === 'rtl';
+
+        // Check click position relative to scrollbar.
+        // In some browsers it is possible to change the <body> (or window)
+        // scrollbar to the left side, but is very rare and is difficult to
+        // check for. Plus, for modal dialogs with backdrops, it is more
+        // important that the backdrop is checked but not so much the window.
+        const pressedVerticalScrollbar = canScrollY && (isRTL ? event.offsetX <= target.offsetWidth - target.clientWidth : event.offsetX > target.clientWidth);
+        const pressedHorizontalScrollbar = canScrollX && event.offsetY > target.clientHeight;
+        if (pressedVerticalScrollbar || pressedHorizontalScrollbar) {
+          return;
+        }
+      }
+      if (isEventWithinFloatingTree(event)) {
+        return;
+      }
+
+      // In intentional mode, a press that starts inside and ends outside gets
+      // one suppressed outside click. Run this after inside-target checks so
+      // inside clicks don't consume the one-shot suppression.
+      if (getOutsidePressEvent() === 'intentional' && suppressNextOutsideClickRef.current) {
+        preventedPressSuppressionTimeout.clear();
+        suppressNextOutsideClickRef.current = false;
+        return;
+      }
+      if (typeof outsidePress === 'function' && !outsidePress(event)) {
+        return;
+      }
+      if (hasBlockingChild('__outsidePressBubbles')) {
+        return;
+      }
+      store.setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_9__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_10__.outsidePress, event));
+      clearInsideReactTree();
+    }
+    function handlePointerDown(event) {
+      if (getOutsidePressEvent() !== 'sloppy' || event.pointerType === 'touch' || !store.select('open') || !enabled || isEventWithinOwnElements(event)) {
+        return;
+      }
+      closeOnPressOutside(event);
+    }
+    function handleTouchStart(event) {
+      if (getOutsidePressEvent() !== 'sloppy' || !store.select('open') || !enabled || isEventWithinOwnElements(event)) {
+        return;
+      }
+      const touch = event.touches[0];
+      if (touch) {
+        touchStateRef.current = {
+          startTime: Date.now(),
+          startX: touch.clientX,
+          startY: touch.clientY,
+          dismissOnTouchEnd: false,
+          dismissOnMouseDown: true
+        };
+        cancelDismissOnEndTimeout.start(1000, () => {
+          if (touchStateRef.current) {
+            touchStateRef.current.dismissOnTouchEnd = false;
+            touchStateRef.current.dismissOnMouseDown = false;
+          }
+        });
+      }
+    }
+    function addTargetEventListenerOnce(event, listener) {
+      const target = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__.getTarget)(event);
+      if (!target) {
+        return;
+      }
+      const unsubscribe = (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(target, event.type, () => {
+        listener(event);
+        unsubscribe();
+      });
+    }
+    function handleTouchStartCapture(event) {
+      currentPointerTypeRef.current = 'touch';
+      addTargetEventListenerOnce(event, handleTouchStart);
+    }
+    function closeOnPressOutsideCapture(event) {
+      cancelDismissOnEndTimeout.clear();
+      if (event.type === 'pointerdown') {
+        currentPointerTypeRef.current = event.pointerType;
+      }
+      if (event.type === 'mousedown' && touchStateRef.current && !touchStateRef.current.dismissOnMouseDown) {
+        return;
+      }
+      addTargetEventListenerOnce(event, targetEvent => {
+        if (targetEvent.type === 'pointerdown') {
+          handlePointerDown(targetEvent);
+        } else {
+          closeOnPressOutside(targetEvent);
+        }
+      });
+    }
+    function handlePressEndCapture(event) {
+      if (!pressStartedInsideRef.current) {
+        return;
+      }
+      const pressStartedInsideDefaultPrevented = pressStartPreventedRef.current;
+      resetPressStartState();
+      if (getOutsidePressEvent() !== 'intentional') {
+        return;
+      }
+      if (event.type === 'pointercancel') {
+        if (pressStartedInsideDefaultPrevented) {
+          suppressImmediateOutsideClickAfterPreventedStart();
+        }
+        return;
+      }
+      if (isEventWithinFloatingTree(event)) {
+        return;
+      }
+
+      // If pointerdown was prevented, no click may be generated for that
+      // interaction. However, Firefox may still emit an immediate click after
+      // pointerup (e.g. NumberField scrub with pointer lock), so suppress for
+      // one tick to absorb that synthetic click only.
+      if (pressStartedInsideDefaultPrevented) {
+        suppressImmediateOutsideClickAfterPreventedStart();
+        return;
+      }
+
+      // Avoid suppressing when outsidePress explicitly ignores this target.
+      if (typeof outsidePress === 'function' && !outsidePress(event)) {
+        return;
+      }
+      preventedPressSuppressionTimeout.clear();
+      suppressNextOutsideClickRef.current = true;
+      clearInsideReactTree();
+    }
+    function handleTouchMove(event) {
+      if (getOutsidePressEvent() !== 'sloppy' || !touchStateRef.current || isEventWithinOwnElements(event)) {
+        return;
+      }
+      const touch = event.touches[0];
+      if (!touch) {
+        return;
+      }
+      const deltaX = Math.abs(touch.clientX - touchStateRef.current.startX);
+      const deltaY = Math.abs(touch.clientY - touchStateRef.current.startY);
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      if (distance > 5) {
+        touchStateRef.current.dismissOnTouchEnd = true;
+      }
+      if (distance > 10) {
+        closeOnPressOutside(event);
+        cancelDismissOnEndTimeout.clear();
+        touchStateRef.current = null;
+      }
+    }
+    function handleTouchMoveCapture(event) {
+      addTargetEventListenerOnce(event, handleTouchMove);
+    }
+    function handleTouchEnd(event) {
+      if (getOutsidePressEvent() !== 'sloppy' || !touchStateRef.current || isEventWithinOwnElements(event)) {
+        return;
+      }
+      if (touchStateRef.current.dismissOnTouchEnd) {
+        closeOnPressOutside(event);
+      }
+      cancelDismissOnEndTimeout.clear();
+      touchStateRef.current = null;
+    }
+    function handleTouchEndCapture(event) {
+      addTargetEventListenerOnce(event, handleTouchEnd);
+    }
+    const doc = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_3__.ownerDocument)(floatingElement);
+    const unsubscribe = (0,_base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_2__.mergeCleanups)(escapeKey && (0,_base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_2__.mergeCleanups)((0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(doc, 'keydown', closeOnEscapeKeyDown), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(doc, 'compositionstart', handleCompositionStart), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(doc, 'compositionend', handleCompositionEnd)), outsidePressEnabled && (0,_base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_2__.mergeCleanups)((0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(doc, 'click', closeOnPressOutsideCapture, true), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(doc, 'pointerdown', closeOnPressOutsideCapture, true), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(doc, 'pointerup', handlePressEndCapture, true), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(doc, 'pointercancel', handlePressEndCapture, true), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(doc, 'mousedown', closeOnPressOutsideCapture, true), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(doc, 'mouseup', handlePressEndCapture, true), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(doc, 'touchstart', handleTouchStartCapture, true), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(doc, 'touchmove', handleTouchMoveCapture, true), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(doc, 'touchend', handleTouchEndCapture, true)));
+    return () => {
+      unsubscribe();
+      compositionTimeout.clear();
+      preventedPressSuppressionTimeout.clear();
+      resetPressStartState();
+      suppressNextOutsideClickRef.current = false;
+      clearInsideReactTree();
+    };
+  }, [dataRef, floatingElement, escapeKey, outsidePressEnabled, outsidePress, open, enabled, escapeKeyBubbles, outsidePressBubbles, closeOnEscapeKeyDown, clearInsideReactTree, getOutsidePressEventProp, hasBlockingChild, isEventWithinOwnElements, tree, store, cancelDismissOnEndTimeout]);
+  const reference = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    onKeyDown: closeOnEscapeKeyDown,
+    onPointerDown: closeOnReferencePress,
+    onClick: closeOnReferencePress
+  }), [closeOnEscapeKeyDown, closeOnReferencePress]);
+  const floating = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    onKeyDown: closeOnEscapeKeyDown,
+    // `onMouseDown` may be blocked if `event.preventDefault()` is called in
+    // `onPointerDown`, such as with <NumberField.ScrubArea>.
+    // See https://github.com/mui/base-ui/pull/3379
+    onPointerDown: markInsidePressStartPrevented,
+    onMouseDown: markInsidePressStartPrevented,
+    onClickCapture: markInsideReactTree,
+    onMouseDownCapture(event) {
+      markInsideReactTree();
+      markPressStartedInsideReactTree(event);
+    },
+    onPointerDownCapture(event) {
+      markInsideReactTree();
+      markPressStartedInsideReactTree(event);
+    },
+    onMouseUpCapture: markInsideReactTree,
+    onTouchEndCapture: markInsideReactTree,
+    onTouchMoveCapture: markInsideReactTree
+  }), [closeOnEscapeKeyDown, markInsideReactTree, markPressStartedInsideReactTree, markInsidePressStartPrevented]);
+  return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => enabled ? {
+    reference,
+    floating,
+    trigger: reference
+  } : {}, [enabled, reference, floating]);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/hooks/useFloating.mjs"
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/hooks/useFloating.mjs ***!
+  \*****************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useBaseUIFloating: () => (/* binding */ useBaseUIFloating),
+/* harmony export */   useFloating: () => (/* binding */ useFloating)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _floating_ui_react_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @floating-ui/react-dom */ "./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/FloatingTree.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingTree.mjs");
+/* harmony import */ var _useFloatingRootContext_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./useFloatingRootContext.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useFloatingRootContext.mjs");
+'use client';
+
+
+
+
+
+
+
+
+/**
+ * Provides data to position a floating element and context to add interactions.
+ * @see https://floating-ui.com/docs/useFloating
+ */
+function useFloating(options = {}) {
+  const internalStore = (0,_useFloatingRootContext_mjs__WEBPACK_IMPORTED_MODULE_5__.useFloatingRootContext)(options);
+  const store = options.rootContext || internalStore;
+  return useFloatingWithStore(options, store);
+}
+
+/**
+ * Base UI's private `useFloating` path. The caller must supply the root store, so this skips the
+ * internal root-context hook used by the public Floating UI-compatible API.
+ */
+function useBaseUIFloating(options) {
+  return useFloatingWithStore(options, options.rootContext);
+}
+function useFloatingWithStore(options, store) {
+  const {
+    nodeId,
+    externalTree
+  } = options;
+  const referenceElement = store.useState('referenceElement');
+  const floatingElement = store.useState('floatingElement');
+  const domReferenceElement = store.useState('domReferenceElement');
+  const open = store.useState('open');
+  const floatingId = store.useState('floatingId');
+  const [positionReference, setPositionReferenceRaw] = react__WEBPACK_IMPORTED_MODULE_0__.useState(null);
+  const [localDomReference, setLocalDomReference] = react__WEBPACK_IMPORTED_MODULE_0__.useState(undefined);
+  const [localFloatingElement, setLocalFloatingElement] = react__WEBPACK_IMPORTED_MODULE_0__.useState(undefined);
+  const domReferenceRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const tree = (0,_components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_4__.useFloatingTree)(externalTree);
+  const storeElements = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    reference: referenceElement,
+    floating: floatingElement,
+    domReference: domReferenceElement
+  }), [referenceElement, floatingElement, domReferenceElement]);
+  const position = (0,_floating_ui_react_dom__WEBPACK_IMPORTED_MODULE_2__.useFloating)({
+    ...options,
+    elements: {
+      ...storeElements,
+      ...(positionReference && {
+        reference: positionReference
+      })
+    }
+  });
+  const localDomReferenceElement = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_3__.isElement)(localDomReference) ? localDomReference : null;
+  const syncedFloatingElement = localFloatingElement === undefined ? store.state.floatingElement : localFloatingElement;
+  store.useSyncedValue('referenceElement', localDomReference ?? null);
+  store.useSyncedValue('domReferenceElement', localDomReference === undefined ? domReferenceElement : localDomReferenceElement);
+  store.useSyncedValue('floatingElement', syncedFloatingElement);
+  const setPositionReference = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(node => {
+    const computedPositionReference = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_3__.isElement)(node) ? {
+      getBoundingClientRect: () => node.getBoundingClientRect(),
+      getClientRects: () => node.getClientRects(),
+      contextElement: node
+    } : node;
+    // Store the positionReference in state if the DOM reference is specified externally via the
+    // `elements.reference` option. This ensures that it won't be overridden on future renders.
+    setPositionReferenceRaw(computedPositionReference);
+    position.refs.setReference(computedPositionReference);
+  }, [position.refs]);
+  const setReference = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(node => {
+    if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_3__.isElement)(node) || node === null) {
+      domReferenceRef.current = node;
+      setLocalDomReference(node);
+    }
+
+    // Backwards-compatibility for passing a virtual element to `reference`
+    // after it has set the DOM reference.
+    if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_3__.isElement)(position.refs.reference.current) || position.refs.reference.current === null ||
+    // Don't allow setting virtual elements using the old technique back to
+    // `null` to support `positionReference` + an unstable `reference`
+    // callback ref.
+    node !== null && !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_3__.isElement)(node)) {
+      position.refs.setReference(node);
+    }
+  }, [position.refs, setLocalDomReference]);
+  const setFloating = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(node => {
+    setLocalFloatingElement(node);
+    position.refs.setFloating(node);
+  }, [position.refs]);
+  const refs = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    ...position.refs,
+    setReference,
+    setFloating,
+    setPositionReference,
+    domReference: domReferenceRef
+  }), [position.refs, setReference, setFloating, setPositionReference]);
+  const elements = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    ...position.elements,
+    domReference: domReferenceElement
+  }), [position.elements, domReferenceElement]);
+  const context = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    ...position,
+    dataRef: store.context.dataRef,
+    open,
+    onOpenChange: store.setOpen,
+    events: store.context.events,
+    floatingId,
+    refs,
+    elements,
+    nodeId,
+    rootStore: store
+  }), [position, refs, elements, nodeId, store, open, floatingId]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    if (domReferenceElement) {
+      domReferenceRef.current = domReferenceElement;
+    }
+  }, [domReferenceElement]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    store.context.dataRef.current.floatingContext = context;
+    const node = tree?.nodesRef.current.find(n => n.id === nodeId);
+    if (node) {
+      node.context = context;
+    }
+  });
+  return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    ...position,
+    context,
+    refs,
+    elements,
+    rootStore: store
+  }), [position, refs, elements, context, store]);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/hooks/useFloatingRootContext.mjs"
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/hooks/useFloatingRootContext.mjs ***!
+  \****************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useFloatingRootContext: () => (/* binding */ useFloatingRootContext)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _base_ui_utils_useId__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useId */ "./node_modules/@base-ui/utils/useId.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/useRefWithInit */ "./node_modules/@base-ui/utils/useRefWithInit.mjs");
+/* harmony import */ var _utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/popups/index.mjs */ "./node_modules/@base-ui/react/utils/popups/popupTriggerMap.mjs");
+/* harmony import */ var _components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/FloatingTree.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingTree.mjs");
+/* harmony import */ var _components_FloatingRootStore_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/FloatingRootStore.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingRootStore.mjs");
+'use client';
+
+
+
+
+
+
+
+
+function useFloatingRootContext(options) {
+  const {
+    open = false,
+    onOpenChange,
+    elements = {}
+  } = options;
+  const floatingId = (0,_base_ui_utils_useId__WEBPACK_IMPORTED_MODULE_1__.useId)();
+  const nested = (0,_components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_5__.useFloatingParentNodeId)() != null;
+  if (true) {
+    const optionDomReference = elements.reference;
+    if (optionDomReference && !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isElement)(optionDomReference)) {
+      console.error('Cannot pass a virtual element to the `elements.reference` option,', 'as it must be a real DOM element. Use `context.setPositionReference()`', 'instead.');
+    }
+  }
+  const store = (0,_base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_3__.useRefWithInit)(() => new _components_FloatingRootStore_mjs__WEBPACK_IMPORTED_MODULE_6__.FloatingRootStore({
+    open,
+    transitionStatus: undefined,
+    onOpenChange,
+    referenceElement: elements.reference ?? null,
+    floatingElement: elements.floating ?? null,
+    triggerElements: new _utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_4__.PopupTriggerMap(),
+    floatingId,
+    syncOnly: false,
+    nested
+  })).current;
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    const valuesToSync = {
+      open,
+      floatingId
+    };
+
+    // Only sync elements that are defined to avoid overwriting existing ones
+    if (elements.reference !== undefined) {
+      valuesToSync.referenceElement = elements.reference;
+      valuesToSync.domReferenceElement = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isElement)(elements.reference) ? elements.reference : null;
+    }
+    if (elements.floating !== undefined) {
+      valuesToSync.floatingElement = elements.floating;
+    }
+    store.update(valuesToSync);
+  }, [open, floatingId, elements.reference, elements.floating, store]);
+  store.context.onOpenChange = onOpenChange;
+  store.context.nested = nested;
+  return store;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/hooks/useFocus.mjs"
+/*!**************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/hooks/useFocus.mjs ***!
+  \**************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useFocus: () => (/* binding */ useFocus)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/addEventListener */ "./node_modules/@base-ui/utils/addEventListener.mjs");
+/* harmony import */ var _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/platform */ "./node_modules/@base-ui/utils/platform/os.mjs");
+/* harmony import */ var _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/platform */ "./node_modules/@base-ui/utils/platform/engine.mjs");
+/* harmony import */ var _base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/mergeCleanups */ "./node_modules/@base-ui/utils/mergeCleanups.mjs");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@base-ui/utils/owner.mjs");
+/* harmony import */ var _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @base-ui/utils/useTimeout */ "./node_modules/@base-ui/utils/useTimeout.mjs");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _utils_createAttribute_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils/createAttribute.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/createAttribute.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/element.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/element.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../utils/element.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+const isMacSafari = _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_2__.mac && _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_3__.webkit;
+/**
+ * Opens the floating element while the reference element has focus, like CSS
+ * `:focus`.
+ * @see https://floating-ui.com/docs/useFocus
+ */
+function useFocus(context, props = {}) {
+  const {
+    enabled = true,
+    delay
+  } = props;
+  const store = 'rootStore' in context ? context.rootStore : context;
+  const {
+    events,
+    dataRef
+  } = store.context;
+  const blockFocusRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  // Track which reference should be blocked from re-opening after Escape/press dismissal.
+  const blockedReferenceRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const keyboardModalityRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(true);
+  const timeout = (0,_base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_6__.useTimeout)();
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    const domReference = store.select('domReferenceElement');
+    if (!enabled) {
+      return undefined;
+    }
+    const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.getWindow)(domReference);
+
+    // If the reference was focused and the user left the tab/window, and the
+    // floating element was not open, the focus should be blocked when they
+    // return to the tab/window.
+    function onBlur() {
+      const currentDomReference = store.select('domReferenceElement');
+      if (!store.select('open') && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.isHTMLElement)(currentDomReference) && currentDomReference === (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_10__.activeElement)((0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_5__.ownerDocument)(currentDomReference))) {
+        blockFocusRef.current = true;
+      }
+    }
+    function onKeyDown() {
+      keyboardModalityRef.current = true;
+    }
+    function onPointerDown() {
+      keyboardModalityRef.current = false;
+    }
+    return (0,_base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_4__.mergeCleanups)((0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(win, 'blur', onBlur), isMacSafari && (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(win, 'keydown', onKeyDown, true), isMacSafari && (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(win, 'pointerdown', onPointerDown, true));
+  }, [store, enabled]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (!enabled) {
+      return undefined;
+    }
+    function onOpenChangeLocal(details) {
+      if (details.reason === _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_12__.triggerPress || details.reason === _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_12__.escapeKey) {
+        const referenceElement = store.select('domReferenceElement');
+        if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.isElement)(referenceElement)) {
+          blockedReferenceRef.current = referenceElement;
+          blockFocusRef.current = true;
+        }
+      }
+    }
+    events.on('openchange', onOpenChangeLocal);
+    return () => {
+      events.off('openchange', onOpenChangeLocal);
+    };
+  }, [events, enabled, store]);
+  const reference = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => {
+    function resetBlockedFocus() {
+      blockFocusRef.current = false;
+      blockedReferenceRef.current = null;
+    }
+    return {
+      onMouseLeave() {
+        resetBlockedFocus();
+      },
+      onFocus(event) {
+        const focusTarget = event.currentTarget;
+        if (blockFocusRef.current) {
+          if (blockedReferenceRef.current === focusTarget) {
+            return;
+          }
+          resetBlockedFocus();
+        }
+        const target = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_10__.getTarget)(event.nativeEvent);
+        if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.isElement)(target)) {
+          // Safari fails to match `:focus-visible` if focus was initially
+          // outside the document.
+          if (isMacSafari && !event.relatedTarget) {
+            if (!keyboardModalityRef.current && !(0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_9__.isTypeableElement)(target)) {
+              return;
+            }
+          } else if (!(0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_9__.matchesFocusVisible)(target)) {
+            return;
+          }
+        }
+        const movedFromOtherEnabledTrigger = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_9__.isTargetInsideEnabledTrigger)(event.relatedTarget, store.context.triggerElements);
+        const {
+          nativeEvent,
+          currentTarget
+        } = event;
+        const delayValue = typeof delay === 'function' ? delay() : delay;
+        if (store.select('open') && movedFromOtherEnabledTrigger || delayValue === 0 || delayValue === undefined) {
+          store.setOpen(true, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_11__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_12__.triggerFocus, nativeEvent, currentTarget));
+          return;
+        }
+        timeout.start(delayValue, () => {
+          if (blockFocusRef.current) {
+            return;
+          }
+          store.setOpen(true, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_11__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_12__.triggerFocus, nativeEvent, currentTarget));
+        });
+      },
+      onBlur(event) {
+        resetBlockedFocus();
+        const relatedTarget = event.relatedTarget;
+        const nativeEvent = event.nativeEvent;
+
+        // Hit the non-modal focus management portal guard. Focus will be
+        // moved into the floating element immediately after.
+        const movedToFocusGuard = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.isElement)(relatedTarget) && relatedTarget.hasAttribute((0,_utils_createAttribute_mjs__WEBPACK_IMPORTED_MODULE_8__.createAttribute)('focus-guard')) && relatedTarget.getAttribute('data-type') === 'outside';
+
+        // Wait for the window blur listener to fire.
+        timeout.start(0, () => {
+          const domReference = store.select('domReferenceElement');
+          const activeEl = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_10__.activeElement)((0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_5__.ownerDocument)(domReference));
+
+          // Focus left the page, keep it open.
+          if (!relatedTarget && activeEl === domReference) {
+            return;
+          }
+
+          // When focusing the reference element (e.g. regular click), then
+          // clicking into the floating element, prevent it from hiding.
+          // Note: it must be focusable, e.g. `tabindex="-1"`.
+          // We can not rely on relatedTarget to point to the correct element
+          // as it will only point to the shadow host of the newly focused element
+          // and not the element that actually has received focus if it is located
+          // inside a shadow root.
+          if ((0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_10__.contains)(dataRef.current.floatingContext?.refs.floating.current, activeEl) || (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_10__.contains)(domReference, activeEl) || movedToFocusGuard) {
+            return;
+          }
+
+          // If the next focused element is one of the triggers, do not close
+          // the floating element. The focus handler of that trigger will
+          // handle the open state.
+          const nextFocusedElement = relatedTarget ?? activeEl;
+          if ((0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_9__.isTargetInsideEnabledTrigger)(nextFocusedElement, store.context.triggerElements)) {
+            return;
+          }
+          store.setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_11__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_12__.triggerFocus, nativeEvent));
+        });
+      }
+    };
+  }, [dataRef, delay, store, timeout]);
+  return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => enabled ? {
+    reference,
+    trigger: reference
+  } : {}, [enabled, reference]);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverFloatingInteraction.mjs"
+/*!*********************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverFloatingInteraction.mjs ***!
+  \*********************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useHoverFloatingInteraction: () => (/* binding */ useHoverFloatingInteraction)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/addEventListener */ "./node_modules/@base-ui/utils/addEventListener.mjs");
+/* harmony import */ var _base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/mergeCleanups */ "./node_modules/@base-ui/utils/mergeCleanups.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@base-ui/utils/owner.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @base-ui/utils/useTimeout */ "./node_modules/@base-ui/utils/useTimeout.mjs");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var _components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../components/FloatingTree.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingTree.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../utils/element.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+/* harmony import */ var _utils_nodes_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../utils/nodes.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/nodes.mjs");
+/* harmony import */ var _useHoverInteractionSharedState_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./useHoverInteractionSharedState.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverInteractionSharedState.mjs");
+/* harmony import */ var _useHoverInteractionSharedState_mjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./useHoverShared.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/element.mjs");
+/* harmony import */ var _useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./useHoverShared.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverShared.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Provides hover interactions that should be attached to the floating element.
+ */
+function useHoverFloatingInteraction(context, parameters = {}) {
+  const {
+    enabled = true,
+    closeDelay: closeDelayProp = 0,
+    nodeId: nodeIdProp
+  } = parameters;
+  const store = 'rootStore' in context ? context.rootStore : context;
+  const open = store.useState('open');
+  const floatingElement = store.useState('floatingElement');
+  const domReferenceElement = store.useState('domReferenceElement');
+  const {
+    dataRef
+  } = store.context;
+  const tree = (0,_components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_10__.useFloatingTree)();
+  const parentId = (0,_components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_10__.useFloatingParentNodeId)();
+  const instance = (0,_useHoverInteractionSharedState_mjs__WEBPACK_IMPORTED_MODULE_13__.useHoverInteractionSharedState)(store);
+  const childClosedTimeout = (0,_base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_6__.useTimeout)();
+  const isClickLikeOpenEvent = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_5__.useStableCallback)(() => {
+    return (0,_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_15__.isClickLikeOpenEvent)(dataRef.current.openEvent?.type, instance.interactedInside);
+  });
+  const isHoverOpen = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_5__.useStableCallback)(() => {
+    return (0,_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_15__.isHoverOpenEvent)(dataRef.current.openEvent?.type);
+  });
+  const clearPointerEvents = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_5__.useStableCallback)(() => {
+    (0,_useHoverInteractionSharedState_mjs__WEBPACK_IMPORTED_MODULE_13__.clearSafePolygonPointerEventsMutation)(instance);
+  });
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_3__.useIsoLayoutEffect)(() => {
+    if (!open) {
+      instance.pointerType = undefined;
+      instance.restTimeoutPending = false;
+      instance.interactedInside = false;
+      clearPointerEvents();
+    }
+  }, [open, instance, clearPointerEvents]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    return clearPointerEvents;
+  }, [clearPointerEvents]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_3__.useIsoLayoutEffect)(() => {
+    if (!enabled) {
+      return undefined;
+    }
+    if (open && instance.handleCloseOptions?.blockPointerEvents && isHoverOpen() && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.isElement)(domReferenceElement) && floatingElement) {
+      const ref = domReferenceElement;
+      const floatingEl = floatingElement;
+      const doc = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_4__.ownerDocument)(floatingElement);
+      const parentFloating = tree?.nodesRef.current.find(node => node.id === parentId)?.context?.elements.floating;
+      if (parentFloating) {
+        parentFloating.style.pointerEvents = '';
+      }
+
+      // A keep-mounted submenu can appear in the tree before it opens, so a
+      // cached scope or parent lookup may resolve to the submenu itself. That
+      // would not shield sibling items in the parent menu.
+      const cachedScopeElement = instance.pointerEventsScopeElement !== floatingEl ? instance.pointerEventsScopeElement : null;
+      const parentScopeElement = parentFloating !== floatingEl ? parentFloating : null;
+      const scopeElement = instance.handleCloseOptions?.getScope?.() ?? cachedScopeElement ?? parentScopeElement ?? ref.closest('[data-rootownerid]') ?? doc.body;
+      (0,_useHoverInteractionSharedState_mjs__WEBPACK_IMPORTED_MODULE_13__.applySafePolygonPointerEventsMutation)(instance, {
+        scopeElement,
+        referenceElement: ref,
+        floatingElement: floatingEl
+      });
+      return () => {
+        clearPointerEvents();
+      };
+    }
+    return undefined;
+  }, [enabled, open, domReferenceElement, floatingElement, instance, isHoverOpen, tree, parentId, clearPointerEvents]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (!enabled) {
+      return undefined;
+    }
+    function hasParentChildren() {
+      return !!(tree && parentId && (0,_utils_nodes_mjs__WEBPACK_IMPORTED_MODULE_12__.getNodeChildren)(tree.nodesRef.current, parentId).length > 0);
+    }
+    function closeWithDelay(event) {
+      const closeDelay = (0,_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_15__.getDelay)(closeDelayProp, 'close', instance.pointerType);
+      const close = () => {
+        store.setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_8__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_9__.triggerHover, event));
+        tree?.events.emit('floating.closed', event);
+      };
+      if (closeDelay) {
+        instance.openChangeTimeout.start(closeDelay, close);
+      } else {
+        instance.openChangeTimeout.clear();
+        close();
+      }
+    }
+    function handleInteractInside(event) {
+      const target = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_11__.getTarget)(event);
+      if (!(0,_useHoverInteractionSharedState_mjs__WEBPACK_IMPORTED_MODULE_14__.isInteractiveElement)(target)) {
+        instance.interactedInside = false;
+        return;
+      }
+      instance.interactedInside = target?.closest('[aria-haspopup]') != null;
+    }
+    function onFloatingMouseEnter() {
+      instance.openChangeTimeout.clear();
+      childClosedTimeout.clear();
+      tree?.events.off('floating.closed', onNodeClosed);
+      clearPointerEvents();
+    }
+    function onFloatingMouseLeave(event) {
+      if (hasParentChildren() && tree) {
+        tree.events.on('floating.closed', onNodeClosed);
+        return;
+      }
+      if ((0,_useHoverInteractionSharedState_mjs__WEBPACK_IMPORTED_MODULE_14__.isTargetInsideEnabledTrigger)(event.relatedTarget, store.context.triggerElements)) {
+        // If the mouse is leaving the reference element to another trigger, don't explicitly close the popup
+        // as it will be moved.
+        return;
+      }
+      const currentNodeId = dataRef.current.floatingContext?.nodeId ?? nodeIdProp;
+      const relatedTarget = event.relatedTarget;
+      const isMovingIntoDescendantFloating = tree && currentNodeId && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.isElement)(relatedTarget) && (0,_utils_nodes_mjs__WEBPACK_IMPORTED_MODULE_12__.getNodeChildren)(tree.nodesRef.current, currentNodeId, false).some(node => (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_11__.contains)(node.context?.elements.floating, relatedTarget));
+      if (isMovingIntoDescendantFloating) {
+        return;
+      }
+
+      // If the safePolygon handler is active, let it handle the close logic.
+      if (instance.handler) {
+        instance.handler(event);
+        return;
+      }
+      clearPointerEvents();
+      if (isHoverOpen() && !isClickLikeOpenEvent()) {
+        closeWithDelay(event);
+      }
+    }
+    function onNodeClosed(event) {
+      if (!tree || !parentId || hasParentChildren()) {
+        return;
+      }
+      // Allow the mouseenter event to fire in case child was closed because mouse moved into parent.
+      childClosedTimeout.start(0, () => {
+        tree.events.off('floating.closed', onNodeClosed);
+        store.setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_8__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_9__.triggerHover, event));
+        tree.events.emit('floating.closed', event);
+      });
+    }
+    const floating = floatingElement;
+    return (0,_base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_2__.mergeCleanups)(floating && (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(floating, 'mouseenter', onFloatingMouseEnter), floating && (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(floating, 'mouseleave', onFloatingMouseLeave), floating && (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(floating, 'pointerdown', handleInteractInside, true), () => {
+      tree?.events.off('floating.closed', onNodeClosed);
+    });
+  }, [enabled, floatingElement, store, dataRef, closeDelayProp, nodeIdProp, isHoverOpen, isClickLikeOpenEvent, clearPointerEvents, instance, tree, parentId, childClosedTimeout]);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverInteractionSharedState.mjs"
+/*!************************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverInteractionSharedState.mjs ***!
+  \************************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   HoverInteraction: () => (/* binding */ HoverInteraction),
+/* harmony export */   applySafePolygonPointerEventsMutation: () => (/* binding */ applySafePolygonPointerEventsMutation),
+/* harmony export */   clearSafePolygonPointerEventsMutation: () => (/* binding */ clearSafePolygonPointerEventsMutation),
+/* harmony export */   isInteractiveElement: () => (/* reexport safe */ _utils_mjs__WEBPACK_IMPORTED_MODULE_3__.isInteractiveElement),
+/* harmony export */   useHoverInteractionSharedState: () => (/* binding */ useHoverInteractionSharedState)
+/* harmony export */ });
+/* harmony import */ var _base_ui_utils_useOnMount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/utils/useOnMount */ "./node_modules/@base-ui/utils/useOnMount.mjs");
+/* harmony import */ var _base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useRefWithInit */ "./node_modules/@base-ui/utils/useRefWithInit.mjs");
+/* harmony import */ var _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useTimeout */ "./node_modules/@base-ui/utils/useTimeout.mjs");
+/* harmony import */ var _utils_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/element.mjs");
+'use client';
+
+
+
+
+
+
+class HoverInteraction {
+  constructor() {
+    this.pointerType = undefined;
+    this.interactedInside = false;
+    this.handler = undefined;
+    this.blockMouseMove = true;
+    this.performedPointerEventsMutation = false;
+    this.pointerEventsScopeElement = null;
+    this.pointerEventsReferenceElement = null;
+    this.pointerEventsFloatingElement = null;
+    this.restTimeoutPending = false;
+    this.openChangeTimeout = new _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_2__.Timeout();
+    this.restTimeout = new _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_2__.Timeout();
+    this.handleCloseOptions = undefined;
+  }
+  static create() {
+    return new HoverInteraction();
+  }
+  dispose = () => {
+    this.openChangeTimeout.clear();
+    this.restTimeout.clear();
+  };
+  disposeEffect = () => {
+    return this.dispose;
+  };
+}
+const pointerEventsMutationOwnerByScopeElement = new WeakMap();
+function clearSafePolygonPointerEventsMutation(instance) {
+  if (!instance.performedPointerEventsMutation) {
+    return;
+  }
+  const scopeElement = instance.pointerEventsScopeElement;
+  if (scopeElement && pointerEventsMutationOwnerByScopeElement.get(scopeElement) === instance) {
+    instance.pointerEventsScopeElement?.style.removeProperty('pointer-events');
+    instance.pointerEventsReferenceElement?.style.removeProperty('pointer-events');
+    instance.pointerEventsFloatingElement?.style.removeProperty('pointer-events');
+    pointerEventsMutationOwnerByScopeElement.delete(scopeElement);
+  }
+  instance.performedPointerEventsMutation = false;
+  instance.pointerEventsScopeElement = null;
+  instance.pointerEventsReferenceElement = null;
+  instance.pointerEventsFloatingElement = null;
+}
+function applySafePolygonPointerEventsMutation(instance, options) {
+  const {
+    scopeElement,
+    referenceElement,
+    floatingElement
+  } = options;
+  const existingOwner = pointerEventsMutationOwnerByScopeElement.get(scopeElement);
+  if (existingOwner && existingOwner !== instance) {
+    clearSafePolygonPointerEventsMutation(existingOwner);
+  }
+  clearSafePolygonPointerEventsMutation(instance);
+  instance.performedPointerEventsMutation = true;
+  instance.pointerEventsScopeElement = scopeElement;
+  instance.pointerEventsReferenceElement = referenceElement;
+  instance.pointerEventsFloatingElement = floatingElement;
+  pointerEventsMutationOwnerByScopeElement.set(scopeElement, instance);
+  scopeElement.style.pointerEvents = 'none';
+  referenceElement.style.pointerEvents = 'auto';
+  floatingElement.style.pointerEvents = 'auto';
+}
+function useHoverInteractionSharedState(store) {
+  const data = store.context.dataRef.current;
+  const instance = (0,_base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_1__.useRefWithInit)(() => data.hoverInteractionState ?? HoverInteraction.create()).current;
+  if (!data.hoverInteractionState) {
+    data.hoverInteractionState = instance;
+  }
+  ;(0,_base_ui_utils_useOnMount__WEBPACK_IMPORTED_MODULE_0__.useOnMount)(data.hoverInteractionState.disposeEffect);
+  return data.hoverInteractionState;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverReferenceInteraction.mjs"
+/*!**********************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverReferenceInteraction.mjs ***!
+  \**********************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useHoverReferenceInteraction: () => (/* binding */ useHoverReferenceInteraction)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "react-dom");
+/* harmony import */ var _base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/addEventListener */ "./node_modules/@base-ui/utils/addEventListener.mjs");
+/* harmony import */ var _base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/mergeCleanups */ "./node_modules/@base-ui/utils/mergeCleanups.mjs");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@base-ui/utils/owner.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @base-ui/utils/useValueAsRef */ "./node_modules/@base-ui/utils/useValueAsRef.mjs");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var _components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../components/FloatingTree.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingTree.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../utils/element.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+/* harmony import */ var _utils_event_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../utils/event.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs");
+/* harmony import */ var _useHoverInteractionSharedState_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./useHoverInteractionSharedState.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverInteractionSharedState.mjs");
+/* harmony import */ var _useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./useHoverShared.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverShared.mjs");
+/* harmony import */ var _useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./useHoverShared.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/element.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const EMPTY_REF = {
+  current: null
+};
+
+/**
+ * Provides hover interactions that should be attached to reference or trigger
+ * elements.
+ */
+function useHoverReferenceInteraction(context, props = {}) {
+  const {
+    enabled = true,
+    delay = 0,
+    handleClose = null,
+    mouseOnly = false,
+    restMs = 0,
+    move = true,
+    triggerElementRef = EMPTY_REF,
+    externalTree,
+    isActiveTrigger = true,
+    getHandleCloseContext,
+    isClosing,
+    shouldOpen: shouldOpenProp,
+    guardStaleOpen = false
+  } = props;
+  const store = 'rootStore' in context ? context.rootStore : context;
+  const {
+    dataRef,
+    events
+  } = store.context;
+  const tree = (0,_components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_10__.useFloatingTree)(externalTree);
+  const instance = (0,_useHoverInteractionSharedState_mjs__WEBPACK_IMPORTED_MODULE_13__.useHoverInteractionSharedState)(store);
+  const isHoverCloseActiveRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const handleCloseRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_6__.useValueAsRef)(handleClose);
+  const delayRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_6__.useValueAsRef)(delay);
+  const restMsRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_6__.useValueAsRef)(restMs);
+  const enabledRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_6__.useValueAsRef)(enabled);
+  const shouldOpenRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_6__.useValueAsRef)(shouldOpenProp);
+  const isClosingRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_6__.useValueAsRef)(isClosing);
+  const isClickLikeOpenEvent = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_5__.useStableCallback)(() => {
+    return (0,_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_14__.isClickLikeOpenEvent)(dataRef.current.openEvent?.type, instance.interactedInside);
+  });
+  const checkShouldOpen = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_5__.useStableCallback)(() => {
+    return shouldOpenRef.current?.() !== false;
+  });
+  const isOverInactiveTrigger = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_5__.useStableCallback)((currentDomReference, currentTarget, target) => {
+    const allTriggers = store.context.triggerElements;
+
+    // Fast path for normal usage where handlers are attached directly to triggers.
+    if (allTriggers.hasElement(currentTarget)) {
+      return !currentDomReference || !(0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_11__.contains)(currentDomReference, currentTarget);
+    }
+
+    // Fallback for delegated/wrapper usage where currentTarget may be outside the trigger map.
+    if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.isElement)(target)) {
+      return false;
+    }
+    const targetElement = target;
+    return allTriggers.hasMatchingElement(trigger => (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_11__.contains)(trigger, targetElement)) && (!currentDomReference || !(0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_11__.contains)(currentDomReference, targetElement));
+  });
+  const cleanupMouseMoveHandler = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_5__.useStableCallback)(() => {
+    if (!instance.handler) {
+      return;
+    }
+    const doc = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_4__.ownerDocument)(store.select('domReferenceElement'));
+    doc.removeEventListener('mousemove', instance.handler);
+    instance.handler = undefined;
+  });
+  const clearPointerEvents = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_5__.useStableCallback)(() => {
+    (0,_useHoverInteractionSharedState_mjs__WEBPACK_IMPORTED_MODULE_13__.clearSafePolygonPointerEventsMutation)(instance);
+  });
+  if (isActiveTrigger) {
+    // eslint-disable-next-line no-underscore-dangle
+    instance.handleCloseOptions = handleCloseRef.current?.__options;
+  }
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => cleanupMouseMoveHandler, [cleanupMouseMoveHandler]);
+
+  // When closing before opening, clear the delay timeouts to cancel it
+  // from showing.
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (!enabled) {
+      return undefined;
+    }
+    function onOpenChangeLocal(details) {
+      if (!details.open) {
+        isHoverCloseActiveRef.current = details.reason === _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_9__.triggerHover;
+        cleanupMouseMoveHandler();
+        instance.openChangeTimeout.clear();
+        instance.restTimeout.clear();
+        instance.blockMouseMove = true;
+        instance.restTimeoutPending = false;
+      } else {
+        isHoverCloseActiveRef.current = false;
+      }
+    }
+    events.on('openchange', onOpenChangeLocal);
+    return () => {
+      events.off('openchange', onOpenChangeLocal);
+    };
+  }, [enabled, events, instance, cleanupMouseMoveHandler]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (!enabled) {
+      return undefined;
+    }
+    function closeWithDelay(event, runElseBranch = true) {
+      const closeDelay = (0,_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_14__.getDelay)(delayRef.current, 'close', instance.pointerType);
+      if (closeDelay) {
+        instance.openChangeTimeout.start(closeDelay, () => {
+          store.setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_8__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_9__.triggerHover, event));
+          tree?.events.emit('floating.closed', event);
+        });
+      } else if (runElseBranch) {
+        instance.openChangeTimeout.clear();
+        store.setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_8__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_9__.triggerHover, event));
+        tree?.events.emit('floating.closed', event);
+      }
+    }
+    const trigger = triggerElementRef.current ?? (isActiveTrigger ? store.select('domReferenceElement') : null);
+    if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.isElement)(trigger)) {
+      return undefined;
+    }
+    function onMouseEnter(event) {
+      instance.openChangeTimeout.clear();
+      instance.blockMouseMove = false;
+      if (mouseOnly && !(0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_12__.isMouseLikePointerType)(instance.pointerType)) {
+        return;
+      }
+
+      // Only rest delay is set; there's no fallback delay.
+      // This will be handled by `onMouseMove`.
+      const restMsValue = (0,_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_14__.getRestMs)(restMsRef.current);
+      const openDelay = (0,_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_14__.getDelay)(delayRef.current, 'open', instance.pointerType);
+      const eventTarget = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_11__.getTarget)(event);
+      const currentTarget = event.currentTarget ?? null;
+      const currentDomReference = store.select('domReferenceElement');
+      let triggerNode = currentTarget;
+
+      // Wrapper/delegated mode: resolve the actual trigger from the event target.
+      if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.isElement)(eventTarget) && !store.context.triggerElements.hasElement(eventTarget)) {
+        for (const triggerElement of store.context.triggerElements.elements()) {
+          if ((0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_11__.contains)(triggerElement, eventTarget)) {
+            triggerNode = triggerElement;
+            break;
+          }
+        }
+      }
+
+      // Wrapper/delegated mode fallback: if the wrapper contains the active trigger,
+      // treat this as re-entering that active trigger.
+      if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.isElement)(currentTarget) && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.isElement)(currentDomReference) && !store.context.triggerElements.hasElement(currentTarget) && (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_11__.contains)(currentTarget, currentDomReference)) {
+        triggerNode = currentDomReference;
+      }
+      const isOverInactive = triggerNode == null ? false : isOverInactiveTrigger(currentDomReference, triggerNode, eventTarget);
+      const isOpen = store.select('open');
+      const isInClosingTransition = isClosingRef.current?.() ?? store.select('transitionStatus') === 'ending';
+      const isHoverCloseTransition = !isOpen && isInClosingTransition && isHoverCloseActiveRef.current;
+      const isReenteringSameTriggerDuringCloseTransition = !isOverInactive && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.isElement)(triggerNode) && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.isElement)(currentDomReference) && (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_11__.contains)(currentDomReference, triggerNode) && isHoverCloseTransition;
+      const isRestOnlyDelay = restMsValue > 0 && !openDelay;
+      const shouldOpenImmediately = isOverInactive && (isOpen || isHoverCloseTransition) || isReenteringSameTriggerDuringCloseTransition;
+      const shouldOpen = !isOpen || isOverInactive;
+
+      // Open immediately when moving between triggers while open, or during
+      // a hover-driven close transition (including same-trigger re-entry).
+      if (shouldOpenImmediately) {
+        if (checkShouldOpen()) {
+          store.setOpen(true, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_8__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_9__.triggerHover, event, triggerNode));
+        }
+        return;
+      }
+      if (isRestOnlyDelay) {
+        return;
+      }
+      if (openDelay) {
+        instance.openChangeTimeout.start(openDelay, () => {
+          if (shouldOpen && checkShouldOpen()) {
+            store.setOpen(true, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_8__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_9__.triggerHover, event, triggerNode));
+          }
+        });
+      } else if (shouldOpen) {
+        if (checkShouldOpen()) {
+          store.setOpen(true, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_8__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_9__.triggerHover, event, triggerNode));
+        }
+      }
+    }
+    function onMouseLeave(event) {
+      if (isClickLikeOpenEvent()) {
+        clearPointerEvents();
+        return;
+      }
+      cleanupMouseMoveHandler();
+      const domReferenceElement = store.select('domReferenceElement');
+      const doc = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_4__.ownerDocument)(domReferenceElement);
+      instance.restTimeout.clear();
+      instance.restTimeoutPending = false;
+      const handleCloseContextBase = dataRef.current.floatingContext ?? getHandleCloseContext?.();
+      if ((0,_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_15__.isTargetInsideEnabledTrigger)(event.relatedTarget, store.context.triggerElements)) {
+        return;
+      }
+      if (handleCloseRef.current && handleCloseContextBase) {
+        if (!store.select('open')) {
+          instance.openChangeTimeout.clear();
+        }
+        const currentTrigger = triggerElementRef.current;
+        instance.handler = handleCloseRef.current({
+          ...handleCloseContextBase,
+          tree,
+          x: event.clientX,
+          y: event.clientY,
+          onClose() {
+            clearPointerEvents();
+            cleanupMouseMoveHandler();
+            if (enabledRef.current && !isClickLikeOpenEvent() && currentTrigger === store.select('domReferenceElement')) {
+              closeWithDelay(event, true);
+            }
+          }
+        });
+        doc.addEventListener('mousemove', instance.handler);
+        instance.handler(event);
+        return;
+      }
+      const shouldClose = instance.pointerType === 'touch' ? !(0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_11__.contains)(store.select('floatingElement'), event.relatedTarget) : true;
+      if (shouldClose) {
+        closeWithDelay(event);
+      }
+    }
+
+    // Backup cancellation for Chrome's dropped `mouseleave` — see `guardStaleOpen`.
+    function onMouseOut(event) {
+      if ((0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_11__.contains)(trigger, event.relatedTarget)) {
+        return; // moved within the trigger's own subtree
+      }
+      instance.openChangeTimeout.clear();
+      instance.restTimeout.clear();
+      instance.restTimeoutPending = false;
+    }
+    const staleOpenGuard = guardStaleOpen ? (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(trigger, 'mouseout', onMouseOut) : undefined;
+    if (move) {
+      return (0,_base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_3__.mergeCleanups)((0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(trigger, 'mousemove', onMouseEnter, {
+        once: true
+      }), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(trigger, 'mouseenter', onMouseEnter), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(trigger, 'mouseleave', onMouseLeave), staleOpenGuard);
+    }
+    return (0,_base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_3__.mergeCleanups)((0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(trigger, 'mouseenter', onMouseEnter), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(trigger, 'mouseleave', onMouseLeave), staleOpenGuard);
+  }, [cleanupMouseMoveHandler, clearPointerEvents, dataRef, delayRef, store, enabled, handleCloseRef, instance, isActiveTrigger, isOverInactiveTrigger, isClickLikeOpenEvent, mouseOnly, move, restMsRef, triggerElementRef, tree, enabledRef, getHandleCloseContext, isClosingRef, checkShouldOpen, guardStaleOpen]);
+  return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => {
+    if (!enabled) {
+      return undefined;
+    }
+    function setPointerRef(event) {
+      instance.pointerType = event.pointerType;
+    }
+    return {
+      onPointerDown: setPointerRef,
+      onPointerEnter: setPointerRef,
+      onMouseMove(event) {
+        const {
+          nativeEvent
+        } = event;
+        const trigger = event.currentTarget;
+        const currentDomReference = store.select('domReferenceElement');
+        const currentOpen = store.select('open');
+        const isOverInactive = isOverInactiveTrigger(currentDomReference, trigger, event.target);
+        if (mouseOnly && !(0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_12__.isMouseLikePointerType)(instance.pointerType)) {
+          return;
+        }
+        if (currentOpen && isOverInactive && instance.handleCloseOptions?.blockPointerEvents) {
+          const floatingElement = store.select('floatingElement');
+          if (floatingElement) {
+            const scopeElement = instance.handleCloseOptions?.getScope?.() ?? trigger.ownerDocument.body;
+            (0,_useHoverInteractionSharedState_mjs__WEBPACK_IMPORTED_MODULE_13__.applySafePolygonPointerEventsMutation)(instance, {
+              scopeElement,
+              referenceElement: trigger,
+              floatingElement
+            });
+          }
+        }
+        const restMsValue = (0,_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_14__.getRestMs)(restMsRef.current);
+        if (currentOpen && !isOverInactive || restMsValue === 0) {
+          return;
+        }
+        if (!isOverInactive && instance.restTimeoutPending && event.movementX ** 2 + event.movementY ** 2 < 2) {
+          return;
+        }
+        instance.restTimeout.clear();
+        function handleMouseMove() {
+          instance.restTimeoutPending = false;
+
+          // A delayed hover open should not override a click-like open that happened
+          // while the hover delay was pending.
+          if (isClickLikeOpenEvent()) {
+            return;
+          }
+          const latestOpen = store.select('open');
+          if (!instance.blockMouseMove && (!latestOpen || isOverInactive) && checkShouldOpen()) {
+            store.setOpen(true, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_8__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_9__.triggerHover, nativeEvent, trigger));
+          }
+        }
+        if (instance.pointerType === 'touch') {
+          react_dom__WEBPACK_IMPORTED_MODULE_1__.flushSync(() => {
+            handleMouseMove();
+          });
+        } else if (isOverInactive && currentOpen) {
+          handleMouseMove();
+        } else {
+          instance.restTimeoutPending = true;
+          instance.restTimeout.start(restMsValue, handleMouseMove);
+        }
+      }
+    };
+  }, [enabled, instance, isClickLikeOpenEvent, isOverInactiveTrigger, mouseOnly, store, restMsRef, checkShouldOpen]);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverShared.mjs"
+/*!********************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverShared.mjs ***!
+  \********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getDelay: () => (/* binding */ getDelay),
+/* harmony export */   getRestMs: () => (/* binding */ getRestMs),
+/* harmony export */   isClickLikeOpenEvent: () => (/* binding */ isClickLikeOpenEvent),
+/* harmony export */   isHoverOpenEvent: () => (/* binding */ isHoverOpenEvent),
+/* harmony export */   isInsideEnabledTrigger: () => (/* reexport safe */ _utils_element_mjs__WEBPACK_IMPORTED_MODULE_1__.isTargetInsideEnabledTrigger)
+/* harmony export */ });
+/* harmony import */ var _utils_event_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/event.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/element.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/element.mjs");
+
+
+function resolveValue(value, pointerType) {
+  if (pointerType != null && !(0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_0__.isMouseLikePointerType)(pointerType)) {
+    return 0;
+  }
+  if (typeof value === 'function') {
+    return value();
+  }
+  return value;
+}
+function getDelay(value, prop, pointerType) {
+  const result = resolveValue(value, pointerType);
+  if (typeof result === 'number') {
+    return result;
+  }
+  return result?.[prop];
+}
+function getRestMs(value) {
+  if (typeof value === 'function') {
+    return value();
+  }
+  return value;
+}
+function isClickLikeOpenEvent(openEventType, interactedInside) {
+  return interactedInside || openEventType === 'click' || openEventType === 'mousedown';
+}
+function isHoverOpenEvent(openEventType) {
+  return openEventType?.includes('mouse') && openEventType !== 'mousedown';
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/hooks/useSyncedFloatingRootContext.mjs"
+/*!**********************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/hooks/useSyncedFloatingRootContext.mjs ***!
+  \**********************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useSyncedFloatingRootContext: () => (/* binding */ useSyncedFloatingRootContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _components_FloatingRootStore_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/FloatingRootStore.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingRootStore.mjs");
+'use client';
+
+
+
+
+
+/**
+ * Keeps a FloatingRootStore in sync with the provided PopupStore.
+ * Uses the provided FloatingRootStore when one exists, otherwise creates one once and updates it on every render.
+ */
+function useSyncedFloatingRootContext(options) {
+  const {
+    popupStore,
+    treatPopupAsFloatingElement = false,
+    floatingRootContext: floatingRootContextProp,
+    floatingId,
+    nested,
+    onOpenChange
+  } = options;
+  const open = popupStore.useState('open');
+  const referenceElement = popupStore.useState('activeTriggerElement');
+  const floatingElement = popupStore.useState(treatPopupAsFloatingElement ? 'popupElement' : 'positionerElement');
+  const triggerElements = popupStore.context.triggerElements;
+  const handleOpenChange = onOpenChange;
+  const internalStoreRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  if (floatingRootContextProp === undefined && internalStoreRef.current === null) {
+    internalStoreRef.current = new _components_FloatingRootStore_mjs__WEBPACK_IMPORTED_MODULE_3__.FloatingRootStore({
+      open,
+      transitionStatus: undefined,
+      referenceElement,
+      floatingElement,
+      triggerElements,
+      onOpenChange: handleOpenChange,
+      floatingId,
+      syncOnly: true,
+      nested
+    });
+  }
+  const store = floatingRootContextProp ?? internalStoreRef.current;
+  popupStore.useSyncedValue('floatingId', floatingId);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    const valuesToSync = {
+      open,
+      floatingId,
+      referenceElement,
+      floatingElement
+    };
+    if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement)(referenceElement)) {
+      valuesToSync.domReferenceElement = referenceElement;
+    }
+    if (store.state.positionReference === store.state.referenceElement) {
+      valuesToSync.positionReference = referenceElement;
+    }
+    store.update(valuesToSync);
+  }, [open, floatingId, referenceElement, floatingElement, store]);
+
+  // Keep non-reactive context values fresh for interactions that call `store.setOpen`.
+  store.context.onOpenChange = handleOpenChange;
+  store.context.nested = nested;
+  return store;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/middleware/arrow.mjs"
+/*!****************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/middleware/arrow.mjs ***!
+  \****************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   arrow: () => (/* binding */ arrow),
+/* harmony export */   baseArrow: () => (/* binding */ baseArrow)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @floating-ui/utils */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs");
+
+/**
+ * Fork of the original `arrow` middleware from Floating UI that allows
+ * configuring the offset parent.
+ */
+const baseArrow = options => ({
+  name: 'arrow',
+  options,
+  async fn(state) {
+    const {
+      x,
+      y,
+      placement,
+      rects,
+      platform,
+      elements,
+      middlewareData
+    } = state;
+    // Since `element` is required, we don't Partial<> the type.
+    const {
+      element,
+      padding = 0,
+      offsetParent = 'real'
+    } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state) || {};
+    if (element == null) {
+      return {};
+    }
+    const paddingObject = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getPaddingObject)(padding);
+    const coords = {
+      x,
+      y
+    };
+    const axis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignmentAxis)(placement);
+    const length = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAxisLength)(axis);
+    const arrowDimensions = await platform.getDimensions(element);
+    const isYAxis = axis === 'y';
+    const minProp = isYAxis ? 'top' : 'left';
+    const maxProp = isYAxis ? 'bottom' : 'right';
+    const clientProp = isYAxis ? 'clientHeight' : 'clientWidth';
+    const endDiff = rects.reference[length] + rects.reference[axis] - coords[axis] - rects.floating[length];
+    const startDiff = coords[axis] - rects.reference[axis];
+    const arrowOffsetParent = offsetParent === 'real' ? await platform.getOffsetParent?.(element) : elements.floating;
+    let clientSize = elements.floating[clientProp] || rects.floating[length];
+
+    // DOM platform can return `window` as the `offsetParent`.
+    if (!clientSize || !(await platform.isElement?.(arrowOffsetParent))) {
+      clientSize = elements.floating[clientProp] || rects.floating[length];
+    }
+    const centerToReference = endDiff / 2 - startDiff / 2;
+
+    // If the padding is large enough that it causes the arrow to no longer be
+    // centered, modify the padding so that it is centered.
+    const largestPossiblePadding = clientSize / 2 - arrowDimensions[length] / 2 - 1;
+    const minPadding = Math.min(paddingObject[minProp], largestPossiblePadding);
+    const maxPadding = Math.min(paddingObject[maxProp], largestPossiblePadding);
+
+    // Make sure the arrow doesn't overflow the floating element if the center
+    // point is outside the floating element's bounds.
+    const min = minPadding;
+    const max = clientSize - arrowDimensions[length] - maxPadding;
+    const center = clientSize / 2 - arrowDimensions[length] / 2 + centerToReference;
+    const offset = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.clamp)(min, center, max);
+
+    // If the reference is small enough that the arrow's padding causes it to
+    // to point to nothing for an aligned placement, adjust the offset of the
+    // floating element itself. To ensure `shift()` continues to take action,
+    // a single reset is performed when this is true.
+    const shouldAddOffset = !middlewareData.arrow && (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(placement) != null && center !== offset && rects.reference[length] / 2 - (center < min ? minPadding : maxPadding) - arrowDimensions[length] / 2 < 0;
+    // eslint-disable-next-line no-nested-ternary
+    const alignmentOffset = shouldAddOffset ? center < min ? center - min : center - max : 0;
+    return {
+      [axis]: coords[axis] + alignmentOffset,
+      data: {
+        [axis]: offset,
+        centerOffset: center - offset - alignmentOffset,
+        ...(shouldAddOffset && {
+          alignmentOffset
+        })
+      },
+      reset: shouldAddOffset
+    };
+  }
+});
+
+/**
+ * Provides data to position an inner element of the floating element so that it
+ * appears centered to the reference element.
+ * This wraps the core `arrow` middleware to allow React refs as the element.
+ * @see https://floating-ui.com/docs/arrow
+ */
+const arrow = (options, deps) => ({
+  ...baseArrow(options),
+  options: [options, deps]
+});
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/safePolygon.mjs"
+/*!***********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/safePolygon.mjs ***!
+  \***********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   safePolygon: () => (/* binding */ safePolygon)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useTimeout */ "./node_modules/@base-ui/utils/useTimeout.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils/element.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+/* harmony import */ var _utils_nodes_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/nodes.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/nodes.mjs");
+
+
+
+
+
+/* eslint-disable no-nested-ternary */
+
+const CURSOR_SPEED_THRESHOLD = 0.1;
+const CURSOR_SPEED_THRESHOLD_SQUARED = CURSOR_SPEED_THRESHOLD * CURSOR_SPEED_THRESHOLD;
+const POLYGON_BUFFER = 0.5;
+function hasIntersectingEdge(pointX, pointY, xi, yi, xj, yj) {
+  return yi >= pointY !== yj >= pointY && pointX <= (xj - xi) * (pointY - yi) / (yj - yi) + xi;
+}
+function isPointInQuadrilateral(pointX, pointY, x1, y1, x2, y2, x3, y3, x4, y4) {
+  let isInsideValue = false;
+  if (hasIntersectingEdge(pointX, pointY, x1, y1, x2, y2)) {
+    isInsideValue = !isInsideValue;
+  }
+  if (hasIntersectingEdge(pointX, pointY, x2, y2, x3, y3)) {
+    isInsideValue = !isInsideValue;
+  }
+  if (hasIntersectingEdge(pointX, pointY, x3, y3, x4, y4)) {
+    isInsideValue = !isInsideValue;
+  }
+  if (hasIntersectingEdge(pointX, pointY, x4, y4, x1, y1)) {
+    isInsideValue = !isInsideValue;
+  }
+  return isInsideValue;
+}
+function isInsideRect(pointX, pointY, rect) {
+  return pointX >= rect.x && pointX <= rect.x + rect.width && pointY >= rect.y && pointY <= rect.y + rect.height;
+}
+function isInsideAxisAlignedRect(pointX, pointY, x1, y1, x2, y2) {
+  const minX = Math.min(x1, x2);
+  const maxX = Math.max(x1, x2);
+  const minY = Math.min(y1, y2);
+  const maxY = Math.max(y1, y2);
+  return pointX >= minX && pointX <= maxX && pointY >= minY && pointY <= maxY;
+}
+/**
+ * Generates a safe polygon area that the user can traverse without closing the
+ * floating element once leaving the reference element.
+ * @see https://floating-ui.com/docs/useHover#safepolygon
+ */
+function safePolygon(options = {}) {
+  const {
+    blockPointerEvents = false
+  } = options;
+  const timeout = new _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_1__.Timeout();
+  const fn = ({
+    x,
+    y,
+    placement,
+    elements,
+    onClose,
+    nodeId,
+    tree
+  }) => {
+    const side = placement?.split('-')[0];
+    let hasLanded = false;
+    let lastX = null;
+    let lastY = null;
+    let lastCursorTime = typeof performance !== 'undefined' ? performance.now() : 0;
+    function isCursorMovingSlowly(nextX, nextY) {
+      const currentTime = performance.now();
+      const elapsedTime = currentTime - lastCursorTime;
+      if (lastX === null || lastY === null || elapsedTime === 0) {
+        lastX = nextX;
+        lastY = nextY;
+        lastCursorTime = currentTime;
+        return false;
+      }
+      const deltaX = nextX - lastX;
+      const deltaY = nextY - lastY;
+      const distanceSquared = deltaX * deltaX + deltaY * deltaY;
+      const thresholdSquared = elapsedTime * elapsedTime * CURSOR_SPEED_THRESHOLD_SQUARED;
+      lastX = nextX;
+      lastY = nextY;
+      lastCursorTime = currentTime;
+      return distanceSquared < thresholdSquared;
+    }
+    function close() {
+      timeout.clear();
+      onClose();
+    }
+    return function onMouseMove(event) {
+      timeout.clear();
+      const domReference = elements.domReference;
+      const floating = elements.floating;
+      if (!domReference || !floating || side == null || x == null || y == null) {
+        return undefined;
+      }
+      const {
+        clientX,
+        clientY
+      } = event;
+      const target = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_2__.getTarget)(event);
+      const isLeave = event.type === 'mouseleave';
+      const isOverFloatingEl = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_2__.contains)(floating, target);
+      const isOverReferenceEl = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_2__.contains)(domReference, target);
+      if (isOverFloatingEl) {
+        hasLanded = true;
+        if (!isLeave) {
+          return undefined;
+        }
+      }
+      if (isOverReferenceEl) {
+        hasLanded = false;
+        if (!isLeave) {
+          hasLanded = true;
+          return undefined;
+        }
+      }
+
+      // Prevent overlapping floating element from being stuck in an open-close
+      // loop: https://github.com/floating-ui/floating-ui/issues/1910
+      if (isLeave && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isElement)(event.relatedTarget) && (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_2__.contains)(floating, event.relatedTarget)) {
+        return undefined;
+      }
+      function hasOpenChildNode() {
+        return Boolean(tree && (0,_utils_nodes_mjs__WEBPACK_IMPORTED_MODULE_3__.getNodeChildren)(tree.nodesRef.current, nodeId).length > 0);
+      }
+      function closeIfNoOpenChild() {
+        if (!hasOpenChildNode()) {
+          close();
+        }
+      }
+
+      // If any nested child is open, abort.
+      if (hasOpenChildNode()) {
+        return undefined;
+      }
+      const refRect = domReference.getBoundingClientRect();
+      const rect = floating.getBoundingClientRect();
+      const cursorLeaveFromRight = x > rect.right - rect.width / 2;
+      const cursorLeaveFromBottom = y > rect.bottom - rect.height / 2;
+      const isFloatingWider = rect.width > refRect.width;
+      const isFloatingTaller = rect.height > refRect.height;
+      const left = (isFloatingWider ? refRect : rect).left;
+      const right = (isFloatingWider ? refRect : rect).right;
+      const top = (isFloatingTaller ? refRect : rect).top;
+      const bottom = (isFloatingTaller ? refRect : rect).bottom;
+
+      // If the pointer is leaving from the opposite side, the "buffer" logic
+      // creates a point where the floating element remains open, but should be
+      // ignored.
+      // A constant of 1 handles floating point rounding errors.
+      if (side === 'top' && y >= refRect.bottom - 1 || side === 'bottom' && y <= refRect.top + 1 || side === 'left' && x >= refRect.right - 1 || side === 'right' && x <= refRect.left + 1) {
+        closeIfNoOpenChild();
+        return undefined;
+      }
+
+      // Ignore when the cursor is within the rectangular trough between the
+      // two elements. Since the triangle is created from the cursor point,
+      // which can start beyond the ref element's edge, traversing back and
+      // forth from the ref to the floating element can cause it to close. This
+      // ensures it always remains open in that case.
+      let isInsideTroughRect = false;
+      switch (side) {
+        case 'top':
+          isInsideTroughRect = isInsideAxisAlignedRect(clientX, clientY, left, refRect.top + 1, right, rect.bottom - 1);
+          break;
+        case 'bottom':
+          isInsideTroughRect = isInsideAxisAlignedRect(clientX, clientY, left, rect.top + 1, right, refRect.bottom - 1);
+          break;
+        case 'left':
+          isInsideTroughRect = isInsideAxisAlignedRect(clientX, clientY, rect.right - 1, bottom, refRect.left + 1, top);
+          break;
+        case 'right':
+          isInsideTroughRect = isInsideAxisAlignedRect(clientX, clientY, refRect.right - 1, bottom, rect.left + 1, top);
+          break;
+        default:
+      }
+      if (isInsideTroughRect) {
+        return undefined;
+      }
+      if (hasLanded && !isInsideRect(clientX, clientY, refRect)) {
+        closeIfNoOpenChild();
+        return undefined;
+      }
+      if (!isLeave && isCursorMovingSlowly(clientX, clientY)) {
+        closeIfNoOpenChild();
+        return undefined;
+      }
+      let isInsidePolygon = false;
+      switch (side) {
+        case 'top':
+          {
+            const cursorXOffset = isFloatingWider ? POLYGON_BUFFER / 2 : POLYGON_BUFFER * 4;
+            const cursorPointOneX = isFloatingWider ? x + cursorXOffset : cursorLeaveFromRight ? x + cursorXOffset : x - cursorXOffset;
+            const cursorPointTwoX = isFloatingWider ? x - cursorXOffset : cursorLeaveFromRight ? x + cursorXOffset : x - cursorXOffset;
+            const cursorPointY = y + POLYGON_BUFFER + 1;
+            const commonYLeft = cursorLeaveFromRight ? rect.bottom - POLYGON_BUFFER : isFloatingWider ? rect.bottom - POLYGON_BUFFER : rect.top;
+            const commonYRight = cursorLeaveFromRight ? isFloatingWider ? rect.bottom - POLYGON_BUFFER : rect.top : rect.bottom - POLYGON_BUFFER;
+            isInsidePolygon = isPointInQuadrilateral(clientX, clientY, cursorPointOneX, cursorPointY, cursorPointTwoX, cursorPointY, rect.left, commonYLeft, rect.right, commonYRight);
+            break;
+          }
+        case 'bottom':
+          {
+            const cursorXOffset = isFloatingWider ? POLYGON_BUFFER / 2 : POLYGON_BUFFER * 4;
+            const cursorPointOneX = isFloatingWider ? x + cursorXOffset : cursorLeaveFromRight ? x + cursorXOffset : x - cursorXOffset;
+            const cursorPointTwoX = isFloatingWider ? x - cursorXOffset : cursorLeaveFromRight ? x + cursorXOffset : x - cursorXOffset;
+            const cursorPointY = y - POLYGON_BUFFER;
+            const commonYLeft = cursorLeaveFromRight ? rect.top + POLYGON_BUFFER : isFloatingWider ? rect.top + POLYGON_BUFFER : rect.bottom;
+            const commonYRight = cursorLeaveFromRight ? isFloatingWider ? rect.top + POLYGON_BUFFER : rect.bottom : rect.top + POLYGON_BUFFER;
+            isInsidePolygon = isPointInQuadrilateral(clientX, clientY, cursorPointOneX, cursorPointY, cursorPointTwoX, cursorPointY, rect.left, commonYLeft, rect.right, commonYRight);
+            break;
+          }
+        case 'left':
+          {
+            const cursorYOffset = isFloatingTaller ? POLYGON_BUFFER / 2 : POLYGON_BUFFER * 4;
+            const cursorPointOneY = isFloatingTaller ? y + cursorYOffset : cursorLeaveFromBottom ? y + cursorYOffset : y - cursorYOffset;
+            const cursorPointTwoY = isFloatingTaller ? y - cursorYOffset : cursorLeaveFromBottom ? y + cursorYOffset : y - cursorYOffset;
+            const cursorPointX = x + POLYGON_BUFFER + 1;
+            const commonXTop = cursorLeaveFromBottom ? rect.right - POLYGON_BUFFER : isFloatingTaller ? rect.right - POLYGON_BUFFER : rect.left;
+            const commonXBottom = cursorLeaveFromBottom ? isFloatingTaller ? rect.right - POLYGON_BUFFER : rect.left : rect.right - POLYGON_BUFFER;
+            isInsidePolygon = isPointInQuadrilateral(clientX, clientY, commonXTop, rect.top, commonXBottom, rect.bottom, cursorPointX, cursorPointOneY, cursorPointX, cursorPointTwoY);
+            break;
+          }
+        case 'right':
+          {
+            const cursorYOffset = isFloatingTaller ? POLYGON_BUFFER / 2 : POLYGON_BUFFER * 4;
+            const cursorPointOneY = isFloatingTaller ? y + cursorYOffset : cursorLeaveFromBottom ? y + cursorYOffset : y - cursorYOffset;
+            const cursorPointTwoY = isFloatingTaller ? y - cursorYOffset : cursorLeaveFromBottom ? y + cursorYOffset : y - cursorYOffset;
+            const cursorPointX = x - POLYGON_BUFFER;
+            const commonXTop = cursorLeaveFromBottom ? rect.left + POLYGON_BUFFER : isFloatingTaller ? rect.left + POLYGON_BUFFER : rect.right;
+            const commonXBottom = cursorLeaveFromBottom ? isFloatingTaller ? rect.left + POLYGON_BUFFER : rect.right : rect.left + POLYGON_BUFFER;
+            isInsidePolygon = isPointInQuadrilateral(clientX, clientY, cursorPointX, cursorPointOneY, cursorPointX, cursorPointTwoY, commonXTop, rect.top, commonXBottom, rect.bottom);
+            break;
+          }
+        default:
+      }
+      if (!isInsidePolygon) {
+        closeIfNoOpenChild();
+      } else if (!hasLanded) {
+        timeout.start(40, closeIfNoOpenChild);
+      }
+      return undefined;
+    };
+  };
+
+  // eslint-disable-next-line no-underscore-dangle
+  fn.__options = {
+    ...options,
+    blockPointerEvents
+  };
+  return fn;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/utils/composite.mjs"
+/*!***************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/utils/composite.mjs ***!
+  \***************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createGridCellMap: () => (/* binding */ createGridCellMap),
+/* harmony export */   findNonDisabledListIndex: () => (/* binding */ findNonDisabledListIndex),
+/* harmony export */   getGridCellIndexOfCorner: () => (/* binding */ getGridCellIndexOfCorner),
+/* harmony export */   getGridCellIndices: () => (/* binding */ getGridCellIndices),
+/* harmony export */   getGridNavigatedIndex: () => (/* binding */ getGridNavigatedIndex),
+/* harmony export */   getMaxListIndex: () => (/* binding */ getMaxListIndex),
+/* harmony export */   getMinListIndex: () => (/* binding */ getMinListIndex),
+/* harmony export */   isDifferentGridRow: () => (/* binding */ isDifferentGridRow),
+/* harmony export */   isElementVisible: () => (/* binding */ isElementVisible),
+/* harmony export */   isHiddenByStyles: () => (/* binding */ isHiddenByStyles),
+/* harmony export */   isIndexOutOfListBounds: () => (/* binding */ isIndexOutOfListBounds),
+/* harmony export */   isListIndexDisabled: () => (/* binding */ isListIndexDisabled)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @floating-ui/utils */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _event_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./event.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs");
+/* harmony import */ var _constants_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./constants.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/constants.mjs");
+
+
+
+
+function isDifferentGridRow(index, cols, prevRow) {
+  return Math.floor(index / cols) !== prevRow;
+}
+function isIndexOutOfListBounds(list, index) {
+  return index < 0 || index >= list.length;
+}
+function getMinListIndex(listRef, disabledIndices) {
+  return findNonDisabledListIndex(listRef.current, {
+    disabledIndices
+  });
+}
+function getMaxListIndex(listRef, disabledIndices) {
+  return findNonDisabledListIndex(listRef.current, {
+    decrement: true,
+    startingIndex: listRef.current.length,
+    disabledIndices
+  });
+}
+function findNonDisabledListIndex(list, {
+  startingIndex = -1,
+  decrement = false,
+  disabledIndices,
+  amount = 1
+} = {}) {
+  let index = startingIndex;
+  do {
+    index += decrement ? -amount : amount;
+  } while (index >= 0 && index <= list.length - 1 && isListIndexDisabled(list, index, disabledIndices));
+  return index;
+}
+function getGridNavigatedIndex(list, {
+  event,
+  orientation,
+  loopFocus,
+  onLoop,
+  rtl,
+  cols,
+  disabledIndices,
+  minIndex,
+  maxIndex,
+  prevIndex,
+  stopEvent: stop = false
+}) {
+  let nextIndex = prevIndex;
+  let verticalDirection;
+  if (event.key === _constants_mjs__WEBPACK_IMPORTED_MODULE_3__.ARROW_UP) {
+    verticalDirection = 'up';
+  } else if (event.key === _constants_mjs__WEBPACK_IMPORTED_MODULE_3__.ARROW_DOWN) {
+    verticalDirection = 'down';
+  }
+  if (verticalDirection) {
+    // -------------------------------------------------------------------------
+    // Detect row structure only when handling vertical navigation. This keeps
+    // the non-vertical key paths free from row inference work.
+    // -------------------------------------------------------------------------
+    const rows = [];
+    const rowIndexMap = [];
+    let hasRoleRow = false;
+    let visibleItemCount = 0;
+    {
+      let currentRowEl = null;
+      let currentRowIndex = -1;
+      list.forEach((el, idx) => {
+        if (el == null) {
+          return;
+        }
+        visibleItemCount += 1;
+        const rowEl = el.closest('[role="row"]');
+        if (rowEl) {
+          hasRoleRow = true;
+        }
+        if (rowEl !== currentRowEl || currentRowIndex === -1) {
+          currentRowEl = rowEl;
+          currentRowIndex += 1;
+          rows[currentRowIndex] = [];
+        }
+        rows[currentRowIndex].push(idx);
+        rowIndexMap[idx] = currentRowIndex;
+      });
+    }
+    let hasDomRows = false;
+    let inferredDomCols = 0;
+    if (hasRoleRow) {
+      for (const row of rows) {
+        const rowLength = row.length;
+        if (rowLength > inferredDomCols) {
+          inferredDomCols = rowLength;
+        }
+        if (rowLength !== cols) {
+          hasDomRows = true;
+        }
+      }
+    }
+    const hasVirtualizedGaps = hasDomRows && visibleItemCount < list.length;
+    const verticalCols = inferredDomCols || cols;
+    const navigateVertically = direction => {
+      if (!hasDomRows || prevIndex === -1) {
+        return undefined;
+      }
+      const currentRow = rowIndexMap[prevIndex];
+      if (currentRow == null) {
+        return undefined;
+      }
+      const colInRow = rows[currentRow].indexOf(prevIndex);
+      const step = direction === 'up' ? -1 : 1;
+      for (let nextRow = currentRow + step, i = 0; i < rows.length; i += 1, nextRow += step) {
+        if (nextRow < 0 || nextRow >= rows.length) {
+          if (!loopFocus || hasVirtualizedGaps) {
+            return undefined;
+          }
+          nextRow = nextRow < 0 ? rows.length - 1 : 0;
+          if (onLoop) {
+            const clampedCol = Math.min(colInRow, rows[nextRow].length - 1);
+            const targetItemIndex = rows[nextRow][clampedCol] ?? rows[nextRow][0];
+            const returnedItemIndex = onLoop(event, prevIndex, targetItemIndex);
+            nextRow = rowIndexMap[returnedItemIndex] ?? nextRow;
+          }
+        }
+        const targetRow = rows[nextRow];
+        for (let col = Math.min(colInRow, targetRow.length - 1); col >= 0; col -= 1) {
+          const candidate = targetRow[col];
+          if (!isListIndexDisabled(list, candidate, disabledIndices)) {
+            return candidate;
+          }
+        }
+      }
+      return undefined;
+    };
+    const navigateVerticallyWithInferredRows = direction => {
+      if (!hasVirtualizedGaps || prevIndex === -1) {
+        return undefined;
+      }
+      const colInRow = prevIndex % verticalCols;
+      const rowStep = direction === 'up' ? -verticalCols : verticalCols;
+      const lastRowStart = maxIndex - maxIndex % verticalCols;
+      const rowCount = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.floor)(maxIndex / verticalCols) + 1;
+      for (let rowStart = prevIndex - colInRow + rowStep, i = 0; i < rowCount; i += 1, rowStart += rowStep) {
+        if (rowStart < 0 || rowStart > maxIndex) {
+          if (!loopFocus) {
+            return undefined;
+          }
+          rowStart = rowStart < 0 ? lastRowStart : 0;
+        }
+        const rowEnd = Math.min(rowStart + verticalCols - 1, maxIndex);
+        for (let candidate = Math.min(rowStart + colInRow, rowEnd); candidate >= rowStart; candidate -= 1) {
+          if (!isListIndexDisabled(list, candidate, disabledIndices)) {
+            return candidate;
+          }
+        }
+      }
+      return undefined;
+    };
+    if (stop) {
+      (0,_event_mjs__WEBPACK_IMPORTED_MODULE_2__.stopEvent)(event);
+    }
+    const verticalCandidate = navigateVertically(verticalDirection) ?? navigateVerticallyWithInferredRows(verticalDirection);
+    if (verticalCandidate !== undefined) {
+      nextIndex = verticalCandidate;
+    } else if (prevIndex === -1) {
+      nextIndex = verticalDirection === 'up' ? maxIndex : minIndex;
+    } else {
+      nextIndex = findNonDisabledListIndex(list, {
+        startingIndex: prevIndex,
+        amount: verticalCols,
+        decrement: verticalDirection === 'up',
+        disabledIndices
+      });
+      if (loopFocus) {
+        if (verticalDirection === 'up' && (prevIndex - verticalCols < minIndex || nextIndex < 0)) {
+          const col = prevIndex % verticalCols;
+          const maxCol = maxIndex % verticalCols;
+          const offset = maxIndex - (maxCol - col);
+          if (maxCol === col) {
+            nextIndex = maxIndex;
+          } else {
+            nextIndex = maxCol > col ? offset : offset - verticalCols;
+          }
+          if (onLoop) {
+            nextIndex = onLoop(event, prevIndex, nextIndex);
+          }
+        }
+        if (verticalDirection === 'down' && prevIndex + verticalCols > maxIndex) {
+          nextIndex = findNonDisabledListIndex(list, {
+            startingIndex: prevIndex % verticalCols - verticalCols,
+            amount: verticalCols,
+            disabledIndices
+          });
+          if (onLoop) {
+            nextIndex = onLoop(event, prevIndex, nextIndex);
+          }
+        }
+      }
+    }
+    if (isIndexOutOfListBounds(list, nextIndex)) {
+      nextIndex = prevIndex;
+    }
+  }
+
+  // Remains on the same row/column.
+  if (orientation === 'both') {
+    const prevRow = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.floor)(prevIndex / cols);
+    if (event.key === (rtl ? _constants_mjs__WEBPACK_IMPORTED_MODULE_3__.ARROW_LEFT : _constants_mjs__WEBPACK_IMPORTED_MODULE_3__.ARROW_RIGHT)) {
+      if (stop) {
+        (0,_event_mjs__WEBPACK_IMPORTED_MODULE_2__.stopEvent)(event);
+      }
+      if (prevIndex % cols !== cols - 1) {
+        nextIndex = findNonDisabledListIndex(list, {
+          startingIndex: prevIndex,
+          disabledIndices
+        });
+        if (loopFocus && isDifferentGridRow(nextIndex, cols, prevRow)) {
+          nextIndex = findNonDisabledListIndex(list, {
+            startingIndex: prevIndex - prevIndex % cols - 1,
+            disabledIndices
+          });
+          if (onLoop) {
+            nextIndex = onLoop(event, prevIndex, nextIndex);
+          }
+        }
+      } else if (loopFocus) {
+        nextIndex = findNonDisabledListIndex(list, {
+          startingIndex: prevIndex - prevIndex % cols - 1,
+          disabledIndices
+        });
+        if (onLoop) {
+          nextIndex = onLoop(event, prevIndex, nextIndex);
+        }
+      }
+      if (isDifferentGridRow(nextIndex, cols, prevRow)) {
+        nextIndex = prevIndex;
+      }
+    }
+    if (event.key === (rtl ? _constants_mjs__WEBPACK_IMPORTED_MODULE_3__.ARROW_RIGHT : _constants_mjs__WEBPACK_IMPORTED_MODULE_3__.ARROW_LEFT)) {
+      if (stop) {
+        (0,_event_mjs__WEBPACK_IMPORTED_MODULE_2__.stopEvent)(event);
+      }
+      if (prevIndex % cols !== 0) {
+        nextIndex = findNonDisabledListIndex(list, {
+          startingIndex: prevIndex,
+          decrement: true,
+          disabledIndices
+        });
+        if (loopFocus && isDifferentGridRow(nextIndex, cols, prevRow)) {
+          nextIndex = findNonDisabledListIndex(list, {
+            startingIndex: prevIndex + (cols - prevIndex % cols),
+            decrement: true,
+            disabledIndices
+          });
+          if (onLoop) {
+            nextIndex = onLoop(event, prevIndex, nextIndex);
+          }
+        }
+      } else if (loopFocus) {
+        nextIndex = findNonDisabledListIndex(list, {
+          startingIndex: prevIndex + (cols - prevIndex % cols),
+          decrement: true,
+          disabledIndices
+        });
+        if (onLoop) {
+          nextIndex = onLoop(event, prevIndex, nextIndex);
+        }
+      }
+      if (isDifferentGridRow(nextIndex, cols, prevRow)) {
+        nextIndex = prevIndex;
+      }
+    }
+    const lastRow = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.floor)(maxIndex / cols) === prevRow;
+    if (isIndexOutOfListBounds(list, nextIndex)) {
+      if (loopFocus && lastRow) {
+        nextIndex = event.key === (rtl ? _constants_mjs__WEBPACK_IMPORTED_MODULE_3__.ARROW_RIGHT : _constants_mjs__WEBPACK_IMPORTED_MODULE_3__.ARROW_LEFT) ? maxIndex : findNonDisabledListIndex(list, {
+          startingIndex: prevIndex - prevIndex % cols - 1,
+          disabledIndices
+        });
+        if (onLoop) {
+          nextIndex = onLoop(event, prevIndex, nextIndex);
+        }
+      } else {
+        nextIndex = prevIndex;
+      }
+    }
+  }
+  return nextIndex;
+}
+
+/** For each cell index, gets the item index that occupies that cell */
+function createGridCellMap(sizes, cols, dense) {
+  const cellMap = [];
+  let startIndex = 0;
+  sizes.forEach(({
+    width,
+    height
+  }, index) => {
+    if (width > cols) {
+      if (true) {
+        // TODO: fix mui/no-guarded-throw
+        // eslint-disable-next-line mui/no-guarded-throw
+        throw new Error(`[Floating UI]: Invalid grid - item width at index ${index} is greater than grid columns`);
+      }
+    }
+    let itemPlaced = false;
+    if (dense) {
+      startIndex = 0;
+    }
+    while (!itemPlaced) {
+      const targetCells = [];
+      for (let i = 0; i < width; i += 1) {
+        for (let j = 0; j < height; j += 1) {
+          targetCells.push(startIndex + i + j * cols);
+        }
+      }
+      if (startIndex % cols + width <= cols && targetCells.every(cell => cellMap[cell] == null)) {
+        targetCells.forEach(cell => {
+          cellMap[cell] = index;
+        });
+        itemPlaced = true;
+      } else {
+        startIndex += 1;
+      }
+    }
+  });
+
+  // convert into a non-sparse array
+  return [...cellMap];
+}
+
+/** Gets cell index of an item's corner or -1 when index is -1. */
+function getGridCellIndexOfCorner(index, sizes, cellMap, cols, corner) {
+  if (index === -1) {
+    return -1;
+  }
+  const firstCellIndex = cellMap.indexOf(index);
+  const sizeItem = sizes[index];
+  switch (corner) {
+    case 'tl':
+      return firstCellIndex;
+    case 'tr':
+      if (!sizeItem) {
+        return firstCellIndex;
+      }
+      return firstCellIndex + sizeItem.width - 1;
+    case 'bl':
+      if (!sizeItem) {
+        return firstCellIndex;
+      }
+      return firstCellIndex + (sizeItem.height - 1) * cols;
+    case 'br':
+      return cellMap.lastIndexOf(index);
+    default:
+      return -1;
+  }
+}
+
+/** Gets all cell indices that correspond to the specified indices */
+function getGridCellIndices(indices, cellMap) {
+  return cellMap.flatMap((index, cellIndex) => indices.includes(index) ? [cellIndex] : []);
+}
+function isListIndexDisabled(list, index, disabledIndices) {
+  const isExplicitlyDisabled = typeof disabledIndices === 'function' ? disabledIndices(index) : disabledIndices?.includes(index) ?? false;
+  if (isExplicitlyDisabled) {
+    return true;
+  }
+  const element = list[index];
+  if (!element) {
+    return false;
+  }
+  if (!isElementVisible(element)) {
+    return true;
+  }
+
+  // A natively disabled element can never receive focus, so it must always be
+  // skipped, even when `disabledIndices` marks it as enabled. Only
+  // `aria-disabled` items can be focusable-while-disabled.
+  if (element.matches(':disabled')) {
+    return true;
+  }
+  return !disabledIndices && (element.hasAttribute('disabled') || element.getAttribute('aria-disabled') === 'true');
+}
+function isHiddenByStyles(styles) {
+  return styles.visibility === 'hidden' || styles.visibility === 'collapse';
+}
+function isElementVisible(element, styles = element ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__.getComputedStyle)(element) : null) {
+  if (!element || !element.isConnected || !styles || isHiddenByStyles(styles)) {
+    return false;
+  }
+  if (typeof element.checkVisibility === 'function') {
+    return element.checkVisibility();
+  }
+  return styles.display !== 'none' && styles.display !== 'contents';
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/utils/constants.mjs"
+/*!***************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/utils/constants.mjs ***!
+  \***************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ACTIVE_KEY: () => (/* binding */ ACTIVE_KEY),
+/* harmony export */   ARROW_DOWN: () => (/* binding */ ARROW_DOWN),
+/* harmony export */   ARROW_LEFT: () => (/* binding */ ARROW_LEFT),
+/* harmony export */   ARROW_RIGHT: () => (/* binding */ ARROW_RIGHT),
+/* harmony export */   ARROW_UP: () => (/* binding */ ARROW_UP),
+/* harmony export */   FOCUSABLE_ATTRIBUTE: () => (/* binding */ FOCUSABLE_ATTRIBUTE),
+/* harmony export */   SELECTED_KEY: () => (/* binding */ SELECTED_KEY),
+/* harmony export */   TYPEABLE_SELECTOR: () => (/* binding */ TYPEABLE_SELECTOR)
+/* harmony export */ });
+const FOCUSABLE_ATTRIBUTE = 'data-base-ui-focusable';
+const ACTIVE_KEY = 'active';
+const SELECTED_KEY = 'selected';
+const TYPEABLE_SELECTOR = "input:not([type='hidden']):not([disabled])," + "[contenteditable]:not([contenteditable='false']),textarea:not([disabled])";
+const ARROW_LEFT = 'ArrowLeft';
+const ARROW_RIGHT = 'ArrowRight';
+const ARROW_UP = 'ArrowUp';
+const ARROW_DOWN = 'ArrowDown';
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/utils/createAttribute.mjs"
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/utils/createAttribute.mjs ***!
+  \*********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createAttribute: () => (/* binding */ createAttribute)
+/* harmony export */ });
+function createAttribute(name) {
+  return `data-base-ui-${name}`;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/utils/createEventEmitter.mjs"
+/*!************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/utils/createEventEmitter.mjs ***!
+  \************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createEventEmitter: () => (/* binding */ createEventEmitter)
+/* harmony export */ });
+function createEventEmitter() {
+  const map = new Map();
+  return {
+    emit(event, data) {
+      map.get(event)?.forEach(listener => listener(data));
+    },
+    on(event, listener) {
+      if (!map.has(event)) {
+        map.set(event, new Set());
+      }
+      map.get(event).add(listener);
+    },
+    off(event, listener) {
+      map.get(event)?.delete(listener);
+    }
+  };
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/utils/element.mjs"
+/*!*************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/utils/element.mjs ***!
+  \*************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   activeElement: () => (/* reexport safe */ _internals_shadowDom_mjs__WEBPACK_IMPORTED_MODULE_3__.activeElement),
+/* harmony export */   contains: () => (/* reexport safe */ _internals_shadowDom_mjs__WEBPACK_IMPORTED_MODULE_3__.contains),
+/* harmony export */   getFloatingFocusElement: () => (/* binding */ getFloatingFocusElement),
+/* harmony export */   getTarget: () => (/* reexport safe */ _internals_shadowDom_mjs__WEBPACK_IMPORTED_MODULE_3__.getTarget),
+/* harmony export */   isEventTargetWithin: () => (/* binding */ isEventTargetWithin),
+/* harmony export */   isInteractiveElement: () => (/* binding */ isInteractiveElement),
+/* harmony export */   isRootElement: () => (/* binding */ isRootElement),
+/* harmony export */   isTargetInsideEnabledTrigger: () => (/* binding */ isTargetInsideEnabledTrigger),
+/* harmony export */   isTypeableCombobox: () => (/* binding */ isTypeableCombobox),
+/* harmony export */   isTypeableElement: () => (/* binding */ isTypeableElement),
+/* harmony export */   matchesFocusVisible: () => (/* binding */ matchesFocusVisible)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/platform */ "./node_modules/@base-ui/utils/platform/env.mjs");
+/* harmony import */ var _constants_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./constants.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/constants.mjs");
+/* harmony import */ var _internals_shadowDom_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../internals/shadowDom.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+
+
+
+
+
+function isTargetInsideEnabledTrigger(target, triggerElements) {
+  if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isElement)(target)) {
+    return false;
+  }
+  const targetElement = target;
+  if (triggerElements.hasElement(targetElement)) {
+    return !targetElement.hasAttribute('data-trigger-disabled');
+  }
+  for (const [, trigger] of triggerElements.entries()) {
+    if ((0,_internals_shadowDom_mjs__WEBPACK_IMPORTED_MODULE_3__.contains)(trigger, targetElement)) {
+      return !trigger.hasAttribute('data-trigger-disabled');
+    }
+  }
+  return false;
+}
+function isEventTargetWithin(event, node) {
+  if (node == null) {
+    return false;
+  }
+  if ('composedPath' in event) {
+    return event.composedPath().includes(node);
+  }
+
+  // TS thinks `event` is of type never as it assumes all browsers support composedPath, but browsers without shadow dom don't
+  const eventAgain = event;
+  return eventAgain.target != null && node.contains(eventAgain.target);
+}
+function isRootElement(element) {
+  return element.matches('html,body');
+}
+function isTypeableElement(element) {
+  return (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isHTMLElement)(element) && element.matches(_constants_mjs__WEBPACK_IMPORTED_MODULE_2__.TYPEABLE_SELECTOR);
+}
+function isInteractiveElement(element) {
+  return element?.closest(`button,a[href],[role="button"],select,[tabindex]:not([tabindex="-1"]),${_constants_mjs__WEBPACK_IMPORTED_MODULE_2__.TYPEABLE_SELECTOR}`) != null;
+}
+function isTypeableCombobox(element) {
+  if (!element) {
+    return false;
+  }
+  return element.getAttribute('role') === 'combobox' && isTypeableElement(element);
+}
+function matchesFocusVisible(element) {
+  // We don't want to block focus from working with `visibleOnly`
+  // (JSDOM doesn't match `:focus-visible` when the element has `:focus`)
+  if (!element || _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_1__.jsdom) {
+    return true;
+  }
+  try {
+    return element.matches(':focus-visible');
+  } catch (_e) {
+    return true;
+  }
+}
+function getFloatingFocusElement(floatingElement) {
+  if (!floatingElement) {
+    return null;
+  }
+  // Try to find the element that has `{...getFloatingProps()}` spread on it.
+  // This indicates the floating element is acting as a positioning wrapper, and
+  // so focus should be managed on the child element with the event handlers and
+  // aria props.
+  return floatingElement.hasAttribute(_constants_mjs__WEBPACK_IMPORTED_MODULE_2__.FOCUSABLE_ATTRIBUTE) ? floatingElement : floatingElement.querySelector(`[${_constants_mjs__WEBPACK_IMPORTED_MODULE_2__.FOCUSABLE_ATTRIBUTE}]`) || floatingElement;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs"
+/*!***********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs ***!
+  \***********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   isClickLikeEvent: () => (/* binding */ isClickLikeEvent),
+/* harmony export */   isMouseLikePointerType: () => (/* binding */ isMouseLikePointerType),
+/* harmony export */   isReactEvent: () => (/* binding */ isReactEvent),
+/* harmony export */   isVirtualClick: () => (/* binding */ isVirtualClick),
+/* harmony export */   isVirtualPointerEvent: () => (/* binding */ isVirtualPointerEvent),
+/* harmony export */   stopEvent: () => (/* binding */ stopEvent)
+/* harmony export */ });
+/* harmony import */ var _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/utils/platform */ "./node_modules/@base-ui/utils/platform/os.mjs");
+/* harmony import */ var _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/platform */ "./node_modules/@base-ui/utils/platform/env.mjs");
+
+function stopEvent(event) {
+  event.preventDefault();
+  event.stopPropagation();
+}
+function isReactEvent(event) {
+  return 'nativeEvent' in event;
+}
+
+// License: https://github.com/adobe/react-spectrum/blob/main/packages/@react-aria/utils/src/isVirtualEvent.ts
+function isVirtualClick(event) {
+  if (event.pointerType === '' && event.isTrusted) {
+    return true;
+  }
+  if (_base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_0__.android && event.pointerType) {
+    return event.type === 'click' && event.buttons === 1;
+  }
+  return event.detail === 0 && !event.pointerType;
+}
+function isVirtualPointerEvent(event) {
+  if (_base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_1__.jsdom) {
+    return false;
+  }
+  return !_base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_0__.android && event.width === 0 && event.height === 0 || _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_0__.android && event.width === 1 && event.height === 1 && event.pressure === 0 && event.detail === 0 && event.pointerType === 'mouse' ||
+  // iOS VoiceOver returns 0.333• for width/height.
+  event.width < 1 && event.height < 1 && event.pressure === 0 && event.detail === 0 && event.pointerType === 'touch';
+}
+function isMouseLikePointerType(pointerType, strict) {
+  // On some Linux machines with Chromium, mouse inputs return a `pointerType`
+  // of "pen": https://github.com/floating-ui/floating-ui/issues/2015
+  const values = ['mouse', 'pen'];
+  if (!strict) {
+    values.push('', undefined);
+  }
+  return values.includes(pointerType);
+}
+function isClickLikeEvent(event) {
+  const type = event.type;
+  return type === 'click' || type === 'mousedown' || type === 'keydown' || type === 'keyup';
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/utils/getEmptyRootContext.mjs"
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/utils/getEmptyRootContext.mjs ***!
+  \*************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getEmptyRootContext: () => (/* binding */ getEmptyRootContext)
+/* harmony export */ });
+/* harmony import */ var _utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../utils/popups/index.mjs */ "./node_modules/@base-ui/react/utils/popups/popupTriggerMap.mjs");
+/* harmony import */ var _components_FloatingRootStore_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/FloatingRootStore.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingRootStore.mjs");
+
+
+function getEmptyRootContext() {
+  return new _components_FloatingRootStore_mjs__WEBPACK_IMPORTED_MODULE_1__.FloatingRootStore({
+    open: false,
+    transitionStatus: undefined,
+    floatingElement: null,
+    referenceElement: null,
+    triggerElements: new _utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_0__.PopupTriggerMap(),
+    floatingId: undefined,
+    syncOnly: false,
+    nested: false,
+    onOpenChange: undefined
+  });
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/utils/nodes.mjs"
+/*!***********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/utils/nodes.mjs ***!
+  \***********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getDeepestNode: () => (/* binding */ getDeepestNode),
+/* harmony export */   getNodeAncestors: () => (/* binding */ getNodeAncestors),
+/* harmony export */   getNodeChildren: () => (/* binding */ getNodeChildren)
+/* harmony export */ });
+/* eslint-disable @typescript-eslint/no-loop-func */
+
+function getNodeChildren(nodes, id, onlyOpenChildren = true) {
+  const directChildren = nodes.filter(node => node.parentId === id);
+  return directChildren.flatMap(child => [...(!onlyOpenChildren || child.context?.open ? [child] : []), ...getNodeChildren(nodes, child.id, onlyOpenChildren)]);
+}
+function getDeepestNode(nodes, id) {
+  let deepestNodeId;
+  let maxDepth = -1;
+  function findDeepest(nodeId, depth) {
+    if (depth > maxDepth) {
+      deepestNodeId = nodeId;
+      maxDepth = depth;
+    }
+    const children = getNodeChildren(nodes, nodeId);
+    children.forEach(child => {
+      findDeepest(child.id, depth + 1);
+    });
+  }
+  findDeepest(id, 0);
+  return nodes.find(node => node.id === deepestNodeId);
+}
+function getNodeAncestors(nodes, id) {
+  let allAncestors = [];
+  let currentParentId = nodes.find(node => node.id === id)?.parentId;
+  while (currentParentId) {
+    const currentNode = nodes.find(node => node.id === currentParentId);
+    currentParentId = currentNode?.parentId;
+    if (currentNode) {
+      allAncestors = allAncestors.concat(currentNode);
+    }
+  }
+  return allAncestors;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/utils/tabbable.mjs"
+/*!**************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/utils/tabbable.mjs ***!
+  \**************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   disableFocusInside: () => (/* binding */ disableFocusInside),
+/* harmony export */   enableFocusInside: () => (/* binding */ enableFocusInside),
+/* harmony export */   focusable: () => (/* binding */ focusable),
+/* harmony export */   getNextTabbable: () => (/* binding */ getNextTabbable),
+/* harmony export */   getPreviousTabbable: () => (/* binding */ getPreviousTabbable),
+/* harmony export */   getTabbableAfterElement: () => (/* binding */ getTabbableAfterElement),
+/* harmony export */   getTabbableBeforeElement: () => (/* binding */ getTabbableBeforeElement),
+/* harmony export */   isOutsideEvent: () => (/* binding */ isOutsideEvent),
+/* harmony export */   isTabbable: () => (/* binding */ isTabbable),
+/* harmony export */   tabbable: () => (/* binding */ tabbable)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@base-ui/utils/owner.mjs");
+/* harmony import */ var _element_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./element.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+/* harmony import */ var _composite_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./composite.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/composite.mjs");
+
+
+
+
+const CANDIDATE_SELECTOR = 'a[href],button,input,select,textarea,summary,details,iframe,object,embed,[tabindex],[contenteditable]:not([contenteditable="false"]),audio[controls],video[controls]';
+function getParentElement(element) {
+  const assignedSlot = element.assignedSlot;
+  if (assignedSlot) {
+    return assignedSlot;
+  }
+  if (element.parentElement) {
+    return element.parentElement;
+  }
+  const rootNode = element.getRootNode();
+  return (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isShadowRoot)(rootNode) ? rootNode.host : null;
+}
+function getDetailsSummary(details) {
+  for (const child of Array.from(details.children)) {
+    if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.getNodeName)(child) === 'summary') {
+      return child;
+    }
+  }
+  return null;
+}
+function isWithinOpenDetailsSummary(element, details) {
+  const summary = getDetailsSummary(details);
+  return !!summary && (element === summary || (0,_element_mjs__WEBPACK_IMPORTED_MODULE_2__.contains)(summary, element));
+}
+function isFocusableCandidate(element) {
+  const nodeName = element ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.getNodeName)(element) : '';
+  return element != null && element.matches(CANDIDATE_SELECTOR) && (nodeName !== 'summary' || element.parentElement != null && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.getNodeName)(element.parentElement) === 'details' && getDetailsSummary(element.parentElement) === element) && (nodeName !== 'details' || getDetailsSummary(element) == null) && (nodeName !== 'input' || element.type !== 'hidden');
+}
+function isFocusableElement(element) {
+  if (!isFocusableCandidate(element) || !element.isConnected || element.matches(':disabled')) {
+    return false;
+  }
+  for (let current = element; current; current = getParentElement(current)) {
+    const isAncestor = current !== element;
+    const isSlot = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.getNodeName)(current) === 'slot';
+    if (current.hasAttribute('inert')) {
+      return false;
+    }
+    if (isAncestor && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.getNodeName)(current) === 'details' && !current.open && !isWithinOpenDetailsSummary(element, current) || current.hasAttribute('hidden') || !isSlot && !isVisibleInTabbableTree(current, isAncestor)) {
+      return false;
+    }
+  }
+  return true;
+}
+function isVisibleInTabbableTree(element, isAncestor) {
+  const styles = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.getComputedStyle)(element);
+  if (!isAncestor) {
+    return (0,_composite_mjs__WEBPACK_IMPORTED_MODULE_3__.isElementVisible)(element, styles);
+  }
+  return styles.display !== 'none';
+}
+function getTabIndex(element) {
+  const tabIndex = element.tabIndex;
+  if (tabIndex < 0) {
+    const nodeName = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.getNodeName)(element);
+    if (nodeName === 'details' || nodeName === 'audio' || nodeName === 'video' || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isHTMLElement)(element) && element.isContentEditable) {
+      return 0;
+    }
+  }
+  return tabIndex;
+}
+function getNamedRadioInput(element) {
+  if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.getNodeName)(element) !== 'input') {
+    return null;
+  }
+  const input = element;
+  return input.type === 'radio' && input.name !== '' ? input : null;
+}
+function isTabbableRadio(element, candidates) {
+  const input = getNamedRadioInput(element);
+  if (!input) {
+    return true;
+  }
+  const checkedRadio = candidates.find(candidate => {
+    const radio = getNamedRadioInput(candidate);
+    return radio?.name === input.name && radio.form === input.form && radio.checked;
+  });
+  if (checkedRadio) {
+    return checkedRadio === input;
+  }
+  return candidates.find(candidate => {
+    const radio = getNamedRadioInput(candidate);
+    return radio?.name === input.name && radio.form === input.form;
+  }) === input;
+}
+function getComposedChildren(container) {
+  if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isHTMLElement)(container) && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.getNodeName)(container) === 'slot') {
+    const assignedElements = container.assignedElements({
+      flatten: true
+    });
+    if (assignedElements.length > 0) {
+      return assignedElements;
+    }
+  }
+  if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isHTMLElement)(container) && container.shadowRoot) {
+    return Array.from(container.shadowRoot.children);
+  }
+  return Array.from(container.children);
+}
+function appendCandidates(container, list) {
+  getComposedChildren(container).forEach(child => {
+    if (isFocusableCandidate(child)) {
+      list.push(child);
+    }
+    appendCandidates(child, list);
+  });
+}
+function appendMatchingElements(container, selector, list) {
+  getComposedChildren(container).forEach(child => {
+    if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isHTMLElement)(child) && child.matches(selector)) {
+      list.push(child);
+    }
+    appendMatchingElements(child, selector, list);
+  });
+}
+function isTabbable(element) {
+  return isFocusableElement(element) && getTabIndex(element) >= 0;
+}
+function focusable(container) {
+  const candidates = [];
+  appendCandidates(container, candidates);
+  return candidates.filter(isFocusableElement);
+}
+function tabbable(container) {
+  const candidates = focusable(container);
+  return candidates.filter(element => getTabIndex(element) >= 0 && isTabbableRadio(element, candidates));
+}
+function getTabbableIn(container, dir) {
+  const list = tabbable(container);
+  const len = list.length;
+  if (len === 0) {
+    return undefined;
+  }
+  const active = (0,_element_mjs__WEBPACK_IMPORTED_MODULE_2__.activeElement)((0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_1__.ownerDocument)(container));
+  const index = list.indexOf(active);
+  // eslint-disable-next-line no-nested-ternary
+  const nextIndex = index === -1 ? dir === 1 ? 0 : len - 1 : index + dir;
+  return list[nextIndex];
+}
+function getNextTabbable(referenceElement) {
+  return getTabbableIn((0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_1__.ownerDocument)(referenceElement).body, 1) || referenceElement;
+}
+function getPreviousTabbable(referenceElement) {
+  return getTabbableIn((0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_1__.ownerDocument)(referenceElement).body, -1) || referenceElement;
+}
+function getTabbableNearElement(referenceElement, dir) {
+  if (!referenceElement) {
+    return null;
+  }
+  const list = tabbable((0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_1__.ownerDocument)(referenceElement).body);
+  const elementCount = list.length;
+  if (elementCount === 0) {
+    return null;
+  }
+  const index = list.indexOf(referenceElement);
+  if (index === -1) {
+    return null;
+  }
+  const nextIndex = (index + dir + elementCount) % elementCount;
+  return list[nextIndex];
+}
+function getTabbableAfterElement(referenceElement) {
+  return getTabbableNearElement(referenceElement, 1);
+}
+function getTabbableBeforeElement(referenceElement) {
+  return getTabbableNearElement(referenceElement, -1);
+}
+function isOutsideEvent(event, container) {
+  const containerElement = container || event.currentTarget;
+  const relatedTarget = event.relatedTarget;
+  return !relatedTarget || !(0,_element_mjs__WEBPACK_IMPORTED_MODULE_2__.contains)(containerElement, relatedTarget);
+}
+function disableFocusInside(container) {
+  const tabbableElements = tabbable(container);
+  tabbableElements.forEach(element => {
+    element.dataset.tabindex = element.getAttribute('tabindex') || '';
+    element.setAttribute('tabindex', '-1');
+  });
+}
+function enableFocusInside(container) {
+  const elements = [];
+  appendMatchingElements(container, '[data-tabindex]', elements);
+  elements.forEach(element => {
+    const tabindex = element.dataset.tabindex;
+    delete element.dataset.tabindex;
+    if (tabindex) {
+      element.setAttribute('tabindex', tabindex);
+    } else {
+      element.removeAttribute('tabindex');
+    }
+  });
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/input/Input.mjs"
+/*!*****************************************************!*\
+  !*** ./node_modules/@base-ui/react/input/Input.mjs ***!
+  \*****************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Input: () => (/* binding */ Input)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _field_index_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../field/index.mjs */ "./node_modules/@base-ui/react/field/control/FieldControl.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+/**
+ * A native input element that automatically works with [Field](https://base-ui.com/react/components/field).
+ * Renders an `<input>` element.
+ *
+ * Documentation: [Base UI Input](https://base-ui.com/react/components/input)
+ */
+
+const Input = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function Input(props, forwardedRef) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_field_index_mjs__WEBPACK_IMPORTED_MODULE_1__.FieldControl, {
+    ref: forwardedRef,
+    ...props
+  });
+});
+if (true) Input.displayName = "Input";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/composite/root/CompositeRootContext.mjs"
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/composite/root/CompositeRootContext.mjs ***!
+  \***************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CompositeRootContext: () => (/* binding */ CompositeRootContext),
+/* harmony export */   useCompositeRootContext: () => (/* binding */ useCompositeRootContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+
+const CompositeRootContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(undefined);
+if (true) CompositeRootContext.displayName = "CompositeRootContext";
+function useCompositeRootContext(optional = false) {
+  const context = react__WEBPACK_IMPORTED_MODULE_0__.useContext(CompositeRootContext);
+  if (context === undefined && !optional) {
+    throw new Error( true ? 'Base UI: CompositeRootContext is missing. Composite parts must be placed within <Composite.Root>.' : 0);
+  }
+  return context;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/constants.mjs"
+/*!*************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/constants.mjs ***!
+  \*************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   BASE_UI_SWIPE_IGNORE_ATTRIBUTE: () => (/* binding */ BASE_UI_SWIPE_IGNORE_ATTRIBUTE),
+/* harmony export */   BASE_UI_SWIPE_IGNORE_SELECTOR: () => (/* binding */ BASE_UI_SWIPE_IGNORE_SELECTOR),
+/* harmony export */   CLICK_TRIGGER_IDENTIFIER: () => (/* binding */ CLICK_TRIGGER_IDENTIFIER),
+/* harmony export */   DISABLED_TRANSITIONS_STYLE: () => (/* binding */ DISABLED_TRANSITIONS_STYLE),
+/* harmony export */   DROPDOWN_COLLISION_AVOIDANCE: () => (/* binding */ DROPDOWN_COLLISION_AVOIDANCE),
+/* harmony export */   LEGACY_SWIPE_IGNORE_ATTRIBUTE: () => (/* binding */ LEGACY_SWIPE_IGNORE_ATTRIBUTE),
+/* harmony export */   LEGACY_SWIPE_IGNORE_SELECTOR: () => (/* binding */ LEGACY_SWIPE_IGNORE_SELECTOR),
+/* harmony export */   PATIENT_CLICK_THRESHOLD: () => (/* binding */ PATIENT_CLICK_THRESHOLD),
+/* harmony export */   POPUP_COLLISION_AVOIDANCE: () => (/* binding */ POPUP_COLLISION_AVOIDANCE),
+/* harmony export */   TYPEAHEAD_RESET_MS: () => (/* binding */ TYPEAHEAD_RESET_MS),
+/* harmony export */   ownerVisuallyHidden: () => (/* binding */ ownerVisuallyHidden)
+/* harmony export */ });
+const TYPEAHEAD_RESET_MS = 500;
+const PATIENT_CLICK_THRESHOLD = 500;
+const DISABLED_TRANSITIONS_STYLE = {
+  style: {
+    transition: 'none'
+  }
+};
+const CLICK_TRIGGER_IDENTIFIER = 'data-base-ui-click-trigger';
+const BASE_UI_SWIPE_IGNORE_ATTRIBUTE = 'data-base-ui-swipe-ignore';
+const LEGACY_SWIPE_IGNORE_ATTRIBUTE = 'data-swipe-ignore';
+const BASE_UI_SWIPE_IGNORE_SELECTOR = `[${BASE_UI_SWIPE_IGNORE_ATTRIBUTE}]`;
+const LEGACY_SWIPE_IGNORE_SELECTOR = `[${LEGACY_SWIPE_IGNORE_ATTRIBUTE}]`;
+
+/**
+ * Used for dropdowns that usually strictly prefer top/bottom placements and
+ * use `var(--available-height)` to limit their height.
+ */
+const DROPDOWN_COLLISION_AVOIDANCE = {
+  fallbackAxisSide: 'none'
+};
+
+/**
+ * Used by regular popups that usually aren't scrollable and are allowed to
+ * freely flip to any axis of placement.
+ */
+const POPUP_COLLISION_AVOIDANCE = {
+  fallbackAxisSide: 'end'
+};
+
+/**
+ * Special visually hidden styles for the aria-owns owner element to ensure owned element
+ * accessibility in iOS/Safari/VoiceControl.
+ * The owner element is an empty span, so most of the common visually hidden styles are not needed.
+ * @see https://github.com/floating-ui/floating-ui/issues/3403
+ */
+const ownerVisuallyHidden = {
+  clipPath: 'inset(50%)',
+  position: 'fixed',
+  top: 0,
+  left: 0
+};
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs"
+/*!****************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs ***!
+  \****************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createChangeEventDetails: () => (/* binding */ createChangeEventDetails),
+/* harmony export */   createGenericEventDetails: () => (/* binding */ createGenericEventDetails)
+/* harmony export */ });
+/* harmony import */ var _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/utils/empty */ "./node_modules/@base-ui/utils/empty.mjs");
+
+
+
+/**
+ * Maps a change `reason` string to the corresponding native event type.
+ */
+
+/**
+ * Details of custom change events emitted by Base UI components.
+ */
+
+/**
+ * Details of custom generic events emitted by Base UI components.
+ */
+
+/**
+ * Creates a Base UI event details object with the given reason and utilities
+ * for preventing Base UI's internal event handling.
+ */
+function createChangeEventDetails(reason, event, trigger, customProperties) {
+  let canceled = false;
+  let allowPropagation = false;
+  const custom = customProperties ?? _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_0__.EMPTY_OBJECT;
+  const details = {
+    reason,
+    event: event ?? new Event('base-ui'),
+    cancel() {
+      canceled = true;
+    },
+    allowPropagation() {
+      allowPropagation = true;
+    },
+    get isCanceled() {
+      return canceled;
+    },
+    get isPropagationAllowed() {
+      return allowPropagation;
+    },
+    trigger,
+    ...custom
+  };
+  return details;
+}
+function createGenericEventDetails(reason, event, customProperties) {
+  const custom = customProperties ?? _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_0__.EMPTY_OBJECT;
+  const details = {
+    reason,
+    event: event ?? new Event('base-ui'),
+    ...custom
+  };
+  return details;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/direction-context/DirectionContext.mjs"
+/*!**************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/direction-context/DirectionContext.mjs ***!
+  \**************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DirectionContext: () => (/* binding */ DirectionContext),
+/* harmony export */   useDirection: () => (/* binding */ useDirection)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+const DirectionContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(undefined);
+if (true) DirectionContext.displayName = "DirectionContext";
+function useDirection() {
+  const context = react__WEBPACK_IMPORTED_MODULE_0__.useContext(DirectionContext);
+  return context?.direction ?? 'ltr';
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/field-constants/constants.mjs"
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/field-constants/constants.mjs ***!
+  \*****************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DEFAULT_FIELD_ROOT_STATE: () => (/* binding */ DEFAULT_FIELD_ROOT_STATE),
+/* harmony export */   DEFAULT_FIELD_STATE_ATTRIBUTES: () => (/* binding */ DEFAULT_FIELD_STATE_ATTRIBUTES),
+/* harmony export */   DEFAULT_VALIDITY_STATE: () => (/* binding */ DEFAULT_VALIDITY_STATE),
+/* harmony export */   fieldValidityMapping: () => (/* binding */ fieldValidityMapping)
+/* harmony export */ });
+const DEFAULT_VALIDITY_STATE = {
+  badInput: false,
+  customError: false,
+  patternMismatch: false,
+  rangeOverflow: false,
+  rangeUnderflow: false,
+  stepMismatch: false,
+  tooLong: false,
+  tooShort: false,
+  typeMismatch: false,
+  valid: null,
+  valueMissing: false
+};
+const DEFAULT_FIELD_STATE_ATTRIBUTES = {
+  valid: null,
+  touched: false,
+  dirty: false,
+  filled: false,
+  focused: false
+};
+const DEFAULT_FIELD_ROOT_STATE = {
+  disabled: false,
+  ...DEFAULT_FIELD_STATE_ATTRIBUTES
+};
+const fieldValidityMapping = {
+  valid(value) {
+    if (value === null) {
+      return null;
+    }
+    if (value) {
+      return {
+        'data-valid': ''
+      };
+    }
+    return {
+      'data-invalid': ''
+    };
+  }
+};
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/field-register-control/useFieldControlRegistration.mjs"
+/*!******************************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/field-register-control/useFieldControlRegistration.mjs ***!
+  \******************************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useFieldControlRegistration: () => (/* binding */ useFieldControlRegistration)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _field_utils_getCombinedFieldValidityData_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../field/utils/getCombinedFieldValidityData.mjs */ "./node_modules/@base-ui/react/field/utils/getCombinedFieldValidityData.mjs");
+/* harmony import */ var _form_context_FormContext_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../form-context/FormContext.mjs */ "./node_modules/@base-ui/react/internals/form-context/FormContext.mjs");
+'use client';
+
+
+
+
+
+
+function useFieldControlRegistration(params) {
+  const {
+    commit,
+    invalid,
+    markedDirtyRef,
+    name,
+    setRegisteredFieldName,
+    registeredFieldIdRef,
+    setValidityData,
+    validityData
+  } = params;
+  const {
+    formRef
+  } = (0,_form_context_FormContext_mjs__WEBPACK_IMPORTED_MODULE_4__.useFormContext)();
+  const activeFieldControlSourceRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const registrationRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const initialValueCapturedRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const getValueForForm = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(() => {
+    const registration = registrationRef.current;
+    if (!registration) {
+      return undefined;
+    }
+    if (registration.getValue) {
+      return registration.getValue();
+    }
+    return registration.value;
+  });
+  function getRegistrationValue(registration) {
+    return registration.value === undefined ? getValueForForm() : registration.value;
+  }
+  const validate = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(() => {
+    const registration = registrationRef.current;
+    markedDirtyRef.current = true;
+    if (!registration) {
+      commit(validityData.value);
+      return;
+    }
+    commit(getRegistrationValue(registration));
+  });
+  function refreshRegistration() {
+    const registration = registrationRef.current;
+    if (!registration || !registration.id) {
+      return;
+    }
+    formRef.current.fields.set(registration.id, {
+      getValue: getValueForForm,
+      name: name ?? registration.name,
+      controlRef: registration.controlRef,
+      validityData: (0,_field_utils_getCombinedFieldValidityData_mjs__WEBPACK_IMPORTED_MODULE_3__.getCombinedFieldValidityData)(validityData, invalid),
+      validate
+    });
+  }
+  function deleteRegistration(id = registrationRef.current?.id) {
+    if (id) {
+      formRef.current.fields.delete(id);
+    }
+  }
+
+  // The baseline belongs to the field, not to a control instance: registration re-runs on every
+  // value change, and a control that unmounts and remounts (or is swapped for another one) comes
+  // back as a brand new registration. Capturing more than once would turn whichever value the
+  // control happens to hold at that point into the initial value, so a modified field would read
+  // pristine and its real initial value would read dirty. Consumers that want a fresh baseline
+  // remount or key `<Field.Root>` itself.
+  function captureInitialValue(registration) {
+    if (initialValueCapturedRef.current) {
+      return;
+    }
+    initialValueCapturedRef.current = true;
+    const initialValue = getRegistrationValue(registration);
+    setValidityData(prev => prev.initialValue === initialValue ? prev : {
+      ...prev,
+      initialValue
+    });
+  }
+  ;(0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    const registration = registrationRef.current;
+    if (!registration || !registration.id) {
+      return;
+    }
+    setRegisteredFieldName(name ? undefined : registration.name);
+    formRef.current.fields.set(registration.id, {
+      getValue: getValueForForm,
+      name: name ?? registration.name,
+      controlRef: registration.controlRef,
+      validityData: (0,_field_utils_getCombinedFieldValidityData_mjs__WEBPACK_IMPORTED_MODULE_3__.getCombinedFieldValidityData)(validityData, invalid),
+      validate
+    });
+  }, [formRef, getValueForForm, invalid, name, setRegisteredFieldName, validate, validityData]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    const fields = formRef.current.fields;
+    return () => {
+      const id = registrationRef.current?.id;
+      if (id) {
+        fields.delete(id);
+      }
+    };
+  }, [formRef]);
+  const register = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)((source, registration) => {
+    if (!registration) {
+      if (activeFieldControlSourceRef.current === source) {
+        activeFieldControlSourceRef.current = null;
+        deleteRegistration();
+        registrationRef.current = null;
+        setRegisteredFieldName(undefined);
+        registeredFieldIdRef.current = undefined;
+      }
+      return;
+    }
+    const previousId = registrationRef.current?.id;
+    activeFieldControlSourceRef.current = source;
+    registrationRef.current = registration;
+    if (!name) {
+      setRegisteredFieldName(registration.name);
+    }
+    registeredFieldIdRef.current = registration.id;
+    if (previousId && previousId !== registration.id) {
+      deleteRegistration(previousId);
+    }
+    captureInitialValue(registration);
+    refreshRegistration();
+  });
+  return [validate, register];
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/field-register-control/useRegisterFieldControl.mjs"
+/*!**************************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/field-register-control/useRegisterFieldControl.mjs ***!
+  \**************************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useRegisterFieldControl: () => (/* binding */ useRegisterFieldControl)
+/* harmony export */ });
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useRefWithInit */ "./node_modules/@base-ui/utils/useRefWithInit.mjs");
+/* harmony import */ var _field_root_context_FieldRootContext_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../field-root-context/FieldRootContext.mjs */ "./node_modules/@base-ui/react/internals/field-root-context/FieldRootContext.mjs");
+'use client';
+
+
+
+
+function useRegisterFieldControl(controlRef, id, value, getFormValueOverride, enabled = true, name) {
+  const {
+    registerFieldControl
+  } = (0,_field_root_context_FieldRootContext_mjs__WEBPACK_IMPORTED_MODULE_2__.useFieldRootContext)();
+  const sourceRef = (0,_base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_1__.useRefWithInit)(() => Symbol());
+
+  // Re-register without unregistering first: re-registration with the same id updates the
+  // form's fields Map entry in place, while a delete + re-add would move the field to the
+  // end of the Map every time its value changes.
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_0__.useIsoLayoutEffect)(() => {
+    const source = sourceRef.current;
+    if (!enabled) {
+      registerFieldControl(source, undefined);
+      return;
+    }
+    const registration = {
+      controlRef,
+      getValue: getFormValueOverride,
+      id,
+      name,
+      value
+    };
+    registerFieldControl(source, registration);
+  }, [controlRef, enabled, getFormValueOverride, id, name, registerFieldControl, sourceRef, value]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_0__.useIsoLayoutEffect)(() => {
+    const source = sourceRef.current;
+    return () => {
+      registerFieldControl(source, undefined);
+    };
+  }, [registerFieldControl, sourceRef]);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/field-root-context/FieldRootContext.mjs"
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/field-root-context/FieldRootContext.mjs ***!
+  \***************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DEFAULT_FIELD_ROOT_CONTEXT: () => (/* binding */ DEFAULT_FIELD_ROOT_CONTEXT),
+/* harmony export */   FieldRootContext: () => (/* binding */ FieldRootContext),
+/* harmony export */   useFieldRootContext: () => (/* binding */ useFieldRootContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../noop.mjs */ "./node_modules/@base-ui/utils/empty.mjs");
+/* harmony import */ var _field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../field-constants/constants.mjs */ "./node_modules/@base-ui/react/internals/field-constants/constants.mjs");
+'use client';
+
+
+
+
+
+
+const DEFAULT_FIELD_ROOT_CONTEXT = {
+  invalid: undefined,
+  name: undefined,
+  validityData: {
+    state: _field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_2__.DEFAULT_VALIDITY_STATE,
+    errors: [],
+    error: '',
+    value: '',
+    initialValue: null
+  },
+  setValidityData: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_1__.NOOP,
+  disabled: undefined,
+  setTouched: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_1__.NOOP,
+  setDirty: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_1__.NOOP,
+  setFilled: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_1__.NOOP,
+  setFocused: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_1__.NOOP,
+  validationMode: 'onSubmit',
+  shouldValidateOnChange: () => false,
+  state: _field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_2__.DEFAULT_FIELD_ROOT_STATE,
+  registerFieldControl: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_1__.NOOP,
+  validation: {
+    getValidationProps: (_disabled, props = _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_1__.EMPTY_OBJECT) => props,
+    inputRef: {
+      current: null
+    },
+    registeredInputs: new Map(),
+    registerInput: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_1__.NOOP,
+    getInputControl: () => null,
+    commit: async () => {},
+    change: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_1__.NOOP
+  }
+};
+const FieldRootContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(DEFAULT_FIELD_ROOT_CONTEXT);
+if (true) FieldRootContext.displayName = "FieldRootContext";
+function useFieldRootContext(optional = true) {
+  const context = react__WEBPACK_IMPORTED_MODULE_0__.useContext(FieldRootContext);
+  if (context.setValidityData === _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_1__.NOOP && !optional) {
+    throw new Error( true ? 'Base UI: FieldRootContext is missing. Field parts must be placed within <Field.Root>.' : 0);
+  }
+  return context;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/form-context/FormContext.mjs"
+/*!****************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/form-context/FormContext.mjs ***!
+  \****************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FormContext: () => (/* binding */ FormContext),
+/* harmony export */   useFormContext: () => (/* binding */ useFormContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _noop_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../noop.mjs */ "./node_modules/@base-ui/utils/empty.mjs");
+'use client';
+
+
+
+const FormContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext({
+  elementRef: {
+    current: null
+  },
+  formRef: {
+    current: {
+      fields: new Map()
+    }
+  },
+  errors: {},
+  clearErrors: _noop_mjs__WEBPACK_IMPORTED_MODULE_1__.NOOP,
+  validationMode: 'onSubmit',
+  submitAttemptedRef: {
+    current: false
+  }
+});
+if (true) FormContext.displayName = "FormContext";
+function useFormContext() {
+  return react__WEBPACK_IMPORTED_MODULE_0__.useContext(FormContext);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/getDisabledMountTransitionStyles.mjs"
+/*!************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/getDisabledMountTransitionStyles.mjs ***!
+  \************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getDisabledMountTransitionStyles: () => (/* binding */ getDisabledMountTransitionStyles)
+/* harmony export */ });
+/* harmony import */ var _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/utils/empty */ "./node_modules/@base-ui/utils/empty.mjs");
+/* harmony import */ var _constants_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./constants.mjs */ "./node_modules/@base-ui/react/internals/constants.mjs");
+
+
+function getDisabledMountTransitionStyles(transitionStatus) {
+  return transitionStatus === 'starting' ? _constants_mjs__WEBPACK_IMPORTED_MODULE_1__.DISABLED_TRANSITIONS_STYLE : _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_0__.EMPTY_OBJECT;
+}
 
 /***/ },
 
@@ -14909,6 +20803,1346 @@ function getStateAttributesProps(state, customMapping) {
     }
   }
   return props;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/labelable-provider/LabelableContext.mjs"
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/labelable-provider/LabelableContext.mjs ***!
+  \***************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   LabelableContext: () => (/* binding */ LabelableContext),
+/* harmony export */   useLabelableContext: () => (/* binding */ useLabelableContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _noop_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../noop.mjs */ "./node_modules/@base-ui/utils/empty.mjs");
+'use client';
+
+
+
+/**
+ * A context for providing [labelable elements](https://html.spec.whatwg.org/multipage/forms.html#category-label)\
+ * with an accessible name (label) and description.
+ */
+const LabelableContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext({
+  controlId: undefined,
+  registerControlId: _noop_mjs__WEBPACK_IMPORTED_MODULE_1__.NOOP,
+  labelId: undefined,
+  setLabelId: _noop_mjs__WEBPACK_IMPORTED_MODULE_1__.NOOP,
+  messageIds: [],
+  setMessageIds: _noop_mjs__WEBPACK_IMPORTED_MODULE_1__.NOOP,
+  getDescriptionProps: externalProps => externalProps
+});
+if (true) LabelableContext.displayName = "LabelableContext";
+function useLabelableContext() {
+  return react__WEBPACK_IMPORTED_MODULE_0__.useContext(LabelableContext);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/labelable-provider/LabelableProvider.mjs"
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/labelable-provider/LabelableProvider.mjs ***!
+  \****************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   LabelableProvider: () => (/* binding */ LabelableProvider)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useRefWithInit */ "./node_modules/@base-ui/utils/useRefWithInit.mjs");
+/* harmony import */ var _useBaseUiId_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../useBaseUiId.mjs */ "./node_modules/@base-ui/react/internals/useBaseUiId.mjs");
+/* harmony import */ var _LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./LabelableContext.mjs */ "./node_modules/@base-ui/react/internals/labelable-provider/LabelableContext.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+
+
+const LabelableProvider = function LabelableProvider(props) {
+  const defaultId = (0,_useBaseUiId_mjs__WEBPACK_IMPORTED_MODULE_3__.useBaseUiId)();
+  const initialControlId = props.controlId === undefined ? defaultId : props.controlId;
+  const [controlId, setControlIdState] = react__WEBPACK_IMPORTED_MODULE_0__.useState(initialControlId);
+  const [labelId, setLabelId] = react__WEBPACK_IMPORTED_MODULE_0__.useState(props.labelId);
+  const [messageIds, setMessageIds] = react__WEBPACK_IMPORTED_MODULE_0__.useState([]);
+  const registrationsRef = (0,_base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_2__.useRefWithInit)(() => new Map());
+  const {
+    messageIds: parentMessageIds
+  } = (0,_LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_4__.useLabelableContext)();
+  const registerControlId = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_1__.useStableCallback)((source, nextId) => {
+    const registrations = registrationsRef.current;
+    if (nextId === undefined) {
+      registrations.delete(source);
+      return;
+    }
+    registrations.set(source, nextId);
+
+    // Only flush when registering, not when unregistering.
+    // This prevents loops during rapid unmount/remount cycles (e.g. React Activity).
+    // The next registration will pick up the correct state.
+    setControlIdState(prev => {
+      if (registrations.size === 0) {
+        return undefined;
+      }
+      let nextControlId;
+      for (const id of registrations.values()) {
+        if (prev !== undefined && id === prev) {
+          return prev;
+        }
+        if (nextControlId === undefined) {
+          nextControlId = id;
+        }
+      }
+      return nextControlId;
+    });
+  });
+  const getDescriptionProps = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(externalProps => {
+    const ids = externalProps['aria-describedby'] ? externalProps['aria-describedby'].split(' ') : [];
+    ids.push(...parentMessageIds, ...messageIds);
+    return {
+      ...externalProps,
+      'aria-describedby': Array.from(new Set(ids)).join(' ') || undefined
+    };
+  }, [parentMessageIds, messageIds]);
+  const contextValue = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    controlId,
+    registerControlId,
+    labelId,
+    setLabelId,
+    messageIds,
+    setMessageIds,
+    getDescriptionProps
+  }), [controlId, registerControlId, labelId, setLabelId, messageIds, setMessageIds, getDescriptionProps]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_4__.LabelableContext.Provider, {
+    value: contextValue,
+    children: props.children
+  });
+};
+if (true) LabelableProvider.displayName = "LabelableProvider";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/labelable-provider/useLabel.mjs"
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/labelable-provider/useLabel.mjs ***!
+  \*******************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   focusElementWithVisible: () => (/* binding */ focusElementWithVisible),
+/* harmony export */   useLabel: () => (/* binding */ useLabel)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@base-ui/utils/owner.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../floating-ui-react/utils.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+/* harmony import */ var _utils_useRegisteredLabelId_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/useRegisteredLabelId.mjs */ "./node_modules/@base-ui/react/utils/useRegisteredLabelId.mjs");
+/* harmony import */ var _LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./LabelableContext.mjs */ "./node_modules/@base-ui/react/internals/labelable-provider/LabelableContext.mjs");
+'use client';
+
+
+
+
+
+
+
+function useLabel(params = {}) {
+  const {
+    id: idProp,
+    fallbackControlId,
+    native = false,
+    setLabelId: setLabelIdProp,
+    focusControl: focusControlProp
+  } = params;
+  const {
+    controlId: contextControlId,
+    setLabelId: setContextLabelId
+  } = (0,_LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_5__.useLabelableContext)();
+  const syncLabelId = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(nextLabelId => {
+    setContextLabelId(nextLabelId);
+    setLabelIdProp?.(nextLabelId);
+  });
+  const id = (0,_utils_useRegisteredLabelId_mjs__WEBPACK_IMPORTED_MODULE_4__.useRegisteredLabelId)(idProp, syncLabelId);
+  const resolvedControlId = contextControlId ?? fallbackControlId;
+  function focusControl(event) {
+    if (focusControlProp) {
+      focusControlProp(event, resolvedControlId);
+      return;
+    }
+    if (!resolvedControlId) {
+      return;
+    }
+    const controlElement = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_1__.ownerDocument)(event.currentTarget).getElementById(resolvedControlId);
+    if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isHTMLElement)(controlElement)) {
+      focusElementWithVisible(controlElement);
+    }
+  }
+  function handleInteraction(event) {
+    const target = (0,_floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_3__.getTarget)(event.nativeEvent);
+    if (target?.closest('button,input,select,textarea')) {
+      return;
+    }
+
+    // Prevent text selection when double clicking label.
+    if (!event.defaultPrevented && event.detail > 1) {
+      event.preventDefault();
+    }
+    if (native) {
+      return;
+    }
+    focusControl(event);
+  }
+  return native ? {
+    id,
+    htmlFor: resolvedControlId ?? undefined,
+    onMouseDown: handleInteraction
+  } : {
+    id,
+    onClick: handleInteraction,
+    onPointerDown(event) {
+      event.preventDefault();
+    }
+  };
+}
+function focusElementWithVisible(element) {
+  element.focus({
+    // Available from Chrome 144+ (January 2026).
+    // Safari and Firefox already support it.
+    focusVisible: true
+  });
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/labelable-provider/useLabelableId.mjs"
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/labelable-provider/useLabelableId.mjs ***!
+  \*************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useLabelableId: () => (/* binding */ useLabelableId)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/useRefWithInit */ "./node_modules/@base-ui/utils/useRefWithInit.mjs");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _noop_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../noop.mjs */ "./node_modules/@base-ui/utils/empty.mjs");
+/* harmony import */ var _useBaseUiId_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../useBaseUiId.mjs */ "./node_modules/@base-ui/react/internals/useBaseUiId.mjs");
+/* harmony import */ var _LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./LabelableContext.mjs */ "./node_modules/@base-ui/react/internals/labelable-provider/LabelableContext.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+function useLabelableId(params = {}) {
+  const {
+    id,
+    implicit = false,
+    controlRef
+  } = params;
+  const {
+    controlId,
+    registerControlId
+  } = (0,_LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_7__.useLabelableContext)();
+  const defaultId = (0,_useBaseUiId_mjs__WEBPACK_IMPORTED_MODULE_6__.useBaseUiId)(id);
+  const controlIdForEffect = implicit ? controlId : undefined;
+  const controlSourceRef = (0,_base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_3__.useRefWithInit)(() => Symbol());
+  const hasRegisteredRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const hadExplicitIdRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(id != null);
+  const unregisterControlId = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(() => {
+    if (!hasRegisteredRef.current || registerControlId === _noop_mjs__WEBPACK_IMPORTED_MODULE_5__.NOOP) {
+      return;
+    }
+    hasRegisteredRef.current = false;
+    registerControlId(controlSourceRef.current, undefined);
+  });
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    if (registerControlId === _noop_mjs__WEBPACK_IMPORTED_MODULE_5__.NOOP) {
+      return undefined;
+    }
+    let nextId;
+    if (implicit) {
+      const elem = controlRef?.current;
+      if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_4__.isElement)(elem) && elem.closest('label') != null) {
+        nextId = id ?? null;
+      } else {
+        nextId = controlIdForEffect ?? defaultId;
+      }
+    } else if (id != null) {
+      hadExplicitIdRef.current = true;
+      nextId = id;
+    } else if (hadExplicitIdRef.current) {
+      nextId = defaultId;
+    } else {
+      unregisterControlId();
+      return undefined;
+    }
+    if (nextId === undefined) {
+      unregisterControlId();
+      return undefined;
+    }
+    hasRegisteredRef.current = true;
+    registerControlId(controlSourceRef.current, nextId);
+    return undefined;
+  }, [id, controlRef, controlIdForEffect, registerControlId, implicit, defaultId, controlSourceRef, unregisterControlId]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    return unregisterControlId;
+  }, [unregisterControlId]);
+  return controlId ?? defaultId;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/reason-parts.mjs"
+/*!****************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/reason-parts.mjs ***!
+  \****************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   cancelOpen: () => (/* binding */ cancelOpen),
+/* harmony export */   chipRemovePress: () => (/* binding */ chipRemovePress),
+/* harmony export */   clearPress: () => (/* binding */ clearPress),
+/* harmony export */   closePress: () => (/* binding */ closePress),
+/* harmony export */   closeWatcher: () => (/* binding */ closeWatcher),
+/* harmony export */   decrementPress: () => (/* binding */ decrementPress),
+/* harmony export */   disabled: () => (/* binding */ disabled),
+/* harmony export */   drag: () => (/* binding */ drag),
+/* harmony export */   escapeKey: () => (/* binding */ escapeKey),
+/* harmony export */   focusOut: () => (/* binding */ focusOut),
+/* harmony export */   imperativeAction: () => (/* binding */ imperativeAction),
+/* harmony export */   incrementPress: () => (/* binding */ incrementPress),
+/* harmony export */   initial: () => (/* binding */ initial),
+/* harmony export */   inputBlur: () => (/* binding */ inputBlur),
+/* harmony export */   inputChange: () => (/* binding */ inputChange),
+/* harmony export */   inputClear: () => (/* binding */ inputClear),
+/* harmony export */   inputPaste: () => (/* binding */ inputPaste),
+/* harmony export */   inputPress: () => (/* binding */ inputPress),
+/* harmony export */   itemPress: () => (/* binding */ itemPress),
+/* harmony export */   keyboard: () => (/* binding */ keyboard),
+/* harmony export */   linkPress: () => (/* binding */ linkPress),
+/* harmony export */   listNavigation: () => (/* binding */ listNavigation),
+/* harmony export */   missing: () => (/* binding */ missing),
+/* harmony export */   none: () => (/* binding */ none),
+/* harmony export */   outsidePress: () => (/* binding */ outsidePress),
+/* harmony export */   pointer: () => (/* binding */ pointer),
+/* harmony export */   scrub: () => (/* binding */ scrub),
+/* harmony export */   siblingOpen: () => (/* binding */ siblingOpen),
+/* harmony export */   swipe: () => (/* binding */ swipe),
+/* harmony export */   trackPress: () => (/* binding */ trackPress),
+/* harmony export */   triggerFocus: () => (/* binding */ triggerFocus),
+/* harmony export */   triggerHover: () => (/* binding */ triggerHover),
+/* harmony export */   triggerPress: () => (/* binding */ triggerPress),
+/* harmony export */   wheel: () => (/* binding */ wheel),
+/* harmony export */   windowResize: () => (/* binding */ windowResize)
+/* harmony export */ });
+const none = 'none';
+const triggerPress = 'trigger-press';
+const triggerHover = 'trigger-hover';
+const triggerFocus = 'trigger-focus';
+const outsidePress = 'outside-press';
+const itemPress = 'item-press';
+const closePress = 'close-press';
+const linkPress = 'link-press';
+const clearPress = 'clear-press';
+const chipRemovePress = 'chip-remove-press';
+const trackPress = 'track-press';
+const incrementPress = 'increment-press';
+const decrementPress = 'decrement-press';
+const inputChange = 'input-change';
+const inputClear = 'input-clear';
+const inputBlur = 'input-blur';
+const inputPaste = 'input-paste';
+const inputPress = 'input-press';
+const focusOut = 'focus-out';
+const escapeKey = 'escape-key';
+const closeWatcher = 'close-watcher';
+const listNavigation = 'list-navigation';
+const keyboard = 'keyboard';
+const pointer = 'pointer';
+const drag = 'drag';
+const wheel = 'wheel';
+const scrub = 'scrub';
+const cancelOpen = 'cancel-open';
+const siblingOpen = 'sibling-open';
+const disabled = 'disabled';
+const missing = 'missing';
+const initial = 'initial';
+const imperativeAction = 'imperative-action';
+const swipe = 'swipe';
+const windowResize = 'window-resize';
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/shadowDom.mjs"
+/*!*************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/shadowDom.mjs ***!
+  \*************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   activeElement: () => (/* binding */ activeElement),
+/* harmony export */   contains: () => (/* binding */ contains),
+/* harmony export */   getTarget: () => (/* binding */ getTarget)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+
+function activeElement(doc) {
+  let element = doc.activeElement;
+  while (element?.shadowRoot?.activeElement != null) {
+    element = element.shadowRoot.activeElement;
+  }
+  return element;
+}
+function contains(parent, child) {
+  if (!parent || !child) {
+    return false;
+  }
+  const rootNode = child.getRootNode?.();
+
+  // First, attempt with the faster native method.
+  if (parent.contains(child)) {
+    return true;
+  }
+
+  // Then fall back to traversing out of shadow roots when needed.
+  if (rootNode && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isShadowRoot)(rootNode)) {
+    let next = child;
+    while (next) {
+      if (parent === next) {
+        return true;
+      }
+      next = next.parentNode || next.host;
+    }
+  }
+  return false;
+}
+function getTarget(event) {
+  if ('composedPath' in event) {
+    return event.composedPath()[0];
+  }
+
+  // TS assumes `composedPath()` always exists, but older browsers without
+  // shadow DOM support still fall back to `target`.
+  return event.target;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/stateAttributesMapping.mjs"
+/*!**************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/stateAttributesMapping.mjs ***!
+  \**************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TransitionStatusDataAttributes: () => (/* binding */ TransitionStatusDataAttributes),
+/* harmony export */   transitionStatusMapping: () => (/* binding */ transitionStatusMapping)
+/* harmony export */ });
+let TransitionStatusDataAttributes = /*#__PURE__*/function (TransitionStatusDataAttributes) {
+  /**
+   * Present when the component begins animating in.
+   */
+  TransitionStatusDataAttributes["startingStyle"] = "data-starting-style";
+  /**
+   * Present when the component is animating out.
+   */
+  TransitionStatusDataAttributes["endingStyle"] = "data-ending-style";
+  return TransitionStatusDataAttributes;
+}({});
+const STARTING_HOOK = {
+  'data-starting-style': ''
+};
+const ENDING_HOOK = {
+  'data-ending-style': ''
+};
+const transitionStatusMapping = {
+  transitionStatus(value) {
+    if (value === 'starting') {
+      return STARTING_HOOK;
+    }
+    if (value === 'ending') {
+      return ENDING_HOOK;
+    }
+    return null;
+  }
+};
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/use-button/useButton.mjs"
+/*!************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/use-button/useButton.mjs ***!
+  \************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useButton: () => (/* binding */ useButton)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_error__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/error */ "./node_modules/@base-ui/utils/error.mjs");
+/* harmony import */ var _base_ui_utils_safeReact__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/safeReact */ "./node_modules/@base-ui/utils/safeReact.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _merge_props_index_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../merge-props/index.mjs */ "./node_modules/@base-ui/react/merge-props/mergeProps.mjs");
+/* harmony import */ var _composite_root_CompositeRootContext_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../composite/root/CompositeRootContext.mjs */ "./node_modules/@base-ui/react/internals/composite/root/CompositeRootContext.mjs");
+/* harmony import */ var _utils_useFocusableWhenDisabled_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../utils/useFocusableWhenDisabled.mjs */ "./node_modules/@base-ui/react/utils/useFocusableWhenDisabled.mjs");
+/* harmony import */ var _utils_dispatchClickWithModifiers_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../utils/dispatchClickWithModifiers.mjs */ "./node_modules/@base-ui/react/utils/dispatchClickWithModifiers.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+function useButton(parameters = {}) {
+  const {
+    disabled = false,
+    focusableWhenDisabled,
+    tabIndex = 0,
+    native: isNativeButton = true,
+    composite: compositeProp
+  } = parameters;
+  const elementRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const compositeRootContext = (0,_composite_root_CompositeRootContext_mjs__WEBPACK_IMPORTED_MODULE_7__.useCompositeRootContext)(true);
+  const isCompositeItem = compositeProp ?? compositeRootContext !== undefined;
+  const {
+    props: focusableWhenDisabledProps
+  } = (0,_utils_useFocusableWhenDisabled_mjs__WEBPACK_IMPORTED_MODULE_8__.useFocusableWhenDisabled)({
+    focusableWhenDisabled,
+    disabled,
+    composite: isCompositeItem,
+    tabIndex,
+    isNativeButton
+  });
+  if (true) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+      if (!elementRef.current) {
+        return;
+      }
+      const isButtonTag = isButtonElement(elementRef.current);
+      if (isNativeButton) {
+        if (!isButtonTag) {
+          const ownerStackMessage = _base_ui_utils_safeReact__WEBPACK_IMPORTED_MODULE_4__.SafeReact.captureOwnerStack?.() || '';
+          const message = 'A component that acts as a button expected a native <button> because the ' + '`nativeButton` prop is true. Rendering a non-<button> removes native button ' + 'semantics, which can impact forms and accessibility. Use a real <button> in the ' + '`render` prop, or set `nativeButton` to `false`.';
+          (0,_base_ui_utils_error__WEBPACK_IMPORTED_MODULE_3__.error)(`${message}${ownerStackMessage}`);
+        }
+      } else if (isButtonTag) {
+        const ownerStackMessage = _base_ui_utils_safeReact__WEBPACK_IMPORTED_MODULE_4__.SafeReact.captureOwnerStack?.() || '';
+        const message = 'A component that acts as a button expected a non-<button> because the `nativeButton` ' + 'prop is false. Rendering a <button> keeps native behavior while Base UI applies ' + 'non-native attributes and handlers, which can add unintended extra attributes (such ' + 'as `role` or `aria-disabled`). Use a non-<button> in the `render` prop, or set ' + '`nativeButton` to `true`.';
+        (0,_base_ui_utils_error__WEBPACK_IMPORTED_MODULE_3__.error)(`${message}${ownerStackMessage}`);
+      }
+    }, [isNativeButton]);
+  }
+
+  // handles a disabled composite button rendering another button, e.g.
+  // <Toolbar.Button disabled render={<Menu.Trigger />} />
+  // the `disabled` prop needs to pass through 2 `useButton`s then finally
+  // delete the `disabled` attribute from DOM
+  const updateDisabled = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(() => {
+    const element = elementRef.current;
+    if (!isButtonElement(element)) {
+      return;
+    }
+    if (isCompositeItem && disabled && focusableWhenDisabledProps.disabled === undefined && element.disabled) {
+      element.disabled = false;
+    }
+  }, [disabled, focusableWhenDisabledProps.disabled, isCompositeItem]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_5__.useIsoLayoutEffect)(updateDisabled, [updateDisabled]);
+  const getButtonProps = react__WEBPACK_IMPORTED_MODULE_0__.useCallback((externalProps = {}) => {
+    const {
+      onClick: externalOnClick,
+      onMouseDown: externalOnMouseDown,
+      onKeyUp: externalOnKeyUp,
+      onKeyDown: externalOnKeyDown,
+      onPointerDown: externalOnPointerDown,
+      ...otherExternalProps
+    } = externalProps;
+    return (0,_merge_props_index_mjs__WEBPACK_IMPORTED_MODULE_6__.mergeProps)({
+      onClick(event) {
+        if (disabled) {
+          event.preventDefault();
+          return;
+        }
+        externalOnClick?.(event);
+      },
+      onMouseDown(event) {
+        if (!disabled) {
+          externalOnMouseDown?.(event);
+        }
+      },
+      onKeyDown(event) {
+        if (disabled) {
+          return;
+        }
+        ;(0,_merge_props_index_mjs__WEBPACK_IMPORTED_MODULE_6__.makeEventPreventable)(event);
+        externalOnKeyDown?.(event);
+        if (event.baseUIHandlerPrevented) {
+          return;
+        }
+        const isCurrentTarget = event.target === event.currentTarget;
+        const currentTarget = event.currentTarget;
+        const isButton = isButtonElement(currentTarget);
+        const isLink = !isNativeButton && isValidLinkElement(currentTarget);
+        const shouldClick = isCurrentTarget && (isNativeButton ? isButton : !isLink);
+        const isEnterKey = event.key === 'Enter';
+        const isSpaceKey = event.key === ' ';
+        const role = currentTarget.getAttribute('role');
+        const isTextNavigationRole = role?.startsWith('menuitem') || role === 'option' || role === 'gridcell';
+        if (isCurrentTarget && isCompositeItem && isSpaceKey) {
+          if (event.defaultPrevented && isTextNavigationRole) {
+            return;
+          }
+          event.preventDefault();
+
+          // Only a native-mode item that isn't a real <button> is excluded.
+          if (!isNativeButton || isButton) {
+            event.preventBaseUIHandler();
+            (0,_utils_dispatchClickWithModifiers_mjs__WEBPACK_IMPORTED_MODULE_9__.dispatchClickWithModifiers)(currentTarget, event);
+          }
+          return;
+        }
+
+        // Keyboard accessibility for native and non-native elements.
+        if (!shouldClick || isNativeButton || !isSpaceKey && !isEnterKey) {
+          // Space activates links on keyup (`role="button"` semantics, matching the
+          // composite path); prevent the page scroll Space would otherwise trigger.
+          // Enter is left to the browser's native link activation.
+          if (isCurrentTarget && isLink && isSpaceKey) {
+            event.preventDefault();
+          }
+          return;
+        }
+
+        // Match native buttons: preventing the keydown's default cancels activation.
+        if (event.defaultPrevented) {
+          return;
+        }
+        event.preventDefault();
+        if (isEnterKey) {
+          event.preventBaseUIHandler();
+          (0,_utils_dispatchClickWithModifiers_mjs__WEBPACK_IMPORTED_MODULE_9__.dispatchClickWithModifiers)(currentTarget, event);
+        }
+      },
+      onKeyUp(event) {
+        if (disabled) {
+          return;
+        }
+
+        // calling preventDefault in keyUp on a <button> will not dispatch a click event if Space is pressed
+        // https://codesandbox.io/p/sandbox/button-keyup-preventdefault-dn7f0
+        ;(0,_merge_props_index_mjs__WEBPACK_IMPORTED_MODULE_6__.makeEventPreventable)(event);
+        externalOnKeyUp?.(event);
+        if (event.target === event.currentTarget && isNativeButton && isCompositeItem && isButtonElement(event.currentTarget) && event.key === ' ') {
+          event.preventDefault();
+          return;
+        }
+        if (event.baseUIHandlerPrevented) {
+          return;
+        }
+
+        // Keyboard accessibility for non interactive elements.
+        // Match native buttons: preventing the keyup's default cancels Space activation.
+        // Limitation: unlike a native <button>, a prevented *keydown* cannot cancel the
+        // activation — no state is kept between keydown and keyup, so we can't tell
+        // whether the keydown was prevented or even happened on this element.
+        if (event.target === event.currentTarget && !isNativeButton && !isCompositeItem && !event.defaultPrevented && event.key === ' ') {
+          event.preventBaseUIHandler();
+          (0,_utils_dispatchClickWithModifiers_mjs__WEBPACK_IMPORTED_MODULE_9__.dispatchClickWithModifiers)(event.currentTarget, event);
+        }
+      },
+      onPointerDown(event) {
+        if (disabled) {
+          event.preventDefault();
+          return;
+        }
+        externalOnPointerDown?.(event);
+      }
+    }, isNativeButton ? {
+      type: 'button'
+    } : {
+      role: 'button'
+    }, focusableWhenDisabledProps, otherExternalProps);
+  }, [disabled, focusableWhenDisabledProps, isCompositeItem, isNativeButton]);
+  const buttonRef = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(element => {
+    elementRef.current = element;
+    updateDisabled();
+  });
+  return {
+    getButtonProps,
+    buttonRef
+  };
+}
+function isButtonElement(elem) {
+  return (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__.isHTMLElement)(elem) && elem.tagName === 'BUTTON';
+}
+function isValidLinkElement(elem) {
+  return (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__.isHTMLElement)(elem) && elem.tagName === 'A' && Boolean(elem.href);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/useAnchorPositioning.mjs"
+/*!************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/useAnchorPositioning.mjs ***!
+  \************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useAnchorPositioning: () => (/* binding */ useAnchorPositioning),
+/* harmony export */   useAnchorPositioningWithHook: () => (/* binding */ useAnchorPositioningWithHook)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @floating-ui/utils */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@base-ui/utils/owner.mjs");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @base-ui/utils/useValueAsRef */ "./node_modules/@base-ui/utils/useValueAsRef.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../floating-ui-react/index.mjs */ "./node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../floating-ui-react/index.mjs */ "./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs");
+/* harmony import */ var _floating_ui_react_hooks_useFloating_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../floating-ui-react/hooks/useFloating.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useFloating.mjs");
+/* harmony import */ var _direction_context_DirectionContext_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./direction-context/DirectionContext.mjs */ "./node_modules/@base-ui/react/internals/direction-context/DirectionContext.mjs");
+/* harmony import */ var _floating_ui_react_middleware_arrow_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../floating-ui-react/middleware/arrow.mjs */ "./node_modules/@base-ui/react/floating-ui-react/middleware/arrow.mjs");
+/* harmony import */ var _utils_hideMiddleware_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../utils/hideMiddleware.mjs */ "./node_modules/@base-ui/react/utils/hideMiddleware.mjs");
+/* harmony import */ var _utils_adaptiveOriginConstants_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../utils/adaptiveOriginConstants.mjs */ "./node_modules/@base-ui/react/utils/adaptiveOriginConstants.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+const AVAILABLE_WIDTH_VAR = '--available-width';
+const AVAILABLE_HEIGHT_VAR = '--available-height';
+function getLogicalSide(sideParam, renderedSide, isRtl) {
+  const isLogicalSideParam = sideParam === 'inline-start' || sideParam === 'inline-end';
+  const logicalRight = isRtl ? 'inline-start' : 'inline-end';
+  const logicalLeft = isRtl ? 'inline-end' : 'inline-start';
+  return {
+    top: 'top',
+    right: isLogicalSideParam ? logicalRight : 'right',
+    bottom: 'bottom',
+    left: isLogicalSideParam ? logicalLeft : 'left'
+  }[renderedSide];
+}
+function getOffsetData(state, sideParam, isRtl) {
+  const {
+    rects,
+    placement
+  } = state;
+  const data = {
+    side: getLogicalSide(sideParam, (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__.getSide)(placement), isRtl),
+    align: (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__.getAlignment)(placement) || 'center',
+    anchor: {
+      width: rects.reference.width,
+      height: rects.reference.height
+    },
+    positioner: {
+      width: rects.floating.width,
+      height: rects.floating.height
+    }
+  };
+  return data;
+}
+/**
+ * Provides standardized anchor positioning behavior for floating elements. Wraps Floating UI's
+ * `useFloating` hook.
+ */
+function useAnchorPositioning(params) {
+  return useAnchorPositioningWithHook(params, _floating_ui_react_hooks_useFloating_mjs__WEBPACK_IMPORTED_MODULE_9__.useBaseUIFloating);
+}
+function useAnchorPositioningWithHook(params, useFloatingHook) {
+  const {
+    // Public parameters
+    anchor,
+    positionMethod = 'absolute',
+    side: sideParam = 'bottom',
+    sideOffset = 0,
+    align = 'center',
+    alignOffset = 0,
+    collisionBoundary,
+    collisionPadding: collisionPaddingParam = 5,
+    sticky = false,
+    arrowPadding = 5,
+    disableAnchorTracking = false,
+    inline: inlineMiddleware,
+    // Private parameters
+    keepMounted = false,
+    floatingRootContext,
+    mounted,
+    collisionAvoidance,
+    shift,
+    nodeId,
+    adaptiveOrigin,
+    lazyFlip = false,
+    externalTree
+  } = params;
+  const [mountSide, setMountSide] = react__WEBPACK_IMPORTED_MODULE_0__.useState(null);
+  if (!mounted && mountSide !== null) {
+    setMountSide(null);
+  }
+  const collisionAvoidanceSide = collisionAvoidance.side || 'flip';
+  const collisionAvoidanceAlign = collisionAvoidance.align || 'flip';
+  const collisionAvoidanceFallbackAxisSide = collisionAvoidance.fallbackAxisSide || 'end';
+  const shiftCrossAxis = shift?.crossAxis ?? false;
+  const shiftRootBoundary = shift?.rootBoundary;
+  const anchorFn = typeof anchor === 'function' ? anchor : undefined;
+  const anchorFnCallback = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_6__.useStableCallback)(anchorFn);
+  const anchorDep = anchorFn ? anchorFnCallback : anchor;
+  const anchorValueRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__.useValueAsRef)(anchor);
+  const mountedRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__.useValueAsRef)(mounted);
+  const direction = (0,_direction_context_DirectionContext_mjs__WEBPACK_IMPORTED_MODULE_10__.useDirection)();
+  const isRtl = direction === 'rtl';
+  const side = mountSide || {
+    top: 'top',
+    right: 'right',
+    bottom: 'bottom',
+    left: 'left',
+    'inline-end': isRtl ? 'left' : 'right',
+    'inline-start': isRtl ? 'right' : 'left'
+  }[sideParam];
+  const placement = align === 'center' ? side : `${side}-${align}`;
+  let collisionPadding = collisionPaddingParam;
+  if (typeof collisionPadding === 'number') {
+    collisionPadding = {
+      top: collisionPadding,
+      right: collisionPadding,
+      bottom: collisionPadding,
+      left: collisionPadding
+    };
+  } else if (collisionPadding) {
+    collisionPadding = {
+      top: collisionPadding.top || 0,
+      right: collisionPadding.right || 0,
+      bottom: collisionPadding.bottom || 0,
+      left: collisionPadding.left || 0
+    };
+  }
+
+  // Create a bias to the preferred side.
+  // On iOS, when the mobile software keyboard opens, the input is exactly centered
+  // in the viewport, but this can cause it to flip to the top undesirably.
+  // The bias is only applied to `flip()` so it doesn't shift the resting position
+  // computed by `shift()` and `size()` away from the requested `collisionPadding`.
+  const bias = 1;
+  const biasTop = sideParam === 'bottom' ? bias : 0;
+  const biasBottom = sideParam === 'top' ? bias : 0;
+  const biasLeft = sideParam === 'right' ? bias : 0;
+  const biasRight = sideParam === 'left' ? bias : 0;
+  const commonCollisionProps = {
+    boundary: collisionBoundary === 'clipping-ancestors' ? 'clippingAncestors' : collisionBoundary,
+    padding: collisionPadding
+  };
+
+  // Using a ref assumes that the arrow element is always present in the DOM for the lifetime of the
+  // popup. If this assumption ends up being false, we can switch to state to manage the arrow's
+  // presence.
+  const arrowRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+
+  // Keep these reactive if they're not functions
+  const sideOffsetRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__.useValueAsRef)(sideOffset);
+  const alignOffsetRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__.useValueAsRef)(alignOffset);
+  const sideOffsetDep = typeof sideOffset !== 'function' ? sideOffset : 0;
+  const alignOffsetDep = typeof alignOffset !== 'function' ? alignOffset : 0;
+  const middleware = [];
+  if (inlineMiddleware) {
+    middleware.push(inlineMiddleware);
+  }
+  middleware.push((0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_8__.offset)(state => {
+    const data = getOffsetData(state, sideParam, isRtl);
+    const sideAxis = typeof sideOffsetRef.current === 'function' ? sideOffsetRef.current(data) : sideOffsetRef.current;
+    const alignAxis = typeof alignOffsetRef.current === 'function' ? alignOffsetRef.current(data) : alignOffsetRef.current;
+    return {
+      mainAxis: sideAxis,
+      crossAxis: alignAxis,
+      alignmentAxis: alignAxis
+    };
+  }, [sideOffsetDep, alignOffsetDep, isRtl, sideParam]));
+  const shiftDisabled = collisionAvoidanceAlign === 'none' && collisionAvoidanceSide !== 'shift';
+  const crossAxisShiftEnabled = !shiftDisabled && (sticky || shiftCrossAxis || collisionAvoidanceSide === 'shift');
+  const flipMiddleware = collisionAvoidanceSide === 'none' ? null : (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_8__.flip)({
+    ...commonCollisionProps,
+    // Ensure the popup flips if it's been limited by its --available-height and it resizes.
+    // Since the size() padding is smaller than the flip() padding, flip() will take precedence.
+    padding: {
+      top: collisionPadding.top + bias + biasTop,
+      right: collisionPadding.right + bias + biasRight,
+      bottom: collisionPadding.bottom + bias + biasBottom,
+      left: collisionPadding.left + bias + biasLeft
+    },
+    mainAxis: !shiftCrossAxis && collisionAvoidanceSide === 'flip',
+    crossAxis: collisionAvoidanceAlign === 'flip' ? 'alignment' : false,
+    fallbackAxisSideDirection: collisionAvoidanceFallbackAxisSide
+  });
+  const shiftMiddleware = shiftDisabled ? null : (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_8__.shift)({
+    ...commonCollisionProps,
+    // Use the Layout Viewport to avoid shifting around when pinch-zooming.
+    rootBoundary: shiftRootBoundary,
+    mainAxis: collisionAvoidanceAlign !== 'none',
+    crossAxis: crossAxisShiftEnabled,
+    limiter: sticky || shiftCrossAxis ? undefined : (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_8__.limitShift)(limitData => {
+      if (!arrowRef.current) {
+        return {};
+      }
+      const {
+        width,
+        height
+      } = arrowRef.current.getBoundingClientRect();
+      const sideAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__.getSideAxis)((0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__.getSide)(limitData.placement));
+      const arrowSize = sideAxis === 'y' ? width : height;
+      const offsetAmount = sideAxis === 'y' ? collisionPadding.left + collisionPadding.right : collisionPadding.top + collisionPadding.bottom;
+      return {
+        offset: arrowSize / 2 + offsetAmount / 2
+      };
+    })
+  }, [commonCollisionProps, sticky, shiftCrossAxis, shiftRootBoundary, collisionPadding, collisionAvoidanceAlign]);
+
+  // https://floating-ui.com/docs/flip#combining-with-shift
+  if (collisionAvoidanceSide === 'shift' || collisionAvoidanceAlign === 'shift' || align === 'center') {
+    middleware.push(shiftMiddleware, flipMiddleware);
+  } else {
+    middleware.push(flipMiddleware, shiftMiddleware);
+  }
+  middleware.push((0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_8__.size)({
+    ...commonCollisionProps,
+    apply({
+      elements: {
+        floating
+      },
+      availableWidth,
+      availableHeight,
+      rects
+    }) {
+      if (!mountedRef.current) {
+        return;
+      }
+      const floatingStyle = floating.style;
+      floatingStyle.setProperty(AVAILABLE_WIDTH_VAR, `${availableWidth}px`);
+      floatingStyle.setProperty(AVAILABLE_HEIGHT_VAR, `${availableHeight}px`);
+
+      // Snap anchor dimensions to device pixels to ensure the popup's visual width matches the anchor's one.
+      const dpr = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_3__.getWindow)(floating).devicePixelRatio || 1;
+      const {
+        x,
+        y,
+        width,
+        height
+      } = rects.reference;
+      const anchorWidth = (Math.round((x + width) * dpr) - Math.round(x * dpr)) / dpr;
+      const anchorHeight = (Math.round((y + height) * dpr) - Math.round(y * dpr)) / dpr;
+      floatingStyle.setProperty('--anchor-width', `${anchorWidth}px`);
+      floatingStyle.setProperty('--anchor-height', `${anchorHeight}px`);
+    }
+  }), (0,_floating_ui_react_middleware_arrow_mjs__WEBPACK_IMPORTED_MODULE_11__.arrow)(state => ({
+    // `transform-origin` calculations rely on an element existing. If the arrow hasn't been set,
+    // we'll create a fake element.
+    element: arrowRef.current || (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_2__.ownerDocument)(state.elements.floating).createElement('div'),
+    padding: arrowPadding,
+    offsetParent: 'floating'
+  }), [arrowPadding]), {
+    name: 'transformOrigin',
+    fn(state) {
+      const {
+        elements,
+        middlewareData,
+        placement: renderedPlacement,
+        rects,
+        y
+      } = state;
+      const currentRenderedSide = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__.getSide)(renderedPlacement);
+      const currentRenderedAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__.getSideAxis)(currentRenderedSide);
+      const arrowEl = arrowRef.current;
+      const arrowX = middlewareData.arrow?.x || 0;
+      const arrowY = middlewareData.arrow?.y || 0;
+      const arrowWidth = arrowEl?.clientWidth || 0;
+      const arrowHeight = arrowEl?.clientHeight || 0;
+      const transformX = arrowX + arrowWidth / 2;
+      const transformY = arrowY + arrowHeight / 2;
+      const shiftY = Math.abs(middlewareData.shift?.y || 0);
+      const halfAnchorHeight = rects.reference.height / 2;
+      const sideOffsetValue = typeof sideOffset === 'function' ? sideOffset(getOffsetData(state, sideParam, isRtl)) : sideOffset;
+      const isOverlappingAnchor = shiftY > sideOffsetValue;
+      const adjacentTransformOrigin = {
+        top: `${transformX}px calc(100% + ${sideOffsetValue}px)`,
+        bottom: `${transformX}px ${-sideOffsetValue}px`,
+        left: `calc(100% + ${sideOffsetValue}px) ${transformY}px`,
+        right: `${-sideOffsetValue}px ${transformY}px`
+      }[currentRenderedSide];
+      const overlapTransformOrigin = `${transformX}px ${rects.reference.y + halfAnchorHeight - y}px`;
+      elements.floating.style.setProperty('--transform-origin', crossAxisShiftEnabled && currentRenderedAxis === 'y' && isOverlappingAnchor ? overlapTransformOrigin : adjacentTransformOrigin);
+      return {};
+    }
+  }, _utils_hideMiddleware_mjs__WEBPACK_IMPORTED_MODULE_12__.hide, adaptiveOrigin);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_4__.useIsoLayoutEffect)(() => {
+    // Ensure positioning doesn't run initially for `keepMounted` elements that
+    // aren't initially open.
+    if (!mounted && floatingRootContext) {
+      floatingRootContext.update({
+        referenceElement: null,
+        floatingElement: null,
+        domReferenceElement: null,
+        positionReference: null
+      });
+    }
+  }, [mounted, floatingRootContext]);
+  const autoUpdateOptions = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    elementResize: !disableAnchorTracking && typeof ResizeObserver !== 'undefined',
+    layoutShift: !disableAnchorTracking && typeof IntersectionObserver !== 'undefined'
+  }), [disableAnchorTracking]);
+  const {
+    refs,
+    elements,
+    x,
+    y,
+    middlewareData,
+    update,
+    placement: renderedPlacement,
+    context,
+    isPositioned,
+    floatingStyles: originalFloatingStyles
+  } = useFloatingHook({
+    rootContext: floatingRootContext,
+    open: keepMounted ? mounted : undefined,
+    placement,
+    middleware,
+    strategy: positionMethod,
+    whileElementsMounted: keepMounted ? undefined : (...args) => (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_7__.autoUpdate)(...args, autoUpdateOptions),
+    nodeId,
+    externalTree
+  });
+  const {
+    sideX,
+    sideY
+  } = middlewareData.adaptiveOrigin || _utils_adaptiveOriginConstants_mjs__WEBPACK_IMPORTED_MODULE_13__.DEFAULT_SIDES;
+
+  // Default to `fixed` when not positioned to prevent `autoFocus` scroll jumps.
+  // This ensures the popup is inside the viewport initially before it gets positioned.
+  const resolvedPosition = isPositioned ? positionMethod : 'fixed';
+  const floatingStyles = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => {
+    let base;
+    if (!isPositioned) {
+      // Until a position for the current open is computed, ignore any coordinates retained from a
+      // previous open (or from a pass that measured the hidden popup as 0x0). Rendering the
+      // full-size popup at such stale coordinates can overflow the layout viewport, which makes
+      // mobile Chrome zoom the page out and reflow everything the popup is anchored to.
+      base = {
+        position: resolvedPosition,
+        top: 0,
+        left: 0
+      };
+    } else if (adaptiveOrigin) {
+      base = {
+        position: resolvedPosition,
+        [sideX]: x,
+        [sideY]: y
+      };
+    } else {
+      base = {
+        ...originalFloatingStyles,
+        position: resolvedPosition
+      };
+    }
+
+    // Seed the available size vars so consumer `max-height: min(x, var(--available-height))` rules
+    // resolve to a valid length on the first positioning pass, before `size()` writes the real
+    // values. Without a fallback the unresolved `var()` invalidates the whole declaration, so the
+    // popup is measured unconstrained while `flip()` picks its side, against the full content
+    // height rather than the capped one. Seeded unconditionally (not only while `!isPositioned`):
+    // the keys must stay present with a constant value so React's per-property style diff never
+    // rewrites them after mount, preserving the px values `size()` sets imperatively. Moving them
+    // into the `!isPositioned` branch makes React remove them once positioned, wiping `size()`'s
+    // values and leaving the popup unconstrained.
+    base[AVAILABLE_WIDTH_VAR] = '100vw';
+    base[AVAILABLE_HEIGHT_VAR] = '100vh';
+    if (!isPositioned) {
+      base.opacity = 0;
+    }
+    return base;
+  }, [adaptiveOrigin, resolvedPosition, sideX, x, sideY, y, originalFloatingStyles, isPositioned]);
+  const registeredPositionReferenceRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_4__.useIsoLayoutEffect)(() => {
+    if (!mounted) {
+      return;
+    }
+    const anchorValue = anchorValueRef.current;
+    const resolvedAnchor = typeof anchorValue === 'function' ? anchorValue() : anchorValue;
+    const unwrappedElement = (isRef(resolvedAnchor) ? resolvedAnchor.current : resolvedAnchor) || null;
+    const finalAnchor = unwrappedElement || null;
+    if (finalAnchor !== registeredPositionReferenceRef.current) {
+      refs.setPositionReference(finalAnchor);
+      registeredPositionReferenceRef.current = finalAnchor;
+    }
+  }, [mounted, refs, anchorDep, anchorValueRef]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (!mounted) {
+      return;
+    }
+    const anchorValue = anchorValueRef.current;
+
+    // Refs from parent components are set after useLayoutEffect runs and are available in useEffect.
+    // Therefore, if the anchor is a ref, we need to update the position reference in useEffect.
+    if (typeof anchorValue === 'function') {
+      return;
+    }
+    if (isRef(anchorValue) && anchorValue.current !== registeredPositionReferenceRef.current) {
+      refs.setPositionReference(anchorValue.current);
+      registeredPositionReferenceRef.current = anchorValue.current;
+    }
+  }, [mounted, refs, anchorDep, anchorValueRef]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (keepMounted && mounted && elements.reference && elements.floating) {
+      return (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_7__.autoUpdate)(elements.reference, elements.floating, update, autoUpdateOptions);
+    }
+    return undefined;
+  }, [keepMounted, mounted, elements, update, autoUpdateOptions]);
+  const renderedSide = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__.getSide)(renderedPlacement);
+  const logicalRenderedSide = getLogicalSide(sideParam, renderedSide, isRtl);
+  const renderedAlign = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__.getAlignment)(renderedPlacement) || 'center';
+  const anchorHidden = Boolean(middlewareData.hide?.referenceHidden);
+
+  // Locks the flip (makes it "sticky") so it doesn't prefer a given placement
+  // and flips back lazily, not eagerly. Ideal for filtered lists that change
+  // the size of the popup dynamically to avoid unwanted flipping when typing.
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_4__.useIsoLayoutEffect)(() => {
+    if (lazyFlip && mounted && isPositioned && renderedSide !== side) {
+      setMountSide(renderedSide);
+    }
+  }, [lazyFlip, mounted, isPositioned, renderedSide, side]);
+  const arrowStyles = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    position: 'absolute',
+    top: middlewareData.arrow?.y,
+    left: middlewareData.arrow?.x
+  }), [middlewareData.arrow]);
+  const arrowUncentered = middlewareData.arrow?.centerOffset !== 0;
+  return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    positionerStyles: floatingStyles,
+    arrowStyles,
+    arrowRef,
+    arrowUncentered,
+    side: logicalRenderedSide,
+    align: renderedAlign,
+    physicalSide: renderedSide,
+    anchorHidden,
+    refs,
+    context,
+    isPositioned,
+    update
+  }), [floatingStyles, arrowStyles, arrowRef, arrowUncentered, logicalRenderedSide, renderedAlign, renderedSide, anchorHidden, refs, context, isPositioned, update]);
+}
+function isRef(param) {
+  return param != null && 'current' in param;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/useAnimationsFinished.mjs"
+/*!*************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/useAnimationsFinished.mjs ***!
+  \*************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useAnimationsFinished: () => (/* binding */ useAnimationsFinished)
+/* harmony export */ });
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react-dom */ "react-dom");
+/* harmony import */ var _base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useAnimationFrame */ "./node_modules/@base-ui/utils/useAnimationFrame.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _utils_resolveRef_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/resolveRef.mjs */ "./node_modules/@base-ui/react/utils/resolveRef.mjs");
+'use client';
+
+
+
+
+
+
+/**
+ * Executes a function once all animations have finished on the provided element.
+ * If an animation is canceled, waits for any replacement animations before executing.
+ * @param elementOrRef - The element to watch for animations.
+ * @param waitForStartingStyleRemoved - Whether to wait for [data-starting-style] to be removed before checking for animations.
+ * @returns A function that takes a callback to execute once all animations have finished, and an optional AbortSignal to abort the callback
+ */
+function useAnimationsFinished(elementOrRef, waitForStartingStyleRemoved = false) {
+  const frame = (0,_base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_1__.useAnimationFrame)();
+  return (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)((fnToExecute,
+  /**
+   * An optional [AbortSignal](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) that
+   * can be used to abort `fnToExecute` before all the animations have finished.
+   * @default null
+   */
+  signal = null) => {
+    frame.cancel();
+    const element = (0,_utils_resolveRef_mjs__WEBPACK_IMPORTED_MODULE_3__.resolveRef)(elementOrRef);
+    if (element == null) {
+      return;
+    }
+    const resolvedElement = element;
+    const done = () => {
+      // Synchronously flush the unmounting of the component so that the browser doesn't
+      // paint: https://github.com/mui/base-ui/issues/979
+      react_dom__WEBPACK_IMPORTED_MODULE_0__.flushSync(fnToExecute);
+    };
+    if (typeof resolvedElement.getAnimations !== 'function' || globalThis.BASE_UI_ANIMATIONS_DISABLED) {
+      fnToExecute();
+      return;
+    }
+    function exec() {
+      Promise.all(resolvedElement.getAnimations().map(animation => animation.finished)).then(() => {
+        if (!signal?.aborted) {
+          done();
+        }
+      }, () => {
+        if (signal?.aborted) {
+          return;
+        }
+        const currentAnimations = resolvedElement.getAnimations();
+        if (currentAnimations.some(animation => animation.pending || animation.playState !== 'finished')) {
+          // Sometimes animations can be aborted because a property they depend on changes while the animation plays.
+          // In such cases, we need to re-check if any new animations have started.
+          exec();
+          return;
+        }
+        done();
+      });
+    }
+    if (waitForStartingStyleRemoved) {
+      const startingStyleAttribute = 'data-starting-style';
+
+      // If `[data-starting-style]` isn't present, fall back to waiting one more frame
+      // to give "open" animations a chance to be registered.
+      if (!resolvedElement.hasAttribute(startingStyleAttribute)) {
+        frame.request(exec);
+        return;
+      }
+
+      // Wait for `[data-starting-style]` to have been removed.
+      const attributeObserver = new MutationObserver(() => {
+        if (!resolvedElement.hasAttribute(startingStyleAttribute)) {
+          attributeObserver.disconnect();
+          exec();
+        }
+      });
+      attributeObserver.observe(resolvedElement, {
+        attributes: true,
+        attributeFilter: [startingStyleAttribute]
+      });
+      signal?.addEventListener('abort', () => attributeObserver.disconnect(), {
+        once: true
+      });
+      return;
+    }
+    frame.request(exec);
+  });
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/useBaseUiId.mjs"
+/*!***************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/useBaseUiId.mjs ***!
+  \***************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useBaseUiId: () => (/* binding */ useBaseUiId)
+/* harmony export */ });
+/* harmony import */ var _base_ui_utils_useId__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/utils/useId */ "./node_modules/@base-ui/utils/useId.mjs");
+'use client';
+
+
+
+/**
+ * Wraps `useId` and prefixes generated `id`s with `base-ui-`
+ * @param {string | undefined} idOverride overrides the generated id when provided
+ * @returns {string | undefined}
+ */
+function useBaseUiId(idOverride) {
+  return (0,_base_ui_utils_useId__WEBPACK_IMPORTED_MODULE_0__.useId)(idOverride, 'base-ui');
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/useOpenChangeComplete.mjs"
+/*!*************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/useOpenChangeComplete.mjs ***!
+  \*************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useOpenChangeComplete: () => (/* binding */ useOpenChangeComplete)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _useAnimationsFinished_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./useAnimationsFinished.mjs */ "./node_modules/@base-ui/react/internals/useAnimationsFinished.mjs");
+'use client';
+
+
+
+
+
+/**
+ * Calls the provided function when the CSS open/close animation or transition completes.
+ */
+function useOpenChangeComplete(parameters) {
+  const {
+    enabled = true,
+    open,
+    ref,
+    onComplete: onCompleteParam
+  } = parameters;
+  const onComplete = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_1__.useStableCallback)(onCompleteParam);
+  const runOnceAnimationsFinish = (0,_useAnimationsFinished_mjs__WEBPACK_IMPORTED_MODULE_2__.useAnimationsFinished)(ref, open);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (!enabled) {
+      return undefined;
+    }
+    const abortController = new AbortController();
+    runOnceAnimationsFinish(onComplete, abortController.signal);
+    return () => {
+      abortController.abort();
+    };
+  }, [enabled, open, onComplete, runOnceAnimationsFinish]);
 }
 
 /***/ },
@@ -15101,6 +22335,89 @@ function renderTag(Tag, props) {
     });
   }
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(Tag, props);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/useTransitionStatus.mjs"
+/*!***********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/useTransitionStatus.mjs ***!
+  \***********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useTransitionStatus: () => (/* binding */ useTransitionStatus)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useAnimationFrame */ "./node_modules/@base-ui/utils/useAnimationFrame.mjs");
+'use client';
+
+
+
+
+/**
+ * Provides a status string for CSS animations.
+ * @param open - a boolean that determines if the element is open.
+ * @param enableIdleState - a boolean that enables the `'idle'` state between `'starting'` and `'ending'`
+ */
+function useTransitionStatus(open, enableIdleState = false, deferEndingState = false) {
+  const [transitionStatus, setTransitionStatus] = react__WEBPACK_IMPORTED_MODULE_0__.useState(open && enableIdleState ? 'idle' : undefined);
+  const [mounted, setMounted] = react__WEBPACK_IMPORTED_MODULE_0__.useState(open);
+  if (open && !mounted) {
+    setMounted(true);
+    setTransitionStatus('starting');
+  }
+  if (!open && mounted && transitionStatus !== 'ending' && !deferEndingState) {
+    setTransitionStatus('ending');
+  }
+  if (!open && !mounted && transitionStatus === 'ending') {
+    setTransitionStatus(undefined);
+  }
+  ;(0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    if (!open && mounted && transitionStatus !== 'ending' && deferEndingState) {
+      const frame = _base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_2__.AnimationFrame.request(() => {
+        setTransitionStatus('ending');
+      });
+      return () => {
+        _base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_2__.AnimationFrame.cancel(frame);
+      };
+    }
+    return undefined;
+  }, [open, mounted, transitionStatus, deferEndingState]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    if (!open || enableIdleState) {
+      return undefined;
+    }
+    const frame = _base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_2__.AnimationFrame.request(() => {
+      // Avoid `flushSync` here due to Firefox.
+      // See https://github.com/mui/base-ui/pull/3424
+      setTransitionStatus(undefined);
+    });
+    return () => {
+      _base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_2__.AnimationFrame.cancel(frame);
+    };
+  }, [enableIdleState, open]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    if (!open || !enableIdleState) {
+      return undefined;
+    }
+    if (open && mounted && transitionStatus !== 'idle') {
+      setTransitionStatus('starting');
+    }
+    const frame = _base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_2__.AnimationFrame.request(() => {
+      setTransitionStatus('idle');
+    });
+    return () => {
+      _base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_2__.AnimationFrame.cancel(frame);
+    };
+  }, [enableIdleState, open, mounted, transitionStatus]);
+  return {
+    mounted,
+    setMounted,
+    transitionStatus
+  };
 }
 
 /***/ },
@@ -15342,6 +22659,938 @@ function isSyntheticEvent(event) {
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/react/tooltip/popup/TooltipPopup.mjs"
+/*!********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/tooltip/popup/TooltipPopup.mjs ***!
+  \********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TooltipPopup: () => (/* binding */ TooltipPopup)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _root_TooltipRootContext_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../root/TooltipRootContext.mjs */ "./node_modules/@base-ui/react/tooltip/root/TooltipRootContext.mjs");
+/* harmony import */ var _positioner_TooltipPositionerContext_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../positioner/TooltipPositionerContext.mjs */ "./node_modules/@base-ui/react/tooltip/positioner/TooltipPositionerContext.mjs");
+/* harmony import */ var _utils_popupStateMapping_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../utils/popupStateMapping.mjs */ "./node_modules/@base-ui/react/utils/popupStateMapping.mjs");
+/* harmony import */ var _internals_useOpenChangeComplete_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../internals/useOpenChangeComplete.mjs */ "./node_modules/@base-ui/react/internals/useOpenChangeComplete.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+/* harmony import */ var _internals_getDisabledMountTransitionStyles_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../internals/getDisabledMountTransitionStyles.mjs */ "./node_modules/@base-ui/react/internals/getDisabledMountTransitionStyles.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../floating-ui-react/index.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverFloatingInteraction.mjs");
+/* harmony import */ var _utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../utils/popups/index.mjs */ "./node_modules/@base-ui/react/utils/popups/popupStoreUtils.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * A container for the tooltip contents.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Tooltip](https://base-ui.com/react/components/tooltip)
+ */
+const TooltipPopup = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function TooltipPopup(componentProps, forwardedRef) {
+  const {
+    render,
+    className,
+    style,
+    ...elementProps
+  } = componentProps;
+  const store = (0,_root_TooltipRootContext_mjs__WEBPACK_IMPORTED_MODULE_1__.useTooltipRootContext)();
+  const {
+    side,
+    align
+  } = (0,_positioner_TooltipPositionerContext_mjs__WEBPACK_IMPORTED_MODULE_2__.useTooltipPositionerContext)();
+  const open = store.useState('open');
+  const instantType = store.useState('instantType');
+  const transitionStatus = store.useState('transitionStatus');
+  const popupProps = store.useState('popupProps');
+  const floatingContext = store.useState('floatingRootContext');
+  const disabled = store.useState('disabled');
+  const closeDelay = store.useState('closeDelay');
+  (0,_internals_useOpenChangeComplete_mjs__WEBPACK_IMPORTED_MODULE_4__.useOpenChangeComplete)({
+    open,
+    ref: store.context.popupRef,
+    onComplete() {
+      if (open) {
+        store.context.onOpenChangeComplete?.(true);
+      }
+    }
+  });
+  (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_7__.useHoverFloatingInteraction)(floatingContext, {
+    enabled: !disabled,
+    closeDelay
+  });
+  const setPopupElement = store.useStateSetter('popupElement');
+  const state = {
+    open,
+    side,
+    align,
+    instant: instantType,
+    transitionStatus
+  };
+  const element = (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_5__.useRenderElement)('div', componentProps, {
+    state,
+    ref: [forwardedRef, store.context.popupRef, setPopupElement],
+    props: [_utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_8__.FOCUSABLE_POPUP_PROPS, popupProps, (0,_internals_getDisabledMountTransitionStyles_mjs__WEBPACK_IMPORTED_MODULE_6__.getDisabledMountTransitionStyles)(transitionStatus), elementProps],
+    stateAttributesMapping: _utils_popupStateMapping_mjs__WEBPACK_IMPORTED_MODULE_3__.popupTransitionStateMapping
+  });
+  return element;
+});
+if (true) TooltipPopup.displayName = "TooltipPopup";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/tooltip/portal/TooltipPortal.mjs"
+/*!**********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/tooltip/portal/TooltipPortal.mjs ***!
+  \**********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TooltipPortal: () => (/* binding */ TooltipPortal)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _root_TooltipRootContext_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../root/TooltipRootContext.mjs */ "./node_modules/@base-ui/react/tooltip/root/TooltipRootContext.mjs");
+/* harmony import */ var _TooltipPortalContext_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TooltipPortalContext.mjs */ "./node_modules/@base-ui/react/tooltip/portal/TooltipPortalContext.mjs");
+/* harmony import */ var _utils_FloatingPortalLite_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../utils/FloatingPortalLite.mjs */ "./node_modules/@base-ui/react/utils/FloatingPortalLite.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+
+/**
+ * A portal element that moves the popup to a different part of the DOM.
+ * By default, the portal element is appended to `<body>`.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Tooltip](https://base-ui.com/react/components/tooltip)
+ */
+const TooltipPortal = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function TooltipPortal(props, forwardedRef) {
+  const {
+    keepMounted = false,
+    ...portalProps
+  } = props;
+  const store = (0,_root_TooltipRootContext_mjs__WEBPACK_IMPORTED_MODULE_1__.useTooltipRootContext)();
+  const mounted = store.useState('mounted');
+  const shouldRender = mounted || keepMounted;
+  if (!shouldRender) {
+    return null;
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_TooltipPortalContext_mjs__WEBPACK_IMPORTED_MODULE_2__.TooltipPortalContext.Provider, {
+    value: keepMounted,
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_utils_FloatingPortalLite_mjs__WEBPACK_IMPORTED_MODULE_3__.FloatingPortalLite, {
+      ref: forwardedRef,
+      ...portalProps
+    })
+  });
+});
+if (true) TooltipPortal.displayName = "TooltipPortal";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/tooltip/portal/TooltipPortalContext.mjs"
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/tooltip/portal/TooltipPortalContext.mjs ***!
+  \*****************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TooltipPortalContext: () => (/* binding */ TooltipPortalContext),
+/* harmony export */   useTooltipPortalContext: () => (/* binding */ useTooltipPortalContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+
+const TooltipPortalContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(undefined);
+if (true) TooltipPortalContext.displayName = "TooltipPortalContext";
+function useTooltipPortalContext() {
+  const value = react__WEBPACK_IMPORTED_MODULE_0__.useContext(TooltipPortalContext);
+  if (value === undefined) {
+    throw new Error( true ? 'Base UI: <Tooltip.Portal> is missing.' : 0);
+  }
+  return value;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/tooltip/positioner/TooltipPositioner.mjs"
+/*!******************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/tooltip/positioner/TooltipPositioner.mjs ***!
+  \******************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TooltipPositioner: () => (/* binding */ TooltipPositioner)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _root_TooltipRootContext_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../root/TooltipRootContext.mjs */ "./node_modules/@base-ui/react/tooltip/root/TooltipRootContext.mjs");
+/* harmony import */ var _TooltipPositionerContext_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TooltipPositionerContext.mjs */ "./node_modules/@base-ui/react/tooltip/positioner/TooltipPositionerContext.mjs");
+/* harmony import */ var _internals_useAnchorPositioning_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../internals/useAnchorPositioning.mjs */ "./node_modules/@base-ui/react/internals/useAnchorPositioning.mjs");
+/* harmony import */ var _portal_TooltipPortalContext_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../portal/TooltipPortalContext.mjs */ "./node_modules/@base-ui/react/tooltip/portal/TooltipPortalContext.mjs");
+/* harmony import */ var _internals_constants_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../internals/constants.mjs */ "./node_modules/@base-ui/react/internals/constants.mjs");
+/* harmony import */ var _utils_usePositioner_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/usePositioner.mjs */ "./node_modules/@base-ui/react/utils/usePositioner.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+
+
+
+
+/**
+ * Positions the tooltip against the trigger.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Tooltip](https://base-ui.com/react/components/tooltip)
+ */
+
+const TooltipPositioner = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function TooltipPositioner(componentProps, forwardedRef) {
+  const {
+    render,
+    className,
+    anchor,
+    positionMethod = 'absolute',
+    side = 'top',
+    align = 'center',
+    sideOffset = 0,
+    alignOffset = 0,
+    collisionBoundary = 'clipping-ancestors',
+    collisionPadding = 5,
+    arrowPadding = 5,
+    sticky = false,
+    disableAnchorTracking = false,
+    collisionAvoidance = _internals_constants_mjs__WEBPACK_IMPORTED_MODULE_5__.POPUP_COLLISION_AVOIDANCE,
+    style,
+    ...elementProps
+  } = componentProps;
+  const store = (0,_root_TooltipRootContext_mjs__WEBPACK_IMPORTED_MODULE_1__.useTooltipRootContext)();
+  const keepMounted = (0,_portal_TooltipPortalContext_mjs__WEBPACK_IMPORTED_MODULE_4__.useTooltipPortalContext)();
+  const open = store.useState('open');
+  const mounted = store.useState('mounted');
+  const trackCursorAxis = store.useState('trackCursorAxis');
+  const disableHoverablePopup = store.useState('disableHoverablePopup');
+  const floatingRootContext = store.useState('floatingRootContext');
+  const instantType = store.useState('instantType');
+  const transitionStatus = store.useState('transitionStatus');
+  const adaptiveOrigin = store.useState('adaptiveOrigin');
+  const positioning = (0,_internals_useAnchorPositioning_mjs__WEBPACK_IMPORTED_MODULE_3__.useAnchorPositioning)({
+    anchor,
+    positionMethod,
+    floatingRootContext,
+    mounted,
+    side,
+    sideOffset,
+    align,
+    alignOffset,
+    collisionBoundary,
+    collisionPadding,
+    sticky,
+    arrowPadding,
+    disableAnchorTracking,
+    keepMounted,
+    collisionAvoidance,
+    adaptiveOrigin
+  });
+  const state = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    open,
+    side: positioning.side,
+    align: positioning.align,
+    anchorHidden: positioning.anchorHidden,
+    instant: trackCursorAxis !== 'none' ? 'tracking-cursor' : instantType
+  }), [open, positioning.side, positioning.align, positioning.anchorHidden, trackCursorAxis, instantType]);
+  const element = (0,_utils_usePositioner_mjs__WEBPACK_IMPORTED_MODULE_6__.usePositioner)(componentProps, state, {
+    styles: positioning.positionerStyles,
+    transitionStatus,
+    props: elementProps,
+    refs: [forwardedRef, store.useStateSetter('positionerElement')],
+    hidden: !mounted,
+    inert: !open || trackCursorAxis === 'both' || disableHoverablePopup
+  });
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_TooltipPositionerContext_mjs__WEBPACK_IMPORTED_MODULE_2__.TooltipPositionerContext.Provider, {
+    value: positioning,
+    children: element
+  });
+});
+if (true) TooltipPositioner.displayName = "TooltipPositioner";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/tooltip/positioner/TooltipPositionerContext.mjs"
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/tooltip/positioner/TooltipPositionerContext.mjs ***!
+  \*************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TooltipPositionerContext: () => (/* binding */ TooltipPositionerContext),
+/* harmony export */   useTooltipPositionerContext: () => (/* binding */ useTooltipPositionerContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+
+const TooltipPositionerContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(undefined);
+if (true) TooltipPositionerContext.displayName = "TooltipPositionerContext";
+function useTooltipPositionerContext() {
+  const context = react__WEBPACK_IMPORTED_MODULE_0__.useContext(TooltipPositionerContext);
+  if (context === undefined) {
+    throw new Error( true ? 'Base UI: TooltipPositionerContext is missing. TooltipPositioner parts must be placed within <Tooltip.Positioner>.' : 0);
+  }
+  return context;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/tooltip/provider/TooltipProviderContext.mjs"
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/tooltip/provider/TooltipProviderContext.mjs ***!
+  \*********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TooltipProviderContext: () => (/* binding */ TooltipProviderContext),
+/* harmony export */   useTooltipProviderContext: () => (/* binding */ useTooltipProviderContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+
+/**
+ * Holds the provider's `delay` value. `closeDelay` is handled by the delay group.
+ */
+const TooltipProviderContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(undefined);
+if (true) TooltipProviderContext.displayName = "TooltipProviderContext";
+function useTooltipProviderContext() {
+  return react__WEBPACK_IMPORTED_MODULE_0__.useContext(TooltipProviderContext);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/tooltip/root/TooltipRoot.mjs"
+/*!******************************************************************!*\
+  !*** ./node_modules/@base-ui/react/tooltip/root/TooltipRoot.mjs ***!
+  \******************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TooltipRoot: () => (/* binding */ TooltipRoot)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_fastHooks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/fastHooks */ "./node_modules/@base-ui/utils/fastHooks.mjs");
+/* harmony import */ var _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/empty */ "./node_modules/@base-ui/utils/empty.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _TooltipRootContext_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./TooltipRootContext.mjs */ "./node_modules/@base-ui/react/tooltip/root/TooltipRootContext.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../floating-ui-react/index.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useClientPoint.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../floating-ui-react/index.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useDismiss.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../utils/popups/index.mjs */ "./node_modules/@base-ui/react/utils/popups/popupStoreUtils.mjs");
+/* harmony import */ var _merge_props_index_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../merge-props/index.mjs */ "./node_modules/@base-ui/react/merge-props/mergeProps.mjs");
+/* harmony import */ var _store_TooltipStore_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../store/TooltipStore.mjs */ "./node_modules/@base-ui/react/tooltip/store/TooltipStore.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Groups all parts of the tooltip.
+ * Doesn't render its own HTML element.
+ *
+ * Documentation: [Base UI Tooltip](https://base-ui.com/react/components/tooltip)
+ */
+
+const TooltipRoot = (0,_base_ui_utils_fastHooks__WEBPACK_IMPORTED_MODULE_1__.fastComponent)(function TooltipRoot(props) {
+  const {
+    disabled = false,
+    defaultOpen = false,
+    open: openProp,
+    disableHoverablePopup = false,
+    trackCursorAxis = 'none',
+    actionsRef,
+    onOpenChange,
+    onOpenChangeComplete,
+    handle,
+    triggerId: triggerIdProp,
+    defaultTriggerId: defaultTriggerIdProp = null,
+    children
+  } = props;
+  const store = (0,_utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_8__.usePopupRootStore)((floatingId, nested) => new _store_TooltipStore_mjs__WEBPACK_IMPORTED_MODULE_10__.TooltipStore({
+    open: defaultOpen,
+    openProp,
+    activeTriggerId: defaultTriggerIdProp,
+    triggerIdProp
+  }, floatingId, nested));
+  store.useControlledProp('openProp', openProp);
+  store.useControlledProp('triggerIdProp', triggerIdProp);
+  store.useContextCallback('onOpenChange', onOpenChange);
+  store.useContextCallback('onOpenChangeComplete', onOpenChangeComplete);
+  const openState = store.useState('open');
+  const open = !disabled && openState;
+  const activeTriggerId = store.useState('activeTriggerId');
+  const mounted = store.useState('mounted');
+  const payload = store.useState('payload');
+  store.useSyncedValues({
+    trackCursorAxis,
+    disableHoverablePopup,
+    disabled
+  });
+  (0,_utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_8__.useImplicitActiveTrigger)(store, {
+    closeOnActiveTriggerUnmount: true
+  });
+  const {
+    forceUnmount,
+    transitionStatus
+  } = (0,_utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_8__.useOpenStateTransitions)(open, store);
+  const isInstantPhase = store.useState('isInstantPhase');
+  const instantType = store.useState('instantType');
+  const lastOpenChangeReason = store.useState('lastOpenChangeReason');
+
+  // Animations should be instant in two cases:
+  // 1) Opening during the provider's instant phase (adjacent tooltip opens instantly)
+  // 2) Closing because another tooltip opened (reason === 'none')
+  // Otherwise, allow the animation to play. In particular, do not disable animations
+  // during the 'ending' phase unless it's due to a sibling opening.
+  const previousInstantTypeRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_3__.useIsoLayoutEffect)(() => {
+    if (openState && disabled) {
+      store.setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_7__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_11__.disabled));
+    }
+  }, [openState, disabled, store]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_3__.useIsoLayoutEffect)(() => {
+    if (transitionStatus === 'ending' && lastOpenChangeReason === _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_11__.none || transitionStatus !== 'ending' && isInstantPhase) {
+      // Capture the current instant type so we can restore it later
+      // and set to 'delay' to disable animations while moving from one trigger to another
+      // within a delay group.
+      if (instantType !== 'delay') {
+        previousInstantTypeRef.current = instantType;
+      }
+      store.set('instantType', 'delay');
+    } else if (previousInstantTypeRef.current !== null) {
+      store.set('instantType', previousInstantTypeRef.current);
+      previousInstantTypeRef.current = null;
+    }
+  }, [transitionStatus, isInstantPhase, lastOpenChangeReason, instantType, store]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_3__.useIsoLayoutEffect)(() => {
+    if (open) {
+      if (activeTriggerId == null) {
+        store.set('payload', undefined);
+      }
+    }
+  }, [store, activeTriggerId, open]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useImperativeHandle(actionsRef, () => ({
+    unmount: forceUnmount,
+    close: () => store.setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_7__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_11__.imperativeAction))
+  }), [forceUnmount, store]);
+  const shouldRenderInteractions = open || mounted || !disabled && trackCursorAxis !== 'none';
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(_TooltipRootContext_mjs__WEBPACK_IMPORTED_MODULE_4__.TooltipRootContext.Provider, {
+    value: store,
+    children: [handle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_8__.PopupHandleAttachment, {
+      handle: handle,
+      store: store
+    }), shouldRenderInteractions && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(TooltipInteractions, {
+      store: store,
+      disabled: disabled,
+      trackCursorAxis: trackCursorAxis
+    }), typeof children === 'function' ? children({
+      payload
+    }) : children]
+  });
+});
+if (true) TooltipRoot.displayName = "TooltipRoot";
+function TooltipInteractions({
+  store,
+  disabled,
+  trackCursorAxis
+}) {
+  const floatingRootContext = store.useState('floatingRootContext');
+  const dismiss = (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_6__.useDismiss)(floatingRootContext, {
+    enabled: !disabled,
+    referencePress: () => store.select('closeOnClick')
+  });
+  const clientPoint = (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_5__.useClientPoint)(floatingRootContext, {
+    enabled: !disabled && trackCursorAxis !== 'none',
+    axis: trackCursorAxis === 'none' ? undefined : trackCursorAxis
+  });
+
+  // Both hooks return `trigger: reference` (same object identity), so the active and
+  // inactive trigger props can never differ. `useClientPoint` has no floating-side props.
+  const triggerProps = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => (0,_merge_props_index_mjs__WEBPACK_IMPORTED_MODULE_9__.mergeProps)(clientPoint.reference, dismiss.reference), [clientPoint.reference, dismiss.reference]);
+  (0,_utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_8__.usePopupInteractionProps)(store, {
+    activeTriggerProps: triggerProps,
+    inactiveTriggerProps: triggerProps,
+    popupProps: dismiss.floating ?? _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_2__.EMPTY_OBJECT
+  });
+  return null;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/tooltip/root/TooltipRootContext.mjs"
+/*!*************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/tooltip/root/TooltipRootContext.mjs ***!
+  \*************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TooltipRootContext: () => (/* binding */ TooltipRootContext),
+/* harmony export */   useTooltipRootContext: () => (/* binding */ useTooltipRootContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+
+const TooltipRootContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(undefined);
+if (true) TooltipRootContext.displayName = "TooltipRootContext";
+function useTooltipRootContext(optional) {
+  const context = react__WEBPACK_IMPORTED_MODULE_0__.useContext(TooltipRootContext);
+  if (context === undefined && !optional) {
+    throw new Error( true ? 'Base UI: TooltipRootContext is missing. Tooltip parts must be placed within <Tooltip.Root>.' : 0);
+  }
+  return context;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/tooltip/store/TooltipStore.mjs"
+/*!********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/tooltip/store/TooltipStore.mjs ***!
+  \********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TooltipStore: () => (/* binding */ TooltipStore),
+/* harmony export */   createNullTooltipStore: () => (/* binding */ createNullTooltipStore)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/store */ "./node_modules/@base-ui/utils/store/ReactStore.mjs");
+/* harmony import */ var _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/empty */ "./node_modules/@base-ui/utils/empty.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var _utils_NullStore_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../utils/NullStore.mjs */ "./node_modules/@base-ui/react/utils/NullStore.mjs");
+/* harmony import */ var _utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/popups/index.mjs */ "./node_modules/@base-ui/react/utils/popups/popupStoreUtils.mjs");
+/* harmony import */ var _utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../utils/popups/index.mjs */ "./node_modules/@base-ui/react/utils/popups/popupTriggerMap.mjs");
+/* harmony import */ var _utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../utils/popups/index.mjs */ "./node_modules/@base-ui/react/utils/popups/store.mjs");
+
+
+
+
+
+
+
+const selectors = {
+  ..._utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_8__.popupStoreSelectors,
+  disabled: state => state.disabled,
+  instantType: state => state.instantType,
+  isInstantPhase: state => state.isInstantPhase,
+  trackCursorAxis: state => state.trackCursorAxis,
+  disableHoverablePopup: state => state.disableHoverablePopup,
+  lastOpenChangeReason: state => state.openChangeReason,
+  closeOnClick: state => state.closeOnClick,
+  closeDelay: state => state.closeDelay,
+  adaptiveOrigin: state => state.adaptiveOrigin
+};
+
+/**
+ * The store view that detached handle-backed triggers read from. Both the real `TooltipStore` and
+ * the inert fallback store satisfy it, so a trigger can read from whichever store the handle
+ * currently exposes. Narrowed to the members a trigger actually uses — the trigger-data members plus
+ * `setOpen`/`cancelPendingOpen` (called directly by the trigger) and `useSyncedValue` — so the
+ * exposed surface can't bypass the open-change pipeline; on the detached fallback store every one of
+ * these mutations is a no-op.
+ */
+
+class TooltipStore extends _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_1__.ReactStore {
+  constructor(initialState, floatingId, nested) {
+    const triggerElements = new _utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_7__.PopupTriggerMap();
+    super(createInitialState(initialState, triggerElements, floatingId, nested), createInitialContext(triggerElements), selectors);
+  }
+  setOpen = (nextOpen, eventDetails) => {
+    ;(0,_utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_6__.applyPopupOpenChange)(this, nextOpen, eventDetails, {
+      extraState: {
+        openChangeReason: eventDetails.reason
+      }
+    });
+  };
+
+  // Used by trigger clicks to clear a delayed hover open without reporting a public open-state change.
+  cancelPendingOpen(event) {
+    this.state.floatingRootContext.dispatchOpenChange(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_3__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_4__.triggerPress, event));
+  }
+}
+
+/**
+ * Creates the inert fallback store used by detached handle-backed triggers while no `Tooltip.Root`
+ * is attached. It preserves a tooltip-specific trigger registry in context so detached triggers can
+ * register before migrating to the live root store. `setOpen`/`cancelPendingOpen` are no-ops
+ * (matching the inert reads/writes of `NullStore`), so a trigger can call them from hover/click
+ * handlers while detached without any effect.
+ */
+function createNullTooltipStore() {
+  const triggerElements = new _utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_7__.PopupTriggerMap();
+  const store = new _utils_NullStore_mjs__WEBPACK_IMPORTED_MODULE_5__.NullStore(Object.freeze(createInitialState(undefined, triggerElements)), Object.freeze(createInitialContext(triggerElements)), selectors);
+  return Object.assign(store, {
+    setOpen: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_2__.NOOP,
+    cancelPendingOpen: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_2__.NOOP
+  });
+}
+function createInitialState(initialState, triggerElements, floatingId, nested = false) {
+  const state = {
+    ...(0,_utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_8__.createInitialPopupStoreState)(),
+    disabled: false,
+    instantType: undefined,
+    isInstantPhase: false,
+    trackCursorAxis: 'none',
+    disableHoverablePopup: false,
+    openChangeReason: null,
+    closeOnClick: true,
+    closeDelay: 0,
+    adaptiveOrigin: undefined,
+    ...initialState
+  };
+  state.floatingRootContext = (0,_utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_8__.createPopupFloatingRootContext)(triggerElements, floatingId, nested);
+  return state;
+}
+function createInitialContext(triggerElements) {
+  return {
+    popupRef: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createRef(),
+    onOpenChange: undefined,
+    onOpenChangeComplete: undefined,
+    triggerElements
+  };
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/tooltip/trigger/TooltipTrigger.mjs"
+/*!************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/tooltip/trigger/TooltipTrigger.mjs ***!
+  \************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TooltipTrigger: () => (/* binding */ TooltipTrigger)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _base_ui_utils_fastHooks__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/fastHooks */ "./node_modules/@base-ui/utils/fastHooks.mjs");
+/* harmony import */ var _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/useTimeout */ "./node_modules/@base-ui/utils/useTimeout.mjs");
+/* harmony import */ var _base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/useValueAsRef */ "./node_modules/@base-ui/utils/useValueAsRef.mjs");
+/* harmony import */ var _root_TooltipRootContext_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../root/TooltipRootContext.mjs */ "./node_modules/@base-ui/react/tooltip/root/TooltipRootContext.mjs");
+/* harmony import */ var _utils_popupStateMapping_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/popupStateMapping.mjs */ "./node_modules/@base-ui/react/utils/popupStateMapping.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+/* harmony import */ var _utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../utils/popups/index.mjs */ "./node_modules/@base-ui/react/utils/popups/popupStoreUtils.mjs");
+/* harmony import */ var _utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../utils/popups/index.mjs */ "./node_modules/@base-ui/react/utils/popups/usePopupHandleStore.mjs");
+/* harmony import */ var _internals_useBaseUiId_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../internals/useBaseUiId.mjs */ "./node_modules/@base-ui/react/internals/useBaseUiId.mjs");
+/* harmony import */ var _provider_TooltipProviderContext_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../provider/TooltipProviderContext.mjs */ "./node_modules/@base-ui/react/tooltip/provider/TooltipProviderContext.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../floating-ui-react/index.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingDelayGroup.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../floating-ui-react/index.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useFocus.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../floating-ui-react/index.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverReferenceInteraction.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../floating-ui-react/index.mjs */ "./node_modules/@base-ui/react/floating-ui-react/safePolygon.mjs");
+/* harmony import */ var _floating_ui_react_utils_element_mjs__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../floating-ui-react/utils/element.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+/* harmony import */ var _floating_ui_react_utils_event_mjs__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../floating-ui-react/utils/event.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var _floating_ui_react_hooks_useHoverInteractionSharedState_mjs__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../../floating-ui-react/hooks/useHoverInteractionSharedState.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverInteractionSharedState.mjs");
+/* harmony import */ var _floating_ui_react_hooks_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../../floating-ui-react/hooks/useHoverShared.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useHoverShared.mjs");
+/* harmony import */ var _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ../utils/constants.mjs */ "./node_modules/@base-ui/react/tooltip/utils/constants.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const TOOLTIP_TRIGGER_IDENTIFIER = 'data-base-ui-tooltip-trigger';
+function getTargetElement(event) {
+  if ('composedPath' in event) {
+    const path = event.composedPath();
+    for (let i = 0; i < path.length; i += 1) {
+      const element = path[i];
+      if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__.isElement)(element)) {
+        return element;
+      }
+    }
+  }
+  const target = event.target;
+  if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__.isElement)(target)) {
+    return target;
+  }
+  return null;
+}
+function closestEnabledTooltipTrigger(element) {
+  let current = element;
+  while (current) {
+    const trigger = current.closest(`[${TOOLTIP_TRIGGER_IDENTIFIER}]`);
+    if (trigger) {
+      return trigger;
+    }
+    const root = current.getRootNode();
+    current = 'host' in root && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__.isElement)(root.host) ? root.host : null;
+  }
+  return null;
+}
+
+/**
+ * An element to attach the tooltip to.
+ * Renders a `<button>` element.
+ *
+ * Documentation: [Base UI Tooltip](https://base-ui.com/react/components/tooltip)
+ */
+const TooltipTrigger = (0,_base_ui_utils_fastHooks__WEBPACK_IMPORTED_MODULE_2__.fastComponentRef)(function TooltipTrigger(componentProps, forwardedRef) {
+  const {
+    render,
+    className,
+    style,
+    handle,
+    payload,
+    disabled: disabledProp,
+    delay,
+    closeOnClick = true,
+    closeDelay,
+    id: idProp,
+    ...elementProps
+  } = componentProps;
+  const rootContext = (0,_root_TooltipRootContext_mjs__WEBPACK_IMPORTED_MODULE_5__.useTooltipRootContext)(true);
+  const handleStore = (0,_utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_9__.usePopupHandleStore)(handle);
+  const store = handleStore ?? rootContext;
+  if (!store) {
+    throw new Error( true ? 'Base UI: <Tooltip.Trigger> must be either used within a <Tooltip.Root> component or provided with a handle.' : 0);
+  }
+  const thisTriggerId = (0,_internals_useBaseUiId_mjs__WEBPACK_IMPORTED_MODULE_10__.useBaseUiId)(idProp);
+  const isTriggerActive = store.useState('isTriggerActive', thisTriggerId);
+  const isOpenedByThisTrigger = store.useState('isOpenedByTrigger', thisTriggerId);
+  const floatingRootContext = store.useState('floatingRootContext');
+  const triggerElementRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const delayWithDefault = delay ?? _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_22__.OPEN_DELAY;
+  const closeDelayWithDefault = closeDelay ?? 0;
+  const {
+    registerTrigger,
+    isMountedByThisTrigger
+  } = (0,_utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_8__.useTriggerDataForwarding)(thisTriggerId, triggerElementRef, store, {
+    payload,
+    closeOnClick,
+    closeDelay: closeDelayWithDefault
+  });
+  const providerDelay = (0,_provider_TooltipProviderContext_mjs__WEBPACK_IMPORTED_MODULE_11__.useTooltipProviderContext)();
+  const {
+    delayRef,
+    isInstantPhase,
+    hasProvider
+  } = (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_12__.useDelayGroup)(floatingRootContext, {
+    open: isOpenedByThisTrigger
+  });
+  const hoverInteraction = (0,_floating_ui_react_hooks_useHoverInteractionSharedState_mjs__WEBPACK_IMPORTED_MODULE_20__.useHoverInteractionSharedState)(floatingRootContext);
+  store.useSyncedValue('isInstantPhase', isInstantPhase);
+  const rootDisabled = store.useState('disabled');
+  const disabled = disabledProp ?? rootDisabled;
+  const disabledRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_4__.useValueAsRef)(disabled);
+  const trackCursorAxis = store.useState('trackCursorAxis');
+  const disableHoverablePopup = store.useState('disableHoverablePopup');
+  const isNestedTriggerHoveredRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const nestedTriggerOpenTimeout = (0,_base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_3__.useTimeout)();
+  // Local copy so it can be cleared on mouseLeave without resetting the hover hook's own pointerType.
+  const pointerTypeRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(undefined);
+  function getOpenDelay() {
+    if (!hasProvider) {
+      return delayWithDefault;
+    }
+    return (0,_floating_ui_react_hooks_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_21__.getDelay)(delayRef.current, 'open') === 0 ? 0 : delay ?? providerDelay ?? _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_22__.OPEN_DELAY;
+  }
+  function isEnabledNestedTriggerTarget(target) {
+    const triggerEl = triggerElementRef.current;
+    if (!triggerEl || !target) {
+      return false;
+    }
+    const nearestTrigger = closestEnabledTooltipTrigger(target);
+    return nearestTrigger !== null && nearestTrigger !== triggerEl && (0,_floating_ui_react_utils_element_mjs__WEBPACK_IMPORTED_MODULE_16__.contains)(triggerEl, nearestTrigger);
+  }
+  function detectNestedTriggerHover(target) {
+    const nestedTriggerHovered = isEnabledNestedTriggerTarget(target);
+    isNestedTriggerHoveredRef.current = nestedTriggerHovered;
+    if (nestedTriggerHovered) {
+      hoverInteraction.openChangeTimeout.clear();
+      hoverInteraction.restTimeout.clear();
+      hoverInteraction.restTimeoutPending = false;
+      nestedTriggerOpenTimeout.clear();
+    }
+    return nestedTriggerHovered;
+  }
+  const hoverProps = (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_14__.useHoverReferenceInteraction)(floatingRootContext, {
+    enabled: !disabled,
+    mouseOnly: true,
+    move: false,
+    handleClose: !disableHoverablePopup && trackCursorAxis !== 'both' ? (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_15__.safePolygon)() : null,
+    restMs: getOpenDelay,
+    delay() {
+      if (closeDelay == null && hasProvider) {
+        return {
+          close: (0,_floating_ui_react_hooks_useHoverShared_mjs__WEBPACK_IMPORTED_MODULE_21__.getDelay)(delayRef.current, 'close')
+        };
+      }
+      return {
+        close: closeDelayWithDefault
+      };
+    },
+    triggerElementRef,
+    isActiveTrigger: isTriggerActive,
+    isClosing: () => store.select('transitionStatus') === 'ending',
+    shouldOpen() {
+      return !isNestedTriggerHoveredRef.current;
+    }
+  });
+  const focusProps = (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_13__.useFocus)(floatingRootContext, {
+    enabled: !disabled
+  }).reference;
+  const handleNestedTriggerHover = event => {
+    const wasNestedTriggerHovered = isNestedTriggerHoveredRef.current;
+    const target = getTargetElement(event);
+    const nestedTriggerHovered = detectNestedTriggerHover(target);
+    const triggerEl = triggerElementRef.current;
+    const targetInsideTrigger = triggerEl && target && (0,_floating_ui_react_utils_element_mjs__WEBPACK_IMPORTED_MODULE_16__.contains)(triggerEl, target);
+
+    // Only close hover-opened parents. Focus/click-like opens remain owned by
+    // their original interaction and should not be clobbered by nested hover.
+    if (nestedTriggerHovered && store.select('open') && store.select('lastOpenChangeReason') === _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_19__.triggerHover) {
+      store.setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_18__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_19__.triggerHover, event));
+      return;
+    }
+    if (wasNestedTriggerHovered && !nestedTriggerHovered && targetInsideTrigger && !disabledRef.current && !store.select('open') && triggerEl &&
+    // Match the hover hook's non-strict mouse fallback for mouse-only event sequences.
+    (0,_floating_ui_react_utils_event_mjs__WEBPACK_IMPORTED_MODULE_17__.isMouseLikePointerType)(pointerTypeRef.current)) {
+      const open = () => {
+        if (!isNestedTriggerHoveredRef.current && !disabledRef.current && !store.select('open')) {
+          store.setOpen(true, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_18__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_19__.triggerHover, event, triggerEl));
+        }
+      };
+      const openDelay = getOpenDelay();
+
+      // With `move: false`, the hover hook only listens to mouseenter/mouseleave
+      // on the parent trigger. Leaving a nested child for the parent area fires
+      // no event the hook can react to, so reopen locally.
+      if (openDelay === 0) {
+        nestedTriggerOpenTimeout.clear();
+        open();
+      } else {
+        nestedTriggerOpenTimeout.start(openDelay, open);
+      }
+    }
+  };
+  const rootTriggerProps = store.useState('triggerProps', isMountedByThisTrigger);
+  const shouldApplyRootTriggerProps = isMountedByThisTrigger || trackCursorAxis !== 'none';
+  const state = {
+    open: isOpenedByThisTrigger
+  };
+  const element = (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_7__.useRenderElement)('button', componentProps, {
+    state,
+    ref: [forwardedRef, registerTrigger, triggerElementRef],
+    props: [hoverProps, focusProps, shouldApplyRootTriggerProps ? rootTriggerProps : undefined, {
+      onMouseOver(event) {
+        handleNestedTriggerHover(event.nativeEvent);
+      },
+      onFocus(event) {
+        if (isEnabledNestedTriggerTarget(getTargetElement(event.nativeEvent))) {
+          event.preventBaseUIHandler();
+        }
+      },
+      onMouseLeave() {
+        isNestedTriggerHoveredRef.current = false;
+        nestedTriggerOpenTimeout.clear();
+        pointerTypeRef.current = undefined;
+      },
+      onPointerEnter(event) {
+        pointerTypeRef.current = event.pointerType;
+      },
+      onPointerDown(event) {
+        pointerTypeRef.current = event.pointerType;
+        store.set('closeOnClick', closeOnClick);
+        if (closeOnClick && !store.select('open')) {
+          store.cancelPendingOpen(event.nativeEvent);
+        }
+      },
+      onClick(event) {
+        if (closeOnClick && !store.select('open')) {
+          store.cancelPendingOpen(event.nativeEvent);
+        }
+      },
+      id: thisTriggerId,
+      'data-trigger-disabled': disabled ? '' : undefined,
+      [TOOLTIP_TRIGGER_IDENTIFIER]: disabled ? undefined : ''
+    }, elementProps],
+    stateAttributesMapping: _utils_popupStateMapping_mjs__WEBPACK_IMPORTED_MODULE_6__.triggerOpenStateMapping
+  });
+  return element;
+});
+if (true) TooltipTrigger.displayName = "TooltipTrigger";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/tooltip/utils/constants.mjs"
+/*!*****************************************************************!*\
+  !*** ./node_modules/@base-ui/react/tooltip/utils/constants.mjs ***!
+  \*****************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   OPEN_DELAY: () => (/* binding */ OPEN_DELAY)
+/* harmony export */ });
+const OPEN_DELAY = 600;
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/react/use-render/useRender.mjs"
 /*!**************************************************************!*\
   !*** ./node_modules/@base-ui/react/use-render/useRender.mjs ***!
@@ -15361,6 +23610,1133 @@ __webpack_require__.r(__webpack_exports__);
  */
 function useRender(params) {
   return (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_0__.useRenderElement)(params.defaultTagName ?? 'div', params, params);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/FloatingPortalLite.mjs"
+/*!******************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/FloatingPortalLite.mjs ***!
+  \******************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FloatingPortalLite: () => (/* binding */ FloatingPortalLite)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "react-dom");
+/* harmony import */ var _floating_ui_react_components_FloatingPortal_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../floating-ui-react/components/FloatingPortal.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingPortal.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+/**
+ * `FloatingPortal` includes tabbable logic handling for focus management.
+ * For components that don't need tabbable logic, use `FloatingPortalLite`.
+ * @internal
+ */
+const FloatingPortalLite = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function FloatingPortalLite(componentProps, forwardedRef) {
+  const {
+    children,
+    container,
+    className,
+    render,
+    style,
+    ...elementProps
+  } = componentProps;
+  const {
+    node: portalNode,
+    subtree: portalSubtree
+  } = (0,_floating_ui_react_components_FloatingPortal_mjs__WEBPACK_IMPORTED_MODULE_2__.useFloatingPortalNode)({
+    container,
+    ref: forwardedRef,
+    componentProps,
+    elementProps
+  });
+  if (!portalSubtree && !portalNode) {
+    return null;
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    children: [portalSubtree, portalNode && /*#__PURE__*/react_dom__WEBPACK_IMPORTED_MODULE_1__.createPortal(children, portalNode)]
+  });
+});
+if (true) FloatingPortalLite.displayName = "FloatingPortalLite";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/FocusGuard.mjs"
+/*!**********************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/FocusGuard.mjs ***!
+  \**********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FocusGuard: () => (/* binding */ FocusGuard)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/platform */ "./node_modules/@base-ui/utils/platform/screen-reader.mjs");
+/* harmony import */ var _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/platform */ "./node_modules/@base-ui/utils/platform/engine.mjs");
+/* harmony import */ var _base_ui_utils_visuallyHidden__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/visuallyHidden */ "./node_modules/@base-ui/utils/visuallyHidden.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+
+/**
+ * @internal
+ */
+
+const FocusGuard = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function FocusGuard(props, ref) {
+  const [role, setRole] = react__WEBPACK_IMPORTED_MODULE_0__.useState();
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    // Unlike NVDA and JAWS, VoiceOver's virtual cursor triggers `onFocus` as
+    // it moves — but only on focusable/role-button elements through WebKit's
+    // NSAccessibility path. Setting `role="button"` lets the focus trap catch
+    // the cursor.
+    if (_base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_2__.voiceOver && _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_3__.webkit) {
+      setRole('button');
+    }
+  }, []);
+  const restProps = {
+    tabIndex: 0,
+    // Role is only for VoiceOver
+    role
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("span", {
+    ...props,
+    ref: ref,
+    style: _base_ui_utils_visuallyHidden__WEBPACK_IMPORTED_MODULE_4__.visuallyHidden,
+    "aria-hidden": role ? undefined : true,
+    ...restProps,
+    "data-base-ui-focus-guard": ""
+  });
+});
+if (true) FocusGuard.displayName = "FocusGuard";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/NullStore.mjs"
+/*!*********************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/NullStore.mjs ***!
+  \*********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   NullStore: () => (/* binding */ NullStore)
+/* harmony export */ });
+/* harmony import */ var _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/utils/store */ "./node_modules/@base-ui/utils/store/ReactStore.mjs");
+
+/**
+ * A `ReactStore` whose state never changes.
+ *
+ * Useful for fallback stores that need to support normal store reads while detached from the
+ * component that owns real state. Context values may still contain mutable refs or maps.
+ */
+class NullStore extends _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_0__.ReactStore {
+  // `update`/`set`/`notifyAll` funnel through `setState` in the base `Store`, so overriding
+  // `setState` alone would neutralize them today. They are overridden explicitly so the store stays
+  // inert even if a future base-class change stops routing a mutator through `setState`.
+  setState(_newState) {}
+  update(_changes) {}
+  set(_key, _value) {}
+  notifyAll() {}
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/adaptiveOriginConstants.mjs"
+/*!***********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/adaptiveOriginConstants.mjs ***!
+  \***********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DEFAULT_SIDES: () => (/* binding */ DEFAULT_SIDES)
+/* harmony export */ });
+const DEFAULT_SIDES = {
+  sideX: 'left',
+  sideY: 'top'
+};
+
+// Self-contained stand-in for Floating UI's `Middleware` type. Referencing the real type in
+// store state makes `tsc` declaration emit reference `Platform`/`detectOverflow` from
+// `@floating-ui/core` internals, which fails as non-portable (TS2883) in consuming builds.
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/dispatchClickWithModifiers.mjs"
+/*!**************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/dispatchClickWithModifiers.mjs ***!
+  \**************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   dispatchClickWithModifiers: () => (/* binding */ dispatchClickWithModifiers)
+/* harmony export */ });
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+
+/**
+ * Dispatches a constructed click on the target so it carries the source event's
+ * modifier state, which `click()` always reports as unpressed. Like `click()`,
+ * the untrusted click still runs native activation behavior (form submission,
+ * link navigation).
+ * `detail` defaults to 0 (the native convention for keyboard-generated clicks);
+ * pass `detail: 1` when the click represents a mouse gesture so consumers keying
+ * off `detail === 0` don't classify it as a keyboard activation.
+ */
+function dispatchClickWithModifiers(target, sourceEvent, {
+  detail = 0
+} = {}) {
+  target.dispatchEvent(new ((0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_0__.getWindow)(target).PointerEvent)('click', {
+    bubbles: true,
+    cancelable: true,
+    composed: true,
+    detail,
+    shiftKey: sourceEvent.shiftKey,
+    ctrlKey: sourceEvent.ctrlKey,
+    altKey: sourceEvent.altKey,
+    metaKey: sourceEvent.metaKey
+  }));
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/hideMiddleware.mjs"
+/*!**************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/hideMiddleware.mjs ***!
+  \**************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   hide: () => (/* binding */ hide)
+/* harmony export */ });
+const hide = {
+  name: 'hide',
+  async fn(state) {
+    const {
+      width,
+      height,
+      x,
+      y
+    } = state.rects.reference;
+    const anchorHidden = width === 0 && height === 0 && x === 0 && y === 0;
+    // Mirrors Floating UI's `hide()` referenceHidden strategy. Floating UI injects
+    // `detectOverflow` into the middleware platform before invoking middleware.
+    const overflow = await state.platform.detectOverflow(state, {
+      elementContext: 'reference'
+    });
+    const referenceHidden = overflow.top - height >= 0 || overflow.right - width >= 0 || overflow.bottom - height >= 0 || overflow.left - width >= 0;
+    return {
+      data: {
+        referenceHidden: referenceHidden || anchorHidden
+      }
+    };
+  }
+};
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/popupStateMapping.mjs"
+/*!*****************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/popupStateMapping.mjs ***!
+  \*****************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CommonPopupDataAttributes: () => (/* binding */ CommonPopupDataAttributes),
+/* harmony export */   CommonTriggerDataAttributes: () => (/* binding */ CommonTriggerDataAttributes),
+/* harmony export */   popupStateMapping: () => (/* binding */ popupStateMapping),
+/* harmony export */   popupTransitionStateMapping: () => (/* binding */ popupTransitionStateMapping),
+/* harmony export */   pressableTriggerOpenStateMapping: () => (/* binding */ pressableTriggerOpenStateMapping),
+/* harmony export */   triggerOpenStateMapping: () => (/* binding */ triggerOpenStateMapping)
+/* harmony export */ });
+/* harmony import */ var _internals_stateAttributesMapping_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../internals/stateAttributesMapping.mjs */ "./node_modules/@base-ui/react/internals/stateAttributesMapping.mjs");
+
+let CommonPopupDataAttributes = function (CommonPopupDataAttributes) {
+  /**
+   * Present when the popup is open.
+   */
+  CommonPopupDataAttributes["open"] = "data-open";
+  /**
+   * Present when the popup is closed.
+   */
+  CommonPopupDataAttributes["closed"] = "data-closed";
+  /**
+   * Present when the popup begins animating in.
+   */
+  CommonPopupDataAttributes[CommonPopupDataAttributes["startingStyle"] = _internals_stateAttributesMapping_mjs__WEBPACK_IMPORTED_MODULE_0__.TransitionStatusDataAttributes.startingStyle] = "startingStyle";
+  /**
+   * Present when the popup is animating out.
+   */
+  CommonPopupDataAttributes[CommonPopupDataAttributes["endingStyle"] = _internals_stateAttributesMapping_mjs__WEBPACK_IMPORTED_MODULE_0__.TransitionStatusDataAttributes.endingStyle] = "endingStyle";
+  /**
+   * Present when the anchor is hidden.
+   */
+  CommonPopupDataAttributes["anchorHidden"] = "data-anchor-hidden";
+  /**
+   * Indicates which side the popup is positioned relative to the trigger.
+   * @type { 'top' | 'bottom' | 'left' | 'right' | 'inline-end' | 'inline-start'}
+   */
+  CommonPopupDataAttributes["side"] = "data-side";
+  /**
+   * Indicates how the popup is aligned relative to specified side.
+   * @type {'start' | 'center' | 'end'}
+   */
+  CommonPopupDataAttributes["align"] = "data-align";
+  return CommonPopupDataAttributes;
+}({});
+let CommonTriggerDataAttributes = /*#__PURE__*/function (CommonTriggerDataAttributes) {
+  /**
+   * Present when the popup is open.
+   */
+  CommonTriggerDataAttributes["popupOpen"] = "data-popup-open";
+  /**
+   * Present when a pressable trigger is pressed.
+   */
+  CommonTriggerDataAttributes["pressed"] = "data-pressed";
+  return CommonTriggerDataAttributes;
+}({});
+
+// Literal keys (instead of enum member references) keep the docs-only enums above
+// tree-shakeable: a runtime reference would retain the whole enum IIFE in every bundle.
+const TRIGGER_HOOK = {
+  'data-popup-open': ''
+};
+const PRESSABLE_TRIGGER_HOOK = {
+  'data-popup-open': '',
+  'data-pressed': ''
+};
+const POPUP_OPEN_HOOK = {
+  'data-open': ''
+};
+const POPUP_CLOSED_HOOK = {
+  'data-closed': ''
+};
+const ANCHOR_HIDDEN_HOOK = {
+  'data-anchor-hidden': ''
+};
+const triggerOpenStateMapping = {
+  open(value) {
+    if (value) {
+      return TRIGGER_HOOK;
+    }
+    return null;
+  }
+};
+const pressableTriggerOpenStateMapping = {
+  open(value) {
+    if (value) {
+      return PRESSABLE_TRIGGER_HOOK;
+    }
+    return null;
+  }
+};
+const popupStateMapping = {
+  open(value) {
+    if (value) {
+      return POPUP_OPEN_HOOK;
+    }
+    return POPUP_CLOSED_HOOK;
+  },
+  anchorHidden(value) {
+    if (value) {
+      return ANCHOR_HIDDEN_HOOK;
+    }
+    return null;
+  }
+};
+const popupTransitionStateMapping = {
+  ...popupStateMapping,
+  ..._internals_stateAttributesMapping_mjs__WEBPACK_IMPORTED_MODULE_0__.transitionStatusMapping
+};
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/popups/popupStoreUtils.mjs"
+/*!**********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/popups/popupStoreUtils.mjs ***!
+  \**********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FOCUSABLE_POPUP_PROPS: () => (/* binding */ FOCUSABLE_POPUP_PROPS),
+/* harmony export */   PopupHandleAttachment: () => (/* binding */ PopupHandleAttachment),
+/* harmony export */   applyPopupOpenChange: () => (/* binding */ applyPopupOpenChange),
+/* harmony export */   attachPreventUnmountOnClose: () => (/* binding */ attachPreventUnmountOnClose),
+/* harmony export */   createDefaultInitialFocus: () => (/* binding */ createDefaultInitialFocus),
+/* harmony export */   setPopupOpenState: () => (/* binding */ setPopupOpenState),
+/* harmony export */   useImplicitActiveTrigger: () => (/* binding */ useImplicitActiveTrigger),
+/* harmony export */   useOpenStateTransitions: () => (/* binding */ useOpenStateTransitions),
+/* harmony export */   usePopupInteractionProps: () => (/* binding */ usePopupInteractionProps),
+/* harmony export */   usePopupRootStore: () => (/* binding */ usePopupRootStore),
+/* harmony export */   usePopupRootSync: () => (/* binding */ usePopupRootSync),
+/* harmony export */   useTriggerDataForwarding: () => (/* binding */ useTriggerDataForwarding),
+/* harmony export */   useTriggerRegistration: () => (/* binding */ useTriggerRegistration)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "react-dom");
+/* harmony import */ var _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/empty */ "./node_modules/@base-ui/utils/empty.mjs");
+/* harmony import */ var _base_ui_utils_useId__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/useId */ "./node_modules/@base-ui/utils/useId.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @base-ui/utils/useRefWithInit */ "./node_modules/@base-ui/utils/useRefWithInit.mjs");
+/* harmony import */ var _floating_ui_react_utils_constants_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../floating-ui-react/utils/constants.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/constants.mjs");
+/* harmony import */ var _floating_ui_react_components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../floating-ui-react/components/FloatingTree.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingTree.mjs");
+/* harmony import */ var _floating_ui_react_hooks_useSyncedFloatingRootContext_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../floating-ui-react/hooks/useSyncedFloatingRootContext.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useSyncedFloatingRootContext.mjs");
+/* harmony import */ var _internals_useTransitionStatus_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../internals/useTransitionStatus.mjs */ "./node_modules/@base-ui/react/internals/useTransitionStatus.mjs");
+/* harmony import */ var _internals_useOpenChangeComplete_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../internals/useOpenChangeComplete.mjs */ "./node_modules/@base-ui/react/internals/useOpenChangeComplete.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const FOCUSABLE_POPUP_PROPS = {
+  tabIndex: -1,
+  [_floating_ui_react_utils_constants_mjs__WEBPACK_IMPORTED_MODULE_7__.FOCUSABLE_ATTRIBUTE]: ''
+};
+
+/**
+ * Returns the default `initialFocus` resolver for a popup. When opened by touch it focuses the
+ * popup element itself to prevent the virtual keyboard from opening (required for Android
+ * specifically; iOS handles this automatically). Otherwise it falls back to the default behavior.
+ */
+function createDefaultInitialFocus(popupRef) {
+  return interactionType => interactionType === 'touch' ? popupRef.current : true;
+}
+
+/**
+ * The subset of a popup handle that a Root needs to bind its store to. Both the real handle classes
+ * and any test double satisfy it.
+ */
+
+/**
+ * Creates and owns a popup store on behalf of a Root part. The store is created exactly once, with
+ * controlled props and root state synced separately after creation. Sets up the synced floating
+ * root context and returns the store.
+ *
+ * @param createStore Factory that builds the store. Called exactly once, receiving the floating id
+ * and whether the popup is nested inside another floating element, both resolved on the first render.
+ * @param treatPopupAsFloatingElement Whether the popup element is passed to Floating UI as the
+ * floating element instead of the default positioner.
+ */
+function usePopupRootStore(createStore, treatPopupAsFloatingElement = false) {
+  const floatingId = (0,_base_ui_utils_useId__WEBPACK_IMPORTED_MODULE_3__.useId)();
+  const nested = (0,_floating_ui_react_components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_8__.useFloatingParentNodeId)() != null;
+  const store = (0,_base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_6__.useRefWithInit)(() => createStore(floatingId, nested)).current;
+  (0,_floating_ui_react_hooks_useSyncedFloatingRootContext_mjs__WEBPACK_IMPORTED_MODULE_9__.useSyncedFloatingRootContext)({
+    popupStore: store,
+    treatPopupAsFloatingElement,
+    floatingRootContext: store.state.floatingRootContext,
+    floatingId,
+    nested,
+    onOpenChange: store.setOpen
+  });
+  return store;
+}
+
+/**
+ * Attaches a Root's store to a handle for this component's committed lifetime. Popup Roots render
+ * it before their interactions and user children so its layout effect runs before descendant layout
+ * effects. This lets descendants call the handle during the Root's initial commit without attaching
+ * during render, which would leak suspended or abandoned stores. Store subscribers are notified by
+ * `attachStore` in this ordinary layout phase, where React permits synchronous updates.
+ *
+ * Popup Roots must render this component only when a handle is present so handle-less Roots avoid
+ * mounting an extra fiber and layout effect.
+ */
+function PopupHandleAttachment({
+  handle,
+  store
+}) {
+  ;(0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_5__.useIsoLayoutEffect)(() => {
+    return handle.attachStore(store);
+  }, [handle, store]);
+  return null;
+}
+
+/**
+ * Returns a callback ref that registers/unregisters the trigger element in the store.
+ *
+ * @param store The Store instance where the trigger should be registered.
+ */
+function useTriggerRegistration(id, store) {
+  // Keep track of the currently registered element to unregister it on unmount or id change.
+  const registeredElementIdRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const registeredElementRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  return react__WEBPACK_IMPORTED_MODULE_0__.useCallback(element => {
+    if (id === undefined) {
+      return;
+    }
+    let shouldSyncTriggerCount = false;
+    if (registeredElementIdRef.current !== null) {
+      const registeredId = registeredElementIdRef.current;
+      const registeredElement = registeredElementRef.current;
+      const currentElement = store.context.triggerElements.getById(registeredId);
+      if (registeredElement && currentElement === registeredElement) {
+        store.context.triggerElements.delete(registeredId);
+        shouldSyncTriggerCount = true;
+      }
+      registeredElementIdRef.current = null;
+      registeredElementRef.current = null;
+    }
+    if (element !== null) {
+      registeredElementIdRef.current = id;
+      registeredElementRef.current = element;
+      store.context.triggerElements.add(id, element);
+      shouldSyncTriggerCount = true;
+    }
+    if (shouldSyncTriggerCount) {
+      const triggerCount = store.context.triggerElements.size;
+      if (store.select('open') && store.state.triggerCount !== triggerCount) {
+        store.set('triggerCount', triggerCount);
+      }
+    }
+  }, [store, id]);
+}
+function setPopupOpenState(state, open, trigger, preventUnmountOnClose = false) {
+  if (open) {
+    // Opening starts a new close cycle, so clear any previous request to keep the popup mounted.
+    state.preventUnmountingOnClose = false;
+  } else if (preventUnmountOnClose) {
+    state.preventUnmountingOnClose = true;
+  }
+  const triggerId = trigger?.id ?? null;
+
+  // If a popup is closing, the `trigger` may be undefined.
+  // We want to keep the previous value so that exit animations are played and focus is returned correctly.
+  if (triggerId || open) {
+    state.activeTriggerId = triggerId;
+    state.activeTriggerElement = trigger ?? null;
+  }
+}
+function attachPreventUnmountOnClose(eventDetails) {
+  let preventUnmountOnClose = false;
+  eventDetails.preventUnmountOnClose = () => {
+    preventUnmountOnClose = true;
+  };
+  return () => preventUnmountOnClose;
+}
+
+/**
+ * Runs the shared open-change sequence for a popup store: notifies `onOpenChange`,
+ * honors cancellation, dispatches the floating root change, maps the reason to an
+ * `instantType`, and commits the state update (synchronously for hover so
+ * `getAnimations()` observes it). Stores supply their own differences via
+ * `extraState` (e.g. the last change reason) and `onBeforeDispatch` (e.g. updating
+ * inline-rect coordinates).
+ */
+function applyPopupOpenChange(store, nextOpen, eventDetails, options = {}) {
+  const reason = eventDetails.reason;
+  const isHover = reason === _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_13__.triggerHover;
+  const isFocusOpen = nextOpen && reason === _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_13__.triggerFocus;
+  const isDismissClose = !nextOpen && (reason === _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_13__.triggerPress || reason === _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_13__.escapeKey);
+  const shouldPreventUnmountOnClose = attachPreventUnmountOnClose(eventDetails);
+  store.context.onOpenChange?.(nextOpen, eventDetails);
+  if (eventDetails.isCanceled) {
+    return;
+  }
+  options.onBeforeDispatch?.();
+  store.state.floatingRootContext.dispatchOpenChange(nextOpen, eventDetails);
+  const changeState = () => {
+    // Spread `extraState` first so `open` always reflects `nextOpen`, keeping it in
+    // sync with the value already passed to `dispatchOpenChange`/`setPopupOpenState`.
+    const updatedState = {
+      ...options.extraState,
+      open: nextOpen
+    };
+    if (isFocusOpen) {
+      updatedState.instantType = 'focus';
+    } else if (isDismissClose) {
+      updatedState.instantType = 'dismiss';
+    } else if (isHover) {
+      updatedState.instantType = undefined;
+    }
+    setPopupOpenState(updatedState, nextOpen, eventDetails.trigger, shouldPreventUnmountOnClose());
+    store.update(updatedState);
+  };
+  if (isHover) {
+    // Flush synchronously for hover so `node.getAnimations()` sees the new state.
+    react_dom__WEBPACK_IMPORTED_MODULE_1__.flushSync(changeState);
+  } else {
+    changeState();
+  }
+}
+
+/**
+ * Sets up trigger data forwarding to the store.
+ *
+ * @param triggerId Id of the trigger.
+ * @param triggerElementRef Ref for the trigger DOM element.
+ * @param store The Store instance managing the popup state.
+ * @param stateUpdates An object with state updates to apply when the trigger is active.
+ */
+function useTriggerDataForwarding(triggerId, triggerElementRef, store, stateUpdates) {
+  const isMountedByThisTrigger = store.useState('isMountedByTrigger', triggerId);
+  const baseRegisterTrigger = useTriggerRegistration(triggerId, store);
+
+  // Applies trigger-owned state (active-trigger ownership and payload) when the trigger registers.
+  // Stable so payload/`stateUpdates` changes do not change the ref identity (which would needlessly
+  // churn registration); it reads the latest closure values when invoked.
+  const applyTriggerData = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(element => {
+    const open = store.select('open');
+    const activeTriggerId = store.select('activeTriggerId');
+    if (activeTriggerId === triggerId) {
+      store.update({
+        activeTriggerElement: element,
+        ...(open ? stateUpdates : null)
+      });
+      return;
+    }
+    if (activeTriggerId == null && open) {
+      // If a popup is already open, a detached trigger can mount before any active trigger
+      // has been established. Claim the first registered trigger so trigger-owned focus
+      // management and ARIA relationships work.
+      store.update({
+        activeTriggerId: triggerId,
+        activeTriggerElement: element,
+        ...stateUpdates
+      });
+    }
+  });
+
+  // Intentionally NOT stable. Its identity is derived from `baseRegisterTrigger`, which is keyed on
+  // `[store, id]`, so when a handle-backed trigger's store pointer swaps the merged ref re-fires —
+  // unregistering from the previous store and registering into the new one. This lets a detached
+  // trigger follow its handle's currently-attached store across attach/detach/remount. (A stable
+  // callback would keep its identity and never re-fire on a store swap.)
+  const registerTrigger = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(element => {
+    baseRegisterTrigger(element);
+    if (element) {
+      applyTriggerData(element);
+    }
+  }, [baseRegisterTrigger, applyTriggerData]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_5__.useIsoLayoutEffect)(() => {
+    if (isMountedByThisTrigger) {
+      store.update({
+        activeTriggerElement: triggerElementRef.current,
+        ...stateUpdates
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMountedByThisTrigger, store, triggerElementRef, ...Object.values(stateUpdates)]);
+  return {
+    registerTrigger,
+    isMountedByThisTrigger
+  };
+}
+/**
+ * Keeps trigger registration state synchronized while the popup is open.
+ *
+ * When a popup opens without an explicit trigger id and exactly one trigger is registered, that
+ * trigger is claimed as the active trigger. When the active trigger id is still registered but its
+ * element changed, the active element is refreshed. When the active trigger id is missing from the
+ * registry but the same element is still registered under a different id (e.g. the rendered trigger
+ * carries its own DOM `id` that differs from Base UI's internal trigger id), the active id is
+ * reassociated to the registered id instead of being treated as lost. When the active trigger
+ * unregisters, the default path preserves existing ownership so non-closing popup families do not
+ * silently claim a different trigger while staying open.
+ *
+ * If `closeOnActiveTriggerUnmount` is enabled, unregistering a previously resolved active trigger
+ * requests a close after a microtask so a same-tick replacement trigger with the same id can
+ * register first. An active trigger id that has not matched a registered trigger yet is treated as
+ * pending and does not request a close.
+ *
+ * This should be called on the Root part.
+ *
+ * @param store The Store instance managing the popup state.
+ * @param options Options for active trigger unmount behavior.
+ */
+function useImplicitActiveTrigger(store, options = {}) {
+  const {
+    closeOnActiveTriggerUnmount = false
+  } = options;
+  // Distinguishes a trigger that unmounted from a new active trigger that has not hydrated yet.
+  const resolvedActiveTriggerIdRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const open = store.useState('open');
+  const reactiveTriggerCount = store.useState('triggerCount');
+  // Subscribe to the active trigger id so the reconciliation below reruns when ownership moves to
+  // another trigger while the popup stays open (e.g. a focus/hover handoff between triggers).
+  const activeTriggerId = store.useState('activeTriggerId');
+  // Subscribe to the active trigger element so the reconciliation reruns when a pending active
+  // trigger registers in a commit where the trigger count nets out unchanged (registration
+  // forwards the element to the store when the registering trigger matches the active id).
+  // Without this, the id would never be marked resolved and a later genuine unmount would be
+  // misclassified as pending, disabling `closeOnActiveTriggerUnmount`.
+  const reactiveActiveTriggerElement = store.useState('activeTriggerElement');
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_5__.useIsoLayoutEffect)(() => {
+    if (!open) {
+      resolvedActiveTriggerIdRef.current = null;
+      if (store.state.triggerCount !== 0) {
+        store.set('triggerCount', 0);
+      }
+      return;
+    }
+    const triggerCount = store.context.triggerElements.size;
+    const stateUpdates = {};
+    if (store.state.triggerCount !== triggerCount) {
+      stateUpdates.triggerCount = triggerCount;
+    }
+    const currentActiveTriggerId = store.select('activeTriggerId');
+    let lostActiveTriggerId = null;
+    if (currentActiveTriggerId) {
+      const activeTriggerElement = store.context.triggerElements.getById(currentActiveTriggerId);
+      if (!activeTriggerElement) {
+        for (const [triggerId, triggerElement] of store.context.triggerElements.entries()) {
+          if (triggerElement === store.state.activeTriggerElement) {
+            stateUpdates.activeTriggerId = triggerId;
+            stateUpdates.activeTriggerElement = triggerElement;
+            resolvedActiveTriggerIdRef.current = triggerId;
+            break;
+          }
+        }
+        if (stateUpdates.activeTriggerId === undefined) {
+          if (resolvedActiveTriggerIdRef.current === currentActiveTriggerId) {
+            lostActiveTriggerId = currentActiveTriggerId;
+          } else {
+            resolvedActiveTriggerIdRef.current = null;
+          }
+        }
+      } else {
+        resolvedActiveTriggerIdRef.current = currentActiveTriggerId;
+        if (activeTriggerElement !== store.state.activeTriggerElement) {
+          stateUpdates.activeTriggerElement = activeTriggerElement;
+        }
+      }
+    } else {
+      resolvedActiveTriggerIdRef.current = null;
+    }
+    if (!lostActiveTriggerId && !currentActiveTriggerId && triggerCount === 1) {
+      const iteratorResult = store.context.triggerElements.entries().next();
+      if (!iteratorResult.done) {
+        const [implicitTriggerId, implicitTriggerElement] = iteratorResult.value;
+        stateUpdates.activeTriggerId = implicitTriggerId;
+        stateUpdates.activeTriggerElement = implicitTriggerElement;
+        resolvedActiveTriggerIdRef.current = implicitTriggerId;
+      }
+    }
+    if (stateUpdates.triggerCount !== undefined || stateUpdates.activeTriggerId !== undefined || stateUpdates.activeTriggerElement !== undefined) {
+      store.update(stateUpdates);
+    }
+    if (lostActiveTriggerId) {
+      if (closeOnActiveTriggerUnmount) {
+        // Defer so a same-tick replacement trigger with the same id can register first.
+        queueMicrotask(() => {
+          if (store.select('open') && store.select('activeTriggerId') === lostActiveTriggerId && !store.context.triggerElements.getById(lostActiveTriggerId)) {
+            const eventDetails = (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_12__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_13__.none);
+            store.setOpen(false, eventDetails);
+            // If closing is canceled, keep the previous active trigger ownership for the
+            // still-open popup instead of claiming another trigger implicitly.
+            if (!eventDetails.isCanceled) {
+              store.update({
+                activeTriggerId: null,
+                activeTriggerElement: null
+              });
+            }
+          }
+        });
+      }
+    }
+  }, [open, store, reactiveTriggerCount, activeTriggerId, reactiveActiveTriggerElement, closeOnActiveTriggerUnmount]);
+}
+
+/**
+ * Manages the mounted state of the popup.
+ * Sets up the transition status listeners and handles unmounting when needed.
+ * Updates the `mounted`, `transitionStatus`, and `preventUnmountingOnClose` states in the store.
+ *
+ * @param open Whether the popup is open.
+ * @param store The Store instance managing the popup state.
+ * @param onUnmount Optional callback to be called when the popup is unmounted.
+ *
+ * @returns A function to forcibly unmount the popup.
+ */
+function useOpenStateTransitions(open, store, onUnmount) {
+  const {
+    mounted,
+    setMounted,
+    transitionStatus
+  } = (0,_internals_useTransitionStatus_mjs__WEBPACK_IMPORTED_MODULE_10__.useTransitionStatus)(open);
+  const preventUnmountingOnClose = store.useState('preventUnmountingOnClose');
+  // Opening starts a new close cycle. Clear during render so the close-completion hook below
+  // reads the synchronized value on the same pass.
+  const syncedPreventUnmountingOnClose = open ? false : preventUnmountingOnClose;
+  store.useSyncedValues({
+    mounted,
+    transitionStatus,
+    preventUnmountingOnClose: syncedPreventUnmountingOnClose
+  });
+  const forceUnmount = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(() => {
+    setMounted(false);
+    store.update({
+      activeTriggerId: null,
+      activeTriggerElement: null,
+      mounted: false,
+      preventUnmountingOnClose: false
+    });
+    onUnmount?.();
+    store.context.onOpenChangeComplete?.(false);
+  });
+  (0,_internals_useOpenChangeComplete_mjs__WEBPACK_IMPORTED_MODULE_11__.useOpenChangeComplete)({
+    enabled: mounted && !open && !syncedPreventUnmountingOnClose,
+    open,
+    ref: store.context.popupRef,
+    onComplete() {
+      if (!open) {
+        forceUnmount();
+      }
+    }
+  });
+  return {
+    forceUnmount,
+    transitionStatus
+  };
+}
+function usePopupInteractionProps(store, statePart) {
+  store.useSyncedValues(statePart);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_5__.useIsoLayoutEffect)(() => () => {
+    store.update({
+      activeTriggerProps: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_2__.EMPTY_OBJECT,
+      inactiveTriggerProps: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_2__.EMPTY_OBJECT,
+      popupProps: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_2__.EMPTY_OBJECT
+    });
+  }, [store]);
+}
+function usePopupRootSync(store, open) {
+  ;(0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_5__.useIsoLayoutEffect)(() => {
+    if (!open && store.state.openMethod !== null) {
+      store.set('openMethod', null);
+    }
+  }, [open, store]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_5__.useIsoLayoutEffect)(() => () => {
+    if (store.state.openMethod !== null) {
+      store.set('openMethod', null);
+    }
+  }, [store]);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/popups/popupTriggerMap.mjs"
+/*!**********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/popups/popupTriggerMap.mjs ***!
+  \**********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   PopupTriggerMap: () => (/* binding */ PopupTriggerMap)
+/* harmony export */ });
+/**
+ * Development-only reverse index of element to registered id, keyed by the owning map.
+ *
+ * Registration would otherwise have to scan every entry to detect an element claimed by two ids,
+ * making the mount of many triggers sharing one handle quadratic. Kept module-scoped, lazily
+ * initialized, and read only from `process.env.NODE_ENV` guards so production builds drop it along
+ * with the checks.
+ */
+let devElementIdsByMap;
+function getDevElementIds(map) {
+  devElementIdsByMap ??= new WeakMap();
+  let elementIds = devElementIdsByMap.get(map);
+  if (!elementIds) {
+    elementIds = new WeakMap();
+    devElementIdsByMap.set(map, elementIds);
+  }
+  return elementIds;
+}
+
+/**
+ * Data structure to keep track of popup trigger elements by their IDs.
+ *
+ * Element lookups iterate the id map rather than maintaining a parallel Set. Registration is O(1),
+ * while `hasElement` and `hasMatchingElement` are linear in the number of triggers.
+ */
+class PopupTriggerMap {
+  constructor() {
+    this.idMap = new Map();
+  }
+
+  /**
+   * Adds a trigger element with the given ID.
+   *
+   * Note: The provided element is assumed to not be registered under multiple IDs.
+   */
+  add(id, element) {
+    if (true) {
+      const elementIds = getDevElementIds(this);
+      const existingId = elementIds.get(element);
+      if (existingId !== undefined && existingId !== id) {
+        // TODO: fix mui/no-guarded-throw
+        // eslint-disable-next-line mui/no-guarded-throw
+        throw new Error('Base UI: A trigger element cannot be registered under multiple IDs in PopupTriggerMap.');
+      }
+
+      // Reusing an id for a different element evicts the previous one, so it must lose its claim
+      // on the id or a later registration under a different id would be reported as a duplicate.
+      const previousElement = this.idMap.get(id);
+      if (previousElement !== undefined && previousElement !== element) {
+        elementIds.delete(previousElement);
+      }
+      elementIds.set(element, id);
+    }
+    this.idMap.set(id, element);
+  }
+
+  /**
+   * Removes the trigger element with the given ID.
+   */
+  delete(id) {
+    if (true) {
+      const element = this.idMap.get(id);
+      if (element !== undefined) {
+        devElementIdsByMap?.get(this)?.delete(element);
+      }
+    }
+    this.idMap.delete(id);
+  }
+
+  /**
+   * Whether the given element is registered as a trigger.
+   */
+  hasElement(element) {
+    for (const registered of this.idMap.values()) {
+      if (registered === element) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Whether there is a registered trigger element matching the given predicate.
+   */
+  hasMatchingElement(predicate) {
+    for (const element of this.idMap.values()) {
+      if (predicate(element)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Returns the trigger element associated with the given ID, or undefined if no such element exists.
+   */
+  getById(id) {
+    return this.idMap.get(id);
+  }
+
+  /**
+   * Returns an iterable of all registered trigger entries, where each entry is a tuple of [id, element].
+   */
+  entries() {
+    return this.idMap.entries();
+  }
+
+  /**
+   * Returns an iterable of all registered trigger elements.
+   */
+  elements() {
+    return this.idMap.values();
+  }
+
+  /**
+   * Returns the number of registered trigger elements.
+   */
+  get size() {
+    return this.idMap.size;
+  }
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/popups/store.mjs"
+/*!************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/popups/store.mjs ***!
+  \************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createInitialPopupStoreState: () => (/* binding */ createInitialPopupStoreState),
+/* harmony export */   createPopupFloatingRootContext: () => (/* binding */ createPopupFloatingRootContext),
+/* harmony export */   popupStoreSelectors: () => (/* binding */ popupStoreSelectors)
+/* harmony export */ });
+/* harmony import */ var _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/utils/empty */ "./node_modules/@base-ui/utils/empty.mjs");
+/* harmony import */ var _floating_ui_react_components_FloatingRootStore_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../floating-ui-react/components/FloatingRootStore.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingRootStore.mjs");
+/* harmony import */ var _floating_ui_react_utils_getEmptyRootContext_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../floating-ui-react/utils/getEmptyRootContext.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/getEmptyRootContext.mjs");
+
+
+
+
+/**
+ * State common to all popup stores.
+ */
+
+function createInitialPopupStoreState() {
+  return {
+    open: false,
+    openProp: undefined,
+    mounted: false,
+    transitionStatus: undefined,
+    floatingRootContext: (0,_floating_ui_react_utils_getEmptyRootContext_mjs__WEBPACK_IMPORTED_MODULE_2__.getEmptyRootContext)(),
+    floatingId: undefined,
+    triggerCount: 0,
+    preventUnmountingOnClose: false,
+    payload: undefined,
+    activeTriggerId: null,
+    activeTriggerElement: null,
+    triggerIdProp: undefined,
+    popupElement: null,
+    positionerElement: null,
+    activeTriggerProps: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_0__.EMPTY_OBJECT,
+    inactiveTriggerProps: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_0__.EMPTY_OBJECT,
+    popupProps: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_0__.EMPTY_OBJECT
+  };
+}
+function createPopupFloatingRootContext(triggerElements, floatingId, nested = false) {
+  return new _floating_ui_react_components_FloatingRootStore_mjs__WEBPACK_IMPORTED_MODULE_1__.FloatingRootStore({
+    open: false,
+    transitionStatus: undefined,
+    floatingElement: null,
+    referenceElement: null,
+    triggerElements,
+    floatingId,
+    syncOnly: true,
+    nested,
+    onOpenChange: undefined
+  });
+}
+const activeTriggerIdSelector = state => state.triggerIdProp ?? state.activeTriggerId;
+const openSelector = state => state.openProp ?? state.open;
+const popupIdSelector = state => {
+  const popupId = state.popupElement?.id ?? state.floatingId;
+  return popupId || undefined;
+};
+function triggerOwnsOpenPopup(state, triggerId) {
+  return triggerId !== undefined && openSelector(state) && activeTriggerIdSelector(state) === triggerId;
+}
+function triggerOwnsOpenPopupOrIsOnlyTrigger(state, triggerId) {
+  if (triggerOwnsOpenPopup(state, triggerId)) {
+    return true;
+  }
+  return triggerId !== undefined && openSelector(state) && activeTriggerIdSelector(state) == null && state.triggerCount === 1;
+}
+const popupStoreSelectors = {
+  open: openSelector,
+  mounted: state => state.mounted,
+  transitionStatus: state => state.transitionStatus,
+  floatingRootContext: state => state.floatingRootContext,
+  triggerCount: state => state.triggerCount,
+  preventUnmountingOnClose: state => state.preventUnmountingOnClose,
+  payload: state => state.payload,
+  activeTriggerId: activeTriggerIdSelector,
+  activeTriggerElement: state => state.mounted ? state.activeTriggerElement : null,
+  popupId: popupIdSelector,
+  /**
+   * Whether the trigger with the given ID was used to open the popup.
+   */
+  isTriggerActive: (state, triggerId) => triggerId !== undefined && activeTriggerIdSelector(state) === triggerId,
+  /**
+   * Whether the popup is open and was activated by a trigger with the given ID.
+   */
+  isOpenedByTrigger: (state, triggerId) => triggerOwnsOpenPopup(state, triggerId),
+  /**
+   * Whether the popup is mounted and was activated by a trigger with the given ID.
+   */
+  isMountedByTrigger: (state, triggerId) => triggerId !== undefined && activeTriggerIdSelector(state) === triggerId && state.mounted,
+  triggerProps: (state, isActive) => isActive ? state.activeTriggerProps : state.inactiveTriggerProps,
+  /**
+   * Popup id for the trigger that currently owns the open popup.
+   */
+  triggerPopupId: (state, triggerId) => triggerOwnsOpenPopupOrIsOnlyTrigger(state, triggerId) ? popupIdSelector(state) : undefined,
+  popupProps: state => state.popupProps,
+  popupElement: state => state.popupElement,
+  positionerElement: state => state.positionerElement
+};
+
+/**
+ * Store members a detached handle-backed trigger reads or invokes for trigger registration and data
+ * forwarding. `set`/`update` are included only for trigger-count and trigger-data bookkeeping; on a
+ * detached (inert) store they are intentionally no-ops, so a write through them is not guaranteed to
+ * be durable. Component handle-store views Pick these from their concrete store (preserving its
+ * context and selectors) and add any component-specific trigger-invoked members such as `setOpen`.
+ */
+
+/**
+ * The subset of a popup store that trigger registration and data forwarding rely on. Narrow enough
+ * that an inert store can be passed while detached.
+ */
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/popups/usePopupHandleStore.mjs"
+/*!**************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/popups/usePopupHandleStore.mjs ***!
+  \**************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   usePopupHandleStore: () => (/* binding */ usePopupHandleStore)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var use_sync_external_store_shim__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! use-sync-external-store/shim */ "./node_modules/use-sync-external-store/shim/index.js");
+/* harmony import */ var _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/empty */ "./node_modules/@base-ui/utils/empty.mjs");
+'use client';
+
+
+
+
+/**
+ * Reads the store currently exposed by a popup handle and subscribes to store-pointer changes.
+ * Detached triggers use this to follow a handle as a root attaches or detaches: while no root is
+ * attached, the handle exposes its fallback store; once a root attaches, subscribers re-render and
+ * read from the live root store.
+ *
+ * Returns `undefined` when no handle is provided so callers can fall back to their root context.
+ *
+ * @param handle The popup handle to read from, or `undefined` when the trigger is not handle-bound.
+ */
+function usePopupHandleStore(handle) {
+  const subscribe = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(listener => {
+    if (handle === undefined) {
+      return _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_2__.NOOP;
+    }
+    return handle.subscribeStore(listener);
+  }, [handle]);
+  const getSnapshot = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(() => {
+    return handle === undefined ? undefined : handle.store;
+  }, [handle]);
+  return (0,use_sync_external_store_shim__WEBPACK_IMPORTED_MODULE_1__.useSyncExternalStore)(subscribe, getSnapshot, () => handle?.serverStore);
 }
 
 /***/ },
@@ -15388,6 +24764,29 @@ function resolveClassName(className, state) {
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/react/utils/resolveRef.mjs"
+/*!**********************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/resolveRef.mjs ***!
+  \**********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   resolveRef: () => (/* binding */ resolveRef)
+/* harmony export */ });
+/**
+ * If the provided argument is a ref object, returns its `current` value.
+ * Otherwise, returns the argument itself.
+ */
+function resolveRef(maybeRef) {
+  if (maybeRef == null) {
+    return maybeRef;
+  }
+  return 'current' in maybeRef ? maybeRef.current : maybeRef;
+}
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/react/utils/resolveStyle.mjs"
 /*!************************************************************!*\
   !*** ./node_modules/@base-ui/react/utils/resolveStyle.mjs ***!
@@ -15411,6 +24810,165 @@ function resolveStyle(style, state) {
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/react/utils/useFocusableWhenDisabled.mjs"
+/*!************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/useFocusableWhenDisabled.mjs ***!
+  \************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useFocusableWhenDisabled: () => (/* binding */ useFocusableWhenDisabled)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+function useFocusableWhenDisabled(parameters) {
+  const {
+    focusableWhenDisabled,
+    disabled,
+    composite = false,
+    tabIndex: tabIndexProp = 0,
+    isNativeButton
+  } = parameters;
+  const isFocusableComposite = composite && focusableWhenDisabled !== false;
+  const isNonFocusableComposite = composite && focusableWhenDisabled === false;
+
+  // we can't explicitly assign `undefined` to any of these props because it
+  // would otherwise prevent subsequently merged props from setting them
+  const props = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => {
+    const additionalProps = {
+      // allow Tabbing away from focusableWhenDisabled elements
+      onKeyDown(event) {
+        if (disabled && focusableWhenDisabled && event.key !== 'Tab') {
+          event.preventDefault();
+        }
+      }
+    };
+    if (!composite) {
+      additionalProps.tabIndex = tabIndexProp;
+      if (!isNativeButton && disabled) {
+        additionalProps.tabIndex = focusableWhenDisabled ? tabIndexProp : -1;
+      }
+    }
+    if (isNativeButton && (focusableWhenDisabled || isFocusableComposite) || !isNativeButton && disabled) {
+      additionalProps['aria-disabled'] = disabled;
+    }
+    if (isNativeButton && (!focusableWhenDisabled || isNonFocusableComposite)) {
+      additionalProps.disabled = disabled;
+    }
+    return additionalProps;
+  }, [composite, disabled, focusableWhenDisabled, isFocusableComposite, isNonFocusableComposite, isNativeButton, tabIndexProp]);
+  return {
+    props
+  };
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/usePositioner.mjs"
+/*!*************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/usePositioner.mjs ***!
+  \*************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   usePositioner: () => (/* binding */ usePositioner)
+/* harmony export */ });
+/* harmony import */ var _popupStateMapping_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./popupStateMapping.mjs */ "./node_modules/@base-ui/react/utils/popupStateMapping.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+/* harmony import */ var _internals_getDisabledMountTransitionStyles_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../internals/getDisabledMountTransitionStyles.mjs */ "./node_modules/@base-ui/react/internals/getDisabledMountTransitionStyles.mjs");
+'use client';
+
+
+
+
+/**
+ * Renders the shared outer Positioner element used by popup components.
+ * Applies the common role, hidden state, transition styles, state attributes, and optional inert styling.
+ */
+function usePositioner(componentProps, state, {
+  styles,
+  transitionStatus,
+  props,
+  refs,
+  hidden,
+  inert = false
+}) {
+  const style = {
+    ...styles
+  };
+  if (inert) {
+    style.pointerEvents = 'none';
+  }
+  return (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_1__.useRenderElement)('div', componentProps, {
+    state,
+    ref: refs,
+    props: [{
+      role: 'presentation',
+      hidden,
+      style
+    }, (0,_internals_getDisabledMountTransitionStyles_mjs__WEBPACK_IMPORTED_MODULE_2__.getDisabledMountTransitionStyles)(transitionStatus), props],
+    stateAttributesMapping: _popupStateMapping_mjs__WEBPACK_IMPORTED_MODULE_0__.popupStateMapping
+  });
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/useRegisteredLabelId.mjs"
+/*!********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/useRegisteredLabelId.mjs ***!
+  \********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useRegisteredLabelId: () => (/* binding */ useRegisteredLabelId)
+/* harmony export */ });
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _internals_useBaseUiId_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../internals/useBaseUiId.mjs */ "./node_modules/@base-ui/react/internals/useBaseUiId.mjs");
+'use client';
+
+
+
+function useRegisteredLabelId(idProp, setLabelId) {
+  const id = (0,_internals_useBaseUiId_mjs__WEBPACK_IMPORTED_MODULE_1__.useBaseUiId)(idProp);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_0__.useIsoLayoutEffect)(() => {
+    setLabelId(id);
+    return () => {
+      setLabelId(currentId => currentId === id ? undefined : currentId);
+    };
+  }, [id, setLabelId]);
+  return id;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/addEventListener.mjs"
+/*!**********************************************************!*\
+  !*** ./node_modules/@base-ui/utils/addEventListener.mjs ***!
+  \**********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   addEventListener: () => (/* binding */ addEventListener)
+/* harmony export */ });
+/**
+ * Adds an event listener and returns a cleanup function to remove it.
+ */
+
+function addEventListener(target, type, listener, options) {
+  target.addEventListener(type, listener, options);
+  return () => {
+    target.removeEventListener(type, listener, options);
+  };
+}
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/utils/empty.mjs"
 /*!***********************************************!*\
   !*** ./node_modules/@base-ui/utils/empty.mjs ***!
@@ -15426,6 +24984,158 @@ __webpack_require__.r(__webpack_exports__);
 function NOOP() {}
 const EMPTY_ARRAY = Object.freeze([]);
 const EMPTY_OBJECT = Object.freeze({});
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/error.mjs"
+/*!***********************************************!*\
+  !*** ./node_modules/@base-ui/utils/error.mjs ***!
+  \***********************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   error: () => (/* binding */ error),
+/* harmony export */   reset: () => (/* binding */ reset)
+/* harmony export */ });
+let set;
+if (true) {
+  set = new Set();
+}
+function error(...messages) {
+  if (true) {
+    const messageKey = messages.join(' ');
+    if (!set.has(messageKey)) {
+      set.add(messageKey);
+      console.error(`Base UI: ${messageKey}`);
+    }
+  }
+}
+function reset() {
+  set?.clear();
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/fastHooks.mjs"
+/*!***************************************************!*\
+  !*** ./node_modules/@base-ui/utils/fastHooks.mjs ***!
+  \***************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   fastComponent: () => (/* binding */ fastComponent),
+/* harmony export */   fastComponentRef: () => (/* binding */ fastComponentRef),
+/* harmony export */   getInstance: () => (/* binding */ getInstance),
+/* harmony export */   register: () => (/* binding */ register),
+/* harmony export */   setInstance: () => (/* binding */ setInstance)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _useRefWithInit_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useRefWithInit.mjs */ "./node_modules/@base-ui/utils/useRefWithInit.mjs");
+
+
+const hooks = [];
+let currentInstance = undefined;
+function getInstance() {
+  return currentInstance;
+}
+function setInstance(instance) {
+  currentInstance = instance;
+}
+function register(hook) {
+  hooks.push(hook);
+}
+
+/**
+ * Wraps a component function to enable performance optimizations for internal hooks.
+ *
+ * **Performance Optimization:**
+ * Components wrapped with `fastComponent` have access to a shared "instance" context that enables
+ * specialized hook implementations to batch operations and reduce overhead. The wrapper creates a
+ * stable instance object that persists across renders, sets it as the current context, calls
+ * registered hooks before and after rendering, then clears the context. The primary benefit is
+ * with `useStore`, where multiple store subscriptions within the same component are collapsed into
+ * a single `useSyncExternalStore` subscription per store, significantly reducing re-render overhead.
+ * This optimization is only active on React 19+; on earlier versions `useStore` falls back to a
+ * separate subscription per call.
+ *
+ * **Requirements:**
+ * - The component function should follow standard React component patterns
+ * - `useStore` calls must keep a stable order and count across renders, as batched hooks are
+ *   matched by call index
+ * - Do not rely on the instance context outside of specialized hooks
+ *
+ * @param fn - The component function to wrap
+ * @returns A wrapped component with the same signature as the input function
+ *
+ * @example
+ * ```tsx
+ * // Wrapping a component to enable optimized useStore batching
+ * export const TooltipRoot = fastComponent(function TooltipRoot(props) {
+ *   // These useStore calls share a single subscription
+ *   const open = useStore(store, (state) => state.open);
+ *   const disabled = useStore(store, (state) => state.disabled);
+ *   const value = useStore(store, (state) => state.value);
+ *   // ...
+ * });
+ * ```
+ */
+function fastComponent(fn) {
+  const FastComponent = (props, forwardedRef) => {
+    const instance = (0,_useRefWithInit_mjs__WEBPACK_IMPORTED_MODULE_1__.useRefWithInit)(createInstance).current;
+    let result;
+    try {
+      currentInstance = instance;
+      for (const hook of hooks) {
+        hook.before(instance);
+      }
+      result = fn(props, forwardedRef);
+      for (const hook of hooks) {
+        hook.after(instance);
+      }
+      instance.didInitialize = true;
+    } finally {
+      currentInstance = undefined;
+    }
+    return result;
+  };
+  FastComponent.displayName = fn.displayName || fn.name;
+  return FastComponent;
+}
+
+/**
+ * Wraps a component function with ref forwarding to enable performance optimizations for internal hooks.
+ *
+ * This is a convenience wrapper that combines `fastComponent` with `React.forwardRef`, enabling
+ * both performance optimizations and proper ref forwarding. See `fastComponent` for details on
+ * the performance benefits.
+ *
+ * @param fn - The component function that accepts props and a forwarded ref
+ * @returns A wrapped component with ref forwarding enabled
+ *
+ * @example
+ * ```tsx
+ * // Wrapping a component with ref forwarding and optimized hooks
+ * export const TooltipTrigger = fastComponentRef(function TooltipTrigger(
+ *   props,
+ *   forwardedRef
+ * ) {
+ *   const store = useContext(TooltipContext);
+ *   const open = useStore(store, (state) => state.open);
+ *   // ... component logic with ref
+ *   return <button ref={forwardedRef} {...props} />;
+ * });
+ * ```
+ */
+function fastComponentRef(fn) {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(fastComponent(fn));
+}
+function createInstance() {
+  return {
+    didInitialize: false
+  };
+}
 
 /***/ },
 
@@ -15458,6 +25168,32 @@ function getReactElementRef(element) {
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/utils/mergeCleanups.mjs"
+/*!*******************************************************!*\
+  !*** ./node_modules/@base-ui/utils/mergeCleanups.mjs ***!
+  \*******************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   mergeCleanups: () => (/* binding */ mergeCleanups)
+/* harmony export */ });
+/**
+ * Combines multiple cleanup functions into a single cleanup function.
+ */
+function mergeCleanups(...cleanups) {
+  return () => {
+    for (let i = 0; i < cleanups.length; i += 1) {
+      const cleanup = cleanups[i];
+      if (cleanup) {
+        cleanup();
+      }
+    }
+  };
+}
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/utils/mergeObjects.mjs"
 /*!******************************************************!*\
   !*** ./node_modules/@base-ui/utils/mergeObjects.mjs ***!
@@ -15486,6 +25222,208 @@ function mergeObjects(a, b) {
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/utils/owner.mjs"
+/*!***********************************************!*\
+  !*** ./node_modules/@base-ui/utils/owner.mjs ***!
+  \***********************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ownerDocument: () => (/* binding */ ownerDocument),
+/* harmony export */   ownerWindow: () => (/* reexport safe */ _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.getWindow)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+
+function ownerDocument(node) {
+  return node?.ownerDocument || document;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/platform/engine.mjs"
+/*!*********************************************************!*\
+  !*** ./node_modules/@base-ui/utils/platform/engine.mjs ***!
+  \*********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   blink: () => (/* binding */ blink),
+/* harmony export */   gecko: () => (/* binding */ gecko),
+/* harmony export */   webkit: () => (/* binding */ webkit)
+/* harmony export */ });
+/* harmony import */ var _shared_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./shared.mjs */ "./node_modules/@base-ui/utils/platform/shared.mjs");
+
+
+// WebKit (Safari, all iOS browsers, GNOME Web). Distinguished from Blink by
+// the legacy `-webkit-backdrop-filter` name — Blink forked from WebKit in 2013
+// and only ships the unprefixed `backdrop-filter`.
+/** WebKit: Safari, all iOS browsers, GNOME Web. Excludes Blink. */
+const webkit = typeof CSS !== 'undefined' && !!CSS.supports?.('-webkit-backdrop-filter:none');
+
+// Anchored to `!webkit` so engines are mutually exclusive by construction.
+// Firefox-on-iOS uses WebKit (its UA marker is `FxiOS/`, not `Firefox/`); the
+// `!webkit` prefix also defends against future iOS-browser UA changes that
+// might inject `Firefox` into a WebKit-based UA.
+/** Gecko: Firefox. */
+const gecko = !webkit && _shared_mjs__WEBPACK_IMPORTED_MODULE_0__.lowerUserAgent.includes('firefox');
+
+// All Chromium-based browsers ship `Chrome/` or `Chromium/` in their UA — both
+// share the `chrom` prefix, so a single substring check covers Chrome, Edge,
+// Opera, Brave, etc. Chrome-on-iOS uses `CriOS/` and stays WebKit. The positive
+// UA check also makes this SSR-safe — an empty UA matches nothing.
+/** Blink: Chrome, Edge, Opera, Brave, and other Chromium-based browsers. */
+const blink = !webkit && _shared_mjs__WEBPACK_IMPORTED_MODULE_0__.lowerUserAgent.includes('chrom');
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/platform/env.mjs"
+/*!******************************************************!*\
+  !*** ./node_modules/@base-ui/utils/platform/env.mjs ***!
+  \******************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   jsdom: () => (/* binding */ jsdom)
+/* harmony export */ });
+/* harmony import */ var _shared_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./shared.mjs */ "./node_modules/@base-ui/utils/platform/shared.mjs");
+
+
+/** Running in jsdom or HappyDOM (used by unit tests). */
+const jsdom = /jsdom|happydom/.test(_shared_mjs__WEBPACK_IMPORTED_MODULE_0__.lowerUserAgent);
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/platform/os.mjs"
+/*!*****************************************************!*\
+  !*** ./node_modules/@base-ui/utils/platform/os.mjs ***!
+  \*****************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   android: () => (/* binding */ android),
+/* harmony export */   apple: () => (/* binding */ apple),
+/* harmony export */   ios: () => (/* binding */ ios),
+/* harmony export */   linux: () => (/* binding */ linux),
+/* harmony export */   mac: () => (/* binding */ mac),
+/* harmony export */   windows: () => (/* binding */ windows)
+/* harmony export */ });
+/* harmony import */ var _shared_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./shared.mjs */ "./node_modules/@base-ui/utils/platform/shared.mjs");
+
+
+// iPadOS 13+ reports `MacIntel` for `navigator.platform`; disambiguated via
+// `maxTouchPoints` so iPad is classified as iOS, not macOS.
+// https://github.com/mui/base-ui/issues/1309
+/** iPhone, iPad (including iPadOS 13+ reporting as macOS), iPod. */
+const ios = /^i(os$|p)/.test(_shared_mjs__WEBPACK_IMPORTED_MODULE_0__.lowerPlatform) || _shared_mjs__WEBPACK_IMPORTED_MODULE_0__.lowerPlatform === 'macintel' && _shared_mjs__WEBPACK_IMPORTED_MODULE_0__.maxTouchPoints > 1;
+
+/** Android phones, tablets, and embedded Android browsers. */
+const ANDROID_STRING = 'android';
+const android = _shared_mjs__WEBPACK_IMPORTED_MODULE_0__.lowerPlatform === ANDROID_STRING || _shared_mjs__WEBPACK_IMPORTED_MODULE_0__.lowerUserAgent.includes(ANDROID_STRING);
+
+/** macOS desktop. Excludes iPadOS, which reports as `MacIntel`. */
+const mac = !ios && _shared_mjs__WEBPACK_IMPORTED_MODULE_0__.lowerPlatform.startsWith('mac');
+
+/** Windows desktop. */
+const windows = _shared_mjs__WEBPACK_IMPORTED_MODULE_0__.lowerPlatform.startsWith('win');
+
+/** Linux desktop (including Chrome OS). */
+const linux = !android && /^(linux|chrome os)/.test(_shared_mjs__WEBPACK_IMPORTED_MODULE_0__.lowerPlatform);
+
+/** Any Apple OS (`mac || ios`). */
+const apple = mac || ios;
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/platform/screen-reader.mjs"
+/*!****************************************************************!*\
+  !*** ./node_modules/@base-ui/utils/platform/screen-reader.mjs ***!
+  \****************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   voiceOver: () => (/* binding */ voiceOver)
+/* harmony export */ });
+/* harmony import */ var _os_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./os.mjs */ "./node_modules/@base-ui/utils/platform/os.mjs");
+
+
+// Whether a screen reader is *actually* running cannot be detected. These flags
+// identify platforms where a specific screen reader could be active. VoiceOver
+// is the system screen reader on Apple platforms and works with every browser
+// there, so the flag is purely an OS check; engine-specific quirks (e.g. the
+// NSAccessibility virtual-cursor focus path) should be gated at the call site.
+/**
+ * The user *may* be using VoiceOver — actual activation is not detectable.
+ * True on any Apple platform (macOS, iOS, iPadOS).
+ */
+const voiceOver = _os_mjs__WEBPACK_IMPORTED_MODULE_0__.apple;
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/platform/shared.mjs"
+/*!*********************************************************!*\
+  !*** ./node_modules/@base-ui/utils/platform/shared.mjs ***!
+  \*********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   lowerPlatform: () => (/* binding */ lowerPlatform),
+/* harmony export */   lowerUserAgent: () => (/* binding */ lowerUserAgent),
+/* harmony export */   maxTouchPoints: () => (/* binding */ maxTouchPoints)
+/* harmony export */ });
+/**
+ * Reads `navigator.userAgent` / `navigator.platform` (legacy but universally
+ * supported) into a normalized shape. In development, prefers the modern
+ * `navigator.userAgentData` API on Chromium to avoid DevTools warnings about
+ * the deprecated reads; that branch is dead-code-eliminated in production
+ * builds to keep the bundle small.
+ *
+ * Returns empty/zero values when `navigator` is undefined (SSR), so every
+ * derived flag safely evaluates to `false`.
+ */
+function readRawData() {
+  if (typeof navigator === 'undefined') {
+    return {
+      userAgent: '',
+      platform: '',
+      maxTouchPoints: 0
+    };
+  }
+  if (true) {
+    const uaData = navigator.userAgentData;
+    if (uaData && Array.isArray(uaData.brands)) {
+      return {
+        userAgent: uaData.brands.map(({
+          brand,
+          version
+        }) => `${brand}/${version}`).join(' '),
+        platform: uaData.platform ?? navigator.platform ?? '',
+        maxTouchPoints: navigator.maxTouchPoints ?? 0
+      };
+    }
+  }
+  return {
+    userAgent: navigator.userAgent,
+    platform: navigator.platform ?? '',
+    maxTouchPoints: navigator.maxTouchPoints ?? 0
+  };
+}
+const {
+  userAgent,
+  platform,
+  maxTouchPoints
+} = readRawData();
+const lowerUserAgent = userAgent.toLowerCase();
+const lowerPlatform = platform.toLowerCase();
+
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/utils/reactVersion.mjs"
 /*!******************************************************!*\
   !*** ./node_modules/@base-ui/utils/reactVersion.mjs ***!
@@ -15502,6 +25440,804 @@ const majorVersion = parseInt(react__WEBPACK_IMPORTED_MODULE_0__.version, 10);
 function isReactVersionAtLeast(reactVersionToCheck) {
   return majorVersion >= reactVersionToCheck;
 }
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/safeReact.mjs"
+/*!***************************************************!*\
+  !*** ./node_modules/@base-ui/utils/safeReact.mjs ***!
+  \***************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+let react__WEBPACK_IMPORTED_MODULE_0___namespace_cache;
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SafeReact: () => (/* binding */ SafeReact)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+
+
+/**
+ * A clone of the React namespace for reading APIs that may be missing in older
+ * supported React versions. Bundlers can rewrite direct `React.someNewApi`
+ * reads into named imports, which breaks React 17. Reading from this cloned
+ * object keeps those lookups optional.
+ *
+ * @see https://github.com/mui/material-ui/issues/41190#issuecomment-2040873379
+ */
+const SafeReact = {
+  .../*#__PURE__*/ (react__WEBPACK_IMPORTED_MODULE_0___namespace_cache || (react__WEBPACK_IMPORTED_MODULE_0___namespace_cache = __webpack_require__.t(react__WEBPACK_IMPORTED_MODULE_0__, 2)))
+};
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/store/ReactStore.mjs"
+/*!**********************************************************!*\
+  !*** ./node_modules/@base-ui/utils/store/ReactStore.mjs ***!
+  \**********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ReactStore: () => (/* binding */ ReactStore)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _Store_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Store.mjs */ "./node_modules/@base-ui/utils/store/Store.mjs");
+/* harmony import */ var _useStore_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./useStore.mjs */ "./node_modules/@base-ui/utils/store/useStore.mjs");
+/* harmony import */ var _useStableCallback_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../useStableCallback.mjs */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _useIsoLayoutEffect_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../useIsoLayoutEffect.mjs */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _empty_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../empty.mjs */ "./node_modules/@base-ui/utils/empty.mjs");
+/* False positives - ESLint thinks we're calling a hook from a class component. */
+/* eslint-disable react-hooks/rules-of-hooks */
+'use client';
+
+
+
+
+
+
+
+
+/**
+ * A Store that supports controlled state keys, non-reactive values and provides utility methods for React.
+ */
+class ReactStore extends _Store_mjs__WEBPACK_IMPORTED_MODULE_1__.Store {
+  /**
+   * Creates a new ReactStore instance.
+   *
+   * @param state Initial state of the store.
+   * @param context Non-reactive context values.
+   * @param selectors Optional selectors for use with `useState`.
+   */
+  constructor(state, context = {}, selectors) {
+    super(state);
+    this.context = context;
+    this.selectors = selectors;
+  }
+
+  /**
+   * Non-reactive values such as refs, callbacks, etc.
+   */
+
+  /**
+   * Synchronizes a single external value into the store.
+   *
+   * Note that the while the value in `state` is updated immediately, the value returned
+   * by `useState` is updated before the next render (similarly to React's `useState`).
+   */
+  useSyncedValue(key, value) {
+    react__WEBPACK_IMPORTED_MODULE_0__.useDebugValue(key);
+    // eslint-disable-next-line consistent-this
+    const store = this;
+    (0,_useIsoLayoutEffect_mjs__WEBPACK_IMPORTED_MODULE_4__.useIsoLayoutEffect)(() => {
+      if (store.state[key] !== value) {
+        store.set(key, value);
+      }
+    }, [store, key, value]);
+  }
+
+  /**
+   * Synchronizes a single external value into the store and
+   * cleans it up (sets to `undefined`) on unmount.
+   *
+   * Note that the while the value in `state` is updated immediately, the value returned
+   * by `useState` is updated before the next render (similarly to React's `useState`).
+   */
+  useSyncedValueWithCleanup(key, value) {
+    // eslint-disable-next-line consistent-this
+    const store = this;
+    (0,_useIsoLayoutEffect_mjs__WEBPACK_IMPORTED_MODULE_4__.useIsoLayoutEffect)(() => {
+      if (store.state[key] !== value) {
+        store.set(key, value);
+      }
+      return () => {
+        store.set(key, undefined);
+      };
+    }, [store, key, value]);
+  }
+
+  /**
+   * Synchronizes multiple external values into the store.
+   *
+   * Note that the while the values in `state` are updated immediately, the values returned
+   * by `useState` are updated before the next render (similarly to React's `useState`).
+   */
+  useSyncedValues(statePart) {
+    // eslint-disable-next-line consistent-this
+    const store = this;
+    if (true) {
+      // Check that an object with the same shape is passed on every render
+      react__WEBPACK_IMPORTED_MODULE_0__.useDebugValue(statePart, p => Object.keys(p));
+      const keys = react__WEBPACK_IMPORTED_MODULE_0__.useRef(Object.keys(statePart)).current;
+      const nextKeys = Object.keys(statePart);
+      if (keys.length !== nextKeys.length || keys.some((key, index) => key !== nextKeys[index])) {
+        console.error('ReactStore.useSyncedValues expects the same prop keys on every render. Keys should be stable.');
+      }
+    }
+    const dependencies = Object.values(statePart);
+    (0,_useIsoLayoutEffect_mjs__WEBPACK_IMPORTED_MODULE_4__.useIsoLayoutEffect)(() => {
+      store.update(statePart);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [store, ...dependencies]);
+  }
+
+  /**
+   * Registers a controllable prop pair (`controlled`, `defaultValue`) for a specific key. If `controlled`
+   * is non-undefined, the store's state at `key` is updated to match `controlled`.
+   */
+  useControlledProp(key, controlled) {
+    react__WEBPACK_IMPORTED_MODULE_0__.useDebugValue(key);
+    // eslint-disable-next-line consistent-this
+    const store = this;
+    const isControlled = controlled !== undefined;
+    (0,_useIsoLayoutEffect_mjs__WEBPACK_IMPORTED_MODULE_4__.useIsoLayoutEffect)(() => {
+      if (isControlled && !Object.is(store.state[key], controlled)) {
+        // Set the internal state to match the controlled value.
+        store.setState({
+          ...store.state,
+          [key]: controlled
+        });
+      }
+    }, [store, key, controlled, isControlled]);
+    if (true) {
+      // eslint-disable-next-line
+      const cache = this.controlledValues ??= new Map();
+      if (!cache.has(key)) {
+        cache.set(key, isControlled);
+      }
+      const previouslyControlled = cache.get(key);
+      if (previouslyControlled !== undefined && previouslyControlled !== isControlled) {
+        console.error(`A component is changing the ${isControlled ? '' : 'un'}controlled state of ${key.toString()} to be ${isControlled ? 'un' : ''}controlled. Elements should not switch from uncontrolled to controlled (or vice versa).`);
+      }
+    }
+  }
+
+  /** Gets the current value from the store using a selector with the provided key.
+   *
+   * @param key Key of the selector to use.
+   */
+
+  select(key, a1, a2, a3) {
+    const selector = this.selectors[key];
+    return selector(this.state, a1, a2, a3);
+  }
+
+  /**
+   * Returns a value from the store's state using a selector function.
+   * Used to subscribe to specific parts of the state.
+   * This methods causes a rerender whenever the selected state changes.
+   *
+   * @param key Key of the selector to use.
+   */
+
+  useState(key, a1, a2, a3) {
+    react__WEBPACK_IMPORTED_MODULE_0__.useDebugValue(key);
+    return (0,_useStore_mjs__WEBPACK_IMPORTED_MODULE_2__.useStore)(this, this.selectors[key], a1, a2, a3);
+  }
+
+  /**
+   * Wraps a function with `useStableCallback` to ensure it has a stable reference
+   * and assigns it to the context.
+   *
+   * @param key Key of the event callback. Must be a function in the context.
+   * @param fn Function to assign.
+   */
+  useContextCallback(key, fn) {
+    react__WEBPACK_IMPORTED_MODULE_0__.useDebugValue(key);
+    const stableFunction = (0,_useStableCallback_mjs__WEBPACK_IMPORTED_MODULE_3__.useStableCallback)(fn ?? _empty_mjs__WEBPACK_IMPORTED_MODULE_5__.NOOP);
+    this.context[key] = stableFunction;
+  }
+
+  /**
+   * Returns a stable setter function for a specific key in the store's state.
+   * It's commonly used to pass as a ref callback to React elements.
+   *
+   * @param key Key of the state to set.
+   */
+  useStateSetter(key) {
+    const ref = react__WEBPACK_IMPORTED_MODULE_0__.useRef(undefined);
+    if (ref.current === undefined) {
+      ref.current = value => {
+        this.set(key, value);
+      };
+    }
+    return ref.current;
+  }
+
+  /**
+   * Observes changes derived from the store's selectors and calls the listener when the selected value changes.
+   *
+   * @param key Key of the selector to observe.
+   * @param listener Listener function called when the selector result changes.
+   */
+
+  observe(selector, listener) {
+    let selectFn;
+    if (typeof selector === 'function') {
+      selectFn = selector;
+    } else {
+      selectFn = this.selectors[selector];
+    }
+    let prevValue = selectFn(this.state);
+    listener(prevValue, prevValue, this);
+    return this.subscribe(nextState => {
+      const nextValue = selectFn(nextState);
+      if (!Object.is(prevValue, nextValue)) {
+        const oldValue = prevValue;
+        prevValue = nextValue;
+        listener(nextValue, oldValue, this);
+      }
+    });
+  }
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/store/Store.mjs"
+/*!*****************************************************!*\
+  !*** ./node_modules/@base-ui/utils/store/Store.mjs ***!
+  \*****************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Store: () => (/* binding */ Store)
+/* harmony export */ });
+/* harmony import */ var _useStore_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./useStore.mjs */ "./node_modules/@base-ui/utils/store/useStore.mjs");
+
+/**
+ * A data store implementation that allows subscribing to state changes and updating the state.
+ * It uses an observer pattern to notify subscribers when the state changes.
+ */
+class Store {
+  /**
+   * The current state of the store.
+   * This property is updated immediately when the state changes as a result of calling {@link setState}, {@link update}, or {@link set}.
+   * To subscribe to state changes, use the {@link useState} method. The value returned by {@link useState} is updated after the component renders (similarly to React's useState).
+   * The values can be used directly (to avoid subscribing to the store) in effects or event handlers.
+   *
+   * Do not modify properties in state directly. Instead, use the provided methods to ensure proper state management and listener notification.
+   */
+
+  // Internal state to handle recursive `setState()` calls
+
+  constructor(state) {
+    this.state = state;
+    this.listeners = new Set();
+    this.updateTick = 0;
+  }
+
+  /**
+   * Registers a listener that will be called whenever the store's state changes.
+   *
+   * @param fn The listener function to be called on state changes.
+   * @returns A function to unsubscribe the listener.
+   */
+  subscribe = fn => {
+    this.listeners.add(fn);
+    return () => {
+      this.listeners.delete(fn);
+    };
+  };
+
+  /**
+   * Returns the current state of the store.
+   */
+  getSnapshot = () => {
+    return this.state;
+  };
+
+  /**
+   * Updates the entire store's state and notifies all registered listeners.
+   *
+   * @param newState The new state to set for the store.
+   */
+  setState(newState) {
+    if (this.state === newState) {
+      return;
+    }
+    this.state = newState;
+    this.updateTick += 1;
+    const currentTick = this.updateTick;
+    for (const listener of this.listeners) {
+      if (currentTick !== this.updateTick) {
+        // If the tick has changed, a recursive `setState` call has been made,
+        // and it has already notified all listeners.
+        return;
+      }
+      listener(newState);
+    }
+  }
+
+  /**
+   * Merges the provided changes into the current state and notifies listeners if there are changes.
+   *
+   * @param changes An object containing the changes to apply to the current state.
+   */
+  update(changes) {
+    for (const key in changes) {
+      if (!Object.is(this.state[key], changes[key])) {
+        this.setState({
+          ...this.state,
+          ...changes
+        });
+        return;
+      }
+    }
+  }
+
+  /**
+   * Sets a specific key in the store's state to a new value and notifies listeners if the value has changed.
+   *
+   * @param key The key in the store's state to update.
+   * @param value The new value to set for the specified key.
+   */
+  set(key, value) {
+    if (!Object.is(this.state[key], value)) {
+      this.setState({
+        ...this.state,
+        [key]: value
+      });
+    }
+  }
+
+  /**
+   * Gives the state a new reference and updates all registered listeners.
+   */
+  notifyAll() {
+    const newState = {
+      ...this.state
+    };
+    this.setState(newState);
+  }
+  use(selector, a1, a2, a3) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return (0,_useStore_mjs__WEBPACK_IMPORTED_MODULE_0__.useStore)(this, selector, a1, a2, a3);
+  }
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/store/useStore.mjs"
+/*!********************************************************!*\
+  !*** ./node_modules/@base-ui/utils/store/useStore.mjs ***!
+  \********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useStore: () => (/* binding */ useStore)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var use_sync_external_store_shim__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! use-sync-external-store/shim */ "./node_modules/use-sync-external-store/shim/index.js");
+/* harmony import */ var use_sync_external_store_shim_with_selector__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! use-sync-external-store/shim/with-selector */ "./node_modules/use-sync-external-store/shim/with-selector.js");
+/* harmony import */ var _reactVersion_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../reactVersion.mjs */ "./node_modules/@base-ui/utils/reactVersion.mjs");
+/* harmony import */ var _fastHooks_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../fastHooks.mjs */ "./node_modules/@base-ui/utils/fastHooks.mjs");
+
+/* We need to import the shim because React 17 does not support the `useSyncExternalStore` API.
+ * More info: https://github.com/mui/mui-x/issues/18303#issuecomment-2958392341 */
+
+
+
+
+/* Some tests fail in R18 with the raw useSyncExternalStore. It may be possible to make it work
+ * but for now we only enable it for R19+. */
+const canUseRawUseSyncExternalStore = (0,_reactVersion_mjs__WEBPACK_IMPORTED_MODULE_3__.isReactVersionAtLeast)(19);
+const useStoreImplementation = canUseRawUseSyncExternalStore ? useStoreFast : useStoreLegacy;
+function useStore(store, selector, a1, a2, a3) {
+  return useStoreImplementation(store, selector, a1, a2, a3);
+}
+function useStoreR19(store, selector, a1, a2, a3) {
+  const getSelection = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(() => selector(store.getSnapshot(), a1, a2, a3), [store, selector, a1, a2, a3]);
+  return (0,use_sync_external_store_shim__WEBPACK_IMPORTED_MODULE_1__.useSyncExternalStore)(store.subscribe, getSelection, getSelection);
+}
+;(0,_fastHooks_mjs__WEBPACK_IMPORTED_MODULE_4__.register)({
+  before(instance) {
+    instance.syncIndex = 0;
+    if (!instance.didInitialize) {
+      instance.syncTick = 1;
+      instance.syncHooks = [];
+      instance.didChangeStore = true;
+      instance.getSnapshot = () => {
+        let didChange = false;
+        for (let i = 0; i < instance.syncHooks.length; i += 1) {
+          const hook = instance.syncHooks[i];
+          const value = hook.selector(hook.store.state, hook.a1, hook.a2, hook.a3);
+          if (!Object.is(hook.value, value)) {
+            didChange = true;
+            hook.value = value;
+          }
+        }
+        if (didChange) {
+          instance.syncTick += 1;
+        }
+        return instance.syncTick;
+      };
+    }
+  },
+  after(instance) {
+    if (instance.syncHooks.length > 0) {
+      if (instance.didChangeStore) {
+        instance.didChangeStore = false;
+        instance.subscribe = onStoreChange => {
+          const stores = new Set();
+          for (const hook of instance.syncHooks) {
+            stores.add(hook.store);
+          }
+          const unsubscribes = [];
+          for (const store of stores) {
+            unsubscribes.push(store.subscribe(onStoreChange));
+          }
+          return () => {
+            for (const unsubscribe of unsubscribes) {
+              unsubscribe();
+            }
+          };
+        };
+      }
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      ;(0,use_sync_external_store_shim__WEBPACK_IMPORTED_MODULE_1__.useSyncExternalStore)(instance.subscribe, instance.getSnapshot, instance.getSnapshot);
+    }
+  }
+});
+function useStoreFast(store, selector, a1, a2, a3) {
+  const instance = (0,_fastHooks_mjs__WEBPACK_IMPORTED_MODULE_4__.getInstance)();
+  if (!instance) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return useStoreR19(store, selector, a1, a2, a3);
+  }
+  const index = instance.syncIndex;
+  instance.syncIndex += 1;
+  let hook;
+  if (!instance.didInitialize) {
+    hook = {
+      store,
+      selector,
+      a1,
+      a2,
+      a3,
+      value: selector(store.getSnapshot(), a1, a2, a3)
+    };
+    instance.syncHooks.push(hook);
+  } else {
+    hook = instance.syncHooks[index];
+    if (hook.store !== store || hook.selector !== selector || !Object.is(hook.a1, a1) || !Object.is(hook.a2, a2) || !Object.is(hook.a3, a3)) {
+      if (hook.store !== store) {
+        instance.didChangeStore = true;
+      }
+      hook.store = store;
+      hook.selector = selector;
+      hook.a1 = a1;
+      hook.a2 = a2;
+      hook.a3 = a3;
+      hook.value = selector(store.getSnapshot(), a1, a2, a3);
+    }
+  }
+  return hook.value;
+}
+function useStoreLegacy(store, selector, a1, a2, a3) {
+  return (0,use_sync_external_store_shim_with_selector__WEBPACK_IMPORTED_MODULE_2__.useSyncExternalStoreWithSelector)(store.subscribe, store.getSnapshot, store.getSnapshot, state => selector(state, a1, a2, a3));
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/useAnimationFrame.mjs"
+/*!***********************************************************!*\
+  !*** ./node_modules/@base-ui/utils/useAnimationFrame.mjs ***!
+  \***********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AnimationFrame: () => (/* binding */ AnimationFrame),
+/* harmony export */   resetAnimationFrameScheduler: () => (/* binding */ resetAnimationFrameScheduler),
+/* harmony export */   useAnimationFrame: () => (/* binding */ useAnimationFrame)
+/* harmony export */ });
+/* harmony import */ var _useRefWithInit_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./useRefWithInit.mjs */ "./node_modules/@base-ui/utils/useRefWithInit.mjs");
+/* harmony import */ var _useOnMount_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useOnMount.mjs */ "./node_modules/@base-ui/utils/useOnMount.mjs");
+'use client';
+
+
+
+/** Unlike `setTimeout`, rAF doesn't guarantee a positive integer return value, so we can't have
+ * a monomorphic `uint` type with `0` meaning empty.
+ * See warning note at:
+ * https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame#return_value */
+const EMPTY = null;
+let LAST_RAF = globalThis.requestAnimationFrame;
+class Scheduler {
+  /* This implementation uses an array as a backing data-structure for frame callbacks.
+   * It allows `O(1)` callback cancelling by inserting a `null` in the array, though it
+   * never calls the native `cancelAnimationFrame` if there are no frames left. This can
+   * be much more efficient if there is a call pattern that alterns as
+   * "request-cancel-request-cancel-…".
+   * But in the case of "request-request-…-cancel-cancel-…", it leaves the final animation
+   * frame to run anyway. We turn that frame into a `O(1)` no-op via `callbacksCount`. */
+
+  callbacks = [];
+  callbacksCount = 0;
+  nextId = 1;
+  startId = 1;
+  isScheduled = false;
+  tick = timestamp => {
+    this.isScheduled = false;
+    const currentCallbacks = this.callbacks;
+    const currentCallbacksCount = this.callbacksCount;
+
+    // Update these before iterating, callbacks could call `requestAnimationFrame` again.
+    this.callbacks = [];
+    this.callbacksCount = 0;
+    this.startId = this.nextId;
+    if (currentCallbacksCount > 0) {
+      for (let i = 0; i < currentCallbacks.length; i += 1) {
+        currentCallbacks[i]?.(timestamp);
+      }
+    }
+  };
+  request(fn) {
+    const id = this.nextId;
+    this.nextId += 1;
+    this.callbacks.push(fn);
+    this.callbacksCount += 1;
+
+    /* In a test environment with fake timers, a fake `requestAnimationFrame` can be called
+     * but there's no guarantee that the animation frame will actually run before the fake
+     * timers are teared, which leaves `isScheduled` set, but won't run our `tick()`. */
+    const didRAFChange =  true && LAST_RAF !== requestAnimationFrame && (LAST_RAF = requestAnimationFrame, true);
+    if (!this.isScheduled || didRAFChange) {
+      requestAnimationFrame(this.tick);
+      this.isScheduled = true;
+    }
+    return id;
+  }
+  cancel(id) {
+    const index = id - this.startId;
+    if (index < 0 || index >= this.callbacks.length) {
+      return;
+    }
+    this.callbacks[index] = null;
+    this.callbacksCount -= 1;
+  }
+}
+let scheduler = new Scheduler();
+
+/**
+ * Replaces the shared scheduler and drops all pending animation frame callbacks.
+ *
+ * For test environments only. The scheduler is process-global, so a callback scheduled in one test
+ * but never run (e.g. requested under fake timers that were torn down before the frame fired) would
+ * otherwise survive into a later test and run there against stale state. Call between tests to drop
+ * such leftovers.
+ */
+function resetAnimationFrameScheduler() {
+  const previous = scheduler;
+  scheduler = new Scheduler();
+  // Continue the id sequence so `cancel()` calls from `AnimationFrame` instances created before the
+  // reset cannot cancel callbacks scheduled after it.
+  scheduler.nextId = previous.nextId;
+  scheduler.startId = previous.nextId;
+  // A frame requested before the reset may still be pending and holds the previous scheduler's
+  // `tick`; empty its queue in place so that frame runs nothing when it eventually fires.
+  previous.callbacks = [];
+  previous.callbacksCount = 0;
+}
+class AnimationFrame {
+  static create() {
+    return new AnimationFrame();
+  }
+  static request(fn) {
+    return scheduler.request(fn);
+  }
+  static cancel(id) {
+    return scheduler.cancel(id);
+  }
+  currentId = EMPTY;
+
+  /**
+   * Executes `fn` after `delay`, clearing any previously scheduled call.
+   */
+  request(fn) {
+    this.cancel();
+    this.currentId = scheduler.request(() => {
+      this.currentId = EMPTY;
+      fn();
+    });
+  }
+  cancel = () => {
+    if (this.currentId !== EMPTY) {
+      scheduler.cancel(this.currentId);
+      this.currentId = EMPTY;
+    }
+  };
+  disposeEffect = () => {
+    return this.cancel;
+  };
+}
+
+/**
+ * A `requestAnimationFrame` with automatic cleanup and guard.
+ */
+function useAnimationFrame() {
+  const timeout = (0,_useRefWithInit_mjs__WEBPACK_IMPORTED_MODULE_0__.useRefWithInit)(AnimationFrame.create).current;
+  (0,_useOnMount_mjs__WEBPACK_IMPORTED_MODULE_1__.useOnMount)(timeout.disposeEffect);
+  return timeout;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/useControlled.mjs"
+/*!*******************************************************!*\
+  !*** ./node_modules/@base-ui/utils/useControlled.mjs ***!
+  \*******************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useControlled: () => (/* binding */ useControlled)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _error_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./error.mjs */ "./node_modules/@base-ui/utils/error.mjs");
+'use client';
+
+// TODO: uncomment once we enable eslint-plugin-react-compiler // eslint-disable-next-line react-compiler/react-compiler -- process.env never changes, dependency arrays are intentionally ignored
+/* eslint-disable react-hooks/rules-of-hooks, react-hooks/exhaustive-deps */
+
+
+function useControlled({
+  controlled,
+  default: defaultProp,
+  name,
+  state = 'value'
+}) {
+  // isControlled is ignored in the hook dependency lists as it should never change.
+  const {
+    current: isControlled
+  } = react__WEBPACK_IMPORTED_MODULE_0__.useRef(controlled !== undefined);
+  const [valueState, setValue] = react__WEBPACK_IMPORTED_MODULE_0__.useState(defaultProp);
+  const value = isControlled ? controlled : valueState;
+  if (true) {
+    react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+      if (isControlled !== (controlled !== undefined)) {
+        (0,_error_mjs__WEBPACK_IMPORTED_MODULE_1__.error)([`A component is changing the ${isControlled ? '' : 'un'}controlled ${state} state of ${name} to be ${isControlled ? 'un' : ''}controlled.`, 'Elements should not switch from uncontrolled to controlled (or vice versa).', `Decide between using a controlled or uncontrolled ${name} ` + 'element for the lifetime of the component.', "The nature of the state is determined during the first render. It's considered controlled if the value is not `undefined`.", 'More info: https://fb.me/react-controlled-components'].join('\n'));
+      }
+    }, [state, name, controlled]);
+    const {
+      current: defaultValue
+    } = react__WEBPACK_IMPORTED_MODULE_0__.useRef(defaultProp);
+    react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+      if (!isControlled && serializeToDevModeString(defaultValue) !== serializeToDevModeString(defaultProp)) {
+        (0,_error_mjs__WEBPACK_IMPORTED_MODULE_1__.error)([`A component is changing the default ${state} state of an uncontrolled ${name} after being initialized. ` + `To suppress this warning opt to use a controlled ${name}.`].join('\n'));
+      }
+    }, [defaultProp]);
+  }
+  const setValueIfUncontrolled = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(newValue => {
+    if (!isControlled) {
+      setValue(newValue);
+    }
+  }, []);
+  return [value, setValueIfUncontrolled];
+}
+function serializeToDevModeString(input) {
+  let nextId = 0;
+  const seen = new WeakMap();
+  try {
+    const result = JSON.stringify(input, function replacer(key, value) {
+      if (key === '_owner' && this != null && typeof this === 'object' && '$$typeof' in this) {
+        return undefined;
+      }
+      if (typeof value === 'bigint') {
+        return `__bigint__:${value}`;
+      }
+      if (value !== null && typeof value === 'object') {
+        const id = seen.get(value);
+        if (id !== undefined) {
+          return `__object__:${id}`;
+        }
+        seen.set(value, nextId);
+        nextId += 1;
+      }
+      return value;
+    });
+    return result ?? `__top__:${typeof input}`;
+  } catch {
+    return '__unserializable__';
+  }
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/useId.mjs"
+/*!***********************************************!*\
+  !*** ./node_modules/@base-ui/utils/useId.mjs ***!
+  \***********************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useId: () => (/* binding */ useId)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _safeReact_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./safeReact.mjs */ "./node_modules/@base-ui/utils/safeReact.mjs");
+'use client';
+
+
+
+let globalId = 0;
+
+// TODO React 17: Remove `useGlobalId` once React 17 support is removed
+function useGlobalId(idOverride, prefix = 'mui') {
+  const [defaultId, setDefaultId] = react__WEBPACK_IMPORTED_MODULE_0__.useState(idOverride);
+  const id = idOverride || defaultId;
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (defaultId == null) {
+      // Fallback to this default id when possible.
+      // Use the incrementing value for client-side rendering only.
+      // We can't use it server-side.
+      // If you want to use random values please consider the Birthday Problem: https://en.wikipedia.org/wiki/Birthday_problem
+      globalId += 1;
+      setDefaultId(`${prefix}-${globalId}`);
+    }
+  }, [defaultId, prefix]);
+  return id;
+}
+const maybeReactUseId = _safeReact_mjs__WEBPACK_IMPORTED_MODULE_1__.SafeReact.useId;
+
+/**
+ *
+ * @example <div id={useId()} />
+ * @param idOverride
+ * @returns {string}
+ */
+function useId(idOverride, prefix) {
+  // React.useId() is only available from React 17.0.0.
+  if (maybeReactUseId !== undefined) {
+    const reactId = maybeReactUseId();
+    return idOverride ?? (prefix ? `${prefix}-${reactId}` : reactId);
+  }
+
+  // TODO: uncomment once we enable eslint-plugin-react-compiler // eslint-disable-next-line react-compiler/react-compiler
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- `React.useId` is invariant at runtime.
+  return useGlobalId(idOverride, prefix);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs"
+/*!************************************************************!*\
+  !*** ./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs ***!
+  \************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useIsoLayoutEffect: () => (/* binding */ useIsoLayoutEffect)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+const noop = () => {};
+const useIsoLayoutEffect = typeof document !== 'undefined' ? react__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect : noop;
 
 /***/ },
 
@@ -15630,6 +26366,35 @@ function update(forkRef, refs) {
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/utils/useOnMount.mjs"
+/*!****************************************************!*\
+  !*** ./node_modules/@base-ui/utils/useOnMount.mjs ***!
+  \****************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useOnMount: () => (/* binding */ useOnMount)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _empty_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./empty.mjs */ "./node_modules/@base-ui/utils/empty.mjs");
+'use client';
+
+
+
+
+/**
+ * A React.useEffect equivalent that runs once, when the component is mounted.
+ */
+function useOnMount(fn) {
+  // TODO: uncomment once we enable eslint-plugin-react-compiler // eslint-disable-next-line react-compiler/react-compiler -- no need to put `fn` in the dependency array
+  /* eslint-disable react-hooks/exhaustive-deps */
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(fn, _empty_mjs__WEBPACK_IMPORTED_MODULE_1__.EMPTY_ARRAY);
+  /* eslint-enable react-hooks/exhaustive-deps */
+}
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/utils/useRefWithInit.mjs"
 /*!********************************************************!*\
   !*** ./node_modules/@base-ui/utils/useRefWithInit.mjs ***!
@@ -15664,6 +26429,201 @@ function useRefWithInit(init, initArg) {
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/utils/useStableCallback.mjs"
+/*!***********************************************************!*\
+  !*** ./node_modules/@base-ui/utils/useStableCallback.mjs ***!
+  \***********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useStableCallback: () => (/* binding */ useStableCallback)
+/* harmony export */ });
+/* harmony import */ var _safeReact_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./safeReact.mjs */ "./node_modules/@base-ui/utils/safeReact.mjs");
+/* harmony import */ var _useRefWithInit_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useRefWithInit.mjs */ "./node_modules/@base-ui/utils/useRefWithInit.mjs");
+'use client';
+
+
+
+const useInsertionEffect = _safeReact_mjs__WEBPACK_IMPORTED_MODULE_0__.SafeReact.useInsertionEffect;
+const useSafeInsertionEffect =
+// React 17 doesn't have useInsertionEffect.
+useInsertionEffect &&
+// Preact replaces useInsertionEffect with useLayoutEffect and fires too late.
+useInsertionEffect !== _safeReact_mjs__WEBPACK_IMPORTED_MODULE_0__.SafeReact.useLayoutEffect ? useInsertionEffect : fn => fn();
+/**
+ * Stabilizes the function passed so it's always the same between renders.
+ *
+ * The function becomes non-reactive to any values it captures.
+ * It can safely be passed as a dependency of `React.useMemo` and `React.useEffect` without re-triggering them if its captured values change.
+ *
+ * The function must only be called inside effects and event handlers, never during render (which throws an error).
+ *
+ * This hook is a more permissive version of React 19.2's `React.useEffectEvent` in that it can be passed through contexts and called in event handler props, not just effects.
+ */
+function useStableCallback(callback) {
+  const stable = (0,_useRefWithInit_mjs__WEBPACK_IMPORTED_MODULE_1__.useRefWithInit)(createStableCallback).current;
+  stable.next = callback;
+  useSafeInsertionEffect(stable.effect);
+  return stable.trampoline;
+}
+function createStableCallback() {
+  const stable = {
+    next: undefined,
+    callback: assertNotCalled,
+    trampoline: (...args) => stable.callback?.(...args),
+    effect: () => {
+      stable.callback = stable.next;
+    }
+  };
+  return stable;
+}
+function assertNotCalled() {
+  if (true) {
+    // TODO: fix mui/no-guarded-throw
+    // eslint-disable-next-line mui/no-guarded-throw
+    throw /* minify-error-disabled */new Error('Base UI: Cannot call an event handler while rendering.');
+  }
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/useTimeout.mjs"
+/*!****************************************************!*\
+  !*** ./node_modules/@base-ui/utils/useTimeout.mjs ***!
+  \****************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Timeout: () => (/* binding */ Timeout),
+/* harmony export */   useTimeout: () => (/* binding */ useTimeout)
+/* harmony export */ });
+/* harmony import */ var _useRefWithInit_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./useRefWithInit.mjs */ "./node_modules/@base-ui/utils/useRefWithInit.mjs");
+/* harmony import */ var _useOnMount_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useOnMount.mjs */ "./node_modules/@base-ui/utils/useOnMount.mjs");
+'use client';
+
+
+
+const EMPTY = 0;
+class Timeout {
+  static create() {
+    return new Timeout();
+  }
+  currentId = EMPTY;
+
+  /**
+   * Executes `fn` after `delay`, clearing any previously scheduled call.
+   */
+  start(delay, fn) {
+    this.clear();
+    this.currentId = setTimeout(() => {
+      this.currentId = EMPTY;
+      fn();
+    }, delay); /* Node.js types are enabled in development */
+  }
+  isStarted() {
+    return this.currentId !== EMPTY;
+  }
+  clear = () => {
+    if (this.currentId !== EMPTY) {
+      clearTimeout(this.currentId);
+      this.currentId = EMPTY;
+    }
+  };
+  disposeEffect = () => {
+    return this.clear;
+  };
+}
+
+/**
+ * A `setTimeout` with automatic cleanup and guard.
+ */
+function useTimeout() {
+  const timeout = (0,_useRefWithInit_mjs__WEBPACK_IMPORTED_MODULE_0__.useRefWithInit)(Timeout.create).current;
+  (0,_useOnMount_mjs__WEBPACK_IMPORTED_MODULE_1__.useOnMount)(timeout.disposeEffect);
+  return timeout;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/useValueAsRef.mjs"
+/*!*******************************************************!*\
+  !*** ./node_modules/@base-ui/utils/useValueAsRef.mjs ***!
+  \*******************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useValueAsRef: () => (/* binding */ useValueAsRef)
+/* harmony export */ });
+/* harmony import */ var _useIsoLayoutEffect_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./useIsoLayoutEffect.mjs */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _useRefWithInit_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useRefWithInit.mjs */ "./node_modules/@base-ui/utils/useRefWithInit.mjs");
+'use client';
+
+
+
+
+/**
+ * Untracks the provided value by turning it into a ref to remove its reactivity.
+ *
+ * Used to access the passed value inside `React.useEffect` without causing the effect to re-run when the value changes.
+ */
+function useValueAsRef(value) {
+  const latest = (0,_useRefWithInit_mjs__WEBPACK_IMPORTED_MODULE_1__.useRefWithInit)(createLatestRef, value).current;
+  latest.next = value;
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  (0,_useIsoLayoutEffect_mjs__WEBPACK_IMPORTED_MODULE_0__.useIsoLayoutEffect)(latest.effect);
+  return latest;
+}
+function createLatestRef(value) {
+  const latest = {
+    current: value,
+    next: value,
+    effect: () => {
+      latest.current = latest.next;
+    }
+  };
+  return latest;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/visuallyHidden.mjs"
+/*!********************************************************!*\
+  !*** ./node_modules/@base-ui/utils/visuallyHidden.mjs ***!
+  \********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   visuallyHidden: () => (/* binding */ visuallyHidden),
+/* harmony export */   visuallyHiddenInput: () => (/* binding */ visuallyHiddenInput)
+/* harmony export */ });
+const visuallyHiddenBase = {
+  clipPath: 'inset(50%)',
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
+  border: 0,
+  padding: 0,
+  width: 1,
+  height: 1,
+  margin: -1
+};
+const visuallyHidden = {
+  ...visuallyHiddenBase,
+  position: 'fixed',
+  top: 0,
+  left: 0
+};
+const visuallyHiddenInput = {
+  ...visuallyHiddenBase,
+  position: 'absolute'
+};
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/utils/warn.mjs"
 /*!**********************************************!*\
   !*** ./node_modules/@base-ui/utils/warn.mjs ***!
@@ -15687,6 +26647,2698 @@ function warn(...messages) {
     }
   }
 }
+
+/***/ },
+
+/***/ "./node_modules/@floating-ui/core/dist/floating-ui.core.mjs"
+/*!******************************************************************!*\
+  !*** ./node_modules/@floating-ui/core/dist/floating-ui.core.mjs ***!
+  \******************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   arrow: () => (/* binding */ arrow),
+/* harmony export */   autoPlacement: () => (/* binding */ autoPlacement),
+/* harmony export */   computePosition: () => (/* binding */ computePosition),
+/* harmony export */   detectOverflow: () => (/* binding */ detectOverflow),
+/* harmony export */   flip: () => (/* binding */ flip),
+/* harmony export */   hide: () => (/* binding */ hide),
+/* harmony export */   inline: () => (/* binding */ inline),
+/* harmony export */   limitShift: () => (/* binding */ limitShift),
+/* harmony export */   offset: () => (/* binding */ offset),
+/* harmony export */   rectToClientRect: () => (/* reexport safe */ _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.rectToClientRect),
+/* harmony export */   shift: () => (/* binding */ shift),
+/* harmony export */   size: () => (/* binding */ size)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @floating-ui/utils */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs");
+
+
+
+function computeCoordsFromPlacement(_ref, placement, rtl) {
+  let {
+    reference,
+    floating
+  } = _ref;
+  const sideAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(placement);
+  const alignmentAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignmentAxis)(placement);
+  const alignLength = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAxisLength)(alignmentAxis);
+  const side = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement);
+  const isVertical = sideAxis === 'y';
+  const commonX = reference.x + reference.width / 2 - floating.width / 2;
+  const commonY = reference.y + reference.height / 2 - floating.height / 2;
+  const commonAlign = reference[alignLength] / 2 - floating[alignLength] / 2;
+  let coords;
+  switch (side) {
+    case 'top':
+      coords = {
+        x: commonX,
+        y: reference.y - floating.height
+      };
+      break;
+    case 'bottom':
+      coords = {
+        x: commonX,
+        y: reference.y + reference.height
+      };
+      break;
+    case 'right':
+      coords = {
+        x: reference.x + reference.width,
+        y: commonY
+      };
+      break;
+    case 'left':
+      coords = {
+        x: reference.x - floating.width,
+        y: commonY
+      };
+      break;
+    default:
+      coords = {
+        x: reference.x,
+        y: reference.y
+      };
+  }
+  const alignment = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(placement);
+  if (alignment) {
+    coords[alignmentAxis] += commonAlign * (alignment === 'end' ? 1 : -1) * (rtl && isVertical ? -1 : 1);
+  }
+  return coords;
+}
+
+/**
+ * Resolves with an object of overflow side offsets that determine how much the
+ * element is overflowing a given clipping boundary on each side.
+ * - positive = overflowing the boundary by that number of pixels
+ * - negative = how many pixels left before it will overflow
+ * - 0 = lies flush with the boundary
+ * @see https://floating-ui.com/docs/detectOverflow
+ */
+async function detectOverflow(state, options) {
+  var _await$platform$isEle;
+  if (options === void 0) {
+    options = {};
+  }
+  const {
+    x,
+    y,
+    platform,
+    rects,
+    elements,
+    strategy
+  } = state;
+  const {
+    boundary = 'clippingAncestors',
+    rootBoundary = 'viewport',
+    elementContext = 'floating',
+    altBoundary = false,
+    padding = 0
+  } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+  const paddingObject = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getPaddingObject)(padding);
+  const altContext = elementContext === 'floating' ? 'reference' : 'floating';
+  const element = elements[altBoundary ? altContext : elementContext];
+  const clippingClientRect = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.rectToClientRect)(await platform.getClippingRect({
+    element: ((_await$platform$isEle = await (platform.isElement == null ? void 0 : platform.isElement(element))) != null ? _await$platform$isEle : true) ? element : element.contextElement || (await (platform.getDocumentElement == null ? void 0 : platform.getDocumentElement(elements.floating))),
+    boundary,
+    rootBoundary,
+    strategy
+  }));
+  const rect = elementContext === 'floating' ? {
+    x,
+    y,
+    width: rects.floating.width,
+    height: rects.floating.height
+  } : rects.reference;
+  const offsetParent = await (platform.getOffsetParent == null ? void 0 : platform.getOffsetParent(elements.floating));
+  const offsetScale = (await (platform.isElement == null ? void 0 : platform.isElement(offsetParent))) && (await (platform.getScale == null ? void 0 : platform.getScale(offsetParent))) || {
+    x: 1,
+    y: 1
+  };
+  const elementClientRect = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.rectToClientRect)(platform.convertOffsetParentRelativeRectToViewportRelativeRect ? await platform.convertOffsetParentRelativeRectToViewportRelativeRect({
+    elements,
+    rect,
+    offsetParent,
+    strategy
+  }) : rect);
+  return {
+    top: (clippingClientRect.top - elementClientRect.top + paddingObject.top) / offsetScale.y,
+    bottom: (elementClientRect.bottom - clippingClientRect.bottom + paddingObject.bottom) / offsetScale.y,
+    left: (clippingClientRect.left - elementClientRect.left + paddingObject.left) / offsetScale.x,
+    right: (elementClientRect.right - clippingClientRect.right + paddingObject.right) / offsetScale.x
+  };
+}
+
+// Maximum number of resets that can occur before bailing to avoid infinite reset loops.
+const MAX_RESET_COUNT = 50;
+
+/**
+ * Computes the `x` and `y` coordinates that will place the floating element
+ * next to a given reference element.
+ *
+ * This export does not have any `platform` interface logic. You will need to
+ * write one for the platform you are using Floating UI with.
+ */
+const computePosition = async (reference, floating, config) => {
+  const {
+    placement = 'bottom',
+    strategy = 'absolute',
+    middleware = [],
+    platform
+  } = config;
+  const platformWithDetectOverflow = platform.detectOverflow ? platform : {
+    ...platform,
+    detectOverflow
+  };
+  const rtl = await (platform.isRTL == null ? void 0 : platform.isRTL(floating));
+  let rects = await platform.getElementRects({
+    reference,
+    floating,
+    strategy
+  });
+  let {
+    x,
+    y
+  } = computeCoordsFromPlacement(rects, placement, rtl);
+  let statefulPlacement = placement;
+  let resetCount = 0;
+  const middlewareData = {};
+  for (let i = 0; i < middleware.length; i++) {
+    const currentMiddleware = middleware[i];
+    if (!currentMiddleware) {
+      continue;
+    }
+    const {
+      name,
+      fn
+    } = currentMiddleware;
+    const {
+      x: nextX,
+      y: nextY,
+      data,
+      reset
+    } = await fn({
+      x,
+      y,
+      initialPlacement: placement,
+      placement: statefulPlacement,
+      strategy,
+      middlewareData,
+      rects,
+      platform: platformWithDetectOverflow,
+      elements: {
+        reference,
+        floating
+      }
+    });
+    x = nextX != null ? nextX : x;
+    y = nextY != null ? nextY : y;
+    middlewareData[name] = {
+      ...middlewareData[name],
+      ...data
+    };
+    if (reset && resetCount < MAX_RESET_COUNT) {
+      resetCount++;
+      if (typeof reset === 'object') {
+        if (reset.placement) {
+          statefulPlacement = reset.placement;
+        }
+        if (reset.rects) {
+          rects = reset.rects === true ? await platform.getElementRects({
+            reference,
+            floating,
+            strategy
+          }) : reset.rects;
+        }
+        ({
+          x,
+          y
+        } = computeCoordsFromPlacement(rects, statefulPlacement, rtl));
+      }
+      i = -1;
+    }
+  }
+  return {
+    x,
+    y,
+    placement: statefulPlacement,
+    strategy,
+    middlewareData
+  };
+};
+
+/**
+ * Provides data to position an inner element of the floating element so that it
+ * appears centered to the reference element.
+ * @see https://floating-ui.com/docs/arrow
+ */
+const arrow = options => ({
+  name: 'arrow',
+  options,
+  async fn(state) {
+    const {
+      x,
+      y,
+      placement,
+      rects,
+      platform,
+      elements,
+      middlewareData
+    } = state;
+    // Since `element` is required, we don't Partial<> the type.
+    const {
+      element,
+      padding = 0
+    } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state) || {};
+    if (element == null) {
+      return {};
+    }
+    const paddingObject = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getPaddingObject)(padding);
+    const coords = {
+      x,
+      y
+    };
+    const axis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignmentAxis)(placement);
+    const length = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAxisLength)(axis);
+    const arrowDimensions = await platform.getDimensions(element);
+    const isYAxis = axis === 'y';
+    const minProp = isYAxis ? 'top' : 'left';
+    const maxProp = isYAxis ? 'bottom' : 'right';
+    const clientProp = isYAxis ? 'clientHeight' : 'clientWidth';
+    const endDiff = rects.reference[length] + rects.reference[axis] - coords[axis] - rects.floating[length];
+    const startDiff = coords[axis] - rects.reference[axis];
+    const arrowOffsetParent = await (platform.getOffsetParent == null ? void 0 : platform.getOffsetParent(element));
+    let clientSize = arrowOffsetParent ? arrowOffsetParent[clientProp] : 0;
+
+    // DOM platform can return `window` as the `offsetParent`.
+    if (!clientSize || !(await (platform.isElement == null ? void 0 : platform.isElement(arrowOffsetParent)))) {
+      clientSize = elements.floating[clientProp] || rects.floating[length];
+    }
+    const centerToReference = endDiff / 2 - startDiff / 2;
+
+    // If the padding is large enough that it causes the arrow to no longer be
+    // centered, modify the padding so that it is centered.
+    const largestPossiblePadding = clientSize / 2 - arrowDimensions[length] / 2 - 1;
+    const minPadding = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.min)(paddingObject[minProp], largestPossiblePadding);
+    const maxPadding = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.min)(paddingObject[maxProp], largestPossiblePadding);
+
+    // Make sure the arrow doesn't overflow the floating element if the center
+    // point is outside the floating element's bounds.
+    const max = clientSize - arrowDimensions[length] - maxPadding;
+    const center = clientSize / 2 - arrowDimensions[length] / 2 + centerToReference;
+    const offset = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.clamp)(minPadding, center, max);
+
+    // If the reference is small enough that the arrow's padding causes it to
+    // to point to nothing for an aligned placement, adjust the offset of the
+    // floating element itself. To ensure `shift()` continues to take action,
+    // a single reset is performed when this is true.
+    const shouldAddOffset = !middlewareData.arrow && (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(placement) != null && center !== offset && rects.reference[length] / 2 - (center < minPadding ? minPadding : maxPadding) - arrowDimensions[length] / 2 < 0;
+    const alignmentOffset = shouldAddOffset ? center < minPadding ? center - minPadding : center - max : 0;
+    return {
+      [axis]: coords[axis] + alignmentOffset,
+      data: {
+        [axis]: offset,
+        centerOffset: center - offset - alignmentOffset,
+        ...(shouldAddOffset && {
+          alignmentOffset
+        })
+      },
+      reset: shouldAddOffset
+    };
+  }
+});
+
+function getPlacementList(alignment, autoAlignment, allowedPlacements) {
+  const allowedPlacementsSortedByAlignment = alignment ? [...allowedPlacements.filter(placement => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(placement) === alignment), ...allowedPlacements.filter(placement => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(placement) !== alignment)] : allowedPlacements.filter(placement => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement) === placement);
+  return allowedPlacementsSortedByAlignment.filter(placement => {
+    if (alignment) {
+      return (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(placement) === alignment || (autoAlignment ? (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getOppositeAlignmentPlacement)(placement) !== placement : false);
+    }
+    return true;
+  });
+}
+/**
+ * Optimizes the visibility of the floating element by choosing the placement
+ * that has the most space available automatically, without needing to specify a
+ * preferred placement. Alternative to `flip`.
+ * @see https://floating-ui.com/docs/autoPlacement
+ */
+const autoPlacement = function (options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: 'autoPlacement',
+    options,
+    async fn(state) {
+      var _middlewareData$autoP, _middlewareData$autoP2, _placementsThatFitOnE;
+      const {
+        rects,
+        middlewareData,
+        placement,
+        platform,
+        elements
+      } = state;
+      const {
+        crossAxis = false,
+        alignment,
+        allowedPlacements = _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.placements,
+        autoAlignment = true,
+        ...detectOverflowOptions
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+      const placements$1 = alignment !== undefined || allowedPlacements === _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.placements ? getPlacementList(alignment || null, autoAlignment, allowedPlacements) : allowedPlacements;
+      const currentIndex = ((_middlewareData$autoP = middlewareData.autoPlacement) == null ? void 0 : _middlewareData$autoP.index) || 0;
+      const currentPlacement = placements$1[currentIndex];
+      if (currentPlacement == null) {
+        return {};
+      }
+
+      // Make `computeCoords` start from the right place.
+      if (placement !== currentPlacement) {
+        return {
+          reset: {
+            placement: placements$1[0]
+          }
+        };
+      }
+      const overflow = await platform.detectOverflow(state, detectOverflowOptions);
+      const alignmentSides = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignmentSides)(currentPlacement, rects, await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating)));
+      const currentOverflows = [overflow[(0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(currentPlacement)], overflow[alignmentSides[0]], overflow[alignmentSides[1]]];
+      const allOverflows = [...(((_middlewareData$autoP2 = middlewareData.autoPlacement) == null ? void 0 : _middlewareData$autoP2.overflows) || []), {
+        placement: currentPlacement,
+        overflows: currentOverflows
+      }];
+      const nextPlacement = placements$1[currentIndex + 1];
+
+      // There are more placements to check.
+      if (nextPlacement) {
+        return {
+          data: {
+            index: currentIndex + 1,
+            overflows: allOverflows
+          },
+          reset: {
+            placement: nextPlacement
+          }
+        };
+      }
+      const placementsSortedByMostSpace = allOverflows.map(d => {
+        const alignment = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(d.placement);
+        return [d.placement, alignment && crossAxis ?
+        // Check along the mainAxis and main crossAxis side.
+        d.overflows.slice(0, 2).reduce((acc, v) => acc + v, 0) :
+        // Check only the mainAxis.
+        d.overflows[0], d.overflows];
+      }).sort((a, b) => a[1] - b[1]);
+      const placementsThatFitOnEachSide = placementsSortedByMostSpace.filter(d => d[2].slice(0,
+      // Aligned placements should not check their opposite crossAxis
+      // side.
+      (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(d[0]) ? 2 : 3).every(v => v <= 0));
+      const resetPlacement = ((_placementsThatFitOnE = placementsThatFitOnEachSide[0]) == null ? void 0 : _placementsThatFitOnE[0]) || placementsSortedByMostSpace[0][0];
+      if (resetPlacement !== placement) {
+        return {
+          data: {
+            index: currentIndex + 1,
+            overflows: allOverflows
+          },
+          reset: {
+            placement: resetPlacement
+          }
+        };
+      }
+      return {};
+    }
+  };
+};
+
+/**
+ * Optimizes the visibility of the floating element by flipping the `placement`
+ * in order to keep it in view when the preferred placement(s) will overflow the
+ * clipping boundary. Alternative to `autoPlacement`.
+ * @see https://floating-ui.com/docs/flip
+ */
+const flip = function (options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: 'flip',
+    options,
+    async fn(state) {
+      var _middlewareData$arrow, _middlewareData$flip;
+      const {
+        placement,
+        middlewareData,
+        rects,
+        initialPlacement,
+        platform,
+        elements
+      } = state;
+      const {
+        mainAxis: checkMainAxis = true,
+        crossAxis: checkCrossAxis = true,
+        fallbackPlacements: specifiedFallbackPlacements,
+        fallbackStrategy = 'bestFit',
+        fallbackAxisSideDirection = 'none',
+        flipAlignment = true,
+        ...detectOverflowOptions
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+
+      // If a reset by the arrow was caused due to an alignment offset being
+      // added, we should skip any logic now since `flip()` has already done its
+      // work.
+      // https://github.com/floating-ui/floating-ui/issues/2549#issuecomment-1719601643
+      if ((_middlewareData$arrow = middlewareData.arrow) != null && _middlewareData$arrow.alignmentOffset) {
+        return {};
+      }
+      const side = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement);
+      const initialSideAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(initialPlacement);
+      const isBasePlacement = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(initialPlacement) === initialPlacement;
+      const rtl = await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating));
+      const fallbackPlacements = specifiedFallbackPlacements || (isBasePlacement || !flipAlignment ? [(0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getOppositePlacement)(initialPlacement)] : (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getExpandedPlacements)(initialPlacement));
+      const hasFallbackAxisSideDirection = fallbackAxisSideDirection !== 'none';
+      if (!specifiedFallbackPlacements && hasFallbackAxisSideDirection) {
+        fallbackPlacements.push(...(0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getOppositeAxisPlacements)(initialPlacement, flipAlignment, fallbackAxisSideDirection, rtl));
+      }
+      const placements = [initialPlacement, ...fallbackPlacements];
+      const overflow = await platform.detectOverflow(state, detectOverflowOptions);
+      const overflows = [];
+      let overflowsData = ((_middlewareData$flip = middlewareData.flip) == null ? void 0 : _middlewareData$flip.overflows) || [];
+      if (checkMainAxis) {
+        overflows.push(overflow[side]);
+      }
+      if (checkCrossAxis) {
+        const sides = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignmentSides)(placement, rects, rtl);
+        overflows.push(overflow[sides[0]], overflow[sides[1]]);
+      }
+      overflowsData = [...overflowsData, {
+        placement,
+        overflows
+      }];
+
+      // One or more sides is overflowing.
+      if (!overflows.every(side => side <= 0)) {
+        var _middlewareData$flip2, _overflowsData$filter;
+        const nextIndex = (((_middlewareData$flip2 = middlewareData.flip) == null ? void 0 : _middlewareData$flip2.index) || 0) + 1;
+        const nextPlacement = placements[nextIndex];
+        if (nextPlacement) {
+          const ignoreCrossAxisOverflow = checkCrossAxis === 'alignment' ? initialSideAxis !== (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(nextPlacement) : false;
+          if (!ignoreCrossAxisOverflow ||
+          // We leave the current main axis only if every placement on that axis
+          // overflows the main axis.
+          overflowsData.every(d => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(d.placement) === initialSideAxis ? d.overflows[0] > 0 : true)) {
+            // Try next placement and re-run the lifecycle.
+            return {
+              data: {
+                index: nextIndex,
+                overflows: overflowsData
+              },
+              reset: {
+                placement: nextPlacement
+              }
+            };
+          }
+        }
+
+        // First, find the candidates that fit on the mainAxis side of overflow,
+        // then find the placement that fits the best on the main crossAxis side.
+        let resetPlacement = (_overflowsData$filter = overflowsData.filter(d => d.overflows[0] <= 0).sort((a, b) => a.overflows[1] - b.overflows[1])[0]) == null ? void 0 : _overflowsData$filter.placement;
+
+        // Otherwise fallback.
+        if (!resetPlacement) {
+          switch (fallbackStrategy) {
+            case 'bestFit':
+              {
+                var _overflowsData$filter2;
+                const placement = (_overflowsData$filter2 = overflowsData.filter(d => {
+                  if (hasFallbackAxisSideDirection) {
+                    const currentSideAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(d.placement);
+                    return currentSideAxis === initialSideAxis ||
+                    // Create a bias to the `y` side axis due to horizontal
+                    // reading directions favoring greater width.
+                    currentSideAxis === 'y';
+                  }
+                  return true;
+                }).map(d => [d.placement, d.overflows.filter(overflow => overflow > 0).reduce((acc, overflow) => acc + overflow, 0)]).sort((a, b) => a[1] - b[1])[0]) == null ? void 0 : _overflowsData$filter2[0];
+                if (placement) {
+                  resetPlacement = placement;
+                }
+                break;
+              }
+            case 'initialPlacement':
+              resetPlacement = initialPlacement;
+              break;
+          }
+        }
+        if (placement !== resetPlacement) {
+          return {
+            reset: {
+              placement: resetPlacement
+            }
+          };
+        }
+      }
+      return {};
+    }
+  };
+};
+
+function getSideOffsets(overflow, rect) {
+  return {
+    top: overflow.top - rect.height,
+    right: overflow.right - rect.width,
+    bottom: overflow.bottom - rect.height,
+    left: overflow.left - rect.width
+  };
+}
+function isAnySideFullyClipped(overflow) {
+  return _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.sides.some(side => overflow[side] >= 0);
+}
+/**
+ * Provides data to hide the floating element in applicable situations, such as
+ * when it is not in the same clipping context as the reference element.
+ * @see https://floating-ui.com/docs/hide
+ */
+const hide = function (options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: 'hide',
+    options,
+    async fn(state) {
+      const {
+        rects,
+        platform
+      } = state;
+      const {
+        strategy = 'referenceHidden',
+        ...detectOverflowOptions
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+      switch (strategy) {
+        case 'referenceHidden':
+          {
+            const overflow = await platform.detectOverflow(state, {
+              ...detectOverflowOptions,
+              elementContext: 'reference'
+            });
+            const offsets = getSideOffsets(overflow, rects.reference);
+            return {
+              data: {
+                referenceHiddenOffsets: offsets,
+                referenceHidden: isAnySideFullyClipped(offsets)
+              }
+            };
+          }
+        case 'escaped':
+          {
+            const overflow = await platform.detectOverflow(state, {
+              ...detectOverflowOptions,
+              altBoundary: true
+            });
+            const offsets = getSideOffsets(overflow, rects.floating);
+            return {
+              data: {
+                escapedOffsets: offsets,
+                escaped: isAnySideFullyClipped(offsets)
+              }
+            };
+          }
+        default:
+          {
+            return {};
+          }
+      }
+    }
+  };
+};
+
+function getBoundingRect(rects) {
+  const minX = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.min)(...rects.map(rect => rect.left));
+  const minY = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.min)(...rects.map(rect => rect.top));
+  const maxX = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.max)(...rects.map(rect => rect.right));
+  const maxY = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.max)(...rects.map(rect => rect.bottom));
+  return {
+    x: minX,
+    y: minY,
+    width: maxX - minX,
+    height: maxY - minY
+  };
+}
+function getRectsByLine(rects) {
+  const sortedRects = rects.slice().sort((a, b) => a.y - b.y);
+  const groups = [];
+  let prevRect = null;
+  for (let i = 0; i < sortedRects.length; i++) {
+    const rect = sortedRects[i];
+    if (!prevRect || rect.y - prevRect.y > prevRect.height / 2) {
+      groups.push([rect]);
+    } else {
+      groups[groups.length - 1].push(rect);
+    }
+    prevRect = rect;
+  }
+  return groups.map(rect => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.rectToClientRect)(getBoundingRect(rect)));
+}
+/**
+ * Provides improved positioning for inline reference elements that can span
+ * over multiple lines, such as hyperlinks or range selections.
+ * @see https://floating-ui.com/docs/inline
+ */
+const inline = function (options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: 'inline',
+    options,
+    async fn(state) {
+      const {
+        placement,
+        elements,
+        rects,
+        platform,
+        strategy
+      } = state;
+      // A MouseEvent's client{X,Y} coords can be up to 2 pixels off a
+      // ClientRect's bounds, despite the event listener being triggered. A
+      // padding of 2 seems to handle this issue.
+      const {
+        padding = 2,
+        x,
+        y
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+      const nativeClientRects = Array.from((await (platform.getClientRects == null ? void 0 : platform.getClientRects(elements.reference))) || []);
+
+      // No rects (e.g. a hidden or detached reference, or a collapsed range) —
+      // keep the existing reference rect rather than resetting to an invalid
+      // one with non-finite values.
+      if (!nativeClientRects.length) {
+        return {};
+      }
+      const clientRects = getRectsByLine(nativeClientRects);
+      const fallback = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.rectToClientRect)(getBoundingRect(nativeClientRects));
+      const paddingObject = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getPaddingObject)(padding);
+      function getBoundingClientRect() {
+        // There are two rects and they are disjoined.
+        if (clientRects.length === 2 && (clientRects[0].left > clientRects[1].right || clientRects[1].left > clientRects[0].right) && x != null && y != null) {
+          // Find the first rect in which the point is fully inside.
+          return clientRects.find(rect => x > rect.left - paddingObject.left && x < rect.right + paddingObject.right && y > rect.top - paddingObject.top && y < rect.bottom + paddingObject.bottom) || fallback;
+        }
+
+        // There are 2 or more connected rects.
+        if (clientRects.length >= 2) {
+          if ((0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(placement) === 'y') {
+            const firstRect = clientRects[0];
+            const lastRect = clientRects[clientRects.length - 1];
+            const isTop = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement) === 'top';
+            const top = firstRect.top;
+            const bottom = lastRect.bottom;
+            const left = isTop ? firstRect.left : lastRect.left;
+            const right = isTop ? firstRect.right : lastRect.right;
+            return (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.rectToClientRect)({
+              x: left,
+              y: top,
+              width: right - left,
+              height: bottom - top
+            });
+          }
+          const isLeftSide = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement) === 'left';
+          const maxRight = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.max)(...clientRects.map(rect => rect.right));
+          const minLeft = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.min)(...clientRects.map(rect => rect.left));
+          const measureRects = clientRects.filter(rect => isLeftSide ? rect.left === minLeft : rect.right === maxRight);
+          const top = measureRects[0].top;
+          const bottom = measureRects[measureRects.length - 1].bottom;
+          return (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.rectToClientRect)({
+            x: minLeft,
+            y: top,
+            width: maxRight - minLeft,
+            height: bottom - top
+          });
+        }
+        return fallback;
+      }
+      const resetRects = await platform.getElementRects({
+        reference: {
+          getBoundingClientRect
+        },
+        floating: elements.floating,
+        strategy
+      });
+      if (rects.reference.x !== resetRects.reference.x || rects.reference.y !== resetRects.reference.y || rects.reference.width !== resetRects.reference.width || rects.reference.height !== resetRects.reference.height) {
+        return {
+          reset: {
+            rects: resetRects
+          }
+        };
+      }
+      return {};
+    }
+  };
+};
+
+const originSides = /*#__PURE__*/new Set(['left', 'top']);
+
+// For type backwards-compatibility, the `OffsetOptions` type was also
+// Derivable.
+
+async function convertValueToCoords(state, options) {
+  const {
+    placement,
+    platform,
+    elements
+  } = state;
+  const rtl = await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating));
+  const side = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement);
+  const alignment = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(placement);
+  const isVertical = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(placement) === 'y';
+  const mainAxisMulti = originSides.has(side) ? -1 : 1;
+  const crossAxisMulti = rtl && isVertical ? -1 : 1;
+  const rawValue = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+
+  // eslint-disable-next-line prefer-const
+  let {
+    mainAxis,
+    crossAxis,
+    alignmentAxis
+  } = typeof rawValue === 'number' ? {
+    mainAxis: rawValue,
+    crossAxis: 0,
+    alignmentAxis: null
+  } : {
+    mainAxis: rawValue.mainAxis || 0,
+    crossAxis: rawValue.crossAxis || 0,
+    alignmentAxis: rawValue.alignmentAxis
+  };
+  if (alignment && typeof alignmentAxis === 'number') {
+    crossAxis = alignment === 'end' ? alignmentAxis * -1 : alignmentAxis;
+  }
+  return isVertical ? {
+    x: crossAxis * crossAxisMulti,
+    y: mainAxis * mainAxisMulti
+  } : {
+    x: mainAxis * mainAxisMulti,
+    y: crossAxis * crossAxisMulti
+  };
+}
+
+/**
+ * Modifies the placement by translating the floating element along the
+ * specified axes.
+ * A number (shorthand for `mainAxis` or distance), or an axes configuration
+ * object may be passed.
+ * @see https://floating-ui.com/docs/offset
+ */
+const offset = function (options) {
+  if (options === void 0) {
+    options = 0;
+  }
+  return {
+    name: 'offset',
+    options,
+    async fn(state) {
+      var _middlewareData$offse, _middlewareData$arrow;
+      const {
+        x,
+        y,
+        placement,
+        middlewareData
+      } = state;
+      const diffCoords = await convertValueToCoords(state, options);
+
+      // If the placement is the same and the arrow caused an alignment offset
+      // then we don't need to change the positioning coordinates.
+      if (placement === ((_middlewareData$offse = middlewareData.offset) == null ? void 0 : _middlewareData$offse.placement) && (_middlewareData$arrow = middlewareData.arrow) != null && _middlewareData$arrow.alignmentOffset) {
+        return {};
+      }
+      return {
+        x: x + diffCoords.x,
+        y: y + diffCoords.y,
+        data: {
+          ...diffCoords,
+          placement
+        }
+      };
+    }
+  };
+};
+
+/**
+ * Optimizes the visibility of the floating element by shifting it in order to
+ * keep it in view when it will overflow the clipping boundary.
+ * @see https://floating-ui.com/docs/shift
+ */
+const shift = function (options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: 'shift',
+    options,
+    async fn(state) {
+      const {
+        x,
+        y,
+        placement,
+        platform
+      } = state;
+      const {
+        mainAxis: checkMainAxis = true,
+        crossAxis: checkCrossAxis = false,
+        limiter = {
+          fn: _ref => {
+            let {
+              x,
+              y
+            } = _ref;
+            return {
+              x,
+              y
+            };
+          }
+        },
+        ...detectOverflowOptions
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+      const coords = {
+        x,
+        y
+      };
+      const overflow = await platform.detectOverflow(state, detectOverflowOptions);
+      const crossAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(placement);
+      const mainAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getOppositeAxis)(crossAxis);
+      let mainAxisCoord = coords[mainAxis];
+      let crossAxisCoord = coords[crossAxis];
+      const clampCoord = (axis, coord) => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.clamp)(coord + overflow[axis === 'y' ? 'top' : 'left'], coord, coord - overflow[axis === 'y' ? 'bottom' : 'right']);
+      if (checkMainAxis) {
+        mainAxisCoord = clampCoord(mainAxis, mainAxisCoord);
+      }
+      if (checkCrossAxis) {
+        crossAxisCoord = clampCoord(crossAxis, crossAxisCoord);
+      }
+      const limitedCoords = limiter.fn({
+        ...state,
+        [mainAxis]: mainAxisCoord,
+        [crossAxis]: crossAxisCoord
+      });
+      return {
+        ...limitedCoords,
+        data: {
+          x: limitedCoords.x - x,
+          y: limitedCoords.y - y,
+          enabled: {
+            [mainAxis]: checkMainAxis,
+            [crossAxis]: checkCrossAxis
+          }
+        }
+      };
+    }
+  };
+};
+/**
+ * Built-in `limiter` that will stop `shift()` at a certain point.
+ */
+const limitShift = function (options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    options,
+    fn(state) {
+      var _rawOffset$mainAxis, _rawOffset$crossAxis;
+      const {
+        x,
+        y,
+        placement,
+        rects,
+        middlewareData
+      } = state;
+      const {
+        offset = 0,
+        mainAxis: checkMainAxis = true,
+        crossAxis: checkCrossAxis = true
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+      const coords = {
+        x,
+        y
+      };
+      const crossAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(placement);
+      const mainAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getOppositeAxis)(crossAxis);
+      let mainAxisCoord = coords[mainAxis];
+      let crossAxisCoord = coords[crossAxis];
+      const rawOffset = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(offset, state);
+      const computedOffset = typeof rawOffset === 'number' ? {
+        mainAxis: rawOffset,
+        crossAxis: 0
+      } : {
+        mainAxis: (_rawOffset$mainAxis = rawOffset.mainAxis) != null ? _rawOffset$mainAxis : 0,
+        crossAxis: (_rawOffset$crossAxis = rawOffset.crossAxis) != null ? _rawOffset$crossAxis : 0
+      };
+      if (checkMainAxis) {
+        const len = mainAxis === 'y' ? 'height' : 'width';
+        const limitMin = rects.reference[mainAxis] - rects.floating[len] + computedOffset.mainAxis;
+        const limitMax = rects.reference[mainAxis] + rects.reference[len] - computedOffset.mainAxis;
+        if (mainAxisCoord < limitMin) {
+          mainAxisCoord = limitMin;
+        } else if (mainAxisCoord > limitMax) {
+          mainAxisCoord = limitMax;
+        }
+      }
+      if (checkCrossAxis) {
+        var _middlewareData$offse, _middlewareData$offse2;
+        const len = mainAxis === 'y' ? 'width' : 'height';
+        const isOriginSide = originSides.has((0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement));
+        const limitMin = rects.reference[crossAxis] - rects.floating[len] + (isOriginSide ? ((_middlewareData$offse = middlewareData.offset) == null ? void 0 : _middlewareData$offse[crossAxis]) || 0 : 0) + (isOriginSide ? 0 : computedOffset.crossAxis);
+        const limitMax = rects.reference[crossAxis] + rects.reference[len] + (isOriginSide ? 0 : ((_middlewareData$offse2 = middlewareData.offset) == null ? void 0 : _middlewareData$offse2[crossAxis]) || 0) - (isOriginSide ? computedOffset.crossAxis : 0);
+        if (crossAxisCoord < limitMin) {
+          crossAxisCoord = limitMin;
+        } else if (crossAxisCoord > limitMax) {
+          crossAxisCoord = limitMax;
+        }
+      }
+      return {
+        [mainAxis]: mainAxisCoord,
+        [crossAxis]: crossAxisCoord
+      };
+    }
+  };
+};
+
+// Method syntax keeps callback parameters bivariant, but expressing the
+// explicit `| undefined` required by `exactOptionalPropertyTypes` needs
+// property syntax, which is contravariant under `strictFunctionTypes`.
+// Extracting the function from a method position restores that bivariance so
+// consumers can still assign callbacks with narrower parameter types.
+
+/**
+ * Provides data that allows you to change the size of the floating element —
+ * for instance, prevent it from overflowing the clipping boundary or match the
+ * width of the reference element.
+ * @see https://floating-ui.com/docs/size
+ */
+const size = function (options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: 'size',
+    options,
+    async fn(state) {
+      const {
+        placement,
+        rects,
+        platform,
+        elements
+      } = state;
+      const {
+        apply = () => {},
+        ...detectOverflowOptions
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+      const overflow = await platform.detectOverflow(state, detectOverflowOptions);
+      const side = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement);
+      const alignment = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(placement);
+      const isYAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(placement) === 'y';
+      const {
+        width,
+        height
+      } = rects.floating;
+      let heightSide;
+      let widthSide;
+      if (side === 'top' || side === 'bottom') {
+        heightSide = side;
+        widthSide = alignment === ((await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating))) ? 'start' : 'end') ? 'left' : 'right';
+      } else {
+        widthSide = side;
+        heightSide = alignment === 'end' ? 'top' : 'bottom';
+      }
+      const maximumClippingHeight = height - overflow.top - overflow.bottom;
+      const maximumClippingWidth = width - overflow.left - overflow.right;
+      const overflowAvailableHeight = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.min)(height - overflow[heightSide], maximumClippingHeight);
+      const overflowAvailableWidth = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.min)(width - overflow[widthSide], maximumClippingWidth);
+      const shiftData = state.middlewareData.shift;
+      const noShift = !shiftData;
+      let availableHeight = overflowAvailableHeight;
+      let availableWidth = overflowAvailableWidth;
+      if (shiftData != null && shiftData.enabled.x) {
+        availableWidth = maximumClippingWidth;
+      }
+      if (shiftData != null && shiftData.enabled.y) {
+        availableHeight = maximumClippingHeight;
+      }
+      if (noShift && !alignment) {
+        if (isYAxis) {
+          availableWidth = width - 2 * (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.max)(overflow.left, overflow.right);
+        } else {
+          availableHeight = height - 2 * (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.max)(overflow.top, overflow.bottom);
+        }
+      }
+      await apply({
+        ...state,
+        availableWidth,
+        availableHeight
+      });
+      const nextDimensions = await platform.getDimensions(elements.floating);
+      if (width !== nextDimensions.width || height !== nextDimensions.height) {
+        return {
+          reset: {
+            rects: true
+          }
+        };
+      }
+      return {};
+    }
+  };
+};
+
+
+
+
+/***/ },
+
+/***/ "./node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs"
+/*!****************************************************************!*\
+  !*** ./node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs ***!
+  \****************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   arrow: () => (/* binding */ arrow),
+/* harmony export */   autoPlacement: () => (/* binding */ autoPlacement),
+/* harmony export */   autoUpdate: () => (/* binding */ autoUpdate),
+/* harmony export */   computePosition: () => (/* binding */ computePosition),
+/* harmony export */   detectOverflow: () => (/* binding */ detectOverflow),
+/* harmony export */   flip: () => (/* binding */ flip),
+/* harmony export */   getOverflowAncestors: () => (/* reexport safe */ _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getOverflowAncestors),
+/* harmony export */   hide: () => (/* binding */ hide),
+/* harmony export */   inline: () => (/* binding */ inline),
+/* harmony export */   limitShift: () => (/* binding */ limitShift),
+/* harmony export */   offset: () => (/* binding */ offset),
+/* harmony export */   platform: () => (/* binding */ platform),
+/* harmony export */   shift: () => (/* binding */ shift),
+/* harmony export */   size: () => (/* binding */ size)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @floating-ui/core */ "./node_modules/@floating-ui/core/dist/floating-ui.core.mjs");
+/* harmony import */ var _floating_ui_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @floating-ui/utils */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+
+
+
+
+
+function getCssDimensions(element) {
+  const css = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(element);
+  // In testing environments, the `width` and `height` properties are empty
+  // strings for SVG elements, returning NaN. Fallback to `0` in this case.
+  let width = parseFloat(css.width) || 0;
+  let height = parseFloat(css.height) || 0;
+  const hasOffset = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isHTMLElement)(element);
+  const offsetWidth = hasOffset ? element.offsetWidth : width;
+  const offsetHeight = hasOffset ? element.offsetHeight : height;
+  const shouldFallback = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.round)(width) !== offsetWidth || (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.round)(height) !== offsetHeight;
+  if (shouldFallback) {
+    width = offsetWidth;
+    height = offsetHeight;
+  }
+  return {
+    width,
+    height,
+    $: shouldFallback
+  };
+}
+
+function unwrapElement(element) {
+  return !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement)(element) ? element.contextElement : element;
+}
+
+function getScale(element) {
+  const domElement = unwrapElement(element);
+  if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isHTMLElement)(domElement)) {
+    return (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(1);
+  }
+  const rect = domElement.getBoundingClientRect();
+  const {
+    width,
+    height,
+    $
+  } = getCssDimensions(domElement);
+  let x = ($ ? (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.round)(rect.width) : rect.width) / width;
+  let y = ($ ? (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.round)(rect.height) : rect.height) / height;
+
+  // 0, NaN, or Infinity should always fallback to 1.
+
+  if (!x || !Number.isFinite(x)) {
+    x = 1;
+  }
+  if (!y || !Number.isFinite(y)) {
+    y = 1;
+  }
+  return {
+    x,
+    y
+  };
+}
+
+const noOffsets = /*#__PURE__*/(0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(0);
+function getVisualOffsets(element) {
+  const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(element);
+  if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isWebKit)() || !win.visualViewport) {
+    return noOffsets;
+  }
+  return {
+    x: win.visualViewport.offsetLeft,
+    y: win.visualViewport.offsetTop
+  };
+}
+function shouldAddVisualOffsets(element, isFixed, floatingOffsetParent) {
+  if (isFixed === void 0) {
+    isFixed = false;
+  }
+  return !!floatingOffsetParent && isFixed && floatingOffsetParent === (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(element);
+}
+
+function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetParent) {
+  if (includeScale === void 0) {
+    includeScale = false;
+  }
+  if (isFixedStrategy === void 0) {
+    isFixedStrategy = false;
+  }
+  const clientRect = element.getBoundingClientRect();
+  const domElement = unwrapElement(element);
+  let scale = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(1);
+  if (includeScale) {
+    if (offsetParent) {
+      if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement)(offsetParent)) {
+        scale = getScale(offsetParent);
+      }
+    } else {
+      scale = getScale(element);
+    }
+  }
+  const visualOffsets = shouldAddVisualOffsets(domElement, isFixedStrategy, offsetParent) ? getVisualOffsets(domElement) : (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(0);
+  let x = (clientRect.left + visualOffsets.x) / scale.x;
+  let y = (clientRect.top + visualOffsets.y) / scale.y;
+  let width = clientRect.width / scale.x;
+  let height = clientRect.height / scale.y;
+  if (domElement && offsetParent) {
+    const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(domElement);
+    const offsetWin = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement)(offsetParent) ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(offsetParent) : offsetParent;
+    let currentWin = win;
+    let currentIFrame = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getFrameElement)(currentWin);
+    while (currentIFrame && offsetWin !== currentWin) {
+      const iframeScale = getScale(currentIFrame);
+      const iframeRect = currentIFrame.getBoundingClientRect();
+      const css = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(currentIFrame);
+      const left = iframeRect.left + (currentIFrame.clientLeft + parseFloat(css.paddingLeft)) * iframeScale.x;
+      const top = iframeRect.top + (currentIFrame.clientTop + parseFloat(css.paddingTop)) * iframeScale.y;
+      x *= iframeScale.x;
+      y *= iframeScale.y;
+      width *= iframeScale.x;
+      height *= iframeScale.y;
+      x += left;
+      y += top;
+      currentWin = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(currentIFrame);
+      currentIFrame = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getFrameElement)(currentWin);
+    }
+  }
+  return (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.rectToClientRect)({
+    width,
+    height,
+    x,
+    y
+  });
+}
+
+// If <html> has a CSS width greater than the viewport, then this will be
+// incorrect for RTL.
+function getWindowScrollBarX(element, rect) {
+  const leftScroll = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getNodeScroll)(element).scrollLeft;
+  if (!rect) {
+    return getBoundingClientRect((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement)(element)).left + leftScroll;
+  }
+  return rect.left + leftScroll;
+}
+
+function getHTMLOffset(documentElement, scroll) {
+  const htmlRect = documentElement.getBoundingClientRect();
+  const x = htmlRect.left + scroll.scrollLeft - getWindowScrollBarX(documentElement, htmlRect);
+  const y = htmlRect.top + scroll.scrollTop;
+  return {
+    x,
+    y
+  };
+}
+
+function convertOffsetParentRelativeRectToViewportRelativeRect(_ref) {
+  let {
+    elements,
+    rect,
+    offsetParent,
+    strategy
+  } = _ref;
+  const isFixed = strategy === 'fixed';
+  const documentElement = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement)(offsetParent);
+  const topLayer = elements ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isTopLayer)(elements.floating) : false;
+  if (offsetParent === documentElement || topLayer && isFixed) {
+    return rect;
+  }
+  let scroll = {
+    scrollLeft: 0,
+    scrollTop: 0
+  };
+  let scale = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(1);
+  const offsets = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(0);
+  const isOffsetParentAnElement = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isHTMLElement)(offsetParent);
+  if (isOffsetParentAnElement || !isFixed) {
+    if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getNodeName)(offsetParent) !== 'body' || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isOverflowElement)(documentElement)) {
+      scroll = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getNodeScroll)(offsetParent);
+    }
+    if (isOffsetParentAnElement) {
+      const offsetRect = getBoundingClientRect(offsetParent);
+      scale = getScale(offsetParent);
+      offsets.x = offsetRect.x + offsetParent.clientLeft;
+      offsets.y = offsetRect.y + offsetParent.clientTop;
+    }
+  }
+  const htmlOffset = documentElement && !isOffsetParentAnElement && !isFixed ? getHTMLOffset(documentElement, scroll) : (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(0);
+  return {
+    width: rect.width * scale.x,
+    height: rect.height * scale.y,
+    x: rect.x * scale.x - scroll.scrollLeft * scale.x + offsets.x + htmlOffset.x,
+    y: rect.y * scale.y - scroll.scrollTop * scale.y + offsets.y + htmlOffset.y
+  };
+}
+
+function getClientRects(element) {
+  return element.getClientRects ? Array.from(element.getClientRects()) : [];
+}
+
+// Gets the entire size of the scrollable document area, even extending outside
+// of the `<html>` and `<body>` rect bounds if horizontally scrollable.
+function getDocumentRect(html) {
+  const scroll = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getNodeScroll)(html);
+  const body = html.ownerDocument.body;
+  const width = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.max)(html.scrollWidth, html.clientWidth, body.scrollWidth, body.clientWidth);
+  const height = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.max)(html.scrollHeight, html.clientHeight, body.scrollHeight, body.clientHeight);
+  let x = -scroll.scrollLeft + getWindowScrollBarX(html);
+  const y = -scroll.scrollTop;
+  if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(body).direction === 'rtl') {
+    x += (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.max)(html.clientWidth, body.clientWidth) - width;
+  }
+  return {
+    width,
+    height,
+    x,
+    y
+  };
+}
+
+// Safety check: ensure the scrollbar space is reasonable in case this
+// calculation is affected by unusual styles.
+// Most scrollbars leave 15-18px of space.
+const SCROLLBAR_MAX = 25;
+function getViewportRect(element, strategy, rootBoundary) {
+  if (rootBoundary === void 0) {
+    rootBoundary = 'viewport';
+  }
+  const isLayoutViewport = rootBoundary === 'layoutViewport';
+  const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(element);
+  const html = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement)(element);
+  const visualViewport = win.visualViewport;
+  let width = html.clientWidth;
+  let height = html.clientHeight;
+  let x = 0;
+  let y = 0;
+  if (visualViewport) {
+    // Client coordinates are relative to the layout viewport, except in
+    // WebKit with an `absolute` strategy, where they are relative to the
+    // visual viewport.
+    const layoutRelativeClientCoords = !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isWebKit)() || strategy === 'fixed';
+    if (isLayoutViewport) {
+      if (!layoutRelativeClientCoords) {
+        x = -visualViewport.offsetLeft;
+        y = -visualViewport.offsetTop;
+      }
+    } else {
+      width = visualViewport.width;
+      height = visualViewport.height;
+      if (layoutRelativeClientCoords) {
+        x = visualViewport.offsetLeft;
+        y = visualViewport.offsetTop;
+      }
+    }
+  }
+  const windowScrollbarX = getWindowScrollBarX(html);
+  // `scrollbar-gutter: stable` on the <html> reserves gutter space that shrinks
+  // the visual width but isn't reflected in `html.clientWidth`, so subtract it.
+  // Only the inline-end (right) gutter can hold the scrollbar; `both-edges` also
+  // reserves an empty inline-start gutter that clips nothing, so exclude just
+  // the one scrollbar-side gutter — halve the measured (two-gutter) total. A
+  // left-side scrollbar (`windowScrollbarX > 0`) is already handled by
+  // `getHTMLOffset`/`visualViewport.width`; skip it here.
+  if (windowScrollbarX <= 0) {
+    const doc = html.ownerDocument;
+    const body = doc.body;
+    const bodyStyles = getComputedStyle(body);
+    const bodyMarginInline = doc.compatMode === 'CSS1Compat' ? parseFloat(bodyStyles.marginLeft) + parseFloat(bodyStyles.marginRight) || 0 : 0;
+    const reservedWidth = Math.abs(html.clientWidth - body.clientWidth - bodyMarginInline);
+    const gutter = getComputedStyle(html).scrollbarGutter === 'stable both-edges' ? reservedWidth / 2 : reservedWidth;
+    if (gutter <= SCROLLBAR_MAX) {
+      width -= gutter;
+    }
+  }
+  return {
+    width,
+    height,
+    x,
+    y
+  };
+}
+
+// Returns the inner client rect, subtracting scrollbars if present.
+function getInnerBoundingClientRect(element, strategy) {
+  const clientRect = getBoundingClientRect(element, true, strategy === 'fixed');
+  const top = clientRect.top + element.clientTop;
+  const left = clientRect.left + element.clientLeft;
+  const scale = getScale(element);
+  const width = element.clientWidth * scale.x;
+  const height = element.clientHeight * scale.y;
+  const x = left * scale.x;
+  const y = top * scale.y;
+  return {
+    width,
+    height,
+    x,
+    y
+  };
+}
+function getClientRectFromClippingAncestor(element, clippingAncestor, strategy) {
+  let rect;
+  if (clippingAncestor === 'viewport' || clippingAncestor === 'layoutViewport') {
+    rect = getViewportRect(element, strategy, clippingAncestor);
+  } else if (clippingAncestor === 'document') {
+    rect = getDocumentRect((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement)(element));
+  } else if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement)(clippingAncestor)) {
+    rect = getInnerBoundingClientRect(clippingAncestor, strategy);
+  } else {
+    const visualOffsets = getVisualOffsets(element);
+    rect = {
+      x: clippingAncestor.x - visualOffsets.x,
+      y: clippingAncestor.y - visualOffsets.y,
+      width: clippingAncestor.width,
+      height: clippingAncestor.height
+    };
+  }
+  return (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.rectToClientRect)(rect);
+}
+
+// A "clipping ancestor" is an `overflow` element with the characteristic of
+// clipping (or hiding) child elements. This returns all clipping ancestors
+// of the given element up the tree.
+function getClippingElementAncestors(element, cache) {
+  const cachedResult = cache.get(element);
+  if (cachedResult) {
+    return cachedResult;
+  }
+  let result = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getOverflowAncestors)(element, [], false).filter(el => (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement)(el) && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getNodeName)(el) !== 'body');
+  let lastKeptComputedStyle = null;
+  const elementIsFixed = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(element).position === 'fixed';
+  let currentNode = elementIsFixed ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getParentNode)(element) : element;
+
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block
+  while ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement)(currentNode) && !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isLastTraversableNode)(currentNode)) {
+    const computedStyle = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(currentNode);
+    const currentNodeIsContaining = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isContainingBlock)(currentNode);
+    // Position of the containing block chain below the current node. A fixed
+    // element whose containing block hasn't been found yet is a fixed chain.
+    const lastPosition = lastKeptComputedStyle ? lastKeptComputedStyle.position : elementIsFixed ? 'fixed' : '';
+
+    // A non-containing ancestor does not clip the element when the chain
+    // below it escapes it: a fixed chain escapes all ancestors up to the
+    // next containing block, an absolute chain escapes static ancestors.
+    const shouldDropCurrentNode = !currentNodeIsContaining && (lastPosition === 'fixed' || lastPosition === 'absolute' && computedStyle.position === 'static');
+    if (shouldDropCurrentNode) {
+      // Drop non-containing blocks.
+      result = result.filter(ancestor => ancestor !== currentNode);
+    } else {
+      // The kept node carries the chain position for the next iteration.
+      lastKeptComputedStyle = computedStyle;
+    }
+    currentNode = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getParentNode)(currentNode);
+  }
+  cache.set(element, result);
+  return result;
+}
+
+// Gets the maximum area that the element is visible in due to any number of
+// clipping ancestors.
+function getClippingRect(_ref) {
+  let {
+    element,
+    boundary,
+    rootBoundary,
+    strategy
+  } = _ref;
+  const elementClippingAncestors = boundary === 'clippingAncestors' ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isTopLayer)(element) ? [] : getClippingElementAncestors(element, this._c) : [].concat(boundary);
+  const clippingAncestors = [...elementClippingAncestors, rootBoundary];
+  const firstRect = getClientRectFromClippingAncestor(element, clippingAncestors[0], strategy);
+  let top = firstRect.top;
+  let right = firstRect.right;
+  let bottom = firstRect.bottom;
+  let left = firstRect.left;
+  for (let i = 1; i < clippingAncestors.length; i++) {
+    const rect = getClientRectFromClippingAncestor(element, clippingAncestors[i], strategy);
+    top = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.max)(rect.top, top);
+    right = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.min)(rect.right, right);
+    bottom = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.min)(rect.bottom, bottom);
+    left = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.max)(rect.left, left);
+  }
+  return {
+    width: right - left,
+    height: bottom - top,
+    x: left,
+    y: top
+  };
+}
+
+function getDimensions(element) {
+  const {
+    width,
+    height
+  } = getCssDimensions(element);
+  return {
+    width,
+    height
+  };
+}
+
+function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
+  const isOffsetParentAnElement = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isHTMLElement)(offsetParent);
+  const documentElement = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement)(offsetParent);
+  const isFixed = strategy === 'fixed';
+  const rect = getBoundingClientRect(element, true, isFixed, offsetParent);
+  let scroll = {
+    scrollLeft: 0,
+    scrollTop: 0
+  };
+  const offsets = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(0);
+  if (isOffsetParentAnElement || !isFixed) {
+    if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getNodeName)(offsetParent) !== 'body' || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isOverflowElement)(documentElement)) {
+      scroll = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getNodeScroll)(offsetParent);
+    }
+    if (isOffsetParentAnElement) {
+      const offsetRect = getBoundingClientRect(offsetParent, true, isFixed, offsetParent);
+      offsets.x = offsetRect.x + offsetParent.clientLeft;
+      offsets.y = offsetRect.y + offsetParent.clientTop;
+    }
+  }
+
+  // If the <body> scrollbar appears on the left (e.g. RTL systems). Use
+  // Firefox with layout.scrollbar.side = 3 in about:config to test this.
+  if (!isOffsetParentAnElement && documentElement) {
+    offsets.x = getWindowScrollBarX(documentElement);
+  }
+  const htmlOffset = documentElement && !isOffsetParentAnElement && !isFixed ? getHTMLOffset(documentElement, scroll) : (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(0);
+  const x = rect.left + scroll.scrollLeft - offsets.x - htmlOffset.x;
+  const y = rect.top + scroll.scrollTop - offsets.y - htmlOffset.y;
+  return {
+    x,
+    y,
+    width: rect.width,
+    height: rect.height
+  };
+}
+
+function isStaticPositioned(element) {
+  return (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(element).position === 'static';
+}
+
+function getTrueOffsetParent(element, polyfill) {
+  if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isHTMLElement)(element) || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(element).position === 'fixed') {
+    return null;
+  }
+  if (polyfill) {
+    return polyfill(element);
+  }
+  let rawOffsetParent = element.offsetParent;
+
+  // Firefox returns the <html> element as the offsetParent if it's non-static,
+  // while Chrome and Safari return the <body> element. The <body> element must
+  // be used to perform the correct calculations even if the <html> element is
+  // non-static.
+  if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement)(element) === rawOffsetParent) {
+    rawOffsetParent = rawOffsetParent.ownerDocument.body;
+  }
+  return rawOffsetParent;
+}
+
+// Gets the closest ancestor positioned element. Handles some edge cases,
+// such as table ancestors and cross browser bugs.
+function getOffsetParent(element, polyfill) {
+  const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(element);
+  if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isTopLayer)(element)) {
+    return win;
+  }
+  if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isHTMLElement)(element)) {
+    let svgOffsetParent = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getParentNode)(element);
+    while (svgOffsetParent && !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isLastTraversableNode)(svgOffsetParent)) {
+      if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement)(svgOffsetParent) && !isStaticPositioned(svgOffsetParent)) {
+        return svgOffsetParent;
+      }
+      svgOffsetParent = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getParentNode)(svgOffsetParent);
+    }
+    return win;
+  }
+  let offsetParent = getTrueOffsetParent(element, polyfill);
+  while (offsetParent && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isTableElement)(offsetParent) && isStaticPositioned(offsetParent)) {
+    offsetParent = getTrueOffsetParent(offsetParent, polyfill);
+  }
+  if (offsetParent && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isLastTraversableNode)(offsetParent) && isStaticPositioned(offsetParent) && !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isContainingBlock)(offsetParent)) {
+    return win;
+  }
+  return offsetParent || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getContainingBlock)(element) || win;
+}
+
+const getElementRects = async function (data) {
+  const getOffsetParentFn = this.getOffsetParent || getOffsetParent;
+  const getDimensionsFn = this.getDimensions;
+  const floatingDimensions = await getDimensionsFn(data.floating);
+  return {
+    reference: getRectRelativeToOffsetParent(data.reference, await getOffsetParentFn(data.floating), data.strategy),
+    floating: {
+      x: 0,
+      y: 0,
+      width: floatingDimensions.width,
+      height: floatingDimensions.height
+    }
+  };
+};
+
+function isRTL(element) {
+  return (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(element).direction === 'rtl';
+}
+
+const platform = {
+  convertOffsetParentRelativeRectToViewportRelativeRect,
+  getDocumentElement: _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement,
+  getClippingRect,
+  getOffsetParent,
+  getElementRects,
+  getClientRects,
+  getDimensions,
+  getScale,
+  isElement: _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement,
+  isRTL
+};
+
+function rectsAreEqual(a, b) {
+  return a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
+}
+
+// https://samthor.au/2021/observing-dom/
+function observeMove(element, onMove, ancestorResize) {
+  let io = null;
+  let timeoutId;
+  const root = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement)(element);
+  function cleanup() {
+    var _io;
+    clearTimeout(timeoutId);
+    (_io = io) == null || _io.disconnect();
+    io = null;
+  }
+  function refresh(skip, threshold) {
+    if (skip === void 0) {
+      skip = false;
+    }
+    if (threshold === void 0) {
+      threshold = 1;
+    }
+    cleanup();
+    const elementRectForRootMargin = element.getBoundingClientRect();
+    const {
+      left,
+      top,
+      width,
+      height
+    } = elementRectForRootMargin;
+    if (!skip) {
+      onMove();
+    }
+    if (!width || !height) {
+      return;
+    }
+    const insetTop = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.floor)(top);
+    const insetRight = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.floor)(root.clientWidth - (left + width));
+    const insetBottom = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.floor)(root.clientHeight - (top + height));
+    const insetLeft = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.floor)(left);
+    const rootMargin = -insetTop + "px " + -insetRight + "px " + -insetBottom + "px " + -insetLeft + "px";
+    const options = {
+      rootMargin,
+      threshold: (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.max)(0, (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.min)(1, threshold)) || 1
+    };
+    let isFirstUpdate = true;
+    function handleObserve(entries) {
+      const ratio = entries[0].intersectionRatio;
+
+      // The entry is a snapshot, so the reference may have moved since the
+      // intersection was computed (under performance constraints, or between
+      // consecutive frames of a multi-frame layout shift). The reported ratio
+      // and the observed area are stale in that case and cannot be trusted to
+      // detect subsequent movement, so refresh regardless of the ratio.
+      if (!rectsAreEqual(elementRectForRootMargin, element.getBoundingClientRect())) {
+        return refresh();
+      }
+      if (ratio !== threshold) {
+        if (!isFirstUpdate) {
+          return refresh();
+        }
+        if (!ratio) {
+          // If the reference is clipped in place, the ratio is 0. Throttle
+          // the refresh to prevent an infinite loop of updates.
+          timeoutId = setTimeout(() => {
+            refresh(false, 1e-7);
+          }, 1000);
+        } else {
+          refresh(false, ratio);
+        }
+      }
+      isFirstUpdate = false;
+    }
+
+    // Older browsers don't support a `document` as the root and will throw an
+    // error.
+    try {
+      io = new IntersectionObserver(handleObserve, {
+        ...options,
+        // Handle <iframe>s
+        root: root.ownerDocument
+      });
+    } catch (_e) {
+      io = new IntersectionObserver(handleObserve, options);
+    }
+    io.observe(element);
+  }
+  const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(element);
+  // The window is a resize ancestor, so when `ancestorResize` is enabled its
+  // listener already runs the update on resize. Here we only need to rebuild
+  // the `IntersectionObserver` for the new root size, skipping a redundant
+  // update. When `ancestorResize` is disabled, this becomes the sole update.
+  const handleResize = () => refresh(ancestorResize);
+  win.addEventListener('resize', handleResize);
+  refresh(true);
+  return () => {
+    win.removeEventListener('resize', handleResize);
+    cleanup();
+  };
+}
+
+/**
+ * Automatically updates the position of the floating element when necessary.
+ * Should only be called when the floating element is mounted on the DOM or
+ * visible on the screen.
+ * @returns cleanup function that should be invoked when the floating element is
+ * removed from the DOM or hidden from the screen.
+ * @see https://floating-ui.com/docs/autoUpdate
+ */
+function autoUpdate(reference, floating, update, options) {
+  if (options === void 0) {
+    options = {};
+  }
+  const {
+    ancestorScroll = true,
+    ancestorResize = true,
+    elementResize = typeof ResizeObserver === 'function',
+    layoutShift = typeof IntersectionObserver === 'function',
+    animationFrame = false
+  } = options;
+  const referenceEl = unwrapElement(reference);
+  const ancestors = ancestorScroll || ancestorResize ? [...(referenceEl ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getOverflowAncestors)(referenceEl) : []), ...(floating ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getOverflowAncestors)(floating) : [])] : [];
+  ancestors.forEach(ancestor => {
+    ancestorScroll && ancestor.addEventListener('scroll', update);
+    ancestorResize && ancestor.addEventListener('resize', update);
+  });
+  const cleanupIo = referenceEl && layoutShift ? observeMove(referenceEl, update, ancestorResize) : null;
+  let reobserveFrame = -1;
+  let resizeObserver = null;
+  if (elementResize) {
+    resizeObserver = new ResizeObserver(_ref => {
+      let [firstEntry] = _ref;
+      if (firstEntry && firstEntry.target === referenceEl && resizeObserver && floating) {
+        // Prevent update loops when using the `size` middleware.
+        // https://github.com/floating-ui/floating-ui/issues/1740
+        resizeObserver.unobserve(floating);
+        cancelAnimationFrame(reobserveFrame);
+        reobserveFrame = requestAnimationFrame(() => {
+          var _resizeObserver;
+          (_resizeObserver = resizeObserver) == null || _resizeObserver.observe(floating);
+        });
+      }
+      update();
+    });
+    if (referenceEl && !animationFrame) {
+      resizeObserver.observe(referenceEl);
+    }
+    if (floating) {
+      resizeObserver.observe(floating);
+    }
+  }
+  let frameId;
+  let prevRefRect = animationFrame ? getBoundingClientRect(reference) : null;
+  if (animationFrame) {
+    frameLoop();
+  }
+  function frameLoop() {
+    const nextRefRect = getBoundingClientRect(reference);
+    if (prevRefRect && !rectsAreEqual(prevRefRect, nextRefRect)) {
+      update();
+    }
+    prevRefRect = nextRefRect;
+    frameId = requestAnimationFrame(frameLoop);
+  }
+  update();
+  return () => {
+    var _resizeObserver2;
+    ancestors.forEach(ancestor => {
+      ancestorScroll && ancestor.removeEventListener('scroll', update);
+      ancestorResize && ancestor.removeEventListener('resize', update);
+    });
+    cleanupIo == null || cleanupIo();
+    (_resizeObserver2 = resizeObserver) == null || _resizeObserver2.disconnect();
+    resizeObserver = null;
+    if (animationFrame) {
+      cancelAnimationFrame(frameId);
+    }
+  };
+}
+
+/**
+ * Resolves with an object of overflow side offsets that determine how much the
+ * element is overflowing a given clipping boundary on each side.
+ * - positive = overflowing the boundary by that number of pixels
+ * - negative = how many pixels left before it will overflow
+ * - 0 = lies flush with the boundary
+ * @see https://floating-ui.com/docs/detectOverflow
+ */
+const detectOverflow = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.detectOverflow;
+
+/**
+ * Modifies the placement by translating the floating element along the
+ * specified axes.
+ * A number (shorthand for `mainAxis` or distance), or an axes configuration
+ * object may be passed.
+ * @see https://floating-ui.com/docs/offset
+ */
+const offset = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.offset;
+
+/**
+ * Optimizes the visibility of the floating element by choosing the placement
+ * that has the most space available automatically, without needing to specify a
+ * preferred placement. Alternative to `flip`.
+ * @see https://floating-ui.com/docs/autoPlacement
+ */
+const autoPlacement = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.autoPlacement;
+
+/**
+ * Optimizes the visibility of the floating element by shifting it in order to
+ * keep it in view when it will overflow the clipping boundary.
+ * @see https://floating-ui.com/docs/shift
+ */
+const shift = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.shift;
+
+/**
+ * Optimizes the visibility of the floating element by flipping the `placement`
+ * in order to keep it in view when the preferred placement(s) will overflow the
+ * clipping boundary. Alternative to `autoPlacement`.
+ * @see https://floating-ui.com/docs/flip
+ */
+const flip = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.flip;
+
+/**
+ * Provides data that allows you to change the size of the floating element —
+ * for instance, prevent it from overflowing the clipping boundary or match the
+ * width of the reference element.
+ * @see https://floating-ui.com/docs/size
+ */
+const size = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.size;
+
+/**
+ * Provides data to hide the floating element in applicable situations, such as
+ * when it is not in the same clipping context as the reference element.
+ * @see https://floating-ui.com/docs/hide
+ */
+const hide = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.hide;
+
+/**
+ * Provides data to position an inner element of the floating element so that it
+ * appears centered to the reference element.
+ * @see https://floating-ui.com/docs/arrow
+ */
+const arrow = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.arrow;
+
+/**
+ * Provides improved positioning for inline reference elements that can span
+ * over multiple lines, such as hyperlinks or range selections.
+ * @see https://floating-ui.com/docs/inline
+ */
+const inline = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.inline;
+
+/**
+ * Built-in `limiter` that will stop `shift()` at a certain point.
+ */
+const limitShift = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.limitShift;
+
+/**
+ * Computes the `x` and `y` coordinates that will place the floating element
+ * next to a given reference element.
+ */
+const computePosition = (reference, floating, options) => {
+  // This caches the expensive `getClippingElementAncestors` function so that
+  // multiple lifecycle resets re-use the same result. It only lives for a
+  // single call. If other functions become expensive, we can add them as well.
+  const cache = new Map();
+  const mergedOptions = options != null ? options : {};
+  const platformWithCache = {
+    ...platform,
+    ...mergedOptions.platform,
+    _c: cache
+  };
+  return (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.computePosition)(reference, floating, {
+    ...mergedOptions,
+    platform: platformWithCache
+  });
+};
+
+
+
+
+/***/ },
+
+/***/ "./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs"
+/*!****************************************************************************!*\
+  !*** ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs ***!
+  \****************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   arrow: () => (/* binding */ arrow),
+/* harmony export */   autoPlacement: () => (/* binding */ autoPlacement),
+/* harmony export */   autoUpdate: () => (/* reexport safe */ _floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.autoUpdate),
+/* harmony export */   computePosition: () => (/* reexport safe */ _floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.computePosition),
+/* harmony export */   detectOverflow: () => (/* reexport safe */ _floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.detectOverflow),
+/* harmony export */   flip: () => (/* binding */ flip),
+/* harmony export */   getOverflowAncestors: () => (/* reexport safe */ _floating_ui_dom__WEBPACK_IMPORTED_MODULE_1__.getOverflowAncestors),
+/* harmony export */   hide: () => (/* binding */ hide),
+/* harmony export */   inline: () => (/* binding */ inline),
+/* harmony export */   limitShift: () => (/* binding */ limitShift),
+/* harmony export */   offset: () => (/* binding */ offset),
+/* harmony export */   platform: () => (/* reexport safe */ _floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.platform),
+/* harmony export */   shift: () => (/* binding */ shift),
+/* harmony export */   size: () => (/* binding */ size),
+/* harmony export */   useFloating: () => (/* binding */ useFloating)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @floating-ui/dom */ "./node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs");
+/* harmony import */ var _floating_ui_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @floating-ui/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-dom */ "react-dom");
+
+
+
+
+
+
+var isClient = typeof document !== 'undefined';
+
+var noop = function noop() {};
+var index = isClient ? react__WEBPACK_IMPORTED_MODULE_2__.useLayoutEffect : noop;
+
+// Fork of `fast-deep-equal` that only does the comparisons we need and compares
+// functions
+function deepEqual(a, b) {
+  if (a === b) {
+    return true;
+  }
+  if (typeof a !== typeof b) {
+    return false;
+  }
+  if (typeof a === 'function' && a.toString() === b.toString()) {
+    return true;
+  }
+  let length;
+  let i;
+  let keys;
+  if (a && b && typeof a === 'object') {
+    if (Array.isArray(a)) {
+      length = a.length;
+      if (length !== b.length) return false;
+      for (i = length; i-- !== 0;) {
+        if (!deepEqual(a[i], b[i])) {
+          return false;
+        }
+      }
+      return true;
+    }
+    keys = Object.keys(a);
+    length = keys.length;
+    if (length !== Object.keys(b).length) {
+      return false;
+    }
+    for (i = length; i-- !== 0;) {
+      if (!{}.hasOwnProperty.call(b, keys[i])) {
+        return false;
+      }
+    }
+    for (i = length; i-- !== 0;) {
+      const key = keys[i];
+      if (key === '_owner' && a.$$typeof) {
+        continue;
+      }
+      if (!deepEqual(a[key], b[key])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return a !== a && b !== b;
+}
+
+function getDPR(element) {
+  if (typeof window === 'undefined') {
+    return 1;
+  }
+  const win = element.ownerDocument.defaultView || window;
+  return win.devicePixelRatio || 1;
+}
+
+function roundByDPR(element, value) {
+  const dpr = getDPR(element);
+  return Math.round(value * dpr) / dpr;
+}
+
+function useLatestRef(value) {
+  const ref = react__WEBPACK_IMPORTED_MODULE_2__.useRef(value);
+  index(() => {
+    ref.current = value;
+  });
+  return ref;
+}
+
+/**
+ * Provides data to position a floating element.
+ * @see https://floating-ui.com/docs/useFloating
+ */
+function useFloating(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  const {
+    placement = 'bottom',
+    strategy = 'absolute',
+    middleware = [],
+    platform,
+    elements: {
+      reference: externalReference,
+      floating: externalFloating
+    } = {},
+    transform = true,
+    whileElementsMounted,
+    open
+  } = options;
+  const [data, setData] = react__WEBPACK_IMPORTED_MODULE_2__.useState({
+    x: 0,
+    y: 0,
+    strategy,
+    placement,
+    middlewareData: {},
+    isPositioned: false
+  });
+  const [latestMiddleware, setLatestMiddleware] = react__WEBPACK_IMPORTED_MODULE_2__.useState(middleware);
+  if (!deepEqual(latestMiddleware, middleware)) {
+    setLatestMiddleware(middleware);
+  }
+  const [_reference, _setReference] = react__WEBPACK_IMPORTED_MODULE_2__.useState(null);
+  const [_floating, _setFloating] = react__WEBPACK_IMPORTED_MODULE_2__.useState(null);
+  const setReference = react__WEBPACK_IMPORTED_MODULE_2__.useCallback(node => {
+    if (node !== referenceRef.current) {
+      referenceRef.current = node;
+      _setReference(node);
+    }
+  }, []);
+  const setFloating = react__WEBPACK_IMPORTED_MODULE_2__.useCallback(node => {
+    if (node !== floatingRef.current) {
+      floatingRef.current = node;
+      _setFloating(node);
+    }
+  }, []);
+  const referenceEl = externalReference || _reference;
+  const floatingEl = externalFloating || _floating;
+  const referenceRef = react__WEBPACK_IMPORTED_MODULE_2__.useRef(null);
+  const floatingRef = react__WEBPACK_IMPORTED_MODULE_2__.useRef(null);
+  const dataRef = react__WEBPACK_IMPORTED_MODULE_2__.useRef(data);
+  const hasWhileElementsMounted = whileElementsMounted != null;
+  const whileElementsMountedRef = useLatestRef(whileElementsMounted);
+  const platformRef = useLatestRef(platform);
+  const openRef = useLatestRef(open);
+  const update = react__WEBPACK_IMPORTED_MODULE_2__.useCallback(() => {
+    if (!referenceRef.current || !floatingRef.current) {
+      return;
+    }
+    const config = {
+      placement,
+      strategy,
+      middleware: latestMiddleware
+    };
+    if (platformRef.current) {
+      config.platform = platformRef.current;
+    }
+    ;(0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.computePosition)(referenceRef.current, floatingRef.current, config).then(data => {
+      const fullData = {
+        ...data,
+        // The floating element's position may be recomputed while it's closed
+        // but still mounted (such as when transitioning out). To ensure
+        // `isPositioned` will be `false` initially on the next open, avoid
+        // setting it to `true` when `open === false` (must be specified).
+        isPositioned: openRef.current !== false
+      };
+      if (isMountedRef.current && !deepEqual(dataRef.current, fullData)) {
+        dataRef.current = fullData;
+        react_dom__WEBPACK_IMPORTED_MODULE_3__.flushSync(() => {
+          setData(fullData);
+        });
+      }
+    });
+  }, [latestMiddleware, placement, strategy, platformRef, openRef]);
+  index(() => {
+    if (open === false && dataRef.current.isPositioned) {
+      dataRef.current.isPositioned = false;
+      setData(data => ({
+        ...data,
+        isPositioned: false
+      }));
+    }
+  }, [open]);
+  const isMountedRef = react__WEBPACK_IMPORTED_MODULE_2__.useRef(false);
+  index(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+  index(() => {
+    if (referenceEl) referenceRef.current = referenceEl;
+    if (floatingEl) floatingRef.current = floatingEl;
+    if (referenceEl && floatingEl) {
+      if (whileElementsMountedRef.current) {
+        return whileElementsMountedRef.current(referenceEl, floatingEl, update);
+      }
+      update();
+    }
+  }, [referenceEl, floatingEl, update, whileElementsMountedRef, hasWhileElementsMounted]);
+  const refs = react__WEBPACK_IMPORTED_MODULE_2__.useMemo(() => ({
+    reference: referenceRef,
+    floating: floatingRef,
+    setReference,
+    setFloating
+  }), [setReference, setFloating]);
+  const elements = react__WEBPACK_IMPORTED_MODULE_2__.useMemo(() => ({
+    reference: referenceEl,
+    floating: floatingEl
+  }), [referenceEl, floatingEl]);
+  const floatingStyles = react__WEBPACK_IMPORTED_MODULE_2__.useMemo(() => {
+    const initialStyles = {
+      position: strategy,
+      left: 0,
+      top: 0
+    };
+    if (!elements.floating) {
+      return initialStyles;
+    }
+    const x = roundByDPR(elements.floating, data.x);
+    const y = roundByDPR(elements.floating, data.y);
+    if (transform) {
+      return {
+        ...initialStyles,
+        transform: "translate(" + x + "px, " + y + "px)",
+        ...(getDPR(elements.floating) >= 1.5 && {
+          willChange: 'transform'
+        })
+      };
+    }
+    return {
+      position: strategy,
+      left: x,
+      top: y
+    };
+  }, [strategy, transform, elements.floating, data.x, data.y]);
+  return react__WEBPACK_IMPORTED_MODULE_2__.useMemo(() => ({
+    ...data,
+    update,
+    refs,
+    elements,
+    floatingStyles
+  }), [data, update, refs, elements, floatingStyles]);
+}
+
+/**
+ * Provides data to position an inner element of the floating element so that it
+ * appears centered to the reference element.
+ * This wraps the core `arrow` middleware to allow React refs as the element.
+ * @see https://floating-ui.com/docs/arrow
+ */
+const arrow$1 = options => {
+  function isRef(value) {
+    return {}.hasOwnProperty.call(value, 'current');
+  }
+  return {
+    name: 'arrow',
+    options,
+    fn(state) {
+      const {
+        element,
+        padding
+      } = typeof options === 'function' ? options(state) : options;
+      if (element && isRef(element)) {
+        if (element.current != null) {
+          return (0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.arrow)({
+            element: element.current,
+            padding
+          }).fn(state);
+        }
+        return {};
+      }
+      if (element) {
+        return (0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.arrow)({
+          element,
+          padding
+        }).fn(state);
+      }
+      return {};
+    }
+  };
+};
+
+/**
+ * Modifies the placement by translating the floating element along the
+ * specified axes.
+ * A number (shorthand for `mainAxis` or distance), or an axes configuration
+ * object may be passed.
+ * @see https://floating-ui.com/docs/offset
+ */
+const offset = (options, deps) => {
+  const result = (0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.offset)(options);
+  return {
+    name: result.name,
+    fn: result.fn,
+    options: [options, deps]
+  };
+};
+
+/**
+ * Optimizes the visibility of the floating element by shifting it in order to
+ * keep it in view when it will overflow the clipping boundary.
+ * @see https://floating-ui.com/docs/shift
+ */
+const shift = (options, deps) => {
+  const result = (0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.shift)(options);
+  return {
+    name: result.name,
+    fn: result.fn,
+    options: [options, deps]
+  };
+};
+
+/**
+ * Built-in `limiter` that will stop `shift()` at a certain point.
+ */
+const limitShift = (options, deps) => {
+  const result = (0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.limitShift)(options);
+  return {
+    fn: result.fn,
+    options: [options, deps]
+  };
+};
+
+/**
+ * Optimizes the visibility of the floating element by flipping the `placement`
+ * in order to keep it in view when the preferred placement(s) will overflow the
+ * clipping boundary. Alternative to `autoPlacement`.
+ * @see https://floating-ui.com/docs/flip
+ */
+const flip = (options, deps) => {
+  const result = (0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.flip)(options);
+  return {
+    name: result.name,
+    fn: result.fn,
+    options: [options, deps]
+  };
+};
+
+/**
+ * Provides data that allows you to change the size of the floating element —
+ * for instance, prevent it from overflowing the clipping boundary or match the
+ * width of the reference element.
+ * @see https://floating-ui.com/docs/size
+ */
+const size = (options, deps) => {
+  const result = (0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.size)(options);
+  return {
+    name: result.name,
+    fn: result.fn,
+    options: [options, deps]
+  };
+};
+
+/**
+ * Optimizes the visibility of the floating element by choosing the placement
+ * that has the most space available automatically, without needing to specify a
+ * preferred placement. Alternative to `flip`.
+ * @see https://floating-ui.com/docs/autoPlacement
+ */
+const autoPlacement = (options, deps) => {
+  const result = (0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.autoPlacement)(options);
+  return {
+    name: result.name,
+    fn: result.fn,
+    options: [options, deps]
+  };
+};
+
+/**
+ * Provides data to hide the floating element in applicable situations, such as
+ * when it is not in the same clipping context as the reference element.
+ * @see https://floating-ui.com/docs/hide
+ */
+const hide = (options, deps) => {
+  const result = (0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.hide)(options);
+  return {
+    name: result.name,
+    fn: result.fn,
+    options: [options, deps]
+  };
+};
+
+/**
+ * Provides improved positioning for inline reference elements that can span
+ * over multiple lines, such as hyperlinks or range selections.
+ * @see https://floating-ui.com/docs/inline
+ */
+const inline = (options, deps) => {
+  const result = (0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.inline)(options);
+  return {
+    name: result.name,
+    fn: result.fn,
+    options: [options, deps]
+  };
+};
+
+/**
+ * Provides data to position an inner element of the floating element so that it
+ * appears centered to the reference element.
+ * This wraps the core `arrow` middleware to allow React refs as the element.
+ * @see https://floating-ui.com/docs/arrow
+ */
+const arrow = (options, deps) => {
+  const result = arrow$1(options);
+  return {
+    name: result.name,
+    fn: result.fn,
+    options: [options, deps]
+  };
+};
+
+
+
+
+/***/ },
+
+/***/ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs"
+/*!************************************************************************!*\
+  !*** ./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs ***!
+  \************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getComputedStyle: () => (/* binding */ getComputedStyle),
+/* harmony export */   getContainingBlock: () => (/* binding */ getContainingBlock),
+/* harmony export */   getDocumentElement: () => (/* binding */ getDocumentElement),
+/* harmony export */   getFrameElement: () => (/* binding */ getFrameElement),
+/* harmony export */   getNearestOverflowAncestor: () => (/* binding */ getNearestOverflowAncestor),
+/* harmony export */   getNodeName: () => (/* binding */ getNodeName),
+/* harmony export */   getNodeScroll: () => (/* binding */ getNodeScroll),
+/* harmony export */   getOverflowAncestors: () => (/* binding */ getOverflowAncestors),
+/* harmony export */   getParentNode: () => (/* binding */ getParentNode),
+/* harmony export */   getWindow: () => (/* binding */ getWindow),
+/* harmony export */   isContainingBlock: () => (/* binding */ isContainingBlock),
+/* harmony export */   isElement: () => (/* binding */ isElement),
+/* harmony export */   isHTMLElement: () => (/* binding */ isHTMLElement),
+/* harmony export */   isLastTraversableNode: () => (/* binding */ isLastTraversableNode),
+/* harmony export */   isNode: () => (/* binding */ isNode),
+/* harmony export */   isOverflowElement: () => (/* binding */ isOverflowElement),
+/* harmony export */   isShadowRoot: () => (/* binding */ isShadowRoot),
+/* harmony export */   isTableElement: () => (/* binding */ isTableElement),
+/* harmony export */   isTopLayer: () => (/* binding */ isTopLayer),
+/* harmony export */   isWebKit: () => (/* binding */ isWebKit)
+/* harmony export */ });
+function hasWindow() {
+  return typeof window !== 'undefined';
+}
+function getNodeName(node) {
+  if (isNode(node)) {
+    return (node.nodeName || '').toLowerCase();
+  }
+  // Mocked nodes in testing environments may not be instances of Node. By
+  // returning `#document` an infinite loop won't occur.
+  // https://github.com/floating-ui/floating-ui/issues/2317
+  return '#document';
+}
+function getWindow(node) {
+  var _node$ownerDocument;
+  return (node == null || (_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.defaultView) || window;
+}
+function getDocumentElement(node) {
+  var _ref;
+  return (_ref = (isNode(node) ? node.ownerDocument : node.document) || window.document) == null ? void 0 : _ref.documentElement;
+}
+function isNode(value) {
+  if (!hasWindow()) {
+    return false;
+  }
+  return value instanceof Node || value instanceof getWindow(value).Node;
+}
+function isElement(value) {
+  if (!hasWindow()) {
+    return false;
+  }
+  return value instanceof Element || value instanceof getWindow(value).Element;
+}
+function isHTMLElement(value) {
+  if (!hasWindow()) {
+    return false;
+  }
+  return value instanceof HTMLElement || value instanceof getWindow(value).HTMLElement;
+}
+function isShadowRoot(value) {
+  if (!hasWindow() || typeof ShadowRoot === 'undefined') {
+    return false;
+  }
+  return value instanceof ShadowRoot || value instanceof getWindow(value).ShadowRoot;
+}
+function isOverflowElement(element) {
+  const {
+    overflow,
+    overflowX,
+    overflowY,
+    display
+  } = getComputedStyle(element);
+  return /auto|scroll|overlay|hidden|clip/.test(overflow + overflowY + overflowX) && display !== 'inline' && display !== 'contents';
+}
+function isTableElement(element) {
+  return /^(table|td|th)$/.test(getNodeName(element));
+}
+function isTopLayer(element) {
+  try {
+    if (element.matches(':popover-open')) {
+      return true;
+    }
+  } catch (_e) {
+    // no-op
+  }
+  try {
+    return element.matches(':modal');
+  } catch (_e) {
+    return false;
+  }
+}
+const willChangeRe = /transform|translate|scale|rotate|perspective|filter/;
+const containRe = /paint|layout|strict|content/;
+const isNotNone = value => !!value && value !== 'none';
+let isWebKitValue;
+function isContainingBlock(elementOrCss) {
+  const css = isElement(elementOrCss) ? getComputedStyle(elementOrCss) : elementOrCss;
+
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block
+  // https://drafts.csswg.org/css-transforms-2/#individual-transforms
+  return isNotNone(css.transform) || isNotNone(css.translate) || isNotNone(css.scale) || isNotNone(css.rotate) || isNotNone(css.perspective) || !isWebKit() && (isNotNone(css.backdropFilter) || isNotNone(css.filter)) || willChangeRe.test(css.willChange || '') || containRe.test(css.contain || '');
+}
+function getContainingBlock(element) {
+  let currentNode = getParentNode(element);
+  while (isHTMLElement(currentNode) && !isLastTraversableNode(currentNode)) {
+    if (isContainingBlock(currentNode)) {
+      return currentNode;
+    } else if (isTopLayer(currentNode)) {
+      return null;
+    }
+    currentNode = getParentNode(currentNode);
+  }
+  return null;
+}
+function isWebKit() {
+  if (isWebKitValue == null) {
+    isWebKitValue = typeof CSS !== 'undefined' && CSS.supports && CSS.supports('-webkit-backdrop-filter', 'none');
+  }
+  return isWebKitValue;
+}
+function isLastTraversableNode(node) {
+  return /^(html|body|#document)$/.test(getNodeName(node));
+}
+function getComputedStyle(element) {
+  return getWindow(element).getComputedStyle(element);
+}
+function getNodeScroll(element) {
+  if (isElement(element)) {
+    return {
+      scrollLeft: element.scrollLeft,
+      scrollTop: element.scrollTop
+    };
+  }
+  return {
+    scrollLeft: element.scrollX,
+    scrollTop: element.scrollY
+  };
+}
+function getParentNode(node) {
+  if (getNodeName(node) === 'html') {
+    return node;
+  }
+  const result =
+  // Step into the shadow DOM of the parent of a slotted node.
+  node.assignedSlot ||
+  // DOM Element detected.
+  node.parentNode ||
+  // ShadowRoot detected.
+  isShadowRoot(node) && node.host ||
+  // Fallback.
+  getDocumentElement(node);
+  return isShadowRoot(result) ? result.host : result;
+}
+function getNearestOverflowAncestor(node) {
+  const parentNode = getParentNode(node);
+  if (isLastTraversableNode(parentNode)) {
+    return (node.ownerDocument || node).body;
+  }
+  if (isHTMLElement(parentNode) && isOverflowElement(parentNode)) {
+    return parentNode;
+  }
+  return getNearestOverflowAncestor(parentNode);
+}
+function getOverflowAncestors(node, list, traverseIframes) {
+  var _node$ownerDocument2;
+  if (list === void 0) {
+    list = [];
+  }
+  if (traverseIframes === void 0) {
+    traverseIframes = true;
+  }
+  const scrollableAncestor = getNearestOverflowAncestor(node);
+  const isBody = scrollableAncestor === ((_node$ownerDocument2 = node.ownerDocument) == null ? void 0 : _node$ownerDocument2.body);
+  const win = getWindow(scrollableAncestor);
+  if (isBody) {
+    const frameElement = getFrameElement(win);
+    return list.concat(win, win.visualViewport || [], isOverflowElement(scrollableAncestor) ? scrollableAncestor : [], frameElement && traverseIframes ? getOverflowAncestors(frameElement) : []);
+  } else {
+    return list.concat(scrollableAncestor, getOverflowAncestors(scrollableAncestor, [], traverseIframes));
+  }
+}
+function getFrameElement(win) {
+  return win.parent && Object.getPrototypeOf(win.parent) ? win.frameElement : null;
+}
+
+
+
+
+/***/ },
+
+/***/ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs"
+/*!********************************************************************!*\
+  !*** ./node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs ***!
+  \********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   alignments: () => (/* binding */ alignments),
+/* harmony export */   clamp: () => (/* binding */ clamp),
+/* harmony export */   createCoords: () => (/* binding */ createCoords),
+/* harmony export */   evaluate: () => (/* binding */ evaluate),
+/* harmony export */   expandPaddingObject: () => (/* binding */ expandPaddingObject),
+/* harmony export */   floor: () => (/* binding */ floor),
+/* harmony export */   getAlignment: () => (/* binding */ getAlignment),
+/* harmony export */   getAlignmentAxis: () => (/* binding */ getAlignmentAxis),
+/* harmony export */   getAlignmentSides: () => (/* binding */ getAlignmentSides),
+/* harmony export */   getAxisLength: () => (/* binding */ getAxisLength),
+/* harmony export */   getExpandedPlacements: () => (/* binding */ getExpandedPlacements),
+/* harmony export */   getOppositeAlignmentPlacement: () => (/* binding */ getOppositeAlignmentPlacement),
+/* harmony export */   getOppositeAxis: () => (/* binding */ getOppositeAxis),
+/* harmony export */   getOppositeAxisPlacements: () => (/* binding */ getOppositeAxisPlacements),
+/* harmony export */   getOppositePlacement: () => (/* binding */ getOppositePlacement),
+/* harmony export */   getPaddingObject: () => (/* binding */ getPaddingObject),
+/* harmony export */   getSide: () => (/* binding */ getSide),
+/* harmony export */   getSideAxis: () => (/* binding */ getSideAxis),
+/* harmony export */   max: () => (/* binding */ max),
+/* harmony export */   min: () => (/* binding */ min),
+/* harmony export */   placements: () => (/* binding */ placements),
+/* harmony export */   rectToClientRect: () => (/* binding */ rectToClientRect),
+/* harmony export */   round: () => (/* binding */ round),
+/* harmony export */   sides: () => (/* binding */ sides)
+/* harmony export */ });
+/**
+ * Custom positioning reference element.
+ * @see https://floating-ui.com/docs/virtual-elements
+ */
+
+const sides = ['top', 'right', 'bottom', 'left'];
+const alignments = ['start', 'end'];
+const placements = /*#__PURE__*/sides.reduce((acc, side) => acc.concat(side, side + "-" + alignments[0], side + "-" + alignments[1]), []);
+const min = Math.min;
+const max = Math.max;
+const round = Math.round;
+const floor = Math.floor;
+const createCoords = v => ({
+  x: v,
+  y: v
+});
+const oppositeSideMap = {
+  left: 'right',
+  right: 'left',
+  bottom: 'top',
+  top: 'bottom'
+};
+function clamp(start, value, end) {
+  return max(start, min(value, end));
+}
+function evaluate(value, param) {
+  return typeof value === 'function' ? value(param) : value;
+}
+function getSide(placement) {
+  return placement.split('-')[0];
+}
+function getAlignment(placement) {
+  return placement.split('-')[1];
+}
+function getOppositeAxis(axis) {
+  return axis === 'x' ? 'y' : 'x';
+}
+function getAxisLength(axis) {
+  return axis === 'y' ? 'height' : 'width';
+}
+function getSideAxis(placement) {
+  const firstChar = placement[0];
+  return firstChar === 't' || firstChar === 'b' ? 'y' : 'x';
+}
+function getAlignmentAxis(placement) {
+  return getOppositeAxis(getSideAxis(placement));
+}
+function getAlignmentSides(placement, rects, rtl) {
+  if (rtl === void 0) {
+    rtl = false;
+  }
+  const alignment = getAlignment(placement);
+  const alignmentAxis = getAlignmentAxis(placement);
+  const length = getAxisLength(alignmentAxis);
+  let mainAlignmentSide = alignmentAxis === 'x' ? alignment === (rtl ? 'end' : 'start') ? 'right' : 'left' : alignment === 'start' ? 'bottom' : 'top';
+  if (rects.reference[length] > rects.floating[length]) {
+    mainAlignmentSide = getOppositePlacement(mainAlignmentSide);
+  }
+  return [mainAlignmentSide, getOppositePlacement(mainAlignmentSide)];
+}
+function getExpandedPlacements(placement) {
+  const oppositePlacement = getOppositePlacement(placement);
+  return [getOppositeAlignmentPlacement(placement), oppositePlacement, getOppositeAlignmentPlacement(oppositePlacement)];
+}
+function getOppositeAlignmentPlacement(placement) {
+  return placement.includes('start') ? placement.replace('start', 'end') : placement.replace('end', 'start');
+}
+const lrPlacement = ['left', 'right'];
+const rlPlacement = ['right', 'left'];
+const tbPlacement = ['top', 'bottom'];
+const btPlacement = ['bottom', 'top'];
+function getSideList(side, isStart, rtl) {
+  switch (side) {
+    case 'top':
+    case 'bottom':
+      if (rtl) return isStart ? rlPlacement : lrPlacement;
+      return isStart ? lrPlacement : rlPlacement;
+    case 'left':
+    case 'right':
+      return isStart ? tbPlacement : btPlacement;
+    default:
+      return [];
+  }
+}
+function getOppositeAxisPlacements(placement, flipAlignment, direction, rtl) {
+  const alignment = getAlignment(placement);
+  let list = getSideList(getSide(placement), direction === 'start', rtl);
+  if (alignment) {
+    list = list.map(side => side + "-" + alignment);
+    if (flipAlignment) {
+      list = list.concat(list.map(getOppositeAlignmentPlacement));
+    }
+  }
+  return list;
+}
+function getOppositePlacement(placement) {
+  const side = getSide(placement);
+  return oppositeSideMap[side] + placement.slice(side.length);
+}
+function expandPaddingObject(padding) {
+  var _padding$top, _padding$right, _padding$bottom, _padding$left;
+  return {
+    top: (_padding$top = padding.top) != null ? _padding$top : 0,
+    right: (_padding$right = padding.right) != null ? _padding$right : 0,
+    bottom: (_padding$bottom = padding.bottom) != null ? _padding$bottom : 0,
+    left: (_padding$left = padding.left) != null ? _padding$left : 0
+  };
+}
+function getPaddingObject(padding) {
+  return typeof padding !== 'number' ? expandPaddingObject(padding) : {
+    top: padding,
+    right: padding,
+    bottom: padding,
+    left: padding
+  };
+}
+function rectToClientRect(rect) {
+  const {
+    x,
+    y,
+    width,
+    height
+  } = rect;
+  return {
+    width,
+    height,
+    top: y,
+    left: x,
+    right: x + width,
+    bottom: y + height,
+    x,
+    y
+  };
+}
+
+
+
 
 /***/ },
 
@@ -16081,6 +29733,50 @@ var pencil_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODU
 
 /***/ },
 
+/***/ "./node_modules/@wordpress/icons/build-module/library/plus.mjs"
+/*!*********************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/plus.mjs ***!
+  \*********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ plus_default)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/icons/src/library/plus.tsx
+
+
+var plus_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M11 12.5V17.5H12.5V12.5H17.5V11H12.5V6H11V11H6V12.5H11Z" }) });
+
+//# sourceMappingURL=plus.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/reset.mjs"
+/*!**********************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/reset.mjs ***!
+  \**********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ reset_default)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/icons/src/library/reset.tsx
+
+
+var reset_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M7 11.5h10V13H7z" }) });
+
+//# sourceMappingURL=reset.mjs.map
+
+
+/***/ },
+
 /***/ "./node_modules/@wordpress/icons/build-module/library/search.mjs"
 /*!***********************************************************************!*\
   !*** ./node_modules/@wordpress/icons/build-module/library/search.mjs ***!
@@ -16124,6 +29820,343 @@ var settings_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MO
 ] });
 
 //# sourceMappingURL=settings.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/button/button.mjs"
+/*!*******************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/button/button.mjs ***!
+  \*******************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Button: () => (/* binding */ Button)
+/* harmony export */ });
+/* harmony import */ var _base_ui_react_button__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/react/button */ "./node_modules/@base-ui/react/button/Button.mjs");
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _wordpress_a11y__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/a11y */ "@wordpress/a11y");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/button/button.tsx
+
+
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/button/style.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("b74f1ac304", '@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{._97b0fc33c028be1a__button,.abbb272e2ce49bd6__is-unstyled{appearance:none;padding:0}._97b0fc33c028be1a__button{--wp-ui-button-font-weight:var(--wpds-typography-font-weight-emphasis,600);--wp-ui-button-background-color:var(--wpds-color-background-interactive-brand-strong,var(--wp-admin-theme-color,#3858e9));--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-brand-strong-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 93%,#000));--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-brand-strong-disabled,#e6e6e6);--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-brand-strong,#fff);--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-brand-strong-active,#fff);--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-brand-strong-disabled,#8d8d8d);--wp-ui-button-padding-block:var(--wpds-dimension-padding-xs,4px);--wp-ui-button-padding-inline:var(--wpds-dimension-padding-md,12px);--wp-ui-button-height:var(--wpds-dimension-size-lg,40px);--wp-ui-button-aspect-ratio:auto;--wp-ui-button-font-size:var(--wpds-typography-font-size-md,13px);--wp-ui-button-min-width:calc(4ch + var(--wp-ui-button-padding-inline)*2);--wp-ui-button-icon-margin:calc((var(--wpds-dimension-size-2xs, 16px) - var(--wpds-dimension-size-sm, 24px))/2);--wp-ui-button-border-color:var(--wp-ui-button-background-color);--wp-ui-button-border-color-active:var(--wp-ui-button-background-color-active);--wp-ui-button-border-color-disabled:var(--wp-ui-button-background-color-disabled);--_gcd-button-font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);--_gcd-button-font-size:var(--wp-ui-button-font-size);--_gcd-button-font-weight:var(--wp-ui-button-font-weight);align-items:center;aspect-ratio:var(--wp-ui-button-aspect-ratio);background-clip:border-box;background-color:var(--wp-ui-button-background-color);border-color:var(--wp-ui-button-border-color);border-radius:var(--wpds-border-radius-sm,2px);border-style:solid;border-width:1px;color:var(--wp-ui-button-foreground-color);display:inline-flex;font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wp-ui-button-font-size);font-weight:var(--wp-ui-button-font-weight);gap:var(--wpds-dimension-gap-sm,8px);justify-content:center;line-height:var(--wpds-typography-line-height-sm,20px);max-width:100%;min-height:var(--wp-ui-button-height);min-width:var(--wp-ui-button-min-width);overflow-wrap:anywhere;padding-block:var(--wp-ui-button-padding-block);padding-inline:var(--wp-ui-button-padding-inline);position:relative;text-align:center;text-decoration:none;&:not([data-disabled]){cursor:var(--wpds-cursor-control,pointer)}@media not (prefers-reduced-motion){transition:color .1s ease-out;*{transition:opacity .1s ease-out}}&[href]{cursor:pointer}[href]{color:inherit;text-decoration:inherit}&:not([data-disabled]):is(:hover,:active,:focus){background-color:var(--wp-ui-button-background-color-active);border-color:var(--wp-ui-button-border-color-active);color:var(--wp-ui-button-foreground-color-active)}&[data-disabled]:not(._914b42f315c0e580__is-loading){background-color:var(--wp-ui-button-background-color-disabled);border-color:var(--wp-ui-button-border-color-disabled);color:var(--wp-ui-button-foreground-color-disabled);@media (forced-colors:active){border-bottom-color:GrayText;border-left-color:GrayText;border-right-color:GrayText;border-top-color:GrayText;color:GrayText}}&:before{aspect-ratio:1;border:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid;border-block-end-color:transparent;border-block-start-color:var(--wp-ui-button-foreground-color);border-inline-end-color:var(--wp-ui-button-foreground-color);border-inline-start-color:transparent;border-radius:50%;box-sizing:border-box;content:"";display:block;height:var(--wp-ui-button-font-size);inset-inline-start:50%;opacity:0;pointer-events:none;position:absolute;top:50%;transform:translate(-50%,-50%);@media not (prefers-reduced-motion){transition:opacity .1s ease-out}@media (forced-colors:active){border-block-end-style:none;border-bottom-color:ButtonText;border-inline-start-style:none;border-left-color:ButtonText;border-right-color:ButtonText;border-top-color:ButtonText}}}._908205475f9f2a92__is-small{--wp-ui-button-padding-block:0px;--wp-ui-button-padding-inline:var(--wpds-dimension-padding-sm,8px);--wp-ui-button-height:var(--wpds-dimension-size-sm,24px)}._9f6fc6553aeb36fe__icon{margin:var(--wp-ui-button-icon-margin)}.dd460c965226cc77__is-brand{&._62d5a778b7b258ee__is-outline,&.ad0619a3217c6a5b__is-minimal{--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-brand,var(--wp-admin-theme-color,#3858e9));--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-brand-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 52%,#000));--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-brand-disabled,#8d8d8d)}&._62d5a778b7b258ee__is-outline{--wp-ui-button-background-color:var(--wpds-color-background-interactive-brand-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-brand-weak-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 12%,#fff));--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-brand-weak-disabled,#0000);--wp-ui-button-border-color:var(--wpds-color-stroke-interactive-brand,var(--wp-admin-theme-color,#3858e9));--wp-ui-button-border-color-active:var(--wpds-color-stroke-interactive-brand-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 85%,#000));--wp-ui-button-border-color-disabled:var(--wpds-color-stroke-interactive-brand-disabled,#dbdbdb)}&.ad0619a3217c6a5b__is-minimal{--wp-ui-button-background-color:var(--wpds-color-background-interactive-brand-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-brand-weak-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 12%,#fff));--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-brand-weak-disabled,#0000)}}.e722a8f96726aa99__is-neutral{&.ad0619a3217c6a5b__is-minimal[aria-pressed=true],&.b50b3358c5fb4d0b__is-solid{--wp-ui-button-background-color:var(--wpds-color-background-interactive-neutral-strong,#2d2d2d);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-neutral-strong-active,#1e1e1e);--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-neutral-strong-disabled,#e6e6e6);--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-neutral-strong,#f0f0f0);--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-neutral-strong-active,#f0f0f0);--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-neutral-strong-disabled,#8d8d8d)}&._62d5a778b7b258ee__is-outline,&.ad0619a3217c6a5b__is-minimal:not([aria-pressed=true]){--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-neutral-active,#1e1e1e);--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d)}&._62d5a778b7b258ee__is-outline{--wp-ui-button-background-color:var(--wpds-color-background-interactive-neutral-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-neutral-weak-active,#ededed);--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-neutral-weak-disabled,#0000);--wp-ui-button-border-color:var(--wpds-color-stroke-interactive-neutral,#8d8d8d);--wp-ui-button-border-color-active:var(--wpds-color-stroke-interactive-neutral-active,#6e6e6e);--wp-ui-button-border-color-disabled:var(--wpds-color-stroke-interactive-neutral-disabled,#dbdbdb)}&.ad0619a3217c6a5b__is-minimal:not([aria-pressed=true]){--wp-ui-button-background-color:var(--wpds-color-background-interactive-neutral-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-neutral-weak-active,#ededed);--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-neutral-weak-disabled,#0000)}}.abbb272e2ce49bd6__is-unstyled{background:none;border:none;min-width:unset}.cf59cf1b69629838__is-compact{--wp-ui-button-height:var(--wpds-dimension-size-md,32px)}._914b42f315c0e580__is-loading:not(.abbb272e2ce49bd6__is-unstyled){color:transparent;&:not([data-disabled]):is(:hover,:active,:focus){color:transparent}@media (forced-colors:active){color:ButtonFace}*{opacity:0}&:before{opacity:1;transition-delay:.05s;@media not (prefers-reduced-motion){animation:_5a1d53da6f830c8d__loading-animation 1s linear infinite}}}}@keyframes _5a1d53da6f830c8d__loading-animation{0%{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(1turn)}}}');
+}
+var style_default = { "button": "_97b0fc33c028be1a__button", "is-unstyled": "abbb272e2ce49bd6__is-unstyled", "is-loading": "_914b42f315c0e580__is-loading", "is-small": "_908205475f9f2a92__is-small", "icon": "_9f6fc6553aeb36fe__icon", "is-brand": "dd460c965226cc77__is-brand", "is-outline": "_62d5a778b7b258ee__is-outline", "is-minimal": "ad0619a3217c6a5b__is-minimal", "is-neutral": "e722a8f96726aa99__is-neutral", "is-solid": "b50b3358c5fb4d0b__is-solid", "is-compact": "cf59cf1b69629838__is-compact", "loading-animation": "_5a1d53da6f830c8d__loading-animation" };
+
+// packages/ui/src/utils/css/resets.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("10f3806643", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._336cd3e4e743482f__box-sizing{box-sizing:border-box;*,:after,:before{box-sizing:inherit}}}}");
+}
+var resets_default = { "box-sizing": "_336cd3e4e743482f__box-sizing" };
+
+// packages/ui/src/utils/css/focus.module.scss
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("2ffedd8246", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._64de9947bf305b7a__outset-ring--focus-within-visible:focus-within:has(:focus-visible),.af79fb116edb0dd7__outset-ring--focus:focus,.dfcfdc28396e5d98__outset-ring--focus-visible:focus-visible,.e5cd9ee879f6403a__outset-ring--focus-within:focus-within,:focus-visible ._81935a08e952f267__outset-ring--focus-parent-visible{--focus-color:var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));--_gcd-a-outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));--_gcd-div-outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--focus-color);outline-offset:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px))}._3c9f5ee9fc9c136d__outset-ring--focus-within-except-active:focus-within,.abc777e9713fa711__outset-ring--focus-except-active:focus{outline:none}._3c9f5ee9fc9c136d__outset-ring--focus-within-except-active:focus-within:not(:has(:active)),.abc777e9713fa711__outset-ring--focus-except-active:focus:not(:active){--focus-color:var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));--_gcd-a-outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));--_gcd-div-outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--focus-color);outline-offset:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px))}}}");
+}
+var focus_module_default = { "outset-ring--focus": "af79fb116edb0dd7__outset-ring--focus", "outset-ring--focus-visible": "dfcfdc28396e5d98__outset-ring--focus-visible", "outset-ring--focus-within": "e5cd9ee879f6403a__outset-ring--focus-within", "outset-ring--focus-within-visible": "_64de9947bf305b7a__outset-ring--focus-within-visible", "outset-ring--focus-parent-visible": "_81935a08e952f267__outset-ring--focus-parent-visible", "outset-ring--focus-except-active": "abc777e9713fa711__outset-ring--focus-except-active", "outset-ring--focus-within-except-active": "_3c9f5ee9fc9c136d__outset-ring--focus-within-except-active" };
+
+// packages/ui/src/utils/css/global-css-defense.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("af6d9984a6", "._6defc79820e382c6__button{box-sizing:var(--_gcd-button-box-sizing,border-box);font-family:var(--_gcd-button-font-family,inherit);font-size:var(--_gcd-button-font-size,inherit);font-weight:var(--_gcd-button-font-weight,inherit)}.d2cff2e5dea83bd1__input{box-sizing:var(--_gcd-input-box-sizing,border-box);font-family:var(--_gcd-input-font-family,inherit);font-size:var(--_gcd-input-font-size,inherit);font-weight:var(--_gcd-input-font-weight,inherit);margin:var(--_gcd-input-margin,0);&:is(textarea,[type=text],[type=password],[type=color],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){background-color:var(--_gcd-input-background-color,transparent);border:var(--_gcd-input-border,none);border-radius:var(--_gcd-input-border-radius,0);box-shadow:var(--_gcd-input-box-shadow,0 0 0 transparent);color:var(--_gcd-input-color,var(--wpds-color-foreground-interactive-neutral,#1e1e1e));&:focus{border-color:var(--_gcd-input-border-color-focus,var(--wp-admin-theme-color));box-shadow:var(--_gcd-input-box-shadow-focus,none);outline:var(--_gcd-input-outline-focus,none)}&:disabled{background:var(--_gcd-input-background-disabled,transparent);border-color:var(--_gcd-input-border-color-disabled,transparent);box-shadow:var(--_gcd-input-box-shadow-disabled,none);color:var(--_gcd-input-color-disabled,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}&::placeholder{color:var(--_gcd-input-placeholder-color,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}}&:is(textarea,[type=text],[type=password],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){line-height:var(--_gcd-input-line-height,inherit);min-height:var(--_gcd-input-min-height,auto);padding:var(--_gcd-input-padding,0)}}._547d86373d02e108__textarea{box-sizing:var(--_gcd-textarea-box-sizing,border-box);overflow:var(--_gcd-textarea-overflow,auto);resize:var(--_gcd-textarea-resize,block)}._8c15fd0ed9f28ba4__div{outline:var(--_gcd-div-outline,0 solid transparent)}p._43cec3e1eec1066d__p{font-size:var(--_gcd-p-font-size,13px);line-height:var(--_gcd-p-line-height,1.5);margin:var(--_gcd-p-margin,0)}:is(h1,h2,h3,h4,h5,h6).e97669c6d9a38497__heading{color:var(--_gcd-heading-color,var(--wpds-color-foreground-content-neutral,#1e1e1e));font-size:var(--_gcd-heading-font-size,inherit);font-weight:var(--_gcd-heading-font-weight,var(--wpds-typography-font-weight-emphasis,600));margin:var(--_gcd-heading-margin,0)}._2c0831b0499dbd6e__a,._2c0831b0499dbd6e__a:is(:hover,:focus,:active){border-radius:var(--_gcd-a-border-radius,0);box-shadow:var(--_gcd-a-box-shadow,none);color:var(--_gcd-a-color,inherit);outline:var(--_gcd-a-outline,0 solid transparent);transition:var(--_gcd-a-transition,none)}");
+}
+var global_css_defense_default = { "button": "_6defc79820e382c6__button", "input": "d2cff2e5dea83bd1__input", "textarea": "_547d86373d02e108__textarea", "div": "_8c15fd0ed9f28ba4__div", "p": "_43cec3e1eec1066d__p", "heading": "e97669c6d9a38497__heading", "a": "_2c0831b0499dbd6e__a" };
+
+// packages/ui/src/button/button.tsx
+
+var Button = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.forwardRef)(
+  function Button2({
+    tone = "brand",
+    variant = "solid",
+    size = "default",
+    className,
+    focusableWhenDisabled = true,
+    disabled,
+    loading,
+    loadingAnnouncement = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)("Loading"),
+    children,
+    ...props
+  }, ref) {
+    const mergedClassName = (0,clsx__WEBPACK_IMPORTED_MODULE_1__["default"])(
+      global_css_defense_default.button,
+      resets_default["box-sizing"],
+      focus_module_default["outset-ring--focus-except-active"],
+      variant !== "unstyled" && style_default.button,
+      style_default[`is-${tone}`],
+      style_default[`is-${variant}`],
+      style_default[`is-${size}`],
+      loading && style_default["is-loading"],
+      className
+    );
+    (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.useEffect)(() => {
+      if (loading && loadingAnnouncement) {
+        (0,_wordpress_a11y__WEBPACK_IMPORTED_MODULE_2__.speak)(loadingAnnouncement);
+      }
+    }, [loading, loadingAnnouncement]);
+    return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(
+      _base_ui_react_button__WEBPACK_IMPORTED_MODULE_0__.Button,
+      {
+        ref,
+        className: mergedClassName,
+        focusableWhenDisabled,
+        disabled: disabled ?? loading,
+        ...props,
+        children
+      }
+    );
+  }
+);
+
+//# sourceMappingURL=button.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/button/icon.mjs"
+/*!*****************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/button/icon.mjs ***!
+  \*****************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ButtonIcon: () => (/* binding */ ButtonIcon)
+/* harmony export */ });
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _icon_index_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../icon/index.mjs */ "./node_modules/@wordpress/ui/build-module/icon/icon.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/button/icon.tsx
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/button/style.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("b74f1ac304", '@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{._97b0fc33c028be1a__button,.abbb272e2ce49bd6__is-unstyled{appearance:none;padding:0}._97b0fc33c028be1a__button{--wp-ui-button-font-weight:var(--wpds-typography-font-weight-emphasis,600);--wp-ui-button-background-color:var(--wpds-color-background-interactive-brand-strong,var(--wp-admin-theme-color,#3858e9));--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-brand-strong-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 93%,#000));--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-brand-strong-disabled,#e6e6e6);--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-brand-strong,#fff);--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-brand-strong-active,#fff);--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-brand-strong-disabled,#8d8d8d);--wp-ui-button-padding-block:var(--wpds-dimension-padding-xs,4px);--wp-ui-button-padding-inline:var(--wpds-dimension-padding-md,12px);--wp-ui-button-height:var(--wpds-dimension-size-lg,40px);--wp-ui-button-aspect-ratio:auto;--wp-ui-button-font-size:var(--wpds-typography-font-size-md,13px);--wp-ui-button-min-width:calc(4ch + var(--wp-ui-button-padding-inline)*2);--wp-ui-button-icon-margin:calc((var(--wpds-dimension-size-2xs, 16px) - var(--wpds-dimension-size-sm, 24px))/2);--wp-ui-button-border-color:var(--wp-ui-button-background-color);--wp-ui-button-border-color-active:var(--wp-ui-button-background-color-active);--wp-ui-button-border-color-disabled:var(--wp-ui-button-background-color-disabled);--_gcd-button-font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);--_gcd-button-font-size:var(--wp-ui-button-font-size);--_gcd-button-font-weight:var(--wp-ui-button-font-weight);align-items:center;aspect-ratio:var(--wp-ui-button-aspect-ratio);background-clip:border-box;background-color:var(--wp-ui-button-background-color);border-color:var(--wp-ui-button-border-color);border-radius:var(--wpds-border-radius-sm,2px);border-style:solid;border-width:1px;color:var(--wp-ui-button-foreground-color);display:inline-flex;font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wp-ui-button-font-size);font-weight:var(--wp-ui-button-font-weight);gap:var(--wpds-dimension-gap-sm,8px);justify-content:center;line-height:var(--wpds-typography-line-height-sm,20px);max-width:100%;min-height:var(--wp-ui-button-height);min-width:var(--wp-ui-button-min-width);overflow-wrap:anywhere;padding-block:var(--wp-ui-button-padding-block);padding-inline:var(--wp-ui-button-padding-inline);position:relative;text-align:center;text-decoration:none;&:not([data-disabled]){cursor:var(--wpds-cursor-control,pointer)}@media not (prefers-reduced-motion){transition:color .1s ease-out;*{transition:opacity .1s ease-out}}&[href]{cursor:pointer}[href]{color:inherit;text-decoration:inherit}&:not([data-disabled]):is(:hover,:active,:focus){background-color:var(--wp-ui-button-background-color-active);border-color:var(--wp-ui-button-border-color-active);color:var(--wp-ui-button-foreground-color-active)}&[data-disabled]:not(._914b42f315c0e580__is-loading){background-color:var(--wp-ui-button-background-color-disabled);border-color:var(--wp-ui-button-border-color-disabled);color:var(--wp-ui-button-foreground-color-disabled);@media (forced-colors:active){border-bottom-color:GrayText;border-left-color:GrayText;border-right-color:GrayText;border-top-color:GrayText;color:GrayText}}&:before{aspect-ratio:1;border:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid;border-block-end-color:transparent;border-block-start-color:var(--wp-ui-button-foreground-color);border-inline-end-color:var(--wp-ui-button-foreground-color);border-inline-start-color:transparent;border-radius:50%;box-sizing:border-box;content:"";display:block;height:var(--wp-ui-button-font-size);inset-inline-start:50%;opacity:0;pointer-events:none;position:absolute;top:50%;transform:translate(-50%,-50%);@media not (prefers-reduced-motion){transition:opacity .1s ease-out}@media (forced-colors:active){border-block-end-style:none;border-bottom-color:ButtonText;border-inline-start-style:none;border-left-color:ButtonText;border-right-color:ButtonText;border-top-color:ButtonText}}}._908205475f9f2a92__is-small{--wp-ui-button-padding-block:0px;--wp-ui-button-padding-inline:var(--wpds-dimension-padding-sm,8px);--wp-ui-button-height:var(--wpds-dimension-size-sm,24px)}._9f6fc6553aeb36fe__icon{margin:var(--wp-ui-button-icon-margin)}.dd460c965226cc77__is-brand{&._62d5a778b7b258ee__is-outline,&.ad0619a3217c6a5b__is-minimal{--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-brand,var(--wp-admin-theme-color,#3858e9));--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-brand-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 52%,#000));--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-brand-disabled,#8d8d8d)}&._62d5a778b7b258ee__is-outline{--wp-ui-button-background-color:var(--wpds-color-background-interactive-brand-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-brand-weak-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 12%,#fff));--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-brand-weak-disabled,#0000);--wp-ui-button-border-color:var(--wpds-color-stroke-interactive-brand,var(--wp-admin-theme-color,#3858e9));--wp-ui-button-border-color-active:var(--wpds-color-stroke-interactive-brand-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 85%,#000));--wp-ui-button-border-color-disabled:var(--wpds-color-stroke-interactive-brand-disabled,#dbdbdb)}&.ad0619a3217c6a5b__is-minimal{--wp-ui-button-background-color:var(--wpds-color-background-interactive-brand-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-brand-weak-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 12%,#fff));--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-brand-weak-disabled,#0000)}}.e722a8f96726aa99__is-neutral{&.ad0619a3217c6a5b__is-minimal[aria-pressed=true],&.b50b3358c5fb4d0b__is-solid{--wp-ui-button-background-color:var(--wpds-color-background-interactive-neutral-strong,#2d2d2d);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-neutral-strong-active,#1e1e1e);--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-neutral-strong-disabled,#e6e6e6);--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-neutral-strong,#f0f0f0);--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-neutral-strong-active,#f0f0f0);--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-neutral-strong-disabled,#8d8d8d)}&._62d5a778b7b258ee__is-outline,&.ad0619a3217c6a5b__is-minimal:not([aria-pressed=true]){--wp-ui-button-foreground-color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);--wp-ui-button-foreground-color-active:var(--wpds-color-foreground-interactive-neutral-active,#1e1e1e);--wp-ui-button-foreground-color-disabled:var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d)}&._62d5a778b7b258ee__is-outline{--wp-ui-button-background-color:var(--wpds-color-background-interactive-neutral-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-neutral-weak-active,#ededed);--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-neutral-weak-disabled,#0000);--wp-ui-button-border-color:var(--wpds-color-stroke-interactive-neutral,#8d8d8d);--wp-ui-button-border-color-active:var(--wpds-color-stroke-interactive-neutral-active,#6e6e6e);--wp-ui-button-border-color-disabled:var(--wpds-color-stroke-interactive-neutral-disabled,#dbdbdb)}&.ad0619a3217c6a5b__is-minimal:not([aria-pressed=true]){--wp-ui-button-background-color:var(--wpds-color-background-interactive-neutral-weak,#0000);--wp-ui-button-background-color-active:var(--wpds-color-background-interactive-neutral-weak-active,#ededed);--wp-ui-button-background-color-disabled:var(--wpds-color-background-interactive-neutral-weak-disabled,#0000)}}.abbb272e2ce49bd6__is-unstyled{background:none;border:none;min-width:unset}.cf59cf1b69629838__is-compact{--wp-ui-button-height:var(--wpds-dimension-size-md,32px)}._914b42f315c0e580__is-loading:not(.abbb272e2ce49bd6__is-unstyled){color:transparent;&:not([data-disabled]):is(:hover,:active,:focus){color:transparent}@media (forced-colors:active){color:ButtonFace}*{opacity:0}&:before{opacity:1;transition-delay:.05s;@media not (prefers-reduced-motion){animation:_5a1d53da6f830c8d__loading-animation 1s linear infinite}}}}@keyframes _5a1d53da6f830c8d__loading-animation{0%{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(1turn)}}}');
+}
+var style_default = { "button": "_97b0fc33c028be1a__button", "is-unstyled": "abbb272e2ce49bd6__is-unstyled", "is-loading": "_914b42f315c0e580__is-loading", "is-small": "_908205475f9f2a92__is-small", "icon": "_9f6fc6553aeb36fe__icon", "is-brand": "dd460c965226cc77__is-brand", "is-outline": "_62d5a778b7b258ee__is-outline", "is-minimal": "ad0619a3217c6a5b__is-minimal", "is-neutral": "e722a8f96726aa99__is-neutral", "is-solid": "b50b3358c5fb4d0b__is-solid", "is-compact": "cf59cf1b69629838__is-compact", "loading-animation": "_5a1d53da6f830c8d__loading-animation" };
+
+// packages/ui/src/button/icon.tsx
+
+var ButtonIcon = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.forwardRef)(
+  function ButtonIcon2({ className, icon, ...props }, ref) {
+    return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(
+      _icon_index_mjs__WEBPACK_IMPORTED_MODULE_2__.Icon,
+      {
+        ref,
+        icon,
+        className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(style_default.icon, className),
+        size: 24,
+        ...props
+      }
+    );
+  }
+);
+
+//# sourceMappingURL=icon.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/button/index.mjs"
+/*!******************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/button/index.mjs ***!
+  \******************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Button: () => (/* binding */ Button)
+/* harmony export */ });
+/* harmony import */ var _button_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./button.mjs */ "./node_modules/@wordpress/ui/build-module/button/button.mjs");
+/* harmony import */ var _icon_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./icon.mjs */ "./node_modules/@wordpress/ui/build-module/button/icon.mjs");
+// packages/ui/src/button/index.ts
+
+
+_icon_mjs__WEBPACK_IMPORTED_MODULE_1__.ButtonIcon.displayName = "Button.Icon";
+var Button = Object.assign(_button_mjs__WEBPACK_IMPORTED_MODULE_0__.Button, {
+  /**
+   * An icon component specifically designed to work well when rendered inside
+   * a `Button` component.
+   */
+  Icon: _icon_mjs__WEBPACK_IMPORTED_MODULE_1__.ButtonIcon
+});
+
+//# sourceMappingURL=index.mjs.map
 
 
 /***/ },
@@ -16542,6 +30575,1307 @@ var Title = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(
 
 /***/ },
 
+/***/ "./node_modules/@wordpress/ui/build-module/form/input-control/input-control.mjs"
+/*!**************************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/input-control/input-control.mjs ***!
+  \**************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   InputControl: () => (/* binding */ InputControl)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _primitives_index_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../primitives/index.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/input/input.mjs");
+/* harmony import */ var _primitives_index_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../primitives/index.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/field/root.mjs");
+/* harmony import */ var _primitives_index_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../primitives/index.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/field/label.mjs");
+/* harmony import */ var _primitives_index_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../primitives/index.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/field/description.mjs");
+/* harmony import */ var _primitives_index_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../primitives/index.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/field/details.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/input-control/input-control.tsx
+
+
+
+var InputControl = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(
+  function InputControl2({
+    className,
+    label,
+    description,
+    details,
+    hideLabelFromVision,
+    ...restProps
+  }, ref) {
+    return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_primitives_index_mjs__WEBPACK_IMPORTED_MODULE_2__.Root, { className, children: [
+      /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_primitives_index_mjs__WEBPACK_IMPORTED_MODULE_3__.Label, { hideFromVision: hideLabelFromVision, children: label }),
+      /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_primitives_index_mjs__WEBPACK_IMPORTED_MODULE_1__.Input, { ref, ...restProps }),
+      description && /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_primitives_index_mjs__WEBPACK_IMPORTED_MODULE_4__.Description, { children: description }),
+      details && /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_primitives_index_mjs__WEBPACK_IMPORTED_MODULE_5__.Details, { children: details })
+    ] });
+  }
+);
+
+//# sourceMappingURL=input-control.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/field/description.mjs"
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/field/description.mjs ***!
+  \***************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Description: () => (/* binding */ Description)
+/* harmony export */ });
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _base_ui_react_field__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/react/field */ "./node_modules/@base-ui/react/field/description/FieldDescription.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/primitives/field/description.tsx
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/utils/css/global-css-defense.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("af6d9984a6", "._6defc79820e382c6__button{box-sizing:var(--_gcd-button-box-sizing,border-box);font-family:var(--_gcd-button-font-family,inherit);font-size:var(--_gcd-button-font-size,inherit);font-weight:var(--_gcd-button-font-weight,inherit)}.d2cff2e5dea83bd1__input{box-sizing:var(--_gcd-input-box-sizing,border-box);font-family:var(--_gcd-input-font-family,inherit);font-size:var(--_gcd-input-font-size,inherit);font-weight:var(--_gcd-input-font-weight,inherit);margin:var(--_gcd-input-margin,0);&:is(textarea,[type=text],[type=password],[type=color],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){background-color:var(--_gcd-input-background-color,transparent);border:var(--_gcd-input-border,none);border-radius:var(--_gcd-input-border-radius,0);box-shadow:var(--_gcd-input-box-shadow,0 0 0 transparent);color:var(--_gcd-input-color,var(--wpds-color-foreground-interactive-neutral,#1e1e1e));&:focus{border-color:var(--_gcd-input-border-color-focus,var(--wp-admin-theme-color));box-shadow:var(--_gcd-input-box-shadow-focus,none);outline:var(--_gcd-input-outline-focus,none)}&:disabled{background:var(--_gcd-input-background-disabled,transparent);border-color:var(--_gcd-input-border-color-disabled,transparent);box-shadow:var(--_gcd-input-box-shadow-disabled,none);color:var(--_gcd-input-color-disabled,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}&::placeholder{color:var(--_gcd-input-placeholder-color,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}}&:is(textarea,[type=text],[type=password],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){line-height:var(--_gcd-input-line-height,inherit);min-height:var(--_gcd-input-min-height,auto);padding:var(--_gcd-input-padding,0)}}._547d86373d02e108__textarea{box-sizing:var(--_gcd-textarea-box-sizing,border-box);overflow:var(--_gcd-textarea-overflow,auto);resize:var(--_gcd-textarea-resize,block)}._8c15fd0ed9f28ba4__div{outline:var(--_gcd-div-outline,0 solid transparent)}p._43cec3e1eec1066d__p{font-size:var(--_gcd-p-font-size,13px);line-height:var(--_gcd-p-line-height,1.5);margin:var(--_gcd-p-margin,0)}:is(h1,h2,h3,h4,h5,h6).e97669c6d9a38497__heading{color:var(--_gcd-heading-color,var(--wpds-color-foreground-content-neutral,#1e1e1e));font-size:var(--_gcd-heading-font-size,inherit);font-weight:var(--_gcd-heading-font-weight,var(--wpds-typography-font-weight-emphasis,600));margin:var(--_gcd-heading-margin,0)}._2c0831b0499dbd6e__a,._2c0831b0499dbd6e__a:is(:hover,:focus,:active){border-radius:var(--_gcd-a-border-radius,0);box-shadow:var(--_gcd-a-box-shadow,none);color:var(--_gcd-a-color,inherit);outline:var(--_gcd-a-outline,0 solid transparent);transition:var(--_gcd-a-transition,none)}");
+}
+var global_css_defense_default = { "button": "_6defc79820e382c6__button", "input": "d2cff2e5dea83bd1__input", "textarea": "_547d86373d02e108__textarea", "div": "_8c15fd0ed9f28ba4__div", "p": "_43cec3e1eec1066d__p", "heading": "e97669c6d9a38497__heading", "a": "_2c0831b0499dbd6e__a" };
+
+// packages/ui/src/utils/css/field.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("e08ffbfdae", '@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._2d5ad850b2f90964__label{--wp-ui-field-label-line-height:var(--wpds-typography-line-height-xs,16px);color:var(--wpds-color-foreground-content-neutral,#1e1e1e);font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-xs,11px);font-weight:var(--wpds-typography-font-weight-emphasis,600);line-height:var(--wp-ui-field-label-line-height);text-transform:uppercase;&._17c4214649230bea__is-plain{font-size:var(--wpds-typography-font-size-md,13px);text-transform:none}}._08a3750500e0233f__description{--_gcd-p-font-size:var(--wpds-typography-font-size-sm,12px);--_gcd-p-line-height:var(--wpds-typography-line-height-xs,16px);--_gcd-p-margin:0;text-wrap:pretty;color:var(--wpds-color-foreground-content-neutral-weak,#707070);font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-sm,12px);line-height:var(--wpds-typography-line-height-xs,16px)}}}');
+}
+var field_default = { "label": "_2d5ad850b2f90964__label", "is-plain": "_17c4214649230bea__is-plain", "description": "_08a3750500e0233f__description" };
+
+// packages/ui/src/form/primitives/field/description.tsx
+
+var Description = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.forwardRef)(function Description2({ className, ...restProps }, ref) {
+  return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(
+    _base_ui_react_field__WEBPACK_IMPORTED_MODULE_1__.FieldDescription,
+    {
+      ref,
+      className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(
+        global_css_defense_default.p,
+        field_default.description,
+        className
+      ),
+      ...restProps
+    }
+  );
+});
+
+//# sourceMappingURL=description.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/field/details.mjs"
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/field/details.mjs ***!
+  \***********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Details: () => (/* binding */ Details)
+/* harmony export */ });
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _base_ui_react_field__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/react/field */ "./node_modules/@base-ui/react/field/description/FieldDescription.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _visually_hidden_index_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../visually-hidden/index.mjs */ "./node_modules/@wordpress/ui/build-module/visually-hidden/visually-hidden.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/primitives/field/details.tsx
+
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/utils/css/field.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("e08ffbfdae", '@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._2d5ad850b2f90964__label{--wp-ui-field-label-line-height:var(--wpds-typography-line-height-xs,16px);color:var(--wpds-color-foreground-content-neutral,#1e1e1e);font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-xs,11px);font-weight:var(--wpds-typography-font-weight-emphasis,600);line-height:var(--wp-ui-field-label-line-height);text-transform:uppercase;&._17c4214649230bea__is-plain{font-size:var(--wpds-typography-font-size-md,13px);text-transform:none}}._08a3750500e0233f__description{--_gcd-p-font-size:var(--wpds-typography-font-size-sm,12px);--_gcd-p-line-height:var(--wpds-typography-line-height-xs,16px);--_gcd-p-margin:0;text-wrap:pretty;color:var(--wpds-color-foreground-content-neutral-weak,#707070);font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-sm,12px);line-height:var(--wpds-typography-line-height-xs,16px)}}}');
+}
+var field_default = { "label": "_2d5ad850b2f90964__label", "is-plain": "_17c4214649230bea__is-plain", "description": "_08a3750500e0233f__description" };
+
+// packages/ui/src/form/primitives/field/details.tsx
+
+
+var Details = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.forwardRef)(
+  function Details2({ className, ...restProps }, ref) {
+    return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, { children: [
+      /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_visually_hidden_index_mjs__WEBPACK_IMPORTED_MODULE_4__.VisuallyHidden, { render: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_base_ui_react_field__WEBPACK_IMPORTED_MODULE_1__.FieldDescription, {}), children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)("More details follow the field.") }),
+      /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(
+        "div",
+        {
+          ref,
+          className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(field_default.description, className),
+          ...restProps
+        }
+      )
+    ] });
+  }
+);
+
+//# sourceMappingURL=details.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/field/label.mjs"
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/field/label.mjs ***!
+  \*********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Label: () => (/* binding */ Label)
+/* harmony export */ });
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _base_ui_react_field__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/react/field */ "./node_modules/@base-ui/react/field/label/FieldLabel.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _visually_hidden_index_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../visually-hidden/index.mjs */ "./node_modules/@wordpress/ui/build-module/visually-hidden/visually-hidden.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/primitives/field/label.tsx
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/utils/css/field.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("e08ffbfdae", '@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._2d5ad850b2f90964__label{--wp-ui-field-label-line-height:var(--wpds-typography-line-height-xs,16px);color:var(--wpds-color-foreground-content-neutral,#1e1e1e);font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-xs,11px);font-weight:var(--wpds-typography-font-weight-emphasis,600);line-height:var(--wp-ui-field-label-line-height);text-transform:uppercase;&._17c4214649230bea__is-plain{font-size:var(--wpds-typography-font-size-md,13px);text-transform:none}}._08a3750500e0233f__description{--_gcd-p-font-size:var(--wpds-typography-font-size-sm,12px);--_gcd-p-line-height:var(--wpds-typography-line-height-xs,16px);--_gcd-p-margin:0;text-wrap:pretty;color:var(--wpds-color-foreground-content-neutral-weak,#707070);font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-sm,12px);line-height:var(--wpds-typography-line-height-xs,16px)}}}');
+}
+var field_default = { "label": "_2d5ad850b2f90964__label", "is-plain": "_17c4214649230bea__is-plain", "description": "_08a3750500e0233f__description" };
+
+// packages/ui/src/form/primitives/field/label.tsx
+
+
+var Label = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.forwardRef)(
+  function Label2({ className, hideFromVision, variant, ...restProps }, ref) {
+    const label = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(
+      _base_ui_react_field__WEBPACK_IMPORTED_MODULE_1__.FieldLabel,
+      {
+        ref,
+        className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(
+          field_default.label,
+          variant && field_default[`is-${variant}`],
+          className
+        ),
+        ...restProps
+      }
+    );
+    if (hideFromVision) {
+      return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_visually_hidden_index_mjs__WEBPACK_IMPORTED_MODULE_3__.VisuallyHidden, { render: label });
+    }
+    return label;
+  }
+);
+
+//# sourceMappingURL=label.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/field/root.mjs"
+/*!********************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/field/root.mjs ***!
+  \********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Root: () => (/* binding */ Root)
+/* harmony export */ });
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _base_ui_react_field__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/react/field */ "./node_modules/@base-ui/react/field/root/FieldRoot.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _stack_index_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../stack/index.mjs */ "./node_modules/@wordpress/ui/build-module/stack/stack.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/primitives/field/root.tsx
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/utils/css/resets.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("10f3806643", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._336cd3e4e743482f__box-sizing{box-sizing:border-box;*,:after,:before{box-sizing:inherit}}}}");
+}
+var resets_default = { "box-sizing": "_336cd3e4e743482f__box-sizing" };
+
+// packages/ui/src/form/primitives/field/root.tsx
+
+
+var DEFAULT_RENDER = (props) => /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_stack_index_mjs__WEBPACK_IMPORTED_MODULE_3__.Stack, { ...props, direction: "column", gap: "sm" });
+var Root = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.forwardRef)(function Root2({ className, render = DEFAULT_RENDER, ...restProps }, ref) {
+  return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(
+    _base_ui_react_field__WEBPACK_IMPORTED_MODULE_1__.FieldRoot,
+    {
+      ref,
+      className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(resets_default["box-sizing"], className),
+      render,
+      ...restProps
+    }
+  );
+});
+
+//# sourceMappingURL=root.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/input-layout/index.mjs"
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/input-layout/index.mjs ***!
+  \****************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   InputLayout: () => (/* binding */ InputLayout)
+/* harmony export */ });
+/* harmony import */ var _input_layout_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./input-layout.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/input-layout/input-layout.mjs");
+/* harmony import */ var _slot_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./slot.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/input-layout/slot.mjs");
+// packages/ui/src/form/primitives/input-layout/index.ts
+
+
+var InputLayout = Object.assign(_input_layout_mjs__WEBPACK_IMPORTED_MODULE_0__.InputLayout, {
+  Slot: _slot_mjs__WEBPACK_IMPORTED_MODULE_1__.InputLayoutSlot
+});
+
+//# sourceMappingURL=index.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/input-layout/input-layout.mjs"
+/*!***********************************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/input-layout/input-layout.mjs ***!
+  \***********************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   InputLayout: () => (/* binding */ InputLayout)
+/* harmony export */ });
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/primitives/input-layout/input-layout.tsx
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/utils/css/global-css-defense.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("af6d9984a6", "._6defc79820e382c6__button{box-sizing:var(--_gcd-button-box-sizing,border-box);font-family:var(--_gcd-button-font-family,inherit);font-size:var(--_gcd-button-font-size,inherit);font-weight:var(--_gcd-button-font-weight,inherit)}.d2cff2e5dea83bd1__input{box-sizing:var(--_gcd-input-box-sizing,border-box);font-family:var(--_gcd-input-font-family,inherit);font-size:var(--_gcd-input-font-size,inherit);font-weight:var(--_gcd-input-font-weight,inherit);margin:var(--_gcd-input-margin,0);&:is(textarea,[type=text],[type=password],[type=color],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){background-color:var(--_gcd-input-background-color,transparent);border:var(--_gcd-input-border,none);border-radius:var(--_gcd-input-border-radius,0);box-shadow:var(--_gcd-input-box-shadow,0 0 0 transparent);color:var(--_gcd-input-color,var(--wpds-color-foreground-interactive-neutral,#1e1e1e));&:focus{border-color:var(--_gcd-input-border-color-focus,var(--wp-admin-theme-color));box-shadow:var(--_gcd-input-box-shadow-focus,none);outline:var(--_gcd-input-outline-focus,none)}&:disabled{background:var(--_gcd-input-background-disabled,transparent);border-color:var(--_gcd-input-border-color-disabled,transparent);box-shadow:var(--_gcd-input-box-shadow-disabled,none);color:var(--_gcd-input-color-disabled,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}&::placeholder{color:var(--_gcd-input-placeholder-color,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}}&:is(textarea,[type=text],[type=password],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){line-height:var(--_gcd-input-line-height,inherit);min-height:var(--_gcd-input-min-height,auto);padding:var(--_gcd-input-padding,0)}}._547d86373d02e108__textarea{box-sizing:var(--_gcd-textarea-box-sizing,border-box);overflow:var(--_gcd-textarea-overflow,auto);resize:var(--_gcd-textarea-resize,block)}._8c15fd0ed9f28ba4__div{outline:var(--_gcd-div-outline,0 solid transparent)}p._43cec3e1eec1066d__p{font-size:var(--_gcd-p-font-size,13px);line-height:var(--_gcd-p-line-height,1.5);margin:var(--_gcd-p-margin,0)}:is(h1,h2,h3,h4,h5,h6).e97669c6d9a38497__heading{color:var(--_gcd-heading-color,var(--wpds-color-foreground-content-neutral,#1e1e1e));font-size:var(--_gcd-heading-font-size,inherit);font-weight:var(--_gcd-heading-font-weight,var(--wpds-typography-font-weight-emphasis,600));margin:var(--_gcd-heading-margin,0)}._2c0831b0499dbd6e__a,._2c0831b0499dbd6e__a:is(:hover,:focus,:active){border-radius:var(--_gcd-a-border-radius,0);box-shadow:var(--_gcd-a-box-shadow,none);color:var(--_gcd-a-color,inherit);outline:var(--_gcd-a-outline,0 solid transparent);transition:var(--_gcd-a-transition,none)}");
+}
+var global_css_defense_default = { "button": "_6defc79820e382c6__button", "input": "d2cff2e5dea83bd1__input", "textarea": "_547d86373d02e108__textarea", "div": "_8c15fd0ed9f28ba4__div", "p": "_43cec3e1eec1066d__p", "heading": "e97669c6d9a38497__heading", "a": "_2c0831b0499dbd6e__a" };
+
+// packages/ui/src/utils/css/resets.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("10f3806643", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._336cd3e4e743482f__box-sizing{box-sizing:border-box;*,:after,:before{box-sizing:inherit}}}}");
+}
+var resets_default = { "box-sizing": "_336cd3e4e743482f__box-sizing" };
+
+// packages/ui/src/form/primitives/input-layout/style.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("bc14d8e61b", '@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{.cb2baafdc08746bb__input-layout{--wp-ui-input-layout-padding-inline:var(--wpds-dimension-padding-md,12px);background-color:var(--wpds-color-background-interactive-neutral-weak,#0000);border-color:var(--wpds-color-stroke-interactive-neutral,#8d8d8d);border-radius:var(--wpds-border-radius-sm,2px);border-style:solid;border-width:var(--wpds-border-width-xs,1px);color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);display:flex;font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:max(var(--wpds-typography-font-size-md,13px),16px);height:var(--wpds-dimension-size-lg,40px);line-height:1;@media (min-width:600px){font-size:var(--wpds-typography-font-size-md,13px)}&._0c807a84cbb94e0c__is-size-compact{height:var(--wpds-dimension-size-md,32px)}&._0c807a84cbb94e0c__is-size-compact,&.ed67cda122dc1e7b__is-size-small{--wp-ui-input-layout-padding-inline:var(--wpds-dimension-padding-sm,8px)}&.ed67cda122dc1e7b__is-size-small{height:var(--wpds-dimension-size-sm,24px)}&._6fb7104732387680__is-disabled,&:has([data-can-disable-input-layout][data-disabled]){background-color:var(--wpds-color-background-interactive-neutral-weak-disabled,#0000);border-color:var(--wpds-color-stroke-interactive-neutral-disabled,#dbdbdb);color:var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d);@media (forced-colors:active){border-bottom-color:GrayText;border-left-color:GrayText;border-right-color:GrayText;border-top-color:GrayText;color:GrayText}}&._8097270636ca6100__is-borderless{border-color:transparent}&:has(._0d7afad74a057888__input-layout-slot:focus-within){outline:none}&:hover:not(._6fb7104732387680__is-disabled,:has([data-can-disable-input-layout][data-disabled]),._8097270636ca6100__is-borderless){border-color:var(--wpds-color-stroke-interactive-neutral-active,#6e6e6e)}}.c192b41a12b4387b__slot-wrapper{display:contents}._0d7afad74a057888__input-layout-slot{align-items:center;display:flex;&._0c952682762ca288__is-padding-minimal{--wp-ui-input-layout-prefix-padding-start:calc(var(--wp-ui-input-layout-padding-inline) - var(--wpds-dimension-padding-xs, 4px));--wp-ui-input-layout-suffix-padding-end:calc(var(--wp-ui-input-layout-padding-inline) - var(--wpds-dimension-padding-xs, 4px))}[data-slot-type=prefix] &{padding-inline-start:var(--wp-ui-input-layout-prefix-padding-start,var(--wp-ui-input-layout-padding-inline))}[data-slot-type=suffix] &{padding-inline-end:var(--wp-ui-input-layout-suffix-padding-end,var(--wp-ui-input-layout-padding-inline))}}}}');
+}
+var style_default = { "input-layout": "cb2baafdc08746bb__input-layout", "is-size-compact": "_0c807a84cbb94e0c__is-size-compact", "is-size-small": "ed67cda122dc1e7b__is-size-small", "is-disabled": "_6fb7104732387680__is-disabled", "is-borderless": "_8097270636ca6100__is-borderless", "input-layout-slot": "_0d7afad74a057888__input-layout-slot", "slot-wrapper": "c192b41a12b4387b__slot-wrapper", "is-padding-minimal": "_0c952682762ca288__is-padding-minimal" };
+
+// packages/ui/src/form/primitives/input-layout/input-layout.tsx
+
+var InputLayout = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.forwardRef)(
+  function InputLayout2({
+    className,
+    children,
+    visuallyDisabled,
+    size = "default",
+    isBorderless,
+    prefix,
+    suffix,
+    ...restProps
+  }, ref) {
+    return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(
+      "div",
+      {
+        ref,
+        className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(
+          global_css_defense_default.div,
+          resets_default["box-sizing"],
+          style_default["input-layout"],
+          style_default[`is-size-${size}`],
+          visuallyDisabled && style_default["is-disabled"],
+          isBorderless && style_default["is-borderless"],
+          className
+        ),
+        ...restProps,
+        children: [
+          _wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Children.count(prefix) > 0 && /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(
+            "div",
+            {
+              className: style_default["slot-wrapper"],
+              "data-slot-type": "prefix",
+              children: prefix
+            }
+          ),
+          children,
+          _wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Children.count(suffix) > 0 && /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(
+            "div",
+            {
+              className: style_default["slot-wrapper"],
+              "data-slot-type": "suffix",
+              children: suffix
+            }
+          )
+        ]
+      }
+    );
+  }
+);
+
+//# sourceMappingURL=input-layout.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/input-layout/slot.mjs"
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/input-layout/slot.mjs ***!
+  \***************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   InputLayoutSlot: () => (/* binding */ InputLayoutSlot)
+/* harmony export */ });
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/primitives/input-layout/slot.tsx
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/form/primitives/input-layout/style.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("bc14d8e61b", '@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{.cb2baafdc08746bb__input-layout{--wp-ui-input-layout-padding-inline:var(--wpds-dimension-padding-md,12px);background-color:var(--wpds-color-background-interactive-neutral-weak,#0000);border-color:var(--wpds-color-stroke-interactive-neutral,#8d8d8d);border-radius:var(--wpds-border-radius-sm,2px);border-style:solid;border-width:var(--wpds-border-width-xs,1px);color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);display:flex;font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:max(var(--wpds-typography-font-size-md,13px),16px);height:var(--wpds-dimension-size-lg,40px);line-height:1;@media (min-width:600px){font-size:var(--wpds-typography-font-size-md,13px)}&._0c807a84cbb94e0c__is-size-compact{height:var(--wpds-dimension-size-md,32px)}&._0c807a84cbb94e0c__is-size-compact,&.ed67cda122dc1e7b__is-size-small{--wp-ui-input-layout-padding-inline:var(--wpds-dimension-padding-sm,8px)}&.ed67cda122dc1e7b__is-size-small{height:var(--wpds-dimension-size-sm,24px)}&._6fb7104732387680__is-disabled,&:has([data-can-disable-input-layout][data-disabled]){background-color:var(--wpds-color-background-interactive-neutral-weak-disabled,#0000);border-color:var(--wpds-color-stroke-interactive-neutral-disabled,#dbdbdb);color:var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d);@media (forced-colors:active){border-bottom-color:GrayText;border-left-color:GrayText;border-right-color:GrayText;border-top-color:GrayText;color:GrayText}}&._8097270636ca6100__is-borderless{border-color:transparent}&:has(._0d7afad74a057888__input-layout-slot:focus-within){outline:none}&:hover:not(._6fb7104732387680__is-disabled,:has([data-can-disable-input-layout][data-disabled]),._8097270636ca6100__is-borderless){border-color:var(--wpds-color-stroke-interactive-neutral-active,#6e6e6e)}}.c192b41a12b4387b__slot-wrapper{display:contents}._0d7afad74a057888__input-layout-slot{align-items:center;display:flex;&._0c952682762ca288__is-padding-minimal{--wp-ui-input-layout-prefix-padding-start:calc(var(--wp-ui-input-layout-padding-inline) - var(--wpds-dimension-padding-xs, 4px));--wp-ui-input-layout-suffix-padding-end:calc(var(--wp-ui-input-layout-padding-inline) - var(--wpds-dimension-padding-xs, 4px))}[data-slot-type=prefix] &{padding-inline-start:var(--wp-ui-input-layout-prefix-padding-start,var(--wp-ui-input-layout-padding-inline))}[data-slot-type=suffix] &{padding-inline-end:var(--wp-ui-input-layout-suffix-padding-end,var(--wp-ui-input-layout-padding-inline))}}}}');
+}
+var style_default = { "input-layout": "cb2baafdc08746bb__input-layout", "is-size-compact": "_0c807a84cbb94e0c__is-size-compact", "is-size-small": "ed67cda122dc1e7b__is-size-small", "is-disabled": "_6fb7104732387680__is-disabled", "is-borderless": "_8097270636ca6100__is-borderless", "input-layout-slot": "_0d7afad74a057888__input-layout-slot", "slot-wrapper": "c192b41a12b4387b__slot-wrapper", "is-padding-minimal": "_0c952682762ca288__is-padding-minimal" };
+
+// packages/ui/src/form/primitives/input-layout/slot.tsx
+
+var InputLayoutSlot = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.forwardRef)(function InputLayoutSlot2({ padding = "default", className, ...restProps }, ref) {
+  return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(
+    "div",
+    {
+      ref,
+      className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(
+        style_default["input-layout-slot"],
+        style_default[`is-padding-${padding}`],
+        className
+      ),
+      ...restProps
+    }
+  );
+});
+InputLayoutSlot.displayName = "InputLayout.Slot";
+
+//# sourceMappingURL=slot.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/input/input.mjs"
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/input/input.mjs ***!
+  \*********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Input: () => (/* binding */ Input)
+/* harmony export */ });
+/* harmony import */ var _base_ui_react_input__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/react/input */ "./node_modules/@base-ui/react/input/Input.mjs");
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _input_layout_index_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../input-layout/index.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/input-layout/index.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/primitives/input/input.tsx
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/utils/css/global-css-defense.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("af6d9984a6", "._6defc79820e382c6__button{box-sizing:var(--_gcd-button-box-sizing,border-box);font-family:var(--_gcd-button-font-family,inherit);font-size:var(--_gcd-button-font-size,inherit);font-weight:var(--_gcd-button-font-weight,inherit)}.d2cff2e5dea83bd1__input{box-sizing:var(--_gcd-input-box-sizing,border-box);font-family:var(--_gcd-input-font-family,inherit);font-size:var(--_gcd-input-font-size,inherit);font-weight:var(--_gcd-input-font-weight,inherit);margin:var(--_gcd-input-margin,0);&:is(textarea,[type=text],[type=password],[type=color],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){background-color:var(--_gcd-input-background-color,transparent);border:var(--_gcd-input-border,none);border-radius:var(--_gcd-input-border-radius,0);box-shadow:var(--_gcd-input-box-shadow,0 0 0 transparent);color:var(--_gcd-input-color,var(--wpds-color-foreground-interactive-neutral,#1e1e1e));&:focus{border-color:var(--_gcd-input-border-color-focus,var(--wp-admin-theme-color));box-shadow:var(--_gcd-input-box-shadow-focus,none);outline:var(--_gcd-input-outline-focus,none)}&:disabled{background:var(--_gcd-input-background-disabled,transparent);border-color:var(--_gcd-input-border-color-disabled,transparent);box-shadow:var(--_gcd-input-box-shadow-disabled,none);color:var(--_gcd-input-color-disabled,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}&::placeholder{color:var(--_gcd-input-placeholder-color,var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d))}}&:is(textarea,[type=text],[type=password],[type=date],[type=datetime],[type=datetime-local],[type=email],[type=month],[type=number],[type=search],[type=tel],[type=time],[type=url],[type=week]){line-height:var(--_gcd-input-line-height,inherit);min-height:var(--_gcd-input-min-height,auto);padding:var(--_gcd-input-padding,0)}}._547d86373d02e108__textarea{box-sizing:var(--_gcd-textarea-box-sizing,border-box);overflow:var(--_gcd-textarea-overflow,auto);resize:var(--_gcd-textarea-resize,block)}._8c15fd0ed9f28ba4__div{outline:var(--_gcd-div-outline,0 solid transparent)}p._43cec3e1eec1066d__p{font-size:var(--_gcd-p-font-size,13px);line-height:var(--_gcd-p-line-height,1.5);margin:var(--_gcd-p-margin,0)}:is(h1,h2,h3,h4,h5,h6).e97669c6d9a38497__heading{color:var(--_gcd-heading-color,var(--wpds-color-foreground-content-neutral,#1e1e1e));font-size:var(--_gcd-heading-font-size,inherit);font-weight:var(--_gcd-heading-font-weight,var(--wpds-typography-font-weight-emphasis,600));margin:var(--_gcd-heading-margin,0)}._2c0831b0499dbd6e__a,._2c0831b0499dbd6e__a:is(:hover,:focus,:active){border-radius:var(--_gcd-a-border-radius,0);box-shadow:var(--_gcd-a-box-shadow,none);color:var(--_gcd-a-color,inherit);outline:var(--_gcd-a-outline,0 solid transparent);transition:var(--_gcd-a-transition,none)}");
+}
+var global_css_defense_default = { "button": "_6defc79820e382c6__button", "input": "d2cff2e5dea83bd1__input", "textarea": "_547d86373d02e108__textarea", "div": "_8c15fd0ed9f28ba4__div", "p": "_43cec3e1eec1066d__p", "heading": "e97669c6d9a38497__heading", "a": "_2c0831b0499dbd6e__a" };
+
+// packages/ui/src/utils/css/focus.module.scss
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("2ffedd8246", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._64de9947bf305b7a__outset-ring--focus-within-visible:focus-within:has(:focus-visible),.af79fb116edb0dd7__outset-ring--focus:focus,.dfcfdc28396e5d98__outset-ring--focus-visible:focus-visible,.e5cd9ee879f6403a__outset-ring--focus-within:focus-within,:focus-visible ._81935a08e952f267__outset-ring--focus-parent-visible{--focus-color:var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));--_gcd-a-outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));--_gcd-div-outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--focus-color);outline-offset:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px))}._3c9f5ee9fc9c136d__outset-ring--focus-within-except-active:focus-within,.abc777e9713fa711__outset-ring--focus-except-active:focus{outline:none}._3c9f5ee9fc9c136d__outset-ring--focus-within-except-active:focus-within:not(:has(:active)),.abc777e9713fa711__outset-ring--focus-except-active:focus:not(:active){--focus-color:var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));--_gcd-a-outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));--_gcd-div-outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--focus-color);outline-offset:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px))}}}");
+}
+var focus_module_default = { "outset-ring--focus": "af79fb116edb0dd7__outset-ring--focus", "outset-ring--focus-visible": "dfcfdc28396e5d98__outset-ring--focus-visible", "outset-ring--focus-within": "e5cd9ee879f6403a__outset-ring--focus-within", "outset-ring--focus-within-visible": "_64de9947bf305b7a__outset-ring--focus-within-visible", "outset-ring--focus-parent-visible": "_81935a08e952f267__outset-ring--focus-parent-visible", "outset-ring--focus-except-active": "abc777e9713fa711__outset-ring--focus-except-active", "outset-ring--focus-within-except-active": "_3c9f5ee9fc9c136d__outset-ring--focus-within-except-active" };
+
+// packages/ui/src/form/primitives/input/style.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("41fce05ee0", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{._2ae7be2fc1bb17a3__input{--_gcd-input-padding:var(--wp-ui-input-padding-block,0px) var(--wp-ui-input-layout-padding-inline,0px);background:transparent;border:none;color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);font-family:inherit;font-size:inherit;line-height:inherit;outline:none;padding-block:var(--wp-ui-input-padding-block,0);padding-inline:var(--wp-ui-input-layout-padding-inline,0);width:100%;&::placeholder{color:var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d)}&:disabled,&[aria-disabled=true]{color:var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d);@media (forced-colors:active){color:GrayText}}&[type=email],&[type=url]{direction:ltr}&[type=number]{appearance:textfield;&::-webkit-inner-spin-button,&::-webkit-outer-spin-button{appearance:none;margin:0}}}}}");
+}
+var style_default = { "input": "_2ae7be2fc1bb17a3__input" };
+
+// packages/ui/src/form/primitives/input/input.tsx
+
+
+var Input = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.forwardRef)(function Input2({ className, size = "default", prefix, suffix, style, ...restProps }, ref) {
+  return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(
+    _input_layout_index_mjs__WEBPACK_IMPORTED_MODULE_3__.InputLayout,
+    {
+      className: (0,clsx__WEBPACK_IMPORTED_MODULE_1__["default"])(
+        focus_module_default["outset-ring--focus-within"],
+        className
+      ),
+      style,
+      size,
+      visuallyDisabled: restProps.disabled,
+      prefix,
+      suffix,
+      children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(
+        _base_ui_react_input__WEBPACK_IMPORTED_MODULE_0__.Input,
+        {
+          ref,
+          className: (0,clsx__WEBPACK_IMPORTED_MODULE_1__["default"])(global_css_defense_default.input, style_default.input),
+          ...restProps
+        }
+      )
+    }
+  );
+});
+
+//# sourceMappingURL=input.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/icon-button/icon-button.mjs"
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/icon-button/icon-button.mjs ***!
+  \*****************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   IconButton: () => (/* binding */ IconButton)
+/* harmony export */ });
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _button_index_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../button/index.mjs */ "./node_modules/@wordpress/ui/build-module/button/index.mjs");
+/* harmony import */ var _icon_index_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../icon/index.mjs */ "./node_modules/@wordpress/ui/build-module/icon/icon.mjs");
+/* harmony import */ var _tooltip_index_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../tooltip/index.mjs */ "./node_modules/@wordpress/ui/build-module/tooltip/popup.mjs");
+/* harmony import */ var _tooltip_index_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../tooltip/index.mjs */ "./node_modules/@wordpress/ui/build-module/tooltip/trigger.mjs");
+/* harmony import */ var _tooltip_index_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../tooltip/index.mjs */ "./node_modules/@wordpress/ui/build-module/tooltip/root.mjs");
+/* harmony import */ var _utils_keyboard_shortcut_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils/keyboard-shortcut.mjs */ "./node_modules/@wordpress/ui/build-module/utils/keyboard-shortcut.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/icon-button/icon-button.tsx
+
+
+
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/icon-button/style.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("c5cdafb1bc", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer compositions{._28cfdc260e755391__icon-button{--wp-ui-button-aspect-ratio:1;--wp-ui-button-padding-inline:0px;--wp-ui-button-min-width:unset}.f1c70d719989a85a__icon{margin:-1px}}}");
+}
+var style_default = { "icon-button": "_28cfdc260e755391__icon-button", "icon": "f1c70d719989a85a__icon" };
+
+// packages/ui/src/icon-button/icon-button.tsx
+
+var IconButton = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.forwardRef)(
+  function IconButton2({
+    label,
+    className,
+    // Prevent accidental forwarding of `children`
+    children: _children,
+    disabled,
+    focusableWhenDisabled = true,
+    icon,
+    size,
+    shortcut,
+    positioner,
+    "aria-describedby": ariaDescribedBy,
+    "aria-keyshortcuts": ariaKeyShortcuts,
+    ...restProps
+  }, ref) {
+    const classes = (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(style_default["icon-button"], className);
+    const { descriptionId, targetProps } = (0,_utils_keyboard_shortcut_mjs__WEBPACK_IMPORTED_MODULE_7__.useKeyboardShortcutProps)({
+      "aria-describedby": ariaDescribedBy,
+      "aria-keyshortcuts": ariaKeyShortcuts,
+      shortcut
+    });
+    return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tooltip_index_mjs__WEBPACK_IMPORTED_MODULE_6__.Root, { children: [
+      /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(
+        _tooltip_index_mjs__WEBPACK_IMPORTED_MODULE_5__.Trigger,
+        {
+          ref,
+          ...targetProps,
+          disabled: disabled && !focusableWhenDisabled,
+          render: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(
+            _button_index_mjs__WEBPACK_IMPORTED_MODULE_2__.Button,
+            {
+              ...restProps,
+              size,
+              "aria-label": label,
+              disabled,
+              focusableWhenDisabled
+            }
+          ),
+          className: classes,
+          children: [
+            /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_icon_index_mjs__WEBPACK_IMPORTED_MODULE_3__.Icon, { icon, size: 24, className: style_default.icon }),
+            shortcut && descriptionId && /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(
+              _utils_keyboard_shortcut_mjs__WEBPACK_IMPORTED_MODULE_7__.KeyboardShortcutDescription,
+              {
+                descriptionId,
+                shortcut
+              }
+            )
+          ]
+        }
+      ),
+      /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_tooltip_index_mjs__WEBPACK_IMPORTED_MODULE_4__.Popup, { positioner, children: [
+        label,
+        shortcut && /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.Fragment, { children: [
+          " ",
+          /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_utils_keyboard_shortcut_mjs__WEBPACK_IMPORTED_MODULE_7__.KeyboardShortcutDisplay, { shortcut })
+        ] })
+      ] })
+    ] });
+  }
+);
+
+//# sourceMappingURL=icon-button.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/icon/icon.mjs"
+/*!***************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/icon/icon.mjs ***!
+  \***************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Icon: () => (/* binding */ Icon)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/icon/icon.tsx
+
+
+
+var Icon = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(function Icon2({ icon, size = 24, ...restProps }, ref) {
+  return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(
+    _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__.SVG,
+    {
+      ref,
+      ...icon.props,
+      ...restProps,
+      width: size,
+      height: size
+    }
+  );
+});
+
+//# sourceMappingURL=icon.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/lock-unlock.mjs"
+/*!*****************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/lock-unlock.mjs ***!
+  \*****************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   lock: () => (/* binding */ lock),
+/* harmony export */   unlock: () => (/* binding */ unlock)
+/* harmony export */ });
+/* harmony import */ var _wordpress_private_apis__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/private-apis */ "@wordpress/private-apis");
+// packages/ui/src/lock-unlock.ts
+
+var { lock, unlock } = (0,_wordpress_private_apis__WEBPACK_IMPORTED_MODULE_0__.__dangerousOptInToUnstableAPIsOnlyForCoreModules)(
+  "I acknowledge private features are not for use in themes or plugins and doing so will break in the next version of WordPress.",
+  "@wordpress/ui"
+);
+
+//# sourceMappingURL=lock-unlock.mjs.map
+
+
+/***/ },
+
 /***/ "./node_modules/@wordpress/ui/build-module/stack/stack.mjs"
 /*!*****************************************************************!*\
   !*** ./node_modules/@wordpress/ui/build-module/stack/stack.mjs ***!
@@ -16815,6 +32149,823 @@ var Text = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.forwardRef)(functi
 
 /***/ },
 
+/***/ "./node_modules/@wordpress/ui/build-module/tooltip/popup.mjs"
+/*!*******************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/tooltip/popup.mjs ***!
+  \*******************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Popup: () => (/* binding */ Popup)
+/* harmony export */ });
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _base_ui_react_tooltip__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/react/tooltip */ "./node_modules/@base-ui/react/tooltip/popup/TooltipPopup.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _portal_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./portal.mjs */ "./node_modules/@wordpress/ui/build-module/tooltip/portal.mjs");
+/* harmony import */ var _positioner_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./positioner.mjs */ "./node_modules/@wordpress/ui/build-module/tooltip/positioner.mjs");
+/* harmony import */ var _utils_render_slot_with_children_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/render-slot-with-children.mjs */ "./node_modules/@wordpress/ui/build-module/utils/render-slot-with-children.mjs");
+/* harmony import */ var _utils_theme_provider_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/theme-provider.mjs */ "./node_modules/@wordpress/ui/build-module/utils/theme-provider.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/tooltip/popup.tsx
+
+
+
+
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/tooltip/style.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("19fcc06039", '@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{._480b748dd3510e64__positioner{z-index:var(--wp-ui-tooltip-z-index,initial)}._50096b232db7709d__popup{--_wp-ui-elevation-sm:0 1px 2px rgba(0,0,0,.05),0 2px 3px rgba(0,0,0,.04),0 6px 6px rgba(0,0,0,.03),0 8px 8px rgba(0,0,0,.02);background-color:var(--wpds-color-background-surface-neutral-strong,#fff);border-radius:var(--wpds-border-radius-md,4px);box-shadow:var(--_wp-ui-elevation-sm);color:var(--wpds-color-foreground-content-neutral,#1e1e1e);font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-sm,12px);line-height:1.4;padding:var(--wpds-dimension-padding-xs,4px) var(--wpds-dimension-padding-sm,8px);@media (forced-colors:active){border-bottom-color:CanvasText;border-bottom-style:solid;border-bottom-width:1px;border-left-color:CanvasText;border-left-style:solid;border-left-width:1px;border-right-color:CanvasText;border-right-style:solid;border-right-width:1px;border-top-color:CanvasText;border-top-style:solid;border-top-width:1px}}}}');
+}
+var style_default = { "positioner": "_480b748dd3510e64__positioner", "popup": "_50096b232db7709d__popup" };
+
+// packages/ui/src/tooltip/popup.tsx
+
+var POPUP_COLOR = { background: "#1e1e1e" };
+var Popup = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.forwardRef)(function TooltipPopup({ portal, positioner, children, className, ...props }, ref) {
+  const popupContent = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_utils_theme_provider_mjs__WEBPACK_IMPORTED_MODULE_6__.ThemeProvider, { color: POPUP_COLOR, children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(
+    _base_ui_react_tooltip__WEBPACK_IMPORTED_MODULE_1__.TooltipPopup,
+    {
+      ref,
+      className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(style_default.popup, className),
+      ...props,
+      children
+    }
+  ) });
+  const positionedPopup = (0,_utils_render_slot_with_children_mjs__WEBPACK_IMPORTED_MODULE_5__.renderSlotWithChildren)(
+    positioner,
+    /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_positioner_mjs__WEBPACK_IMPORTED_MODULE_4__.Positioner, {}),
+    popupContent
+  );
+  return (0,_utils_render_slot_with_children_mjs__WEBPACK_IMPORTED_MODULE_5__.renderSlotWithChildren)(portal, /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_portal_mjs__WEBPACK_IMPORTED_MODULE_3__.Portal, {}), positionedPopup);
+});
+
+//# sourceMappingURL=popup.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/tooltip/portal.mjs"
+/*!********************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/tooltip/portal.mjs ***!
+  \********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Portal: () => (/* binding */ Portal)
+/* harmony export */ });
+/* harmony import */ var _base_ui_react_tooltip__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/react/tooltip */ "./node_modules/@base-ui/react/tooltip/portal/TooltipPortal.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _utils_wp_compat_overlay_slot_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/wp-compat-overlay-slot.mjs */ "./node_modules/@wordpress/ui/build-module/utils/wp-compat-overlay-slot.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/tooltip/portal.tsx
+
+
+
+
+var Portal = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.forwardRef)(
+  function TooltipPortal({ container, ...restProps }, ref) {
+    return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(
+      _base_ui_react_tooltip__WEBPACK_IMPORTED_MODULE_0__.TooltipPortal,
+      {
+        container: container ?? (0,_utils_wp_compat_overlay_slot_mjs__WEBPACK_IMPORTED_MODULE_2__.getWpCompatOverlaySlot)(),
+        ...restProps,
+        ref
+      }
+    );
+  }
+);
+
+//# sourceMappingURL=portal.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/tooltip/positioner.mjs"
+/*!************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/tooltip/positioner.mjs ***!
+  \************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Positioner: () => (/* binding */ Positioner)
+/* harmony export */ });
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _base_ui_react_tooltip__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/react/tooltip */ "./node_modules/@base-ui/react/tooltip/positioner/TooltipPositioner.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/tooltip/positioner.tsx
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/utils/css/resets.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("10f3806643", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._336cd3e4e743482f__box-sizing{box-sizing:border-box;*,:after,:before{box-sizing:inherit}}}}");
+}
+var resets_default = { "box-sizing": "_336cd3e4e743482f__box-sizing" };
+
+// packages/ui/src/tooltip/style.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("19fcc06039", '@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{._480b748dd3510e64__positioner{z-index:var(--wp-ui-tooltip-z-index,initial)}._50096b232db7709d__popup{--_wp-ui-elevation-sm:0 1px 2px rgba(0,0,0,.05),0 2px 3px rgba(0,0,0,.04),0 6px 6px rgba(0,0,0,.03),0 8px 8px rgba(0,0,0,.02);background-color:var(--wpds-color-background-surface-neutral-strong,#fff);border-radius:var(--wpds-border-radius-md,4px);box-shadow:var(--_wp-ui-elevation-sm);color:var(--wpds-color-foreground-content-neutral,#1e1e1e);font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-sm,12px);line-height:1.4;padding:var(--wpds-dimension-padding-xs,4px) var(--wpds-dimension-padding-sm,8px);@media (forced-colors:active){border-bottom-color:CanvasText;border-bottom-style:solid;border-bottom-width:1px;border-left-color:CanvasText;border-left-style:solid;border-left-width:1px;border-right-color:CanvasText;border-right-style:solid;border-right-width:1px;border-top-color:CanvasText;border-top-style:solid;border-top-width:1px}}}}');
+}
+var style_default = { "positioner": "_480b748dd3510e64__positioner", "popup": "_50096b232db7709d__popup" };
+
+// packages/ui/src/tooltip/positioner.tsx
+
+var Positioner = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.forwardRef)(
+  function TooltipPositioner({ align = "center", className, side = "top", sideOffset = 4, ...props }, ref) {
+    return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(
+      _base_ui_react_tooltip__WEBPACK_IMPORTED_MODULE_1__.TooltipPositioner,
+      {
+        ref,
+        align,
+        side,
+        sideOffset,
+        ...props,
+        className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(
+          resets_default["box-sizing"],
+          style_default.positioner,
+          className
+        )
+      }
+    );
+  }
+);
+
+//# sourceMappingURL=positioner.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/tooltip/root.mjs"
+/*!******************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/tooltip/root.mjs ***!
+  \******************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Root: () => (/* binding */ Root)
+/* harmony export */ });
+/* harmony import */ var _base_ui_react_tooltip__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/react/tooltip */ "./node_modules/@base-ui/react/tooltip/root/TooltipRoot.mjs");
+/* harmony import */ var _utils_direction_provider_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/direction-provider.mjs */ "./node_modules/@wordpress/ui/build-module/utils/direction-provider.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/tooltip/root.tsx
+
+
+
+function Root(props) {
+  return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_utils_direction_provider_mjs__WEBPACK_IMPORTED_MODULE_1__.DirectionProvider, { children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_base_ui_react_tooltip__WEBPACK_IMPORTED_MODULE_0__.TooltipRoot, { ...props }) });
+}
+
+//# sourceMappingURL=root.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/tooltip/trigger.mjs"
+/*!*********************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/tooltip/trigger.mjs ***!
+  \*********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Trigger: () => (/* binding */ Trigger)
+/* harmony export */ });
+/* harmony import */ var _base_ui_react_tooltip__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/react/tooltip */ "./node_modules/@base-ui/react/tooltip/trigger/TooltipTrigger.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/tooltip/trigger.tsx
+
+
+
+var Trigger = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.forwardRef)(
+  function TooltipTrigger(props, ref) {
+    return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_base_ui_react_tooltip__WEBPACK_IMPORTED_MODULE_0__.TooltipTrigger, { ref, ...props });
+  }
+);
+
+//# sourceMappingURL=trigger.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/utils/direction-provider.mjs"
+/*!******************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/utils/direction-provider.mjs ***!
+  \******************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DirectionProvider: () => (/* binding */ DirectionProvider)
+/* harmony export */ });
+/* harmony import */ var _base_ui_react_direction_provider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/react/direction-provider */ "./node_modules/@base-ui/react/direction-provider/DirectionProvider.mjs");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/utils/direction-provider.tsx
+
+
+
+function DirectionProvider({ children }) {
+  return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_base_ui_react_direction_provider__WEBPACK_IMPORTED_MODULE_0__.DirectionProvider, { direction: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.isRTL)() ? "rtl" : "ltr", children });
+}
+
+//# sourceMappingURL=direction-provider.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/utils/keyboard-shortcut.mjs"
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/utils/keyboard-shortcut.mjs ***!
+  \*****************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   KeyboardShortcutDescription: () => (/* binding */ KeyboardShortcutDescription),
+/* harmony export */   KeyboardShortcutDisplay: () => (/* binding */ KeyboardShortcutDisplay),
+/* harmony export */   useKeyboardShortcutProps: () => (/* binding */ useKeyboardShortcutProps)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _visually_hidden_index_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../visually-hidden/index.mjs */ "./node_modules/@wordpress/ui/build-module/visually-hidden/visually-hidden.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/utils/keyboard-shortcut.tsx
+
+
+
+
+function useKeyboardShortcutProps({
+  "aria-describedby": ariaDescribedBy,
+  "aria-keyshortcuts": ariaKeyShortcuts,
+  shortcut
+}) {
+  const generatedDescriptionId = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useId)();
+  const descriptionId = shortcut ? generatedDescriptionId : void 0;
+  const describedBy = [ariaDescribedBy, descriptionId].filter(Boolean).join(" ");
+  return {
+    descriptionId,
+    targetProps: {
+      "aria-describedby": describedBy || void 0,
+      "aria-keyshortcuts": shortcut?.ariaKeyShortcut ?? ariaKeyShortcuts
+    }
+  };
+}
+function KeyboardShortcutDescription({
+  descriptionId,
+  shortcut
+}) {
+  return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(
+    _visually_hidden_index_mjs__WEBPACK_IMPORTED_MODULE_2__.VisuallyHidden,
+    {
+      id: descriptionId,
+      "aria-hidden": "true",
+      render: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {}),
+      children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.sprintf)(
+        /* translators: %s: keyboard shortcut. */
+        (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("Keyboard shortcut: %s"),
+        shortcut.label ?? shortcut.ariaKeyShortcut
+      )
+    }
+  );
+}
+function KeyboardShortcutDisplay({
+  className,
+  shortcut
+}) {
+  return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", { "aria-hidden": "true", className, dir: "ltr", children: shortcut.displayShortcut });
+}
+
+//# sourceMappingURL=keyboard-shortcut.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/utils/render-slot-with-children.mjs"
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/utils/render-slot-with-children.mjs ***!
+  \*************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   renderSlotWithChildren: () => (/* binding */ renderSlotWithChildren)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+// packages/ui/src/utils/render-slot-with-children.ts
+
+function renderSlotWithChildren(slot, defaultSlot, children) {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.cloneElement)(slot ?? defaultSlot, { children });
+}
+
+//# sourceMappingURL=render-slot-with-children.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/utils/theme-provider.mjs"
+/*!**************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/utils/theme-provider.mjs ***!
+  \**************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+let _wordpress_theme__WEBPACK_IMPORTED_MODULE_0___namespace_cache;
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ThemeProvider: () => (/* binding */ ThemeProvider)
+/* harmony export */ });
+/* harmony import */ var _wordpress_theme__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/theme */ "@wordpress/theme");
+/* harmony import */ var _lock_unlock_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lock-unlock.mjs */ "./node_modules/@wordpress/ui/build-module/lock-unlock.mjs");
+// packages/ui/src/utils/theme-provider.ts
+
+
+function getThemeProvider() {
+  const themePackage = /*#__PURE__*/ (_wordpress_theme__WEBPACK_IMPORTED_MODULE_0___namespace_cache || (_wordpress_theme__WEBPACK_IMPORTED_MODULE_0___namespace_cache = __webpack_require__.t(_wordpress_theme__WEBPACK_IMPORTED_MODULE_0__, 2)));
+  if (themePackage.ThemeProvider) {
+    return themePackage.ThemeProvider;
+  }
+  if (!themePackage.privateApis) {
+    throw new Error(
+      "@wordpress/ui: @wordpress/theme must expose `ThemeProvider` or `privateApis.ThemeProvider`."
+    );
+  }
+  return (0,_lock_unlock_mjs__WEBPACK_IMPORTED_MODULE_1__.unlock)(
+    themePackage.privateApis
+  ).ThemeProvider;
+}
+var ThemeProvider = getThemeProvider();
+
+//# sourceMappingURL=theme-provider.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/utils/wp-compat-overlay-slot.mjs"
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/utils/wp-compat-overlay-slot.mjs ***!
+  \**********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   WP_COMPAT_OVERLAY_SLOT_ATTRIBUTE: () => (/* binding */ WP_COMPAT_OVERLAY_SLOT_ATTRIBUTE),
+/* harmony export */   __resetWpCompatOverlaySlotCacheForTests: () => (/* binding */ __resetWpCompatOverlaySlotCacheForTests),
+/* harmony export */   getWpCompatOverlaySlot: () => (/* binding */ getWpCompatOverlaySlot)
+/* harmony export */ });
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/utils/css/wp-compat-overlay-slot.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("be37f31c1e", "._11fc52b637ff8a7e__slot{inset:0;isolation:isolate;pointer-events:none;position:fixed;z-index:1000000003}@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._11fc52b637ff8a7e__slot>*{pointer-events:auto}}}");
+}
+var wp_compat_overlay_slot_default = { "slot": "_11fc52b637ff8a7e__slot" };
+
+// packages/ui/src/utils/wp-compat-overlay-slot.ts
+var WP_COMPAT_OVERLAY_SLOT_ATTRIBUTE = "data-wp-compat-overlay-slot";
+function resolveOwnerDocument() {
+  return typeof document === "undefined" ? null : document;
+}
+function isInWordPressEnvironment() {
+  let topWp;
+  try {
+    topWp = window.top?.wp;
+  } catch {
+  }
+  const wp = topWp ?? window.wp;
+  return typeof wp?.components === "object" && wp.components !== null;
+}
+var cachedSlot = null;
+function ensureSlotIsAccessible(element) {
+  element.setAttribute("aria-hidden", "false");
+  return element;
+}
+function createSlot(ownerDocument) {
+  const element = ownerDocument.createElement("div");
+  element.setAttribute(WP_COMPAT_OVERLAY_SLOT_ATTRIBUTE, "");
+  if (wp_compat_overlay_slot_default.slot) {
+    element.classList.add(wp_compat_overlay_slot_default.slot);
+  }
+  ownerDocument.body.appendChild(element);
+  return element;
+}
+function getWpCompatOverlaySlot() {
+  if (typeof window === "undefined") {
+    return void 0;
+  }
+  if (!isInWordPressEnvironment() && window.__wpUiCompatOverlaySlotEnabled !== true) {
+    return void 0;
+  }
+  const ownerDocument = resolveOwnerDocument();
+  if (!ownerDocument || !ownerDocument.body) {
+    return void 0;
+  }
+  if (cachedSlot && cachedSlot.ownerDocument === ownerDocument && cachedSlot.isConnected) {
+    return ensureSlotIsAccessible(cachedSlot);
+  }
+  const existing = ownerDocument.querySelector(
+    `[${WP_COMPAT_OVERLAY_SLOT_ATTRIBUTE}]`
+  );
+  if (existing instanceof HTMLDivElement) {
+    cachedSlot = ensureSlotIsAccessible(existing);
+    return cachedSlot;
+  }
+  if (cachedSlot?.isConnected) {
+    cachedSlot.remove();
+  }
+  cachedSlot = ensureSlotIsAccessible(createSlot(ownerDocument));
+  return cachedSlot;
+}
+function __resetWpCompatOverlaySlotCacheForTests() {
+  cachedSlot = null;
+}
+
+//# sourceMappingURL=wp-compat-overlay-slot.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/visually-hidden/visually-hidden.mjs"
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/visually-hidden/visually-hidden.mjs ***!
+  \*************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   VisuallyHidden: () => (/* binding */ VisuallyHidden)
+/* harmony export */ });
+/* harmony import */ var _base_ui_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/react */ "./node_modules/@base-ui/react/use-render/useRender.mjs");
+/* harmony import */ var _base_ui_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/react */ "./node_modules/@base-ui/react/merge-props/mergeProps.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+// packages/ui/src/visually-hidden/visually-hidden.tsx
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/visually-hidden/style.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("fa606a57ae", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{.f37b9e2e191ebd66__visually-hidden{word-wrap:normal;border:0;clip-path:inset(50%);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px;word-break:normal}}}");
+}
+var style_default = { "visually-hidden": "f37b9e2e191ebd66__visually-hidden" };
+
+// packages/ui/src/visually-hidden/visually-hidden.tsx
+var VisuallyHidden = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.forwardRef)(
+  function VisuallyHidden2({ render, ...restProps }, ref) {
+    const element = (0,_base_ui_react__WEBPACK_IMPORTED_MODULE_0__.useRender)({
+      render,
+      ref,
+      props: (0,_base_ui_react__WEBPACK_IMPORTED_MODULE_1__.mergeProps)(
+        { className: style_default["visually-hidden"] },
+        restProps,
+        {
+          // @ts-expect-error Arbitrary data-* attributes aren't indexable on the typed div props. Kept hardcoded so consumers can't change or remove it.
+          "data-visually-hidden": ""
+        }
+      )
+    });
+    return element;
+  }
+);
+
+//# sourceMappingURL=visually-hidden.mjs.map
+
+
+/***/ },
+
 /***/ "./node_modules/clsx/dist/clsx.mjs"
 /*!*****************************************!*\
   !*** ./node_modules/clsx/dist/clsx.mjs ***!
@@ -16917,6 +33068,36 @@ module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/tru
 /******/ 				() => (module);
 /******/ 			__webpack_require__.d(getter, { a: getter });
 /******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/create fake namespace object */
+/******/ 	(() => {
+/******/ 		const getProto = Object.getPrototypeOf ? (obj) => (Object.getPrototypeOf(obj)) : (obj) => (obj.__proto__);
+/******/ 		let leafPrototypes;
+/******/ 		// create a fake namespace object
+/******/ 		// mode & 1: value is a module id, require it
+/******/ 		// mode & 2: merge all properties of value into the ns
+/******/ 		// mode & 4: return value when already ns object
+/******/ 		// mode & 16: return value when it's Promise-like
+/******/ 		// mode & 8|1: behave like require
+/******/ 		__webpack_require__.t = function(value, mode) {
+/******/ 			if(mode & 1) value = this(value);
+/******/ 			if(mode & 8) return value;
+/******/ 			if(typeof value === 'object' && value) {
+/******/ 				if((mode & 4) && value.__esModule) return value;
+/******/ 				if((mode & 16) && typeof value.then === 'function') return value;
+/******/ 			}
+/******/ 			const ns = Object.create(null);
+/******/ 			__webpack_require__.r(ns);
+/******/ 			const def = {};
+/******/ 			leafPrototypes = leafPrototypes || [null, getProto({}), getProto([]), getProto(getProto)];
+/******/ 			for(var current = mode & 2 && value; (typeof current == 'object' || typeof current == 'function') && !~leafPrototypes.indexOf(current); current = getProto(current)) {
+/******/ 				Object.getOwnPropertyNames(current).forEach((key) => (def[key] = () => (value[key])));
+/******/ 			}
+/******/ 			def['default'] = () => (value);
+/******/ 			__webpack_require__.d(ns, def);
+/******/ 			return ns;
 /******/ 		};
 /******/ 	})();
 /******/ 	

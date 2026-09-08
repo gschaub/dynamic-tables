@@ -304,6 +304,20 @@ export function generateBlockTableRef() {
 }
 
 /**
+ * Create a unique identifyier for reference use
+ *
+ * @since 1.4.9
+ *
+ * @return  {string} Unique reference identifier
+ */
+export function generateTablePartRef() {
+	const bytes = new Uint8Array(16);
+	window.crypto.getRandomValues(bytes);
+
+	return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+}
+
+/**
  * Calculate the cell id for each cell in the Summary.
  *
  * @since 1.0.0
@@ -925,13 +939,15 @@ export function formatClipboardContent(
  * @param {string} cellValueAttr               The value attribute of the table cell
  * @param {Object} currentColumnDataTypeObject The data type object for the current column
  * @param {string} columnDataType              The data type of the target column
+ * @param {string} cellFormattedText           Formatted clipboard value
  * @return {Object}  Coerced cell content
  */
 export function coerceCellData(
 	cellContent,
 	cellValueAttr,
 	currentColumnDataTypeObject,
-	columnDataType
+	columnDataType,
+	cellFormattedText
 ) {
 	const currentColumnDataType = currentColumnDataTypeObject?.type || 'general';
 	const dataTypeFormat = currentColumnDataTypeObject?.settings || '';
@@ -954,8 +970,12 @@ export function coerceCellData(
 					}
 					break;
 				case 'number':
+					updatedCellContent = cellFormattedText;
+					updatedCellValueAttr = { indexText: updatedCellContent };
 					break;
 				case 'date-time':
+					updatedCellContent = cellFormattedText;
+					updatedCellValueAttr = { indexText: updatedCellContent };
 					break;
 				default:
 					incompatibleDataTypes = true;

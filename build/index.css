@@ -26,7 +26,7 @@
   align-items: stretch;
 }
 .blocks-table__placeholder-input {
-  margin-bottom: 0;
+  padding: 4px;
 }
 .column-menu {
   visibility: hidden;
@@ -310,9 +310,57 @@
   line-height: 1.4;
   text-transform: none;
 }
-.dtbk-configure-column-split {
+.dtbk-full-width-input {
+  width: 100%;
+  width: -moz-available;
+  width: -webkit-fill-available;
+  width: stretch;
+  box-sizing: border-box;
+  min-width: 0;
+}
+.dtbk-increment-steppers {
+  flex-shrink: 0;
+  gap: 0;
+}
+.dtbk-increment-steppers .dtbk-increment-steppers__button {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0;
+  flex-shrink: 0;
+}
+.dtbk-increment-steppers .dtbk-increment-steppers__button svg {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+.dtbk-increment-steppers .dtbk-increment-steppers__separator {
+  color: inherit;
+  opacity: 0.45;
+  font-size: 14px;
+  line-height: 1;
+  -webkit-user-select: none;
+          user-select: none;
+  pointer-events: none;
+}
+.dtbk-configure-column-split__left {
   flex: 1 1 0;
   min-width: 0;
+  padding-right: 10px;
+  border-right: 1px solid #e1e1e1;
+}
+.dtbk-configure-column-split__right {
+  flex: 1 1 0;
+  min-width: 0;
+  padding-left: 9px;
+}
+.dtbk-new-dt {
+  --wp-ui-card-padding: 4px;
+  --wp-ui-card-header-content-gap: 12px;
+}
+.dtbk-new-dt_header {
+  text-align: center;
 }
 table {
   width: 100%;

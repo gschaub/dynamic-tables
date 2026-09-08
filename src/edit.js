@@ -26,11 +26,11 @@ import {
 	CustomSelectControl,
 	CheckboxControl,
 	TextControl,
-	__experimentalInputControl as InputControl,
+	__experimentalInputControl as OldInputControl,
 	BorderBoxControl,
 	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
-import { Card, Stack } from '@wordpress/ui';
+import { Card, Stack, InputControl as InputControl, InputLayout, IconButton } from '@wordpress/ui';
 import {
 	RichText,
 	useBlockProps,
@@ -43,7 +43,7 @@ import {
 	PanelColorSettings,
 } from '@wordpress/block-editor';
 import { create, getTextContent } from '@wordpress/rich-text';
-import { Icon, search, blockTable as icon, pencil as edit } from '@wordpress/icons';
+import { Icon, search, blockTable as icon, pencil as edit, plus, reset } from '@wordpress/icons';
 import clsx from 'clsx';
 
 /* Internal dependencies */
@@ -2396,7 +2396,8 @@ export default function Edit(props) {
 	 */
 	function onChangeInitialColumnCount(num_columns) {
 		let newNumColumns = num_columns;
-		if (num_columns < 1 || num_columns > 50) {
+
+		if (!Number.isInteger(num_columns) || num_columns < 1 || num_columns > 50) {
 			showMessageNotice(createNotice, 'invalid-num-columns', {
 				args: { count: num_columns },
 			});
@@ -2410,7 +2411,7 @@ export default function Edit(props) {
 		const priorColumnCount = priorColumns.length;
 		const columnCountDifference = newNumColumns - priorColumnCount;
 
-		const newColumns = priorColumns;
+		const newColumns = [...priorColumns];
 
 		if (columnCountDifference > 0) {
 			for (let i = 1; i <= columnCountDifference; i++) {
@@ -2440,7 +2441,8 @@ export default function Edit(props) {
 	 */
 	function onChangeInitialRowCount(num_rows) {
 		let newNumRows = num_rows;
-		if (num_rows < 1 || num_rows > 1000) {
+
+		if (!Number.isInteger(num_rows) || num_rows < 1 || num_rows > 1000) {
 			showMessageNotice(createNotice, 'invalid-num-rows', {
 				args: { count: num_rows },
 			});
@@ -2578,11 +2580,19 @@ export default function Edit(props) {
 	 * @since 1.3.1 - Add keyboard support for cell copy/cut/paste
 	 * @since 1.4.3 - Update for checkbox data entry
 	 * @since 1.4.5 - Add support for standard keyboard undo/redo shortcuts
+	 * @since 1.4.9 - Enter key (but not alt/enter) ends edit mode for RichText
 	 *
 	 * @param {Object} event onKeyDown event
 	 * @return {void}
 	 */
 	function onCellKeyDown(event) {
+		const isAltOnly = event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
+		const isShiftOnly = !event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
+		const isAltShiftOnly = event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
+		const isCtlOnly = !event.altKey && !event.shiftKey && (event.ctrlKey || event.metaKey);
+		const isAnyModifierKey = event.altKey || event.shiftKey || event.ctrlKey || event.metaKey;
+		const isPrimaryKeyOnly = !event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
+
 		const key = String(event.key || '').toLowerCase();
 		const hasPrimaryModifier = (event.ctrlKey || event.metaKey) && !event.altKey;
 		const isUndoRedoShortcut =
@@ -2602,6 +2612,10 @@ export default function Edit(props) {
 				editTarget?.tagName === 'INPUT' ? String(editTarget.type || '').toLowerCase() : '';
 			const editTargetInputMode =
 				editTarget?.tagName === 'INPUT' ? String(editTarget.inputMode || '').toLowerCase() : '';
+			const generalContentEditor = editTarget?.closest?.('.dtbk-cell-general-content');
+			const isGeneralContentEditor =
+				generalContentEditor?.isContentEditable === true &&
+				generalContentEditor.closest?.('[data-cell-id]')?.dataset.cellId === String(editingCellId);
 			const isNumberEditor =
 				['number', 'integer', 'percent', 'currency'].includes(editTargetInputType) ||
 				['numeric', 'decimal'].includes(editTargetInputMode);
@@ -2626,8 +2640,14 @@ export default function Edit(props) {
 				return;
 			}
 
+			// ENTER exits RichText editing except for exactly ALT+ENTER.
 			// For native date/time editors, Enter should commit via blur and exit edit mode.
-			if (event.key === 'Enter' && (isDateTimeEditor || isNumberEditor)) {
+			if (
+				event.key === 'Enter' &&
+				!event.isComposing &&
+				((isGeneralContentEditor && !isAltOnly) || isDateTimeEditor || isNumberEditor)
+			) {
+				console.log('Event Target Variable', editTarget);
 				event.preventDefault();
 				event.stopPropagation();
 				editTarget?.blur?.();
@@ -2692,12 +2712,6 @@ export default function Edit(props) {
 			editDataType === 'checkbox';
 		const canStartEditFromPrintableKey =
 			canTypeToEdit && (editDataType !== 'checkbox' || event.key === ' ');
-		const isAltOnly = event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
-		const isShiftOnly = !event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
-		const isAltShiftOnly = event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
-		const isCtlOnly = !event.altKey && !event.shiftKey && (event.ctrlKey || event.metaKey);
-		const isAnyModifierKey = event.altKey || event.shiftKey || event.ctrlKey || event.metaKey;
-		const isPrimaryKeyOnly = !event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
 		const canUseRowInsertDeleteShortcuts = !isHeaderRow;
 		const canUseStructureShortcuts = !isContentOnlyMode;
 		const cellId = activeCellEl.getAttribute('data-cell-id');
@@ -2987,7 +3001,6 @@ export default function Edit(props) {
 
 		// For input-backed editors, mount synchronously so the initiating
 		// printable key can be handled by the input itself.
-		// if (columnDataType === 'date-time' || columnDataType === 'number') {
 		if (
 			columnDataType === 'date-time' ||
 			columnDataType === 'number' ||
@@ -3421,6 +3434,7 @@ export default function Edit(props) {
 			columnDataType,
 			cellContent,
 			cellValueAttr,
+			cellFormattedText,
 		} = cellClipboard;
 
 		if (!inUse) return;
@@ -3450,7 +3464,8 @@ export default function Edit(props) {
 				cellContent,
 				cellValueAttr,
 				currentColumnDataTypeObject,
-				columnDataType
+				columnDataType,
+				cellFormattedText
 			);
 		}
 
@@ -4555,6 +4570,8 @@ export default function Edit(props) {
 		</div>
 	);
 
+	const tableCreationMethodLabel = tableCreationMethod === 'new' ? 'New' : 'Existing';
+
 	return (
 		<div {...blockProps}>
 			{/* Render an existing table after it has been fetched  */}
@@ -5138,7 +5155,11 @@ export default function Edit(props) {
 
 						{tableCreationMethod !== 'choose' && (
 							<>
-								<p>Table creation method: {tableCreationMethod}</p>
+								<p>
+									<strong>
+										Table creation method: <em>{tableCreationMethodLabel}</em>
+									</strong>
+								</p>
 								<hr
 									style={{
 										alignSelf: 'stretch',
@@ -5171,7 +5192,7 @@ export default function Edit(props) {
 								/>
 								{tableRequest.action !== 'idle' && requestedTableIsResolving && (
 									<span className={'dtbk-spinner-message'}>
-										{__('Retrieving selected table...', 'dynamic-table-blocks')}
+										{__('Retrieving selected table…', 'dynamic-table-blocks')}
 										<Spinner />
 									</span>
 								)}
@@ -5180,51 +5201,142 @@ export default function Edit(props) {
 
 						{tableCreationMethod === 'new' && (
 							<>
-								<Card.Root>
-									<Card.Header>
+								<Card.Root className="dtbk-new-dt">
+									<Card.Header className="dtbk-new-dt_header">
 										<Card.Title>New Table Definition</Card.Title>
 									</Card.Header>
 									<Card.Content>
 										<Stack direction="row" gap="24px">
 											{/* Left column */}
-											<Stack direction="column" className="dtbk-configure-column-split">
+											<Stack direction="column" className="dtbk-configure-column-split__left">
 												<InputControl
 													label={__('Table Name', 'dynamic-table-blocks')}
 													placeholder="New Table"
-													required="true"
-													onChange={value =>
+													required
+													onValueChange={value =>
 														setCreateDraftTable(prev => ({
 															...prev,
 															tableName: value,
 														}))
 													}
 													value={createDraftTable.tableName}
-													className="blocks-table__placeholder-input"
+													className="blocks-table__placeholder-input dtbk-full-width-input"
+													size="compact"
 												/>
 
-												<NumberControl
-													__nextHasNoMarginBottom
+												<InputControl
 													label={__('Table Columns', 'dynamic-table-blocks')}
 													min={1}
-													required="true"
+													max={50}
+													step={1}
+													required
 													value={createDraftTable.numColumns}
-													onChange={e => onChangeInitialColumnCount(e)}
+													onValueChange={value => onChangeInitialColumnCount(Number(value))}
 													className="blocks-table__placeholder-input"
+													type="number"
+													size="compact"
+													suffix={
+														<InputLayout.Slot padding="minimal">
+															<Stack
+																direction="row"
+																align="center"
+																className="dtbk-increment-steppers"
+															>
+																<IconButton
+																	className="dtbk-increment-steppers__button"
+																	type="button"
+																	label={__('Increment columns', 'dynamic-table-blocks')}
+																	icon={plus}
+																	size="small"
+																	variant="minimal"
+																	disabled={Number(createDraftTable.numColumns) >= 50}
+																	onClick={() =>
+																		onChangeInitialColumnCount(
+																			Number(createDraftTable.numColumns) + 1
+																		)
+																	}
+																/>
+																<span
+																	className="dtbk-increment-steppers__separator"
+																	aria-hidden="true"
+																>
+																	/
+																</span>
+																<IconButton
+																	className="dtbk-increment-steppers__button"
+																	type="button"
+																	label={__('Decrement columns', 'dynamic-table-blocks')}
+																	icon={reset}
+																	size="small"
+																	variant="minimal"
+																	disabled={Number(createDraftTable.numColumns) <= 1}
+																	onClick={() =>
+																		onChangeInitialColumnCount(
+																			Number(createDraftTable.numColumns) - 1
+																		)
+																	}
+																/>
+															</Stack>
+														</InputLayout.Slot>
+													}
 												/>
 
-												<NumberControl
-													__nextHasNoMarginBottom
+												<InputControl
 													label={__('Table Rows', 'dynamic-table-blocks')}
-													required="true"
 													min={1}
+													max={1000}
+													step={1}
+													required
 													value={createDraftTable.numRows}
-													onChange={e => onChangeInitialRowCount(e)}
+													onValueChange={value => onChangeInitialRowCount(Number(value))}
 													className="blocks-table__placeholder-input"
+													type="number"
+													size="compact"
+													suffix={
+														<InputLayout.Slot padding="minimal">
+															<Stack
+																direction="row"
+																align="center"
+																className="dtbk-increment-steppers"
+															>
+																<IconButton
+																	className="dtbk-increment-steppers__button"
+																	type="button"
+																	label={__('Increment rows', 'dynamic-table-blocks')}
+																	icon={plus}
+																	size="small"
+																	variant="minimal"
+																	disabled={Number(createDraftTable.numRows) >= 1000}
+																	onClick={() =>
+																		onChangeInitialRowCount(Number(createDraftTable.numRows) + 1)
+																	}
+																/>
+																<span
+																	className="dtbk-increment-steppers__separator"
+																	aria-hidden="true"
+																>
+																	/
+																</span>
+																<IconButton
+																	className="dtbk-increment-steppers__button"
+																	type="button"
+																	label={__('Decrement columns', 'dynamic-table-blocks')}
+																	icon={reset}
+																	size="small"
+																	variant="minimal"
+																	disabled={Number(createDraftTable.numRows) <= 1}
+																	onClick={() =>
+																		onChangeInitialColumnCount(Number(createDraftTable.numRows) - 1)
+																	}
+																/>
+															</Stack>
+														</InputLayout.Slot>
+													}
 												/>
 											</Stack>
 
 											{/* Right column */}
-											<Stack direction="column" className="dtbk-configure-column-split">
+											<Stack direction="column" className="dtbk-configure-column-split__right">
 												<table>
 													<caption>Column Definitions</caption>
 													<thead>
@@ -5241,7 +5353,7 @@ export default function Edit(props) {
 																	<td>
 																		<InputControl
 																			placeholder="New Column"
-																			onChange={value =>
+																			onValueChange={value =>
 																				setCreateDraftTable(prev => ({
 																					...prev,
 																					columns: prev.columns.map(column =>
@@ -5251,7 +5363,9 @@ export default function Edit(props) {
 																					),
 																				}))
 																			}
+																			defaultValue={'Column ' + numberToLetter(Number(column_id))}
 																			value={column_name}
+																			size="compact"
 																		/>
 																	</td>
 																</tr>
@@ -5830,9 +5944,15 @@ function Cell(props) {
 		richText: () => (
 			<RichText
 				tagName="div"
+				className="dtbk-cell-general-content"
 				value={cellContent}
 				readOnly={!isEditing}
 				spellCheck={true}
+				onBlur={() => {
+					if (isEditing) {
+						onRequestStopEdit?.();
+					}
+				}}
 				onChange={
 					!isEditing
 						? undefined
