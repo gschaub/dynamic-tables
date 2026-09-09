@@ -47,7 +47,11 @@ import clsx from 'clsx';
 
 /* Internal dependencies */
 import { store as tableStore } from './data';
-import { areTableAndEntityRecordsEqual, entityRecordToTable } from './data/table-entity-adapter';
+import {
+	areTableAndEntityRecordsEqual,
+	entityRecordToTable,
+	withTableBorders,
+} from './data/table-entity-adapter';
 
 import {
 	usePostChangesSaved,
@@ -74,7 +78,7 @@ import {
 } from './summary-table-refresh';
 
 import {
-	tableSort,
+	// tableSort,
 	generateBlockTableRef,
 	numberToLetter,
 	getCellIdCoordinates,
@@ -1179,7 +1183,8 @@ export default function Edit(props) {
 	 * @since 1.3.0 Refactored
 	 */
 	const {
-		table,
+		// table,
+		table: storedTable,
 		tableStatus,
 		tableHasStartedResolving,
 		tableHasFinishedResolving,
@@ -1215,6 +1220,12 @@ export default function Edit(props) {
 			};
 		},
 		[table_id, isTableStale, block_table_ref]
+	);
+
+	// Keep editor controls consistent with this block's border preference.
+	const table = useMemo(
+		() => (storedTable?.block_table_ref ? withTableBorders(storedTable, showBorders) : storedTable),
+		[storedTable, showBorders]
 	);
 
 	/* Table is no longer stale once it has finished resolving */
@@ -2173,55 +2184,60 @@ export default function Edit(props) {
 	 *
 	 * @since 1.0.0
 	 * @since 1.4.4 - Update to use table id from table object
+	 * @since 1.4.9 - Update offload primary logic to withTableBorders() helper function
 	 *
 	 * @param {Object}  table     Dynamic Table
 	 * @param {boolean} isChecked Are borders being toggled on?
 	 */
 	function onToggleBorders(table, isChecked) {
-		let updatedRows;
-		let updatedColumns;
-		let updatedCells;
+		// let updatedRows;
+		// let updatedColumns;
+		// let updatedCells;
 
-		const currentTableId = table.table_id;
-		const currentNumColumns = table.columns.filter(column => column.column_id !== '0').length;
-		const currentNumRows = table.rows.filter(row => row.row_id !== '0').length;
+		// const currentTableId = table.table_id;
+		// const currentNumColumns = table.columns.filter(column => column.column_id !== '0').length;
+		// const currentNumRows = table.rows.filter(row => row.row_id !== '0').length;
 
 		/**
 		 * Remove borders if unchecked
 		 */
-		if (isChecked === false) {
-			updatedRows = table.rows.filter(row => row.row_id !== '0');
-			updatedColumns = table.columns.filter(column => column.column_id !== '0');
-			updatedCells = table.cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
-			updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
-		} else {
-			/**  Create header row border at top of table */
-			const rowBorder = [];
-			rowBorder.push(getDefaultRow(currentTableId, 0, 'Border'));
+		// if (isChecked === false) {
+		// 	updatedRows = table.rows.filter(row => row.row_id !== '0');
+		// 	updatedColumns = table.columns.filter(column => column.column_id !== '0');
+		// 	updatedCells = table.cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
+		// 	updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
+		// } else {
+		// 	/**  Create header row border at top of table */
+		// 	const rowBorder = [];
+		// 	rowBorder.push(getDefaultRow(currentTableId, 0, 'Border'));
 
-			const rowCells = [];
-			for (let i = 0; i <= currentNumColumns; i++) {
-				const cell = getDefaultCell(currentTableId, i, 0, 'Border');
-				rowCells.push(cell);
-			}
+		// 	const rowCells = [];
+		// 	for (let i = 0; i <= currentNumColumns; i++) {
+		// 		const cell = getDefaultCell(currentTableId, i, 0, 'Border');
+		// 		rowCells.push(cell);
+		// 	}
 
-			/** Create column border down left side of table */
-			const columnBorder = [];
-			columnBorder.push(getDefaultColumn(currentTableId, 0, 'Border'));
+		// 	/** Create column border down left side of table */
+		// 	const columnBorder = [];
+		// 	columnBorder.push(getDefaultColumn(currentTableId, 0, 'Border'));
 
-			const columnCells = [];
-			for (let i = 1; i <= currentNumRows; i++) {
-				const cell = getDefaultCell(currentTableId, 0, i, 'Border');
-				columnCells.push(cell);
-			}
+		// 	const columnCells = [];
+		// 	for (let i = 1; i <= currentNumRows; i++) {
+		// 		const cell = getDefaultCell(currentTableId, 0, i, 'Border');
+		// 		columnCells.push(cell);
+		// 	}
 
-			/** Sort table parts */
-			updatedRows = tableSort('rows', [...table.rows, ...rowBorder]);
-			updatedColumns = tableSort('columns', [...table.columns, ...columnBorder]);
-			updatedCells = tableSort('cells', [...table.cells, ...rowCells, ...columnCells]);
+		// 	/** Sort table parts */
+		// 	updatedRows = tableSort('rows', [...table.rows, ...rowBorder]);
+		// 	updatedColumns = tableSort('columns', [...table.columns, ...columnBorder]);
+		// 	updatedCells = tableSort('cells', [...table.cells, ...rowCells, ...columnCells]);
 
-			updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
-		}
+		// 	updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
+		// }
+		const updatedTable = withTableBorders(table, isChecked);
+
+		updateTableBorder(table.table_id, updatedTable.rows, updatedTable.columns, updatedTable.cells);
+
 		setShowBorders(isChecked);
 		setTableStale(false);
 	}

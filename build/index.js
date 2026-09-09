@@ -5688,7 +5688,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   areTableAndEntityRecordsEqual: () => (/* binding */ areTableAndEntityRecordsEqual),
 /* harmony export */   entityRecordToTable: () => (/* binding */ entityRecordToTable),
-/* harmony export */   isDeepEqual: () => (/* binding */ isDeepEqual)
+/* harmony export */   isDeepEqual: () => (/* binding */ isDeepEqual),
+/* harmony export */   withTableBorders: () => (/* binding */ withTableBorders)
 /* harmony export */ });
 /* harmony import */ var _table_defaults__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../table-defaults */ "./src/table-defaults.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
@@ -5792,16 +5793,25 @@ function tableToComparableEntityRecord(sourceTable, recordId = sourceTable?.tabl
  * Add editor-only border controls to a normalized local table.
  *
  * @since    1.4.5
+ * @since    1.4.9 Added `includeBorders` parameter to optionally skip border generation
  *
- * @param {Object} table Local table without border controls
+ * @param {Object}  table          Local table without border controls
+ * @param {boolean} includeBorders Whether to include editor-only borders
  * @return {Object} Local table with border controls
  */
-function addTableBorders(table) {
-  console.log('addTableBorders');
+function withTableBorders(table, includeBorders = true) {
   const tableId = table.table_id;
   const rows = table.rows.filter(row => String(row?.row_id) !== '0');
   const columns = table.columns.filter(column => String(column?.column_id) !== '0');
   const cells = table.cells.filter(cell => String(cell?.row_id) !== '0' && String(cell?.column_id) !== '0');
+  if (!includeBorders) {
+    return {
+      ...table,
+      rows,
+      columns,
+      cells
+    };
+  }
   const columnIds = columns.map(column => Number(column.column_id)).filter(columnId => Number.isFinite(columnId) && columnId > 0).sort((a, b) => a - b);
   const rowIds = rows.map(row => Number(row.row_id)).filter(rowId => Number.isFinite(rowId) && rowId > 0).sort((a, b) => a - b);
   const borderCells = [(0,_table_defaults__WEBPACK_IMPORTED_MODULE_0__.getDefaultCell)(tableId, 0, 0, 'Border'), ...columnIds.map(columnId => (0,_table_defaults__WEBPACK_IMPORTED_MODULE_0__.getDefaultCell)(tableId, columnId, 0, 'Border')), ...rowIds.map(rowId => (0,_table_defaults__WEBPACK_IMPORTED_MODULE_0__.getDefaultCell)(tableId, 0, rowId, 'Border'))];
@@ -5855,7 +5865,7 @@ function entityRecordToTable(entityRecord, {
     columns,
     cells
   };
-  return includeBorders ? addTableBorders(table) : table;
+  return includeBorders ? withTableBorders(table) : table;
 }
 
 /**
@@ -7101,7 +7111,8 @@ function Edit(props) {
    * @since 1.3.0 Refactored
    */
   const {
-    table,
+    // table,
+    table: storedTable,
     tableStatus,
     tableHasStartedResolving,
     tableHasFinishedResolving,
@@ -7135,6 +7146,9 @@ function Edit(props) {
       tableIsResolving: tableIsResolving
     };
   }, [table_id, isTableStale, block_table_ref]);
+
+  // Keep editor controls consistent with this block's border preference.
+  const table = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useMemo)(() => storedTable?.block_table_ref ? (0,_data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_26__.withTableBorders)(storedTable, showBorders) : storedTable, [storedTable, showBorders]);
 
   /* Table is no longer stale once it has finished resolving */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
@@ -7939,51 +7953,58 @@ function Edit(props) {
    *
    * @since 1.0.0
    * @since 1.4.4 - Update to use table id from table object
+   * @since 1.4.9 - Update offload primary logic to withTableBorders() helper function
    *
    * @param {Object}  table     Dynamic Table
    * @param {boolean} isChecked Are borders being toggled on?
    */
   function onToggleBorders(table, isChecked) {
-    let updatedRows;
-    let updatedColumns;
-    let updatedCells;
-    const currentTableId = table.table_id;
-    const currentNumColumns = table.columns.filter(column => column.column_id !== '0').length;
-    const currentNumRows = table.rows.filter(row => row.row_id !== '0').length;
+    // let updatedRows;
+    // let updatedColumns;
+    // let updatedCells;
+
+    // const currentTableId = table.table_id;
+    // const currentNumColumns = table.columns.filter(column => column.column_id !== '0').length;
+    // const currentNumRows = table.rows.filter(row => row.row_id !== '0').length;
 
     /**
      * Remove borders if unchecked
      */
-    if (isChecked === false) {
-      updatedRows = table.rows.filter(row => row.row_id !== '0');
-      updatedColumns = table.columns.filter(column => column.column_id !== '0');
-      updatedCells = table.cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
-      updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
-    } else {
-      /**  Create header row border at top of table */
-      const rowBorder = [];
-      rowBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_31__.getDefaultRow)(currentTableId, 0, 'Border'));
-      const rowCells = [];
-      for (let i = 0; i <= currentNumColumns; i++) {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_31__.getDefaultCell)(currentTableId, i, 0, 'Border');
-        rowCells.push(cell);
-      }
+    // if (isChecked === false) {
+    // 	updatedRows = table.rows.filter(row => row.row_id !== '0');
+    // 	updatedColumns = table.columns.filter(column => column.column_id !== '0');
+    // 	updatedCells = table.cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
+    // 	updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
+    // } else {
+    // 	/**  Create header row border at top of table */
+    // 	const rowBorder = [];
+    // 	rowBorder.push(getDefaultRow(currentTableId, 0, 'Border'));
 
-      /** Create column border down left side of table */
-      const columnBorder = [];
-      columnBorder.push((0,_table_defaults__WEBPACK_IMPORTED_MODULE_31__.getDefaultColumn)(currentTableId, 0, 'Border'));
-      const columnCells = [];
-      for (let i = 1; i <= currentNumRows; i++) {
-        const cell = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_31__.getDefaultCell)(currentTableId, 0, i, 'Border');
-        columnCells.push(cell);
-      }
+    // 	const rowCells = [];
+    // 	for (let i = 0; i <= currentNumColumns; i++) {
+    // 		const cell = getDefaultCell(currentTableId, i, 0, 'Border');
+    // 		rowCells.push(cell);
+    // 	}
 
-      /** Sort table parts */
-      updatedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.tableSort)('rows', [...table.rows, ...rowBorder]);
-      updatedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.tableSort)('columns', [...table.columns, ...columnBorder]);
-      updatedCells = (0,_utils__WEBPACK_IMPORTED_MODULE_30__.tableSort)('cells', [...table.cells, ...rowCells, ...columnCells]);
-      updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
-    }
+    // 	/** Create column border down left side of table */
+    // 	const columnBorder = [];
+    // 	columnBorder.push(getDefaultColumn(currentTableId, 0, 'Border'));
+
+    // 	const columnCells = [];
+    // 	for (let i = 1; i <= currentNumRows; i++) {
+    // 		const cell = getDefaultCell(currentTableId, 0, i, 'Border');
+    // 		columnCells.push(cell);
+    // 	}
+
+    // 	/** Sort table parts */
+    // 	updatedRows = tableSort('rows', [...table.rows, ...rowBorder]);
+    // 	updatedColumns = tableSort('columns', [...table.columns, ...columnBorder]);
+    // 	updatedCells = tableSort('cells', [...table.cells, ...rowCells, ...columnCells]);
+
+    // 	updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
+    // }
+    const updatedTable = (0,_data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_26__.withTableBorders)(table, isChecked);
+    updateTableBorder(table.table_id, updatedTable.rows, updatedTable.columns, updatedTable.cells);
     setShowBorders(isChecked);
     setTableStale(false);
   }

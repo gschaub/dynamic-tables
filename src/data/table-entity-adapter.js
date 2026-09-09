@@ -115,18 +115,23 @@ function tableToComparableEntityRecord(sourceTable, recordId = sourceTable?.tabl
  * Add editor-only border controls to a normalized local table.
  *
  * @since    1.4.5
+ * @since    1.4.9 Added `includeBorders` parameter to optionally skip border generation
  *
- * @param {Object} table Local table without border controls
+ * @param {Object}  table          Local table without border controls
+ * @param {boolean} includeBorders Whether to include editor-only borders
  * @return {Object} Local table with border controls
  */
-function addTableBorders(table) {
-	console.log('addTableBorders');
+export function withTableBorders(table, includeBorders = true) {
 	const tableId = table.table_id;
 	const rows = table.rows.filter(row => String(row?.row_id) !== '0');
 	const columns = table.columns.filter(column => String(column?.column_id) !== '0');
 	const cells = table.cells.filter(
 		cell => String(cell?.row_id) !== '0' && String(cell?.column_id) !== '0'
 	);
+
+	if (!includeBorders) {
+		return { ...table, rows, columns, cells };
+	}
 
 	const columnIds = columns
 		.map(column => Number(column.column_id))
@@ -205,7 +210,7 @@ export function entityRecordToTable(entityRecord, { includeBorders = false } = {
 		cells,
 	};
 
-	return includeBorders ? addTableBorders(table) : table;
+	return includeBorders ? withTableBorders(table) : table;
 }
 
 /**
