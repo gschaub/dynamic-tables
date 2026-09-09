@@ -1183,7 +1183,6 @@ export default function Edit(props) {
 	 * @since 1.3.0 Refactored
 	 */
 	const {
-		// table,
 		table: storedTable,
 		tableStatus,
 		tableHasStartedResolving,
@@ -1228,7 +1227,7 @@ export default function Edit(props) {
 		[storedTable, showBorders]
 	);
 
-	/* Table is no longer stale once it has finished resolving */
+	// Table is no longer stale once it has finished resolving
 	useEffect(() => {
 		if (!tableHasFinishedResolving) return;
 		setTableStale(false);
@@ -2190,50 +2189,6 @@ export default function Edit(props) {
 	 * @param {boolean} isChecked Are borders being toggled on?
 	 */
 	function onToggleBorders(table, isChecked) {
-		// let updatedRows;
-		// let updatedColumns;
-		// let updatedCells;
-
-		// const currentTableId = table.table_id;
-		// const currentNumColumns = table.columns.filter(column => column.column_id !== '0').length;
-		// const currentNumRows = table.rows.filter(row => row.row_id !== '0').length;
-
-		/**
-		 * Remove borders if unchecked
-		 */
-		// if (isChecked === false) {
-		// 	updatedRows = table.rows.filter(row => row.row_id !== '0');
-		// 	updatedColumns = table.columns.filter(column => column.column_id !== '0');
-		// 	updatedCells = table.cells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
-		// 	updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
-		// } else {
-		// 	/**  Create header row border at top of table */
-		// 	const rowBorder = [];
-		// 	rowBorder.push(getDefaultRow(currentTableId, 0, 'Border'));
-
-		// 	const rowCells = [];
-		// 	for (let i = 0; i <= currentNumColumns; i++) {
-		// 		const cell = getDefaultCell(currentTableId, i, 0, 'Border');
-		// 		rowCells.push(cell);
-		// 	}
-
-		// 	/** Create column border down left side of table */
-		// 	const columnBorder = [];
-		// 	columnBorder.push(getDefaultColumn(currentTableId, 0, 'Border'));
-
-		// 	const columnCells = [];
-		// 	for (let i = 1; i <= currentNumRows; i++) {
-		// 		const cell = getDefaultCell(currentTableId, 0, i, 'Border');
-		// 		columnCells.push(cell);
-		// 	}
-
-		// 	/** Sort table parts */
-		// 	updatedRows = tableSort('rows', [...table.rows, ...rowBorder]);
-		// 	updatedColumns = tableSort('columns', [...table.columns, ...columnBorder]);
-		// 	updatedCells = tableSort('cells', [...table.cells, ...rowCells, ...columnCells]);
-
-		// 	updateTableBorder(table.table_id, updatedRows, updatedColumns, updatedCells);
-		// }
 		const updatedTable = withTableBorders(table, isChecked);
 
 		updateTableBorder(table.table_id, updatedTable.rows, updatedTable.columns, updatedTable.cells);
