@@ -6159,7 +6159,7 @@ function Edit(props) {
   const paragraphStyles = (0,_hooks__WEBPACK_IMPORTED_MODULE_27__.useGetElementStyles)(paragraphRef);
   const dynamicHtmlElementStyles = [{
     key: 'h1',
-    name: 'Heading 1',
+    name: 'Head 1',
     style: h1Styles
   }, {
     key: 'h2',
@@ -6183,7 +6183,7 @@ function Edit(props) {
     style: h6Styles
   }, {
     key: 'p',
-    name: 'Heading 1',
+    name: 'Paragraph',
     style: paragraphStyles
   }];
 
@@ -9903,7 +9903,7 @@ function Edit(props) {
               className: "border-box-workaround",
               __experimentalIsRenderedInSidebar: true,
               label: "Borders",
-              isCompact: "true",
+              isCompact: true,
               colors: borderBoxColors,
               value: headerBorder,
               onChange: e => onHeaderBorder(table, e)
@@ -9935,9 +9935,9 @@ function Edit(props) {
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.BorderBoxControl, {
               className: "border-box-workaround",
+              __experimentalIsRenderedInSidebar: true,
               label: "Borders",
-              hideLabelFromVision: "false",
-              isCompact: "true",
+              isCompact: true,
               colors: borderBoxColors,
               value: bodyBorder,
               onChange: e => onBodyBorder(table, e)
@@ -10029,8 +10029,8 @@ function Edit(props) {
   const tableCreationMethodLabel = tableCreationMethod === 'new' ? 'New' : 'Existing';
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("div", {
     ...blockProps,
-    children: [!isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.Fragment, {
-      children: [renderRowMenu, renderRowHeightModal, renderColumnMenu, renderColumnDataTypeModal, renderColumnWidthModal, renderCellMenu, renderEditCellContentModal, renderElementStyleRefs, renderControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("div", {
+    children: [renderElementStyleRefs, !isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.Fragment, {
+      children: [renderRowMenu, renderRowHeightModal, renderColumnMenu, renderColumnDataTypeModal, renderColumnWidthModal, renderCellMenu, renderEditCellContentModal, renderControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_35__.jsxs)("div", {
         style: {
           display: 'block'
         },
@@ -10614,7 +10614,6 @@ function Edit(props) {
                                   column_name: value
                                 } : column)
                               })),
-                              defaultValue: 'Column ' + (0,_utils__WEBPACK_IMPORTED_MODULE_30__.numberToLetter)(Number(column_id)),
                               value: column_name,
                               size: "compact"
                             })
@@ -13307,7 +13306,7 @@ function getDefaultColumn(tableId, columnId, columnLocation = 'Body') {
     column = {
       table_id: String(tableId),
       column_id: String(columnId),
-      column_name: 'Column ' + String(columnId),
+      column_name: 'Column ' + (0,_utils__WEBPACK_IMPORTED_MODULE_0__.numberToLetter)(Number(columnId)),
       attributes: getDefaultTableAttributes('columns', columnLocation),
       classes: getDefaultTableClasses('columns')
     };

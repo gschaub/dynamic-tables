@@ -26,11 +26,10 @@ import {
 	CustomSelectControl,
 	CheckboxControl,
 	TextControl,
-	__experimentalInputControl as OldInputControl,
 	BorderBoxControl,
 	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
-import { Card, Stack, InputControl as InputControl, InputLayout, IconButton } from '@wordpress/ui';
+import { Card, Stack, InputControl, InputLayout, IconButton } from '@wordpress/ui';
 import {
 	RichText,
 	useBlockProps,
@@ -251,13 +250,13 @@ export default function Edit(props) {
 	const paragraphStyles = useGetElementStyles(paragraphRef);
 
 	const dynamicHtmlElementStyles = [
-		{ key: 'h1', name: 'Heading 1', style: h1Styles },
+		{ key: 'h1', name: 'Head 1', style: h1Styles },
 		{ key: 'h2', name: 'Heading 2', style: h2Styles },
 		{ key: 'h3', name: 'Heading 3', style: h3Styles },
 		{ key: 'h4', name: 'Heading 4', style: h4Styles },
 		{ key: 'h5', name: 'Heading 5', style: h5Styles },
 		{ key: 'h6', name: 'Heading 6', style: h6Styles },
-		{ key: 'p', name: 'Heading 1', style: paragraphStyles },
+		{ key: 'p', name: 'Paragraph', style: paragraphStyles },
 	];
 
 	// Pre-processor to integrate caching into table entity updates.
@@ -4441,7 +4440,7 @@ export default function Edit(props) {
 								className="border-box-workaround"
 								__experimentalIsRenderedInSidebar
 								label="Borders"
-								isCompact="true"
+								isCompact
 								colors={borderBoxColors}
 								value={headerBorder}
 								onChange={e => onHeaderBorder(table, e)}
@@ -4478,9 +4477,9 @@ export default function Edit(props) {
 						<PanelRow>
 							<BorderBoxControl
 								className="border-box-workaround"
+								__experimentalIsRenderedInSidebar
 								label="Borders"
-								hideLabelFromVision="false"
-								isCompact="true"
+								isCompact
 								colors={borderBoxColors}
 								value={bodyBorder}
 								onChange={e => onBodyBorder(table, e)}
@@ -4575,6 +4574,7 @@ export default function Edit(props) {
 	return (
 		<div {...blockProps}>
 			{/* Render an existing table after it has been fetched  */}
+			{renderElementStyleRefs}
 			{!isNewBlock && !tableIsResolving && (
 				<>
 					{renderRowMenu}
@@ -4584,7 +4584,6 @@ export default function Edit(props) {
 					{renderColumnWidthModal}
 					{renderCellMenu}
 					{renderEditCellContentModal}
-					{renderElementStyleRefs}
 					{renderControls}
 
 					<div style={{ display: 'block' }}>
@@ -5363,7 +5362,6 @@ export default function Edit(props) {
 																					),
 																				}))
 																			}
-																			defaultValue={'Column ' + numberToLetter(Number(column_id))}
 																			value={column_name}
 																			size="compact"
 																		/>

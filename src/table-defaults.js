@@ -137,7 +137,7 @@ export function getDefaultColumn(tableId, columnId, columnLocation = 'Body') {
 		column = {
 			table_id: String(tableId),
 			column_id: String(columnId),
-			column_name: 'Column ' + String(columnId),
+			column_name: 'Column ' + numberToLetter(Number(columnId)),
 			attributes: getDefaultTableAttributes('columns', columnLocation),
 			classes: getDefaultTableClasses('columns'),
 		};

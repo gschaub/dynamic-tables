@@ -2,7 +2,7 @@
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, responsive tables, table block, gutenberg table
 Tested up to:      7.1
-Stable tag:        1.4.8
+Stable tag:        1.4.9
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,14 +42,14 @@ Rather than forcing you to choose between ease of use and technical capability, 
 * Native Gutenberg block — no page builders or external dependencies
 * Spreadsheet-style editing with familiar keyboard navigation
 * Fully responsive tables that preserve alignment across screen sizes
-* Structured column data types including rich text, numbers, date/time, checkboxs, and links
+* Structured column data types including rich text, numbers, date/time, checkboxes, and links
 * Inline editing with contextual menus and keyboard shortcuts
 * Import CSV files or restore tables from JSON backups
 * Export tables for backup or interoperability
 * Precise control over column widths, row heights, borders, headers, and formatting
 * Optionally render as a bulleted or numbered list on the front end
 * Semantic HTML output for accessibility and search engines
-* Built with multisite support in mind
+* Supports multisite with activation on individual sites
 
 === Key Features ===
 
@@ -67,7 +67,7 @@ Anyone familiar with a spreadsheet will feel immediately at home.
 
 Columns understand the type of information they contain.
 
-Current supported data types include:
+Current supported content types include:
 
 * General (rich) text
 * Numbers (float, currency, percentages, integers)
@@ -123,13 +123,13 @@ The technical complexity remains invisible to content editors while providing de
 Dynamic Tables continues to evolve. Planned enhancements include:
 
 * Additional column content types such as buttons, images, and more
-* Expanded copy and paste capabilities
+* Continued copy and paste enhancements
 * Additional responsive formatting options
 * Integration with WordPress search
 * Front-end sorting and filtering
 * Front-end editing
 * Additional REST API capabilities
-* Support for external data sources
+* Connectors and adapters to integrate with data sources and targets outside of the dynamic table
 
 == Installation ==
 1. In your WordPress dashboard, go to **Plugins -> Add New**, search for *Dynamic Tables*, click **Install Now** and then **Activate**.
@@ -193,6 +193,8 @@ No. This plugin is free to use. However, we are planning for a premium version o
 = 1.4.9 =
 * Allow for specification of column names during table creation
 * Allow for copy/paste across different content types where possible
+* The enter key will now stop editing for General content types.
+* alt+enter will now insert a new line for General content types.
 
 = 1.4.8 =
 * Made the green border for the current cell turn off when focus shifts to another block and turn on when focus returns
@@ -205,7 +207,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 
 = 1.4.6 =
 * Added link column content type
-* Added support multi-part edits via an edit dialog for specific cell content types
+* Added support for multi-part edits via an edit dialog for specific cell content types
 * Added block global style defaults that can be optionally applied
 * Fixed bug that caused formatting issues for other blocks in a post when adding a new Dynamic Tables block
 * Fixed bug that caused alignment issues of the table title on the front end
@@ -222,13 +224,13 @@ No. This plugin is free to use. However, we are planning for a premium version o
 * Added checkbox column content type
 
 = 1.4.2 =
-* Added support restore backup files which contain full table formatting
+* Added support to restore backup files which contain full table formatting
 * Added support to export tables to csv files
 
 = 1.4.1 =
 * Added support to delete table from the admin Table Maintenance
 * Added support to change a table's status from the admin Table Maintenance
-* Fixed bug that prevented import "choose file" button from opening file expolorer
+* Fixed bug that prevented import "choose file" button from opening file explorer
 * Fixed bug that made table delete unreliable
 
 = 1.4.0 =
@@ -275,7 +277,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 
 
 = 1.2.1 =
-* Fixed bug that made a date/time render in date/time columns when there was not underlying value
+* Fixed bug that made a date/time render in date/time columns when there was no underlying value
 
 = 1.2.0 =
 * Separated table control activity from editing so that navigation, delete key, etc. will work properly when not otherwise editing a cell
