@@ -2,7 +2,7 @@
 Contributors:      glschaub, myfamilyweb
 Tags:              tables, data table, responsive tables, table block, gutenberg table
 Tested up to:      7.1
-Stable tag:        1.4.9
+Stable tag:        1.4.10
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -190,6 +190,9 @@ No. This plugin is free to use. However, we are planning for a premium version o
 10. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+= 1.4.10 =
+* Refactor to split Cell into a separate file
+
 = 1.4.9 =
 * Allow for specification of column names during table creation
 * Allow for copy/paste across different content types where possible

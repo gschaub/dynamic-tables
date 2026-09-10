@@ -1,3 +1,6 @@
+/* Export table cells */
+export { Cell } from './cell';
+
 /* Export table column react components */
 export { ColumnMenu } from './column-dropdown-menu';
 export { ColumnWidthModal } from './configure-column-width';
