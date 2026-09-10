@@ -45,6 +45,7 @@ module.exports = [
 				'@wordpress/date',
 				'@wordpress/editor',
 				'@wordpress/element',
+				'@wordpress/html-entities',
 				'@wordpress/i18n',
 				'@wordpress/icons',
 				'@wordpress/notices',

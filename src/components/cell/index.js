@@ -710,6 +710,21 @@ export function Cell(props) {
 			}
 			return <div>Placeholder</div>;
 		},
+		post: () => {
+			if (!isEditing) {
+				return (
+					<>
+						<RichText.Content
+							tagName="span"
+							className="grid-control__cell-edit-content"
+							value={cellContent}
+						/>
+						{renderCellEditButton(__('Edit link cell', 'dynamic-table-blocks'))}
+					</>
+				);
+			}
+			return <div>Placeholder</div>;
+		},
 	};
 
 	let renderPipeline = [];
@@ -740,6 +755,9 @@ export function Cell(props) {
 					break;
 				case 'link':
 					renderPipeline = ['link'];
+					break;
+				case 'post':
+					renderPipeline = ['post'];
 					break;
 				default:
 					break;

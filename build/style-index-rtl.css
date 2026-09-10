@@ -818,4 +818,15 @@ fieldset {
 /*!***************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/components/cell-advanced-edit-modal/style.scss ***!
   \***************************************************************************************************************************************************************************************************************************************************************************/
+.dtbk-adv-edit-content-settings-field-layout {
+  --wp-ui-card-padding: 8px;
+  --wp-ui-card-header-content-gap: 12px;
+}
 
+.dtbk-adv-edit-content-settings-full-width {
+  width: 100%;
+  width: -moz-available;
+  width: -webkit-fill-available;
+  width: stretch;
+  min-width: 0;
+}

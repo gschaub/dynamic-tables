@@ -4205,7 +4205,7 @@ export default function Edit(props) {
 	);
 
 	/**
-	 * Render column data content type menu
+	 * Render multi-part cell content editor
 	 *
 	 * @since 1.4.6
 	 */

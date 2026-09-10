@@ -19,18 +19,12 @@ if ( dtbk_is_editor_preview_request() ) {
 }
 
 $table_id        = isset( $attributes['table_id'] ) ? absint( $attributes['table_id'] ) : 0;
-$block_table_ref = isset( $attributes['block_table_ref']) ? $attributes['block_table_ref'] : '';
-$grid_alignment  = isset( $attributes['block_alignment']) ? $attributes['block_alignment'] : '';
+$block_table_ref = $attributes['block_table_ref'];
+$grid_alignment  = $attributes['block_alignment'];
 
 // Fail if invalid table ID.
 if ( (int) $table_id <= 0 ) {
-	error_log(
-		sprintf(
-			'Invalid table ID (%s) provided in block attributes. post_id=%d',
-			(string) $table_id,
-			absint( $block->context['postId'] ?? get_the_ID() )
-		)
-	);
+	error_log( 'Invalid table ID provided in block attributes.' );
 	return;
 }
 

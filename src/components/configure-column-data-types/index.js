@@ -708,9 +708,16 @@ function ConfigureColumnDataType(props = {}) {
 				return;
 			case 'link':
 				setDataTypeFormat('link');
-				// onCheckboxFormat('standard', true);
 				updatedDataType = {
 					type: 'link',
+				};
+				newColumnClassNames.delete('grid-control__body-columns--number-align-right');
+				newColumnClassNames.delete('grid-control__body-columns--date-align-right');
+				break;
+			case 'post':
+				setDataTypeFormat('post');
+				updatedDataType = {
+					type: 'post',
 				};
 				newColumnClassNames.delete('grid-control__body-columns--number-align-right');
 				newColumnClassNames.delete('grid-control__body-columns--date-align-right');
@@ -776,6 +783,8 @@ function ConfigureColumnDataType(props = {}) {
 			case 'checkbox':
 				break;
 			case 'link':
+				break;
+			case 'post':
 				break;
 		}
 
@@ -845,6 +854,7 @@ function ConfigureColumnDataType(props = {}) {
 												{ value: 'link', label: 'Link' },
 												// { value: 'image', label: 'Image' },
 												// { value: 'rating', label: 'Rating' },
+												{ value: 'post', label: 'WordPress Content' },
 											]}
 											__nextHasNoMarginBottom
 										/>
