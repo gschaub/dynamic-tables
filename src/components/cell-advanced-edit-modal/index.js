@@ -1,8 +1,6 @@
 /* External dependencies */
+import { useState, useRef, useEffect, memo } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-import { useInstanceId } from '@wordpress/compose';
-import { useLayoutEffect, useRef, useState, memo } from '@wordpress/element';
-import { decodeEntities } from '@wordpress/html-entities';
 import { __ } from '@wordpress/i18n';
 import {
 	Modal,
@@ -12,24 +10,114 @@ import {
 	ComboboxControl,
 	Notice,
 } from '@wordpress/components';
-import { Card, Stack, InputControl, InputLayout, IconButton } from '@wordpress/ui';
-
-import clsx from 'clsx';
+import { Card, Stack } from '@wordpress/ui';
 
 /**
  * Internal dependencies
  */
+import { lookupPost } from '../../get-external-data';
+import { htmlToIndexText } from '../../utils';
+import {
+	normalizeCellValueAttributes,
+	getPostOption,
+	getNewTab,
+	getCellLinkUrl,
+	buildCellContent,
+	isWebUrl,
+	setPostDetails,
+	removePostDetails,
+} from './value';
+
 import './style.scss';
 import '../../editor.scss';
 
 /**
- * React component to configure data types for a column.
+ * Keep only the last edit request.
+ *
+ * @since    1.4.10
+ * @description Keep only the latest request active and abort it when the modal unmounts.
+ */
+function useLatestRequest() {
+	const ref = useRef(null);
+	useEffect(
+		() => () => {
+			ref.current?.abort();
+			ref.current = null;
+		},
+		[]
+	);
+	const cancel = () => {
+		ref.current?.abort();
+		ref.current = null;
+	};
+	const begin = () => {
+		cancel();
+		const requestHandler = new AbortController();
+		ref.current = requestHandler;
+		return requestHandler;
+	};
+	const isCurrent = requestHandler =>
+		ref.current === requestHandler && !requestHandler.signal.aborted;
+	const finish = requestHandler => {
+		if (!isCurrent(requestHandler)) return false;
+		ref.current = null;
+		return true;
+	};
+	return { ref, begin, cancel, isCurrent, finish };
+}
+
+/**
+ * Keep one combobox's state and requests together.
+ *
+ * @param {Object|Function|null} initialOption Initial selection or its initializer.
+ * @return {Object} Independent combobox state and request handlers.
+ */
+function useComboboxState(initialOption = null) {
+	const [selectedOption, setSelectedOption] = useState(initialOption);
+	const [selectOptions, setSelectOptions] = useState([]);
+
+	const selectedValue = selectedOption?.value ?? null;
+	const comboboxOptions =
+		selectedOption && !selectOptions.some(option => option.value === selectedValue)
+			? [selectedOption, ...selectOptions]
+			: selectOptions;
+
+	const searchRequest = useLatestRequest();
+
+	const [isSearching, setIsSearching] = useState(false);
+	const [searchError, setSearchError] = useState('');
+	const selectionRequest = useLatestRequest();
+	const [isLoading, setIsLoading] = useState(false);
+	const [selectionError, setSelectionError] = useState('');
+
+	return {
+		selectedOption,
+		setSelectedOption,
+		selectedValue,
+		comboboxOptions,
+		selectOptions,
+		setSelectOptions,
+		searchRequest,
+		isSearching,
+		setIsSearching,
+		searchError,
+		setSearchError,
+		selectionRequest,
+		isLoading,
+		setIsLoading,
+		selectionError,
+		setSelectionError,
+	};
+}
+
+/**
+ * React component to edit multi-part cell content.
  *
  * @since    1.4.6
- * @since    1.4.6  Added support for post data type.
+ * @since    1.4.10  Added support for post data type.
  *
  * @param {Object} props
- * @return {Object} Updated column properties
+ * @return {Object} Updated cell content and its related value attributes
  */
 function EditCellContent(props = {}) {
 	const {
@@ -46,28 +134,51 @@ function EditCellContent(props = {}) {
 
 	const { type: contentType, settings } = cellContentType;
 	const { format: contentFormat } = settings?.format || '';
+	const columnOptions = settings?.formatOptions || {};
 
-	const [currentCellContent, setCurrentCellContent] = useState(cellContent);
-	const [currentCellValueAttributes, setCurrentCellValueAttributes] = useState(
-		cellAttributes || {}
-	);
+	const [currentCell, setCurrentCell] = useState(() => ({
+		content: cellContent || '',
+		attributes: normalizeCellValueAttributes(cellAttributes, cellContent, contentType),
+	}));
+	const { attributes: currentCellValueAttributes } = currentCell;
 	const [currentCellClasses, setCurrentCellClasses] = useState(cellClasses);
-	const [linkResolutionError, setLinkResolutionError] = useState('');
-	const initialLinkUrlRef = useRef(String(cellAttributes?.cannonical?.url || ''));
-	const [isResolvingLink, setIsResolvingLink] = useState(false);
-	const [selectOptions, setSelectOptions] = useState([]);
-	const [isSearching, setIsSearching] = useState(false);
+	const newTab = getNewTab(currentCellValueAttributes, columnOptions);
 
-	const [selectedPostId, setSelectedPostId] = useState(
-		cellAttributes?.cannonical?.postId ? String(cellAttributes.cannonical.postId) : null
-	);
+	// Save management for async operations
+	const saveRequest = useLatestRequest();
+	const [isSaving, setIsSaving] = useState(false);
+	const [saveError, setSaveError] = useState('');
 
-	const [selectedPost, setSelectedPost] = useState({
-		postId: cellAttributes?.cannonical?.postId ? String(cellAttributes.cannonical.postId) : 0,
-		postType: cellAttributes?.cannonical?.postId ? String(cellAttributes.cannonical.postType) : 0,
-		title: cellAttributes?.indexText || '',
-		url: cellContent || '',
-	});
+	// link spectific configuration
+	const initialLinkUrlRef = useRef(String(cellAttributes?.cannonical?.url || '').trim());
+	const [linkErrors, setLinkErrors] = useState({});
+
+	// post state
+	const postCombobox = useComboboxState(() => getPostOption(currentCell.attributes));
+	const {
+		selectedOption: selectedPostOption,
+		setSelectedOption: setSelectedPostOption,
+		setSelectOptions: setPostSelectOptions,
+	} = postCombobox;
+
+	const {
+		searchRequest: postSearchRequest,
+		isSearching: isSearchingPosts,
+		setIsSearching: setIsSearchingPosts,
+		searchError: postSearchError,
+		setSearchError: setPostSearchError,
+	} = postCombobox;
+
+	const {
+		selectionRequest: postRequest,
+		isLoading: isLoadingPost,
+		setIsLoading: setIsLoadingPost,
+		selectionError: postError,
+		setSelectionError: setPostError,
+	} = postCombobox;
+
+	const selectedPostId = postCombobox.selectedValue;
+	const postComboboxOptions = postCombobox.comboboxOptions;
 
 	/**
 	 * Stop event processing in favor of custom processing.
@@ -81,206 +192,102 @@ function EditCellContent(props = {}) {
 	}
 
 	/**
-	 * Close component modal.
-	 *
-	 * @since    1.4.6
-	 */
-	function close() {
-		onRequestClose?.();
-	}
-
-	/**
 	 * Close modal on cancel.
 	 *
 	 * @since    1.4.6
+	 * @since    1.4.10 Update to support aborts
 	 */
 	function handleCancel() {
+		postSearchRequest.cancel();
+		postRequest.cancel();
+		saveRequest.cancel();
 		onRequestClose?.();
 	}
 
+	/**
+	 * Update cell value.
+	 *
+	 * @since  1.4.10
+	 *
+	 * @param {string}                     attribute Attribute to update.
+	 * @param {string|boolean|Object|null} value     Value to update; null clears a post selection.
+	 */
 	function updateCellValue(attribute, value) {
-		let content = currentCellContent;
-		let attributes = currentCellValueAttributes;
-
-		switch (contentType) {
-			case 'link':
-				if (!attributes) {
-					attributes = {
-						cannonical: {
-							url: '#',
-							label: '',
-						},
-						indexText: '',
-					};
-				}
-
-				switch (attribute) {
-					case 'url':
-						setLinkResolutionError('');
-						attributes = {
-							...attributes,
-							cannonical: {
-								...attributes?.cannonical,
-								url: value,
-							},
-							indexText: attributes?.indexText || '',
-						};
-						break;
-					case 'label':
-						attributes = {
-							...attributes,
-							cannonical: {
-								...attributes?.cannonical,
-								label: value,
-							},
-							indexText: value,
-						};
-						break;
-					case 'newTab':
-						attributes = {
-							...attributes,
-							cannonical: {
-								...attributes?.cannonical,
-								newTab: value,
-							},
-							indexText: attributes?.indexText || '',
-						};
-						break;
-					default:
-						break;
-				}
-				const url = attributes.cannonical?.url;
-				const label = attributes.cannonical?.label;
-
-				if (attributes.cannonical?.newTab) {
-					content =
-						'<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
-				} else {
-					content = '<a href="' + url + '" target="_top">' + label + '</a>';
-				}
-				break;
-			case 'post':
-				if (!attributes) {
-					attributes = {
-						cannonical: {
-							postId: 0,
-							postType: '',
-						},
-						refs: [
-							{
-								postId: 0,
-							},
-						],
-						indexText: '',
-					};
-				}
-
-				switch (attribute) {
-					case 'postId':
-						attributes = {
-							...attributes,
-							cannonical: {
-								...attributes?.cannonical,
-								postId: value,
-							},
-							refs: [
-								{
-									postId: value,
-								},
-							],
-							indexText: attributes?.indexText || '',
-						};
-						break;
-					case 'postType':
-						attributes = {
-							...attributes,
-							cannonical: {
-								...attributes?.cannonical,
-								postType: value || '',
-							},
-							refs: attributes?.refs || [{}],
-							indexText: attributes?.indexText || '',
-						};
-						break;
-					case 'title':
-						attributes = {
-							...attributes,
-							refs: attributes?.refs || [{}],
-							indexText: value || '',
-						};
-						break;
-					case 'newTab':
-						attributes = {
-							...attributes,
-							cannonical: {
-								...attributes?.cannonical,
-								newTab: value,
-							},
-							indexText: attributes?.indexText || '',
-						};
-						break;
-					default:
-						break;
-				}
-				const postTitle = attributes.indexText || '';
-
-				content = postTitle;
-
-				// if (attributes.cannonical?.newTab) {
-				// 	content =
-				// 		'<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + label + '</a>';
-				// } else {
-				// 	content = '<a href="' + url + '" target="_top">' + label + '</a>';
-				// }
-				break;
-			default:
-				break;
+		if (saveRequest.ref.current) return;
+		setSaveError('');
+		if (contentType === 'link') {
+			setLinkErrors(previous => ({ ...previous, [attribute]: '' }));
 		}
 
-		setCurrentCellContent(content);
-		setCurrentCellValueAttributes(attributes);
-	}
-
-	function onUpdateCellValue(event, attribute) {
-		const value = event;
-		updateCellValue(attribute, value);
-	}
-
-	/**
-	 * Retrieve a WordPress post.
-	 *
-	 * @since    1.4.10
-	 *
-	 * @param {Object} event onChange event from post selection
-	 */
-	async function onPostSelection(event) {
-		event?.preventDefault?.();
-		console.log('onPostSelection event:', event);
-
-		const postId = event;
-		if (postId) {
-			setIsSearching(true);
-			try {
-				const post = await lookupPost(postId);
-				console.log('...post details:', post);
-
-				const selectedPostDetails = {
-					postId: postId,
-					postType: post.postType,
-					title: post.title,
-					url: post.url,
-				};
-				console.log('selected post details:', selectedPostDetails);
-				setSelectedPostId(postId);
-				setSelectedPost(selectedPostDetails);
-
-				updateCellValue('postId', postId);
-				updateCellValue('postType', post.postType);
-				updateCellValue('title', post.title);
-			} finally {
-				setIsSearching(false);
+		setCurrentCell(previous => {
+			let attributes = previous.attributes;
+			let postUrl;
+			switch (contentType) {
+				case 'link': {
+					switch (attribute) {
+						case 'url': {
+							attributes = {
+								...attributes,
+								cannonical: { ...attributes.cannonical, url: value },
+							};
+							break;
+						}
+						case 'label': {
+							attributes = {
+								...attributes,
+								cannonical: { ...attributes.cannonical, label: value },
+								indexText: value,
+							};
+							break;
+						}
+						case 'newTab': {
+							attributes = {
+								...attributes,
+								options: { ...attributes.options, newTab: Boolean(value) },
+							};
+							break;
+						}
+						default: {
+							return previous;
+						}
+					}
+					break;
+				}
+				case 'post': {
+					switch (attribute) {
+						case 'post': {
+							if (value === null) {
+								attributes = removePostDetails(attributes);
+							} else {
+								attributes = setPostDetails(attributes, value);
+								postUrl = value.url;
+							}
+							break;
+						}
+						case 'newTab': {
+							postUrl = getCellLinkUrl(previous.content);
+							attributes = {
+								...attributes,
+								options: { ...attributes.options, newTab: Boolean(value) },
+							};
+							break;
+						}
+						default: {
+							return previous;
+						}
+					}
+					break;
+				}
+				default: {
+					return previous;
+				}
 			}
-		}
+
+			return {
+				attributes,
+				content: buildCellContent(contentType, attributes, columnOptions, postUrl),
+			};
+		});
 	}
 
 	/**
@@ -288,26 +295,84 @@ function EditCellContent(props = {}) {
 	 *
 	 * @since    1.4.10
 	 *
-	 * @param {string} postId Text on which to search
+	 * @param {string|null} value onChange event from post selection
 	 */
-	async function lookupPost(postId) {
-		const post = await apiFetch({
-			path: `/wp/v2/posts/${postId}`,
-			method: 'GET',
-		});
+	async function onPostSelection(value) {
+		if (saveRequest.ref.current) return;
+		postSearchRequest.cancel();
+		postRequest.cancel();
+		setIsSearchingPosts(false);
+		setIsLoadingPost(false);
+		setPostSearchError('');
+		setPostError('');
+		setSaveError('');
 
-		const title = decodeEntities(post.title.rendered);
-		const url = post.link;
-		const postType = post.type;
-		const author = post.author;
+		if (value === null || value === '') {
+			setSelectedPostOption(null);
+			setPostSelectOptions([]);
+			updateCellValue('post', null);
+			return;
+		}
 
-		return {
-			postId: postId,
-			postType: postType,
-			title: title,
-			url: url,
-			author: author,
-		};
+		const option = postComboboxOptions.find(item => item.value === String(value) && !item.disabled);
+		if (!option) {
+			setPostError(__('Choose a post from the search results.', 'dynamic-table-blocks'));
+			return;
+		}
+
+		setSelectedPostOption(option);
+		const request = postRequest.begin();
+		setIsLoadingPost(true);
+
+		try {
+			const post = await lookupPost(option.value, {
+				postType: option.postType,
+				signal: request.signal,
+			});
+
+			if (!postRequest.isCurrent(request)) return;
+			if (!isWebUrl(post.url)) {
+				throw new Error(__('The post has an invalid web address.', 'dynamic-table-blocks'));
+			}
+
+			const nextOption = {
+				value: String(post.postId),
+				label: post.title || __('No title found', 'dynamic-table-blocks'),
+				postType: post.postType,
+				title: post.title,
+				url: post.url,
+			};
+
+			setSelectedPostOption(nextOption);
+			updateCellValue('post', post);
+
+			setPostSelectOptions(previous =>
+				previous.map(item => (item.value === nextOption.value ? nextOption : item))
+			);
+		} catch (error) {
+			if (postRequest.isCurrent(request)) {
+				setPostError(
+					error?.message ||
+						__('The post could not be loaded. Select it again to retry.', 'dynamic-table-blocks')
+				);
+			}
+		} finally {
+			if (postRequest.finish(request)) setIsLoadingPost(false);
+		}
+	}
+
+	/**
+	 * Update whether the post link opens in a new tab.
+	 *
+	 * @since    1.4.10
+	 *
+	 * @param {boolean} value Whether to open in a new tab.
+	 */
+	function onPostNewTabSelection(value) {
+		if (saveRequest.ref.current) {
+			return;
+		}
+		updateCellValue('newTab', value);
 	}
 
 	/**
@@ -318,143 +383,208 @@ function EditCellContent(props = {}) {
 	 * @param {string} value Text on which to search
 	 */
 	async function onPostSearch(value) {
-		value?.preventDefault?.();
+		if (saveRequest.ref.current) return;
+		postSearchRequest.cancel();
+		setIsSearchingPosts(false);
+		setPostSearchError('');
+		const searchTerm = String(value ?? '').trim();
 		const noResults = [
 			{
 				value: '',
-				label: 'No matching content found or search term is too short.',
+				label: __('No matching content found or search term is too short.', 'dynamic-table-blocks'),
+				disabled: true,
 			},
 		];
 
-		if (value.trim(' ').length < 3) {
-			setSelectOptions(noResults);
+		if (!searchTerm && selectedPostOption) {
+			setPostSelectOptions([]);
 			return;
 		}
 
-		setIsSearching(true);
-		try {
-			const basePath = '/wp/v2/search';
-			const seacrhTitle = value;
+		if (searchTerm.length < 3) {
+			setPostSelectOptions(noResults);
+			return;
+		}
 
+		const request = postSearchRequest.begin();
+		setIsSearchingPosts(true);
+		try {
 			const posts = await apiFetch({
-				path: basePath + '?type=post&search=' + encodeURIComponent(seacrhTitle),
-				method: 'GET',
+				path: '/wp/v2/search?type=post&search=' + encodeURIComponent(searchTerm),
+				signal: request.signal,
 			});
 
-			let postsList = [];
-			if (posts && Array.isArray(posts)) {
-				postsList = posts.map(post => ({
-					id: post.id,
-					title: decodeEntities(post.title),
-					url: post.url,
-				}));
+			if (!postSearchRequest.isCurrent(request)) return;
+			if (!Array.isArray(posts)) {
+				throw new Error(__('The search response was invalid.', 'dynamic-table-blocks'));
 			}
 
-			let selectOptionResults = noResults;
-
-			if (postsList.length > 0) {
-				selectOptionResults = postsList.map(post => ({
+			const options = posts
+				.filter(
+					post =>
+						Number.isSafeInteger(Number(post.id)) &&
+						Number(post.id) > 0 &&
+						typeof post.subtype === 'string'
+				)
+				.map(post => ({
 					value: String(post.id),
-					label: post.title,
+					label: htmlToIndexText(post.title || '') || __('No title found', 'dynamic-table-blocks'),
+					postType: post.subtype,
 				}));
-			}
 
-			setSelectOptions(selectOptionResults);
+			setPostSelectOptions(options.length ? options : noResults);
+		} catch (error) {
+			if (postSearchRequest.isCurrent(request)) {
+				setPostSelectOptions([]);
+				setPostSearchError(
+					error?.message || __('The search failed. Try again.', 'dynamic-table-blocks')
+				);
+			}
 		} finally {
-			setIsSearching(false);
+			if (postSearchRequest.finish(request)) setIsSearchingPosts(false);
 		}
 	}
 
 	/**
-	 * Return new column data type settings.
+	 * Return new cell content and value attributes.
 	 *
 	 * @since    1.4.6
+	 * @since    1.4.10 - Add support for post contentType
 	 *
 	 * @param {Object} event Form submit
 	 */
 	async function onUpdate(event) {
 		event?.preventDefault?.();
 
-		let updatedCellContent = currentCellContent;
-		let updatedCellValueAttributes = currentCellValueAttributes;
-		const updateCellClasses = currentCellClasses;
+		if (saveRequest.ref.current || postRequest.ref.current) return;
+		setSaveError('');
 
-		if (contentType === 'link') {
-			const currentLabel = currentCellValueAttributes?.cannonical?.label || '';
-			const currentLinkUrl = String(currentCellValueAttributes?.cannonical?.url || '');
-			const shouldResolveLink =
-				contentType === 'link' && currentLinkUrl !== initialLinkUrlRef.current;
+		let attributes = currentCell.attributes;
+		let postUrl;
 
-			if (!currentLabel || currentLabel.trim() === '') {
-				setLinkResolutionError(__('The link label cannot be empty.', 'dynamic-table-blocks'));
-				return;
+		// Validate link content type before saving
+		switch (contentType) {
+			case 'link': {
+				const errors = {};
+
+				if (!String(attributes.cannonical.label || '').trim()) {
+					errors.label = __('The link label cannot be empty.', 'dynamic-table-blocks');
+				}
+
+				if (!isWebUrl(attributes.cannonical.url)) {
+					errors.url = __('Enter a valid web address.', 'dynamic-table-blocks');
+				}
+				setLinkErrors(errors);
+				if (Object.keys(errors).length) return;
+				break;
 			}
 
-			if (shouldResolveLink) {
-				setIsResolvingLink(true);
-				setLinkResolutionError('');
-
-				try {
-					const { resolvedUrl } = await apiFetch({
-						path: '/dynamic-table-blocks/v1/resolve-link',
-						method: 'POST',
-						data: {
-							url: currentCellValueAttributes?.cannonical?.url || '',
-						},
-					});
-
-					if (typeof resolvedUrl !== 'string' || !resolvedUrl) {
-						throw new Error(
-							__('The link resolver did not return a valid URL.', 'dynamic-table-blocks')
-						);
-					}
-
-					updatedCellValueAttributes = {
-						...currentCellValueAttributes,
-						cannonical: {
-							...currentCellValueAttributes?.cannonical,
-							url: resolvedUrl,
-						},
-					};
-
-					const label = updatedCellValueAttributes.cannonical?.label || '';
-
-					updatedCellContent = updatedCellValueAttributes.cannonical?.newTab
-						? '<a href="' +
-							resolvedUrl +
-							'" target="_blank" rel="noopener noreferrer">' +
-							label +
-							'</a>'
-						: '<a href="' + resolvedUrl + '" target="_top">' + label + '</a>';
-				} catch (error) {
-					setLinkResolutionError(
-						error?.message || __('We could not reach this web address.', 'dynamic-table-blocks')
+			// Validate post content type before saving
+			case 'post': {
+				const committedOption = getPostOption(attributes);
+				if (!selectedPostOption || postError || committedOption?.value !== selectedPostId) {
+					setPostError(
+						__('Select a post and wait for it to load before updating.', 'dynamic-table-blocks')
 					);
 					return;
-				} finally {
-					setIsResolvingLink(false);
 				}
+				break;
+			}
+
+			default: {
+				setSaveError(__('This content type cannot be edited here.', 'dynamic-table-blocks'));
+				return;
 			}
 		}
 
-		updatedCell(
-			event,
-			'editedCellContent',
-			tableId,
-			cellId,
-			updatedCellContent,
-			updatedCellValueAttributes,
-			updateCellClasses
-		);
-		close();
+		postSearchRequest.cancel();
+		setIsSearchingPosts(false);
+		const request = saveRequest.begin();
+		setIsSaving(true);
+
+		try {
+			switch (contentType) {
+				case 'link': {
+					const url = String(attributes.cannonical.url).trim();
+					let resolvedUrl = url;
+
+					if (url !== initialLinkUrlRef.current) {
+						const result = await apiFetch({
+							path: '/dynamic-table-blocks/v1/resolve-link',
+							method: 'POST',
+							data: { url },
+							signal: request.signal,
+						});
+
+						if (!saveRequest.isCurrent(request)) return;
+						resolvedUrl = result?.resolvedUrl;
+					}
+
+					if (!isWebUrl(resolvedUrl)) {
+						throw new Error(__('The resolved web address was invalid.', 'dynamic-table-blocks'));
+					}
+
+					attributes = {
+						...attributes,
+						cannonical: { ...attributes.cannonical, url: resolvedUrl },
+						indexText: String(attributes.cannonical.label || ''),
+					};
+					break;
+				}
+
+				case 'post': {
+					postUrl = getCellLinkUrl(currentCell.content);
+					break;
+				}
+			}
+
+			if (!saveRequest.isCurrent(request)) return;
+			const content = buildCellContent(contentType, attributes, columnOptions, postUrl);
+
+			// Omit empty attributes when writing the cell back.
+			const savedAttributes = { ...attributes };
+
+			if (savedAttributes.refs.length === 0) {
+				delete savedAttributes.refs;
+			}
+
+			if (Object.keys(savedAttributes.meta).length === 0) {
+				delete savedAttributes.meta;
+			}
+
+			if (Object.keys(savedAttributes.options).length === 0) {
+				delete savedAttributes.options;
+			}
+
+			updatedCell(
+				event,
+				'editedCellContent',
+				tableId,
+				cellId,
+				content,
+				savedAttributes,
+				currentCellClasses
+			);
+
+			if (saveRequest.isCurrent(request)) handleCancel();
+		} catch (error) {
+			if (saveRequest.isCurrent(request)) {
+				setSaveError(
+					error?.message || __('The cell could not be updated. Try again.', 'dynamic-table-blocks')
+				);
+			}
+		} finally {
+			if (saveRequest.finish(request)) setIsSaving(false);
+		}
 	}
 
-	console.log('selected postId = ', selectedPostId);
-	console.log('selected post:', selectedPost);
+	let updateLabel = __('Update', 'dynamic-table-blocks');
+	if (isSaving) updateLabel = __('Saving…', 'dynamic-table-blocks');
+	else if (isLoadingPost) updateLabel = __('Loading post…', 'dynamic-table-blocks');
 
 	return (
 		<Modal
-			title="Edit Cell Content"
+			title={__('Edit Cell Content', 'dynamic-table-blocks')}
 			onRequestClose={handleCancel}
 			focusOnMount="firstContentElement"
 			isDismissible={false}
@@ -462,107 +592,116 @@ function EditCellContent(props = {}) {
 			size="large"
 		>
 			<form className="blocks-table__placeholder-form" onSubmit={onUpdate} onMouseDown={stopProp}>
-				{/* Scrollable body */}
-				<div className="configure-column-modal__body">
-					<div className="configure-column-modal__body-inner">
-						<Stack gap="sm">
-							{/* Cell Content Type */}
-							{cellContentType.type === 'link' && (
-								<Card.Root className="dtbk-adv-edit-content-settings-field-layout dtbk-adv-edit-content-settings-full-width">
-									<Card.Header>
-										<Card.Title>
-											<strong>Content settings</strong>
-										</Card.Title>
-									</Card.Header>
-									<Card.Content>
-										<Stack direction="column" gap="lg">
-											{linkResolutionError && (
-												<Notice status="error" isDismissible={false}>
-													{linkResolutionError}
-												</Notice>
-											)}
+				{saveError && (
+					<Notice status="error" isDismissible={false}>
+						{saveError}
+					</Notice>
+				)}
+				<fieldset
+					disabled={isSaving}
+					className="dtbk-adv-edit-content-fields"
+					aria-label={__('Cell content settings', 'dynamic-table-blocks')}
+				>
+					{/* Scrollable body */}
+					<div className="configure-column-modal__body">
+						<div className="configure-column-modal__body-inner">
+							<Stack gap="sm">
+								{/* Cell Content Type */}
+								{contentType === 'link' && (
+									<Card.Root className="dtbk-adv-edit-content-settings-field-layout dtbk-adv-edit-content-settings-full-width">
+										<Card.Header>
+											<Card.Title>
+												<strong>{__('Content settings', 'dynamic-table-blocks')}</strong>
+											</Card.Title>
+										</Card.Header>
+										<Card.Content>
+											<Stack direction="column" gap="lg">
+												<TextControl
+													type="text"
+													inputMode="url"
+													label={__('Link URL', 'dynamic-table-blocks')}
+													placeholder="https://www.example.com"
+													value={currentCellValueAttributes?.cannonical?.url || ''}
+													onChange={value => updateCellValue('url', value)}
+													help={linkErrors.url || undefined}
+													aria-invalid={linkErrors.url ? 'true' : undefined}
+												/>
 
-											<TextControl
-												// className={renderColumnClasses}
-												type="text"
-												inputMode="url"
-												label="Link URL"
-												placeholder="https://www.example.com"
-												value={currentCellValueAttributes?.cannonical?.url || ''}
-												onChange={e => onUpdateCellValue(e, 'url')}
-												help={linkResolutionError || undefined}
-												aria-invalid={linkResolutionError ? 'true' : undefined}
-											></TextControl>
+												<TextControl
+													type="text"
+													label={__('Link Label', 'dynamic-table-blocks')}
+													value={currentCellValueAttributes?.cannonical?.label || ''}
+													onChange={value => updateCellValue('label', value)}
+													help={linkErrors.label || undefined}
+													aria-invalid={linkErrors.label ? 'true' : undefined}
+												/>
 
-											<TextControl
-												// className={renderColumnClasses}
-												type="text"
-												label="Link Label"
-												value={currentCellValueAttributes?.cannonical?.label || ''}
-												onChange={e => onUpdateCellValue(e, 'label')}
-											></TextControl>
+												<CheckboxControl
+													label={__('Open in new tab?', 'dynamic-table-blocks')}
+													checked={newTab}
+													onChange={value => updateCellValue('newTab', value)}
+												/>
+											</Stack>
+										</Card.Content>
+									</Card.Root>
+								)}
 
-											<CheckboxControl
-												// className="configure-column-modal__checkbox"
-												label={'Open in new tab?'}
-												checked={currentCellValueAttributes?.cannonical?.newTab || false}
-												onChange={e => onUpdateCellValue(e, 'newTab')}
-											/>
-										</Stack>
-									</Card.Content>
-								</Card.Root>
-							)}
+								{contentType === 'post' && (
+									<Card.Root className="dtbk-adv-edit-content-settings-field-layout dtbk-adv-edit-content-settings-full-width">
+										<Card.Header>
+											<Card.Title>
+												<strong>{__('Content settings', 'dynamic-table-blocks')}</strong>
+											</Card.Title>
+										</Card.Header>
+										<Card.Content>
+											<Stack direction="column" gap="lg">
+												{(postError || postSearchError) && (
+													<Notice status="error" isDismissible={false}>
+														{postError || postSearchError}
+													</Notice>
+												)}
 
-							{cellContentType.type === 'post' && (
-								<Card.Root className="dtbk-adv-edit-content-settings-field-layout dtbk-adv-edit-content-settings-full-width">
-									<Card.Header>
-										<Card.Title>
-											<strong>Content settings</strong>
-										</Card.Title>
-									</Card.Header>
-									<Card.Content>
-										<Stack direction="column" gap="lg">
-											<ComboboxControl
-												label={__('Content Title', 'dynamic-table-blocks')}
-												placeholder="New WordPress Content"
-												required
-												isLoading={isSearching}
-												options={selectOptions}
-												value={selectedPostId}
-												size="compact"
-												onFilterValueChange={value => onPostSearch(value)}
-												onChange={event => onPostSelection(event)}
-											/>
+												<ComboboxControl
+													label={__('Content Title', 'dynamic-table-blocks')}
+													placeholder={__('Search WordPress content', 'dynamic-table-blocks')}
+													help={__('Type at least 3 characters to search.', 'dynamic-table-blocks')}
+													isLoading={isSearchingPosts || isLoadingPost}
+													options={postComboboxOptions}
+													value={selectedPostId}
+													expandOnFocus={false}
+													onFilterValueChange={onPostSearch}
+													onChange={onPostSelection}
+												/>
 
-											<CheckboxControl
-												label={'Open in new tab?'}
-												checked={currentCellValueAttributes?.cannonical?.newTab || false}
-												onChange={e => onUpdateCellValue(e, 'newTab')}
-											/>
-										</Stack>
-									</Card.Content>
-								</Card.Root>
-							)}
-						</Stack>
+												<CheckboxControl
+													label={__('Open in new tab?', 'dynamic-table-blocks')}
+													checked={newTab}
+													disabled={isLoadingPost || Boolean(postError)}
+													onChange={onPostNewTabSelection}
+												/>
+											</Stack>
+										</Card.Content>
+									</Card.Root>
+								)}
+							</Stack>
+						</div>
 					</div>
-				</div>
+				</fieldset>
 
 				{/* Sticky footer */}
 				<div className="configure-column-modal__footer">
 					<div className="configure-column-modal__button-group">
-						<Button variant="secondary" onClick={handleCancel}>
+						<Button variant="secondary" type="button" onClick={handleCancel}>
 							{__('Cancel', 'dynamic-table-blocks')}
 						</Button>
 
 						<Button
 							variant="primary"
 							type="submit"
-							isBusy={isResolvingLink}
-							disabled={isResolvingLink}
+							isBusy={isSaving || isLoadingPost}
+							disabled={isSaving || isLoadingPost}
 						>
-							{isResolvingLink
-								? __('Verifying link…', 'dynamic-table-blocks')
-								: __('Update', 'dynamic-table-blocks')}
+							{updateLabel}
 						</Button>
 					</div>
 				</div>

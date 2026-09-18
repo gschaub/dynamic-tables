@@ -42,7 +42,7 @@ Rather than forcing you to choose between ease of use and technical capability, 
 * Native Gutenberg block — no page builders or external dependencies
 * Spreadsheet-style editing with familiar keyboard navigation
 * Fully responsive tables that preserve alignment across screen sizes
-* Structured column data types including rich text, numbers, date/time, checkboxes, and links
+* Structured column data types including rich text, numbers, date/time, checkboxes, links, and site content
 * Inline editing with contextual menus and keyboard shortcuts
 * Import CSV files or restore tables from JSON backups
 * Export tables for backup or interoperability
@@ -74,6 +74,7 @@ Current supported content types include:
 * Date/Time (date, time, date/time)
 * Checkbox (standard, toggle, icon, freeform)
 * Links
+* Site Content (e.g., posts, pages)
 
 Formatting is applied consistently across an entire column while preserving the underlying value.
 
@@ -191,6 +192,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 
 == Changelog ==
 = 1.4.10 =
+* Added site content (e.g., posts, pages, etc.) column content type
 * Refactor to split Cell into a separate file
 
 = 1.4.9 =

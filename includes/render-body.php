@@ -150,6 +150,9 @@ function render_table_body(array $render_context) {
 								case 'link':
 									render_link_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width );
 									break;
+								case 'post':
+									render_post_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width );
+									break;
 								default:
 									$cell_text_alignment = 'left';
 							}
@@ -222,6 +225,9 @@ function render_list_body( $render_mode, $list_item_style_type, array $render_co
 						break;
 					case 'link':
 						render_link_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width, true );
+						break;
+					case 'post':
+						render_post_cell( $body_cell, $grid_show_inner_lines, $grid_inner_line_width, true );
 						break;
 					default:
 						$cell_text_alignment = 'left';

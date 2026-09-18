@@ -50,8 +50,6 @@ export function isDeepEqual(left, right) {
  * @return {Object} Comparable entity-shaped value
  */
 function tableToComparableEntityRecord(sourceTable, recordId = sourceTable?.table_id) {
-	console.log('In atableToComparableEntityRecord');
-
 	const {
 		table_id,
 		block_table_ref,
@@ -168,8 +166,6 @@ export function withTableBorders(table, includeBorders = true) {
  * @return {Object|null} Local table or null for an invalid entity record
  */
 export function entityRecordToTable(entityRecord, { includeBorders = false } = {}) {
-	console.log('In entityRecordToTable');
-
 	const header = entityRecord?.header || {};
 	const tableId = header.id ?? entityRecord?.id;
 
@@ -226,7 +222,6 @@ export function entityRecordToTable(entityRecord, { includeBorders = false } = {
  * @return {boolean} Whether the canonical table values match
  */
 export function areTableAndEntityRecordsEqual(table, entityRecord) {
-	console.log('In areTableAnd EntityRecordsEqual');
 	const normalizedEntityTable = entityRecordToTable(entityRecord);
 
 	if (!table || !normalizedEntityTable) {

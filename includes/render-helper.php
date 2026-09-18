@@ -1131,3 +1131,53 @@ function render_link_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width
 		<?php
 	}
 }
+
+/**
+ * Render Post cell data types
+ *
+ * @since 1.4.10
+ *
+ * @param  array   $cell                   Cell data and attributes to be rendered
+ * @param  string  $grid_show_inner_lines  Show inner grid lines for cell?
+ * @param  string  $grid_inner_line_width  Width for inner grid lines if present
+ * @param  boolean $content_only           Output formatted content only
+ * @return void
+ */
+function render_post_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width, $content_only = false ) {
+	// $format_options      = $cell['data_type']['settings']['formatOptions'] ?? array();
+	$conditional_classes = array();
+	$cell_classes        = 'grid-control__body-cells ' . $cell['classes'];
+	$cell_render_classes = get_cell_classes( $cell_classes, $cell['column_classes'], $conditional_classes );
+
+	$conditional_classes = array();
+
+	// Prep for future front end editing.
+	$editable = false;
+	if ( $editable ) {
+		// Front End Edit.
+		?>
+		<div id="<?php echo esc_attr( $cell['cell_tag_id'] ); ?>"
+			role="cell"
+			class="<?php echo esc_attr( trim( $cell_render_classes ) ); ?>"
+			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
+				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
+		>
+			<?php echo ( $cell['content'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</div>
+		<?php
+	} elseif ( $content_only ) {
+		echo ( $cell['content'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	} else {
+		// Display only.
+		?>
+		<div id="<?php echo esc_attr( $cell['cell_tag_id'] ); ?>"
+			role="cell"
+			class="<?php echo esc_attr( trim( $cell_render_classes ) ); ?>"
+			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
+				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
+		>
+			<?php echo ( $cell['content'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</div>
+		<?php
+	}
+}

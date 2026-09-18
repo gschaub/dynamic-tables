@@ -854,7 +854,7 @@ function ConfigureColumnDataType(props = {}) {
 												{ value: 'link', label: 'Link' },
 												// { value: 'image', label: 'Image' },
 												// { value: 'rating', label: 'Rating' },
-												{ value: 'post', label: 'WordPress Content' },
+												{ value: 'post', label: 'Site Content' },
 											]}
 											__nextHasNoMarginBottom
 										/>
