@@ -193,6 +193,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 == Changelog ==
 = 1.4.10 =
 * Added site content (e.g., posts, pages, etc.) column content type
+* Added support for wide display of the table
 * Refactor to split Cell into a separate file
 
 = 1.4.9 =

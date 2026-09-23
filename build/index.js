@@ -9691,7 +9691,6 @@ function Edit(props) {
       // ENTER exits RichText editing except for exactly ALT+ENTER.
       // For native date/time editors, Enter should commit via blur and exit edit mode.
       if (event.key === 'Enter' && !event.isComposing && (isGeneralContentEditor && !isAltOnly || isDateTimeEditor || isNumberEditor)) {
-        console.log('Event Target Variable', editTarget);
         event.preventDefault();
         event.stopPropagation();
         editTarget?.blur?.();
@@ -10399,9 +10398,6 @@ function Edit(props) {
     }
     const currentColumnDataTypeObject = getClipboardDataType(column_id, row_id);
     const currentCellData = table.cells.find(c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id));
-    console.log('Clipboard data type', columnDataType);
-    console.log('Clipboard data: ' + cellContent, cellValueAttr);
-    console.log('Current cell contents:', currentCellData);
     const matchedDataTypes = currentColumnDataTypeObject?.type === columnDataType ? true : false;
     let convertedCellContent = {
       incompatibleDataTypes: false,
@@ -11073,16 +11069,10 @@ function Edit(props) {
    *
    * @since 1.2.0
    * @since 1.4.7 Add support to identify title element type
+   * @since 1.4.10 Add support for wide display on a table
    */
   const renderControls = !isContentOnlyMode && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.BlockControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.BlockAlignmentToolbar, {
-        value: block_alignment,
-        onChange: e => props.setAttributes({
-          block_alignment: e
-        })
-      })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.InspectorControls, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.InspectorControls, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Panel, {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
           title: "Definition",
@@ -33701,7 +33691,7 @@ function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else i
   \************************/
 (module) {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"dynamic-table-blocks/dynamic-table-blocks","version":"0.1.0","title":"Dynamic Tables","category":"design","icon":"editor-table","description":"Create custom table blocks with highly customizable and responsive formats","example":{},"textdomain":"dynamic-table-blocks","attributes":{"table_id":{"type":"integer","default":"0"},"block_table_ref":{"type":"string","default":""},"original_post_type":{"type":"string","default":""},"original_post_id":{"type":"integer","default":"0"},"block_alignment":{"type":"string","default":"undefined"}},"usesContext":["postId","postType"],"supports":{"contentRole":true,"html":false,"className":false,"color":{"button":true,"gradients":true,"heading":true,"link":true},"typography":{"fontSize":true,"__experimentalFontFamily":true,"__experimentalTextDecoration":true,"__experimentalFontStyle":true,"__experimentalFontWeight":true,"__experimentalLetterSpacing":true,"__experimentalWritingMode":true,"__experimentalDefaultControls":{"fontSize":true}},"interactivity":{"clientNavigation":true}},"editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"dynamic-table-blocks/dynamic-table-blocks","version":"0.1.0","title":"Dynamic Tables","category":"design","icon":"editor-table","description":"Create custom table blocks with highly customizable and responsive formats","example":{},"textdomain":"dynamic-table-blocks","attributes":{"table_id":{"type":"integer","default":"0"},"block_table_ref":{"type":"string","default":""},"original_post_type":{"type":"string","default":""},"original_post_id":{"type":"integer","default":"0"},"block_alignment":{"type":"string","default":"undefined"}},"usesContext":["postId","postType"],"supports":{"contentRole":true,"html":false,"className":false,"color":{"button":true,"gradients":true,"heading":true,"link":true},"typography":{"fontSize":true,"__experimentalFontFamily":true,"__experimentalTextDecoration":true,"__experimentalFontStyle":true,"__experimentalFontWeight":true,"__experimentalLetterSpacing":true,"__experimentalWritingMode":true,"__experimentalDefaultControls":{"fontSize":true}},"align":["left","center","right","wide","full"],"spacing":{"padding":true},"interactivity":{"clientNavigation":true}},"editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ }
 

@@ -57,6 +57,10 @@
 				"fontSize": true
 			}
 		},
+		"align": ["left", "center", "right","wide", "full"],
+		"spacing": {
+			"padding": true
+		},
 		"interactivity": {
 			"clientNavigation": true
 		}

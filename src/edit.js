@@ -36,8 +36,6 @@ import {
 	BlockIcon,
 	AlignmentControl,
 	InspectorControls,
-	BlockControls,
-	BlockAlignmentToolbar,
 	PanelColorSettings,
 } from '@wordpress/block-editor';
 import { search, blockTable as icon, plus, reset } from '@wordpress/icons';
@@ -2596,7 +2594,6 @@ export default function Edit(props) {
 				!event.isComposing &&
 				((isGeneralContentEditor && !isAltOnly) || isDateTimeEditor || isNumberEditor)
 			) {
-				console.log('Event Target Variable', editTarget);
 				event.preventDefault();
 				event.stopPropagation();
 				editTarget?.blur?.();
@@ -3396,10 +3393,6 @@ export default function Edit(props) {
 		const currentCellData = table.cells.find(
 			c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id)
 		);
-
-		console.log('Clipboard data type', columnDataType);
-		console.log('Clipboard data: ' + cellContent, cellValueAttr);
-		console.log('Current cell contents:', currentCellData);
 
 		const matchedDataTypes = currentColumnDataTypeObject?.type === columnDataType ? true : false;
 		let convertedCellContent = {
@@ -4232,16 +4225,10 @@ export default function Edit(props) {
 	 *
 	 * @since 1.2.0
 	 * @since 1.4.7 Add support to identify title element type
+	 * @since 1.4.10 Add support for wide display on a table
 	 */
 	const renderControls = !isContentOnlyMode && (
 		<>
-			<BlockControls>
-				<BlockAlignmentToolbar
-					value={block_alignment}
-					onChange={e => props.setAttributes({ block_alignment: e })}
-				/>
-			</BlockControls>
-
 			<InspectorControls>
 				<Panel>
 					<PanelBody title="Definition" initialOpen={true}>
