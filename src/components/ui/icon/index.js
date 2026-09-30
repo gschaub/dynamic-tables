@@ -1,9 +1,9 @@
 /* External dependencies */
 import { Button, CheckboxControl, ToggleControl } from '@wordpress/components';
-import freeformCheckedIcon from '../../../assets/icons/checkbox/freeform-checked.svg';
-import freeformUncheckedIcon from '../../../assets/icons/checkbox/freeform-unchecked.svg';
-import statusCheckedIcon from '../../../assets/icons/checkbox/status-icon-checked.svg';
-import statusUncheckedIcon from '../../../assets/icons/checkbox/status-icon-unchecked.svg';
+import freeformCheckedIcon from '../../../../assets/icons/checkbox/freeform-checked.svg';
+import freeformUncheckedIcon from '../../../../assets/icons/checkbox/freeform-unchecked.svg';
+import statusCheckedIcon from '../../../../assets/icons/checkbox/status-icon-checked.svg';
+import statusUncheckedIcon from '../../../../assets/icons/checkbox/status-icon-unchecked.svg';
 
 /**
  * Render checkbox image

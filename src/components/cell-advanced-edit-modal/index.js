@@ -325,12 +325,21 @@ function EditCellContent(props = {}) {
 		setIsLoadingPost(true);
 
 		try {
-			const post = await lookupPost(option.value, {
+			const fetchedPost = await lookupPost(option.value, {
 				postType: option.postType,
 				signal: request.signal,
 			});
 
 			if (!postRequest.isCurrent(request)) return;
+
+			const post = {
+				postId: Number(fetchedPost.id),
+				postType: fetchedPost.type,
+				title: htmlToIndexText(fetchedPost.title.rendered),
+				url: fetchedPost.link,
+				author: fetchedPost.author,
+			};
+
 			if (!isWebUrl(post.url)) {
 				throw new Error(__('The post has an invalid web address.', 'dynamic-table-blocks'));
 			}

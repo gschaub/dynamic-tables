@@ -21,10 +21,10 @@ import {
 	getFirstNumericIndex,
 	normalizeCaretForPresentationPrefix,
 	htmlToIndexText,
-} from '../../utils';
+} from '../../../utils';
 
-import { TableCheckbox } from '../formatted-display';
-import '../../editor.scss';
+import { TableCheckbox } from '../icon';
+import '../../../editor.scss';
 
 /**
  * Component to render and manage cell content editing

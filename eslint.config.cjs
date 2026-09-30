@@ -51,6 +51,7 @@ module.exports = [
 				'@wordpress/icons',
 				'@wordpress/notices',
 				'@wordpress/rich-text',
+				'@wordpress/wordcount',
 			],
 		},
 		rules: {

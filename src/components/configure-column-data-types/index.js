@@ -19,13 +19,22 @@ import {
 	CardBody,
 	CardHeader,
 } from '@wordpress/components';
+import {
+	Card as NewCard,
+	Stack,
+	InputControl as NewInputControl,
+	CheckboxControl as NewCheckboxControl,
+	SelectControl as NewSelectControl,
+	InputLayout,
+	IconButton,
+} from '@wordpress/ui';
 import clsx from 'clsx';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
-import { FreeformCheckboxIcon, StatusIcon } from '../formatted-display';
+import { FreeformCheckboxIcon, StatusIcon } from '../ui/icon';
 import {
 	normalizeColumnDataType,
 	stageClassesForEdit,
@@ -39,6 +48,7 @@ import {
 	getFirstNumericIndex,
 	normalizeCaretForPresentationPrefix,
 } from '../../utils';
+import { CellPostContent } from '../ui/post-content';
 
 /**
  * React component to configure data types for a column.
@@ -62,7 +72,6 @@ function ConfigureColumnDataType(props = {}) {
 	} = props;
 
 	const normalizedColumnDataType = normalizeColumnDataType(columnAttributes?.columnDataType);
-	console.log('Normalized Column Data Type Outbound = ', normalizedColumnDataType);
 
 	const [columnName, setColumnName] = useState(columnLabel);
 	const [dataType, setDataType] = useState(normalizedColumnDataType);
@@ -140,6 +149,51 @@ function ConfigureColumnDataType(props = {}) {
 		normalizedColumnDataType?.settings?.formatOptions?.defaultToChecked || false
 	);
 	const isCheckboxDataType = normalizedColumnDataType?.type === 'checkbox' ? true : false;
+
+	// Post specific attributes
+	const defaultDisplayElement = {
+		display: false,
+		column: 'none',
+		order: 0,
+	};
+
+	const [postDisplayElements, setPostDisplayElements] = useState({
+		displayTitle: normalizedColumnDataType?.settings?.formatOptions?.displayTitle || {
+			...defaultDisplayElement,
+			display: true,
+			order: 1,
+		},
+		displayCoverImage:
+			normalizedColumnDataType?.settings?.formatOptions?.displayCoverImage || defaultDisplayElement,
+		displayExcerpt:
+			normalizedColumnDataType?.settings?.formatOptions?.displayExcerpt || defaultDisplayElement,
+		displayAuthor:
+			normalizedColumnDataType?.settings?.formatOptions?.displayAuthor || defaultDisplayElement,
+		displayShortContent:
+			normalizedColumnDataType?.settings?.formatOptions?.displayShortContent ||
+			defaultDisplayElement,
+		displayPublishDate:
+			normalizedColumnDataType?.settings?.formatOptions?.displayPublishDate ||
+			defaultDisplayElement,
+		displayModifiedDate:
+			normalizedColumnDataType?.settings?.formatOptions?.displayModifiedDate ||
+			defaultDisplayElement,
+	});
+	const [postLinkLocation, setPostLinkLocation] = useState(
+		normalizedColumnDataType?.settings?.formatOptions?.linkLocation || 'title'
+	);
+	const [postTitleInCover, setPostTitleInCover] = useState(
+		normalizedColumnDataType?.settings?.formatOptions?.displayTitleInCover || false
+	);
+
+	const [postImageSize, setPostImageSize] = useState(
+		normalizedColumnDataType?.settings?.formatOptions?.displayImageSize || 'thumbnail'
+	);
+
+	// console.log('data type = ', dataType + ', format = ' + dataTypeFormat);
+	if (dataType.type === 'post' && !dataTypeFormat) {
+		setDataTypeFormat('link');
+	}
 
 	// Column width attributes
 	const [columnWidthType, setColumnWidthType] = useState(columnAttributes.columnWidthType);
@@ -636,7 +690,6 @@ function ConfigureColumnDataType(props = {}) {
 		let newHideIfEmpty = checkboxHideIfEmpty;
 		let newDefaultToChecked = checkboxDefaultToChecked;
 		let newUpdateColumnStyle = updateColumnStyle;
-		console.log('Checkbox Format: Event & Option: :', event, option);
 
 		switch (option) {
 			case 'hideEmpty':
@@ -670,6 +723,299 @@ function ConfigureColumnDataType(props = {}) {
 	}
 
 	/**
+	 * Update post format and set default options
+	 *
+	 * @since 1.4.11
+	 *
+	 * @param {string} postFormat Post format to set
+	 */
+	function onPostFormat(postFormat) {
+		console.log('Setting Post Format');
+		setDataTypeFormat(postFormat);
+
+		let formatOptions;
+
+		switch (postFormat) {
+			case 'link': {
+				formatOptions = {
+					displayTitle: {
+						...defaultDisplayElement,
+						display: true,
+						order: 1,
+					},
+					displayCoverImage: defaultDisplayElement,
+					displayExcerpt: defaultDisplayElement,
+					displayAuthor: defaultDisplayElement,
+					displayShortContent: defaultDisplayElement,
+					displayPublishDate: defaultDisplayElement,
+					displayModifiedDate: defaultDisplayElement,
+					displayTitleInCover: false,
+					displayImageSize: 'thumbnail',
+					linkLocation: 'title',
+				};
+				setPostLinkLocation('title');
+				setPostTitleInCover(false);
+				setPostImageSize('thumbnail');
+				break;
+			}
+			case 'narrow': {
+				formatOptions = {
+					displayTitle: {
+						...defaultDisplayElement,
+						display: true,
+						column: 'none',
+						order: 1,
+					},
+					displayCoverImage: {
+						...defaultDisplayElement,
+						order: 0,
+					},
+					displayExcerpt: {
+						...defaultDisplayElement,
+						display: true,
+						order: 2,
+					},
+					displayAuthor: {
+						...defaultDisplayElement,
+						display: true,
+						order: 3,
+					},
+					displayShortContent: defaultDisplayElement,
+					displayPublishDate: defaultDisplayElement,
+					displayModifiedDate: defaultDisplayElement,
+					displayTitleInCover: false,
+					displayImageSize: 'thumbnail',
+					linkLocation: 'title',
+				};
+				break;
+			}
+			case 'wide': {
+				formatOptions = {
+					displayTitle: {
+						...defaultDisplayElement,
+						display: true,
+						column: 'left',
+						order: 1,
+					},
+					displayCoverImage: {
+						...defaultDisplayElement,
+						order: 0,
+					},
+					displayExcerpt: {
+						...defaultDisplayElement,
+						display: true,
+						column: 'left',
+						order: 2,
+					},
+					displayAuthor: {
+						...defaultDisplayElement,
+						display: true,
+						column: 'right',
+						order: 3,
+					},
+					displayShortContent: defaultDisplayElement,
+					displayPublishDate: defaultDisplayElement,
+					displayModifiedDate: defaultDisplayElement,
+					displayTitleInCover: false,
+					displayImageSize: 'thumbnail',
+					linkLocation: 'title',
+				};
+				break;
+			}
+			default:
+				return;
+		}
+
+		const newDisplayElements = {
+			displayTitle: formatOptions.displayTitle,
+			displayCoverImage: formatOptions.displayCoverImage,
+			displayExcerpt: formatOptions.displayExcerpt,
+			displayAuthor: formatOptions.displayAuthor,
+			displayShortContent: formatOptions.displayShortContent,
+			displayPublishDate: formatOptions.displayPublishDate,
+			displayModifiedDate: formatOptions.displayModifiedDate,
+		};
+
+		setPostLinkLocation('title');
+		setPostTitleInCover(false);
+		setPostImageSize('thumbnail');
+		setPostDisplayElements(newDisplayElements);
+
+		const updatedDataType = {
+			type: 'post',
+			settings: {
+				format: postFormat,
+				formatOptions: formatOptions,
+			},
+		};
+
+		setDataType(updatedDataType);
+	}
+
+	/**
+	 * Update post formatting options based on configuration input
+	 *
+	 * @since 1.4.11
+	 *
+	 * @param {Object} value  Formatting value to set
+	 * @param {string} option Formatting option
+	 */
+	function onPostFormatOption(value, option) {
+		console.log('Setting Post Format Option: attribute = ' + option + 'value = ' + value);
+
+		let {
+			displayTitle: newDisplayTitle,
+			displayCoverImage: newDisplayCoverImage,
+			displayExcerpt: newDisplayExcerpt,
+			displayAuthor: newDisplayAuthor,
+			displayShortContent: newDisplayShortContent,
+			displayPublishDate: newDisplayPublishDate,
+			displayModifiedDate: newDisplayModifiedDate,
+		} = postDisplayElements;
+
+		let newLinkLocation = postLinkLocation;
+		let newTitleInCover = postTitleInCover;
+		let newImageSize = postImageSize;
+
+		let updatedElement;
+		let priorElement;
+
+		switch (option) {
+			case 'display-title':
+				updatedElement = 'displayTitle';
+				priorElement = newDisplayTitle;
+				newDisplayTitle = value;
+				break;
+			case 'display-image':
+				updatedElement = 'displayCoverImage';
+				priorElement = newDisplayCoverImage;
+				newDisplayCoverImage = value;
+				if (newDisplayCoverImage === 0) {
+					newLinkLocation = 'title';
+					newTitleInCover = false;
+				}
+				break;
+			case 'display-excerpt':
+				updatedElement = 'displayExcerpt';
+				priorElement = newDisplayExcerpt;
+				newDisplayExcerpt = value;
+				break;
+			case 'display-author':
+				updatedElement = 'displayAuthor';
+				priorElement = newDisplayAuthor;
+				newDisplayAuthor = value;
+				break;
+			case 'display-content':
+				updatedElement = 'displayShortContent';
+				priorElement = newDisplayShortContent;
+				newDisplayShortContent = value;
+				break;
+			case 'display-published':
+				updatedElement = 'displayPublishDate';
+				priorElement = newDisplayPublishDate;
+				newDisplayPublishDate = value;
+				break;
+			case 'display-modified':
+				updatedElement = 'displayModifiedDate';
+				priorElement = newDisplayModifiedDate;
+				newDisplayModifiedDate = value;
+				break;
+			case 'title-in-cover':
+				if (newDisplayCoverImage !== 0) {
+					newTitleInCover = value;
+				} else {
+					newTitleInCover = false;
+				}
+				break;
+			case 'link-location':
+				if (newDisplayCoverImage !== 0) {
+					newLinkLocation = value;
+				} else {
+					newLinkLocation = 'title';
+				}
+				break;
+			case 'image-size':
+				newImageSize = value;
+				break;
+			default:
+				return;
+		}
+
+		const newDisplayElements = {
+			displayTitle: newDisplayTitle,
+			displayCoverImage: newDisplayCoverImage,
+			displayExcerpt: newDisplayExcerpt,
+			displayAuthor: newDisplayAuthor,
+			displayShortContent: newDisplayShortContent,
+			displayPublishDate: newDisplayPublishDate,
+			displayModifiedDate: newDisplayModifiedDate,
+		};
+
+		console.log('Updated Post Display Element', newDisplayElements);
+
+		const updatedElementOrder = newDisplayElements[updatedElement].order;
+		const oldElementOrder = priorElement.order;
+
+		console.log('Updated Element = ' + updatedElementOrder);
+		console.log('Updated Element Prior Order = ' + oldElementOrder);
+
+		// Close order gap when an element becomes not displayed
+		if (updatedElementOrder !== oldElementOrder && updatedElementOrder === 0) {
+			for (const element in newDisplayElements) {
+				const elementOrder = newDisplayElements[element].order;
+				const elementDisplay = newDisplayElements[element].display;
+				if (elementDisplay && elementOrder > oldElementOrder && element !== updatedElement) {
+					newDisplayElements[element].order = elementOrder - 1;
+				}
+			}
+		}
+
+		// Increment order order for elements when an element becomes goes down in order
+		if (updatedElementOrder !== oldElementOrder && updatedElementOrder > 0) {
+			for (const element in newDisplayElements) {
+				const elementOrder = newDisplayElements[element].order;
+				const elementDisplay = newDisplayElements[element].display;
+				console.log('Current element (' + element + ') order:' + elementOrder);
+				console.log('Updated element key = ' + updatedElement);
+				console.log('Comparison Element Order = ' + updatedElementOrder);
+				if (elementDisplay && elementOrder >= updatedElementOrder && element !== updatedElement) {
+					console.log('Updating Element Order');
+					newDisplayElements[element].order = elementOrder + 1;
+				}
+			}
+		}
+
+		// for (const element of newDisplayElements) {
+		// 	if element
+		// }
+
+		setPostDisplayElements(newDisplayElements);
+		setPostLinkLocation(newLinkLocation);
+		setPostTitleInCover(newTitleInCover);
+		setPostImageSize(newImageSize);
+
+		const updatedDataType = {
+			...dataType,
+			settings: {
+				format: dataType.settings.format,
+				formatOptions: {
+					displayTitle: newDisplayTitle,
+					displayCoverImage: newDisplayCoverImage,
+					displayExcerpt: newDisplayExcerpt,
+					displayAuthor: newDisplayAuthor,
+					displayShortContent: newDisplayShortContent,
+					displayPublishDate: newDisplayPublishDate,
+					displayModifiedDate: newDisplayModifiedDate,
+					displayTitleInCover: newTitleInCover,
+					displayImageSize: newImageSize,
+					linkLocation: newLinkLocation,
+				},
+			},
+		};
+
+		setDataType(updatedDataType);
+	}
+	/**
 	 * Change column data types and set formatting defaults
 	 *
 	 * @since    1.2.0
@@ -699,12 +1045,14 @@ function ConfigureColumnDataType(props = {}) {
 				setDataTypeFormat('number');
 				onNumberFormat('number');
 				newColumnClassNames.delete('grid-control__body-columns--date-align-right');
+				setColumnClassNames(newColumnClassNames);
 				return;
 			case 'checkbox':
 				setDataTypeFormat('checkbox');
 				onCheckboxFormat('standard', true);
 				newColumnClassNames.delete('grid-control__body-columns--number-align-right');
 				newColumnClassNames.delete('grid-control__body-columns--date-align-right');
+				setColumnClassNames(newColumnClassNames);
 				return;
 			case 'link':
 				setDataTypeFormat('link');
@@ -715,13 +1063,12 @@ function ConfigureColumnDataType(props = {}) {
 				newColumnClassNames.delete('grid-control__body-columns--date-align-right');
 				break;
 			case 'post':
-				setDataTypeFormat('post');
-				updatedDataType = {
-					type: 'post',
-				};
+				setDataTypeFormat('link');
+				onPostFormat('link');
 				newColumnClassNames.delete('grid-control__body-columns--number-align-right');
 				newColumnClassNames.delete('grid-control__body-columns--date-align-right');
-				break;
+				setColumnClassNames(newColumnClassNames);
+				return;
 			default:
 				updatedDataType = {
 					type: event,
@@ -730,7 +1077,6 @@ function ConfigureColumnDataType(props = {}) {
 				newColumnClassNames.delete('grid-control__body-columns--number-align-right');
 				break;
 		}
-		console.log('New data type: ', updatedDataType);
 		setColumnClassNames(newColumnClassNames);
 		setDataType(updatedDataType);
 	}
@@ -807,7 +1153,21 @@ function ConfigureColumnDataType(props = {}) {
 		'grid-control__body-columns--number-red': showNegativeNumberPreview,
 	});
 
-	console.log('Column Content Type: ', dataType);
+	// console.log('Column Content Type: ', dataType);
+
+	// console.log(dataType.type);
+	// console.log(dataTypeFormat);
+
+	const testCellContent = 'Test Content';
+	const testCellAttributes = {
+		canonical: {
+			postId: 196,
+			postType: 'post',
+		},
+		ref: [{ postId: '196' }],
+	};
+	const testCellClasses = '';
+	const testCellContentType = dataType;
 
 	return (
 		<Modal
@@ -1178,6 +1538,166 @@ function ConfigureColumnDataType(props = {}) {
 									</CardBody>
 								</Card>
 							)}
+
+							{/* Post Settings */}
+							{dataType.type === 'post' && (
+								<Card>
+									<CardHeader>
+										<strong>Content settings</strong>
+									</CardHeader>
+									<CardBody>
+										<VStack spacing={3}>
+											<div>Select the specific content display options.</div>
+
+											{/* True split layout */}
+											<Flex gap={24} align="stretch" className="configure-column-modal__split">
+												{/* Left column */}
+												<FlexItem className="configure-column-modal__left" isBlock>
+													<VStack spacing={3}>
+														<RadioControl
+															label="Post Layout"
+															selected={dataTypeFormat}
+															options={[
+																{ label: 'Link Only', value: 'link' },
+																{ label: 'Wide', value: 'wide' },
+																{ label: 'Narrow', value: 'narrow' },
+															]}
+															onChange={value => onPostFormat(value)}
+														/>
+
+														{dataTypeFormat !== 'link' && (
+															<div className="configure-column-modal__options">
+																<strong>Formatting Options</strong>
+																<NewCard.Root>
+																	<NewCard.Header>
+																		<NewCard.Title>Content Elements To Display</NewCard.Title>
+																	</NewCard.Header>
+																	<NewCard.Content>
+																		<table>
+																			<thead>
+																				<tr>
+																					<th>Element</th>
+																					<th>Display?</th>
+																					<th>Order</th>
+																					{dataTypeFormat === 'wide' && <th>Location</th>}
+																				</tr>
+																			</thead>
+																			<tbody>
+																				<DislpayPostElementRow
+																					elementName="Title"
+																					displayElement={postDisplayElements.displayTitle}
+																					updateOption="display-title"
+																					postFormat={dataTypeFormat}
+																					onChange={onPostFormatOption}
+																				/>
+																				<DislpayPostElementRow
+																					elementName="Excerpt"
+																					displayElement={postDisplayElements.displayExcerpt}
+																					updateOption="display-excerpt"
+																					postFormat={dataTypeFormat}
+																					onChange={onPostFormatOption}
+																				/>
+																				<DislpayPostElementRow
+																					elementName="Author"
+																					displayElement={postDisplayElements.displayAuthor}
+																					updateOption="display-author"
+																					postFormat={dataTypeFormat}
+																					onChange={onPostFormatOption}
+																				/>
+																				<DislpayPostElementRow
+																					elementName="Cover Image"
+																					displayElement={postDisplayElements.displayCoverImage}
+																					updateOption="display-image"
+																					postFormat={dataTypeFormat}
+																					onChange={onPostFormatOption}
+																				/>
+																				<DislpayPostElementRow
+																					elementName="Published Date"
+																					displayElement={postDisplayElements.displayPublishDate}
+																					updateOption="display-published"
+																					postFormat={dataTypeFormat}
+																					onChange={onPostFormatOption}
+																				/>
+																				<DislpayPostElementRow
+																					elementName="Last Modified Date"
+																					displayElement={postDisplayElements.displayModifiedDate}
+																					updateOption="display-modified"
+																					postFormat={dataTypeFormat}
+																					onChange={onPostFormatOption}
+																				/>
+																			</tbody>
+																		</table>
+																	</NewCard.Content>
+																</NewCard.Root>
+
+																{postDisplayElements.displayCoverImage > 0 &&
+																	postDisplayElements.displayTitle > 0 && (
+																		<CheckboxControl
+																			// className="configure-column-modal__checkbox"
+																			label={'Display title in Cover Image?'}
+																			checked={postTitleInCover}
+																			onChange={checked =>
+																				onPostFormatOption(checked, 'title-in-cover')
+																			}
+																		/>
+																	)}
+																{postDisplayElements.displayCoverImage > 0 && (
+																	<>
+																		<RadioControl
+																			label="Link Location"
+																			selected={postLinkLocation}
+																			options={[
+																				{ label: 'Title', value: 'title' },
+																				{ label: 'Cover Image', value: 'image' },
+																			]}
+																			onChange={value => onPostFormatOption(value, 'link-location')}
+																		/>
+																		<NewSelectControl
+																			label="Image Size"
+																			value={postImageSize}
+																			defaultValue="thumbnail"
+																			onValueChange={value =>
+																				onPostFormatOption(value, 'image-size')
+																			}
+																			items={[
+																				{ value: 'thumbnail', label: 'Thumbnail: (150 x 150)' },
+																				{ value: 'medium', label: 'Medium: (300 x 300)' },
+																				{ value: 'medium_large', label: 'Medium/Large (768 Wide)' },
+																				{ value: 'large', label: 'Large (1024 x 1024)' },
+																			]}
+																		/>
+																	</>
+																)}
+															</div>
+														)}
+													</VStack>
+												</FlexItem>
+
+												{/* Right column */}
+												<FlexItem className="configure-column-modal__right" isBlock>
+													<div style={{ display: 'flex', flexDirection: 'column' }}>
+														<BaseControl
+															id={previewId}
+															label="Preview"
+															style={{ alignContent: 'center', flexWrap: 'wrap', height: '20%' }}
+														>
+															<div>
+																<div>Post Cell Preview</div>
+																<CellPostContent
+																	cellContent={testCellContent}
+																	cellAttributes={testCellAttributes}
+																	cellClasses={testCellClasses}
+																	cellContentType={testCellContentType}
+																/>
+															</div>
+														</BaseControl>
+													</div>
+												</FlexItem>
+											</Flex>
+										</VStack>
+									</CardBody>
+								</Card>
+							)}
 						</VStack>
 					</div>
 				</div>
@@ -1195,6 +1715,98 @@ function ConfigureColumnDataType(props = {}) {
 				</div>
 			</form>
 		</Modal>
+	);
+}
+
+function DislpayPostElementRow(props) {
+	const { elementName, displayElement, updateOption, postFormat, onChange } = props;
+	const { display, order, column } = displayElement;
+	const labelOrderSuffix = __('Display Order', 'dynamic-table-blocks');
+	const labelColumnSuffix = __('Display Column', 'dynamic-table-blocks');
+
+	function onDisplayUpdate(updatedValue, updatedDisplayOption, updatedAttribute) {
+		let newDisplay = display;
+		let newColumn = column;
+		let newOrder = order;
+
+		switch (updatedAttribute) {
+			case 'display': {
+				newDisplay = updatedValue;
+				if (updatedValue) {
+					newColumn = postFormat === 'wide' ? 'left' : 'none';
+					newOrder = 1;
+				} else {
+					newColumn = 'none';
+					newOrder = 0;
+				}
+				break;
+			}
+			case 'column': {
+				newColumn = updatedValue;
+				break;
+			}
+			case 'order': {
+				newOrder = updatedValue;
+				break;
+			}
+			default: {
+				break;
+			}
+		}
+
+		const updatedDisplayElement = {
+			display: newDisplay,
+			column: newColumn,
+			order: newOrder,
+		};
+
+		onChange(updatedDisplayElement, updatedDisplayOption);
+	}
+
+	return (
+		<tr>
+			<td>{elementName}</td>
+			<td>
+				<CheckboxControl
+					checked={display}
+					onChange={checked => onDisplayUpdate(checked, updateOption, 'display')}
+				/>
+			</td>
+
+			<td>
+				{display ? (
+					<NewInputControl
+						label={elementName + ' ' + labelOrderSuffix}
+						hideLabelFromVision
+						min={1}
+						step={1}
+						value={order || 1}
+						onValueChange={value => onDisplayUpdate(value, updateOption, 'order')}
+						type="number"
+						size="compact"
+					/>
+				) : (
+					__('n/a', 'dynamic-table-blocks')
+				)}
+			</td>
+			<td>
+				{postFormat === 'wide' && (
+					<NewSelectControl
+						label={elementName + ' ' + labelColumnSuffix}
+						hideLabelFromVision
+						value={column || 'none'}
+						onValueChange={value => onDisplayUpdate(value, updateOption, 'column')}
+						items={[
+							{
+								value: 'left',
+								label: 'Left',
+							},
+							{ value: 'right', label: 'Right' },
+						]}
+					/>
+				)}
+			</td>
+		</tr>
 	);
 }
 

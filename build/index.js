@@ -521,11 +521,18 @@ function EditCellContent(props = {}) {
     const request = postRequest.begin();
     setIsLoadingPost(true);
     try {
-      const post = await (0,_get_external_data__WEBPACK_IMPORTED_MODULE_9__.lookupPost)(option.value, {
+      const fetchedPost = await (0,_get_external_data__WEBPACK_IMPORTED_MODULE_9__.lookupPost)(option.value, {
         postType: option.postType,
         signal: request.signal
       });
       if (!postRequest.isCurrent(request)) return;
+      const post = {
+        postId: Number(fetchedPost.id),
+        postType: fetchedPost.type,
+        title: (0,_utils__WEBPACK_IMPORTED_MODULE_10__.htmlToIndexText)(fetchedPost.title.rendered),
+        url: fetchedPost.link,
+        author: fetchedPost.author
+      };
       if (!(0,_value__WEBPACK_IMPORTED_MODULE_11__.isWebUrl)(post.url)) {
         throw new Error((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('The post has an invalid web address.', 'dynamic-table-blocks'));
       }
@@ -1405,750 +1412,6 @@ const CellMenu = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.memo)(CellMe
 
 /***/ },
 
-/***/ "./src/components/cell/index.js"
-/*!**************************************!*\
-  !*** ./src/components/cell/index.js ***!
-  \**************************************/
-(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Cell: () => (/* binding */ Cell)
-/* harmony export */ });
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/icon/index.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/pencil.mjs");
-/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../utils */ "./src/utils.js");
-/* harmony import */ var _formatted_display__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../formatted-display */ "./src/components/formatted-display/index.js");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../editor.scss */ "./src/editor.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__);
-/* External dependencies */
-
-
-
-
-
-
-
-/* Internal dependencies */
-
-
-
-
-/**
- * Component to render and manage cell content editing
- *
- * Data Shape as follows with date-time as an example
- *
- * Type Registry
- *
- *   TYPES = {
- *     general: {
- *       label: 'Rich Text',
- * 	   },
- *
- *     'date-time': {
- *       label: 'Date/Time',
- *       formats: {
- *         date: { label: 'Date' },
- *         time: { label: 'Time' },
- *         datetime-local: { label: 'Date & Time' },
- *       },
- *     },
- *   }
- *
- *   Column - attributes.columnDataType:
- *	  {
- *        Date/Time Example
- *
- *		  type: 'date-time',
- *		  settings: {
- *			  format: 'date',
- *			  defaultToToday: false,
- *	  },
- *
- *   Cell - Content:
- *     Raw content value (example 10/1/2025)
- *
- *   Cell - attributes.value:
- *   {
- *        Column columnDataType may be included only if an override is permitted
- *        for this data type AND an override exists for this particular cell
- *        overrides: {...}
- *
- * 		  meta: {
- *            label: 'My Date',
- * 		      size: 'My Size',
- *        },
- * 		  // Dependencies on other objects external to Cell. Example for post
- * 	  	  ref: {
- * 			  kind: 'post',
- * 			  id: 45,
- * 		  },
- * 		  // search support
- * 		  indexText: 'optimized for web search, all text only' (example 2025-10-01),
- *   }
- *
- * @since 1.1.1
- * @since 1.2.0  Added column data type logic and Date/Time render
- * @since 1.2.4  Added support for number column content type
- *
- * @param {Object} props Passed attributes
- * @return {Object} events for cell content editing
- */
-
-function Cell(props) {
-  const {
-    cellType,
-    isContentOnlyMode = false,
-    dataFormat,
-    table,
-    cell_id,
-    content,
-    attributes,
-    isFocused,
-    columnClassNames,
-    cellBaseClasses,
-    cellClassNames,
-    showGridLinesCSS,
-    gridLineWidthCSS,
-    onChange,
-    onMouseDown,
-    onContextMenu,
-    borderHandleProps = {},
-    cellTagId,
-    isEditing,
-    onRequestEdit,
-    onRequestStopEdit,
-    onRequestFocus,
-    canOpenContextMenu = false,
-    contextMenuProps = {}
-  } = props;
-  const {
-    column_id,
-    row_id
-  } = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.getCellIdCoordinates)(cell_id);
-  const table_id = table?.table_id;
-  const {
-    type,
-    settings
-  } = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.normalizeColumnDataType)(dataFormat);
-  const [inputType, setInputType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(() => settings?.format || '');
-  const [cellContent, setCellContent] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)();
-  const initialCellValue = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(content);
-  const [cellAttributes, setCellAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(attributes);
-  const numberEntryWrapperRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  const numberEntryInputRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  const pendingCaretRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  const [percentEntryValue, setPercentEntryValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  const numberEntryValue = inputType === 'percent' ? percentEntryValue ?? (0,_utils__WEBPACK_IMPORTED_MODULE_7__.toPercentEntryValue)(cellContent) : cellContent ?? '';
-  const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.formattedNumber)(cellContent, inputType, settings?.formatOptions?.thousandSeparator, settings?.formatOptions?.decimalPlaces, settings?.formatOptions?.showCurrencySymbol, settings?.formatOptions?.bracketNegative);
-  const sanitizedNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.sanitizeNumberInput)(cellContent, inputType);
-  const redNegativeNumber = settings?.formatOptions?.redNegative && sanitizedNumber !== '' && sanitizedNumber !== '-' && Number(sanitizedNumber) < 0;
-  const checkboxVariant = settings?.format || inputType || 'standard';
-  const shouldHideCheckbox = !isEditing && settings?.formatOptions?.hideIfEmpty && isEmptyCheckboxValue(cellContent);
-
-  /**
-   * Identify whether checkbox cell value is empty
-   *
-   * @since 1.4.3
-   *
-   * @param {boolean} value Checkbox cell value
-   * @return {boolean}  Is cell content empty?
-   */
-  function isEmptyCheckboxValue(value) {
-    return value === '' || value === null || value === undefined;
-  }
-
-  /**
-   * Identify whether checkbox value should be true or false
-   *
-   * @since 1.4.3
-   *
-   * @param {boolean} value Checkbox cell value
-   * @return {boolean} Checkbox value to render
-   */
-  function getCheckboxCheckedState(value) {
-    const normalizedValue = typeof value === 'string' ? value.trim().toLowerCase() : value;
-    if (normalizedValue === true || normalizedValue === 'true' || normalizedValue === 1 || normalizedValue === '1') {
-      return true;
-    }
-    if (normalizedValue === false || normalizedValue === 'false' || normalizedValue === 0 || normalizedValue === '0') {
-      return false;
-    }
-    return !!(settings?.formatOptions?.defaultToChecked && isEmptyCheckboxValue(value));
-  }
-
-  /**
-   * Return markup for checkbox being edited
-   *
-   * @since 1.4.3
-   */
-  function checkboxEditValue() {
-    const isChecked = getCheckboxCheckedState(cellContent);
-    const scale = checkboxVariant === 'freeform' ? 0.6 : 1;
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_formatted_display__WEBPACK_IMPORTED_MODULE_8__.TableCheckbox, {
-      checked: isChecked,
-      variant: checkboxVariant,
-      scale: scale,
-      onChange: processBooleanCellEdit
-    });
-  }
-
-  /**
-   * Process effect of changes to cell level attributes
-   *
-   * @since 1.2.0
-   */
-  ;(0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    setCellAttributes(attributes);
-    initialCellValue.current = content ?? '';
-
-    // Default behavior: raw content as-is
-    setCellContent(content ?? '');
-  }, [content, attributes]);
-
-  /**
-   * Process effect of changes to column level attributes
-   *
-   * @since 1.2.0
-   */
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (cellType !== 'body' || type !== 'date-time' && type !== 'number') return;
-    const resolvedFormat = settings?.format || '';
-    if (isEditing) {
-      // Enter edit mode: force a valid HTML input value FIRST
-      if (cellType === 'body' && type === 'date-time') {
-        const raw = content ?? initialCellValue.current ?? '';
-        if (raw) {
-          setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_7__.formattedIsoDate)(raw, resolvedFormat));
-        } else if (settings?.defaultToToday) {
-          setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_7__.formattedIsoDate)('', resolvedFormat));
-        } else {
-          setCellContent('');
-        }
-      }
-
-      // Enter edit mode: force a valid HTML input value FIRST
-      if (cellType === 'body' && type === 'number') {
-        const raw = content ?? initialCellValue.current ?? '';
-        setCellContent(raw);
-      }
-    } else {
-      const raw = content ?? '';
-      if (cellType === 'body' && type === 'date-time') {
-        setCellContent(raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_7__.formatedDisplayDate)(raw, resolvedFormat) : '');
-      }
-      if (cellType === 'body' && type === 'number') {
-        setCellContent(raw);
-      }
-    }
-    setInputType(resolvedFormat);
-    setCellAttributes(attributes);
-    initialCellValue.current = content ?? '';
-  }, [isEditing, content, attributes, cellType, type, settings?.format, settings?.defaultToToday]);
-
-  /**
-   * Support caret positioning during entry
-   *
-   * @since 1.2.4
-   */
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect)(() => {
-    const input = numberEntryWrapperRef.current?.querySelector('input') ?? null;
-    numberEntryInputRef.current = input;
-    if (!input || !pendingCaretRef.current) {
-      return;
-    }
-    if (input !== input.ownerDocument.activeElement) {
-      pendingCaretRef.current = null;
-      return;
-    }
-    let nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.getCaretIndexFromTokenCount)(input.value, pendingCaretRef.current.tokenCount);
-    nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.normalizeCaretForPresentationPrefix)(input.value, nextCaret, pendingCaretRef.current);
-    input.setSelectionRange(nextCaret, nextCaret);
-    pendingCaretRef.current = null;
-  }, [numberEntryValue]);
-
-  /**
-   * Handle onChange event for cell content update
-   *
-   * @since 1.1.1
-   * @since 1.2.0   Converted input to object to update multiple fields
-   *
-   * @param {Object} patch event data
-   */
-  function updateCellData(patch) {
-    initialCellValue.current = patch.content;
-    if (patch.content !== undefined) setCellContent(patch.content);
-    if (patch.attributes !== undefined) setCellAttributes(patch.attributes);
-    onChange(table_id, cell_id, patch);
-  }
-
-  /**
-   * Support key press overrides for date/time input
-   *
-   * @since 1.2.2
-   *
-   * @param {Object} event Key press event
-   */
-  function onDateTimeKeyDown(event) {
-    const key = String(event.key || '').toLowerCase();
-    if ((inputType === 'time' || inputType === 'datetime-local') && (key === 'a' || key === 'p')) {
-      const currentValue = event.currentTarget?.value ?? cellContent ?? '';
-      const nextValue = applyMeridiemShortcut(currentValue, inputType, key);
-      if (nextValue !== currentValue) {
-        event.preventDefault();
-        event.stopPropagation();
-        setCellContent(nextValue);
-      }
-    }
-  }
-
-  /**
-   * Support key press overrides for date/time input
-   *
-   * @since 1.2.2
-   *
-   * @param {string} currentCellContent Cell contents
-   * @param {string} format             Date/Time format
-   * @param {string} keyValue           Key press value
-   * @return {string} Updated input value
-   */
-  function applyMeridiemShortcut(currentCellContent, format, keyValue) {
-    if (!currentCellContent || format !== 'time' && format !== 'datetime-local') {
-      return currentCellContent;
-    }
-    const isPm = keyValue === 'p';
-    if (format === 'time') {
-      const match = /^(\d{2}):(\d{2})(:\d{2})?$/.exec(currentCellContent);
-      if (!match) return currentCellContent;
-      let hours = Number(match[1]);
-      if (!Number.isFinite(hours)) return currentCellContent;
-      if (isPm && hours < 12) hours += 12;
-      if (!isPm && hours >= 12) hours -= 12;
-      return `${String(hours).padStart(2, '0')}:${match[2]}${match[3] || ''}`;
-    }
-    const match = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})(:\d{2})?$/.exec(currentCellContent);
-    if (!match) return currentCellContent;
-    let hours = Number(match[2]);
-    if (!Number.isFinite(hours)) return currentCellContent;
-    if (isPm && hours < 12) hours += 12;
-    if (!isPm && hours >= 12) hours -= 12;
-    return `${match[1]}T${String(hours).padStart(2, '0')}:${match[3]}${match[4] || ''}`;
-  }
-
-  /**
-   * Change number string from entry
-   *
-   * @since 1.2.4
-   *
-   * @param {Object} event New number string
-   */
-  function onNumberChange(event) {
-    const input = numberEntryInputRef.current;
-    const entryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.sanitizeNumberInput)(event, inputType === 'percent' ? 'number' : inputType);
-    const selectionStart = input?.selectionStart ?? entryValue.length;
-    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.getFirstNumericIndex)(entryValue);
-    pendingCaretRef.current = {
-      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_7__.countCaretTokens)(entryValue, selectionStart),
-      wasAtStart: selectionStart === 0,
-      wasInPrefixZone: firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex
-    };
-    let nextRawValue = entryValue;
-    let revisedDecimalPlaces = settings?.formatOptions?.decimalPlaces ?? 0;
-    if (inputType === 'percent') {
-      const [integerPart, fractionPart = ''] = entryValue.split('.');
-      const nextEntryValue = fractionPart.length > revisedDecimalPlaces ? `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}` : entryValue;
-      setPercentEntryValue(nextEntryValue);
-      revisedDecimalPlaces += 2;
-      nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.fromPercentEntryValue)(nextEntryValue);
-    } else {
-      setPercentEntryValue(null);
-    }
-    if (inputType !== 'integer') {
-      const [integerPart, fractionPart = ''] = nextRawValue.split('.');
-      const fractionalExcessLength = fractionPart.length - revisedDecimalPlaces;
-      if (fractionalExcessLength > 0) {
-        nextRawValue = `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}`;
-      }
-    }
-    setCellContent(nextRawValue);
-  }
-
-  /**
-   * Prepare updated cell content and pass to update handler
-   *
-   * @since 1.3.1
-   *
-   * @param {string} nextContent   Updated formatted text content for the cell
-   * @param {string} nextIndexText Updated plain text conent for the cell
-   */
-  function persistCellEdit(nextContent, nextIndexText) {
-    updateCellData({
-      content: nextContent,
-      attributes: {
-        ...cellAttributes,
-        value: {
-          ...(cellAttributes?.value || {}),
-          indexText: nextIndexText
-        }
-      }
-    });
-  }
-  function processBooleanCellEdit(updatedValue) {
-    persistCellEdit(updatedValue, updatedValue ? 'true' : 'false');
-  }
-
-  /**
-   * Relay mouse down event for menu cells
-   *
-   * @since 1.2.0
-   *
-   * @param {number} column_id Clicked table column
-   * @param {number} row_id    Clicked table row
-   * @param {Object} table     Current Dynamic Table
-   * @param {Object} e         Border click event object
-   */
-  function passMouseMenuClick(column_id, row_id, table, e) {
-    if (e.button !== 0) {
-      onContextMenu(column_id, row_id, table, e);
-    } else {
-      onMouseDown(column_id, row_id, table, e);
-    }
-  }
-
-  /**
-   * Render the common control for cell types edited in a modal.
-   *
-   * @since 1.4.6
-   *
-   * @param {string} label Accessible label and native tooltip text.
-   * @return {Object} Cell edit button.
-   */
-  const renderCellEditButton = (label = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Edit cell', 'dynamic-table-blocks')) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("button", {
-    type: "button",
-    className: "grid-control__cell-edit-button",
-    "aria-label": label,
-    "data-dtbk-cell-edit-button": true,
-    title: label,
-    onMouseDown: e => {
-      e.preventDefault();
-    },
-    onClick: e => {
-      passMouseEditClick(table_id, cell_id, cellContent, cellAttributes, cellBaseClasses, dataFormat, e);
-    },
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"], {
-      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
-      size: 16
-    })
-  });
-
-  /**
-   * Relay mouse down event for cell editing
-   *
-   * @since 1.4.6
-   *
-   * @param {number} table_id        Table identifier
-   * @param {string} cell_id         Clicked table cell for editing
-   * @param {Object} cellContent     Cell content
-   * @param {Object} cellAttributes  Cell attributes
-   * @param {string} cellBaseClasses Cell space delimited class names
-   * @param {Object} dataFormat      Column data format
-   * @param {Object} e               Border click event object
-   */
-  function passMouseEditClick(table_id, cell_id, cellContent, cellAttributes, cellBaseClasses, dataFormat, e) {
-    const cellValueAttributes = cellAttributes?.value || {};
-    onMouseDown(table_id, cell_id, cellContent, cellValueAttributes, cellBaseClasses, dataFormat, e);
-  }
-
-  /**
-   * React HTML to render a cell based on its type
-   *
-   * @since 1.1.1
-   * @since 1.2.0    Add DateTime render type
-   * @since 1.2.4    Add Number render type
-   *
-   * @return {void}
-   */
-  const renderTypes = {
-    richText: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
-      tagName: "div",
-      className: "dtbk-cell-general-content",
-      value: cellContent,
-      readOnly: !isEditing,
-      spellCheck: true,
-      onBlur: () => {
-        if (isEditing) {
-          onRequestStopEdit?.();
-        }
-      },
-      onChange: !isEditing ? undefined : next => {
-        const indexText = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.htmlToIndexText)(next);
-        persistCellEdit(next, indexText);
-      }
-    }),
-    border: () => {
-      const isCornerBorderCell = String(row_id) === '0' && String(column_id) === '0';
-      const isBorderHandle = !isCornerBorderCell && (String(row_id) === '0' || String(column_id) === '0');
-      const isRowHandle = String(column_id) === '0' && String(row_id) !== '0';
-      const currentRow = isRowHandle ? table?.rows?.find(r => String(r.row_id) === String(row_id)) : null;
-      const isHeaderRowHandle = currentRow?.attributes?.isHeader === true;
-      const canOpenBorderMenu = !isContentOnlyMode || isRowHandle && !isHeaderRowHandle;
-      if (!isBorderHandle || !canOpenBorderMenu) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-          "aria-hidden": "true",
-          children: cellContent
-        });
-      }
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("button", {
-        type: "button",
-        className: "grid-control__border-button",
-        "aria-label": borderHandleProps.ariaLabel,
-        "aria-haspopup": "menu",
-        "aria-expanded": borderHandleProps.expanded,
-        "aria-controls": borderHandleProps.expanded ? borderHandleProps.controls : undefined,
-        onMouseDown: e => {
-          e.preventDefault();
-        },
-        onClick: e => {
-          passMouseMenuClick(column_id, row_id, table, e);
-        },
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("span", {
-          "aria-hidden": "true",
-          children: cellContent
-        })
-      });
-    },
-    dateTime: () => {
-      if (!isEditing) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-          children: cellContent
-        });
-      }
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
-        className: renderClassesEdit,
-        type: inputType,
-        value: cellContent,
-        onKeyDown: event => {
-          onDateTimeKeyDown(event);
-        },
-        onChange: next => {
-          setCellContent(next);
-        },
-        onBlur: event => {
-          if (event?.target?.dataset?.cancelEdit === 'true') {
-            delete event.target.dataset.cancelEdit;
-            onRequestStopEdit?.();
-            return;
-          }
-          const format = settings?.format || inputType || 'date';
-          const next = event?.target?.value ?? cellContent ?? '';
-          const formattedContent = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.formattedIsoDate)(next, format);
-          persistCellEdit(next, formattedContent);
-          onRequestStopEdit?.();
-        }
-      });
-    },
-    number: () => {
-      if (!isEditing) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-          children: numberDisplayValue
-        });
-      }
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-        ref: numberEntryWrapperRef,
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
-          className: renderClassesEdit,
-          type: 'text',
-          inputMode: inputType === 'integer' ? 'numeric' : 'decimal',
-          value: numberEntryValue,
-          onChange: event => {
-            onNumberChange(event);
-          },
-          onBlur: event => {
-            pendingCaretRef.current = null;
-            setPercentEntryValue(null);
-            if (event?.target?.dataset?.cancelEdit === 'true') {
-              delete event.target.dataset.cancelEdit;
-              onRequestStopEdit?.();
-              return;
-            }
-            const next = cellContent ?? '';
-            persistCellEdit(next, next);
-            onRequestStopEdit?.();
-          }
-        })
-      });
-    },
-    checkbox: () => {
-      if (shouldHideCheckbox) {
-        return null;
-      }
-      if (!isEditing) {
-        if (settings?.formatOptions?.hideIfEmpty && isEmptyCheckboxValue(cellContent)) {
-          return null;
-        }
-        const isChecked = getCheckboxCheckedState(cellContent);
-        const scale = checkboxVariant === 'freeform' ? 0.6 : 1;
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_formatted_display__WEBPACK_IMPORTED_MODULE_8__.TableCheckbox, {
-          checked: isChecked,
-          variant: checkboxVariant,
-          scale: scale
-        });
-      }
-      const editedCheckbox = checkboxEditValue();
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-        children: editedCheckbox
-      });
-    },
-    link: () => {
-      if (!isEditing) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText.Content, {
-            tagName: "span",
-            className: "grid-control__cell-edit-content",
-            value: cellContent
-          }), renderCellEditButton((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Edit link cell', 'dynamic-table-blocks'))]
-        });
-      }
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-        children: "Placeholder"
-      });
-    },
-    post: () => {
-      if (!isEditing) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText.Content, {
-            tagName: "span",
-            className: "grid-control__cell-edit-content",
-            value: cellContent
-          }), renderCellEditButton((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Edit link cell', 'dynamic-table-blocks'))]
-        });
-      }
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-        children: "Placeholder"
-      });
-    }
-  };
-  let renderPipeline = [];
-  switch (cellType) {
-    case 'border':
-      renderPipeline = ['border'];
-      break;
-    case 'header':
-      renderPipeline = ['richText'];
-      break;
-    case 'body':
-      switch (type) {
-        case 'general':
-          renderPipeline = ['richText'];
-          break;
-        case 'border':
-          renderPipeline = ['border'];
-          break;
-        case 'date-time':
-          renderPipeline = ['dateTime'];
-          break;
-        case 'number':
-          renderPipeline = ['number'];
-          break;
-        case 'checkbox':
-          renderPipeline = ['checkbox'];
-          break;
-        case 'link':
-          renderPipeline = ['link'];
-          break;
-        case 'post':
-          renderPipeline = ['post'];
-          break;
-        default:
-          break;
-      }
-      break;
-    default:
-      break;
-  }
-  const renderClassesDisplay = (0,clsx__WEBPACK_IMPORTED_MODULE_6__["default"])(columnClassNames, cellClassNames, {
-    'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
-    'grid-control__body-cells--checkbox': type === 'checkbox',
-    'grid-control__body-columns--number-red': redNegativeNumber
-  });
-  const renderClassesEdit = (0,clsx__WEBPACK_IMPORTED_MODULE_6__["default"])(columnClassNames, {
-    'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
-    'grid-control__body-cells--checkbox': type === 'checkbox',
-    'grid-control__body-columns--number-red': redNegativeNumber
-  });
-  const isBorderCell = cellType === 'border';
-  let cellRole = 'presentation';
-  if (cellType === 'header') {
-    cellRole = 'columnheader';
-  } else if (cellType === 'body') {
-    cellRole = 'gridcell';
-  }
-  const ariaColIndex = !isBorderCell ? Number(column_id) : undefined;
-  const computedTabIndex = !isBorderCell && isFocused ? 0 : -1;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
-    id: cellTagId,
-    role: cellRole,
-    "aria-colindex": ariaColIndex,
-    "aria-haspopup": !isBorderCell && canOpenContextMenu ? 'menu' : undefined,
-    "aria-expanded": !isBorderCell && canOpenContextMenu ? contextMenuProps.expanded : undefined,
-    "aria-controls": !isBorderCell && canOpenContextMenu && contextMenuProps.expanded ? contextMenuProps.controls : undefined,
-    "data-cell-id": cell_id,
-    "data-col": Number(column_id),
-    "data-row": Number(row_id),
-    tabIndex: computedTabIndex,
-    className: renderClassesDisplay,
-    style: cellType === 'border' ? undefined : {
-      '--showGridLines': showGridLinesCSS,
-      '--gridLineWidth': gridLineWidthCSS
-    },
-    onMouseDown: e => {
-      if (cellType === 'border') return;
-      if (isEditing) return;
-      if (e.button !== 0) {
-        return;
-      }
-      e.preventDefault();
-      e.stopPropagation();
-      onRequestFocus?.(Number(column_id), Number(row_id));
-    },
-    onDoubleClick: e => {
-      if (cellType === 'border') return;
-      e.preventDefault();
-      onRequestEdit?.(cell_id);
-    },
-    onContextMenu: e => {
-      if (cellType === 'border' || !canOpenContextMenu) return;
-      e.preventDefault();
-      passMouseMenuClick(column_id, row_id, table, e);
-      onRequestFocus?.(Number(column_id), Number(row_id));
-    },
-    children: renderPipeline.map(key => {
-      const renderPart = renderTypes[key];
-      if (!renderPart) {
-        return null;
-      }
-
-      // Stable key in React list:
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-        children: renderPart()
-      }, key);
-    })
-  });
-}
-
-/***/ },
-
 /***/ "./src/components/column-dropdown-menu/index.js"
 /*!******************************************************!*\
   !*** ./src/components/column-dropdown-menu/index.js ***!
@@ -2433,13 +1696,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-column-data-types/style.scss");
-/* harmony import */ var _formatted_display__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../formatted-display */ "./src/components/formatted-display/index.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../utils */ "./src/utils.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/form/input-control/input-control.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/form/select-control/index.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/root.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/header.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/title.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/content.mjs");
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-column-data-types/style.scss");
+/* harmony import */ var _ui_icon__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../ui/icon */ "./src/components/ui/icon/index.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../utils */ "./src/utils.js");
+/* harmony import */ var _ui_post_content__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../ui/post-content */ "./src/components/ui/post-content/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__);
 /* External dependencies */
+
 
 
 
@@ -2449,6 +1720,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Internal dependencies
  */
+
 
 
 
@@ -2474,14 +1746,13 @@ function ConfigureColumnDataType(props = {}) {
     updatedColumn,
     onRequestClose
   } = props;
-  const normalizedColumnDataType = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.normalizeColumnDataType)(columnAttributes?.columnDataType);
-  console.log('Normalized Column Data Type Outbound = ', normalizedColumnDataType);
+  const normalizedColumnDataType = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.normalizeColumnDataType)(columnAttributes?.columnDataType);
   const [columnName, setColumnName] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnLabel);
   const [dataType, setDataType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType);
   const [dataTypeFormat, setDataTypeFormat] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.format || '');
   const [updateColumnStyle, setUpdateColumnStyle] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.updateColumnStyle || true);
-  const [columnClassNames, setColumnClassNames] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)((0,_utils__WEBPACK_IMPORTED_MODULE_7__.stageClassesForEdit)(columnClasses));
-  const columnClassNamesRender = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.prepareClassesForUse)(columnClassNames);
+  const [columnClassNames, setColumnClassNames] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)((0,_utils__WEBPACK_IMPORTED_MODULE_13__.stageClassesForEdit)(columnClasses));
+  const columnClassNamesRender = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.prepareClassesForUse)(columnClassNames);
 
   // Date specific attributes
   const initDefaultToToday = normalizedColumnDataType?.settings?.defaultToToday === true ? true : false;
@@ -2501,15 +1772,43 @@ function ConfigureColumnDataType(props = {}) {
   const pendingCaretRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const [percentEntryValue, setPercentEntryValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
   const [numberRawValue, setNumberRawValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
-  const sanitizedPreviewNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.sanitizeNumberInput)(numberRawValue, dataTypeFormat);
+  const sanitizedPreviewNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.sanitizeNumberInput)(numberRawValue, dataTypeFormat);
   const showNegativeNumberPreview = redNegative && sanitizedPreviewNumber !== '' && sanitizedPreviewNumber !== '-' && Number(sanitizedPreviewNumber) < 0;
-  const numberEntryValue = dataTypeFormat === 'percent' ? percentEntryValue ?? (0,_utils__WEBPACK_IMPORTED_MODULE_7__.toPercentEntryValue)(numberRawValue) : numberRawValue;
-  const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.formattedNumber)(numberRawValue, dataTypeFormat, thousandSeparator, decimalPlaces, currency, bracketNegative);
+  const numberEntryValue = dataTypeFormat === 'percent' ? percentEntryValue ?? (0,_utils__WEBPACK_IMPORTED_MODULE_13__.toPercentEntryValue)(numberRawValue) : numberRawValue;
+  const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.formattedNumber)(numberRawValue, dataTypeFormat, thousandSeparator, decimalPlaces, currency, bracketNegative);
 
   // Checkbox specific attributes
   const [checkboxHideIfEmpty, setCheckboxHideIfEmpty] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.hideIfEmpty || false);
   const [checkboxDefaultToChecked, setCheckboxDefaultToChecked] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.defaultToChecked || false);
   const isCheckboxDataType = normalizedColumnDataType?.type === 'checkbox' ? true : false;
+
+  // Post specific attributes
+  const defaultDisplayElement = {
+    display: false,
+    column: 'none',
+    order: 0
+  };
+  const [postDisplayElements, setPostDisplayElements] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({
+    displayTitle: normalizedColumnDataType?.settings?.formatOptions?.displayTitle || {
+      ...defaultDisplayElement,
+      display: true,
+      order: 1
+    },
+    displayCoverImage: normalizedColumnDataType?.settings?.formatOptions?.displayCoverImage || defaultDisplayElement,
+    displayExcerpt: normalizedColumnDataType?.settings?.formatOptions?.displayExcerpt || defaultDisplayElement,
+    displayAuthor: normalizedColumnDataType?.settings?.formatOptions?.displayAuthor || defaultDisplayElement,
+    displayShortContent: normalizedColumnDataType?.settings?.formatOptions?.displayShortContent || defaultDisplayElement,
+    displayPublishDate: normalizedColumnDataType?.settings?.formatOptions?.displayPublishDate || defaultDisplayElement,
+    displayModifiedDate: normalizedColumnDataType?.settings?.formatOptions?.displayModifiedDate || defaultDisplayElement
+  });
+  const [postLinkLocation, setPostLinkLocation] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.linkLocation || 'title');
+  const [postTitleInCover, setPostTitleInCover] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.displayTitleInCover || false);
+  const [postImageSize, setPostImageSize] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.displayImageSize || 'thumbnail');
+
+  // console.log('data type = ', dataType + ', format = ' + dataTypeFormat);
+  if (dataType.type === 'post' && !dataTypeFormat) {
+    setDataTypeFormat('link');
+  }
 
   // Column width attributes
   const [columnWidthType, setColumnWidthType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes.columnWidthType);
@@ -2560,8 +1859,8 @@ function ConfigureColumnDataType(props = {}) {
       pendingCaretRef.current = null;
       return;
     }
-    let nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.getCaretIndexFromTokenCount)(input.value, pendingCaretRef.current.tokenCount);
-    nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.normalizeCaretForPresentationPrefix)(input.value, nextCaret, pendingCaretRef.current);
+    let nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.getCaretIndexFromTokenCount)(input.value, pendingCaretRef.current.tokenCount);
+    nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.normalizeCaretForPresentationPrefix)(input.value, nextCaret, pendingCaretRef.current);
     input.setSelectionRange(nextCaret, nextCaret);
     pendingCaretRef.current = null;
   }, [numberEntryValue]);
@@ -2861,11 +2160,11 @@ function ConfigureColumnDataType(props = {}) {
    */
   function onNumberPreviewChange(event) {
     const input = numberEntryInputRef.current;
-    const entryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.sanitizeNumberInput)(event, dataTypeFormat === 'percent' ? 'number' : dataTypeFormat);
+    const entryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.sanitizeNumberInput)(event, dataTypeFormat === 'percent' ? 'number' : dataTypeFormat);
     const selectionStart = input?.selectionStart ?? entryValue.length;
-    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.getFirstNumericIndex)(entryValue);
+    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.getFirstNumericIndex)(entryValue);
     pendingCaretRef.current = {
-      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_7__.countCaretTokens)(entryValue, selectionStart),
+      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_13__.countCaretTokens)(entryValue, selectionStart),
       wasAtStart: selectionStart === 0,
       wasInPrefixZone: firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex
     };
@@ -2876,7 +2175,7 @@ function ConfigureColumnDataType(props = {}) {
       const nextEntryValue = fractionPart.length > revisedDecimalPlaces ? `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}` : entryValue;
       setPercentEntryValue(nextEntryValue);
       revisedDecimalPlaces += 2;
-      nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.fromPercentEntryValue)(nextEntryValue);
+      nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.fromPercentEntryValue)(nextEntryValue);
     } else {
       setPercentEntryValue(null);
     }
@@ -2940,7 +2239,6 @@ function ConfigureColumnDataType(props = {}) {
     let newHideIfEmpty = checkboxHideIfEmpty;
     let newDefaultToChecked = checkboxDefaultToChecked;
     let newUpdateColumnStyle = updateColumnStyle;
-    console.log('Checkbox Format: Event & Option: :', event, option);
     switch (option) {
       case 'hideEmpty':
         newHideIfEmpty = event;
@@ -2970,6 +2268,286 @@ function ConfigureColumnDataType(props = {}) {
   }
 
   /**
+   * Update post format and set default options
+   *
+   * @since 1.4.11
+   *
+   * @param {string} postFormat Post format to set
+   */
+  function onPostFormat(postFormat) {
+    console.log('Setting Post Format');
+    setDataTypeFormat(postFormat);
+    let formatOptions;
+    switch (postFormat) {
+      case 'link':
+        {
+          formatOptions = {
+            displayTitle: {
+              ...defaultDisplayElement,
+              display: true,
+              order: 1
+            },
+            displayCoverImage: defaultDisplayElement,
+            displayExcerpt: defaultDisplayElement,
+            displayAuthor: defaultDisplayElement,
+            displayShortContent: defaultDisplayElement,
+            displayPublishDate: defaultDisplayElement,
+            displayModifiedDate: defaultDisplayElement,
+            displayTitleInCover: false,
+            displayImageSize: 'thumbnail',
+            linkLocation: 'title'
+          };
+          setPostLinkLocation('title');
+          setPostTitleInCover(false);
+          setPostImageSize('thumbnail');
+          break;
+        }
+      case 'narrow':
+        {
+          formatOptions = {
+            displayTitle: {
+              ...defaultDisplayElement,
+              display: true,
+              column: 'none',
+              order: 1
+            },
+            displayCoverImage: {
+              ...defaultDisplayElement,
+              order: 0
+            },
+            displayExcerpt: {
+              ...defaultDisplayElement,
+              display: true,
+              order: 2
+            },
+            displayAuthor: {
+              ...defaultDisplayElement,
+              display: true,
+              order: 3
+            },
+            displayShortContent: defaultDisplayElement,
+            displayPublishDate: defaultDisplayElement,
+            displayModifiedDate: defaultDisplayElement,
+            displayTitleInCover: false,
+            displayImageSize: 'thumbnail',
+            linkLocation: 'title'
+          };
+          break;
+        }
+      case 'wide':
+        {
+          formatOptions = {
+            displayTitle: {
+              ...defaultDisplayElement,
+              display: true,
+              column: 'left',
+              order: 1
+            },
+            displayCoverImage: {
+              ...defaultDisplayElement,
+              order: 0
+            },
+            displayExcerpt: {
+              ...defaultDisplayElement,
+              display: true,
+              column: 'left',
+              order: 2
+            },
+            displayAuthor: {
+              ...defaultDisplayElement,
+              display: true,
+              column: 'right',
+              order: 3
+            },
+            displayShortContent: defaultDisplayElement,
+            displayPublishDate: defaultDisplayElement,
+            displayModifiedDate: defaultDisplayElement,
+            displayTitleInCover: false,
+            displayImageSize: 'thumbnail',
+            linkLocation: 'title'
+          };
+          break;
+        }
+      default:
+        return;
+    }
+    const newDisplayElements = {
+      displayTitle: formatOptions.displayTitle,
+      displayCoverImage: formatOptions.displayCoverImage,
+      displayExcerpt: formatOptions.displayExcerpt,
+      displayAuthor: formatOptions.displayAuthor,
+      displayShortContent: formatOptions.displayShortContent,
+      displayPublishDate: formatOptions.displayPublishDate,
+      displayModifiedDate: formatOptions.displayModifiedDate
+    };
+    setPostLinkLocation('title');
+    setPostTitleInCover(false);
+    setPostImageSize('thumbnail');
+    setPostDisplayElements(newDisplayElements);
+    const updatedDataType = {
+      type: 'post',
+      settings: {
+        format: postFormat,
+        formatOptions: formatOptions
+      }
+    };
+    setDataType(updatedDataType);
+  }
+
+  /**
+   * Update post formatting options based on configuration input
+   *
+   * @since 1.4.11
+   *
+   * @param {Object} value  Formatting value to set
+   * @param {string} option Formatting option
+   */
+  function onPostFormatOption(value, option) {
+    console.log('Setting Post Format Option: attribute = ' + option + 'value = ' + value);
+    let {
+      displayTitle: newDisplayTitle,
+      displayCoverImage: newDisplayCoverImage,
+      displayExcerpt: newDisplayExcerpt,
+      displayAuthor: newDisplayAuthor,
+      displayShortContent: newDisplayShortContent,
+      displayPublishDate: newDisplayPublishDate,
+      displayModifiedDate: newDisplayModifiedDate
+    } = postDisplayElements;
+    let newLinkLocation = postLinkLocation;
+    let newTitleInCover = postTitleInCover;
+    let newImageSize = postImageSize;
+    let updatedElement;
+    let priorElement;
+    switch (option) {
+      case 'display-title':
+        updatedElement = 'displayTitle';
+        priorElement = newDisplayTitle;
+        newDisplayTitle = value;
+        break;
+      case 'display-image':
+        updatedElement = 'displayCoverImage';
+        priorElement = newDisplayCoverImage;
+        newDisplayCoverImage = value;
+        if (newDisplayCoverImage === 0) {
+          newLinkLocation = 'title';
+          newTitleInCover = false;
+        }
+        break;
+      case 'display-excerpt':
+        updatedElement = 'displayExcerpt';
+        priorElement = newDisplayExcerpt;
+        newDisplayExcerpt = value;
+        break;
+      case 'display-author':
+        updatedElement = 'displayAuthor';
+        priorElement = newDisplayAuthor;
+        newDisplayAuthor = value;
+        break;
+      case 'display-content':
+        updatedElement = 'displayShortContent';
+        priorElement = newDisplayShortContent;
+        newDisplayShortContent = value;
+        break;
+      case 'display-published':
+        updatedElement = 'displayPublishDate';
+        priorElement = newDisplayPublishDate;
+        newDisplayPublishDate = value;
+        break;
+      case 'display-modified':
+        updatedElement = 'displayModifiedDate';
+        priorElement = newDisplayModifiedDate;
+        newDisplayModifiedDate = value;
+        break;
+      case 'title-in-cover':
+        if (newDisplayCoverImage !== 0) {
+          newTitleInCover = value;
+        } else {
+          newTitleInCover = false;
+        }
+        break;
+      case 'link-location':
+        if (newDisplayCoverImage !== 0) {
+          newLinkLocation = value;
+        } else {
+          newLinkLocation = 'title';
+        }
+        break;
+      case 'image-size':
+        newImageSize = value;
+        break;
+      default:
+        return;
+    }
+    const newDisplayElements = {
+      displayTitle: newDisplayTitle,
+      displayCoverImage: newDisplayCoverImage,
+      displayExcerpt: newDisplayExcerpt,
+      displayAuthor: newDisplayAuthor,
+      displayShortContent: newDisplayShortContent,
+      displayPublishDate: newDisplayPublishDate,
+      displayModifiedDate: newDisplayModifiedDate
+    };
+    console.log('Updated Post Display Element', newDisplayElements);
+    const updatedElementOrder = newDisplayElements[updatedElement].order;
+    const oldElementOrder = priorElement.order;
+    console.log('Updated Element = ' + updatedElementOrder);
+    console.log('Updated Element Prior Order = ' + oldElementOrder);
+
+    // Close order gap when an element becomes not displayed
+    if (updatedElementOrder !== oldElementOrder && updatedElementOrder === 0) {
+      for (const element in newDisplayElements) {
+        const elementOrder = newDisplayElements[element].order;
+        const elementDisplay = newDisplayElements[element].display;
+        if (elementDisplay && elementOrder > oldElementOrder && element !== updatedElement) {
+          newDisplayElements[element].order = elementOrder - 1;
+        }
+      }
+    }
+
+    // Increment order order for elements when an element becomes goes down in order
+    if (updatedElementOrder !== oldElementOrder && updatedElementOrder > 0) {
+      for (const element in newDisplayElements) {
+        const elementOrder = newDisplayElements[element].order;
+        const elementDisplay = newDisplayElements[element].display;
+        console.log('Current element (' + element + ') order:' + elementOrder);
+        console.log('Updated element key = ' + updatedElement);
+        console.log('Comparison Element Order = ' + updatedElementOrder);
+        if (elementDisplay && elementOrder >= updatedElementOrder && element !== updatedElement) {
+          console.log('Updating Element Order');
+          newDisplayElements[element].order = elementOrder + 1;
+        }
+      }
+    }
+
+    // for (const element of newDisplayElements) {
+    // 	if element
+    // }
+
+    setPostDisplayElements(newDisplayElements);
+    setPostLinkLocation(newLinkLocation);
+    setPostTitleInCover(newTitleInCover);
+    setPostImageSize(newImageSize);
+    const updatedDataType = {
+      ...dataType,
+      settings: {
+        format: dataType.settings.format,
+        formatOptions: {
+          displayTitle: newDisplayTitle,
+          displayCoverImage: newDisplayCoverImage,
+          displayExcerpt: newDisplayExcerpt,
+          displayAuthor: newDisplayAuthor,
+          displayShortContent: newDisplayShortContent,
+          displayPublishDate: newDisplayPublishDate,
+          displayModifiedDate: newDisplayModifiedDate,
+          displayTitleInCover: newTitleInCover,
+          displayImageSize: newImageSize,
+          linkLocation: newLinkLocation
+        }
+      }
+    };
+    setDataType(updatedDataType);
+  }
+  /**
    * Change column data types and set formatting defaults
    *
    * @since    1.2.0
@@ -2998,12 +2576,14 @@ function ConfigureColumnDataType(props = {}) {
         setDataTypeFormat('number');
         onNumberFormat('number');
         newColumnClassNames.delete('grid-control__body-columns--date-align-right');
+        setColumnClassNames(newColumnClassNames);
         return;
       case 'checkbox':
         setDataTypeFormat('checkbox');
         onCheckboxFormat('standard', true);
         newColumnClassNames.delete('grid-control__body-columns--number-align-right');
         newColumnClassNames.delete('grid-control__body-columns--date-align-right');
+        setColumnClassNames(newColumnClassNames);
         return;
       case 'link':
         setDataTypeFormat('link');
@@ -3014,13 +2594,12 @@ function ConfigureColumnDataType(props = {}) {
         newColumnClassNames.delete('grid-control__body-columns--date-align-right');
         break;
       case 'post':
-        setDataTypeFormat('post');
-        updatedDataType = {
-          type: 'post'
-        };
+        setDataTypeFormat('link');
+        onPostFormat('link');
         newColumnClassNames.delete('grid-control__body-columns--number-align-right');
         newColumnClassNames.delete('grid-control__body-columns--date-align-right');
-        break;
+        setColumnClassNames(newColumnClassNames);
+        return;
       default:
         updatedDataType = {
           type: event
@@ -3029,7 +2608,6 @@ function ConfigureColumnDataType(props = {}) {
         newColumnClassNames.delete('grid-control__body-columns--number-align-right');
         break;
     }
-    console.log('New data type: ', updatedDataType);
     setColumnClassNames(newColumnClassNames);
     setDataType(updatedDataType);
   }
@@ -3081,15 +2659,32 @@ function ConfigureColumnDataType(props = {}) {
         break;
     }
     setColumnClassNames(newColumnClassNames);
-    const updatedColumnClasses = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.prepareClassesForUse)(newColumnClassNames);
+    const updatedColumnClasses = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.prepareClassesForUse)(newColumnClassNames);
     updatedColumn(event, 'dataType', tableId, columnId, columnName, updatedColumnAttributes, updatedColumnClasses);
     close();
   }
-  const renderColumnClasses = (0,clsx__WEBPACK_IMPORTED_MODULE_4__["default"])(columnClassNamesRender, {
+  const renderColumnClasses = (0,clsx__WEBPACK_IMPORTED_MODULE_10__["default"])(columnClassNamesRender, {
     'grid-control__body-columns--number-red': showNegativeNumberPreview
   });
-  console.log('Column Content Type: ', dataType);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Modal, {
+
+  // console.log('Column Content Type: ', dataType);
+
+  // console.log(dataType.type);
+  // console.log(dataTypeFormat);
+
+  const testCellContent = 'Test Content';
+  const testCellAttributes = {
+    canonical: {
+      postId: 196,
+      postType: 'post'
+    },
+    ref: [{
+      postId: '196'
+    }]
+  };
+  const testCellClasses = '';
+  const testCellContentType = dataType;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Modal, {
     title: "Configure Column Content Type",
     overlayClassName: "configure-column-modal",
     onRequestClose: handleCancel,
@@ -3097,32 +2692,32 @@ function ConfigureColumnDataType(props = {}) {
     isDismissible: false,
     shouldCloseOnClickOutside: false,
     size: "large",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("form", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("form", {
       className: "configure-data-type--form configure-column-modal__form",
       onSubmit: onUpdate,
       onMouseDown: stopProp,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
         className: "configure-column-modal__body",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
           className: "configure-column-modal__body-inner",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
             spacing: 4,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("p", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("p", {
               className: "column-label",
               children: ["For column ", columnName]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("strong", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
                   children: "Basics"
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                   spacing: 3,
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalInputControl, {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalInputControl, {
                     label: "Column Name",
                     value: columnName,
                     onChange: value => setColumnName(value)
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
                     label: "Content Type",
                     value: dataType.type,
                     onChange: onUpdateDataType,
@@ -3152,26 +2747,26 @@ function ConfigureColumnDataType(props = {}) {
                   })]
                 })
               })]
-            }), dataType.type === 'date-time' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("strong", {
+            }), dataType.type === 'date-time' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
                   children: "Content settings"
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                   spacing: 3,
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
                     children: "Select the specific date/time appearance."
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
                     gap: 24,
                     align: "stretch",
                     className: "configure-column-modal__split",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__left",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                         spacing: 3,
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
                           label: "Format",
                           selected: dataTypeFormat,
                           options: [{
@@ -3185,16 +2780,16 @@ function ConfigureColumnDataType(props = {}) {
                             value: 'datetime-local'
                           }],
                           onChange: value => onDateTimeType(value)
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
                           className: "configure-column-modal__options",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("strong", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
                             children: "Options"
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: "Default to today's date",
                             checked: dateDefaultToToday,
                             onChange: e => onDateDefaultToToday(e, dataTypeFormat)
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Auto format column?',
                             checked: updateColumnStyle,
@@ -3202,16 +2797,16 @@ function ConfigureColumnDataType(props = {}) {
                           })]
                         })]
                       })
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__right",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
                         className: "configure-column-modal__preview",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
                           id: previewId,
                           label: "Preview",
                           help: "This is only a preview; it won\u2019t change saved values.",
-                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
                             className: renderColumnClasses,
                             type: dataTypeFormat,
                             label: '',
@@ -3226,26 +2821,26 @@ function ConfigureColumnDataType(props = {}) {
                   })]
                 })
               })]
-            }), dataType.type === 'number' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("strong", {
+            }), dataType.type === 'number' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
                   children: "Content settings"
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                   spacing: 3,
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
                     children: "Select the specific number type."
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
                     gap: 24,
                     align: "stretch",
                     className: "configure-column-modal__split",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__left",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                         spacing: 3,
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
                           label: "Number Type",
                           selected: dataTypeFormat,
                           options: [{
@@ -3262,37 +2857,37 @@ function ConfigureColumnDataType(props = {}) {
                             value: 'currency'
                           }],
                           onChange: value => onNumberFormat(value)
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
                           className: "configure-column-modal__options",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("strong", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
                             children: "Formatting Options"
-                          }), (dataTypeFormat === 'number' || dataTypeFormat === 'percent' || dataTypeFormat === 'currency') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+                          }), (dataTypeFormat === 'number' || dataTypeFormat === 'percent' || dataTypeFormat === 'currency') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
                             className: "configure-column-modal__input",
                             type: 'number',
                             label: 'Decimal Places',
                             value: decimalPlaces,
                             onChange: e => onNumberFormatOption(e, 'decimal')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Thousand Separator',
                             checked: thousandSeparator,
                             onChange: e => onNumberFormatOption(e, 'thousand')
-                          }), dataTypeFormat === 'currency' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), dataTypeFormat === 'currency' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Currency',
                             checked: currency,
                             onChange: e => onNumberFormatOption(e, 'currency')
-                          }), (dataTypeFormat === 'number' || dataTypeFormat === 'integer' || dataTypeFormat === 'currency') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), (dataTypeFormat === 'number' || dataTypeFormat === 'integer' || dataTypeFormat === 'currency') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Bracket negative numbers?',
                             checked: bracketNegative,
                             onChange: e => onNumberFormatOption(e, 'bracket-negative')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Display negative numbers in red?',
                             checked: redNegative,
                             onChange: e => onNumberFormatOption(e, 'red-negative')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Auto format column?',
                             checked: updateColumnStyle,
@@ -3300,18 +2895,18 @@ function ConfigureColumnDataType(props = {}) {
                           })]
                         })]
                       })
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__right",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
                         className: "configure-column-modal__preview",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
                           id: previewId,
                           label: "Preview",
                           help: "This is only a preview; it won\u2019t change saved values.",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
                             ref: numberEntryWrapperRef,
-                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
                               className: `configure-column-modal__input-preview ${renderColumnClasses}`,
                               type: 'text',
                               inputMode: dataTypeFormat === 'integer' ? 'numeric' : 'decimal',
@@ -3324,7 +2919,7 @@ function ConfigureColumnDataType(props = {}) {
                                 setPercentEntryValue(null);
                               }
                             })
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
                             className: `configure-column-modal__display-preview ${renderColumnClasses}`,
                             type: 'text',
                             inputMode: dataTypeFormat === 'integer' ? 'numeric' : 'decimal',
@@ -3339,26 +2934,26 @@ function ConfigureColumnDataType(props = {}) {
                   })]
                 })
               })]
-            }), dataType.type === 'checkbox' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("strong", {
+            }), dataType.type === 'checkbox' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
                   children: "Content settings"
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                   spacing: 3,
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
                     children: "Select the specific checkbox type."
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
                     gap: 24,
                     align: "stretch",
                     className: "configure-column-modal__split",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__left",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                         spacing: 3,
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
                           label: "Checkbox Type",
                           selected: dataTypeFormat,
                           options: [{
@@ -3375,21 +2970,21 @@ function ConfigureColumnDataType(props = {}) {
                             value: 'freeform'
                           }],
                           onChange: value => onCheckboxFormat(value)
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
                           className: "configure-column-modal__options",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("strong", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
                             children: "Formatting Options"
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Hide checkbox when no value exists?',
                             checked: checkboxHideIfEmpty,
                             onChange: e => onCheckboxFormatOption(e, 'hideEmpty')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Default to "Checked"',
                             checked: checkboxDefaultToChecked,
                             onChange: e => onCheckboxFormatOption(e, 'default-checked')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Auto format column?',
                             checked: updateColumnStyle,
@@ -3397,12 +2992,12 @@ function ConfigureColumnDataType(props = {}) {
                           })]
                         })]
                       })
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__right",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
                         className: "configure-column-modal__preview configure-column-modal__preview--checkbox",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
                           id: previewId,
                           label: "Preview",
                           style: {
@@ -3411,38 +3006,38 @@ function ConfigureColumnDataType(props = {}) {
                             height: '20%'
                           },
                           className: "configure-column-modal__checkbox-preview-control",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
                             className: "configure-column-modal__checkbox-preview-state",
-                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
                               children: "When Checked"
-                            }), dataTypeFormat === 'standard' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                            }), dataTypeFormat === 'standard' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: true
-                            }), dataTypeFormat === 'toggle' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+                            }), dataTypeFormat === 'toggle' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: true
-                            }), dataTypeFormat === 'icon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_formatted_display__WEBPACK_IMPORTED_MODULE_6__.StatusIcon, {
+                            }), dataTypeFormat === 'icon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.StatusIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: true
-                            }), dataTypeFormat === 'freeform' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_formatted_display__WEBPACK_IMPORTED_MODULE_6__.FreeformCheckboxIcon, {
+                            }), dataTypeFormat === 'freeform' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.FreeformCheckboxIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: true,
                               scale: 0.6
                             })]
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
                             className: "configure-column-modal__checkbox-preview-state",
-                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
                               children: "When Unchecked"
-                            }), dataTypeFormat === 'standard' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                            }), dataTypeFormat === 'standard' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: false
-                            }), dataTypeFormat === 'toggle' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+                            }), dataTypeFormat === 'toggle' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: false
-                            }), dataTypeFormat === 'icon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_formatted_display__WEBPACK_IMPORTED_MODULE_6__.StatusIcon, {
+                            }), dataTypeFormat === 'icon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.StatusIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: false
-                            }), dataTypeFormat === 'freeform' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_formatted_display__WEBPACK_IMPORTED_MODULE_6__.FreeformCheckboxIcon, {
+                            }), dataTypeFormat === 'freeform' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.FreeformCheckboxIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: false,
                               scale: 0.6
@@ -3454,18 +3049,187 @@ function ConfigureColumnDataType(props = {}) {
                   })]
                 })
               })]
+            }), dataType.type === 'post' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
+                  children: "Content settings"
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+                  spacing: 3,
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+                    children: "Select the specific content display options."
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
+                    gap: 24,
+                    align: "stretch",
+                    className: "configure-column-modal__split",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                      className: "configure-column-modal__left",
+                      isBlock: true,
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+                        spacing: 3,
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                          label: "Post Layout",
+                          selected: dataTypeFormat,
+                          options: [{
+                            label: 'Link Only',
+                            value: 'link'
+                          }, {
+                            label: 'Wide',
+                            value: 'wide'
+                          }, {
+                            label: 'Narrow',
+                            value: 'narrow'
+                          }],
+                          onChange: value => onPostFormat(value)
+                        }), dataTypeFormat !== 'link' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
+                          className: "configure-column-modal__options",
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
+                            children: "Formatting Options"
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_6__.Root, {
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_7__.Header, {
+                              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Title, {
+                                children: "Content Elements To Display"
+                              })
+                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.Content, {
+                              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("table", {
+                                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("thead", {
+                                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("tr", {
+                                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("th", {
+                                      children: "Element"
+                                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("th", {
+                                      children: "Display?"
+                                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("th", {
+                                      children: "Order"
+                                    }), dataTypeFormat === 'wide' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("th", {
+                                      children: "Location"
+                                    })]
+                                  })
+                                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("tbody", {
+                                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(DislpayPostElementRow, {
+                                    elementName: "Title",
+                                    displayElement: postDisplayElements.displayTitle,
+                                    updateOption: "display-title",
+                                    postFormat: dataTypeFormat,
+                                    onChange: onPostFormatOption
+                                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(DislpayPostElementRow, {
+                                    elementName: "Excerpt",
+                                    displayElement: postDisplayElements.displayExcerpt,
+                                    updateOption: "display-excerpt",
+                                    postFormat: dataTypeFormat,
+                                    onChange: onPostFormatOption
+                                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(DislpayPostElementRow, {
+                                    elementName: "Author",
+                                    displayElement: postDisplayElements.displayAuthor,
+                                    updateOption: "display-author",
+                                    postFormat: dataTypeFormat,
+                                    onChange: onPostFormatOption
+                                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(DislpayPostElementRow, {
+                                    elementName: "Cover Image",
+                                    displayElement: postDisplayElements.displayCoverImage,
+                                    updateOption: "display-image",
+                                    postFormat: dataTypeFormat,
+                                    onChange: onPostFormatOption
+                                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(DislpayPostElementRow, {
+                                    elementName: "Published Date",
+                                    displayElement: postDisplayElements.displayPublishDate,
+                                    updateOption: "display-published",
+                                    postFormat: dataTypeFormat,
+                                    onChange: onPostFormatOption
+                                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(DislpayPostElementRow, {
+                                    elementName: "Last Modified Date",
+                                    displayElement: postDisplayElements.displayModifiedDate,
+                                    updateOption: "display-modified",
+                                    postFormat: dataTypeFormat,
+                                    onChange: onPostFormatOption
+                                  })]
+                                })]
+                              })
+                            })]
+                          }), postDisplayElements.displayCoverImage > 0 && postDisplayElements.displayTitle > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl
+                          // className="configure-column-modal__checkbox"
+                          , {
+                            label: 'Display title in Cover Image?',
+                            checked: postTitleInCover,
+                            onChange: checked => onPostFormatOption(checked, 'title-in-cover')
+                          }), postDisplayElements.displayCoverImage > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.Fragment, {
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                              label: "Link Location",
+                              selected: postLinkLocation,
+                              options: [{
+                                label: 'Title',
+                                value: 'title'
+                              }, {
+                                label: 'Cover Image',
+                                value: 'image'
+                              }],
+                              onChange: value => onPostFormatOption(value, 'link-location')
+                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+                              label: "Image Size",
+                              value: postImageSize,
+                              defaultValue: "thumbnail",
+                              onValueChange: value => onPostFormatOption(value, 'image-size'),
+                              items: [{
+                                value: 'thumbnail',
+                                label: 'Thumbnail: (150 x 150)'
+                              }, {
+                                value: 'medium',
+                                label: 'Medium: (300 x 300)'
+                              }, {
+                                value: 'medium_large',
+                                label: 'Medium/Large (768 Wide)'
+                              }, {
+                                value: 'large',
+                                label: 'Large (1024 x 1024)'
+                              }]
+                            })]
+                          })]
+                        })]
+                      })
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                      className: "configure-column-modal__right",
+                      isBlock: true,
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+                        style: {
+                          display: 'flex',
+                          flexDirection: 'column'
+                        },
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
+                          id: previewId,
+                          label: "Preview",
+                          style: {
+                            alignContent: 'center',
+                            flexWrap: 'wrap',
+                            height: '20%'
+                          },
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+                              children: "Post Cell Preview"
+                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_ui_post_content__WEBPACK_IMPORTED_MODULE_14__.CellPostContent, {
+                              cellContent: testCellContent,
+                              cellAttributes: testCellAttributes,
+                              cellClasses: testCellClasses,
+                              cellContentType: testCellContentType
+                            })]
+                          })
+                        })
+                      })
+                    })]
+                  })]
+                })
+              })]
             })]
           })
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
         className: "configure-column-modal__footer",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
           className: "configure-column-modal__button-group",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
             variant: "secondary",
             onClick: handleCancel,
             children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Cancel', 'dynamic-table-blocks')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
             variant: "primary",
             type: "submit",
             children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Update', 'dynamic-table-blocks')
@@ -3473,6 +3237,96 @@ function ConfigureColumnDataType(props = {}) {
         })
       })]
     })
+  });
+}
+function DislpayPostElementRow(props) {
+  const {
+    elementName,
+    displayElement,
+    updateOption,
+    postFormat,
+    onChange
+  } = props;
+  const {
+    display,
+    order,
+    column
+  } = displayElement;
+  const labelOrderSuffix = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Display Order', 'dynamic-table-blocks');
+  const labelColumnSuffix = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Display Column', 'dynamic-table-blocks');
+  function onDisplayUpdate(updatedValue, updatedDisplayOption, updatedAttribute) {
+    let newDisplay = display;
+    let newColumn = column;
+    let newOrder = order;
+    switch (updatedAttribute) {
+      case 'display':
+        {
+          newDisplay = updatedValue;
+          if (updatedValue) {
+            newColumn = postFormat === 'wide' ? 'left' : 'none';
+            newOrder = 1;
+          } else {
+            newColumn = 'none';
+            newOrder = 0;
+          }
+          break;
+        }
+      case 'column':
+        {
+          newColumn = updatedValue;
+          break;
+        }
+      case 'order':
+        {
+          newOrder = updatedValue;
+          break;
+        }
+      default:
+        {
+          break;
+        }
+    }
+    const updatedDisplayElement = {
+      display: newDisplay,
+      column: newColumn,
+      order: newOrder
+    };
+    onChange(updatedDisplayElement, updatedDisplayOption);
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("tr", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("td", {
+      children: elementName
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("td", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+        checked: display,
+        onChange: checked => onDisplayUpdate(checked, updateOption, 'display')
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("td", {
+      children: display ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_4__.InputControl, {
+        label: elementName + ' ' + labelOrderSuffix,
+        hideLabelFromVision: true,
+        min: 1,
+        step: 1,
+        value: order || 1,
+        onValueChange: value => onDisplayUpdate(value, updateOption, 'order'),
+        type: "number",
+        size: "compact"
+      }) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('n/a', 'dynamic-table-blocks')
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("td", {
+      children: postFormat === 'wide' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+        label: elementName + ' ' + labelColumnSuffix,
+        hideLabelFromVision: true,
+        value: column || 'none',
+        onValueChange: value => onDisplayUpdate(value, updateOption, 'column'),
+        items: [{
+          value: 'left',
+          label: 'Left'
+        }, {
+          value: 'right',
+          label: 'Right'
+        }]
+      })
+    })]
   });
 }
 const ColumnDataTypeModal = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.memo)(ConfigureColumnDataType);
@@ -4341,223 +4195,6 @@ const RowHeightModal = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.memo)(
 
 /***/ },
 
-/***/ "./src/components/formatted-display/index.js"
-/*!***************************************************!*\
-  !*** ./src/components/formatted-display/index.js ***!
-  \***************************************************/
-(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   FreeformCheckboxIcon: () => (/* binding */ FreeformCheckboxIcon),
-/* harmony export */   StatusIcon: () => (/* binding */ StatusIcon),
-/* harmony export */   TableCheckbox: () => (/* binding */ TableCheckbox)
-/* harmony export */ });
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _assets_icons_checkbox_freeform_checked_svg__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../assets/icons/checkbox/freeform-checked.svg */ "./assets/icons/checkbox/freeform-checked.svg");
-/* harmony import */ var _assets_icons_checkbox_freeform_unchecked_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../assets/icons/checkbox/freeform-unchecked.svg */ "./assets/icons/checkbox/freeform-unchecked.svg");
-/* harmony import */ var _assets_icons_checkbox_status_icon_checked_svg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../assets/icons/checkbox/status-icon-checked.svg */ "./assets/icons/checkbox/status-icon-checked.svg");
-/* harmony import */ var _assets_icons_checkbox_status_icon_unchecked_svg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../assets/icons/checkbox/status-icon-unchecked.svg */ "./assets/icons/checkbox/status-icon-unchecked.svg");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
-/* External dependencies */
-
-
-
-
-
-
-/**
- * Render checkbox image
- *
- * @since 1.4.3
- *
- * @param {string} src       Location of image to select
- * @param {string} className Element classes
- * @param {string} label     Whether the image should identify as checked or unchecked
- * @param {number} width     Width to render image in px
- * @param {number} height    Height to render image in px
- * @return {string}  Image HTML to render
- */
-
-function CheckboxAssetIcon({
-  src,
-  className,
-  label,
-  width,
-  height
-}) {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
-    className: className,
-    src: src,
-    alt: label,
-    width: width,
-    height: height,
-    style: {
-      display: 'inline-block',
-      flexShrink: 0,
-      verticalAlign: 'middle'
-    }
-  });
-}
-
-/**
- * Render checkbox as Icon
- *
- * @since 1.4.3
- *
- * @param {boolean} checked   Whether the icon is checked
- * @param {string}  className Element classes
- * @param {string}  size      Whether the image should identify as checked or unchecked
- * @param {Object}  onChange  Action associated with checkbox update
- * @return {string}  Icon type checkbox HTML element
- */
-function StatusIcon({
-  checked,
-  className,
-  size = 24,
-  onChange
-}) {
-  const label = checked ? 'Checked' : 'Unchecked';
-  const src = checked ? _assets_icons_checkbox_status_icon_checked_svg__WEBPACK_IMPORTED_MODULE_3__["default"] : _assets_icons_checkbox_status_icon_unchecked_svg__WEBPACK_IMPORTED_MODULE_4__["default"];
-  function onHandleClick(event) {
-    if (typeof onChange !== 'function') {
-      return;
-    }
-    return onChange(event);
-  }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
-    className: className,
-    label: label,
-    icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(CheckboxAssetIcon, {
-      src: src,
-      className: className,
-      label: label,
-      width: size,
-      height: size
-    }),
-    iconSize: size,
-    onClick: e => onHandleClick(e)
-  });
-}
-
-/**
- * Render checkbox as freeform icon
- *
- * @since 1.4.3
- *
- * @param {boolean} checked   Whether the icon is checked
- * @param {string}  className Element classes
- * @param {string}  scale     Factor by which to scale the checkbox size
- * @param {Object}  onChange  Action associated with checkbox update
- * @return {string}  Freeform type checkbox HTML element
- */
-function FreeformCheckboxIcon({
-  checked,
-  className,
-  scale = 1,
-  onChange
-}) {
-  const label = checked ? 'Checked' : 'Unchecked';
-  const baseSize = 52;
-  const size = baseSize * scale;
-  const src = checked ? _assets_icons_checkbox_freeform_checked_svg__WEBPACK_IMPORTED_MODULE_1__["default"] : _assets_icons_checkbox_freeform_unchecked_svg__WEBPACK_IMPORTED_MODULE_2__["default"];
-  function onHandleClick(event) {
-    if (typeof onChange !== 'function') {
-      return;
-    }
-    return onChange(event);
-  }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
-    className: className,
-    label: label,
-    icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(CheckboxAssetIcon, {
-      src: src,
-      className: className,
-      label: label,
-      width: size,
-      height: size
-    }),
-    iconSize: size,
-    onClick: e => onHandleClick(e)
-  });
-}
-
-/**
- * Render the appropriate checkbox based on it type
- *
- * @since 1.4.3
- *
- * @param {boolean} checked   Whether the icon is checked
- * @param {string}  variant   Checkbox type to render
- * @param {Object}  onChange  Action associated with checkbox update
- * @param {string}  className Element classes
- * @param {string}  scale     Factor by which to scale the checkbox size
- * @return {string}  Checkbox HTML element
- */
-function TableCheckbox({
-  checked,
-  variant,
-  onChange,
-  className = '',
-  scale = 1
-}) {
-  const isInteractive = typeof onChange === 'function';
-  const newChecked = !checked;
-  function onUpdateValue(updatedValue) {
-    if (!isInteractive) {
-      return;
-    }
-    onChange(updatedValue);
-  }
-  switch (variant) {
-    case 'standard':
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.CheckboxControl, {
-        checked: !!checked,
-        onChange: nextChecked => {
-          if (!isInteractive) {
-            return;
-          }
-          onUpdateValue(!!nextChecked);
-        }
-      });
-    case 'toggle':
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.ToggleControl, {
-        checked: !!checked,
-        onChange: nextChecked => {
-          if (!isInteractive) {
-            return;
-          }
-          onUpdateValue(!!nextChecked);
-        },
-        label: ''
-      });
-    case 'icon':
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(StatusIcon, {
-        checked: !!checked,
-        className: className,
-        size: 24,
-        onChange: () => {
-          onUpdateValue(newChecked);
-        }
-      });
-    case 'freeform':
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(FreeformCheckboxIcon, {
-        checked: !!checked,
-        className: className,
-        scale: scale,
-        onChange: () => {
-          onUpdateValue(newChecked);
-        }
-      });
-    default:
-      return null;
-  }
-}
-
-/***/ },
-
 /***/ "./src/components/index.js"
 /*!*********************************!*\
   !*** ./src/components/index.js ***!
@@ -4566,19 +4203,24 @@ function TableCheckbox({
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Cell: () => (/* reexport safe */ _cell__WEBPACK_IMPORTED_MODULE_0__.Cell),
+/* harmony export */   Cell: () => (/* reexport safe */ _ui__WEBPACK_IMPORTED_MODULE_0__.Cell),
 /* harmony export */   CellMenu: () => (/* reexport safe */ _cell_dropdown_menu__WEBPACK_IMPORTED_MODULE_6__.CellMenu),
+/* harmony export */   CellPostContent: () => (/* reexport safe */ _ui__WEBPACK_IMPORTED_MODULE_0__.CellPostContent),
 /* harmony export */   ColumnDataTypeModal: () => (/* reexport safe */ _configure_column_data_types__WEBPACK_IMPORTED_MODULE_3__.ColumnDataTypeModal),
 /* harmony export */   ColumnMenu: () => (/* reexport safe */ _column_dropdown_menu__WEBPACK_IMPORTED_MODULE_1__.ColumnMenu),
 /* harmony export */   ColumnWidthModal: () => (/* reexport safe */ _configure_column_width__WEBPACK_IMPORTED_MODULE_2__.ColumnWidthModal),
 /* harmony export */   EditCellContentModal: () => (/* reexport safe */ _cell_advanced_edit_modal__WEBPACK_IMPORTED_MODULE_7__.EditCellContentModal),
-/* harmony export */   FreeformCheckboxIcon: () => (/* reexport safe */ _formatted_display__WEBPACK_IMPORTED_MODULE_8__.FreeformCheckboxIcon),
+/* harmony export */   FreeformCheckboxIcon: () => (/* reexport safe */ _ui__WEBPACK_IMPORTED_MODULE_0__.FreeformCheckboxIcon),
+/* harmony export */   PostAuthor: () => (/* reexport safe */ _ui__WEBPACK_IMPORTED_MODULE_0__.PostAuthor),
+/* harmony export */   PostImage: () => (/* reexport safe */ _ui__WEBPACK_IMPORTED_MODULE_0__.PostImage),
+/* harmony export */   PostTimeToRead: () => (/* reexport safe */ _ui__WEBPACK_IMPORTED_MODULE_0__.PostTimeToRead),
+/* harmony export */   PostWordCount: () => (/* reexport safe */ _ui__WEBPACK_IMPORTED_MODULE_0__.PostWordCount),
 /* harmony export */   RowHeightModal: () => (/* reexport safe */ _configure_row_height__WEBPACK_IMPORTED_MODULE_5__.RowHeightModal),
 /* harmony export */   RowMenu: () => (/* reexport safe */ _row_dropdown_menu__WEBPACK_IMPORTED_MODULE_4__.RowMenu),
-/* harmony export */   StatusIcon: () => (/* reexport safe */ _formatted_display__WEBPACK_IMPORTED_MODULE_8__.StatusIcon),
-/* harmony export */   TableCheckbox: () => (/* reexport safe */ _formatted_display__WEBPACK_IMPORTED_MODULE_8__.TableCheckbox)
+/* harmony export */   StatusIcon: () => (/* reexport safe */ _ui__WEBPACK_IMPORTED_MODULE_0__.StatusIcon),
+/* harmony export */   TableCheckbox: () => (/* reexport safe */ _ui__WEBPACK_IMPORTED_MODULE_0__.TableCheckbox)
 /* harmony export */ });
-/* harmony import */ var _cell__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cell */ "./src/components/cell/index.js");
+/* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ui */ "./src/components/ui/index.js");
 /* harmony import */ var _column_dropdown_menu__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./column-dropdown-menu */ "./src/components/column-dropdown-menu/index.js");
 /* harmony import */ var _configure_column_width__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./configure-column-width */ "./src/components/configure-column-width/index.js");
 /* harmony import */ var _configure_column_data_types__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./configure-column-data-types */ "./src/components/configure-column-data-types/index.js");
@@ -4586,8 +4228,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _configure_row_height__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./configure-row-height */ "./src/components/configure-row-height/index.js");
 /* harmony import */ var _cell_dropdown_menu__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./cell-dropdown-menu */ "./src/components/cell-dropdown-menu/index.js");
 /* harmony import */ var _cell_advanced_edit_modal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./cell-advanced-edit-modal */ "./src/components/cell-advanced-edit-modal/index.js");
-/* harmony import */ var _formatted_display__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./formatted-display */ "./src/components/formatted-display/index.js");
-/* Export table cells */
+/* Export UI components */
 
 
 /* Export table column react components */
@@ -4601,9 +4242,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /* Export table cell react components */
 
-
-
-/* Export custom display react components */
 
 
 /***/ },
@@ -4865,6 +4503,1707 @@ function RowMenuImpl(props = {}) {
   });
 }
 const RowMenu = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.memo)(RowMenuImpl);
+
+/***/ },
+
+/***/ "./src/components/ui/cell/index.js"
+/*!*****************************************!*\
+  !*** ./src/components/ui/cell/index.js ***!
+  \*****************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Cell: () => (/* binding */ Cell)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/icon/index.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/pencil.mjs");
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../utils */ "./src/utils.js");
+/* harmony import */ var _icon__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../icon */ "./src/components/ui/icon/index.js");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../editor.scss */ "./src/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__);
+/* External dependencies */
+
+
+
+
+
+
+
+/* Internal dependencies */
+
+
+
+
+/**
+ * Component to render and manage cell content editing
+ *
+ * Data Shape as follows with date-time as an example
+ *
+ * Type Registry
+ *
+ *   TYPES = {
+ *     general: {
+ *       label: 'Rich Text',
+ * 	   },
+ *
+ *     'date-time': {
+ *       label: 'Date/Time',
+ *       formats: {
+ *         date: { label: 'Date' },
+ *         time: { label: 'Time' },
+ *         datetime-local: { label: 'Date & Time' },
+ *       },
+ *     },
+ *   }
+ *
+ *   Column - attributes.columnDataType:
+ *	  {
+ *        Date/Time Example
+ *
+ *		  type: 'date-time',
+ *		  settings: {
+ *			  format: 'date',
+ *			  defaultToToday: false,
+ *	  },
+ *
+ *   Cell - Content:
+ *     Raw content value (example 10/1/2025)
+ *
+ *   Cell - attributes.value:
+ *   {
+ *        Column columnDataType may be included only if an override is permitted
+ *        for this data type AND an override exists for this particular cell
+ *        overrides: {...}
+ *
+ * 		  meta: {
+ *            label: 'My Date',
+ * 		      size: 'My Size',
+ *        },
+ * 		  // Dependencies on other objects external to Cell. Example for post
+ * 	  	  ref: {
+ * 			  kind: 'post',
+ * 			  id: 45,
+ * 		  },
+ * 		  // search support
+ * 		  indexText: 'optimized for web search, all text only' (example 2025-10-01),
+ *   }
+ *
+ * @since 1.1.1
+ * @since 1.2.0  Added column data type logic and Date/Time render
+ * @since 1.2.4  Added support for number column content type
+ *
+ * @param {Object} props Passed attributes
+ * @return {Object} events for cell content editing
+ */
+
+function Cell(props) {
+  const {
+    cellType,
+    isContentOnlyMode = false,
+    dataFormat,
+    table,
+    cell_id,
+    content,
+    attributes,
+    isFocused,
+    columnClassNames,
+    cellBaseClasses,
+    cellClassNames,
+    showGridLinesCSS,
+    gridLineWidthCSS,
+    onChange,
+    onMouseDown,
+    onContextMenu,
+    borderHandleProps = {},
+    cellTagId,
+    isEditing,
+    onRequestEdit,
+    onRequestStopEdit,
+    onRequestFocus,
+    canOpenContextMenu = false,
+    contextMenuProps = {}
+  } = props;
+  const {
+    column_id,
+    row_id
+  } = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.getCellIdCoordinates)(cell_id);
+  const table_id = table?.table_id;
+  const {
+    type,
+    settings
+  } = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.normalizeColumnDataType)(dataFormat);
+  const [inputType, setInputType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(() => settings?.format || '');
+  const [cellContent, setCellContent] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)();
+  const initialCellValue = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(content);
+  const [cellAttributes, setCellAttributes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(attributes);
+  const numberEntryWrapperRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const numberEntryInputRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const pendingCaretRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const [percentEntryValue, setPercentEntryValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const numberEntryValue = inputType === 'percent' ? percentEntryValue ?? (0,_utils__WEBPACK_IMPORTED_MODULE_7__.toPercentEntryValue)(cellContent) : cellContent ?? '';
+  const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.formattedNumber)(cellContent, inputType, settings?.formatOptions?.thousandSeparator, settings?.formatOptions?.decimalPlaces, settings?.formatOptions?.showCurrencySymbol, settings?.formatOptions?.bracketNegative);
+  const sanitizedNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.sanitizeNumberInput)(cellContent, inputType);
+  const redNegativeNumber = settings?.formatOptions?.redNegative && sanitizedNumber !== '' && sanitizedNumber !== '-' && Number(sanitizedNumber) < 0;
+  const checkboxVariant = settings?.format || inputType || 'standard';
+  const shouldHideCheckbox = !isEditing && settings?.formatOptions?.hideIfEmpty && isEmptyCheckboxValue(cellContent);
+
+  /**
+   * Identify whether checkbox cell value is empty
+   *
+   * @since 1.4.3
+   *
+   * @param {boolean} value Checkbox cell value
+   * @return {boolean}  Is cell content empty?
+   */
+  function isEmptyCheckboxValue(value) {
+    return value === '' || value === null || value === undefined;
+  }
+
+  /**
+   * Identify whether checkbox value should be true or false
+   *
+   * @since 1.4.3
+   *
+   * @param {boolean} value Checkbox cell value
+   * @return {boolean} Checkbox value to render
+   */
+  function getCheckboxCheckedState(value) {
+    const normalizedValue = typeof value === 'string' ? value.trim().toLowerCase() : value;
+    if (normalizedValue === true || normalizedValue === 'true' || normalizedValue === 1 || normalizedValue === '1') {
+      return true;
+    }
+    if (normalizedValue === false || normalizedValue === 'false' || normalizedValue === 0 || normalizedValue === '0') {
+      return false;
+    }
+    return !!(settings?.formatOptions?.defaultToChecked && isEmptyCheckboxValue(value));
+  }
+
+  /**
+   * Return markup for checkbox being edited
+   *
+   * @since 1.4.3
+   */
+  function checkboxEditValue() {
+    const isChecked = getCheckboxCheckedState(cellContent);
+    const scale = checkboxVariant === 'freeform' ? 0.6 : 1;
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_icon__WEBPACK_IMPORTED_MODULE_8__.TableCheckbox, {
+      checked: isChecked,
+      variant: checkboxVariant,
+      scale: scale,
+      onChange: processBooleanCellEdit
+    });
+  }
+
+  /**
+   * Process effect of changes to cell level attributes
+   *
+   * @since 1.2.0
+   */
+  ;(0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    setCellAttributes(attributes);
+    initialCellValue.current = content ?? '';
+
+    // Default behavior: raw content as-is
+    setCellContent(content ?? '');
+  }, [content, attributes]);
+
+  /**
+   * Process effect of changes to column level attributes
+   *
+   * @since 1.2.0
+   */
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (cellType !== 'body' || type !== 'date-time' && type !== 'number') return;
+    const resolvedFormat = settings?.format || '';
+    if (isEditing) {
+      // Enter edit mode: force a valid HTML input value FIRST
+      if (cellType === 'body' && type === 'date-time') {
+        const raw = content ?? initialCellValue.current ?? '';
+        if (raw) {
+          setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_7__.formattedIsoDate)(raw, resolvedFormat));
+        } else if (settings?.defaultToToday) {
+          setCellContent((0,_utils__WEBPACK_IMPORTED_MODULE_7__.formattedIsoDate)('', resolvedFormat));
+        } else {
+          setCellContent('');
+        }
+      }
+
+      // Enter edit mode: force a valid HTML input value FIRST
+      if (cellType === 'body' && type === 'number') {
+        const raw = content ?? initialCellValue.current ?? '';
+        setCellContent(raw);
+      }
+    } else {
+      const raw = content ?? '';
+      if (cellType === 'body' && type === 'date-time') {
+        setCellContent(raw ? (0,_utils__WEBPACK_IMPORTED_MODULE_7__.formatedDisplayDate)(raw, resolvedFormat) : '');
+      }
+      if (cellType === 'body' && type === 'number') {
+        setCellContent(raw);
+      }
+    }
+    setInputType(resolvedFormat);
+    setCellAttributes(attributes);
+    initialCellValue.current = content ?? '';
+  }, [isEditing, content, attributes, cellType, type, settings?.format, settings?.defaultToToday]);
+
+  /**
+   * Support caret positioning during entry
+   *
+   * @since 1.2.4
+   */
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect)(() => {
+    const input = numberEntryWrapperRef.current?.querySelector('input') ?? null;
+    numberEntryInputRef.current = input;
+    if (!input || !pendingCaretRef.current) {
+      return;
+    }
+    if (input !== input.ownerDocument.activeElement) {
+      pendingCaretRef.current = null;
+      return;
+    }
+    let nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.getCaretIndexFromTokenCount)(input.value, pendingCaretRef.current.tokenCount);
+    nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.normalizeCaretForPresentationPrefix)(input.value, nextCaret, pendingCaretRef.current);
+    input.setSelectionRange(nextCaret, nextCaret);
+    pendingCaretRef.current = null;
+  }, [numberEntryValue]);
+
+  /**
+   * Handle onChange event for cell content update
+   *
+   * @since 1.1.1
+   * @since 1.2.0   Converted input to object to update multiple fields
+   *
+   * @param {Object} patch event data
+   */
+  function updateCellData(patch) {
+    initialCellValue.current = patch.content;
+    if (patch.content !== undefined) setCellContent(patch.content);
+    if (patch.attributes !== undefined) setCellAttributes(patch.attributes);
+    onChange(table_id, cell_id, patch);
+  }
+
+  /**
+   * Support key press overrides for date/time input
+   *
+   * @since 1.2.2
+   *
+   * @param {Object} event Key press event
+   */
+  function onDateTimeKeyDown(event) {
+    const key = String(event.key || '').toLowerCase();
+    if ((inputType === 'time' || inputType === 'datetime-local') && (key === 'a' || key === 'p')) {
+      const currentValue = event.currentTarget?.value ?? cellContent ?? '';
+      const nextValue = applyMeridiemShortcut(currentValue, inputType, key);
+      if (nextValue !== currentValue) {
+        event.preventDefault();
+        event.stopPropagation();
+        setCellContent(nextValue);
+      }
+    }
+  }
+
+  /**
+   * Support key press overrides for date/time input
+   *
+   * @since 1.2.2
+   *
+   * @param {string} currentCellContent Cell contents
+   * @param {string} format             Date/Time format
+   * @param {string} keyValue           Key press value
+   * @return {string} Updated input value
+   */
+  function applyMeridiemShortcut(currentCellContent, format, keyValue) {
+    if (!currentCellContent || format !== 'time' && format !== 'datetime-local') {
+      return currentCellContent;
+    }
+    const isPm = keyValue === 'p';
+    if (format === 'time') {
+      const match = /^(\d{2}):(\d{2})(:\d{2})?$/.exec(currentCellContent);
+      if (!match) return currentCellContent;
+      let hours = Number(match[1]);
+      if (!Number.isFinite(hours)) return currentCellContent;
+      if (isPm && hours < 12) hours += 12;
+      if (!isPm && hours >= 12) hours -= 12;
+      return `${String(hours).padStart(2, '0')}:${match[2]}${match[3] || ''}`;
+    }
+    const match = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})(:\d{2})?$/.exec(currentCellContent);
+    if (!match) return currentCellContent;
+    let hours = Number(match[2]);
+    if (!Number.isFinite(hours)) return currentCellContent;
+    if (isPm && hours < 12) hours += 12;
+    if (!isPm && hours >= 12) hours -= 12;
+    return `${match[1]}T${String(hours).padStart(2, '0')}:${match[3]}${match[4] || ''}`;
+  }
+
+  /**
+   * Change number string from entry
+   *
+   * @since 1.2.4
+   *
+   * @param {Object} event New number string
+   */
+  function onNumberChange(event) {
+    const input = numberEntryInputRef.current;
+    const entryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.sanitizeNumberInput)(event, inputType === 'percent' ? 'number' : inputType);
+    const selectionStart = input?.selectionStart ?? entryValue.length;
+    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.getFirstNumericIndex)(entryValue);
+    pendingCaretRef.current = {
+      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_7__.countCaretTokens)(entryValue, selectionStart),
+      wasAtStart: selectionStart === 0,
+      wasInPrefixZone: firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex
+    };
+    let nextRawValue = entryValue;
+    let revisedDecimalPlaces = settings?.formatOptions?.decimalPlaces ?? 0;
+    if (inputType === 'percent') {
+      const [integerPart, fractionPart = ''] = entryValue.split('.');
+      const nextEntryValue = fractionPart.length > revisedDecimalPlaces ? `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}` : entryValue;
+      setPercentEntryValue(nextEntryValue);
+      revisedDecimalPlaces += 2;
+      nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.fromPercentEntryValue)(nextEntryValue);
+    } else {
+      setPercentEntryValue(null);
+    }
+    if (inputType !== 'integer') {
+      const [integerPart, fractionPart = ''] = nextRawValue.split('.');
+      const fractionalExcessLength = fractionPart.length - revisedDecimalPlaces;
+      if (fractionalExcessLength > 0) {
+        nextRawValue = `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}`;
+      }
+    }
+    setCellContent(nextRawValue);
+  }
+
+  /**
+   * Prepare updated cell content and pass to update handler
+   *
+   * @since 1.3.1
+   *
+   * @param {string} nextContent   Updated formatted text content for the cell
+   * @param {string} nextIndexText Updated plain text conent for the cell
+   */
+  function persistCellEdit(nextContent, nextIndexText) {
+    updateCellData({
+      content: nextContent,
+      attributes: {
+        ...cellAttributes,
+        value: {
+          ...(cellAttributes?.value || {}),
+          indexText: nextIndexText
+        }
+      }
+    });
+  }
+  function processBooleanCellEdit(updatedValue) {
+    persistCellEdit(updatedValue, updatedValue ? 'true' : 'false');
+  }
+
+  /**
+   * Relay mouse down event for menu cells
+   *
+   * @since 1.2.0
+   *
+   * @param {number} column_id Clicked table column
+   * @param {number} row_id    Clicked table row
+   * @param {Object} table     Current Dynamic Table
+   * @param {Object} e         Border click event object
+   */
+  function passMouseMenuClick(column_id, row_id, table, e) {
+    if (e.button !== 0) {
+      onContextMenu(column_id, row_id, table, e);
+    } else {
+      onMouseDown(column_id, row_id, table, e);
+    }
+  }
+
+  /**
+   * Render the common control for cell types edited in a modal.
+   *
+   * @since 1.4.6
+   *
+   * @param {string} label Accessible label and native tooltip text.
+   * @return {Object} Cell edit button.
+   */
+  const renderCellEditButton = (label = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Edit cell', 'dynamic-table-blocks')) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("button", {
+    type: "button",
+    className: "grid-control__cell-edit-button",
+    "aria-label": label,
+    "data-dtbk-cell-edit-button": true,
+    title: label,
+    onMouseDown: e => {
+      e.preventDefault();
+    },
+    onClick: e => {
+      passMouseEditClick(table_id, cell_id, cellContent, cellAttributes, cellBaseClasses, dataFormat, e);
+    },
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"],
+      size: 16
+    })
+  });
+
+  /**
+   * Relay mouse down event for cell editing
+   *
+   * @since 1.4.6
+   *
+   * @param {number} table_id        Table identifier
+   * @param {string} cell_id         Clicked table cell for editing
+   * @param {Object} cellContent     Cell content
+   * @param {Object} cellAttributes  Cell attributes
+   * @param {string} cellBaseClasses Cell space delimited class names
+   * @param {Object} dataFormat      Column data format
+   * @param {Object} e               Border click event object
+   */
+  function passMouseEditClick(table_id, cell_id, cellContent, cellAttributes, cellBaseClasses, dataFormat, e) {
+    const cellValueAttributes = cellAttributes?.value || {};
+    onMouseDown(table_id, cell_id, cellContent, cellValueAttributes, cellBaseClasses, dataFormat, e);
+  }
+
+  /**
+   * React HTML to render a cell based on its type
+   *
+   * @since 1.1.1
+   * @since 1.2.0    Add DateTime render type
+   * @since 1.2.4    Add Number render type
+   *
+   * @return {void}
+   */
+  const renderTypes = {
+    richText: () => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText, {
+      tagName: "div",
+      className: "dtbk-cell-general-content",
+      value: cellContent,
+      readOnly: !isEditing,
+      spellCheck: true,
+      onBlur: () => {
+        if (isEditing) {
+          onRequestStopEdit?.();
+        }
+      },
+      onChange: !isEditing ? undefined : next => {
+        const indexText = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.htmlToIndexText)(next);
+        persistCellEdit(next, indexText);
+      }
+    }),
+    border: () => {
+      const isCornerBorderCell = String(row_id) === '0' && String(column_id) === '0';
+      const isBorderHandle = !isCornerBorderCell && (String(row_id) === '0' || String(column_id) === '0');
+      const isRowHandle = String(column_id) === '0' && String(row_id) !== '0';
+      const currentRow = isRowHandle ? table?.rows?.find(r => String(r.row_id) === String(row_id)) : null;
+      const isHeaderRowHandle = currentRow?.attributes?.isHeader === true;
+      const canOpenBorderMenu = !isContentOnlyMode || isRowHandle && !isHeaderRowHandle;
+      if (!isBorderHandle || !canOpenBorderMenu) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+          "aria-hidden": "true",
+          children: cellContent
+        });
+      }
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("button", {
+        type: "button",
+        className: "grid-control__border-button",
+        "aria-label": borderHandleProps.ariaLabel,
+        "aria-haspopup": "menu",
+        "aria-expanded": borderHandleProps.expanded,
+        "aria-controls": borderHandleProps.expanded ? borderHandleProps.controls : undefined,
+        onMouseDown: e => {
+          e.preventDefault();
+        },
+        onClick: e => {
+          passMouseMenuClick(column_id, row_id, table, e);
+        },
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("span", {
+          "aria-hidden": "true",
+          children: cellContent
+        })
+      });
+    },
+    dateTime: () => {
+      if (!isEditing) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+          children: cellContent
+        });
+      }
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+        className: renderClassesEdit,
+        type: inputType,
+        value: cellContent,
+        onKeyDown: event => {
+          onDateTimeKeyDown(event);
+        },
+        onChange: next => {
+          setCellContent(next);
+        },
+        onBlur: event => {
+          if (event?.target?.dataset?.cancelEdit === 'true') {
+            delete event.target.dataset.cancelEdit;
+            onRequestStopEdit?.();
+            return;
+          }
+          const format = settings?.format || inputType || 'date';
+          const next = event?.target?.value ?? cellContent ?? '';
+          const formattedContent = (0,_utils__WEBPACK_IMPORTED_MODULE_7__.formattedIsoDate)(next, format);
+          persistCellEdit(next, formattedContent);
+          onRequestStopEdit?.();
+        }
+      });
+    },
+    number: () => {
+      if (!isEditing) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+          children: numberDisplayValue
+        });
+      }
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+        ref: numberEntryWrapperRef,
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+          className: renderClassesEdit,
+          type: 'text',
+          inputMode: inputType === 'integer' ? 'numeric' : 'decimal',
+          value: numberEntryValue,
+          onChange: event => {
+            onNumberChange(event);
+          },
+          onBlur: event => {
+            pendingCaretRef.current = null;
+            setPercentEntryValue(null);
+            if (event?.target?.dataset?.cancelEdit === 'true') {
+              delete event.target.dataset.cancelEdit;
+              onRequestStopEdit?.();
+              return;
+            }
+            const next = cellContent ?? '';
+            persistCellEdit(next, next);
+            onRequestStopEdit?.();
+          }
+        })
+      });
+    },
+    checkbox: () => {
+      if (shouldHideCheckbox) {
+        return null;
+      }
+      if (!isEditing) {
+        if (settings?.formatOptions?.hideIfEmpty && isEmptyCheckboxValue(cellContent)) {
+          return null;
+        }
+        const isChecked = getCheckboxCheckedState(cellContent);
+        const scale = checkboxVariant === 'freeform' ? 0.6 : 1;
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_icon__WEBPACK_IMPORTED_MODULE_8__.TableCheckbox, {
+          checked: isChecked,
+          variant: checkboxVariant,
+          scale: scale
+        });
+      }
+      const editedCheckbox = checkboxEditValue();
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+        children: editedCheckbox
+      });
+    },
+    link: () => {
+      if (!isEditing) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText.Content, {
+            tagName: "span",
+            className: "grid-control__cell-edit-content",
+            value: cellContent
+          }), renderCellEditButton((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Edit link cell', 'dynamic-table-blocks'))]
+        });
+      }
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+        children: "Placeholder"
+      });
+    },
+    post: () => {
+      if (!isEditing) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.RichText.Content, {
+            tagName: "span",
+            className: "grid-control__cell-edit-content",
+            value: cellContent
+          }), renderCellEditButton((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Edit link cell', 'dynamic-table-blocks'))]
+        });
+      }
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+        children: "Placeholder"
+      });
+    }
+  };
+  let renderPipeline = [];
+  switch (cellType) {
+    case 'border':
+      renderPipeline = ['border'];
+      break;
+    case 'header':
+      renderPipeline = ['richText'];
+      break;
+    case 'body':
+      switch (type) {
+        case 'general':
+          renderPipeline = ['richText'];
+          break;
+        case 'border':
+          renderPipeline = ['border'];
+          break;
+        case 'date-time':
+          renderPipeline = ['dateTime'];
+          break;
+        case 'number':
+          renderPipeline = ['number'];
+          break;
+        case 'checkbox':
+          renderPipeline = ['checkbox'];
+          break;
+        case 'link':
+          renderPipeline = ['link'];
+          break;
+        case 'post':
+          renderPipeline = ['post'];
+          break;
+        default:
+          break;
+      }
+      break;
+    default:
+      break;
+  }
+  const renderClassesDisplay = (0,clsx__WEBPACK_IMPORTED_MODULE_6__["default"])(columnClassNames, cellClassNames, {
+    'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
+    'grid-control__body-cells--checkbox': type === 'checkbox',
+    'grid-control__body-columns--number-red': redNegativeNumber
+  });
+  const renderClassesEdit = (0,clsx__WEBPACK_IMPORTED_MODULE_6__["default"])(columnClassNames, {
+    'grid-control__cellEditor--dateTimeInput': cellType === 'body' || type === 'date-time',
+    'grid-control__body-cells--checkbox': type === 'checkbox',
+    'grid-control__body-columns--number-red': redNegativeNumber
+  });
+  const isBorderCell = cellType === 'border';
+  let cellRole = 'presentation';
+  if (cellType === 'header') {
+    cellRole = 'columnheader';
+  } else if (cellType === 'body') {
+    cellRole = 'gridcell';
+  }
+  const ariaColIndex = !isBorderCell ? Number(column_id) : undefined;
+  const computedTabIndex = !isBorderCell && isFocused ? 0 : -1;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+    id: cellTagId,
+    role: cellRole,
+    "aria-colindex": ariaColIndex,
+    "aria-haspopup": !isBorderCell && canOpenContextMenu ? 'menu' : undefined,
+    "aria-expanded": !isBorderCell && canOpenContextMenu ? contextMenuProps.expanded : undefined,
+    "aria-controls": !isBorderCell && canOpenContextMenu && contextMenuProps.expanded ? contextMenuProps.controls : undefined,
+    "data-cell-id": cell_id,
+    "data-col": Number(column_id),
+    "data-row": Number(row_id),
+    tabIndex: computedTabIndex,
+    className: renderClassesDisplay,
+    style: cellType === 'border' ? undefined : {
+      '--showGridLines': showGridLinesCSS,
+      '--gridLineWidth': gridLineWidthCSS
+    },
+    onMouseDown: e => {
+      if (cellType === 'border') return;
+      if (isEditing) return;
+      if (e.button !== 0) {
+        return;
+      }
+      e.preventDefault();
+      e.stopPropagation();
+      onRequestFocus?.(Number(column_id), Number(row_id));
+    },
+    onDoubleClick: e => {
+      if (cellType === 'border') return;
+      e.preventDefault();
+      onRequestEdit?.(cell_id);
+    },
+    onContextMenu: e => {
+      if (cellType === 'border' || !canOpenContextMenu) return;
+      e.preventDefault();
+      passMouseMenuClick(column_id, row_id, table, e);
+      onRequestFocus?.(Number(column_id), Number(row_id));
+    },
+    children: renderPipeline.map(key => {
+      const renderPart = renderTypes[key];
+      if (!renderPart) {
+        return null;
+      }
+
+      // Stable key in React list:
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+        children: renderPart()
+      }, key);
+    })
+  });
+}
+
+/***/ },
+
+/***/ "./src/components/ui/icon/index.js"
+/*!*****************************************!*\
+  !*** ./src/components/ui/icon/index.js ***!
+  \*****************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FreeformCheckboxIcon: () => (/* binding */ FreeformCheckboxIcon),
+/* harmony export */   StatusIcon: () => (/* binding */ StatusIcon),
+/* harmony export */   TableCheckbox: () => (/* binding */ TableCheckbox)
+/* harmony export */ });
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _assets_icons_checkbox_freeform_checked_svg__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../assets/icons/checkbox/freeform-checked.svg */ "./assets/icons/checkbox/freeform-checked.svg");
+/* harmony import */ var _assets_icons_checkbox_freeform_unchecked_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../assets/icons/checkbox/freeform-unchecked.svg */ "./assets/icons/checkbox/freeform-unchecked.svg");
+/* harmony import */ var _assets_icons_checkbox_status_icon_checked_svg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../assets/icons/checkbox/status-icon-checked.svg */ "./assets/icons/checkbox/status-icon-checked.svg");
+/* harmony import */ var _assets_icons_checkbox_status_icon_unchecked_svg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../assets/icons/checkbox/status-icon-unchecked.svg */ "./assets/icons/checkbox/status-icon-unchecked.svg");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+/* External dependencies */
+
+
+
+
+
+
+/**
+ * Render checkbox image
+ *
+ * @since 1.4.3
+ *
+ * @param {string} src       Location of image to select
+ * @param {string} className Element classes
+ * @param {string} label     Whether the image should identify as checked or unchecked
+ * @param {number} width     Width to render image in px
+ * @param {number} height    Height to render image in px
+ * @return {string}  Image HTML to render
+ */
+
+function CheckboxAssetIcon({
+  src,
+  className,
+  label,
+  width,
+  height
+}) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
+    className: className,
+    src: src,
+    alt: label,
+    width: width,
+    height: height,
+    style: {
+      display: 'inline-block',
+      flexShrink: 0,
+      verticalAlign: 'middle'
+    }
+  });
+}
+
+/**
+ * Render checkbox as Icon
+ *
+ * @since 1.4.3
+ *
+ * @param {boolean} checked   Whether the icon is checked
+ * @param {string}  className Element classes
+ * @param {string}  size      Whether the image should identify as checked or unchecked
+ * @param {Object}  onChange  Action associated with checkbox update
+ * @return {string}  Icon type checkbox HTML element
+ */
+function StatusIcon({
+  checked,
+  className,
+  size = 24,
+  onChange
+}) {
+  const label = checked ? 'Checked' : 'Unchecked';
+  const src = checked ? _assets_icons_checkbox_status_icon_checked_svg__WEBPACK_IMPORTED_MODULE_3__["default"] : _assets_icons_checkbox_status_icon_unchecked_svg__WEBPACK_IMPORTED_MODULE_4__["default"];
+  function onHandleClick(event) {
+    if (typeof onChange !== 'function') {
+      return;
+    }
+    return onChange(event);
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
+    className: className,
+    label: label,
+    icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(CheckboxAssetIcon, {
+      src: src,
+      className: className,
+      label: label,
+      width: size,
+      height: size
+    }),
+    iconSize: size,
+    onClick: e => onHandleClick(e)
+  });
+}
+
+/**
+ * Render checkbox as freeform icon
+ *
+ * @since 1.4.3
+ *
+ * @param {boolean} checked   Whether the icon is checked
+ * @param {string}  className Element classes
+ * @param {string}  scale     Factor by which to scale the checkbox size
+ * @param {Object}  onChange  Action associated with checkbox update
+ * @return {string}  Freeform type checkbox HTML element
+ */
+function FreeformCheckboxIcon({
+  checked,
+  className,
+  scale = 1,
+  onChange
+}) {
+  const label = checked ? 'Checked' : 'Unchecked';
+  const baseSize = 52;
+  const size = baseSize * scale;
+  const src = checked ? _assets_icons_checkbox_freeform_checked_svg__WEBPACK_IMPORTED_MODULE_1__["default"] : _assets_icons_checkbox_freeform_unchecked_svg__WEBPACK_IMPORTED_MODULE_2__["default"];
+  function onHandleClick(event) {
+    if (typeof onChange !== 'function') {
+      return;
+    }
+    return onChange(event);
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.Button, {
+    className: className,
+    label: label,
+    icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(CheckboxAssetIcon, {
+      src: src,
+      className: className,
+      label: label,
+      width: size,
+      height: size
+    }),
+    iconSize: size,
+    onClick: e => onHandleClick(e)
+  });
+}
+
+/**
+ * Render the appropriate checkbox based on it type
+ *
+ * @since 1.4.3
+ *
+ * @param {boolean} checked   Whether the icon is checked
+ * @param {string}  variant   Checkbox type to render
+ * @param {Object}  onChange  Action associated with checkbox update
+ * @param {string}  className Element classes
+ * @param {string}  scale     Factor by which to scale the checkbox size
+ * @return {string}  Checkbox HTML element
+ */
+function TableCheckbox({
+  checked,
+  variant,
+  onChange,
+  className = '',
+  scale = 1
+}) {
+  const isInteractive = typeof onChange === 'function';
+  const newChecked = !checked;
+  function onUpdateValue(updatedValue) {
+    if (!isInteractive) {
+      return;
+    }
+    onChange(updatedValue);
+  }
+  switch (variant) {
+    case 'standard':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.CheckboxControl, {
+        checked: !!checked,
+        onChange: nextChecked => {
+          if (!isInteractive) {
+            return;
+          }
+          onUpdateValue(!!nextChecked);
+        }
+      });
+    case 'toggle':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_0__.ToggleControl, {
+        checked: !!checked,
+        onChange: nextChecked => {
+          if (!isInteractive) {
+            return;
+          }
+          onUpdateValue(!!nextChecked);
+        },
+        label: ''
+      });
+    case 'icon':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(StatusIcon, {
+        checked: !!checked,
+        className: className,
+        size: 24,
+        onChange: () => {
+          onUpdateValue(newChecked);
+        }
+      });
+    case 'freeform':
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(FreeformCheckboxIcon, {
+        checked: !!checked,
+        className: className,
+        scale: scale,
+        onChange: () => {
+          onUpdateValue(newChecked);
+        }
+      });
+    default:
+      return null;
+  }
+}
+
+/***/ },
+
+/***/ "./src/components/ui/index.js"
+/*!************************************!*\
+  !*** ./src/components/ui/index.js ***!
+  \************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Cell: () => (/* reexport safe */ _cell__WEBPACK_IMPORTED_MODULE_0__.Cell),
+/* harmony export */   CellPostContent: () => (/* reexport safe */ _post_content__WEBPACK_IMPORTED_MODULE_1__.CellPostContent),
+/* harmony export */   FreeformCheckboxIcon: () => (/* reexport safe */ _icon__WEBPACK_IMPORTED_MODULE_6__.FreeformCheckboxIcon),
+/* harmony export */   PostAuthor: () => (/* reexport safe */ _post_content_post_author__WEBPACK_IMPORTED_MODULE_2__.PostAuthor),
+/* harmony export */   PostImage: () => (/* reexport safe */ _post_content_post_image__WEBPACK_IMPORTED_MODULE_3__.PostImage),
+/* harmony export */   PostTimeToRead: () => (/* reexport safe */ _post_content_post_read_time__WEBPACK_IMPORTED_MODULE_4__.PostTimeToRead),
+/* harmony export */   PostWordCount: () => (/* reexport safe */ _post_content_post_word_count__WEBPACK_IMPORTED_MODULE_5__.PostWordCount),
+/* harmony export */   StatusIcon: () => (/* reexport safe */ _icon__WEBPACK_IMPORTED_MODULE_6__.StatusIcon),
+/* harmony export */   TableCheckbox: () => (/* reexport safe */ _icon__WEBPACK_IMPORTED_MODULE_6__.TableCheckbox)
+/* harmony export */ });
+/* harmony import */ var _cell__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cell */ "./src/components/ui/cell/index.js");
+/* harmony import */ var _post_content__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./post-content */ "./src/components/ui/post-content/index.js");
+/* harmony import */ var _post_content_post_author__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./post-content/post-author */ "./src/components/ui/post-content/post-author.js");
+/* harmony import */ var _post_content_post_image__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./post-content/post-image */ "./src/components/ui/post-content/post-image.js");
+/* harmony import */ var _post_content_post_read_time__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./post-content/post-read-time */ "./src/components/ui/post-content/post-read-time.js");
+/* harmony import */ var _post_content_post_word_count__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./post-content/post-word-count */ "./src/components/ui/post-content/post-word-count.js");
+/* harmony import */ var _icon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./icon */ "./src/components/ui/icon/index.js");
+/* Export table cells */
+
+
+
+
+
+
+
+
+/***/ },
+
+/***/ "./src/components/ui/post-content/index.js"
+/*!*************************************************!*\
+  !*** ./src/components/ui/post-content/index.js ***!
+  \*************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CellPostContent: () => (/* binding */ CellPostContent)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _get_external_data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../get-external-data */ "./src/get-external-data.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../utils */ "./src/utils.js");
+/* harmony import */ var _post_author__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./post-author */ "./src/components/ui/post-content/post-author.js");
+/* harmony import */ var _post_image__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./post-image */ "./src/components/ui/post-content/post-image.js");
+/* harmony import */ var _post_read_time__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./post-read-time */ "./src/components/ui/post-content/post-read-time.js");
+/* harmony import */ var _post_word_count__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./post-word-count */ "./src/components/ui/post-content/post-word-count.js");
+/* harmony import */ var _post_statistics__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./post-statistics */ "./src/components/ui/post-content/post-statistics.js");
+/* harmony import */ var _cell_advanced_edit_modal_value__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../cell-advanced-edit-modal/value */ "./src/components/cell-advanced-edit-modal/value.js");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../editor.scss */ "./src/editor.scss");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../style.scss */ "./src/style.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__);
+/* External dependencies */
+
+
+
+
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+
+
+
+
+
+
+
+function RenderCellPostContent(props = {}) {
+  const {
+    cellContent,
+    cellAttributes,
+    cellClasses,
+    cellContentType
+  } = props;
+  const {
+    type: contentType,
+    settings
+  } = cellContentType;
+  const contentFormat = settings?.format || '';
+  const contentOptions = settings?.formatOptions || {};
+  const displayedAttributes = getDisplayAttributes(contentOptions);
+  const {
+    canonical: cellCanonical,
+    options: cellDisplayOptions
+  } = (0,_cell_advanced_edit_modal_value__WEBPACK_IMPORTED_MODULE_11__.normalizeCellValueAttributes)(cellAttributes, cellContent, contentType);
+  const postId = cellCanonical?.postId || 0;
+  const postType = cellCanonical?.postType || 'post';
+  const postLinkInNewTab = cellDisplayOptions?.newTab || false;
+  const [postData, setPostData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [postError, setPostError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const post = postData?.post;
+  const needsImage = contentOptions?.displayCoverImage > 0;
+  const needsAuthor = contentOptions?.displayAuthor > 0;
+  const imageSize = contentOptions?.displayImageSize || 'thumbnail';
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const request = new AbortController();
+    let active = true;
+    setPostData(null);
+    setPostError(null);
+    async function getPost() {
+      try {
+        const postValue = await (0,_get_external_data__WEBPACK_IMPORTED_MODULE_4__.lookupPost)(postId, {
+          postType: postType,
+          signal: request.signal
+        });
+        if (!active) return;
+        const [image, authorName] = await Promise.all([needsImage ? (0,_get_external_data__WEBPACK_IMPORTED_MODULE_4__.lookupPostImage)(postValue.featured_media, {
+          size: imageSize
+        }) : null, needsAuthor ? (0,_get_external_data__WEBPACK_IMPORTED_MODULE_4__.lookupPostAuthor)(postValue.author) : null]);
+        if (active) {
+          setPostData({
+            post: postValue,
+            image,
+            authorName,
+            statistics: (0,_post_statistics__WEBPACK_IMPORTED_MODULE_10__.getPostStatistics)(postValue)
+          });
+        }
+      } catch (error) {
+        if (active) {
+          setPostError(error?.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Unable to load the post.', 'dynamic-table-blocks'));
+        }
+      }
+    }
+    if (contentFormat !== 'link') {
+      getPost();
+    }
+    return () => {
+      active = false;
+      request.abort();
+    };
+  }, [postId, postType, contentFormat, needsImage, needsAuthor, imageSize]);
+  if (contentFormat !== 'link') {
+    if (postError) {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Notice, {
+        status: "error",
+        isDismissible: false,
+        children: postError
+      });
+    }
+    if (!post || Number(post.id) !== Number(postId) || post.type !== postType) {
+      return null;
+    }
+  }
+  switch (contentFormat) {
+    case 'link':
+      {
+        // Render link
+        return cellContent;
+      }
+    case 'narrow':
+      {
+        // Render narrow
+        return renderNarrowContent(postData, postLinkInNewTab, displayedAttributes, contentOptions, cellClasses);
+      }
+    case 'wide':
+      {
+        // Render wide
+        return renderWideContent(postData, postLinkInNewTab, displayedAttributes, contentOptions, cellClasses);
+      }
+    default:
+      {
+        break;
+      }
+  }
+}
+function getDisplayAttributes(contentOptions) {
+  const {
+    displayTitle,
+    displayCoverImage,
+    displayExcerpt,
+    displayAuthor,
+    displayPublishDate,
+    displayModifiedDate
+  } = contentOptions;
+  const postDisplayAttributes = Array();
+  if (displayTitle > 0) {
+    postDisplayAttributes.push({
+      attribute: 'title',
+      slot: displayTitle
+    });
+  }
+  if (displayCoverImage > 0) {
+    postDisplayAttributes.push({
+      attribute: 'image',
+      slot: displayCoverImage
+    });
+  }
+  if (displayExcerpt > 0) {
+    postDisplayAttributes.push({
+      attribute: 'excerpt',
+      slot: displayExcerpt
+    });
+  }
+  if (displayAuthor > 0) {
+    postDisplayAttributes.push({
+      attribute: 'author',
+      slot: displayAuthor
+    });
+  }
+  if (displayPublishDate > 0) {
+    postDisplayAttributes.push({
+      attribute: 'published',
+      slot: displayPublishDate
+    });
+  }
+  if (displayModifiedDate > 0) {
+    postDisplayAttributes.push({
+      attribute: 'modified',
+      slot: displayModifiedDate
+    });
+  }
+
+  // sort array before return
+
+  return postDisplayAttributes;
+}
+function renderPostTitle(renderedContent, linkLocation, postLink) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+    style: {
+      fontWeight: '600',
+      textAlign: 'center'
+    },
+    children: linkLocation === 'title' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("a", {
+      href: postLink,
+      children: renderedContent
+    }) : renderedContent
+  });
+}
+function renderPostImage(image, sizes, link, title) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+    style: {
+      display: 'flex',
+      width: '100%'
+    },
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_post_image__WEBPACK_IMPORTED_MODULE_7__.PostImage, {
+      image: image,
+      sizes: sizes,
+      link: link,
+      title: title
+    })
+  });
+}
+function renderPostExcept(renderedContent) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("div", {
+    style: {
+      display: 'flex',
+      gap: '8px',
+      width: '100%'
+    },
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("style", {
+      children: `
+				.dtb-post-excerpt > p:first-child {
+					margin: 0;
+					padding: 0;
+				}
+			`
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("em", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.RawHTML, {
+        className: "dtb-post-excerpt",
+        children: renderedContent || ''
+      })
+    })]
+  });
+}
+function renderPostAuthor(authorName) {
+  const contentLabel = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Author:', 'dynamic-table-blocks');
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("div", {
+    style: {
+      display: 'flex',
+      gap: '8px',
+      width: '100%'
+    },
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+      style: {},
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("strong", {
+        children: contentLabel
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("span", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_post_author__WEBPACK_IMPORTED_MODULE_6__.PostAuthor, {
+        authorName: authorName
+      })
+    })]
+  });
+}
+function renderPublishedDate(renderedContent) {
+  const contentLabel = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Published:', 'dynamic-table-blocks');
+  const displayDate = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.formatedDisplayDate)(renderedContent, 'date');
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("div", {
+    style: {
+      display: 'flex',
+      gap: '8px',
+      width: '100%'
+    },
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+      style: {},
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("strong", {
+        children: contentLabel
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("span", {
+      children: displayDate
+    })]
+  });
+}
+function renderModifiedDate(renderedContent) {
+  const contentLabel = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Last Updated:', 'dynamic-table-blocks');
+  const displayDate = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.formatedDisplayDate)(renderedContent, 'date');
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("div", {
+    style: {
+      display: 'flex',
+      gap: '8px',
+      width: '100%'
+    },
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+      style: {},
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("strong", {
+        children: contentLabel
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("span", {
+      children: displayDate
+    })]
+  });
+}
+function renderNarrowContent(postData, postLinkInNewTab, displayedAttributes, contentOptions, cellClasses) {
+  const {
+    post,
+    image,
+    authorName
+  } = postData;
+  const {
+    displayTitleInCover,
+    displayImageSize,
+    linkLocation
+  } = contentOptions;
+  const postLink = post.link;
+
+  // Reserved for future use
+  // const postCategoriesApi = post.wp.term.href;
+  // const postTagsApi = post.wp.term.tags;
+
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '10px'
+    },
+    children: displayedAttributes.map(({
+      attribute
+    }) => {
+      let formattedContent;
+      switch (attribute) {
+        case 'title':
+          {
+            const renderedContent = post.title.rendered;
+            if (displayTitleInCover) break;
+            formattedContent = renderPostTitle(renderedContent, linkLocation, postLink);
+            break;
+          }
+        case 'image':
+          {
+            const link = {
+              isLink: linkLocation === 'image' ? true : false,
+              url: linkLocation === 'image' ? postLink : null
+            };
+            const title = {
+              embedTitle: displayTitleInCover,
+              title: displayTitleInCover ? post.title.rendered : ''
+            };
+            formattedContent = renderPostImage(image, 'auto', link, title);
+            break;
+          }
+        case 'excerpt':
+          {
+            const renderedContent = post.excerpt.rendered;
+            formattedContent = renderPostExcept(renderedContent);
+            break;
+          }
+        case 'author':
+          {
+            formattedContent = renderPostAuthor(authorName);
+            break;
+          }
+        case 'published':
+          {
+            const renderedContent = post.date;
+            formattedContent = renderPublishedDate(renderedContent);
+            break;
+          }
+        case 'modified':
+          {
+            const renderedContent = post.modified;
+            formattedContent = renderModifiedDate(renderedContent);
+            break;
+          }
+        default:
+          {
+            break;
+          }
+      }
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+        children: formattedContent
+      });
+    })
+  });
+}
+function renderWideContent(postData, postLinkInNewTab, displayedAttributes, contentOptions, cellClasses) {
+  const {
+    post,
+    image,
+    authorName
+  } = postData;
+  const {
+    displayTitleInCover,
+    linkLocation
+  } = contentOptions;
+  const postLink = post.link;
+
+  // Reserved for future use
+  // const postCategoriesApi = post.wp.term.href;
+  // const postTagsApi = post.wp.term.tags;
+
+  return displayedAttributes.map(({
+    attribute
+  }) => {
+    let formattedContent;
+    switch (attribute) {
+      case 'title':
+        {
+          const renderedContent = post.title.rendered;
+          if (displayTitleInCover) break;
+          formattedContent = renderPostTitle(renderedContent, linkLocation, postLink);
+          break;
+        }
+      case 'image':
+        {
+          formattedContent = renderPostImage(image, 'auto', {
+            isLink: linkLocation === 'image',
+            url: postLink
+          }, {
+            embedTitle: displayTitleInCover,
+            title: post.title.rendered
+          });
+          break;
+        }
+      case 'excerpt':
+        {
+          const renderedContent = post.excerpt.rendered;
+          formattedContent = renderPostExcept(renderedContent);
+          break;
+        }
+      case 'author':
+        {
+          formattedContent = renderPostAuthor(authorName);
+          break;
+        }
+      case 'content':
+        {
+          const renderedContent = post.content.rendered;
+          formattedContent = renderShortContent(renderedContent);
+          break;
+        }
+      case 'published':
+        {
+          const renderedContent = post.date;
+          formattedContent = renderPublishedDate(renderedContent);
+          break;
+        }
+      case 'modified':
+        {
+          const renderedContent = post.modified;
+          formattedContent = renderModifiedDate(renderedContent);
+          break;
+        }
+      default:
+        {
+          break;
+        }
+    }
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+      children: formattedContent
+    });
+  });
+}
+const CellPostContent = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.memo)(RenderCellPostContent);
+
+/***/ },
+
+/***/ "./src/components/ui/post-content/post-author.js"
+/*!*******************************************************!*\
+  !*** ./src/components/ui/post-content/post-author.js ***!
+  \*******************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   PostAuthor: () => (/* binding */ PostAuthor)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
+
+function PostAuthor({
+  authorName
+}) {
+  if (!authorName) {
+    return null;
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    children: authorName
+  });
+}
+
+/***/ },
+
+/***/ "./src/components/ui/post-content/post-image.js"
+/*!******************************************************!*\
+  !*** ./src/components/ui/post-content/post-image.js ***!
+  \******************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   PostImage: () => (/* binding */ PostImage)
+/* harmony export */ });
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../utils */ "./src/utils.js");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../editor.scss */ "./src/editor.scss");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../style.scss */ "./src/style.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
+/**
+ * Internal dependencies
+ */
+
+
+
+
+function PostImage({
+  image,
+  sizes,
+  link = {},
+  title = {}
+}) {
+  if (!image) {
+    return null;
+  }
+  const renderedImage = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+    style: {
+      position: 'relative',
+      display: 'inline-block',
+      maxWidth: '100%',
+      verticalAlign: 'top'
+    },
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("img", {
+      src: image.src,
+      loading: image.loading,
+      srcSet: sizes ? image.srcSet : undefined,
+      sizes: sizes,
+      alt: image.alt,
+      width: image.width,
+      height: image.height,
+      style: {
+        display: 'block',
+        maxWidth: '100%',
+        height: 'auto'
+      }
+    }), title.embedTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+      style: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        padding: '12px',
+        background: 'rgba(0, 0, 0, 0.65)',
+        color: '#fff',
+        fontWeight: 600,
+        lineHeight: 1.3,
+        overflowWrap: 'anywhere'
+      },
+      children: (0,_utils__WEBPACK_IMPORTED_MODULE_0__.htmlToIndexText)(title.title)
+    })]
+  });
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+    children: [link.isLink && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
+      href: link.url,
+      children: renderedImage
+    }), !link.isLink && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+      children: renderedImage
+    })]
+  });
+}
+
+/***/ },
+
+/***/ "./src/components/ui/post-content/post-read-time.js"
+/*!**********************************************************!*\
+  !*** ./src/components/ui/post-content/post-read-time.js ***!
+  \**********************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   PostTimeToRead: () => (/* binding */ PostTimeToRead)
+/* harmony export */ });
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../editor.scss */ "./src/editor.scss");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../style.scss */ "./src/style.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
+/* External dependencies */
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+function PostTimeToRead({
+  readingMinutes
+}) {
+  if (readingMinutes === null || readingMinutes === undefined) {
+    return null;
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+    style: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '12px',
+      marginTop: '8px'
+    },
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+      children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.sprintf)(/* translators: %s: Estimated reading time in minutes. */
+      (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__._n)('%s minute read', '%s minutes read', readingMinutes, 'dynamic-table-blocks'), readingMinutes)
+    })
+  });
+}
+
+/***/ },
+
+/***/ "./src/components/ui/post-content/post-statistics.js"
+/*!***********************************************************!*\
+  !*** ./src/components/ui/post-content/post-statistics.js ***!
+  \***********************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getPostStatistics: () => (/* binding */ getPostStatistics)
+/* harmony export */ });
+/* harmony import */ var _wordpress_wordcount__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/wordcount */ "@wordpress/wordcount");
+/* harmony import */ var _wordpress_wordcount__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_wordcount__WEBPACK_IMPORTED_MODULE_0__);
+
+
+/**
+ * Calculate statistics from the retrieved post's rendered content.
+ *
+ * @param {Object} post WordPress REST API post.
+ * @return {Object|null} Statistics, or null when content is unavailable.
+ */
+function getPostStatistics(post) {
+  const content = post?.content;
+  if (content?.protected || typeof content?.rendered !== 'string') {
+    return null;
+  }
+  const wordCount = (0,_wordpress_wordcount__WEBPACK_IMPORTED_MODULE_0__.count)(content.rendered, 'words');
+  const readingMinutes = wordCount === 0 ? 0 : Math.max(1, Math.round(wordCount / 189));
+  return {
+    wordCount,
+    readingMinutes
+  };
+}
+
+/***/ },
+
+/***/ "./src/components/ui/post-content/post-word-count.js"
+/*!***********************************************************!*\
+  !*** ./src/components/ui/post-content/post-word-count.js ***!
+  \***********************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   PostWordCount: () => (/* binding */ PostWordCount)
+/* harmony export */ });
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../editor.scss */ "./src/editor.scss");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../style.scss */ "./src/style.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__);
+/* External dependencies */
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+function PostWordCount({
+  wordCount
+}) {
+  if (wordCount === null || wordCount === undefined) {
+    return null;
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+    style: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '12px',
+      marginTop: '8px'
+    },
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+      children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.sprintf)(/* translators: %s: Number of words. */
+      (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__._n)('%s word', '%s words', wordCount, 'dynamic-table-blocks'), wordCount)
+    })
+  });
+}
 
 /***/ },
 
@@ -11976,16 +13315,21 @@ function Edit(props) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   lookupPost: () => (/* binding */ lookupPost)
+/* harmony export */   lookupPost: () => (/* binding */ lookupPost),
+/* harmony export */   lookupPostAuthor: () => (/* binding */ lookupPostAuthor),
+/* harmony export */   lookupPostImage: () => (/* binding */ lookupPostImage)
 /* harmony export */ });
-/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
-/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
 /* External dependencies */
+// import apiFetch from '@wordpress/api-fetch';
 
 
+// import { useSelect } from '@wordpress/data';
 
 
 /**
@@ -11997,8 +13341,8 @@ __webpack_require__.r(__webpack_exports__);
  * @param {number|string} postId           Post ID.
  * @param {Object}        options          Lookup options.
  * @param {string}        options.postType WordPress post type.
- * @param {AbortSignal}   options.signal   Request cancellation signal.
- * @return {Promise<Object>} Normalized post details.
+ * @param {AbortSignal}   options.signal   Prevents returning a cancelled lookup.
+ * @return {Promise<Object>} WordPress REST API post object.
  */
 async function lookupPost(postId, {
   postType = 'post',
@@ -12006,37 +13350,132 @@ async function lookupPost(postId, {
 } = {}) {
   const id = Number(postId);
   if (!Number.isSafeInteger(id) || id <= 0) {
-    throw new Error((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Choose a valid post.', 'dynamic-table-blocks'));
+    throw new Error((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Choose a valid post.', 'dynamic-table-blocks'));
   }
-  let route;
-  if (postType === 'post') {
-    route = '/wp/v2/posts';
-  } else if (postType === 'page') {
-    route = '/wp/v2/pages';
-  } else {
-    const type = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default()({
-      path: '/wp/v2/types/' + encodeURIComponent(postType),
-      signal
-    });
-    if (!type?.rest_namespace || !type?.rest_base) {
-      throw new Error((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('This post type cannot be retrieved.', 'dynamic-table-blocks'));
-    }
-    route = '/' + type.rest_namespace + '/' + type.rest_base;
+
+  // let route;
+  // if (postType === 'post') {
+  // 	route = '/wp/v2/posts';
+  // } else if (postType === 'page') {
+  // 	route = '/wp/v2/pages';
+  // } else {
+  // 	const type = await apiFetch({
+  // 		path: '/wp/v2/types/' + encodeURIComponent(postType),
+  // 		signal,
+  // 	});
+  // 	if (!type?.rest_namespace || !type?.rest_base) {
+  // 		throw new Error(__('This post type cannot be retrieved.', 'dynamic-table-blocks'));
+  // 	}
+  // 	route = '/' + type.rest_namespace + '/' + type.rest_base;
+  // }
+
+  if (signal?.aborted) {
+    throw new DOMException('The lookup was aborted.', 'AbortError');
   }
-  const post = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default()({
-    path: route + '/' + id + '?_fields=id,type,title,link,author',
-    signal
+
+  // const post = await apiFetch({
+  // 	path: route + '/' + id,
+  // 	signal,
+  // });
+
+  const post = await (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.resolveSelect)(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).getEntityRecord('postType', postType, id, {
+    context: 'view'
   });
-  if (Number(post?.id) !== id || typeof post?.link !== 'string' || typeof post?.title?.rendered !== 'string' || typeof post?.type !== 'string') {
-    throw new Error((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('The post response was incomplete.', 'dynamic-table-blocks'));
+  if (signal?.aborted) {
+    throw new DOMException('The lookup was aborted.', 'AbortError');
   }
+  if (Number(post?.id) !== id || typeof post?.link !== 'string' || typeof post?.title?.rendered !== 'string' || typeof post?.type !== 'string') {
+    throw new Error((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('The post response was incomplete.', 'dynamic-table-blocks'));
+  }
+  return post;
+}
+
+/** Size Options:
+ * thumbnail: 150 x 150, cropped, site configurable
+ * medium: Up to 300 x 300, aspect ratio preserved, site configurable
+ * medium_large Up to 768 wide, no height limit
+ * large: Up to 1024 x 1024, aspect ratio preserved, site configurable
+ */
+async function lookupPostImage(mediaId, {
+  size = 'thumbnail'
+} = {}) {
+  // const media = useSelect(
+  // 	select => {
+  // 		if (!mediaId) {
+  // 			return null;
+  // 		}
+
+  // 		return select(coreDataStore).getEntityRecord('postType', 'attachment', mediaId, {
+  // 			context: 'view',
+  // 		});
+  // 	},
+  // 	[mediaId]
+  // );
+
+  if (!mediaId) {
+    return null;
+  }
+  const media = await (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.resolveSelect)(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).getEntityRecord('postType', 'attachment', Number(mediaId), {
+    context: 'view'
+  });
+  if (!media?.source_url) {
+    return null;
+  }
+  const image = media.media_details?.sizes?.[size];
+  const width = image?.width || media.media_details?.width;
+  const height = image?.height || media.media_details?.height;
+  const candidates = [...Object.values(media.media_details?.sizes || {}), {
+    source_url: media.source_url,
+    width: media.media_details?.width,
+    height: media.media_details?.height
+  }];
+  const sources = new Map();
+  if (width > 0 && height > 0) {
+    for (const candidate of candidates) {
+      if (!candidate.source_url || !(candidate.width > 0) || !(candidate.height > 0)) {
+        continue;
+      }
+
+      // Allow a one-pixel difference from resizing and rounding.
+      const expectedHeight = candidate.width * height / width;
+      if (Math.abs(candidate.height - expectedHeight) > 1) {
+        continue;
+      }
+      sources.set(candidate.width, candidate.source_url);
+    }
+  }
+  const srcSet = [...sources.entries()].sort(([a], [b]) => a - b).map(([sourceWidth, url]) => `${url} ${sourceWidth}w`).join(', ');
   return {
-    postId: id,
-    postType: post.type,
-    title: (0,_utils__WEBPACK_IMPORTED_MODULE_2__.htmlToIndexText)(post.title.rendered),
-    url: post.link,
-    author: post.author
+    src: image?.source_url || media.source_url,
+    loading: 'lazy',
+    srcSet: srcSet || undefined,
+    alt: media.alt_text || '',
+    width,
+    height
   };
+}
+async function lookupPostAuthor(authorId) {
+  // return useSelect(
+  // 	select => {
+  // 		if (!authorId) {
+  // 			return null;
+  // 		}
+
+  // 		const author = select(coreDataStore).getEntityRecord('root', 'user', authorId, {
+  // 			context: 'view',
+  // 		});
+
+  // 		return author?.name || null;
+  // 	},
+  // 	[authorId]
+  // );
+  if (!authorId) {
+    return null;
+  }
+  const author = await (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_1__.resolveSelect)(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_0__.store).getEntityRecord('root', 'user', Number(authorId), {
+    context: 'view'
+  });
+  return author?.name || null;
 }
 
 /***/ },
@@ -15974,6 +17413,16 @@ module.exports = window["wp"]["url"];
 
 /***/ },
 
+/***/ "@wordpress/wordcount"
+/*!***********************************!*\
+  !*** external ["wp","wordcount"] ***!
+  \***********************************/
+(module) {
+
+module.exports = window["wp"]["wordcount"];
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/react/button/Button.mjs"
 /*!*******************************************************!*\
   !*** ./node_modules/@base-ui/react/button/Button.mjs ***!
@@ -17186,6 +18635,646 @@ function useDelayGroup(context, options = {
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingFocusManager.mjs"
+/*!*******************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/components/FloatingFocusManager.mjs ***!
+  \*******************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FloatingFocusManager: () => (/* binding */ FloatingFocusManager)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/addEventListener */ "./node_modules/@base-ui/utils/addEventListener.mjs");
+/* harmony import */ var _base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/mergeCleanups */ "./node_modules/@base-ui/utils/mergeCleanups.mjs");
+/* harmony import */ var _base_ui_utils_useMergedRefs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/useMergedRefs */ "./node_modules/@base-ui/utils/useMergedRefs.mjs");
+/* harmony import */ var _base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @base-ui/utils/useValueAsRef */ "./node_modules/@base-ui/utils/useValueAsRef.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @base-ui/utils/useTimeout */ "./node_modules/@base-ui/utils/useTimeout.mjs");
+/* harmony import */ var _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @base-ui/utils/platform */ "./node_modules/@base-ui/utils/platform/engine.mjs");
+/* harmony import */ var _base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @base-ui/utils/useAnimationFrame */ "./node_modules/@base-ui/utils/useAnimationFrame.mjs");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@base-ui/utils/owner.mjs");
+/* harmony import */ var _utils_FocusGuard_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../utils/FocusGuard.mjs */ "./node_modules/@base-ui/react/utils/FocusGuard.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../utils/element.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/element.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../utils/element.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+/* harmony import */ var _utils_event_mjs__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../utils/event.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs");
+/* harmony import */ var _utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../utils/tabbable.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/tabbable.mjs");
+/* harmony import */ var _utils_nodes_mjs__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../utils/nodes.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/nodes.mjs");
+/* harmony import */ var _utils_composite_mjs__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../utils/composite.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/composite.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var _utils_createAttribute_mjs__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../utils/createAttribute.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/createAttribute.mjs");
+/* harmony import */ var _utils_enqueueFocus_mjs__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ../utils/enqueueFocus.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/enqueueFocus.mjs");
+/* harmony import */ var _utils_markOthers_mjs__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ../utils/markOthers.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/markOthers.mjs");
+/* harmony import */ var _FloatingPortal_mjs__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./FloatingPortal.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingPortal.mjs");
+/* harmony import */ var _FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./FloatingTree.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingTree.mjs");
+/* harmony import */ var _internals_constants_mjs__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ../../internals/constants.mjs */ "./node_modules/@base-ui/react/internals/constants.mjs");
+/* harmony import */ var _utils_resolveRef_mjs__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ../../utils/resolveRef.mjs */ "./node_modules/@base-ui/react/utils/resolveRef.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function getEventType(event, lastInteractionType) {
+  const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__.getWindow)((0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.getTarget)(event));
+  if (event instanceof win.KeyboardEvent) {
+    return 'keyboard';
+  }
+  if (event instanceof win.FocusEvent) {
+    // Focus events can be caused by a preceding pointer interaction (e.g., focusout on outside press).
+    // Prefer the last known pointer type if provided, else treat as keyboard.
+    return lastInteractionType || 'keyboard';
+  }
+  if ('pointerType' in event) {
+    return event.pointerType || 'keyboard';
+  }
+  if ('touches' in event) {
+    return 'touch';
+  }
+  if (event instanceof win.MouseEvent) {
+    // onClick events may not contain pointer events, and will fall through to here
+    return lastInteractionType || (event.detail === 0 ? 'keyboard' : 'mouse');
+  }
+  return '';
+}
+const LIST_LIMIT = 20;
+let previouslyFocusedElements = [];
+function clearDisconnectedPreviouslyFocusedElements() {
+  previouslyFocusedElements = previouslyFocusedElements.filter(entry => {
+    return entry.deref()?.isConnected;
+  });
+}
+function addPreviouslyFocusedElement(element) {
+  clearDisconnectedPreviouslyFocusedElements();
+  if (element && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__.getNodeName)(element) !== 'body') {
+    previouslyFocusedElements.push(new WeakRef(element));
+    if (previouslyFocusedElements.length > LIST_LIMIT) {
+      previouslyFocusedElements = previouslyFocusedElements.slice(-LIST_LIMIT);
+    }
+  }
+}
+function getPreviouslyFocusedElement() {
+  clearDisconnectedPreviouslyFocusedElements();
+  return previouslyFocusedElements[previouslyFocusedElements.length - 1]?.deref();
+}
+function getFirstTabbableElement(container) {
+  if (!container) {
+    return null;
+  }
+  if ((0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_16__.isTabbable)(container)) {
+    return container;
+  }
+  return (0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_16__.tabbable)(container)[0] || container;
+}
+function handleTabIndex(floatingFocusElement) {
+  if (floatingFocusElement.hasAttribute('tabindex') && !floatingFocusElement.hasAttribute('data-tabindex')) {
+    return;
+  }
+  if (!floatingFocusElement.getAttribute('role')?.includes('dialog')) {
+    return;
+  }
+  const focusableElements = (0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_16__.focusable)(floatingFocusElement);
+  const tabbableContent = focusableElements.filter(element => {
+    const dataTabIndex = element.getAttribute('data-tabindex') || '';
+    return (0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_16__.isTabbable)(element) || element.hasAttribute('data-tabindex') && !dataTabIndex.startsWith('-');
+  });
+  const tabIndex = floatingFocusElement.getAttribute('tabindex');
+  if (tabbableContent.length === 0) {
+    if (tabIndex !== '0') {
+      floatingFocusElement.setAttribute('tabindex', '0');
+      // Mark our own write so the externally-managed early-return above doesn't
+      // mistake it for a user-authored `tabindex` and freeze management.
+      floatingFocusElement.setAttribute('data-tabindex', '0');
+    }
+  } else if (tabIndex !== '-1' || floatingFocusElement.hasAttribute('data-tabindex') && floatingFocusElement.getAttribute('data-tabindex') !== '-1') {
+    floatingFocusElement.setAttribute('tabindex', '-1');
+    floatingFocusElement.setAttribute('data-tabindex', '-1');
+  }
+}
+/**
+ * Provides focus management for the floating element.
+ * @see https://floating-ui.com/docs/FloatingFocusManager
+ * @internal
+ */
+function FloatingFocusManager(props) {
+  const {
+    context,
+    children,
+    disabled = false,
+    initialFocus = true,
+    returnFocus = true,
+    restoreFocus = false,
+    modal = true,
+    closeOnFocusOut = true,
+    openInteractionType = '',
+    nextFocusableElement,
+    previousFocusableElement,
+    beforeContentFocusGuardRef,
+    externalTree,
+    getInsideElements
+  } = props;
+  const store = 'rootStore' in context ? context.rootStore : context;
+  const open = store.useState('open');
+  const domReference = store.useState('domReferenceElement');
+  const floating = store.useState('floatingElement');
+  const {
+    events,
+    dataRef
+  } = store.context;
+  const getNodeId = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_6__.useStableCallback)(() => dataRef.current.floatingContext?.nodeId);
+  const ignoreInitialFocus = initialFocus === false;
+  // A typeable combobox reference (e.g. input/textarea) with `initialFocus={false}`
+  // has different focus semantics: focus is not trapped inside the floating element,
+  // so in the modal case the guards are not rendered, but `aria-hidden` is still
+  // applied to the outside nodes.
+  const isUntrappedTypeableCombobox = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__.isTypeableCombobox)(domReference) && ignoreInitialFocus;
+  const initialFocusRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__.useValueAsRef)(initialFocus);
+  const returnFocusRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__.useValueAsRef)(returnFocus);
+  const openInteractionTypeRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__.useValueAsRef)(openInteractionType);
+  const openRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__.useValueAsRef)(open);
+  const tree = (0,_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_25__.useFloatingTree)(externalTree);
+  const portalContext = (0,_FloatingPortal_mjs__WEBPACK_IMPORTED_MODULE_24__.usePortalContext)();
+  const preventReturnFocusRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const isPointerDownRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const pointerDownOutsideRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const lastFocusedTabbableRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const closeTypeRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef('');
+  const lastInteractionTypeRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef('');
+  const beforeGuardRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const afterGuardRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const mergedBeforeGuardRef = (0,_base_ui_utils_useMergedRefs__WEBPACK_IMPORTED_MODULE_4__.useMergedRefs)(beforeGuardRef, beforeContentFocusGuardRef, portalContext?.beforeInsideRef);
+  const mergedAfterGuardRef = (0,_base_ui_utils_useMergedRefs__WEBPACK_IMPORTED_MODULE_4__.useMergedRefs)(afterGuardRef, portalContext?.afterInsideRef);
+  const blurTimeout = (0,_base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_8__.useTimeout)();
+  const pointerDownTimeout = (0,_base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_8__.useTimeout)();
+  const restoreFocusFrame = (0,_base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_10__.useAnimationFrame)();
+  const isInsidePortal = portalContext != null;
+  const floatingFocusElement = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__.getFloatingFocusElement)(floating);
+  const getTabbableContent = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_6__.useStableCallback)((container = floatingFocusElement) => {
+    return container ? (0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_16__.tabbable)(container) : [];
+  });
+  const getResolvedInsideElements = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_6__.useStableCallback)(() => getInsideElements?.().filter(element => element != null) ?? []);
+
+  // Prevent Tab from escaping the modal when there are no tabbable elements.
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (disabled || !modal) {
+      return undefined;
+    }
+    function onKeyDown(event) {
+      if (event.key === 'Tab') {
+        // The focus guards have nothing to focus, so we need to stop the event.
+        if ((0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(floatingFocusElement, (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.activeElement)((0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_11__.ownerDocument)(floatingFocusElement))) && getTabbableContent().length === 0 && !isUntrappedTypeableCombobox) {
+          (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_15__.stopEvent)(event);
+        }
+      }
+    }
+    const doc = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_11__.ownerDocument)(floatingFocusElement);
+    return (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(doc, 'keydown', onKeyDown);
+  }, [disabled, floatingFocusElement, modal, isUntrappedTypeableCombobox, getTabbableContent]);
+
+  // Track pointer/keyboard interactions to disambiguate focus and outside presses.
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (disabled || !open) {
+      return undefined;
+    }
+    const doc = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_11__.ownerDocument)(floatingFocusElement);
+    function clearPointerDownOutside() {
+      pointerDownOutsideRef.current = false;
+    }
+    function onPointerDown(event) {
+      const target = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.getTarget)(event);
+      const insideElements = getResolvedInsideElements();
+      const pointerTargetInside = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(floating, target) || (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(domReference, target) || (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(portalContext?.portalNode, target) || insideElements.some(element => element === target || (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(element, target));
+      pointerDownOutsideRef.current = !pointerTargetInside;
+      lastInteractionTypeRef.current = event.pointerType || 'keyboard';
+      if (target?.closest(`[${_internals_constants_mjs__WEBPACK_IMPORTED_MODULE_26__.CLICK_TRIGGER_IDENTIFIER}]`)) {
+        isPointerDownRef.current = true;
+        // Reset on the next tick so a single click on a click-trigger doesn't
+        // permanently suppress focus-out closing for the lifetime of the instance.
+        pointerDownTimeout.start(0, () => {
+          isPointerDownRef.current = false;
+        });
+      }
+    }
+    function onKeyDown() {
+      lastInteractionTypeRef.current = 'keyboard';
+    }
+    return (0,_base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_3__.mergeCleanups)((0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(doc, 'pointerdown', onPointerDown, true), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(doc, 'pointerup', clearPointerDownOutside, true), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(doc, 'pointercancel', clearPointerDownOutside, true), (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(doc, 'keydown', onKeyDown, true),
+    // Avoid a stale `true` leaking into the next open (e.g. keep-mounted popups)
+    // if the popup dismissed between pointerdown and pointerup.
+    clearPointerDownOutside);
+  }, [disabled, floating, domReference, floatingFocusElement, open, portalContext, pointerDownTimeout, getResolvedInsideElements]);
+
+  // Close on focus out and restore focus within the floating tree when needed.
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (disabled || !closeOnFocusOut) {
+      return undefined;
+    }
+    const doc = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_11__.ownerDocument)(floatingFocusElement);
+
+    // In Safari, buttons lose focus when pressing them.
+    function handlePointerDown() {
+      isPointerDownRef.current = true;
+      pointerDownTimeout.start(0, () => {
+        isPointerDownRef.current = false;
+      });
+    }
+    function handleFocusIn(event) {
+      const target = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.getTarget)(event);
+      if ((0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_16__.isTabbable)(target)) {
+        lastFocusedTabbableRef.current = target;
+      }
+    }
+    function handleFocusOutside(event) {
+      const relatedTarget = event.relatedTarget;
+      const currentTarget = event.currentTarget;
+      const target = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.getTarget)(event);
+
+      // When focus is lost to the body (e.g. on a backdrop press), record the element that
+      // had focus so a confirmation dialog opened while the body is focused can return focus
+      // to it. Scoped to `modal` to avoid non-modal popups polluting the shared stack.
+      if (modal && relatedTarget == null && target != null && (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(floating, target)) {
+        addPreviouslyFocusedElement(target);
+      }
+      queueMicrotask(() => {
+        const nodeId = getNodeId();
+        const triggers = store.context.triggerElements;
+        const insideElements = getResolvedInsideElements();
+        const isRelatedFocusGuard = relatedTarget?.hasAttribute((0,_utils_createAttribute_mjs__WEBPACK_IMPORTED_MODULE_21__.createAttribute)('focus-guard')) && [beforeGuardRef.current, afterGuardRef.current, portalContext?.beforeInsideRef.current, portalContext?.afterInsideRef.current, portalContext?.beforeOutsideRef.current, portalContext?.afterOutsideRef.current, (0,_utils_resolveRef_mjs__WEBPACK_IMPORTED_MODULE_27__.resolveRef)(previousFocusableElement), (0,_utils_resolveRef_mjs__WEBPACK_IMPORTED_MODULE_27__.resolveRef)(nextFocusableElement)].includes(relatedTarget);
+        const movedToUnrelatedNode = !((0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(domReference, relatedTarget) || (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(floating, relatedTarget) || (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(relatedTarget, floating) || (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(portalContext?.portalNode, relatedTarget) || insideElements.some(element => element === relatedTarget || (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(element, relatedTarget)) || triggers.hasMatchingElement(trigger => (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(trigger, relatedTarget)) || isRelatedFocusGuard || tree && ((0,_utils_nodes_mjs__WEBPACK_IMPORTED_MODULE_17__.getNodeChildren)(tree.nodesRef.current, nodeId).find(node => (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(node.context?.elements.floating, relatedTarget) || (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(node.context?.elements.domReference, relatedTarget)) || (0,_utils_nodes_mjs__WEBPACK_IMPORTED_MODULE_17__.getNodeAncestors)(tree.nodesRef.current, nodeId).find(node => [node.context?.elements.floating, (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__.getFloatingFocusElement)(node.context?.elements.floating)].includes(relatedTarget) || node.context?.elements.domReference === relatedTarget)));
+        if (currentTarget === domReference && floatingFocusElement) {
+          handleTabIndex(floatingFocusElement);
+        }
+
+        // Restore focus to the previously focused tabbable element to prevent
+        // focus from being lost outside the floating tree.
+        if (restoreFocus && currentTarget !== domReference && !(0,_utils_composite_mjs__WEBPACK_IMPORTED_MODULE_18__.isElementVisible)(target) && (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.activeElement)(doc) === doc.body) {
+          // Let `FloatingPortal` effect knows that focus is still inside the
+          // floating tree.
+          if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__.isHTMLElement)(floatingFocusElement)) {
+            floatingFocusElement.focus();
+            // If explicitly requested to restore focus to the popup container, do not search
+            // for the next/previous tabbable element.
+            if (restoreFocus === 'popup') {
+              // If the focused element is removed on pointerdown, the browser
+              // tries to move focus to it right after the `.focus()` call above,
+              // but because it's removed in the same tick, focus is lost instead.
+              // Re-focusing asynchronously (next frame) wins that race.
+              restoreFocusFrame.request(() => {
+                floatingFocusElement.focus();
+              });
+              return;
+            }
+          }
+          const tabbableContent = getTabbableContent();
+          const prevTabbable = lastFocusedTabbableRef.current;
+          const nodeToFocus = (prevTabbable && tabbableContent.includes(prevTabbable) ? prevTabbable : null) || tabbableContent[tabbableContent.length - 1] || floatingFocusElement;
+          if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__.isHTMLElement)(nodeToFocus)) {
+            nodeToFocus.focus();
+          }
+        }
+
+        // https://github.com/floating-ui/floating-ui/issues/3060
+        if (dataRef.current.insideReactTree) {
+          dataRef.current.insideReactTree = false;
+          return;
+        }
+
+        // Focus did not move inside the floating tree, and there are no tabbable
+        // portal guards to handle closing.
+        if ((isUntrappedTypeableCombobox ? true : !modal) && relatedTarget && movedToUnrelatedNode && !isPointerDownRef.current && (
+        // Fix React 18 Strict Mode returnFocus due to double rendering.
+        // For an "untrapped" typeable combobox (input role=combobox with
+        // initialFocus=false), re-opening the popup and tabbing out should still close it even
+        // when the previously focused element (e.g. the next tabbable outside the popup) is
+        // focused again. Otherwise, the popup remains open on the second Tab sequence:
+        // click input -> Tab (closes) -> click input -> Tab.
+        // Allow closing when `isUntrappedTypeableCombobox` regardless of the previously focused element.
+        isUntrappedTypeableCombobox || relatedTarget !== getPreviouslyFocusedElement())) {
+          preventReturnFocusRef.current = true;
+          store.setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_19__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_20__.focusOut, event));
+        }
+      });
+    }
+    function markInsideReactTree() {
+      if (pointerDownOutsideRef.current) {
+        return;
+      }
+      dataRef.current.insideReactTree = true;
+      blurTimeout.start(0, () => {
+        dataRef.current.insideReactTree = false;
+      });
+    }
+    const domReferenceElement = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__.isHTMLElement)(domReference) ? domReference : null;
+    if (!floating && !domReferenceElement) {
+      return undefined;
+    }
+    return (0,_base_ui_utils_mergeCleanups__WEBPACK_IMPORTED_MODULE_3__.mergeCleanups)(domReferenceElement && (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(domReferenceElement, 'focusout', handleFocusOutside), domReferenceElement && (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(domReferenceElement, 'pointerdown', handlePointerDown), floating && (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(floating, 'focusin', handleFocusIn), floating && (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(floating, 'focusout', handleFocusOutside), floating && portalContext && (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(floating, 'focusout', markInsideReactTree, true));
+  }, [disabled, domReference, floating, floatingFocusElement, modal, tree, portalContext, store, closeOnFocusOut, restoreFocus, getTabbableContent, isUntrappedTypeableCombobox, getNodeId, dataRef, blurTimeout, pointerDownTimeout, restoreFocusFrame, nextFocusableElement, previousFocusableElement, getResolvedInsideElements]);
+
+  // Hide everything outside the floating tree from assistive tech while open.
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (disabled || !floating || !open) {
+      return undefined;
+    }
+
+    // Don't hide portals nested within the parent portal.
+    const portalNodes = Array.from(portalContext?.portalNode?.querySelectorAll(`[${(0,_utils_createAttribute_mjs__WEBPACK_IMPORTED_MODULE_21__.createAttribute)('portal')}]`) || []);
+    const ancestors = tree ? (0,_utils_nodes_mjs__WEBPACK_IMPORTED_MODULE_17__.getNodeAncestors)(tree.nodesRef.current, getNodeId()) : [];
+    const rootAncestorComboboxDomReference = ancestors.find(node => (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__.isTypeableCombobox)(node.context?.elements.domReference || null))?.context?.elements.domReference;
+    const controlInsideElements = [floating, ...portalNodes, beforeGuardRef.current, afterGuardRef.current, portalContext?.beforeOutsideRef.current, portalContext?.afterOutsideRef.current, ...getResolvedInsideElements()];
+    const insideElements = [...controlInsideElements, rootAncestorComboboxDomReference, (0,_utils_resolveRef_mjs__WEBPACK_IMPORTED_MODULE_27__.resolveRef)(previousFocusableElement), (0,_utils_resolveRef_mjs__WEBPACK_IMPORTED_MODULE_27__.resolveRef)(nextFocusableElement), isUntrappedTypeableCombobox ? domReference : null].filter(x => x != null);
+    const ariaHiddenCleanup = (0,_utils_markOthers_mjs__WEBPACK_IMPORTED_MODULE_23__.markOthers)(insideElements, {
+      ariaHidden: modal || isUntrappedTypeableCombobox,
+      mark: false
+    });
+    const markerInsideElements = [floating, ...portalNodes].filter(x => x != null);
+    const markerCleanup = (0,_utils_markOthers_mjs__WEBPACK_IMPORTED_MODULE_23__.markOthers)(markerInsideElements);
+    return () => {
+      markerCleanup();
+      ariaHiddenCleanup();
+    };
+  }, [open, disabled, domReference, floating, modal, portalContext, isUntrappedTypeableCombobox, tree, getNodeId, nextFocusableElement, previousFocusableElement, getResolvedInsideElements]);
+
+  // Focus the initial element when the floating element opens.
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_7__.useIsoLayoutEffect)(() => {
+    if (!open || disabled || !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__.isHTMLElement)(floatingFocusElement)) {
+      return;
+    }
+    closeTypeRef.current = '';
+    lastInteractionTypeRef.current = '';
+    const doc = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_11__.ownerDocument)(floatingFocusElement);
+    const previouslyFocusedElement = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.activeElement)(doc);
+
+    // Wait for any layout effect state setters to execute to set `tabIndex`.
+    queueMicrotask(() => {
+      const initialFocusValueOrFn = initialFocusRef.current;
+      const resolvedInitialFocus = typeof initialFocusValueOrFn === 'function' ? initialFocusValueOrFn(openInteractionTypeRef.current || '') : initialFocusValueOrFn;
+
+      // `null` should fallback to default behavior in case of an empty ref.
+      if (resolvedInitialFocus === undefined || resolvedInitialFocus === false) {
+        return;
+      }
+      const focusAlreadyInsideFloatingEl = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(floatingFocusElement, previouslyFocusedElement);
+      if (focusAlreadyInsideFloatingEl) {
+        return;
+      }
+      let focusableElements = null;
+      const getDefaultFocusElement = () => {
+        if (focusableElements == null) {
+          focusableElements = getTabbableContent(floatingFocusElement);
+        }
+        return focusableElements[0] || floatingFocusElement;
+      };
+      let elToFocus;
+      if (resolvedInitialFocus === true || resolvedInitialFocus === null) {
+        elToFocus = getDefaultFocusElement();
+      } else {
+        elToFocus = (0,_utils_resolveRef_mjs__WEBPACK_IMPORTED_MODULE_27__.resolveRef)(resolvedInitialFocus);
+      }
+      elToFocus = elToFocus || getDefaultFocusElement();
+      const hadFocusInside = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(floatingFocusElement, (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.activeElement)(doc));
+
+      // enqueueFocus returns a rAF-cancel function; we intentionally don't cancel this focus.
+      void (0,_utils_enqueueFocus_mjs__WEBPACK_IMPORTED_MODULE_22__.enqueueFocus)(elToFocus, {
+        preventScroll: elToFocus === floatingFocusElement,
+        shouldFocus() {
+          // This focus is queued on the next animation frame. If the floating element has closed
+          // before it runs — e.g. tabbing out of a kept-mounted popup — don't pull focus back
+          // onto the initial element after it has legitimately moved elsewhere.
+          if (!openRef.current) {
+            return false;
+          }
+          if (hadFocusInside) {
+            return true;
+          }
+          const currentActiveElement = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.activeElement)(doc);
+          const focusMovedInside = currentActiveElement !== elToFocus && (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(floatingFocusElement, currentActiveElement);
+          return !focusMovedInside;
+        }
+      });
+    });
+  }, [disabled, open, floatingFocusElement, getTabbableContent, initialFocusRef, openInteractionTypeRef, openRef]);
+
+  // Track return focus targets and restore focus on unmount/close.
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_7__.useIsoLayoutEffect)(() => {
+    if (disabled || !floatingFocusElement) {
+      return undefined;
+    }
+    const doc = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_11__.ownerDocument)(floatingFocusElement);
+    const elementFocusedBeforeOpen = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.activeElement)(doc);
+    // Only an explicit `null` interaction type represents a programmatic open.
+    // `undefined` is normalized to `''` by the prop default, so it never reaches
+    // here as nullish and is intentionally not treated as programmatic.
+    const preferPreviousFocus = openInteractionTypeRef.current == null;
+    addPreviouslyFocusedElement(elementFocusedBeforeOpen);
+    function onOpenChangeLocal(details) {
+      if (!details.open) {
+        closeTypeRef.current = getEventType(details.nativeEvent, lastInteractionTypeRef.current);
+      }
+      if (details.reason === _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_20__.triggerHover && details.nativeEvent.type === 'mouseleave') {
+        preventReturnFocusRef.current = true;
+      }
+      if (details.reason !== _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_20__.outsidePress) {
+        return;
+      }
+      if (details.nested) {
+        preventReturnFocusRef.current = false;
+      } else if ((0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_15__.isVirtualClick)(details.nativeEvent) || (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_15__.isVirtualPointerEvent)(details.nativeEvent)) {
+        preventReturnFocusRef.current = false;
+      } else {
+        // On outside press, only return focus to the reference when the browser supports the
+        // `focus({ preventScroll })` option; without it, restoring focus scrolls the page.
+        // Chrome on Android and Samsung Internet still don't support `preventScroll`
+        // (https://issues.chromium.org/issues/41453122), so the runtime check keeps return
+        // focus disabled there to avoid the scroll jump.
+        let isPreventScrollSupported = false;
+        (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_11__.ownerDocument)(floatingFocusElement).createElement('div').focus({
+          get preventScroll() {
+            isPreventScrollSupported = true;
+            return false;
+          }
+        });
+        if (isPreventScrollSupported) {
+          preventReturnFocusRef.current = false;
+        } else {
+          preventReturnFocusRef.current = true;
+        }
+      }
+    }
+    events.on('openchange', onOpenChangeLocal);
+    function getReturnElement(closeType) {
+      const returnFocusValueOrFn = returnFocusRef.current;
+      let resolvedReturnFocusValue = typeof returnFocusValueOrFn === 'function' ? returnFocusValueOrFn(closeType) : returnFocusValueOrFn;
+
+      // `null` should fallback to default behavior in case of an empty ref.
+      if (resolvedReturnFocusValue === undefined || resolvedReturnFocusValue === false) {
+        return null;
+      }
+      if (resolvedReturnFocusValue === null) {
+        resolvedReturnFocusValue = true;
+      }
+      const referenceReturnElement = domReference?.isConnected ? domReference : null;
+      const previousReturnElement = elementFocusedBeforeOpen?.isConnected && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__.getNodeName)(elementFocusedBeforeOpen) !== 'body' ? elementFocusedBeforeOpen : null;
+      let defaultReturnElement = preferPreviousFocus ? previousReturnElement || referenceReturnElement : referenceReturnElement || previousReturnElement;
+      if (!defaultReturnElement) {
+        defaultReturnElement = getPreviouslyFocusedElement() || null;
+      }
+      if (typeof resolvedReturnFocusValue === 'boolean') {
+        return defaultReturnElement;
+      }
+      return (0,_utils_resolveRef_mjs__WEBPACK_IMPORTED_MODULE_27__.resolveRef)(resolvedReturnFocusValue) || defaultReturnElement || null;
+    }
+    return () => {
+      events.off('openchange', onOpenChangeLocal);
+      const activeEl = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.activeElement)(doc);
+      const insideElements = getResolvedInsideElements();
+      const isFocusInsideFloatingTree = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(floating, activeEl) || insideElements.some(element => element === activeEl || (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(element, activeEl)) || tree && (0,_utils_nodes_mjs__WEBPACK_IMPORTED_MODULE_17__.getNodeChildren)(tree.nodesRef.current, getNodeId(), false).some(node => (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(node.context?.elements.floating, activeEl));
+
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      const returnFocusValueOrFn = returnFocusRef.current;
+      const closeType = closeTypeRef.current;
+      const returnElement = getReturnElement(closeType);
+      queueMicrotask(() => {
+        // `returnElement` if it is tabbable, otherwise its first tabbable child,
+        // otherwise `returnElement` itself (which may not be tabbable at all).
+        const tabbableReturnElement = getFirstTabbableElement(returnElement);
+        const hasExplicitReturnFocus = typeof returnFocusValueOrFn !== 'boolean';
+        if (returnFocusValueOrFn && !preventReturnFocusRef.current && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__.isHTMLElement)(tabbableReturnElement) && (
+        // If the focus moved somewhere else after mount, avoid returning focus
+        // since it likely entered a different element which should be
+        // respected: https://github.com/floating-ui/floating-ui/issues/2607
+        !hasExplicitReturnFocus && tabbableReturnElement !== activeEl && activeEl !== doc.body ? isFocusInsideFloatingTree : true)) {
+          const focusOptions = {
+            preventScroll: true
+          };
+          if (closeType === 'keyboard') {
+            focusOptions.focusVisible = true;
+          }
+          tabbableReturnElement.focus(focusOptions);
+        }
+        preventReturnFocusRef.current = false;
+      });
+    };
+  }, [disabled, floating, floatingFocusElement, returnFocusRef, openInteractionTypeRef, events, tree, domReference, getNodeId, getResolvedInsideElements]);
+
+  // Safari may randomly scroll to the bottom of the page if an input inside a popup has focus
+  // when the popup unmounts from the DOM.
+  // By blurring it before the popup unmounts, we can prevent this behavior.
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_7__.useIsoLayoutEffect)(() => {
+    if (!_base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_9__.webkit || open || !floating) {
+      return;
+    }
+    const activeEl = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.activeElement)((0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_11__.ownerDocument)(floating));
+    if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_1__.isHTMLElement)(activeEl) || !(0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__.isTypeableElement)(activeEl)) {
+      return;
+    }
+    if ((0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(floating, activeEl)) {
+      activeEl.blur();
+    }
+  }, [open, floating]);
+
+  // Synchronize the focus manager state (modal, closeOnFocusOut, open, etc.) to the
+  // FloatingPortal context, which uses it to decide whether to render its own guards.
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_7__.useIsoLayoutEffect)(() => {
+    if (disabled || !portalContext) {
+      return undefined;
+    }
+    portalContext.setFocusManagerState({
+      modal,
+      closeOnFocusOut,
+      open,
+      onOpenChange: store.setOpen,
+      domReference
+    });
+    return () => {
+      portalContext.setFocusManagerState(null);
+    };
+  }, [disabled, portalContext, modal, open, store, closeOnFocusOut, domReference]);
+
+  // Keep the floating element tabIndex in sync and clear stale focus records.
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_7__.useIsoLayoutEffect)(() => {
+    if (disabled || !floatingFocusElement) {
+      return undefined;
+    }
+    handleTabIndex(floatingFocusElement);
+    return () => {
+      queueMicrotask(clearDisconnectedPreviouslyFocusedElements);
+    };
+  }, [disabled, floatingFocusElement]);
+  const shouldRenderGuards = !disabled && (modal ? !isUntrappedTypeableCombobox : true) && (isInsidePortal || modal);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_28__.jsxs)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    children: [shouldRenderGuards && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_28__.jsx)(_utils_FocusGuard_mjs__WEBPACK_IMPORTED_MODULE_12__.FocusGuard, {
+      "data-type": "inside",
+      ref: mergedBeforeGuardRef,
+      onFocus: event => {
+        if (modal) {
+          const els = getTabbableContent();
+          // enqueueFocus returns a rAF-cancel function we don't need here.
+          void (0,_utils_enqueueFocus_mjs__WEBPACK_IMPORTED_MODULE_22__.enqueueFocus)(els[els.length - 1]);
+        } else if (portalContext?.portalNode) {
+          preventReturnFocusRef.current = false;
+          if ((0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_16__.isOutsideEvent)(event, portalContext.portalNode)) {
+            const nextTabbable = (0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_16__.getNextTabbable)(domReference);
+            nextTabbable?.focus();
+          } else {
+            (0,_utils_resolveRef_mjs__WEBPACK_IMPORTED_MODULE_27__.resolveRef)(previousFocusableElement ?? portalContext.beforeOutsideRef)?.focus();
+          }
+        }
+      }
+    }), children, shouldRenderGuards && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_28__.jsx)(_utils_FocusGuard_mjs__WEBPACK_IMPORTED_MODULE_12__.FocusGuard, {
+      "data-type": "inside",
+      ref: mergedAfterGuardRef,
+      onFocus: event => {
+        if (modal) {
+          // enqueueFocus returns a rAF-cancel function we don't need here.
+          void (0,_utils_enqueueFocus_mjs__WEBPACK_IMPORTED_MODULE_22__.enqueueFocus)(getTabbableContent()[0]);
+        } else if (portalContext?.portalNode) {
+          if (closeOnFocusOut) {
+            preventReturnFocusRef.current = true;
+          }
+          if ((0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_16__.isOutsideEvent)(event, portalContext.portalNode)) {
+            const prevTabbable = (0,_utils_tabbable_mjs__WEBPACK_IMPORTED_MODULE_16__.getPreviousTabbable)(domReference);
+            prevTabbable?.focus();
+          } else {
+            (0,_utils_resolveRef_mjs__WEBPACK_IMPORTED_MODULE_27__.resolveRef)(nextFocusableElement ?? portalContext.afterOutsideRef)?.focus();
+          }
+        }
+      }
+    })]
+  });
+}
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingPortal.mjs"
 /*!*************************************************************************************!*\
   !*** ./node_modules/@base-ui/react/floating-ui-react/components/FloatingPortal.mjs ***!
@@ -17666,6 +19755,154 @@ class FloatingTreeStore {
       this.nodesRef.current.splice(index, 1);
     }
   }
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/hooks/useClick.mjs"
+/*!**************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/hooks/useClick.mjs ***!
+  \**************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useClick: () => (/* binding */ useClick)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useAnimationFrame */ "./node_modules/@base-ui/utils/useAnimationFrame.mjs");
+/* harmony import */ var _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useTimeout */ "./node_modules/@base-ui/utils/useTimeout.mjs");
+/* harmony import */ var _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/empty */ "./node_modules/@base-ui/utils/empty.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/element.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/element.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/element.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+/* harmony import */ var _utils_event_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/event.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+/**
+ * Opens or closes the floating element when clicking the reference element.
+ * @see https://floating-ui.com/docs/useClick
+ */
+function useClick(context, props = {}) {
+  const {
+    enabled = true,
+    event: eventOption = 'click',
+    toggle = true,
+    ignoreMouse = false,
+    stickIfOpen = true,
+    touchOpenDelay = 0,
+    reason = _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_8__.triggerPress
+  } = props;
+  const store = 'rootStore' in context ? context.rootStore : context;
+  const dataRef = store.context.dataRef;
+  const pointerTypeRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(undefined);
+  const frame = (0,_base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_1__.useAnimationFrame)();
+  const touchOpenTimeout = (0,_base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_2__.useTimeout)();
+  const reference = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => {
+    function setOpenWithTouchDelay(nextOpen, nativeEvent, target, pointerType) {
+      const details = (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_7__.createChangeEventDetails)(reason, nativeEvent, target);
+      if (nextOpen && pointerType === 'touch' && touchOpenDelay > 0) {
+        touchOpenTimeout.start(touchOpenDelay, () => {
+          store.setOpen(true, details);
+        });
+      } else {
+        store.setOpen(nextOpen, details);
+      }
+    }
+    function getNextOpen(open, currentTarget, isClickLikeOpenEvent) {
+      const openEvent = dataRef.current.openEvent;
+      const hasClickedOnInactiveTrigger = store.select('domReferenceElement') !== currentTarget;
+      if (open && hasClickedOnInactiveTrigger) {
+        // Moving between triggers should always open the newly active one.
+        return true;
+      }
+      if (!open) {
+        // A closed popup should open on the next press.
+        return true;
+      }
+      if (!toggle) {
+        // Non-toggle mode never closes on a repeated trigger press.
+        return true;
+      }
+      if (openEvent && stickIfOpen) {
+        // Preserve hover/focus-opened popups until the matching click-like event closes them.
+        return !isClickLikeOpenEvent(openEvent.type);
+      }
+
+      // Otherwise, a repeated click toggles the popup closed.
+      return false;
+    }
+    return {
+      onPointerDown(event) {
+        // Screen reader activations (Android TalkBack, desktop screen readers) report a
+        // mouse-like `pointerType`, but `ignoreMouse` must not drop them: hover logic cannot
+        // open for a virtual press since there is no real pointer movement to wait for.
+        // Virtual `touch` presses (iOS VoiceOver) keep their type so `touchOpenDelay` applies.
+        pointerTypeRef.current = (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_6__.isMouseLikePointerType)(event.pointerType, true) && (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_6__.isVirtualPointerEvent)(event.nativeEvent) ? 'virtual' : event.pointerType;
+      },
+      onMouseDown(event) {
+        const pointerType = pointerTypeRef.current;
+        const nativeEvent = event.nativeEvent;
+        const open = store.select('open');
+
+        // Ignore all buttons except for the "main" button.
+        // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
+        if (event.button !== 0 || eventOption === 'click' || (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_6__.isMouseLikePointerType)(pointerType, true) && ignoreMouse) {
+          return;
+        }
+        const nextOpen = getNextOpen(open, event.currentTarget, openEventType => openEventType === 'click' || openEventType === 'mousedown');
+
+        // Animations sometimes won't run on a typeable element if using a rAF.
+        // Focus is always set on these elements. For touch, we may delay opening.
+        const target = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_5__.getTarget)(nativeEvent);
+        if ((0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_4__.isTypeableElement)(target)) {
+          setOpenWithTouchDelay(nextOpen, nativeEvent, target, pointerType);
+          return;
+        }
+
+        // Capture the currentTarget before the rAF.
+        // as React sets it to null after the event handler completes.
+        const eventCurrentTarget = event.currentTarget;
+
+        // Wait until focus is set on the element. This is an alternative to
+        // `event.preventDefault()` to avoid :focus-visible from appearing when using a pointer.
+        frame.request(() => {
+          setOpenWithTouchDelay(nextOpen, nativeEvent, eventCurrentTarget, pointerType);
+        });
+      },
+      onClick(event) {
+        if (eventOption === 'mousedown-only') {
+          return;
+        }
+        const pointerType = pointerTypeRef.current;
+        if (eventOption === 'mousedown' && pointerType) {
+          pointerTypeRef.current = undefined;
+          return;
+        }
+        if ((0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_6__.isMouseLikePointerType)(pointerType, true) && ignoreMouse) {
+          return;
+        }
+        const open = store.select('open');
+        const nextOpen = getNextOpen(open, event.currentTarget, openEventType => openEventType === 'click' || openEventType === 'mousedown' || openEventType === 'keydown' || openEventType === 'keyup');
+        setOpenWithTouchDelay(nextOpen, event.nativeEvent, event.currentTarget, pointerType);
+      },
+      onKeyDown() {
+        pointerTypeRef.current = undefined;
+      }
+    };
+  }, [dataRef, eventOption, ignoreMouse, reason, store, stickIfOpen, toggle, frame, touchOpenTimeout, touchOpenDelay]);
+  return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => enabled ? {
+    reference
+  } : _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_3__.EMPTY_OBJECT, [enabled, reference]);
 }
 
 /***/ },
@@ -19473,6 +21710,634 @@ function isHoverOpenEvent(openEventType) {
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/react/floating-ui-react/hooks/useListNavigation.mjs"
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/hooks/useListNavigation.mjs ***!
+  \***********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ESCAPE: () => (/* binding */ ESCAPE),
+/* harmony export */   useListNavigation: () => (/* binding */ useListNavigation)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useAnimationFrame */ "./node_modules/@base-ui/utils/useAnimationFrame.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@base-ui/utils/owner.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @base-ui/utils/useValueAsRef */ "./node_modules/@base-ui/utils/useValueAsRef.mjs");
+/* harmony import */ var _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @base-ui/utils/platform */ "./node_modules/@base-ui/utils/platform/engine.mjs");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var _components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../components/FloatingTree.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingTree.mjs");
+/* harmony import */ var _utils_composite_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../utils/composite.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/composite.mjs");
+/* harmony import */ var _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../utils/constants.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/constants.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../utils/element.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/element.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../utils/element.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+/* harmony import */ var _utils_enqueueFocus_mjs__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../utils/enqueueFocus.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/enqueueFocus.mjs");
+/* harmony import */ var _utils_event_mjs__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../utils/event.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const ESCAPE = 'Escape';
+
+// WebKit fires zero-delta `mousemove`/`pointermove` events when the list scrolls
+// beneath a stationary pointer, moving the highlight during keyboard navigation.
+// https://github.com/mui/base-ui/issues/4002
+function isStationaryWebKitPointer(event) {
+  return _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_6__.webkit && event.movementX === 0 && event.movementY === 0;
+}
+function doSwitch(orientation, vertical, horizontal) {
+  switch (orientation) {
+    case 'vertical':
+      return vertical;
+    case 'horizontal':
+      return horizontal;
+    default:
+      return vertical || horizontal;
+  }
+}
+function isMainOrientationKey(key, orientation) {
+  const vertical = key === _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_12__.ARROW_UP || key === _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_12__.ARROW_DOWN;
+  const horizontal = key === _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_12__.ARROW_LEFT || key === _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_12__.ARROW_RIGHT;
+  return doSwitch(orientation, vertical, horizontal);
+}
+function isMainOrientationToEndKey(key, orientation, rtl) {
+  const vertical = key === _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_12__.ARROW_DOWN;
+  const horizontal = rtl ? key === _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_12__.ARROW_LEFT : key === _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_12__.ARROW_RIGHT;
+  return doSwitch(orientation, vertical, horizontal) || key === 'Enter' || key === ' ' || key === '';
+}
+function isCrossOrientationOpenKey(key, orientation, rtl) {
+  const vertical = rtl ? key === _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_12__.ARROW_LEFT : key === _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_12__.ARROW_RIGHT;
+  const horizontal = key === _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_12__.ARROW_DOWN;
+  return doSwitch(orientation, vertical, horizontal);
+}
+function isCrossOrientationCloseKey(key, orientation, rtl, grid) {
+  const vertical = rtl ? key === _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_12__.ARROW_RIGHT : key === _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_12__.ARROW_LEFT;
+  const horizontal = key === _utils_constants_mjs__WEBPACK_IMPORTED_MODULE_12__.ARROW_UP;
+  if (orientation === 'both' || orientation === 'horizontal' && grid) {
+    return key === ESCAPE;
+  }
+  return doSwitch(orientation, vertical, horizontal);
+}
+/**
+ * Adds arrow key-based navigation of a list of items, either using real DOM
+ * focus or virtual focus.
+ * @see https://floating-ui.com/docs/useListNavigation
+ */
+function useListNavigation(context, props) {
+  const {
+    listRef,
+    activeIndex,
+    onNavigate: onNavigateProp = () => {},
+    enabled = true,
+    selectedIndex = null,
+    allowEscape = false,
+    loopFocus = false,
+    nested = false,
+    rtl = false,
+    virtual = false,
+    focusItemOnOpen = 'auto',
+    focusItemOnHover = true,
+    openOnArrowKeyDown = true,
+    disabledIndices = undefined,
+    orientation = 'vertical',
+    parentOrientation,
+    id,
+    resetOnPointerLeave = true,
+    externalTree,
+    grid: navigateGrid
+  } = props;
+  const isGrid = navigateGrid != null;
+  if (true) {
+    if (allowEscape) {
+      if (!loopFocus) {
+        console.warn('`useListNavigation` looping must be enabled to allow escaping.');
+      }
+      if (!virtual) {
+        console.warn('`useListNavigation` must be virtual to allow escaping.');
+      }
+    }
+    if (orientation === 'vertical' && isGrid) {
+      console.warn('In grid list navigation mode, the `orientation` should', 'be either "horizontal" or "both".');
+    }
+  }
+  const store = 'rootStore' in context ? context.rootStore : context;
+  const open = store.useState('open');
+  const floatingElement = store.useState('floatingElement');
+  const domReferenceElement = store.useState('domReferenceElement');
+  const dataRef = store.context.dataRef;
+  const floatingFocusElement = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__.getFloatingFocusElement)(floatingElement);
+  const typeableComboboxReference = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_13__.isTypeableCombobox)(domReferenceElement);
+  const floatingFocusElementRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__.useValueAsRef)(floatingFocusElement);
+  const parentId = (0,_components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_10__.useFloatingParentNodeId)();
+  const tree = (0,_components_FloatingTree_mjs__WEBPACK_IMPORTED_MODULE_10__.useFloatingTree)(externalTree);
+  const focusItemOnOpenRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(focusItemOnOpen);
+  const indexRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(selectedIndex ?? -1);
+  const keyRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const isPointerModalityRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(true);
+  const onNavigate = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(event => {
+    onNavigateProp(indexRef.current === -1 ? null : indexRef.current, event);
+  });
+  const previousMountedRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(!!floatingElement);
+  const previousOpenRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(open);
+  const forceSyncFocusRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const forceScrollIntoViewRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const cancelQueuedFocusRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const disabledIndicesRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__.useValueAsRef)(disabledIndices);
+  const latestOpenRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__.useValueAsRef)(open);
+  const selectedIndexRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__.useValueAsRef)(selectedIndex);
+  const resetOnPointerLeaveRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_5__.useValueAsRef)(resetOnPointerLeave);
+  const focusFrame = (0,_base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_1__.useAnimationFrame)();
+  const waitForListPopulatedFrame = (0,_base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_1__.useAnimationFrame)();
+  const focusItem = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(() => {
+    function runFocus(item) {
+      if (virtual) {
+        tree?.events.emit('virtualfocus', item);
+      } else {
+        cancelQueuedFocusRef.current = (0,_utils_enqueueFocus_mjs__WEBPACK_IMPORTED_MODULE_15__.enqueueFocus)(item, {
+          sync: forceSyncFocusRef.current,
+          preventScroll: true
+        });
+      }
+    }
+    const initialItem = listRef.current[indexRef.current];
+    const forceScrollIntoView = forceScrollIntoViewRef.current;
+    if (initialItem) {
+      runFocus(initialItem);
+    }
+    const scheduler = forceSyncFocusRef.current ? callback => callback() : callback => focusFrame.request(callback);
+    scheduler(() => {
+      const waitedItem = listRef.current[indexRef.current] || initialItem;
+      if (!waitedItem) {
+        return;
+      }
+      if (!initialItem) {
+        runFocus(waitedItem);
+      }
+      const shouldScrollIntoView =
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      item && (forceScrollIntoView || !isPointerModalityRef.current);
+      if (shouldScrollIntoView) {
+        // JSDOM doesn't support `.scrollIntoView()` but it's widely supported
+        // by all browsers.
+        waitedItem.scrollIntoView?.({
+          block: 'nearest',
+          inline: 'nearest'
+        });
+      }
+    });
+  });
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    dataRef.current.orientation = orientation;
+  }, [dataRef, orientation]);
+
+  // Sync `selectedIndex` to be the `activeIndex` upon opening the floating
+  // element. Also, reset `activeIndex` upon closing the floating element.
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    if (!enabled) {
+      return;
+    }
+    if (open && floatingElement) {
+      indexRef.current = selectedIndex ?? -1;
+      if (focusItemOnOpenRef.current && selectedIndex != null) {
+        // Regardless of the pointer modality, we want to ensure the selected
+        // item comes into view when the floating element is opened.
+        forceScrollIntoViewRef.current = true;
+        onNavigate();
+      }
+    } else if (previousMountedRef.current) {
+      // Reset the active index when the list is no longer open and mounted (closing or
+      // unmounting). `onNavigate` is a stable callback that always forwards to the latest
+      // `onNavigate` prop.
+      indexRef.current = -1;
+      onNavigate();
+    }
+  }, [enabled, open, floatingElement, selectedIndex, onNavigate]);
+
+  // Sync `activeIndex` to be the focused item while the floating element is
+  // open.
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    if (!enabled) {
+      return;
+    }
+    if (!open) {
+      forceSyncFocusRef.current = false;
+      return;
+    }
+    if (!floatingElement) {
+      return;
+    }
+    if (activeIndex == null) {
+      forceSyncFocusRef.current = false;
+      if (selectedIndexRef.current != null) {
+        return;
+      }
+
+      // Reset while the floating element was open (e.g. the list changed).
+      if (previousMountedRef.current) {
+        indexRef.current = -1;
+        focusItem();
+      }
+
+      // Initial sync.
+      if ((!previousOpenRef.current || !previousMountedRef.current) && focusItemOnOpenRef.current && (keyRef.current != null || focusItemOnOpenRef.current === true && keyRef.current == null)) {
+        let runs = 0;
+        const waitForListPopulated = () => {
+          if (listRef.current[0] == null) {
+            // Avoid letting the browser paint if possible on the first try,
+            // otherwise use rAF. Don't try more than twice, since something
+            // is wrong otherwise.
+            if (runs < 2) {
+              const scheduler = runs ? callback => waitForListPopulatedFrame.request(callback) : queueMicrotask;
+              scheduler(waitForListPopulated);
+            }
+            runs += 1;
+          } else {
+            // Initially focus the first non-disabled item. `disabledIndices` is deliberately
+            // omitted here so attribute-disabled items (`disabled`/`aria-disabled`) are skipped
+            // on open even when the consumer passes an empty `disabledIndices` array. Passing it
+            // would regress that behavior (see mui/base-ui#2604).
+            indexRef.current = keyRef.current == null || isMainOrientationToEndKey(keyRef.current, orientation, rtl) || nested ? (0,_utils_composite_mjs__WEBPACK_IMPORTED_MODULE_11__.getMinListIndex)(listRef) : (0,_utils_composite_mjs__WEBPACK_IMPORTED_MODULE_11__.getMaxListIndex)(listRef);
+            keyRef.current = null;
+            onNavigate();
+          }
+        };
+        waitForListPopulated();
+      }
+    } else if (!(0,_utils_composite_mjs__WEBPACK_IMPORTED_MODULE_11__.isIndexOutOfListBounds)(listRef.current, activeIndex)) {
+      indexRef.current = activeIndex;
+      focusItem();
+      forceScrollIntoViewRef.current = false;
+    }
+  }, [enabled, open, floatingElement, activeIndex, selectedIndexRef, nested, listRef, orientation, rtl, onNavigate, focusItem, waitForListPopulatedFrame]);
+
+  // Ensure the parent floating element has focus when a nested child closes
+  // to allow arrow key navigation to work after the pointer leaves the child.
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    if (!enabled || floatingElement || !tree || virtual || !previousMountedRef.current) {
+      return;
+    }
+    const nodes = tree.nodesRef.current;
+    const parent = nodes.find(node => node.id === parentId)?.context?.elements.floating;
+    // `floatingElement` is null here (see the guard above), so resolve the owner document from an
+    // in-DOM element for realm-safety (shadow DOM/iframes): the reference element, falling back to
+    // the parent floating element when the reference is virtual (`domReferenceElement` is null).
+    const activeEl = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.activeElement)((0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_3__.ownerDocument)(domReferenceElement ?? parent ?? null));
+    const treeContainsActiveEl = nodes.some(node => node.context && (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(node.context.elements.floating, activeEl));
+    if (parent && !treeContainsActiveEl && isPointerModalityRef.current) {
+      parent.focus({
+        preventScroll: true
+      });
+    }
+  }, [enabled, floatingElement, domReferenceElement, tree, parentId, virtual]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    previousOpenRef.current = open;
+    previousMountedRef.current = !!floatingElement;
+  });
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    if (!open) {
+      keyRef.current = null;
+      focusItemOnOpenRef.current = focusItemOnOpen;
+    }
+  }, [open, focusItemOnOpen]);
+  const hasActiveIndex = activeIndex != null;
+  const syncCurrentTarget = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(event => {
+    if (!latestOpenRef.current) {
+      return;
+    }
+    const index = listRef.current.indexOf(event.currentTarget);
+    if (index !== -1 && (indexRef.current !== index || activeIndex !== index)) {
+      indexRef.current = index;
+      onNavigate(event);
+    }
+  });
+  const getParentOrientation = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(() => {
+    return parentOrientation ?? tree?.nodesRef.current.find(node => node.id === parentId)?.context?.dataRef?.current.orientation;
+  });
+  const getMinEnabledIndex = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(() => {
+    return (0,_utils_composite_mjs__WEBPACK_IMPORTED_MODULE_11__.getMinListIndex)(listRef, disabledIndicesRef.current);
+  });
+  const commonOnKeyDown = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(event => {
+    isPointerModalityRef.current = false;
+    forceSyncFocusRef.current = true;
+
+    // When composing a character, Chrome fires ArrowDown twice. Firefox/Safari
+    // don't appear to suffer from this. `event.isComposing` is avoided due to
+    // Safari not supporting it properly (although it's not needed in the first
+    // place for Safari, just avoiding any possible issues).
+    if (event.which === 229) {
+      return;
+    }
+
+    // If the floating element is animating out, ignore navigation. Otherwise,
+    // the `activeIndex` gets set to 0 despite not being open so the next time
+    // the user ArrowDowns, the first item won't be focused.
+    if (!latestOpenRef.current && event.currentTarget === floatingFocusElementRef.current) {
+      return;
+    }
+    if (nested && isCrossOrientationCloseKey(event.key, orientation, rtl, isGrid)) {
+      // If the nested list's close key is also the parent navigation key,
+      // let the parent navigate. Otherwise, stop propagating the event.
+      if (!isMainOrientationKey(event.key, getParentOrientation())) {
+        (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_16__.stopEvent)(event);
+      }
+      store.setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_8__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_9__.listNavigation, event.nativeEvent));
+      if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.isHTMLElement)(domReferenceElement)) {
+        if (virtual) {
+          tree?.events.emit('virtualfocus', domReferenceElement);
+        } else {
+          domReferenceElement.focus();
+        }
+      }
+      return;
+    }
+    const currentIndex = indexRef.current;
+    const minIndex = (0,_utils_composite_mjs__WEBPACK_IMPORTED_MODULE_11__.getMinListIndex)(listRef, disabledIndices);
+    const maxIndex = (0,_utils_composite_mjs__WEBPACK_IMPORTED_MODULE_11__.getMaxListIndex)(listRef, disabledIndices);
+    if (!typeableComboboxReference) {
+      if (event.key === 'Home') {
+        (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_16__.stopEvent)(event);
+        indexRef.current = minIndex;
+        onNavigate(event);
+      }
+      if (event.key === 'End') {
+        (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_16__.stopEvent)(event);
+        indexRef.current = maxIndex;
+        onNavigate(event);
+      }
+    }
+
+    // Grid navigation is injected by grid-capable consumers so non-grid
+    // consumers (menu, select) tree-shake the grid helpers out.
+    if (navigateGrid != null) {
+      const index = navigateGrid(event, indexRef.current, listRef, orientation, loopFocus, rtl, disabledIndices, minIndex, maxIndex);
+      if (index != null) {
+        indexRef.current = index;
+        onNavigate(event);
+      }
+      if (orientation === 'both') {
+        return;
+      }
+    }
+    if (isMainOrientationKey(event.key, orientation)) {
+      (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_16__.stopEvent)(event);
+
+      // Reset the index if no item is focused.
+      if (open && !virtual && (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.activeElement)(event.currentTarget.ownerDocument) === event.currentTarget) {
+        indexRef.current = isMainOrientationToEndKey(event.key, orientation, rtl) ? minIndex : maxIndex;
+        onNavigate(event);
+        return;
+      }
+      if (isMainOrientationToEndKey(event.key, orientation, rtl)) {
+        if (loopFocus) {
+          if (currentIndex >= maxIndex) {
+            if (allowEscape && currentIndex !== listRef.current.length) {
+              indexRef.current = -1;
+            } else {
+              // Give time for virtualizers to update the listRef.
+              forceSyncFocusRef.current = false;
+              indexRef.current = minIndex;
+            }
+          } else {
+            indexRef.current = (0,_utils_composite_mjs__WEBPACK_IMPORTED_MODULE_11__.findNonDisabledListIndex)(listRef.current, {
+              startingIndex: currentIndex,
+              disabledIndices
+            });
+          }
+        } else {
+          indexRef.current = Math.min(maxIndex, (0,_utils_composite_mjs__WEBPACK_IMPORTED_MODULE_11__.findNonDisabledListIndex)(listRef.current, {
+            startingIndex: currentIndex,
+            disabledIndices
+          }));
+        }
+      } else if (loopFocus) {
+        if (currentIndex <= minIndex) {
+          if (allowEscape && currentIndex !== -1) {
+            indexRef.current = listRef.current.length;
+          } else {
+            // Give time for virtualizers to update the listRef.
+            forceSyncFocusRef.current = false;
+            indexRef.current = maxIndex;
+          }
+        } else {
+          indexRef.current = (0,_utils_composite_mjs__WEBPACK_IMPORTED_MODULE_11__.findNonDisabledListIndex)(listRef.current, {
+            startingIndex: currentIndex,
+            decrement: true,
+            disabledIndices
+          });
+        }
+      } else {
+        indexRef.current = Math.max(minIndex, (0,_utils_composite_mjs__WEBPACK_IMPORTED_MODULE_11__.findNonDisabledListIndex)(listRef.current, {
+          startingIndex: currentIndex,
+          decrement: true,
+          disabledIndices
+        }));
+      }
+      if ((0,_utils_composite_mjs__WEBPACK_IMPORTED_MODULE_11__.isIndexOutOfListBounds)(listRef.current, indexRef.current)) {
+        indexRef.current = -1;
+      }
+      onNavigate(event);
+    }
+  });
+  const item = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => {
+    const itemProps = {
+      onFocus(event) {
+        forceSyncFocusRef.current = true;
+        syncCurrentTarget(event);
+      },
+      onClick: ({
+        currentTarget
+      }) => currentTarget.focus({
+        preventScroll: true
+      }),
+      // Safari
+      onMouseMove(event) {
+        if (isStationaryWebKitPointer(event)) {
+          return;
+        }
+        forceSyncFocusRef.current = true;
+        forceScrollIntoViewRef.current = false;
+        if (focusItemOnHover) {
+          syncCurrentTarget(event);
+        }
+      },
+      onPointerLeave(event) {
+        if (!latestOpenRef.current || !isPointerModalityRef.current || event.pointerType === 'touch') {
+          return;
+        }
+        forceSyncFocusRef.current = true;
+        const relatedTarget = event.relatedTarget;
+        if (!focusItemOnHover || listRef.current.includes(relatedTarget)) {
+          return;
+        }
+        if (!resetOnPointerLeaveRef.current) {
+          return;
+        }
+        cancelQueuedFocusRef.current?.();
+        cancelQueuedFocusRef.current = null;
+        indexRef.current = -1;
+        onNavigate(event);
+        if (!virtual) {
+          const floatingFocusEl = floatingFocusElementRef.current;
+          const activeEl = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.activeElement)((0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_3__.ownerDocument)(floatingFocusEl));
+          if (floatingFocusEl && (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(floatingFocusEl, activeEl)) {
+            floatingFocusEl.focus({
+              preventScroll: true
+            });
+          }
+        }
+      }
+    };
+    return itemProps;
+  }, [syncCurrentTarget, latestOpenRef, floatingFocusElementRef, focusItemOnHover, listRef, onNavigate, resetOnPointerLeaveRef, virtual]);
+  const ariaActiveDescendantProp = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => {
+    return virtual && open && hasActiveIndex && {
+      'aria-activedescendant': `${id}-${activeIndex}`
+    };
+  }, [virtual, open, hasActiveIndex, id, activeIndex]);
+  const floating = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => {
+    return {
+      'aria-orientation': orientation === 'both' ? undefined : orientation,
+      ...(!typeableComboboxReference ? ariaActiveDescendantProp : {}),
+      onKeyDown(event) {
+        // Close submenu on Shift+Tab
+        if (event.key === 'Tab' && event.shiftKey && open && !virtual) {
+          // If the event originated from within a nested element (e.g., a Dialog opened from
+          // within the menu), don't close the menu. The nested element has its own focus
+          // management and should handle the Tab key.
+          const target = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.getTarget)(event.nativeEvent);
+          if (target && !(0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(floatingFocusElementRef.current, target)) {
+            return;
+          }
+          ;(0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_16__.stopEvent)(event);
+          store.setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_8__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_9__.focusOut, event.nativeEvent));
+          if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_7__.isHTMLElement)(domReferenceElement)) {
+            domReferenceElement.focus();
+          }
+          return;
+        }
+        commonOnKeyDown(event);
+      },
+      onPointerMove(event) {
+        if (isStationaryWebKitPointer(event)) {
+          return;
+        }
+        isPointerModalityRef.current = true;
+      }
+    };
+  }, [ariaActiveDescendantProp, commonOnKeyDown, floatingFocusElementRef, orientation, typeableComboboxReference, store, open, virtual, domReferenceElement]);
+  const trigger = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => {
+    function openOnNavigationKeyDown(event) {
+      store.setOpen(true, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_8__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_9__.listNavigation, event.nativeEvent, event.currentTarget));
+    }
+    function checkVirtualMouse(event) {
+      if (focusItemOnOpen === 'auto' && (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_16__.isVirtualClick)(event.nativeEvent)) {
+        focusItemOnOpenRef.current = !virtual;
+      }
+    }
+    function checkVirtualPointer(event) {
+      // `pointerdown` fires first, reset the state then perform the checks.
+      focusItemOnOpenRef.current = focusItemOnOpen;
+      if (focusItemOnOpen === 'auto' && (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_16__.isVirtualPointerEvent)(event.nativeEvent)) {
+        focusItemOnOpenRef.current = true;
+      }
+    }
+    return {
+      onKeyDown(event) {
+        // non-reactive open state (to prevent re-creation of the handler)
+        const currentOpen = store.select('open');
+        isPointerModalityRef.current = false;
+        const isArrowKey = event.key.startsWith('Arrow');
+        const isParentCrossOpenKey = isCrossOrientationOpenKey(event.key, getParentOrientation(), rtl);
+        const isMainKey = isMainOrientationKey(event.key, orientation);
+        const isNavigationKey = (nested ? isParentCrossOpenKey : isMainKey) || event.key === 'Enter' || event.key.trim() === '';
+        if (virtual && currentOpen) {
+          return commonOnKeyDown(event);
+        }
+
+        // If a floating element should not open on arrow key down, avoid
+        // setting `activeIndex` while it's closed.
+        if (!currentOpen && !openOnArrowKeyDown && isArrowKey) {
+          return undefined;
+        }
+        if (isNavigationKey) {
+          const isParentMainKey = isMainOrientationKey(event.key, getParentOrientation());
+          keyRef.current = nested && isParentMainKey ? null : event.key;
+        }
+        if (nested) {
+          if (isParentCrossOpenKey) {
+            (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_16__.stopEvent)(event);
+            if (currentOpen) {
+              indexRef.current = getMinEnabledIndex();
+              onNavigate(event);
+            } else {
+              openOnNavigationKeyDown(event);
+            }
+          }
+          return undefined;
+        }
+        if (isMainKey) {
+          if (selectedIndexRef.current != null) {
+            indexRef.current = selectedIndexRef.current;
+          }
+          ;(0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_16__.stopEvent)(event);
+          if (!currentOpen && openOnArrowKeyDown) {
+            openOnNavigationKeyDown(event);
+          } else {
+            commonOnKeyDown(event);
+          }
+          if (currentOpen) {
+            onNavigate(event);
+          }
+        }
+        return undefined;
+      },
+      onFocus(event) {
+        if (store.select('open') && !virtual) {
+          indexRef.current = -1;
+          onNavigate(event);
+        }
+      },
+      onPointerDown: checkVirtualPointer,
+      onPointerEnter: checkVirtualPointer,
+      onMouseDown: checkVirtualMouse,
+      onClick: checkVirtualMouse
+    };
+  }, [commonOnKeyDown, focusItemOnOpen, getMinEnabledIndex, nested, onNavigate, store, openOnArrowKeyDown, orientation, getParentOrientation, rtl, selectedIndexRef, virtual]);
+  const reference = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => {
+    return {
+      ...ariaActiveDescendantProp,
+      ...trigger
+    };
+  }, [ariaActiveDescendantProp, trigger]);
+  return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => enabled ? {
+    reference,
+    floating,
+    item,
+    trigger
+  } : {}, [enabled, reference, floating, trigger, item]);
+}
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/react/floating-ui-react/hooks/useSyncedFloatingRootContext.mjs"
 /*!**********************************************************************************************!*\
   !*** ./node_modules/@base-ui/react/floating-ui-react/hooks/useSyncedFloatingRootContext.mjs ***!
@@ -19547,6 +22412,190 @@ function useSyncedFloatingRootContext(options) {
   store.context.onOpenChange = handleOpenChange;
   store.context.nested = nested;
   return store;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/hooks/useTypeahead.mjs"
+/*!******************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/hooks/useTypeahead.mjs ***!
+  \******************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useTypeahead: () => (/* binding */ useTypeahead)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/useTimeout */ "./node_modules/@base-ui/utils/useTimeout.mjs");
+/* harmony import */ var _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/empty */ "./node_modules/@base-ui/utils/empty.mjs");
+/* harmony import */ var _utils_composite_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/composite.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/composite.mjs");
+/* harmony import */ var _utils_element_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/element.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+/* harmony import */ var _utils_event_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils/event.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+/**
+ * Provides a matching callback that can be used to focus an item as the user
+ * types, often used in tandem with `useListNavigation()`.
+ * @see https://floating-ui.com/docs/useTypeahead
+ */
+function useTypeahead(context, props) {
+  const {
+    listRef,
+    elementsRef,
+    activeIndex,
+    onMatch: onMatchProp,
+    disabledIndices,
+    onTyping,
+    enabled = true,
+    resetMs = 750,
+    selectedIndex = null
+  } = props;
+  const store = 'rootStore' in context ? context.rootStore : context;
+  const open = store.useState('open');
+  const timeout = (0,_base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_3__.useTimeout)();
+  const stringRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef('');
+  const prevIndexRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(selectedIndex ?? activeIndex ?? -1);
+  const matchIndexRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const onKeyDown = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(event => {
+    function getElement(index) {
+      return elementsRef?.current[index];
+    }
+    function isItemAvailable(index) {
+      const element = getElement(index);
+      if (element && !(0,_utils_composite_mjs__WEBPACK_IMPORTED_MODULE_5__.isElementVisible)(element) || element?.matches(':disabled')) {
+        return false;
+      }
+      // Visibility and native disabled state are handled above; pass an empty
+      // element list so `isListIndexDisabled` resolves only the explicit
+      // `disabledIndices` (array/predicate) and skips its own fallbacks.
+      // Consumers that don't pass `disabledIndices` keep matching every visible
+      // item except native disabled elements provided through `elementsRef`.
+      return disabledIndices == null || !(0,_utils_composite_mjs__WEBPACK_IMPORTED_MODULE_5__.isListIndexDisabled)(_base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_4__.EMPTY_ARRAY, index, disabledIndices);
+    }
+    function getMatchingIndex(list, string, startIndex = 0) {
+      if (list.length === 0) {
+        return -1;
+      }
+      const normalizedStartIndex = (startIndex % list.length + list.length) % list.length;
+      const lowerString = string.toLowerCase();
+      for (let offset = 0; offset < list.length; offset += 1) {
+        const index = (normalizedStartIndex + offset) % list.length;
+        const text = list[index];
+        if (!text?.toLowerCase().startsWith(lowerString) || !isItemAvailable(index)) {
+          continue;
+        }
+        return index;
+      }
+      return -1;
+    }
+    const listContent = listRef.current;
+    if (stringRef.current.length > 0 && event.key === ' ') {
+      // Space should continue the in-progress typeahead session.
+      (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_7__.stopEvent)(event);
+      onTyping?.(true);
+    }
+    if (stringRef.current.length > 0 && stringRef.current[0] !== ' ') {
+      if (getMatchingIndex(listContent, stringRef.current) === -1 && event.key !== ' ') {
+        onTyping?.(false);
+      }
+    }
+    if (listContent == null ||
+    // Character key.
+    event.key.length !== 1 ||
+    // Modifier key.
+    event.ctrlKey || event.metaKey || event.altKey) {
+      return;
+    }
+    if (open && event.key !== ' ') {
+      (0,_utils_event_mjs__WEBPACK_IMPORTED_MODULE_7__.stopEvent)(event);
+      onTyping?.(true);
+    }
+
+    // Capture whether this is a new typing session before mutating the string.
+    const isNewSession = stringRef.current === '';
+    if (isNewSession) {
+      prevIndexRef.current = selectedIndex ?? activeIndex ?? -1;
+    }
+
+    // Bail out if the list contains a word like "llama" or "aaron". TODO:
+    // allow it in this case, too. Unavailable items are skipped while matching, so
+    // they must be ignored here as well — otherwise a hidden or disabled double-letter
+    // label would block rapid cycling through the available items.
+    const allowRapidSuccessionOfFirstLetter = listContent.every((text, index) => text && isItemAvailable(index) ? text[0]?.toLowerCase() !== text[1]?.toLowerCase() : true);
+
+    // Allows the user to cycle through items that start with the same letter
+    // in rapid succession.
+    if (allowRapidSuccessionOfFirstLetter && stringRef.current === event.key) {
+      stringRef.current = '';
+      prevIndexRef.current = matchIndexRef.current;
+    }
+    stringRef.current += event.key;
+    timeout.start(resetMs, () => {
+      stringRef.current = '';
+      prevIndexRef.current = matchIndexRef.current;
+      onTyping?.(false);
+    });
+
+    // Compute the starting index for this search.
+    // If this is a new typing session (string is empty), base it on the current
+    // selection/active item; otherwise continue from the last matched index.
+    const prevIndex = isNewSession ? selectedIndex ?? activeIndex ?? -1 : prevIndexRef.current;
+    const startIndex = (prevIndex ?? 0) + 1;
+    const index = getMatchingIndex(listContent, stringRef.current, startIndex);
+    if (index !== -1) {
+      onMatchProp?.(index);
+      matchIndexRef.current = index;
+    } else if (event.key !== ' ') {
+      stringRef.current = '';
+      onTyping?.(false);
+    }
+  });
+  const onBlur = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(event => {
+    const next = event.relatedTarget;
+    const currentDomReferenceElement = store.select('domReferenceElement');
+    const currentFloatingElement = store.select('floatingElement');
+    const withinComposite = (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_6__.contains)(currentDomReferenceElement, next) || (0,_utils_element_mjs__WEBPACK_IMPORTED_MODULE_6__.contains)(currentFloatingElement, next);
+
+    // Keep the session if focus moves within the composite (reference <-> floating).
+    if (withinComposite) {
+      return;
+    }
+
+    // End the current typing session when focus leaves the composite entirely.
+    timeout.clear();
+    stringRef.current = '';
+    prevIndexRef.current = matchIndexRef.current;
+    onTyping?.(false);
+  });
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    if (!open && selectedIndex !== null) {
+      return;
+    }
+    timeout.clear();
+    matchIndexRef.current = null;
+    if (stringRef.current !== '') {
+      stringRef.current = '';
+    }
+  }, [open, selectedIndex, timeout]);
+  const sharedProps = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    onKeyDown,
+    onBlur
+  }), [onKeyDown, onBlur]);
+  return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => enabled ? {
+    reference: sharedProps,
+    floating: sharedProps
+  } : {}, [enabled, sharedProps]);
 }
 
 /***/ },
@@ -20516,6 +23565,50 @@ function getFloatingFocusElement(floatingElement) {
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/react/floating-ui-react/utils/enqueueFocus.mjs"
+/*!******************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/utils/enqueueFocus.mjs ***!
+  \******************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   enqueueFocus: () => (/* binding */ enqueueFocus)
+/* harmony export */ });
+/* harmony import */ var _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/utils/empty */ "./node_modules/@base-ui/utils/empty.mjs");
+
+let rafId = 0;
+function enqueueFocus(el, options = {}) {
+  const {
+    preventScroll = false,
+    sync = false,
+    shouldFocus
+  } = options;
+  cancelAnimationFrame(rafId);
+  function exec() {
+    if (shouldFocus && !shouldFocus()) {
+      return;
+    }
+    el?.focus({
+      preventScroll
+    });
+  }
+  if (sync) {
+    exec();
+    return _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_0__.NOOP;
+  }
+  const currentRafId = requestAnimationFrame(exec);
+  rafId = currentRafId;
+  return () => {
+    if (rafId === currentRafId) {
+      cancelAnimationFrame(currentRafId);
+      rafId = 0;
+    }
+  };
+}
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs"
 /*!***********************************************************************!*\
   !*** ./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs ***!
@@ -20601,6 +23694,178 @@ function getEmptyRootContext() {
     syncOnly: false,
     nested: false,
     onOpenChange: undefined
+  });
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/floating-ui-react/utils/markOthers.mjs"
+/*!****************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/floating-ui-react/utils/markOthers.mjs ***!
+  \****************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   markOthers: () => (/* binding */ markOthers)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@base-ui/utils/owner.mjs");
+// Modified to add conditional `aria-hidden` support:
+// https://github.com/theKashey/aria-hidden/blob/9220c8f4a4fd35f63bee5510a9f41a37264382d4/src/index.ts
+
+
+const counters = {
+  inert: new WeakMap(),
+  'aria-hidden': new WeakMap()
+};
+const markerName = 'data-base-ui-inert';
+const uncontrolledElementsSets = {
+  inert: new WeakSet(),
+  'aria-hidden': new WeakSet()
+};
+let markerCounterMap = new WeakMap();
+let lockCount = 0;
+function getUncontrolledElementsSet(controlAttribute) {
+  return uncontrolledElementsSets[controlAttribute];
+}
+function unwrapHost(node) {
+  if (!node) {
+    return null;
+  }
+  return (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isShadowRoot)(node) ? node.host : unwrapHost(node.parentNode);
+}
+const correctElements = (parent, targets) => targets.map(target => {
+  if (parent.contains(target)) {
+    return target;
+  }
+  const correctedTarget = unwrapHost(target);
+  if (parent.contains(correctedTarget)) {
+    return correctedTarget;
+  }
+  return null;
+}).filter(x => x != null);
+const buildKeepSet = targets => {
+  const keep = new Set();
+  targets.forEach(target => {
+    let node = target;
+    while (node && !keep.has(node)) {
+      keep.add(node);
+      node = node.parentNode;
+    }
+  });
+  return keep;
+};
+const collectOutsideElements = (root, keepElements, stopElements) => {
+  const outside = [];
+  const walk = parent => {
+    if (!parent || stopElements.has(parent)) {
+      return;
+    }
+    Array.from(parent.children).forEach(node => {
+      if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.getNodeName)(node) === 'script') {
+        return;
+      }
+      if (keepElements.has(node)) {
+        walk(node);
+      } else {
+        outside.push(node);
+      }
+    });
+  };
+  walk(root);
+  return outside;
+};
+function applyAttributeToOthers(uncorrectedAvoidElements, body, ariaHidden, inert, {
+  mark = true
+}) {
+  let controlAttribute = null;
+  if (inert) {
+    controlAttribute = 'inert';
+  } else if (ariaHidden) {
+    controlAttribute = 'aria-hidden';
+  }
+  let counterMap = null;
+  let uncontrolledElementsSet = null;
+  const avoidElements = correctElements(body, uncorrectedAvoidElements);
+  const markerTargets = mark ? collectOutsideElements(body, buildKeepSet(avoidElements), new Set(avoidElements)) : [];
+  const hiddenElements = [];
+  const markedElements = [];
+  if (controlAttribute) {
+    const map = counters[controlAttribute];
+    const currentUncontrolledElementsSet = getUncontrolledElementsSet(controlAttribute);
+    uncontrolledElementsSet = currentUncontrolledElementsSet;
+    counterMap = map;
+    const ariaLiveElements = correctElements(body, Array.from(body.querySelectorAll('[aria-live]')));
+    const controlElements = avoidElements.concat(ariaLiveElements);
+    const controlTargets = collectOutsideElements(body, buildKeepSet(controlElements), new Set(controlElements));
+    controlTargets.forEach(node => {
+      const attr = node.getAttribute(controlAttribute);
+      const alreadyHidden = attr !== null && attr !== 'false';
+      const counterValue = (map.get(node) || 0) + 1;
+      map.set(node, counterValue);
+      hiddenElements.push(node);
+      if (counterValue === 1 && alreadyHidden) {
+        currentUncontrolledElementsSet.add(node);
+      }
+      if (!alreadyHidden) {
+        node.setAttribute(controlAttribute, controlAttribute === 'inert' ? '' : 'true');
+      }
+    });
+  }
+  if (mark) {
+    markerTargets.forEach(node => {
+      const markerValue = (markerCounterMap.get(node) || 0) + 1;
+      markerCounterMap.set(node, markerValue);
+      markedElements.push(node);
+      if (markerValue === 1) {
+        node.setAttribute(markerName, '');
+      }
+    });
+  }
+  lockCount += 1;
+  return () => {
+    if (counterMap) {
+      hiddenElements.forEach(element => {
+        const currentCounterValue = counterMap.get(element) || 0;
+        const counterValue = currentCounterValue - 1;
+        counterMap.set(element, counterValue);
+        if (!counterValue) {
+          if (!uncontrolledElementsSet?.has(element) && controlAttribute) {
+            element.removeAttribute(controlAttribute);
+          }
+          uncontrolledElementsSet?.delete(element);
+        }
+      });
+    }
+    if (mark) {
+      markedElements.forEach(element => {
+        const markerValue = (markerCounterMap.get(element) || 0) - 1;
+        markerCounterMap.set(element, markerValue);
+        if (!markerValue) {
+          element.removeAttribute(markerName);
+        }
+      });
+    }
+    lockCount -= 1;
+    if (!lockCount) {
+      counters.inert = new WeakMap();
+      counters['aria-hidden'] = new WeakMap();
+      uncontrolledElementsSets.inert = new WeakSet();
+      uncontrolledElementsSets['aria-hidden'] = new WeakSet();
+      markerCounterMap = new WeakMap();
+    }
+  };
+}
+function markOthers(avoidElements, options = {}) {
+  const {
+    ariaHidden = false,
+    inert = false,
+    mark = true
+  } = options;
+  const body = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_1__.ownerDocument)(avoidElements[0]).body;
+  return applyAttributeToOthers(avoidElements, body, ariaHidden, inert, {
+    mark
   });
 }
 
@@ -20912,6 +24177,540 @@ if (true) Input.displayName = "Input";
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/react/internals/areArraysEqual.mjs"
+/*!******************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/areArraysEqual.mjs ***!
+  \******************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   areArraysEqual: () => (/* binding */ areArraysEqual)
+/* harmony export */ });
+function areArraysEqual(array1, array2, itemComparer = (a, b) => a === b) {
+  return array1.length === array2.length && array1.every((value, index) => itemComparer(value, array2[index]));
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/clamp.mjs"
+/*!*********************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/clamp.mjs ***!
+  \*********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   clamp: () => (/* binding */ clamp)
+/* harmony export */ });
+function clamp(val, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER) {
+  return Math.max(min, Math.min(val, max));
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/composite/composite.mjs"
+/*!***********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/composite/composite.mjs ***!
+  \***********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ARROW_DOWN: () => (/* binding */ ARROW_DOWN),
+/* harmony export */   ARROW_LEFT: () => (/* binding */ ARROW_LEFT),
+/* harmony export */   ARROW_RIGHT: () => (/* binding */ ARROW_RIGHT),
+/* harmony export */   ARROW_UP: () => (/* binding */ ARROW_UP),
+/* harmony export */   COMPOSITE_KEYS: () => (/* binding */ COMPOSITE_KEYS),
+/* harmony export */   END: () => (/* binding */ END),
+/* harmony export */   HOME: () => (/* binding */ HOME),
+/* harmony export */   MODIFIER_KEYS: () => (/* binding */ MODIFIER_KEYS),
+/* harmony export */   PAGE_DOWN: () => (/* binding */ PAGE_DOWN),
+/* harmony export */   PAGE_UP: () => (/* binding */ PAGE_UP),
+/* harmony export */   SHIFT: () => (/* binding */ SHIFT),
+/* harmony export */   findNonDisabledListIndex: () => (/* reexport safe */ _floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_2__.findNonDisabledListIndex),
+/* harmony export */   getMaxListIndex: () => (/* reexport safe */ _floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_2__.getMaxListIndex),
+/* harmony export */   getMinListIndex: () => (/* reexport safe */ _floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_2__.getMinListIndex),
+/* harmony export */   isIndexOutOfListBounds: () => (/* reexport safe */ _floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_2__.isIndexOutOfListBounds),
+/* harmony export */   isListIndexDisabled: () => (/* reexport safe */ _floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_2__.isListIndexDisabled),
+/* harmony export */   isNativeInput: () => (/* binding */ isNativeInput),
+/* harmony export */   scrollIntoViewIfNeeded: () => (/* binding */ scrollIntoViewIfNeeded),
+/* harmony export */   stopEvent: () => (/* reexport safe */ _floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_1__.stopEvent)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @floating-ui/utils/dom */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../floating-ui-react/utils.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs");
+/* harmony import */ var _floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../floating-ui-react/utils.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/composite.mjs");
+
+
+const ARROW_UP = 'ArrowUp';
+const ARROW_DOWN = 'ArrowDown';
+const ARROW_LEFT = 'ArrowLeft';
+const ARROW_RIGHT = 'ArrowRight';
+const HOME = 'Home';
+const END = 'End';
+const PAGE_UP = 'PageUp';
+const PAGE_DOWN = 'PageDown';
+const COMPOSITE_KEYS = new Set([ARROW_UP, ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT, HOME, END]);
+const SHIFT = 'Shift';
+const MODIFIER_KEYS = [SHIFT, 'Control', 'Alt', 'Meta'];
+function isInputElement(element) {
+  return (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isHTMLElement)(element) && element.tagName === 'INPUT';
+}
+function isNativeInput(element) {
+  if (isInputElement(element) && element.selectionStart != null) {
+    return true;
+  }
+  if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isHTMLElement)(element) && element.tagName === 'TEXTAREA') {
+    return true;
+  }
+  return false;
+}
+function scrollIntoViewIfNeeded(scrollContainer, element, direction, orientation) {
+  if (!scrollContainer || !element || !element.scrollTo) {
+    return;
+  }
+  let targetX = scrollContainer.scrollLeft;
+  let targetY = scrollContainer.scrollTop;
+  const isOverflowingX = scrollContainer.clientWidth < scrollContainer.scrollWidth;
+  const isOverflowingY = scrollContainer.clientHeight < scrollContainer.scrollHeight;
+  if (isOverflowingX && orientation !== 'vertical') {
+    const elementOffsetLeft = getOffset(scrollContainer, element, 'left');
+    const containerStyles = getStyles(scrollContainer);
+    const elementStyles = getStyles(element);
+    if (direction === 'ltr') {
+      if (elementOffsetLeft + element.offsetWidth + elementStyles.scrollMarginRight > scrollContainer.scrollLeft + scrollContainer.clientWidth - containerStyles.scrollPaddingRight) {
+        // overflow to the right, scroll to align right edges
+        targetX = elementOffsetLeft + element.offsetWidth + elementStyles.scrollMarginRight - scrollContainer.clientWidth + containerStyles.scrollPaddingRight;
+      } else if (elementOffsetLeft - elementStyles.scrollMarginLeft < scrollContainer.scrollLeft + containerStyles.scrollPaddingLeft) {
+        // overflow to the left, scroll to align left edges
+        targetX = elementOffsetLeft - elementStyles.scrollMarginLeft - containerStyles.scrollPaddingLeft;
+      }
+    }
+    if (direction === 'rtl') {
+      if (elementOffsetLeft - elementStyles.scrollMarginLeft < scrollContainer.scrollLeft + containerStyles.scrollPaddingLeft) {
+        // overflow to the left, scroll to align left edges
+        targetX = elementOffsetLeft - elementStyles.scrollMarginLeft - containerStyles.scrollPaddingLeft;
+      } else if (elementOffsetLeft + element.offsetWidth + elementStyles.scrollMarginRight > scrollContainer.scrollLeft + scrollContainer.clientWidth - containerStyles.scrollPaddingRight) {
+        // overflow to the right, scroll to align right edges
+        targetX = elementOffsetLeft + element.offsetWidth + elementStyles.scrollMarginRight - scrollContainer.clientWidth + containerStyles.scrollPaddingRight;
+      }
+    }
+  }
+  if (isOverflowingY && orientation !== 'horizontal') {
+    const elementOffsetTop = getOffset(scrollContainer, element, 'top');
+    const containerStyles = getStyles(scrollContainer);
+    const elementStyles = getStyles(element);
+    if (elementOffsetTop - elementStyles.scrollMarginTop < scrollContainer.scrollTop + containerStyles.scrollPaddingTop) {
+      // overflow upwards, align top edges
+      targetY = elementOffsetTop - elementStyles.scrollMarginTop - containerStyles.scrollPaddingTop;
+    } else if (elementOffsetTop + element.offsetHeight + elementStyles.scrollMarginBottom > scrollContainer.scrollTop + scrollContainer.clientHeight - containerStyles.scrollPaddingBottom) {
+      // overflow downwards, align bottom edges
+      targetY = elementOffsetTop + element.offsetHeight + elementStyles.scrollMarginBottom - scrollContainer.clientHeight + containerStyles.scrollPaddingBottom;
+    }
+  }
+  scrollContainer.scrollTo({
+    left: targetX,
+    top: targetY,
+    behavior: 'auto'
+  });
+}
+function getOffset(ancestor, element, side) {
+  const propName = side === 'left' ? 'offsetLeft' : 'offsetTop';
+  let result = 0;
+  while (element.offsetParent) {
+    result += element[propName];
+    if (element.offsetParent === ancestor) {
+      break;
+    }
+    element = element.offsetParent;
+  }
+  return result;
+}
+function getStyles(element) {
+  const styles = getComputedStyle(element);
+  return {
+    scrollMarginTop: parseFloat(styles.scrollMarginTop) || 0,
+    scrollMarginRight: parseFloat(styles.scrollMarginRight) || 0,
+    scrollMarginBottom: parseFloat(styles.scrollMarginBottom) || 0,
+    scrollMarginLeft: parseFloat(styles.scrollMarginLeft) || 0,
+    scrollPaddingTop: parseFloat(styles.scrollPaddingTop) || 0,
+    scrollPaddingRight: parseFloat(styles.scrollPaddingRight) || 0,
+    scrollPaddingBottom: parseFloat(styles.scrollPaddingBottom) || 0,
+    scrollPaddingLeft: parseFloat(styles.scrollPaddingLeft) || 0
+  };
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/composite/list/CompositeList.mjs"
+/*!********************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/composite/list/CompositeList.mjs ***!
+  \********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CompositeList: () => (/* binding */ CompositeList)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useRefWithInit */ "./node_modules/@base-ui/utils/useRefWithInit.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _CompositeListContext_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CompositeListContext.mjs */ "./node_modules/@base-ui/react/internals/composite/list/CompositeListContext.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* eslint-disable no-bitwise */
+'use client';
+
+
+
+
+
+
+
+/**
+ * Provides context for a list of items in a composite component.
+ */
+function CompositeList(props) {
+  const {
+    children,
+    elementsRef,
+    labelsRef,
+    onMapChange: onMapChangeProp
+  } = props;
+  const onMapChange = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(onMapChangeProp);
+  const [, setMapTick] = react__WEBPACK_IMPORTED_MODULE_0__.useState(false);
+  const listeners = (0,_base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_1__.useRefWithInit)(createListeners).current;
+  const map = (0,_base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_1__.useRefWithInit)(createMap).current;
+  const nextIndexRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(0);
+  const isDirtyRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(true);
+  const itemsRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef([]);
+  const mutationObserverRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+
+  // Item effects can run without their parent rendering. Schedule one synchronous
+  // parent update for the whole commit so refs are rebuilt before paint and while
+  // the originating React event is still inside `act()` in tests.
+  const scheduleMapUpdate = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(() => {
+    if (isDirtyRef.current) {
+      return;
+    }
+    isDirtyRef.current = true;
+    setMapTick(tick => !tick);
+  });
+  const register = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)((node, registration) => {
+    map.set(node, registration);
+    scheduleMapUpdate();
+  });
+  const unregister = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(node => {
+    map.delete(node);
+    scheduleMapUpdate();
+  });
+  const syncRefs = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(items => {
+    const nextMap = new Map();
+    elementsRef.current.length = 0;
+    if (labelsRef) {
+      labelsRef.current.length = 0;
+    }
+    items.forEach(item => {
+      nextMap.set(item.element, {
+        ...(item.registration.metadata ?? {}),
+        index: item.index
+      });
+      elementsRef.current[item.index] = item.element;
+      if (labelsRef) {
+        labelsRef.current[item.index] = item.registration.label !== undefined ? item.registration.label : item.registration.textRef?.current?.textContent ?? item.element.textContent;
+      }
+    });
+    nextIndexRef.current = elementsRef.current.length;
+    return nextMap;
+  });
+  function observe(sortedNodes) {
+    mutationObserverRef.current?.disconnect();
+    mutationObserverRef.current = null;
+
+    // A single item can't reorder.
+    if (typeof MutationObserver !== 'function' || sortedNodes.length < 2) {
+      return;
+    }
+    const mutationObserver = new MutationObserver(entries => {
+      // Only verify the order after a move: a node that was removed and later
+      // re-added within the same batch. Additions and removals alone can't
+      // change the relative order of the remaining items, and items that mount
+      // or unmount re-sort through `register`/`unregister`.
+      if (!hasMovedNode(entries)) {
+        return;
+      }
+      let previousConnectedNode = null;
+
+      // If any connected node now appears before the previous connected node,
+      // wrappers/items moved and the index map needs to be rebuilt.
+      for (const node of sortedNodes) {
+        if (!node.isConnected) {
+          continue;
+        }
+        if (previousConnectedNode && sortByDocumentPosition(previousConnectedNode, node) > 0) {
+          mutationObserver.disconnect();
+          scheduleMapUpdate();
+          return;
+        }
+        previousConnectedNode = node;
+      }
+    });
+    mutationObserverRef.current = mutationObserver;
+
+    // A reorder that changes item indexes must invert at least one adjacent pair
+    // from the previous sorted order. Observing each pair's common parent catches
+    // both direct item moves and ancestor wrapper moves at the boundary.
+    const roots = new Set();
+    for (let i = 1; i < sortedNodes.length; i += 1) {
+      const root = getCommonAncestor(sortedNodes[i - 1], sortedNodes[i]);
+      if (root) {
+        roots.add(root);
+      }
+    }
+    roots.forEach(root => mutationObserver.observe(root, {
+      childList: true
+    }));
+  }
+  const flush = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(() => {
+    const [items, automaticNodes] = getCompositeListSnapshot(map);
+    const nextMap = syncRefs(items);
+    observe(automaticNodes);
+    itemsRef.current = items;
+    isDirtyRef.current = false;
+    listeners.forEach(listener => listener(nextMap));
+    onMapChange(nextMap);
+  });
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_3__.useIsoLayoutEffect)(() => {
+    // Re-copy the last committed snapshot when the ref objects change or Strict Mode replays
+    // effects without reattaching callback refs.
+    if (!isDirtyRef.current) {
+      syncRefs(itemsRef.current);
+    }
+    return () => {
+      elementsRef.current = [];
+      if (labelsRef) {
+        labelsRef.current = [];
+      }
+    };
+  }, [elementsRef, labelsRef, syncRefs]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_3__.useIsoLayoutEffect)(() => {
+    if (isDirtyRef.current) {
+      flush();
+    }
+  });
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_3__.useIsoLayoutEffect)(() => {
+    return () => {
+      mutationObserverRef.current?.disconnect();
+      // React 18 Strict Mode replays effects without replaying callback refs.
+      // Mark the retained map dirty so the replay rebuilds refs and observation.
+      isDirtyRef.current = true;
+    };
+  }, []);
+  const subscribeMapChange = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(fn => {
+    listeners.add(fn);
+    return () => {
+      listeners.delete(fn);
+    };
+  });
+  const contextValue = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    register,
+    unregister,
+    subscribeMapChange,
+    nextIndexRef
+  }), [register, unregister, subscribeMapChange, nextIndexRef]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_CompositeListContext_mjs__WEBPACK_IMPORTED_MODULE_4__.CompositeListContext.Provider, {
+    value: contextValue,
+    children: children
+  });
+}
+function createMap() {
+  return new Map();
+}
+function createListeners() {
+  return new Set();
+}
+function getCompositeListSnapshot(map) {
+  const reservedIndices = new Set();
+  const items = [];
+  const automaticItems = [];
+  map.forEach((registration, node) => {
+    if (!node.isConnected) {
+      return;
+    }
+    const index = registration.index;
+    const item = {
+      index: index ?? -1,
+      element: node,
+      registration
+    };
+    if (index === null) {
+      automaticItems.push(item);
+    } else if (index >= 0) {
+      reservedIndices.add(index);
+      items.push(item);
+    }
+  });
+  let nextAutomaticIndex = 0;
+  automaticItems.sort((a, b) => sortByDocumentPosition(a.element, b.element));
+  automaticItems.forEach(item => {
+    while (reservedIndices.has(nextAutomaticIndex)) {
+      nextAutomaticIndex += 1;
+    }
+    item.index = nextAutomaticIndex;
+    items.push(item);
+    nextAutomaticIndex += 1;
+  });
+  if (reservedIndices.size > 0) {
+    items.sort((a, b) => a.index - b.index);
+  }
+  return [items, automaticItems.map(item => item.element)];
+}
+function getCommonAncestor(firstNode, lastNode) {
+  let ancestor = firstNode.parentElement;
+
+  // The `parentElement` walk cannot cross shadow boundaries, so the native
+  // `contains` is sufficient here.
+  while (ancestor && !ancestor.contains(lastNode)) {
+    ancestor = ancestor.parentElement;
+  }
+  return ancestor;
+}
+function hasMovedNode(entries) {
+  for (const entry of entries) {
+    for (let i = 0; i < entry.removedNodes.length; i += 1) {
+      if (entry.removedNodes[i].isConnected) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+function sortByDocumentPosition(a, b) {
+  // `DOCUMENT_POSITION_CONTAINED_BY` is always reported alongside `FOLLOWING`, and `CONTAINS`
+  // alongside `PRECEDING`, so testing `FOLLOWING` alone orders siblings and nested items alike.
+  return a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/composite/list/CompositeListContext.mjs"
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/composite/list/CompositeListContext.mjs ***!
+  \***************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CompositeListContext: () => (/* binding */ CompositeListContext),
+/* harmony export */   useCompositeListContext: () => (/* binding */ useCompositeListContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+const CompositeListContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext({
+  register: () => {},
+  unregister: () => {},
+  subscribeMapChange: () => () => {},
+  nextIndexRef: {
+    current: 0
+  }
+});
+if (true) CompositeListContext.displayName = "CompositeListContext";
+function useCompositeListContext() {
+  return react__WEBPACK_IMPORTED_MODULE_0__.useContext(CompositeListContext);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/composite/list/useCompositeListItem.mjs"
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/composite/list/useCompositeListItem.mjs ***!
+  \***************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useCompositeListItem: () => (/* binding */ useCompositeListItem)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _CompositeListContext_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CompositeListContext.mjs */ "./node_modules/@base-ui/react/internals/composite/list/CompositeListContext.mjs");
+'use client';
+
+
+
+
+/**
+ * Used to register a list item and its index (DOM position) in the `CompositeList`.
+ */
+function useCompositeListItem(params = {}) {
+  const {
+    guess,
+    label,
+    metadata,
+    textRef,
+    index: externalIndex
+  } = params;
+  const {
+    register,
+    unregister,
+    subscribeMapChange,
+    nextIndexRef
+  } = (0,_CompositeListContext_mjs__WEBPACK_IMPORTED_MODULE_2__.useCompositeListContext)();
+
+  // Guess the index from the render order. This avoids a re-render after mount for
+  // flat lists rendered in DOM order; when the guess is wrong (grouped or out-of-order
+  // rendering), the commit flush corrects it before paint.
+  const indexRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(-1);
+  const [internalIndex, setInternalIndex] = react__WEBPACK_IMPORTED_MODULE_0__.useState(externalIndex == null && guess ? () => {
+    if (indexRef.current === -1) {
+      const newIndex = nextIndexRef.current;
+      nextIndexRef.current += 1;
+      indexRef.current = newIndex;
+    }
+    return indexRef.current;
+  } : -1);
+  const index = externalIndex ?? internalIndex;
+  const componentRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+
+  // Deliberately identity-sensitive: nested items sharing one DOM node rely on ref attachment
+  // order to decide which registration wins, and republishing from an effect instead would let
+  // an inner item's later update silently take ownership from the outer one.
+  const ref = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(node => {
+    const previousNode = componentRef.current;
+    if (previousNode) {
+      unregister(previousNode);
+    }
+    componentRef.current = node;
+    if (node) {
+      register(node, {
+        metadata: metadata ?? null,
+        index: externalIndex ?? null,
+        label,
+        textRef
+      });
+    }
+  }, [externalIndex, register, unregister, metadata, label, textRef]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    if (externalIndex != null) {
+      return undefined;
+    }
+    return subscribeMapChange(map => {
+      const i = componentRef.current ? map.get(componentRef.current)?.index : null;
+      if (i != null) {
+        setInternalIndex(i);
+      }
+    });
+  }, [externalIndex, subscribeMapChange]);
+  return {
+    ref,
+    index
+  };
+}
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/react/internals/composite/root/CompositeRootContext.mjs"
 /*!***************************************************************************************!*\
   !*** ./node_modules/@base-ui/react/internals/composite/root/CompositeRootContext.mjs ***!
@@ -21067,6 +24866,32 @@ function createGenericEventDetails(reason, event, customProperties) {
     ...custom
   };
   return details;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/csp-context/CSPContext.mjs"
+/*!**************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/csp-context/CSPContext.mjs ***!
+  \**************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CSPContext: () => (/* binding */ CSPContext),
+/* harmony export */   useCSPContext: () => (/* binding */ useCSPContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+const CSPContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(undefined);
+if (true) CSPContext.displayName = "CSPContext";
+const DEFAULT_CSP_CONTEXT_VALUE = {
+  disableStyleElements: false
+};
+function useCSPContext() {
+  return react__WEBPACK_IMPORTED_MODULE_0__.useContext(CSPContext) ?? DEFAULT_CSP_CONTEXT_VALUE;
 }
 
 /***/ },
@@ -21511,6 +25336,62 @@ function getStateAttributesProps(state, customMapping) {
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/react/internals/itemEquality.mjs"
+/*!****************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/itemEquality.mjs ***!
+  \****************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   compareItemEquality: () => (/* binding */ compareItemEquality),
+/* harmony export */   defaultItemEquality: () => (/* binding */ defaultItemEquality),
+/* harmony export */   findItemIndex: () => (/* binding */ findItemIndex),
+/* harmony export */   findSelectionIndex: () => (/* binding */ findSelectionIndex),
+/* harmony export */   removeItem: () => (/* binding */ removeItem),
+/* harmony export */   selectedValueIncludes: () => (/* binding */ selectedValueIncludes)
+/* harmony export */ });
+const defaultItemEquality = (itemValue, selectedValue) => Object.is(itemValue, selectedValue);
+function compareItemEquality(itemValue, selectedValue, comparer) {
+  if (itemValue == null || selectedValue == null) {
+    return Object.is(itemValue, selectedValue);
+  }
+  return comparer(itemValue, selectedValue);
+}
+function selectedValueIncludes(selectedValues, itemValue, comparer) {
+  if (!selectedValues || selectedValues.length === 0) {
+    return false;
+  }
+  return selectedValues.some(selectedValue => {
+    if (selectedValue === undefined) {
+      return false;
+    }
+    return compareItemEquality(itemValue, selectedValue, comparer);
+  });
+}
+function findItemIndex(itemValues, selectedValue, comparer) {
+  if (!itemValues || itemValues.length === 0) {
+    return -1;
+  }
+  return itemValues.findIndex(itemValue => {
+    if (itemValue === undefined) {
+      return false;
+    }
+    return compareItemEquality(itemValue, selectedValue, comparer);
+  });
+}
+function findSelectionIndex(itemValues, selectedValue, comparer, multiple) {
+  // Only unwrap in multiple mode: an array can itself be a valid single-select value.
+  const lastValue = multiple && Array.isArray(selectedValue) ? selectedValue[selectedValue.length - 1] : selectedValue;
+  const index = findItemIndex(itemValues, lastValue, comparer);
+  return index === -1 ? null : index;
+}
+function removeItem(selectedValues, itemValue, comparer) {
+  return selectedValues.filter(selectedValue => !compareItemEquality(itemValue, selectedValue, comparer));
+}
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/react/internals/labelable-provider/LabelableContext.mjs"
 /*!***************************************************************************************!*\
   !*** ./node_modules/@base-ui/react/internals/labelable-provider/LabelableContext.mjs ***!
@@ -21894,6 +25775,161 @@ const initial = 'initial';
 const imperativeAction = 'imperative-action';
 const swipe = 'swipe';
 const windowResize = 'window-resize';
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/resolveValueLabel.mjs"
+/*!*********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/resolveValueLabel.mjs ***!
+  \*********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   hasNullItemLabel: () => (/* binding */ hasNullItemLabel),
+/* harmony export */   isGroupedItems: () => (/* binding */ isGroupedItems),
+/* harmony export */   resolveMultipleLabels: () => (/* binding */ resolveMultipleLabels),
+/* harmony export */   resolveSelectedLabel: () => (/* binding */ resolveSelectedLabel),
+/* harmony export */   stringifyAsLabel: () => (/* binding */ stringifyAsLabel),
+/* harmony export */   stringifyAsValue: () => (/* binding */ stringifyAsValue)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _serializeValue_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./serializeValue.mjs */ "./node_modules/@base-ui/react/internals/serializeValue.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+function isGroupedItems(items) {
+  return items != null && items.length > 0 && typeof items[0] === 'object' && items[0] != null && 'items' in items[0];
+}
+
+/**
+ * Checks if the items array contains an item with a null value that has a non-null label.
+ */
+function hasNullItemLabel(items) {
+  if (!Array.isArray(items)) {
+    return items != null && 'null' in items;
+  }
+  const arrayItems = items;
+  if (isGroupedItems(arrayItems)) {
+    for (const group of arrayItems) {
+      for (const item of group.items) {
+        if (item && item.value == null && item.label != null) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  for (const item of arrayItems) {
+    if (item && item.value == null && item.label != null) {
+      return true;
+    }
+  }
+  return false;
+}
+function stringifyAsLabel(item, itemToStringLabel) {
+  if (itemToStringLabel && item != null) {
+    return itemToStringLabel(item) ?? '';
+  }
+  if (item && typeof item === 'object') {
+    if ('label' in item && item.label != null) {
+      return String(item.label);
+    }
+    if ('value' in item) {
+      return String(item.value);
+    }
+  }
+  return (0,_serializeValue_mjs__WEBPACK_IMPORTED_MODULE_1__.serializeValue)(item);
+}
+function stringifyAsValue(item, itemToStringValue) {
+  if (itemToStringValue && item != null) {
+    return itemToStringValue(item) ?? '';
+  }
+  if (item && typeof item === 'object' && 'value' in item && 'label' in item) {
+    return (0,_serializeValue_mjs__WEBPACK_IMPORTED_MODULE_1__.serializeValue)(item.value);
+  }
+  return (0,_serializeValue_mjs__WEBPACK_IMPORTED_MODULE_1__.serializeValue)(item);
+}
+function resolveSelectedLabel(value, items, itemToStringLabel) {
+  function fallback() {
+    return stringifyAsLabel(value, itemToStringLabel);
+  }
+  if (itemToStringLabel && value != null) {
+    return itemToStringLabel(value);
+  }
+
+  // Custom object with explicit label takes precedence
+  if (value && typeof value === 'object' && 'label' in value && value.label != null) {
+    return value.label;
+  }
+
+  // Items provided as plain record map
+  if (items && !Array.isArray(items)) {
+    return items[value] ?? fallback();
+  }
+
+  // Items provided as array (flat or grouped)
+  if (Array.isArray(items)) {
+    const arrayItems = items;
+    const flatItems = isGroupedItems(arrayItems) ? arrayItems.flatMap(group => group.items) : arrayItems;
+    if (value == null || typeof value !== 'object') {
+      const match = flatItems.find(item => item.value === value);
+      if (match && match.label != null) {
+        return match.label;
+      }
+      return fallback();
+    }
+
+    // Object without explicit label: try matching by its `value` property
+    if ('value' in value) {
+      const match = flatItems.find(item => item && item.value === value.value);
+      if (match && match.label != null) {
+        return match.label;
+      }
+    }
+  }
+  return fallback();
+}
+function resolveMultipleLabels(values, items, itemToStringLabel) {
+  return values.reduce((acc, value, index) => {
+    if (index > 0) {
+      acc.push(', ');
+    }
+    acc.push(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+      children: resolveSelectedLabel(value, items, itemToStringLabel)
+    }, index));
+    return acc;
+  }, []);
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/internals/serializeValue.mjs"
+/*!******************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/serializeValue.mjs ***!
+  \******************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   serializeValue: () => (/* binding */ serializeValue)
+/* harmony export */ });
+function serializeValue(value) {
+  if (value == null) {
+    return '';
+  }
+  if (typeof value === 'string') {
+    return value;
+  }
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
 
 /***/ },
 
@@ -23126,6 +27162,37 @@ function useTransitionStatus(open, enableIdleState = false, deferEndingState = f
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/react/internals/useValueChanged.mjs"
+/*!*******************************************************************!*\
+  !*** ./node_modules/@base-ui/react/internals/useValueChanged.mjs ***!
+  \*******************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useValueChanged: () => (/* binding */ useValueChanged)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+'use client';
+
+
+
+
+function useValueChanged(value, onChange) {
+  const valueRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(value);
+  const onChangeCallback = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_2__.useStableCallback)(onChange);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    if (valueRef.current !== value) {
+      onChangeCallback(valueRef.current);
+    }
+    valueRef.current = value;
+  }, [value, onChangeCallback]);
+}
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/react/merge-props/mergeProps.mjs"
 /*!****************************************************************!*\
   !*** ./node_modules/@base-ui/react/merge-props/mergeProps.mjs ***!
@@ -23359,6 +27426,2287 @@ function mergeClassNames(ourClassName, theirClassName) {
 }
 function isSyntheticEvent(event) {
   return event != null && typeof event === 'object' && 'nativeEvent' in event;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/group-label/SelectGroupLabel.mjs"
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/group-label/SelectGroupLabel.mjs ***!
+  \*****************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectGroupLabel: () => (/* binding */ SelectGroupLabel)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _internals_useBaseUiId_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../internals/useBaseUiId.mjs */ "./node_modules/@base-ui/react/internals/useBaseUiId.mjs");
+/* harmony import */ var _group_SelectGroupContext_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../group/SelectGroupContext.mjs */ "./node_modules/@base-ui/react/select/group/SelectGroupContext.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+'use client';
+
+
+
+
+
+
+
+/**
+ * An accessible label that is automatically associated with its parent group.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Select](https://base-ui.com/react/components/select)
+ */
+const SelectGroupLabel = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function SelectGroupLabel(componentProps, forwardedRef) {
+  const {
+    render,
+    className,
+    style,
+    id: idProp,
+    ...elementProps
+  } = componentProps;
+  const {
+    setLabelId
+  } = (0,_group_SelectGroupContext_mjs__WEBPACK_IMPORTED_MODULE_3__.useSelectGroupContext)();
+  const id = (0,_internals_useBaseUiId_mjs__WEBPACK_IMPORTED_MODULE_2__.useBaseUiId)(idProp);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    setLabelId(id);
+    return () => {
+      setLabelId(currentId => currentId === id ? undefined : currentId);
+    };
+  }, [id, setLabelId]);
+  const element = (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_4__.useRenderElement)('div', componentProps, {
+    ref: forwardedRef,
+    props: [{
+      id
+    }, elementProps]
+  });
+  return element;
+});
+if (true) SelectGroupLabel.displayName = "SelectGroupLabel";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/group/SelectGroup.mjs"
+/*!******************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/group/SelectGroup.mjs ***!
+  \******************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectGroup: () => (/* binding */ SelectGroup)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _SelectGroupContext_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SelectGroupContext.mjs */ "./node_modules/@base-ui/react/select/group/SelectGroupContext.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+/**
+ * Groups related select items with the corresponding label.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Select](https://base-ui.com/react/components/select)
+ */
+
+const SelectGroup = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function SelectGroup(componentProps, forwardedRef) {
+  const {
+    render,
+    className,
+    style,
+    ...elementProps
+  } = componentProps;
+  const [labelId, setLabelId] = react__WEBPACK_IMPORTED_MODULE_0__.useState();
+  const contextValue = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    labelId,
+    setLabelId
+  }), [labelId, setLabelId]);
+  const element = (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_2__.useRenderElement)('div', componentProps, {
+    ref: forwardedRef,
+    props: [{
+      role: 'group',
+      'aria-labelledby': labelId
+    }, elementProps]
+  });
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_SelectGroupContext_mjs__WEBPACK_IMPORTED_MODULE_1__.SelectGroupContext.Provider, {
+    value: contextValue,
+    children: element
+  });
+});
+if (true) SelectGroup.displayName = "SelectGroup";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/group/SelectGroupContext.mjs"
+/*!*************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/group/SelectGroupContext.mjs ***!
+  \*************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectGroupContext: () => (/* binding */ SelectGroupContext),
+/* harmony export */   useSelectGroupContext: () => (/* binding */ useSelectGroupContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+
+const SelectGroupContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(undefined);
+if (true) SelectGroupContext.displayName = "SelectGroupContext";
+function useSelectGroupContext() {
+  const context = react__WEBPACK_IMPORTED_MODULE_0__.useContext(SelectGroupContext);
+  if (context === undefined) {
+    throw new Error( true ? 'Base UI: SelectGroupContext is missing. SelectGroup parts must be placed within <Select.Group>.' : 0);
+  }
+  return context;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/item-text/SelectItemText.mjs"
+/*!*************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/item-text/SelectItemText.mjs ***!
+  \*************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectItemText: () => (/* binding */ SelectItemText)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../root/SelectRootContext.mjs */ "./node_modules/@base-ui/react/select/root/SelectRootContext.mjs");
+/* harmony import */ var _item_SelectItemContext_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../item/SelectItemContext.mjs */ "./node_modules/@base-ui/react/select/item/SelectItemContext.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+'use client';
+
+
+
+
+
+
+/**
+ * A text label of the select item.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Select](https://base-ui.com/react/components/select)
+ */
+const SelectItemText = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.memo(/*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function SelectItemText(componentProps, forwardedRef) {
+  const {
+    index,
+    textRef,
+    selectedByFocus
+  } = (0,_item_SelectItemContext_mjs__WEBPACK_IMPORTED_MODULE_2__.useSelectItemContext)();
+  const {
+    firstItemTextRef,
+    selectedItemTextRef
+  } = (0,_root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_1__.useSelectRootContext)();
+  const {
+    render,
+    className,
+    style,
+    ...elementProps
+  } = componentProps;
+  const localRef = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(node => {
+    if (!node) {
+      return;
+    }
+    if (index === 0) {
+      firstItemTextRef.current = node;
+    }
+    if (selectedByFocus) {
+      selectedItemTextRef.current = node;
+    }
+  }, [firstItemTextRef, selectedItemTextRef, index, selectedByFocus]);
+  const element = (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_3__.useRenderElement)('div', componentProps, {
+    ref: [localRef, forwardedRef, textRef],
+    props: elementProps
+  });
+  return element;
+}));
+if (true) SelectItemText.displayName = "SelectItemText";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/item/SelectItem.mjs"
+/*!****************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/item/SelectItem.mjs ***!
+  \****************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectItem: () => (/* binding */ SelectItem)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/store */ "./node_modules/@base-ui/utils/store/useStore.mjs");
+/* harmony import */ var _root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../root/SelectRootContext.mjs */ "./node_modules/@base-ui/react/select/root/SelectRootContext.mjs");
+/* harmony import */ var _internals_composite_list_useCompositeListItem_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../internals/composite/list/useCompositeListItem.mjs */ "./node_modules/@base-ui/react/internals/composite/list/useCompositeListItem.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+/* harmony import */ var _SelectItemContext_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./SelectItemContext.mjs */ "./node_modules/@base-ui/react/select/item/SelectItemContext.mjs");
+/* harmony import */ var _store_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../store.mjs */ "./node_modules/@base-ui/react/select/store.mjs");
+/* harmony import */ var _internals_use_button_index_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../internals/use-button/index.mjs */ "./node_modules/@base-ui/react/internals/use-button/useButton.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var _internals_itemEquality_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../internals/itemEquality.mjs */ "./node_modules/@base-ui/react/internals/itemEquality.mjs");
+/* harmony import */ var _floating_ui_react_utils_event_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../floating-ui-react/utils/event.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/event.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * An individual option in the select popup.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Select](https://base-ui.com/react/components/select)
+ */
+
+const SelectItem = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.memo(/*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function SelectItem(componentProps, forwardedRef) {
+  const {
+    render,
+    className,
+    style,
+    value: itemValue = null,
+    label,
+    disabled: disabledProp = false,
+    nativeButton = false,
+    ...elementProps
+  } = componentProps;
+  const textRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const listItem = (0,_internals_composite_list_useCompositeListItem_mjs__WEBPACK_IMPORTED_MODULE_4__.useCompositeListItem)({
+    guess: true,
+    label,
+    textRef
+  });
+  const {
+    store,
+    itemProps,
+    setOpen,
+    setValue,
+    selectionRef,
+    typingRef,
+    valuesRef,
+    multiple,
+    selectedItemTextRef,
+    disabled: selectDisabled,
+    readOnly
+  } = (0,_root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_3__.useSelectRootContext)();
+  const disabled = selectDisabled || disabledProp;
+  const highlighted = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_2__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_7__.selectors.isActive, listItem.index);
+  const open = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_2__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_7__.selectors.open);
+  const selected = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_2__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_7__.selectors.isSelected, itemValue);
+  const selectedByFocus = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_2__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_7__.selectors.isSelectedByFocus, listItem.index);
+  const isItemEqualToValue = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_2__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_7__.selectors.isItemEqualToValue);
+  const index = listItem.index;
+  const itemRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    const values = valuesRef.current;
+    values[index] = itemValue;
+    return () => {
+      delete values[index];
+    };
+  }, [index, itemValue, valuesRef]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_1__.useIsoLayoutEffect)(() => {
+    const selectedValue = store.state.value;
+    let selectedCandidate = selectedValue;
+    if (multiple && Array.isArray(selectedValue)) {
+      // Compare against the last selected item, or `undefined` when nothing is selected — never
+      // the raw array, which a custom `isItemEqualToValue` isn't expected to receive.
+      selectedCandidate = selectedValue.length > 0 ? selectedValue[selectedValue.length - 1] : undefined;
+    }
+    if (selectedCandidate !== undefined && (0,_internals_itemEquality_mjs__WEBPACK_IMPORTED_MODULE_11__.compareItemEquality)(itemValue, selectedCandidate, isItemEqualToValue)) {
+      store.set('selectedIndex', index);
+      // Make sure SelectPopup can measure the selected item on first open.
+      // SelectItemText can still update this ref later when focus moves.
+      if (textRef.current) {
+        selectedItemTextRef.current = textRef.current;
+      }
+    }
+  }, [index, multiple, isItemEqualToValue, store, itemValue, selectedItemTextRef]);
+  const pointerTypeRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef('mouse');
+  const allowMouseSelectionRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const {
+    getButtonProps,
+    buttonRef
+  } = (0,_internals_use_button_index_mjs__WEBPACK_IMPORTED_MODULE_8__.useButton)({
+    disabled,
+    focusableWhenDisabled: true,
+    native: nativeButton,
+    composite: true
+  });
+  const state = {
+    disabled,
+    selected,
+    highlighted
+  };
+  function commitSelection(event) {
+    // A forced-open select (`open`/`defaultOpen`) can still receive item activations even
+    // when the root is disabled or read-only, so guard the commit here too.
+    if (selectDisabled || readOnly) {
+      return;
+    }
+    const selectedValue = store.state.value;
+    if (multiple) {
+      const currentValue = Array.isArray(selectedValue) ? selectedValue : [];
+      const nextValue = selected ? (0,_internals_itemEquality_mjs__WEBPACK_IMPORTED_MODULE_11__.removeItem)(currentValue, itemValue, isItemEqualToValue) : [...currentValue, itemValue];
+      setValue(nextValue, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_9__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_10__.itemPress, event));
+    } else {
+      setValue(itemValue, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_9__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_10__.itemPress, event));
+      setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_9__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_10__.itemPress, event));
+    }
+  }
+  function resetDragMovement() {
+    selectionRef.current.dragY = 0;
+  }
+  const defaultProps = {
+    role: 'option',
+    'aria-selected': selected,
+    tabIndex: open && highlighted ? 0 : -1,
+    onKeyDown(event) {
+      store.set('activeIndex', index);
+      if (event.key === ' ' && typingRef.current) {
+        // `useButton` skips Space activation for `role="option"` items when the keydown
+        // is `defaultPrevented`, keeping typeahead spaces from committing a selection.
+        event.preventDefault();
+      }
+    },
+    onClick(event) {
+      const isMouseClick = pointerTypeRef.current !== 'touch';
+      const clickPointerType = event.nativeEvent.pointerType;
+      const isVirtualMouseClick = isMouseClick && (0,_floating_ui_react_utils_event_mjs__WEBPACK_IMPORTED_MODULE_12__.isVirtualClick)(event.nativeEvent) && (
+      // Generic no-pointer `detail === 0` clicks stay tied to highlight state. Virtual
+      // clicks that carry browser pointer data, including an empty string from assistive
+      // technology, can activate unhighlighted items.
+      clickPointerType !== undefined || highlighted);
+      // With alignItemWithTrigger, opening can place an item under the cursor. Real mouse
+      // clicks must start on the item, while virtual clicks represent explicit keyboard or
+      // assistive technology activation.
+      const isInvalidMouseClick = isMouseClick && !isVirtualMouseClick && !allowMouseSelectionRef.current;
+      allowMouseSelectionRef.current = false;
+      if (disabled || isInvalidMouseClick) {
+        return;
+      }
+      commitSelection(event.nativeEvent);
+    },
+    onPointerEnter(event) {
+      pointerTypeRef.current = event.pointerType;
+    },
+    onPointerMove(event) {
+      if (event.pointerType === 'mouse' && event.buttons === 1) {
+        const selection = selectionRef.current;
+        selection.dragY += event.movementY;
+        if (selection.dragY ** 2 >= 64) {
+          selection.allowUnselectedMouseUp = true;
+        }
+      }
+    },
+    onPointerDown(event) {
+      pointerTypeRef.current = event.pointerType;
+      allowMouseSelectionRef.current = true;
+      resetDragMovement();
+    },
+    onMouseUp() {
+      resetDragMovement();
+      if (disabled || pointerTypeRef.current === 'touch') {
+        return;
+      }
+
+      // Regular clicks are committed by the click event.
+      if (allowMouseSelectionRef.current) {
+        return;
+      }
+      const disallowSelectedMouseUp = !selectionRef.current.allowSelectedMouseUp && selected;
+      const disallowUnselectedMouseUp = !selectionRef.current.allowUnselectedMouseUp && !selected;
+      if (disallowSelectedMouseUp || disallowUnselectedMouseUp) {
+        return;
+      }
+      allowMouseSelectionRef.current = true;
+      itemRef.current?.click();
+      allowMouseSelectionRef.current = false;
+    }
+  };
+  const element = (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_5__.useRenderElement)('div', componentProps, {
+    ref: [buttonRef, forwardedRef, listItem.ref, itemRef],
+    state,
+    props: [itemProps, defaultProps, elementProps, getButtonProps]
+  });
+  const contextValue = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    selected,
+    index,
+    textRef,
+    selectedByFocus
+  }), [selected, index, textRef, selectedByFocus]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_SelectItemContext_mjs__WEBPACK_IMPORTED_MODULE_6__.SelectItemContext.Provider, {
+    value: contextValue,
+    children: element
+  });
+}));
+if (true) SelectItem.displayName = "SelectItem";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/item/SelectItemContext.mjs"
+/*!***********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/item/SelectItemContext.mjs ***!
+  \***********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectItemContext: () => (/* binding */ SelectItemContext),
+/* harmony export */   useSelectItemContext: () => (/* binding */ useSelectItemContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+
+const SelectItemContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(undefined);
+if (true) SelectItemContext.displayName = "SelectItemContext";
+function useSelectItemContext() {
+  const context = react__WEBPACK_IMPORTED_MODULE_0__.useContext(SelectItemContext);
+  if (!context) {
+    throw new Error( true ? 'Base UI: SelectItemContext is missing. SelectItem parts must be placed within <Select.Item>.' : 0);
+  }
+  return context;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/list/SelectList.mjs"
+/*!****************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/list/SelectList.mjs ***!
+  \****************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectList: () => (/* binding */ SelectList)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/store */ "./node_modules/@base-ui/utils/store/useStore.mjs");
+/* harmony import */ var _root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../root/SelectRootContext.mjs */ "./node_modules/@base-ui/react/select/root/SelectRootContext.mjs");
+/* harmony import */ var _positioner_SelectPositionerContext_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../positioner/SelectPositionerContext.mjs */ "./node_modules/@base-ui/react/select/positioner/SelectPositionerContext.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+/* harmony import */ var _utils_styles_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../utils/styles.mjs */ "./node_modules/@base-ui/react/utils/styles.mjs");
+/* harmony import */ var _popup_utils_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../popup/utils.mjs */ "./node_modules/@base-ui/react/select/popup/utils.mjs");
+/* harmony import */ var _store_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../store.mjs */ "./node_modules/@base-ui/react/select/store.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+
+/**
+ * A container for the select items.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Select](https://base-ui.com/react/components/select)
+ */
+const SelectList = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function SelectList(componentProps, forwardedRef) {
+  const {
+    render,
+    className,
+    style,
+    ...elementProps
+  } = componentProps;
+  const {
+    store,
+    scrollHandlerRef,
+    multiple
+  } = (0,_root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_2__.useSelectRootContext)();
+  const {
+    alignItemWithTriggerActive
+  } = (0,_positioner_SelectPositionerContext_mjs__WEBPACK_IMPORTED_MODULE_3__.useSelectPositionerContext)();
+  const hasScrollArrows = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_1__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_7__.selectors.hasScrollArrows);
+  const openMethod = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_1__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_7__.selectors.openMethod);
+  const id = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_1__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_7__.selectors.id);
+  const defaultProps = {
+    id: `${id}-list`,
+    role: 'listbox',
+    'aria-multiselectable': multiple || undefined,
+    onScroll(event) {
+      scrollHandlerRef.current?.(event.currentTarget);
+    },
+    ...(alignItemWithTriggerActive && {
+      style: _popup_utils_mjs__WEBPACK_IMPORTED_MODULE_6__.LIST_FUNCTIONAL_STYLES
+    }),
+    className: hasScrollArrows && openMethod !== 'touch' ? _utils_styles_mjs__WEBPACK_IMPORTED_MODULE_5__.styleDisableScrollbar.className : undefined
+  };
+  const setListElement = store.useStateSetter('listElement');
+  return (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_4__.useRenderElement)('div', componentProps, {
+    ref: [forwardedRef, setListElement],
+    props: [defaultProps, elementProps]
+  });
+});
+if (true) SelectList.displayName = "SelectList";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/popup/SelectPopup.mjs"
+/*!******************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/popup/SelectPopup.mjs ***!
+  \******************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectPopup: () => (/* binding */ SelectPopup)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @floating-ui/utils */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs");
+/* harmony import */ var _base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/addEventListener */ "./node_modules/@base-ui/utils/addEventListener.mjs");
+/* harmony import */ var _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/platform */ "./node_modules/@base-ui/utils/platform/engine.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@base-ui/utils/owner.mjs");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @base-ui/utils/store */ "./node_modules/@base-ui/utils/store/useStore.mjs");
+/* harmony import */ var _base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @base-ui/utils/useAnimationFrame */ "./node_modules/@base-ui/utils/useAnimationFrame.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../floating-ui-react/index.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingFocusManager.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../floating-ui-react/index.mjs */ "./node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs");
+/* harmony import */ var _root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../root/SelectRootContext.mjs */ "./node_modules/@base-ui/react/select/root/SelectRootContext.mjs");
+/* harmony import */ var _utils_popupStateMapping_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../utils/popupStateMapping.mjs */ "./node_modules/@base-ui/react/utils/popupStateMapping.mjs");
+/* harmony import */ var _positioner_SelectPositionerContext_mjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../positioner/SelectPositionerContext.mjs */ "./node_modules/@base-ui/react/select/positioner/SelectPositionerContext.mjs");
+/* harmony import */ var _utils_styles_mjs__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../utils/styles.mjs */ "./node_modules/@base-ui/react/utils/styles.mjs");
+/* harmony import */ var _internals_stateAttributesMapping_mjs__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../internals/stateAttributesMapping.mjs */ "./node_modules/@base-ui/react/internals/stateAttributesMapping.mjs");
+/* harmony import */ var _internals_useOpenChangeComplete_mjs__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../internals/useOpenChangeComplete.mjs */ "./node_modules/@base-ui/react/internals/useOpenChangeComplete.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+/* harmony import */ var _store_mjs__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../store.mjs */ "./node_modules/@base-ui/react/select/store.mjs");
+/* harmony import */ var _utils_mjs__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./utils.mjs */ "./node_modules/@base-ui/react/select/popup/utils.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var _toolbar_root_ToolbarRootContext_mjs__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ../../toolbar/root/ToolbarRootContext.mjs */ "./node_modules/@base-ui/react/toolbar/root/ToolbarRootContext.mjs");
+/* harmony import */ var _internals_composite_composite_mjs__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ../../internals/composite/composite.mjs */ "./node_modules/@base-ui/react/internals/composite/composite.mjs");
+/* harmony import */ var _internals_getDisabledMountTransitionStyles_mjs__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ../../internals/getDisabledMountTransitionStyles.mjs */ "./node_modules/@base-ui/react/internals/getDisabledMountTransitionStyles.mjs");
+/* harmony import */ var _internals_clamp_mjs__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ../../internals/clamp.mjs */ "./node_modules/@base-ui/react/internals/clamp.mjs");
+/* harmony import */ var _utils_scrollEdges_mjs__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ../../utils/scrollEdges.mjs */ "./node_modules/@base-ui/react/utils/scrollEdges.mjs");
+/* harmony import */ var _internals_csp_context_CSPContext_mjs__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ../../internals/csp-context/CSPContext.mjs */ "./node_modules/@base-ui/react/internals/csp-context/CSPContext.mjs");
+/* harmony import */ var _internals_direction_context_DirectionContext_mjs__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ../../internals/direction-context/DirectionContext.mjs */ "./node_modules/@base-ui/react/internals/direction-context/DirectionContext.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const stateAttributesMapping = {
+  ..._utils_popupStateMapping_mjs__WEBPACK_IMPORTED_MODULE_13__.popupStateMapping,
+  ..._internals_stateAttributesMapping_mjs__WEBPACK_IMPORTED_MODULE_16__.transitionStatusMapping
+};
+
+/**
+ * A container for the select list.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Select](https://base-ui.com/react/components/select)
+ */
+const SelectPopup = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function SelectPopup(componentProps, forwardedRef) {
+  const {
+    render,
+    className,
+    style,
+    finalFocus,
+    ...elementProps
+  } = componentProps;
+  const {
+    store,
+    popupRef,
+    onOpenChangeComplete,
+    setOpen,
+    valueRef,
+    firstItemTextRef,
+    selectedItemTextRef,
+    multiple,
+    handleScrollArrowVisibility,
+    scrollHandlerRef,
+    listRef,
+    highlightItemOnHover,
+    floatingContext: floatingRootContext
+  } = (0,_root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_12__.useSelectRootContext)();
+  const {
+    side,
+    align,
+    alignItemWithTriggerActive,
+    isPositioned,
+    setControlledAlignItemWithTrigger
+  } = (0,_positioner_SelectPositionerContext_mjs__WEBPACK_IMPORTED_MODULE_14__.useSelectPositionerContext)();
+  const insideToolbar = (0,_toolbar_root_ToolbarRootContext_mjs__WEBPACK_IMPORTED_MODULE_23__.useToolbarRootContext)(true) != null;
+  const direction = (0,_internals_direction_context_DirectionContext_mjs__WEBPACK_IMPORTED_MODULE_29__.useDirection)();
+  const {
+    nonce,
+    disableStyleElements
+  } = (0,_internals_csp_context_CSPContext_mjs__WEBPACK_IMPORTED_MODULE_28__.useCSPContext)();
+  const id = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_8__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_19__.selectors.id);
+  const open = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_8__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_19__.selectors.open);
+  const openMethod = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_8__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_19__.selectors.openMethod);
+  const mounted = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_8__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_19__.selectors.mounted);
+  const popupProps = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_8__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_19__.selectors.popupProps);
+  const transitionStatus = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_8__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_19__.selectors.transitionStatus);
+  const triggerElement = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_8__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_19__.selectors.triggerElement);
+  const positionerElement = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_8__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_19__.selectors.positionerElement);
+  const listElement = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_8__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_19__.selectors.listElement);
+  const reachedMaxHeightRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const initialPlacedRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const originalPositionerStylesRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef({});
+  const scrollArrowFrame = (0,_base_ui_utils_useAnimationFrame__WEBPACK_IMPORTED_MODULE_9__.useAnimationFrame)();
+  const handleScroll = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_4__.useStableCallback)(scroller => {
+    if (!positionerElement || !popupRef.current || !initialPlacedRef.current) {
+      return;
+    }
+    const isTopPositioned = positionerElement.style.top === '0px';
+    const isBottomPositioned = positionerElement.style.bottom === '0px';
+    if (reachedMaxHeightRef.current || !alignItemWithTriggerActive || !isTopPositioned && !isBottomPositioned) {
+      handleScrollArrowVisibility(scroller);
+      return;
+    }
+    const scale = getScale(positionerElement);
+    const currentHeight = normalizeSize(positionerElement.getBoundingClientRect().height, 'y', scale);
+    const doc = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_5__.ownerDocument)(positionerElement);
+    const win = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_6__.getWindow)(positionerElement);
+    const positionerStyles = win.getComputedStyle(positionerElement);
+    const marginTop = parseFloat(positionerStyles.marginTop);
+    const marginBottom = parseFloat(positionerStyles.marginBottom);
+    const maxPopupHeight = getMaxPopupHeight(win.getComputedStyle(popupRef.current));
+    const maxAvailableHeight = Math.min(doc.documentElement.clientHeight - marginTop - marginBottom, maxPopupHeight);
+    const scrollTop = scroller.scrollTop;
+    const maxScrollTop = getMaxScrollTop(scroller);
+
+    // `Infinity` requests a scroll to the recomputed maximum offset.
+    let nextScrollTop = null;
+    const setHeight = height => {
+      positionerElement.style.height = `${height}px`;
+    };
+    const diff = isTopPositioned ? maxScrollTop - scrollTop : scrollTop;
+    const nextHeight = Math.min(currentHeight + diff, maxAvailableHeight);
+    if (diff <= _utils_scrollEdges_mjs__WEBPACK_IMPORTED_MODULE_27__.SCROLL_EDGE_TOLERANCE_PX) {
+      const heightDelta = (0,_internals_clamp_mjs__WEBPACK_IMPORTED_MODULE_26__.clamp)(diff, 0, maxAvailableHeight - currentHeight);
+      if (heightDelta > 0) {
+        // Consume the remaining scroll in height.
+        setHeight(currentHeight + heightDelta);
+      }
+      scroller.scrollTop = isTopPositioned ? maxScrollTop : 0;
+      if (maxAvailableHeight - (currentHeight + heightDelta) <= _utils_scrollEdges_mjs__WEBPACK_IMPORTED_MODULE_27__.SCROLL_EDGE_TOLERANCE_PX) {
+        reachedMaxHeightRef.current = true;
+      }
+      handleScrollArrowVisibility(scroller);
+      return;
+    }
+    if (maxAvailableHeight - nextHeight > _utils_scrollEdges_mjs__WEBPACK_IMPORTED_MODULE_27__.SCROLL_EDGE_TOLERANCE_PX) {
+      nextScrollTop = isTopPositioned ? Infinity : 0;
+    } else if (isBottomPositioned && scrollTop < maxScrollTop) {
+      const overshoot = currentHeight + diff - maxAvailableHeight;
+      nextScrollTop = scrollTop - (diff - overshoot);
+    }
+    const nextPositionerHeight = Math.ceil(nextHeight);
+    if (nextPositionerHeight !== 0) {
+      setHeight(nextPositionerHeight);
+    }
+    if (nextScrollTop != null) {
+      // Recompute bounds after resizing (clientHeight likely changed).
+      const target = (0,_internals_clamp_mjs__WEBPACK_IMPORTED_MODULE_26__.clamp)(nextScrollTop, 0, getMaxScrollTop(scroller));
+
+      // Avoid adjustments that re-trigger scroll events forever.
+      if (Math.abs(scroller.scrollTop - target) > _utils_scrollEdges_mjs__WEBPACK_IMPORTED_MODULE_27__.SCROLL_EDGE_TOLERANCE_PX) {
+        scroller.scrollTop = target;
+      }
+    }
+    if (nextPositionerHeight >= maxAvailableHeight - _utils_scrollEdges_mjs__WEBPACK_IMPORTED_MODULE_27__.SCROLL_EDGE_TOLERANCE_PX) {
+      reachedMaxHeightRef.current = true;
+    }
+    handleScrollArrowVisibility(scroller);
+  });
+  react__WEBPACK_IMPORTED_MODULE_0__.useImperativeHandle(scrollHandlerRef, () => handleScroll, [handleScroll]);
+  (0,_internals_useOpenChangeComplete_mjs__WEBPACK_IMPORTED_MODULE_17__.useOpenChangeComplete)({
+    open,
+    ref: popupRef,
+    onComplete() {
+      if (open) {
+        onOpenChangeComplete?.(true);
+      }
+    }
+  });
+  const state = {
+    open,
+    transitionStatus,
+    side,
+    align
+  };
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_7__.useIsoLayoutEffect)(() => {
+    if (!positionerElement || !popupRef.current || Object.keys(originalPositionerStylesRef.current).length) {
+      return;
+    }
+    originalPositionerStylesRef.current = {
+      top: positionerElement.style.top || '0',
+      left: positionerElement.style.left || '0',
+      right: positionerElement.style.right,
+      height: positionerElement.style.height,
+      bottom: positionerElement.style.bottom,
+      minHeight: positionerElement.style.minHeight,
+      maxHeight: positionerElement.style.maxHeight,
+      marginTop: positionerElement.style.marginTop,
+      marginBottom: positionerElement.style.marginBottom
+    };
+  }, [popupRef, positionerElement]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_7__.useIsoLayoutEffect)(() => {
+    if (open || alignItemWithTriggerActive) {
+      return;
+    }
+    initialPlacedRef.current = false;
+    reachedMaxHeightRef.current = false;
+    (0,_utils_mjs__WEBPACK_IMPORTED_MODULE_20__.clearStyles)(positionerElement, originalPositionerStylesRef.current);
+  }, [open, alignItemWithTriggerActive, positionerElement, popupRef]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_7__.useIsoLayoutEffect)(() => {
+    const popupElement = popupRef.current;
+
+    // Wait for Floating UI's first positioning pass before reading DOM geometry.
+    // We replace the final coordinates for aligned selects, but still need middleware
+    // like `size()` to set CSS variables such as `--anchor-width`.
+    if (!open || !triggerElement || !positionerElement || !popupElement || alignItemWithTriggerActive && !isPositioned || store.state.transitionStatus === 'ending') {
+      return;
+    }
+    initialPlacedRef.current = true;
+    popupElement.style.removeProperty('--transform-origin');
+    if (!alignItemWithTriggerActive) {
+      // The wrapper supplies the scroller: the list owns scrolling once it has mounted, and
+      // this effect re-runs (cancelling the stale frame) when that happens.
+      scrollArrowFrame.request(() => handleScrollArrowVisibility(listElement || popupElement));
+      return;
+    }
+
+    // Ensure we remove any transforms that can affect the location of the popup
+    // and therefore the calculations.
+    const restoreTransformStyles = unsetTransformStyles(popupElement);
+    try {
+      let textElement = selectedItemTextRef.current;
+      if (!textElement?.isConnected) {
+        const hasSelectedValue = _store_mjs__WEBPACK_IMPORTED_MODULE_19__.selectors.hasSelectedValue(store.state);
+        textElement = !hasSelectedValue && firstItemTextRef.current?.isConnected ? firstItemTextRef.current : null;
+      }
+      const valueElement = valueRef.current;
+      const win = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_6__.getWindow)(positionerElement);
+      const positionerStyles = win.getComputedStyle(positionerElement);
+      const popupStyles = win.getComputedStyle(popupElement);
+      const doc = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_5__.ownerDocument)(triggerElement);
+      const scale = getScale(triggerElement);
+      const triggerRect = normalizeRect(triggerElement.getBoundingClientRect(), scale);
+      const positionerRect = normalizeRect(positionerElement.getBoundingClientRect(), scale);
+      const triggerHeight = triggerRect.height;
+      const scroller = listElement || popupElement;
+      const scrollHeight = scroller.scrollHeight;
+      const borderBottom = parseFloat(popupStyles.borderBottomWidth);
+      // The `|| N` fallbacks cover an unset/`auto` value (parses to `NaN`). Note a literal `0`
+      // also resolves to the fallback, so an explicit `margin: 0` or `min-height: 0` still takes
+      // the default below.
+      const marginTop = parseFloat(positionerStyles.marginTop) || 10;
+      const marginBottom = parseFloat(positionerStyles.marginBottom) || 10;
+      const minHeight = parseFloat(positionerStyles.minHeight) || 100;
+      const maxPopupHeight = getMaxPopupHeight(popupStyles);
+      const paddingLeft = 5;
+      const paddingRight = 5;
+      const triggerCollisionThreshold = 20;
+      const viewportHeight = doc.documentElement.clientHeight - marginTop - marginBottom;
+      const viewportWidth = doc.documentElement.clientWidth;
+      const availableSpaceBeneathTrigger = viewportHeight - triggerRect.bottom + triggerHeight;
+      let textRect;
+      let alignedLeft = direction === 'rtl' ? triggerRect.right - positionerRect.width : triggerRect.left;
+      let offsetY = 0;
+      if (textElement && valueElement) {
+        const valueRect = normalizeRect(valueElement.getBoundingClientRect(), scale);
+        textRect = normalizeRect(textElement.getBoundingClientRect(), scale);
+        alignedLeft = positionerRect.left + (direction === 'rtl' ? valueRect.right - textRect.right : valueRect.left - textRect.left);
+        const valueCenterFromTriggerTop = valueRect.top - triggerRect.top + valueRect.height / 2;
+        const textCenterFromPositionerTop = textRect.top - positionerRect.top + textRect.height / 2;
+        offsetY = textCenterFromPositionerTop - valueCenterFromTriggerTop;
+      }
+      const idealHeight = availableSpaceBeneathTrigger + offsetY + marginBottom + borderBottom;
+      let height = Math.min(viewportHeight, idealHeight);
+      const maxHeight = viewportHeight - marginTop - marginBottom;
+      const scrollTop = idealHeight - height;
+      const maxRight = viewportWidth - paddingRight;
+      positionerElement.style.left = `${(0,_internals_clamp_mjs__WEBPACK_IMPORTED_MODULE_26__.clamp)(alignedLeft, paddingLeft, maxRight - positionerRect.width)}px`;
+      positionerElement.style.height = `${height}px`;
+      // `none` (not the invalid `auto`) so the explicit height governs in align mode and isn't
+      // clamped by a `max-height` from user CSS.
+      positionerElement.style.maxHeight = 'none';
+      positionerElement.style.marginTop = `${marginTop}px`;
+      positionerElement.style.marginBottom = `${marginBottom}px`;
+      popupElement.style.height = '100%';
+      const maxScrollTop = getMaxScrollTop(scroller);
+      const isTopPositioned = scrollTop >= maxScrollTop - _utils_scrollEdges_mjs__WEBPACK_IMPORTED_MODULE_27__.SCROLL_EDGE_TOLERANCE_PX;
+      if (isTopPositioned) {
+        height = Math.min(viewportHeight, positionerRect.height) - (scrollTop - maxScrollTop);
+      }
+
+      // When the trigger is too close to the top or bottom of the viewport, or the minHeight is
+      // reached, we fallback to aligning the popup to the trigger as the UX is poor otherwise.
+      const fallbackToAlignPopupToTrigger = triggerRect.top < triggerCollisionThreshold || triggerRect.bottom > viewportHeight - triggerCollisionThreshold || Math.ceil(height) + _utils_scrollEdges_mjs__WEBPACK_IMPORTED_MODULE_27__.SCROLL_EDGE_TOLERANCE_PX < Math.min(scrollHeight, minHeight);
+
+      // Safari doesn't position the popup correctly when pinch-zoomed.
+      const isPinchZoomed = (win.visualViewport?.scale ?? 1) !== 1 && _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_3__.webkit;
+      if (fallbackToAlignPopupToTrigger || isPinchZoomed) {
+        (0,_utils_mjs__WEBPACK_IMPORTED_MODULE_20__.clearStyles)(positionerElement, originalPositionerStylesRef.current);
+        setControlledAlignItemWithTrigger(false);
+        return;
+      }
+      const initialHeight = Math.max(minHeight, height);
+      if (isTopPositioned) {
+        const topOffset = Math.max(0, viewportHeight - idealHeight);
+        positionerElement.style.top = positionerRect.height >= maxHeight ? '0' : `${topOffset}px`;
+        positionerElement.style.height = `${height}px`;
+        scroller.scrollTop = getMaxScrollTop(scroller);
+      } else {
+        positionerElement.style.bottom = '0';
+        scroller.scrollTop = scrollTop;
+      }
+      if (textRect) {
+        const popupTop = positionerRect.top;
+        const popupHeight = positionerRect.height;
+        const textCenterY = textRect.top + textRect.height / 2;
+        const clampedY = (0,_internals_clamp_mjs__WEBPACK_IMPORTED_MODULE_26__.clamp)(popupHeight > 0 ? (textCenterY - popupTop) / popupHeight * 100 : 50, 0, 100);
+        popupElement.style.setProperty('--transform-origin', `50% ${clampedY}%`);
+      }
+      if (initialHeight === viewportHeight || height >= maxPopupHeight) {
+        reachedMaxHeightRef.current = true;
+      }
+      handleScrollArrowVisibility(scroller);
+      if (highlightItemOnHover && store.state.selectedIndex === null && store.state.activeIndex === null && listRef.current[0] != null) {
+        store.set('activeIndex', 0);
+      }
+    } finally {
+      restoreTransformStyles();
+    }
+  }, [store, open, positionerElement, triggerElement, valueRef, firstItemTextRef, selectedItemTextRef, popupRef, handleScrollArrowVisibility, alignItemWithTriggerActive, setControlledAlignItemWithTrigger, scrollArrowFrame, listElement, listRef, highlightItemOnHover, direction, isPositioned]);
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (!alignItemWithTriggerActive || !positionerElement || !open) {
+      return undefined;
+    }
+    const win = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_6__.getWindow)(positionerElement);
+    function handleResize(event) {
+      setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_21__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_22__.windowResize, event));
+    }
+    return (0,_base_ui_utils_addEventListener__WEBPACK_IMPORTED_MODULE_2__.addEventListener)(win, 'resize', handleResize);
+  }, [setOpen, alignItemWithTriggerActive, positionerElement, open]);
+  const defaultProps = {
+    ...(listElement ? {
+      role: 'presentation',
+      'aria-orientation': undefined
+    } : {
+      role: 'listbox',
+      'aria-multiselectable': multiple || undefined,
+      id: `${id}-list`
+    }),
+    onKeyDown(event) {
+      if (insideToolbar && _internals_composite_composite_mjs__WEBPACK_IMPORTED_MODULE_24__.COMPOSITE_KEYS.has(event.key)) {
+        event.stopPropagation();
+      }
+    },
+    onScroll(event) {
+      if (listElement) {
+        return;
+      }
+      handleScroll(event.currentTarget);
+    },
+    ...(alignItemWithTriggerActive && {
+      style: listElement ? {
+        height: '100%'
+      } : _utils_mjs__WEBPACK_IMPORTED_MODULE_20__.LIST_FUNCTIONAL_STYLES
+    }),
+    className: !listElement && alignItemWithTriggerActive ? _utils_styles_mjs__WEBPACK_IMPORTED_MODULE_15__.styleDisableScrollbar.className : undefined
+  };
+  const element = (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_18__.useRenderElement)('div', componentProps, {
+    ref: [forwardedRef, popupRef],
+    state,
+    stateAttributesMapping,
+    props: [popupProps, defaultProps, (0,_internals_getDisabledMountTransitionStyles_mjs__WEBPACK_IMPORTED_MODULE_25__.getDisabledMountTransitionStyles)(transitionStatus), elementProps]
+  });
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsxs)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    children: [!disableStyleElements && _utils_styles_mjs__WEBPACK_IMPORTED_MODULE_15__.styleDisableScrollbar.getElement(nonce), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_30__.jsx)(_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_10__.FloatingFocusManager, {
+      context: floatingRootContext,
+      modal: false,
+      disabled: !mounted,
+      openInteractionType: openMethod,
+      returnFocus: finalFocus,
+      restoreFocus: true,
+      children: element
+    })]
+  });
+});
+if (true) SelectPopup.displayName = "SelectPopup";
+function getMaxPopupHeight(popupStyles) {
+  const maxHeightStyle = popupStyles.maxHeight;
+  return maxHeightStyle.endsWith('px') ? parseFloat(maxHeightStyle) || Infinity : Infinity;
+}
+function getMaxScrollTop(scroller) {
+  return (0,_utils_scrollEdges_mjs__WEBPACK_IMPORTED_MODULE_27__.getMaxScrollOffset)(scroller.scrollHeight, scroller.clientHeight);
+}
+function getScale(element) {
+  // The platform API is async-capable, but the DOM platform returns a plain scale object.
+  return _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_11__.platform.getScale(element);
+}
+function normalizeSize(size, axis, scale) {
+  return size / scale[axis];
+}
+function normalizeRect(rect, scale) {
+  return (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__.rectToClientRect)({
+    x: normalizeSize(rect.x, 'x', scale),
+    y: normalizeSize(rect.y, 'y', scale),
+    width: normalizeSize(rect.width, 'x', scale),
+    height: normalizeSize(rect.height, 'y', scale)
+  });
+}
+const TRANSFORM_STYLE_RESETS = [['transform', 'none'], ['scale', '1'], ['translate', '0 0']];
+function unsetTransformStyles(popupElement) {
+  const {
+    style
+  } = popupElement;
+  const originalStyles = {};
+  for (const [property, value] of TRANSFORM_STYLE_RESETS) {
+    originalStyles[property] = style.getPropertyValue(property);
+    style.setProperty(property, value, 'important');
+  }
+  return () => {
+    for (const [property] of TRANSFORM_STYLE_RESETS) {
+      const originalValue = originalStyles[property];
+      if (originalValue) {
+        style.setProperty(property, originalValue);
+      } else {
+        style.removeProperty(property);
+      }
+    }
+  };
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/popup/utils.mjs"
+/*!************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/popup/utils.mjs ***!
+  \************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   LIST_FUNCTIONAL_STYLES: () => (/* binding */ LIST_FUNCTIONAL_STYLES),
+/* harmony export */   clearStyles: () => (/* binding */ clearStyles)
+/* harmony export */ });
+function clearStyles(element, originalStyles) {
+  if (element) {
+    Object.assign(element.style, originalStyles);
+  }
+}
+const LIST_FUNCTIONAL_STYLES = {
+  position: 'relative',
+  maxHeight: '100%',
+  overflowX: 'hidden',
+  overflowY: 'auto'
+};
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/portal/SelectPortal.mjs"
+/*!********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/portal/SelectPortal.mjs ***!
+  \********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectPortal: () => (/* binding */ SelectPortal)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/store */ "./node_modules/@base-ui/utils/store/useStore.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../floating-ui-react/index.mjs */ "./node_modules/@base-ui/react/floating-ui-react/components/FloatingPortal.mjs");
+/* harmony import */ var _root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../root/SelectRootContext.mjs */ "./node_modules/@base-ui/react/select/root/SelectRootContext.mjs");
+/* harmony import */ var _store_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../store.mjs */ "./node_modules/@base-ui/react/select/store.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+
+
+/**
+ * A portal element that moves the popup to a different part of the DOM.
+ * By default, the portal element is appended to `<body>`.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Select](https://base-ui.com/react/components/select)
+ */
+
+const SelectPortal = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function SelectPortal(portalProps, forwardedRef) {
+  const {
+    store
+  } = (0,_root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_3__.useSelectRootContext)();
+  const mounted = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_1__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_4__.selectors.mounted);
+  const forceMount = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_1__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_4__.selectors.forceMount);
+  const shouldRender = mounted || forceMount;
+  if (!shouldRender) {
+    return null;
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_2__.FloatingPortal, {
+    ref: forwardedRef,
+    ...portalProps
+  });
+});
+if (true) SelectPortal.displayName = "SelectPortal";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/positioner/SelectPositioner.mjs"
+/*!****************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/positioner/SelectPositioner.mjs ***!
+  \****************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectPositioner: () => (/* binding */ SelectPositioner)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_inertValue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/inertValue */ "./node_modules/@base-ui/utils/inertValue.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/store */ "./node_modules/@base-ui/utils/store/useStore.mjs");
+/* harmony import */ var _root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../root/SelectRootContext.mjs */ "./node_modules/@base-ui/react/select/root/SelectRootContext.mjs");
+/* harmony import */ var _internals_composite_list_CompositeList_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../internals/composite/list/CompositeList.mjs */ "./node_modules/@base-ui/react/internals/composite/list/CompositeList.mjs");
+/* harmony import */ var _internals_useAnchorPositioning_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../internals/useAnchorPositioning.mjs */ "./node_modules/@base-ui/react/internals/useAnchorPositioning.mjs");
+/* harmony import */ var _SelectPositionerContext_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./SelectPositionerContext.mjs */ "./node_modules/@base-ui/react/select/positioner/SelectPositionerContext.mjs");
+/* harmony import */ var _utils_InternalBackdrop_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../utils/InternalBackdrop.mjs */ "./node_modules/@base-ui/react/utils/InternalBackdrop.mjs");
+/* harmony import */ var _internals_constants_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../internals/constants.mjs */ "./node_modules/@base-ui/react/internals/constants.mjs");
+/* harmony import */ var _popup_utils_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../popup/utils.mjs */ "./node_modules/@base-ui/react/select/popup/utils.mjs");
+/* harmony import */ var _store_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../store.mjs */ "./node_modules/@base-ui/react/select/store.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var _internals_itemEquality_mjs__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../internals/itemEquality.mjs */ "./node_modules/@base-ui/react/internals/itemEquality.mjs");
+/* harmony import */ var _utils_usePositioner_mjs__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../utils/usePositioner.mjs */ "./node_modules/@base-ui/react/utils/usePositioner.mjs");
+/* harmony import */ var _utils_useAnchoredPopupScrollLock_mjs__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../utils/useAnchoredPopupScrollLock.mjs */ "./node_modules/@base-ui/react/utils/useAnchoredPopupScrollLock.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const FIXED = {
+  position: 'fixed'
+};
+
+/**
+ * Positions the select popup.
+ * Renders a `<div>` element.
+ *
+ * Documentation: [Base UI Select](https://base-ui.com/react/components/select)
+ */
+const SelectPositioner = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function SelectPositioner(componentProps, forwardedRef) {
+  const {
+    anchor,
+    className,
+    render,
+    // `useAnchorPositioning` applies the same defaults to the undefined values; the names
+    // remain destructured to exclude the props from `elementProps`.
+    positionMethod,
+    side,
+    align,
+    sideOffset,
+    alignOffset,
+    collisionBoundary = 'clipping-ancestors',
+    collisionPadding,
+    arrowPadding,
+    sticky,
+    disableAnchorTracking,
+    alignItemWithTrigger = true,
+    collisionAvoidance = _internals_constants_mjs__WEBPACK_IMPORTED_MODULE_10__.DROPDOWN_COLLISION_AVOIDANCE,
+    style,
+    ...elementProps
+  } = componentProps;
+  const {
+    store,
+    listRef,
+    labelsRef,
+    alignItemWithTriggerActiveRef,
+    selectedItemTextRef,
+    valuesRef,
+    initialValueRef,
+    popupRef,
+    setValue,
+    floatingContext: floatingRootContext
+  } = (0,_root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_5__.useSelectRootContext)();
+  const open = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_12__.selectors.open);
+  const mounted = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_12__.selectors.mounted);
+  const modal = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_12__.selectors.modal);
+  const value = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_12__.selectors.value);
+  const openMethod = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_12__.selectors.openMethod);
+  const positionerElement = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_12__.selectors.positionerElement);
+  const triggerElement = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_12__.selectors.triggerElement);
+  const isItemEqualToValue = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_12__.selectors.isItemEqualToValue);
+  const transitionStatus = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_12__.selectors.transitionStatus);
+  const scrollUpArrowRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const scrollDownArrowRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const [controlledAlignItemWithTrigger, setControlledAlignItemWithTrigger] = react__WEBPACK_IMPORTED_MODULE_0__.useState(alignItemWithTrigger);
+  const alignItemWithTriggerActive = mounted && controlledAlignItemWithTrigger && openMethod !== 'touch';
+  if (!mounted && controlledAlignItemWithTrigger !== alignItemWithTrigger) {
+    setControlledAlignItemWithTrigger(alignItemWithTrigger);
+  }
+  react__WEBPACK_IMPORTED_MODULE_0__.useImperativeHandle(alignItemWithTriggerActiveRef, () => alignItemWithTriggerActive);
+  (0,_utils_useAnchoredPopupScrollLock_mjs__WEBPACK_IMPORTED_MODULE_17__.useAnchoredPopupScrollLock)((alignItemWithTriggerActive || modal) && open, openMethod === 'touch', positionerElement, triggerElement);
+  const positioning = (0,_internals_useAnchorPositioning_mjs__WEBPACK_IMPORTED_MODULE_7__.useAnchorPositioning)({
+    anchor,
+    floatingRootContext,
+    positionMethod,
+    mounted,
+    side,
+    sideOffset,
+    align,
+    alignOffset,
+    arrowPadding,
+    collisionBoundary,
+    collisionPadding,
+    sticky,
+    disableAnchorTracking: disableAnchorTracking ?? alignItemWithTriggerActive,
+    collisionAvoidance,
+    keepMounted: true
+  });
+  const renderedSide = alignItemWithTriggerActive ? 'none' : positioning.side;
+  const positionerStyles = alignItemWithTriggerActive ? FIXED : positioning.positionerStyles;
+  const state = {
+    open,
+    side: renderedSide,
+    align: positioning.align,
+    anchorHidden: positioning.anchorHidden
+  };
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_2__.useIsoLayoutEffect)(() => {
+    store.set('popupSide', positioning.side);
+  }, [store, positioning.side]);
+  const setPositionerElement = store.useStateSetter('positionerElement');
+  const element = (0,_utils_usePositioner_mjs__WEBPACK_IMPORTED_MODULE_16__.usePositioner)(componentProps, state, {
+    styles: positionerStyles,
+    transitionStatus,
+    props: elementProps,
+    refs: [forwardedRef, setPositionerElement],
+    hidden: !mounted,
+    inert: !open
+  });
+  const prevMapSizeRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(0);
+  const onMapChange = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_3__.useStableCallback)(map => {
+    if (valuesRef.current.length === 0) {
+      return;
+    }
+    const prevSize = prevMapSizeRef.current;
+    prevMapSizeRef.current = map.size;
+    if (map.size === prevSize) {
+      return;
+    }
+    const eventDetails = (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_13__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_14__.none);
+    if (prevSize !== 0 && !store.state.multiple && value !== null) {
+      const selectedValueIndex = (0,_internals_itemEquality_mjs__WEBPACK_IMPORTED_MODULE_15__.findItemIndex)(valuesRef.current, value, isItemEqualToValue);
+      if (selectedValueIndex === -1) {
+        const initialSelectedValue = initialValueRef.current;
+        const hasInitial = initialSelectedValue != null && (0,_internals_itemEquality_mjs__WEBPACK_IMPORTED_MODULE_15__.findItemIndex)(valuesRef.current, initialSelectedValue, isItemEqualToValue) !== -1;
+        const nextValue = hasInitial ? initialSelectedValue : null;
+        setValue(nextValue, eventDetails);
+        if (nextValue === null) {
+          store.set('selectedIndex', null);
+          selectedItemTextRef.current = null;
+        }
+      }
+    }
+    if (prevSize !== 0 && store.state.multiple && Array.isArray(value)) {
+      const nextValue = value.filter(selectedItemValue => (0,_internals_itemEquality_mjs__WEBPACK_IMPORTED_MODULE_15__.findItemIndex)(valuesRef.current, selectedItemValue, isItemEqualToValue) !== -1);
+      if (nextValue.length !== value.length) {
+        setValue(nextValue, eventDetails);
+        if (nextValue.length === 0) {
+          store.set('selectedIndex', null);
+          selectedItemTextRef.current = null;
+        }
+      }
+    }
+    if (open && alignItemWithTriggerActive) {
+      store.update({
+        scrollUpArrowVisible: false,
+        scrollDownArrowVisible: false
+      });
+      const stylesToClear = {
+        height: ''
+      };
+      (0,_popup_utils_mjs__WEBPACK_IMPORTED_MODULE_11__.clearStyles)(positionerElement, stylesToClear);
+      (0,_popup_utils_mjs__WEBPACK_IMPORTED_MODULE_11__.clearStyles)(popupRef.current, stylesToClear);
+    }
+  });
+  const contextValue = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    ...positioning,
+    side: renderedSide,
+    alignItemWithTriggerActive,
+    setControlledAlignItemWithTrigger,
+    scrollUpArrowRef,
+    scrollDownArrowRef
+  }), [positioning, renderedSide, alignItemWithTriggerActive, setControlledAlignItemWithTrigger]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_internals_composite_list_CompositeList_mjs__WEBPACK_IMPORTED_MODULE_6__.CompositeList, {
+    elementsRef: listRef,
+    labelsRef: labelsRef,
+    onMapChange: onMapChange,
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsxs)(_SelectPositionerContext_mjs__WEBPACK_IMPORTED_MODULE_8__.SelectPositionerContext.Provider, {
+      value: contextValue,
+      children: [mounted && modal && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_18__.jsx)(_utils_InternalBackdrop_mjs__WEBPACK_IMPORTED_MODULE_9__.InternalBackdrop, {
+        inert: (0,_base_ui_utils_inertValue__WEBPACK_IMPORTED_MODULE_1__.inertValue)(!open),
+        cutout: triggerElement
+      }), element]
+    })
+  });
+});
+if (true) SelectPositioner.displayName = "SelectPositioner";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/positioner/SelectPositionerContext.mjs"
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/positioner/SelectPositionerContext.mjs ***!
+  \***********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectPositionerContext: () => (/* binding */ SelectPositionerContext),
+/* harmony export */   useSelectPositionerContext: () => (/* binding */ useSelectPositionerContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+
+const SelectPositionerContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(undefined);
+if (true) SelectPositionerContext.displayName = "SelectPositionerContext";
+function useSelectPositionerContext() {
+  const context = react__WEBPACK_IMPORTED_MODULE_0__.useContext(SelectPositionerContext);
+  if (!context) {
+    throw new Error( true ? 'Base UI: SelectPositionerContext is missing. SelectPositioner parts must be placed within <Select.Positioner>.' : 0);
+  }
+  return context;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/root/SelectRoot.mjs"
+/*!****************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/root/SelectRoot.mjs ***!
+  \****************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectRoot: () => (/* binding */ SelectRoot)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_visuallyHidden__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/visuallyHidden */ "./node_modules/@base-ui/utils/visuallyHidden.mjs");
+/* harmony import */ var _base_ui_utils_useMergedRefs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useMergedRefs */ "./node_modules/@base-ui/utils/useMergedRefs.mjs");
+/* harmony import */ var _base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/useRefWithInit */ "./node_modules/@base-ui/utils/useRefWithInit.mjs");
+/* harmony import */ var _base_ui_utils_useOnFirstRender__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/useOnFirstRender */ "./node_modules/@base-ui/utils/useOnFirstRender.mjs");
+/* harmony import */ var _base_ui_utils_usePreviousValue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @base-ui/utils/usePreviousValue */ "./node_modules/@base-ui/utils/usePreviousValue.mjs");
+/* harmony import */ var _base_ui_utils_isElementDisabled__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @base-ui/utils/isElementDisabled */ "./node_modules/@base-ui/utils/isElementDisabled.mjs");
+/* harmony import */ var _base_ui_utils_useControlled__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @base-ui/utils/useControlled */ "./node_modules/@base-ui/utils/useControlled.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @base-ui/utils/useValueAsRef */ "./node_modules/@base-ui/utils/useValueAsRef.mjs");
+/* harmony import */ var _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @base-ui/utils/store */ "./node_modules/@base-ui/utils/store/useStore.mjs");
+/* harmony import */ var _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @base-ui/utils/store */ "./node_modules/@base-ui/utils/store/ReactStore.mjs");
+/* harmony import */ var _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @base-ui/utils/empty */ "./node_modules/@base-ui/utils/empty.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../floating-ui-react/index.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useClick.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../floating-ui-react/index.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useDismiss.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../floating-ui-react/index.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useFloatingRootContext.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../floating-ui-react/index.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useListNavigation.mjs");
+/* harmony import */ var _floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../floating-ui-react/index.mjs */ "./node_modules/@base-ui/react/floating-ui-react/hooks/useTypeahead.mjs");
+/* harmony import */ var _SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./SelectRootContext.mjs */ "./node_modules/@base-ui/react/select/root/SelectRootContext.mjs");
+/* harmony import */ var _internals_field_root_context_FieldRootContext_mjs__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../../internals/field-root-context/FieldRootContext.mjs */ "./node_modules/@base-ui/react/internals/field-root-context/FieldRootContext.mjs");
+/* harmony import */ var _internals_field_register_control_useRegisterFieldControl_mjs__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../../internals/field-register-control/useRegisterFieldControl.mjs */ "./node_modules/@base-ui/react/internals/field-register-control/useRegisterFieldControl.mjs");
+/* harmony import */ var _internals_labelable_provider_useLabelableId_mjs__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ../../internals/labelable-provider/useLabelableId.mjs */ "./node_modules/@base-ui/react/internals/labelable-provider/useLabelableId.mjs");
+/* harmony import */ var _internals_useTransitionStatus_mjs__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ../../internals/useTransitionStatus.mjs */ "./node_modules/@base-ui/react/internals/useTransitionStatus.mjs");
+/* harmony import */ var _store_mjs__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ../store.mjs */ "./node_modules/@base-ui/react/select/store.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var _internals_useOpenChangeComplete_mjs__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ../../internals/useOpenChangeComplete.mjs */ "./node_modules/@base-ui/react/internals/useOpenChangeComplete.mjs");
+/* harmony import */ var _internals_form_context_FormContext_mjs__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ../../internals/form-context/FormContext.mjs */ "./node_modules/@base-ui/react/internals/form-context/FormContext.mjs");
+/* harmony import */ var _internals_resolveValueLabel_mjs__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ../../internals/resolveValueLabel.mjs */ "./node_modules/@base-ui/react/internals/resolveValueLabel.mjs");
+/* harmony import */ var _internals_itemEquality_mjs__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ../../internals/itemEquality.mjs */ "./node_modules/@base-ui/react/internals/itemEquality.mjs");
+/* harmony import */ var _internals_areArraysEqual_mjs__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ../../internals/areArraysEqual.mjs */ "./node_modules/@base-ui/react/internals/areArraysEqual.mjs");
+/* harmony import */ var _internals_useValueChanged_mjs__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ../../internals/useValueChanged.mjs */ "./node_modules/@base-ui/react/internals/useValueChanged.mjs");
+/* harmony import */ var _utils_useOpenInteractionType_mjs__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ../../utils/useOpenInteractionType.mjs */ "./node_modules/@base-ui/react/utils/useOpenInteractionType.mjs");
+/* harmony import */ var _utils_scrollEdges_mjs__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ../../utils/scrollEdges.mjs */ "./node_modules/@base-ui/react/utils/scrollEdges.mjs");
+/* harmony import */ var _utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ../../utils/popups/index.mjs */ "./node_modules/@base-ui/react/utils/popups/popupStoreUtils.mjs");
+/* harmony import */ var _merge_props_index_mjs__WEBPACK_IMPORTED_MODULE_36__ = __webpack_require__(/*! ../../merge-props/index.mjs */ "./node_modules/@base-ui/react/merge-props/mergeProps.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_37__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Groups all parts of the select.
+ * Doesn't render its own HTML element.
+ *
+ * Documentation: [Base UI Select](https://base-ui.com/react/components/select)
+ */
+
+function SelectRoot(props) {
+  const {
+    id,
+    value: valueProp,
+    defaultValue = null,
+    onValueChange,
+    open: openProp,
+    defaultOpen = false,
+    onOpenChange,
+    name: nameProp,
+    form,
+    autoComplete,
+    disabled: disabledProp = false,
+    readOnly = false,
+    required = false,
+    modal = true,
+    actionsRef,
+    inputRef,
+    onOpenChangeComplete,
+    items,
+    multiple = false,
+    itemToStringLabel,
+    itemToStringValue,
+    isItemEqualToValue = _internals_itemEquality_mjs__WEBPACK_IMPORTED_MODULE_30__.defaultItemEquality,
+    highlightItemOnHover = true,
+    children
+  } = props;
+  const {
+    clearErrors
+  } = (0,_internals_form_context_FormContext_mjs__WEBPACK_IMPORTED_MODULE_28__.useFormContext)();
+  const {
+    setDirty,
+    setTouched,
+    setFocused,
+    validityData,
+    setFilled,
+    name: fieldName,
+    disabled: fieldDisabled,
+    validation,
+    validationMode
+  } = (0,_internals_field_root_context_FieldRootContext_mjs__WEBPACK_IMPORTED_MODULE_20__.useFieldRootContext)();
+  const generatedId = (0,_internals_labelable_provider_useLabelableId_mjs__WEBPACK_IMPORTED_MODULE_22__.useLabelableId)({
+    id
+  });
+  const disabled = fieldDisabled || disabledProp;
+  const name = fieldName ?? nameProp;
+  const [value, setValueUnwrapped] = (0,_base_ui_utils_useControlled__WEBPACK_IMPORTED_MODULE_7__.useControlled)({
+    controlled: valueProp,
+    default: multiple ? defaultValue ?? _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_13__.EMPTY_ARRAY : defaultValue,
+    name: 'Select',
+    state: 'value'
+  });
+  const [open, setOpenUnwrapped] = (0,_base_ui_utils_useControlled__WEBPACK_IMPORTED_MODULE_7__.useControlled)({
+    controlled: openProp,
+    default: defaultOpen,
+    name: 'Select',
+    state: 'open'
+  });
+  const listRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef([]);
+  const labelsRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef([]);
+  const popupRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const scrollHandlerRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const scrollArrowsMountedCountRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(0);
+  const valueRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const valuesRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef([]);
+  const typingRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const firstItemTextRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const selectedItemTextRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const selectionRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef({
+    allowSelectedMouseUp: false,
+    allowUnselectedMouseUp: false,
+    dragY: 0
+  });
+  const alignItemWithTriggerActiveRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(false);
+  const {
+    mounted,
+    setMounted,
+    transitionStatus
+  } = (0,_internals_useTransitionStatus_mjs__WEBPACK_IMPORTED_MODULE_23__.useTransitionStatus)(open);
+  const {
+    openMethod,
+    triggerProps: interactionTypeProps
+  } = (0,_utils_useOpenInteractionType_mjs__WEBPACK_IMPORTED_MODULE_33__.useOpenInteractionType)(open);
+  const store = (0,_base_ui_utils_useRefWithInit__WEBPACK_IMPORTED_MODULE_3__.useRefWithInit)(() => new _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_12__.ReactStore({
+    id: generatedId,
+    labelId: undefined,
+    modal,
+    multiple,
+    itemToStringLabel,
+    itemToStringValue,
+    isItemEqualToValue,
+    value,
+    open,
+    mounted,
+    transitionStatus,
+    items,
+    forceMount: false,
+    openMethod: null,
+    activeIndex: null,
+    selectedIndex: null,
+    popupProps: {},
+    triggerProps: {},
+    triggerElement: null,
+    positionerElement: null,
+    listElement: null,
+    popupSide: null,
+    scrollUpArrowVisible: false,
+    scrollDownArrowVisible: false,
+    hasScrollArrows: false
+  })).current;
+  const activeIndex = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_11__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_24__.selectors.activeIndex);
+  const selectedIndex = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_11__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_24__.selectors.selectedIndex);
+  const triggerElement = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_11__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_24__.selectors.triggerElement);
+  const positionerElement = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_11__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_24__.selectors.positionerElement);
+  const previousOpenMethod = (0,_base_ui_utils_usePreviousValue__WEBPACK_IMPORTED_MODULE_5__.usePreviousValue)(openMethod);
+  const renderedOpenMethod = openMethod ?? previousOpenMethod;
+  const serializedValue = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => {
+    // In multiple mode the shared input is nameless; per-value entries are submitted via
+    // `hiddenInputs`. Its value is therefore irrelevant, and passing the whole array to
+    // `stringifyAsValue` would invoke a user `itemToStringValue` with an array it doesn't expect.
+    if (multiple) {
+      return '';
+    }
+    return (0,_internals_resolveValueLabel_mjs__WEBPACK_IMPORTED_MODULE_29__.stringifyAsValue)(value, itemToStringValue);
+  }, [multiple, value, itemToStringValue]);
+  const fieldStringValue = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => {
+    if (multiple && Array.isArray(value)) {
+      return value.map(currentValue => (0,_internals_resolveValueLabel_mjs__WEBPACK_IMPORTED_MODULE_29__.stringifyAsValue)(currentValue, itemToStringValue));
+    }
+    return (0,_internals_resolveValueLabel_mjs__WEBPACK_IMPORTED_MODULE_29__.stringifyAsValue)(value, itemToStringValue);
+  }, [multiple, value, itemToStringValue]);
+  const controlRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_10__.useValueAsRef)(triggerElement);
+  const getStringifiedValueForForm = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_9__.useStableCallback)(() => fieldStringValue);
+  (0,_internals_field_register_control_useRegisterFieldControl_mjs__WEBPACK_IMPORTED_MODULE_21__.useRegisterFieldControl)(controlRef, generatedId, value, getStringifiedValueForForm, !disabled, nameProp);
+  const initialValueRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(value);
+  // Mirror the `hasSelectedValue` store selector so the Field's filled state agrees with the
+  // trigger/value placeholder semantics (a value serializing to `''` counts as empty).
+  const hasSelectedValue = multiple ? Array.isArray(value) && value.length > 0 : value != null && serializedValue !== '';
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_8__.useIsoLayoutEffect)(() => {
+    setFilled(hasSelectedValue);
+  }, [hasSelectedValue, setFilled]);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_8__.useIsoLayoutEffect)(function syncSelectedIndex() {
+    let target = value;
+    let empty = false;
+    if (multiple) {
+      const currentValue = Array.isArray(value) ? value : [];
+      empty = currentValue.length === 0;
+      target = currentValue[currentValue.length - 1];
+    }
+    const index = empty ? -1 : (0,_internals_itemEquality_mjs__WEBPACK_IMPORTED_MODULE_30__.findItemIndex)(valuesRef.current, target, isItemEqualToValue);
+    const nextIndex = index === -1 ? null : index;
+    if (nextIndex === null) {
+      selectedItemTextRef.current = null;
+    }
+    if (open) {
+      return;
+    }
+    store.set('selectedIndex', nextIndex);
+  }, [multiple, open, value, isItemEqualToValue, store]);
+  function isSelectedValueDirty(currentValue) {
+    const initialValue = validityData.initialValue;
+    if (Array.isArray(currentValue) && Array.isArray(initialValue)) {
+      return !(0,_internals_areArraysEqual_mjs__WEBPACK_IMPORTED_MODULE_31__.areArraysEqual)(currentValue, initialValue, (itemValue, initialItemValue) => (0,_internals_itemEquality_mjs__WEBPACK_IMPORTED_MODULE_30__.compareItemEquality)(itemValue, initialItemValue, isItemEqualToValue));
+    }
+    return currentValue !== initialValue;
+  }
+  ;(0,_internals_useValueChanged_mjs__WEBPACK_IMPORTED_MODULE_32__.useValueChanged)(value, () => {
+    clearErrors(name);
+    setDirty(isSelectedValueDirty(value));
+    validation.change(value);
+  });
+  const setOpen = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_9__.useStableCallback)((nextOpen, eventDetails) => {
+    onOpenChange?.(nextOpen, eventDetails);
+    if (eventDetails.isCanceled) {
+      return;
+    }
+    setOpenUnwrapped(nextOpen);
+    if (!nextOpen && (eventDetails.reason === _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_26__.focusOut || eventDetails.reason === _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_26__.outsidePress)) {
+      setTouched(true);
+      setFocused(false);
+      if (validationMode === 'onBlur') {
+        validation.commit(value);
+      }
+    }
+  });
+  const handleUnmount = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_9__.useStableCallback)(() => {
+    setMounted(false);
+    store.update({
+      activeIndex: null,
+      openMethod: null,
+      scrollUpArrowVisible: false,
+      scrollDownArrowVisible: false
+    });
+    onOpenChangeComplete?.(false);
+  });
+  (0,_internals_useOpenChangeComplete_mjs__WEBPACK_IMPORTED_MODULE_27__.useOpenChangeComplete)({
+    enabled: !actionsRef,
+    open,
+    ref: popupRef,
+    onComplete() {
+      if (!open) {
+        handleUnmount();
+      }
+    }
+  });
+  react__WEBPACK_IMPORTED_MODULE_0__.useImperativeHandle(actionsRef, () => ({
+    unmount: handleUnmount
+  }), [handleUnmount]);
+  const setValue = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_9__.useStableCallback)((nextValue, eventDetails) => {
+    onValueChange?.(nextValue, eventDetails);
+    if (eventDetails.isCanceled) {
+      return;
+    }
+    setValueUnwrapped(nextValue);
+  });
+  const handleScrollArrowVisibility = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_9__.useStableCallback)(scroller => {
+    const maxScrollTop = (0,_utils_scrollEdges_mjs__WEBPACK_IMPORTED_MODULE_34__.getMaxScrollOffset)(scroller.scrollHeight, scroller.clientHeight);
+    const scrollTop = (0,_utils_scrollEdges_mjs__WEBPACK_IMPORTED_MODULE_34__.normalizeScrollOffset)(scroller.scrollTop, maxScrollTop);
+    const shouldShowUp = scrollTop > 0;
+    const shouldShowDown = scrollTop < maxScrollTop;
+    store.set('scrollUpArrowVisible', shouldShowUp);
+    store.set('scrollDownArrowVisible', shouldShowDown);
+  });
+  const floatingContext = (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_16__.useFloatingRootContext)({
+    open,
+    onOpenChange: setOpen,
+    elements: {
+      reference: triggerElement,
+      floating: positionerElement
+    }
+  });
+  const click = (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_14__.useClick)(floatingContext, {
+    enabled: !readOnly && !disabled,
+    event: 'mousedown'
+  });
+  const dismiss = (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_15__.useDismiss)(floatingContext);
+  const listNavigation = (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_17__.useListNavigation)(floatingContext, {
+    enabled: !readOnly && !disabled,
+    listRef,
+    activeIndex,
+    selectedIndex,
+    disabledIndices: _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_13__.EMPTY_ARRAY,
+    onNavigate(nextActiveIndex) {
+      // Retain the highlight while transitioning out.
+      if (nextActiveIndex === null && !open) {
+        return;
+      }
+      store.set('activeIndex', nextActiveIndex);
+    },
+    focusItemOnHover: highlightItemOnHover
+  });
+  const typeahead = (0,_floating_ui_react_index_mjs__WEBPACK_IMPORTED_MODULE_18__.useTypeahead)(floatingContext, {
+    enabled: !readOnly && !disabled && (open || !multiple),
+    listRef: labelsRef,
+    activeIndex,
+    selectedIndex,
+    // Skip disabled items while matching so typeahead advances to the next selectable item
+    // (a click can never select a disabled item and native `<select>` skips them too). Resolve
+    // the disabled state from the element via the attribute-only `isElementDisabled` so the
+    // hidden, force-mounted items used for closed-trigger typeahead aren't dropped by the
+    // `elementsRef`/visibility filter that `disabledIndices` deliberately sidesteps.
+    disabledIndices: index => (0,_base_ui_utils_isElementDisabled__WEBPACK_IMPORTED_MODULE_6__.isElementDisabled)(listRef.current[index]),
+    onMatch(index) {
+      if (open) {
+        store.set('activeIndex', index);
+      } else {
+        setValue(valuesRef.current[index], (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_25__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_26__.none));
+      }
+    },
+    onTyping(typing) {
+      typingRef.current = typing;
+    }
+  });
+
+  // `Select.Trigger` applies the id itself from the store, so it's deliberately not merged here.
+  const mergedTriggerProps = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => (0,_merge_props_index_mjs__WEBPACK_IMPORTED_MODULE_36__.mergeProps)(typeahead.reference, listNavigation.reference, dismiss.reference, click.reference, interactionTypeProps), [click.reference, typeahead.reference, listNavigation.reference, dismiss.reference, interactionTypeProps]);
+  const popupProps = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => (0,_merge_props_index_mjs__WEBPACK_IMPORTED_MODULE_36__.mergeProps)(_utils_popups_index_mjs__WEBPACK_IMPORTED_MODULE_35__.FOCUSABLE_POPUP_PROPS, typeahead.floating, listNavigation.floating, dismiss.floating), [typeahead.floating, listNavigation.floating, dismiss.floating]);
+  const itemProps = listNavigation.item ?? _base_ui_utils_empty__WEBPACK_IMPORTED_MODULE_13__.EMPTY_OBJECT;
+  (0,_base_ui_utils_useOnFirstRender__WEBPACK_IMPORTED_MODULE_4__.useOnFirstRender)(() => {
+    store.update({
+      popupProps,
+      triggerProps: mergedTriggerProps
+    });
+  });
+  store.useSyncedValues({
+    id: generatedId,
+    modal,
+    multiple,
+    value,
+    open,
+    mounted,
+    transitionStatus,
+    popupProps,
+    triggerProps: mergedTriggerProps,
+    items,
+    itemToStringLabel,
+    itemToStringValue,
+    isItemEqualToValue,
+    openMethod: renderedOpenMethod
+  });
+  const contextValue = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    store,
+    floatingContext,
+    required,
+    disabled,
+    readOnly,
+    multiple,
+    highlightItemOnHover,
+    setValue,
+    setOpen,
+    listRef,
+    popupRef,
+    scrollHandlerRef,
+    handleScrollArrowVisibility,
+    scrollArrowsMountedCountRef,
+    itemProps,
+    valueRef,
+    valuesRef,
+    labelsRef,
+    typingRef,
+    selectionRef,
+    firstItemTextRef,
+    selectedItemTextRef,
+    validation,
+    onOpenChangeComplete,
+    alignItemWithTriggerActiveRef,
+    initialValueRef
+  }), [store, floatingContext, required, disabled, readOnly, multiple, highlightItemOnHover, setValue, setOpen, itemProps, validation, onOpenChangeComplete, handleScrollArrowVisibility]);
+  const ref = (0,_base_ui_utils_useMergedRefs__WEBPACK_IMPORTED_MODULE_2__.useMergedRefs)(inputRef, validation.inputRef);
+  const hiddenInputName = multiple ? undefined : name;
+  const hiddenInputs = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => {
+    if (!multiple || !Array.isArray(value) || !name) {
+      return null;
+    }
+    return value.map(v => {
+      const currentSerializedValue = (0,_internals_resolveValueLabel_mjs__WEBPACK_IMPORTED_MODULE_29__.stringifyAsValue)(v, itemToStringValue);
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_37__.jsx)("input", {
+        type: "hidden",
+        form: form,
+        name: name,
+        value: currentSerializedValue,
+        disabled: disabled
+      }, currentSerializedValue);
+    });
+  }, [multiple, value, form, name, itemToStringValue, disabled]);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_37__.jsxs)(_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_19__.SelectRootContext.Provider, {
+    value: contextValue,
+    children: [children, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_37__.jsx)("input", {
+      ...validation.getValidationProps(disabled, {
+        onFocus() {
+          // Move focus to the trigger element when the hidden input is focused.
+          store.state.triggerElement?.focus({
+            // Supported in Chrome from 144 (January 2026)
+            focusVisible: true
+          });
+        },
+        // Handle browser autofill.
+        onChange(event) {
+          // Workaround for https://github.com/react/react/issues/9023
+          if (event.nativeEvent.defaultPrevented || disabled || readOnly) {
+            return;
+          }
+          const nextValue = event.currentTarget.value;
+          const details = (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_25__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_26__.none, event.nativeEvent);
+          function handleChange() {
+            if (multiple) {
+              // Browser autofill only writes a single scalar value.
+              return;
+            }
+
+            // Preserve the original serialized matching, then fall back to rendered text,
+            // which browsers can autofill for primitive values like `value="US">United States`.
+            const nextValueLower = nextValue.toLowerCase();
+            let matchingIndex = valuesRef.current.findIndex(candidate => (0,_internals_resolveValueLabel_mjs__WEBPACK_IMPORTED_MODULE_29__.stringifyAsValue)(candidate, itemToStringValue).toLowerCase() === nextValueLower || (0,_internals_resolveValueLabel_mjs__WEBPACK_IMPORTED_MODULE_29__.stringifyAsLabel)(candidate, itemToStringLabel).toLowerCase() === nextValueLower);
+            if (matchingIndex === -1) {
+              matchingIndex = valuesRef.current.findIndex((_, index) => {
+                const renderedLabel = labelsRef.current[index];
+                return renderedLabel != null && renderedLabel.toLowerCase() === nextValueLower;
+              });
+            }
+            const matchingValue = valuesRef.current[matchingIndex];
+            if (matchingValue != null) {
+              // `setValue` may be canceled by `onValueChange`; rely on `useValueChanged` to
+              // mark the field dirty and run validation only when the value actually changes.
+              setValue(matchingValue, details);
+            }
+          }
+          store.set('forceMount', true);
+          queueMicrotask(handleChange);
+        }
+      }),
+      id: generatedId && hiddenInputName == null ? `${generatedId}-hidden-input` : undefined,
+      form: form,
+      name: hiddenInputName,
+      autoComplete: autoComplete,
+      value: serializedValue,
+      disabled: disabled,
+      required: required && !(multiple && hasSelectedValue),
+      readOnly: readOnly,
+      ref: ref,
+      style: name ? _base_ui_utils_visuallyHidden__WEBPACK_IMPORTED_MODULE_1__.visuallyHiddenInput : _base_ui_utils_visuallyHidden__WEBPACK_IMPORTED_MODULE_1__.visuallyHidden,
+      tabIndex: -1,
+      "aria-hidden": true,
+      suppressHydrationWarning: true
+    }), hiddenInputs]
+  });
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/root/SelectRootContext.mjs"
+/*!***********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/root/SelectRootContext.mjs ***!
+  \***********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectRootContext: () => (/* binding */ SelectRootContext),
+/* harmony export */   useSelectRootContext: () => (/* binding */ useSelectRootContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+
+const SelectRootContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(null);
+if (true) SelectRootContext.displayName = "SelectRootContext";
+function useSelectRootContext() {
+  const context = react__WEBPACK_IMPORTED_MODULE_0__.useContext(SelectRootContext);
+  if (context === null) {
+    throw new Error( true ? 'Base UI: SelectRootContext is missing. Select parts must be placed within <Select.Root>.' : 0);
+  }
+  return context;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/store.mjs"
+/*!******************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/store.mjs ***!
+  \******************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   selectors: () => (/* binding */ selectors)
+/* harmony export */ });
+/* harmony import */ var _internals_itemEquality_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../internals/itemEquality.mjs */ "./node_modules/@base-ui/react/internals/itemEquality.mjs");
+/* harmony import */ var _internals_resolveValueLabel_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../internals/resolveValueLabel.mjs */ "./node_modules/@base-ui/react/internals/resolveValueLabel.mjs");
+
+
+const selectors = {
+  id: state => state.id,
+  labelId: state => state.labelId,
+  modal: state => state.modal,
+  items: state => state.items,
+  itemToStringLabel: state => state.itemToStringLabel,
+  isItemEqualToValue: state => state.isItemEqualToValue,
+  value: state => state.value,
+  hasSelectedValue: state => {
+    const {
+      value,
+      multiple,
+      itemToStringValue
+    } = state;
+    if (value == null) {
+      return false;
+    }
+    if (multiple && Array.isArray(value)) {
+      return value.length > 0;
+    }
+    return (0,_internals_resolveValueLabel_mjs__WEBPACK_IMPORTED_MODULE_1__.stringifyAsValue)(value, itemToStringValue) !== '';
+  },
+  hasNullItemLabel: (state, enabled) => {
+    return enabled ? (0,_internals_resolveValueLabel_mjs__WEBPACK_IMPORTED_MODULE_1__.hasNullItemLabel)(state.items) : false;
+  },
+  open: state => state.open,
+  mounted: state => state.mounted,
+  forceMount: state => state.forceMount,
+  transitionStatus: state => state.transitionStatus,
+  openMethod: state => state.openMethod,
+  activeIndex: state => state.activeIndex,
+  selectedIndex: state => state.selectedIndex,
+  isActive: (state, index) => state.activeIndex === index,
+  isSelected: (state, itemValue) => {
+    const comparer = state.isItemEqualToValue;
+    const storeValue = state.value;
+    if (state.multiple) {
+      return Array.isArray(storeValue) && storeValue.some(selectedItem => (0,_internals_itemEquality_mjs__WEBPACK_IMPORTED_MODULE_0__.compareItemEquality)(itemValue, selectedItem, comparer));
+    }
+
+    // The value is the source of truth: a stale `selectedIndex` (e.g. the controlled
+    // value changes while the popup is open, where the index sync is deferred) must not
+    // keep a previously selected item marked as selected.
+    return (0,_internals_itemEquality_mjs__WEBPACK_IMPORTED_MODULE_0__.compareItemEquality)(itemValue, storeValue, comparer);
+  },
+  isSelectedByFocus: (state, index) => {
+    return state.selectedIndex === index;
+  },
+  popupProps: state => state.popupProps,
+  triggerProps: state => state.triggerProps,
+  triggerElement: state => state.triggerElement,
+  positionerElement: state => state.positionerElement,
+  listElement: state => state.listElement,
+  popupSide: state => state.popupSide,
+  scrollUpArrowVisible: state => state.scrollUpArrowVisible,
+  scrollDownArrowVisible: state => state.scrollDownArrowVisible,
+  hasScrollArrows: state => state.hasScrollArrows
+};
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/trigger/SelectTrigger.mjs"
+/*!**********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/trigger/SelectTrigger.mjs ***!
+  \**********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectTrigger: () => (/* binding */ SelectTrigger)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@base-ui/utils/owner.mjs");
+/* harmony import */ var _base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useTimeout */ "./node_modules/@base-ui/utils/useTimeout.mjs");
+/* harmony import */ var _base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/useValueAsRef */ "./node_modules/@base-ui/utils/useValueAsRef.mjs");
+/* harmony import */ var _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @base-ui/utils/store */ "./node_modules/@base-ui/utils/store/useStore.mjs");
+/* harmony import */ var _root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../root/SelectRootContext.mjs */ "./node_modules/@base-ui/react/select/root/SelectRootContext.mjs");
+/* harmony import */ var _internals_field_root_context_FieldRootContext_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../internals/field-root-context/FieldRootContext.mjs */ "./node_modules/@base-ui/react/internals/field-root-context/FieldRootContext.mjs");
+/* harmony import */ var _internals_labelable_provider_LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../internals/labelable-provider/LabelableContext.mjs */ "./node_modules/@base-ui/react/internals/labelable-provider/LabelableContext.mjs");
+/* harmony import */ var _utils_popupStateMapping_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../utils/popupStateMapping.mjs */ "./node_modules/@base-ui/react/utils/popupStateMapping.mjs");
+/* harmony import */ var _internals_field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../internals/field-constants/constants.mjs */ "./node_modules/@base-ui/react/internals/field-constants/constants.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+/* harmony import */ var _store_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../store.mjs */ "./node_modules/@base-ui/react/select/store.mjs");
+/* harmony import */ var _utils_getPseudoElementBounds_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../utils/getPseudoElementBounds.mjs */ "./node_modules/@base-ui/react/utils/getPseudoElementBounds.mjs");
+/* harmony import */ var _floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../floating-ui-react/utils.mjs */ "./node_modules/@base-ui/react/floating-ui-react/utils/element.mjs");
+/* harmony import */ var _floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../floating-ui-react/utils.mjs */ "./node_modules/@base-ui/react/internals/shadowDom.mjs");
+/* harmony import */ var _merge_props_index_mjs__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../merge-props/index.mjs */ "./node_modules/@base-ui/react/merge-props/mergeProps.mjs");
+/* harmony import */ var _internals_use_button_index_mjs__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../internals/use-button/index.mjs */ "./node_modules/@base-ui/react/internals/use-button/useButton.mjs");
+/* harmony import */ var _internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../internals/createBaseUIEventDetails.mjs */ "./node_modules/@base-ui/react/internals/createBaseUIEventDetails.mjs");
+/* harmony import */ var _internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../internals/reasons.mjs */ "./node_modules/@base-ui/react/internals/reason-parts.mjs");
+/* harmony import */ var _internals_labelable_provider_useLabelableId_mjs__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../internals/labelable-provider/useLabelableId.mjs */ "./node_modules/@base-ui/react/internals/labelable-provider/useLabelableId.mjs");
+/* harmony import */ var _utils_resolveAriaLabelledBy_mjs__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../../utils/resolveAriaLabelledBy.mjs */ "./node_modules/@base-ui/react/utils/resolveAriaLabelledBy.mjs");
+'use client';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const SELECTED_DELAY = 400;
+const stateAttributesMapping = {
+  ..._utils_popupStateMapping_mjs__WEBPACK_IMPORTED_MODULE_8__.pressableTriggerOpenStateMapping,
+  ..._internals_field_constants_constants_mjs__WEBPACK_IMPORTED_MODULE_9__.fieldValidityMapping,
+  popupSide: side => side ? {
+    'data-popup-side': side
+  } : null,
+  value: () => null
+};
+
+/**
+ * A button that opens the select popup.
+ * Renders a `<button>` element.
+ *
+ * Documentation: [Base UI Select](https://base-ui.com/react/components/select)
+ */
+const SelectTrigger = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function SelectTrigger(componentProps, forwardedRef) {
+  const {
+    render,
+    className,
+    id: idProp,
+    disabled: disabledProp = false,
+    nativeButton = true,
+    style,
+    ...elementProps
+  } = componentProps;
+  const {
+    setTouched,
+    setFocused,
+    validationMode,
+    state: fieldState,
+    disabled: fieldDisabled
+  } = (0,_internals_field_root_context_FieldRootContext_mjs__WEBPACK_IMPORTED_MODULE_6__.useFieldRootContext)();
+  const {
+    labelId: fieldLabelId
+  } = (0,_internals_labelable_provider_LabelableContext_mjs__WEBPACK_IMPORTED_MODULE_7__.useLabelableContext)();
+  const {
+    store,
+    setOpen,
+    selectionRef,
+    validation,
+    readOnly,
+    required,
+    alignItemWithTriggerActiveRef,
+    disabled: selectDisabled
+  } = (0,_root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_5__.useSelectRootContext)();
+  const disabled = fieldDisabled || selectDisabled || disabledProp;
+  const open = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_11__.selectors.open);
+  const mounted = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_11__.selectors.mounted);
+  const value = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_11__.selectors.value);
+  const triggerProps = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_11__.selectors.triggerProps);
+  const positionerElement = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_11__.selectors.positionerElement);
+  const listElement = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_11__.selectors.listElement);
+  const popupSideValue = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_11__.selectors.popupSide);
+  const rootId = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_11__.selectors.id);
+  const selectLabelId = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_11__.selectors.labelId);
+  const hasSelectedValue = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_4__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_11__.selectors.hasSelectedValue);
+  const popupSide = mounted && positionerElement ? popupSideValue : null;
+  const id = idProp ?? rootId;
+  const ariaLabelledBy = (0,_utils_resolveAriaLabelledBy_mjs__WEBPACK_IMPORTED_MODULE_20__.resolveAriaLabelledBy)(fieldLabelId, selectLabelId);
+  (0,_internals_labelable_provider_useLabelableId_mjs__WEBPACK_IMPORTED_MODULE_19__.useLabelableId)({
+    id
+  });
+  const positionerRef = (0,_base_ui_utils_useValueAsRef__WEBPACK_IMPORTED_MODULE_3__.useValueAsRef)(positionerElement);
+  const triggerRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef(null);
+  const {
+    getButtonProps,
+    buttonRef
+  } = (0,_internals_use_button_index_mjs__WEBPACK_IMPORTED_MODULE_16__.useButton)({
+    disabled,
+    native: nativeButton
+  });
+  const setTriggerElement = store.useStateSetter('triggerElement');
+  const timeoutFocus = (0,_base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_2__.useTimeout)();
+  const timeoutMouseDown = (0,_base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_2__.useTimeout)();
+  const selectedDelayTimeout = (0,_base_ui_utils_useTimeout__WEBPACK_IMPORTED_MODULE_2__.useTimeout)();
+  react__WEBPACK_IMPORTED_MODULE_0__.useEffect(() => {
+    if (open) {
+      // A mousedown on the trigger can open the popup under the cursor. Keep mouseup selection
+      // disabled briefly so releasing over either the selected item or a neighboring item doesn't
+      // commit an accidental selection. SelectItem can still opt into unselected mouseup sooner
+      // after a real drag over the item.
+      selectedDelayTimeout.start(SELECTED_DELAY, () => {
+        selectionRef.current.allowUnselectedMouseUp = true;
+        selectionRef.current.allowSelectedMouseUp = true;
+      });
+      return () => {
+        selectedDelayTimeout.clear();
+      };
+    }
+    selectionRef.current = {
+      allowSelectedMouseUp: false,
+      allowUnselectedMouseUp: false,
+      dragY: 0
+    };
+    timeoutMouseDown.clear();
+    return undefined;
+  }, [open, selectionRef, timeoutMouseDown, selectedDelayTimeout]);
+  const mergedProps = (0,_merge_props_index_mjs__WEBPACK_IMPORTED_MODULE_15__.mergeProps)(triggerProps, {
+    id,
+    role: 'combobox',
+    'aria-expanded': open,
+    'aria-haspopup': 'listbox',
+    'aria-controls': open ? listElement?.id ?? (0,_floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_13__.getFloatingFocusElement)(positionerElement)?.id : undefined,
+    'aria-labelledby': ariaLabelledBy,
+    'aria-readonly': readOnly || undefined,
+    'aria-required': required || undefined,
+    tabIndex: disabled ? -1 : 0,
+    onFocus(event) {
+      setFocused(true);
+
+      // The popup element shouldn't obscure the focused trigger.
+      if (open && alignItemWithTriggerActiveRef.current) {
+        setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_17__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_18__.none, event.nativeEvent));
+      }
+
+      // Saves a re-render on initial click: `forceMount === true` mounts
+      // the items before `open === true`. We could sync those cycles better
+      // without a timeout, but this is enough for now.
+      timeoutFocus.start(0, () => {
+        store.set('forceMount', true);
+      });
+    },
+    onBlur(event) {
+      // If focus is moving into the popup, don't count it as a blur.
+      if ((0,_floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(positionerElement, event.relatedTarget)) {
+        return;
+      }
+      setTouched(true);
+      setFocused(false);
+      if (validationMode === 'onBlur') {
+        validation.commit(value);
+      }
+    },
+    onMouseDown(event) {
+      if (open) {
+        return;
+      }
+      const doc = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_1__.ownerDocument)(event.currentTarget);
+      function handleMouseUp(mouseEvent) {
+        if (!triggerRef.current) {
+          return;
+        }
+        const mouseUpTarget = mouseEvent.target;
+
+        // Don't treat the release as an outside press when it lands on the trigger or inside
+        // the popup positioner (or their children).
+        if ((0,_floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(triggerRef.current, mouseUpTarget) || (0,_floating_ui_react_utils_mjs__WEBPACK_IMPORTED_MODULE_14__.contains)(positionerRef.current, mouseUpTarget)) {
+          return;
+        }
+        if ((0,_utils_getPseudoElementBounds_mjs__WEBPACK_IMPORTED_MODULE_12__.isMouseWithinBounds)(mouseEvent, triggerRef.current)) {
+          return;
+        }
+        setOpen(false, (0,_internals_createBaseUIEventDetails_mjs__WEBPACK_IMPORTED_MODULE_17__.createChangeEventDetails)(_internals_reasons_mjs__WEBPACK_IMPORTED_MODULE_18__.cancelOpen, mouseEvent));
+      }
+
+      // Firefox can fire this upon mousedown
+      timeoutMouseDown.start(0, () => {
+        doc.addEventListener('mouseup', handleMouseUp, {
+          once: true
+        });
+      });
+    }
+  }, elementProps, getButtonProps);
+  const props = validation.getValidationProps(disabled, mergedProps);
+
+  // ensure nested useButton does not overwrite the combobox role:
+  // <Toolbar.Button render={<Select.Trigger />} />
+  props.role = 'combobox';
+  const state = {
+    ...fieldState,
+    open,
+    disabled,
+    value,
+    readOnly,
+    popupSide,
+    placeholder: !hasSelectedValue
+  };
+  return (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_10__.useRenderElement)('button', componentProps, {
+    ref: [forwardedRef, triggerRef, buttonRef, setTriggerElement],
+    state,
+    stateAttributesMapping,
+    props
+  });
+});
+if (true) SelectTrigger.displayName = "SelectTrigger";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/select/value/SelectValue.mjs"
+/*!******************************************************************!*\
+  !*** ./node_modules/@base-ui/react/select/value/SelectValue.mjs ***!
+  \******************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectValue: () => (/* binding */ SelectValue)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/store */ "./node_modules/@base-ui/utils/store/useStore.mjs");
+/* harmony import */ var _internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../internals/useRenderElement.mjs */ "./node_modules/@base-ui/react/internals/useRenderElement.mjs");
+/* harmony import */ var _root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../root/SelectRootContext.mjs */ "./node_modules/@base-ui/react/select/root/SelectRootContext.mjs");
+/* harmony import */ var _internals_resolveValueLabel_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../internals/resolveValueLabel.mjs */ "./node_modules/@base-ui/react/internals/resolveValueLabel.mjs");
+/* harmony import */ var _store_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../store.mjs */ "./node_modules/@base-ui/react/select/store.mjs");
+'use client';
+
+
+
+
+
+
+
+const stateAttributesMapping = {
+  value: () => null
+};
+
+/**
+ * A text label of the currently selected item.
+ * Renders a `<span>` element.
+ *
+ * Documentation: [Base UI Select](https://base-ui.com/react/components/select)
+ */
+const SelectValue = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function SelectValue(componentProps, forwardedRef) {
+  const {
+    className,
+    render,
+    children: childrenProp,
+    placeholder,
+    style,
+    ...elementProps
+  } = componentProps;
+  const {
+    store,
+    valueRef
+  } = (0,_root_SelectRootContext_mjs__WEBPACK_IMPORTED_MODULE_3__.useSelectRootContext)();
+  const value = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_1__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_5__.selectors.value);
+  const items = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_1__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_5__.selectors.items);
+  const itemToStringLabel = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_1__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_5__.selectors.itemToStringLabel);
+  const hasSelectedValue = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_1__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_5__.selectors.hasSelectedValue);
+  const shouldCheckNullItemLabel = !hasSelectedValue && placeholder != null && childrenProp == null;
+  const hasNullLabel = (0,_base_ui_utils_store__WEBPACK_IMPORTED_MODULE_1__.useStore)(store, _store_mjs__WEBPACK_IMPORTED_MODULE_5__.selectors.hasNullItemLabel, shouldCheckNullItemLabel);
+  const state = {
+    value,
+    placeholder: !hasSelectedValue
+  };
+  let children = null;
+  if (typeof childrenProp === 'function') {
+    children = childrenProp(value);
+  } else if (childrenProp != null) {
+    children = childrenProp;
+  } else if (shouldCheckNullItemLabel && !hasNullLabel) {
+    children = placeholder;
+  } else if (Array.isArray(value)) {
+    children = (0,_internals_resolveValueLabel_mjs__WEBPACK_IMPORTED_MODULE_4__.resolveMultipleLabels)(value, items, itemToStringLabel);
+  } else {
+    children = (0,_internals_resolveValueLabel_mjs__WEBPACK_IMPORTED_MODULE_4__.resolveSelectedLabel)(value, items, itemToStringLabel);
+  }
+  const element = (0,_internals_useRenderElement_mjs__WEBPACK_IMPORTED_MODULE_2__.useRenderElement)('span', componentProps, {
+    state,
+    ref: [forwardedRef, valueRef],
+    props: [{
+      children
+    }, elementProps],
+    stateAttributesMapping
+  });
+  return element;
+});
+if (true) SelectValue.displayName = "SelectValue";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/toolbar/root/ToolbarRootContext.mjs"
+/*!*************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/toolbar/root/ToolbarRootContext.mjs ***!
+  \*************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ToolbarRootContext: () => (/* binding */ ToolbarRootContext),
+/* harmony export */   useToolbarRootContext: () => (/* binding */ useToolbarRootContext)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+
+const ToolbarRootContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(undefined);
+if (true) ToolbarRootContext.displayName = "ToolbarRootContext";
+function useToolbarRootContext(optional) {
+  const context = react__WEBPACK_IMPORTED_MODULE_0__.useContext(ToolbarRootContext);
+  if (context === undefined && !optional) {
+    throw new Error( true ? 'Base UI: ToolbarRootContext is missing. Toolbar parts must be placed within <Toolbar.Root>.' : 0);
+  }
+  return context;
 }
 
 /***/ },
@@ -24428,6 +30776,55 @@ if (true) FocusGuard.displayName = "FocusGuard";
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/react/utils/InternalBackdrop.mjs"
+/*!****************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/InternalBackdrop.mjs ***!
+  \****************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   InternalBackdrop: () => (/* binding */ InternalBackdrop)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+
+
+/**
+ * @internal
+ */
+
+const InternalBackdrop = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef(function InternalBackdrop(props, ref) {
+  const {
+    cutout,
+    ...otherProps
+  } = props;
+  let clipPath;
+  if (cutout) {
+    const rect = cutout.getBoundingClientRect();
+    clipPath = `polygon(0% 0%,100% 0%,100% 100%,0% 100%,0% 0%,${rect.left}px ${rect.top}px,${rect.left}px ${rect.bottom}px,${rect.right}px ${rect.bottom}px,${rect.right}px ${rect.top}px,${rect.left}px ${rect.top}px)`;
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+    ref: ref,
+    role: "presentation"
+    // Ensures Floating UI's outside press detection runs, as it considers
+    // it an element that existed when the popup rendered.
+    ,
+    "data-base-ui-inert": "",
+    ...otherProps,
+    style: {
+      position: 'fixed',
+      inset: 0,
+      userSelect: 'none',
+      WebkitUserSelect: 'none',
+      clipPath
+    }
+  });
+});
+if (true) InternalBackdrop.displayName = "InternalBackdrop";
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/react/utils/NullStore.mjs"
 /*!*********************************************************!*\
   !*** ./node_modules/@base-ui/react/utils/NullStore.mjs ***!
@@ -24513,6 +30910,72 @@ function dispatchClickWithModifiers(target, sourceEvent, {
     altKey: sourceEvent.altKey,
     metaKey: sourceEvent.metaKey
   }));
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/getPseudoElementBounds.mjs"
+/*!**********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/getPseudoElementBounds.mjs ***!
+  \**********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getPseudoElementBounds: () => (/* binding */ getPseudoElementBounds),
+/* harmony export */   isMouseWithinBounds: () => (/* binding */ isMouseWithinBounds)
+/* harmony export */ });
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/platform */ "./node_modules/@base-ui/utils/platform/env.mjs");
+
+
+// Tolerance around the element bounds so a fast click whose pointer drifts slightly
+// during press-release isn't mistaken for a drag-off-and-release cancellation.
+// Matches typical OS/browser drag-initiation thresholds.
+const BOUNDARY_OFFSET = 5;
+
+/**
+ * Determines if a mouse event occurred within the bounds of an element
+ * (including its pseudo-elements), with a small tolerance for pointer drift.
+ */
+function isMouseWithinBounds(event, element) {
+  const bounds = getPseudoElementBounds(element);
+  return event.clientX >= bounds.left - BOUNDARY_OFFSET && event.clientX <= bounds.right + BOUNDARY_OFFSET && event.clientY >= bounds.top - BOUNDARY_OFFSET && event.clientY <= bounds.bottom + BOUNDARY_OFFSET;
+}
+function getPseudoElementBounds(element) {
+  const elementRect = element.getBoundingClientRect();
+  const win = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_0__.getWindow)(element);
+
+  // Avoid "Not implemented: window.getComputedStyle(elt, pseudoElt)" in jsdom.
+  if (_base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_1__.jsdom) {
+    return elementRect;
+  }
+  const beforeStyles = win.getComputedStyle(element, '::before');
+  const afterStyles = win.getComputedStyle(element, '::after');
+  const hasPseudoElements = beforeStyles.content !== 'none' || afterStyles.content !== 'none';
+  if (!hasPseudoElements) {
+    return elementRect;
+  }
+
+  // Get dimensions of pseudo-elements
+  const beforeWidth = parseFloat(beforeStyles.width) || 0;
+  const beforeHeight = parseFloat(beforeStyles.height) || 0;
+  const afterWidth = parseFloat(afterStyles.width) || 0;
+  const afterHeight = parseFloat(afterStyles.height) || 0;
+
+  // Calculate max dimensions including pseudo-elements
+  const totalWidth = Math.max(elementRect.width, beforeWidth, afterWidth);
+  const totalHeight = Math.max(elementRect.height, beforeHeight, afterHeight);
+
+  // Calculate the differences to extend the bounds
+  const widthDiff = totalWidth - elementRect.width;
+  const heightDiff = totalHeight - elementRect.height;
+  return {
+    left: elementRect.left - widthDiff / 2,
+    right: elementRect.right + widthDiff / 2,
+    top: elementRect.top - heightDiff / 2,
+    bottom: elementRect.bottom + heightDiff / 2
+  };
 }
 
 /***/ },
@@ -25445,6 +31908,28 @@ function usePopupHandleStore(handle) {
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/react/utils/resolveAriaLabelledBy.mjs"
+/*!*********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/resolveAriaLabelledBy.mjs ***!
+  \*********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getDefaultLabelId: () => (/* binding */ getDefaultLabelId),
+/* harmony export */   resolveAriaLabelledBy: () => (/* binding */ resolveAriaLabelledBy)
+/* harmony export */ });
+'use client';
+
+function getDefaultLabelId(id) {
+  return id == null ? undefined : `${id}-label`;
+}
+function resolveAriaLabelledBy(fieldLabelId, localLabelId) {
+  return fieldLabelId ?? localLabelId;
+}
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/react/utils/resolveClassName.mjs"
 /*!****************************************************************!*\
   !*** ./node_modules/@base-ui/react/utils/resolveClassName.mjs ***!
@@ -25514,6 +31999,123 @@ function resolveStyle(style, state) {
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/react/utils/scrollEdges.mjs"
+/*!***********************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/scrollEdges.mjs ***!
+  \***********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SCROLL_EDGE_TOLERANCE_PX: () => (/* binding */ SCROLL_EDGE_TOLERANCE_PX),
+/* harmony export */   getMaxScrollOffset: () => (/* binding */ getMaxScrollOffset),
+/* harmony export */   normalizeScrollOffset: () => (/* binding */ normalizeScrollOffset)
+/* harmony export */ });
+/* harmony import */ var _internals_clamp_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../internals/clamp.mjs */ "./node_modules/@base-ui/react/internals/clamp.mjs");
+
+const SCROLL_EDGE_TOLERANCE_PX = 1;
+function getMaxScrollOffset(scrollSize, clientSize) {
+  return Math.max(0, scrollSize - clientSize);
+}
+function normalizeScrollOffset(value, max) {
+  if (max <= 0) {
+    return 0;
+  }
+  const clamped = (0,_internals_clamp_mjs__WEBPACK_IMPORTED_MODULE_0__.clamp)(value, 0, max);
+  const startDistance = clamped;
+  const endDistance = max - clamped;
+  const withinStartTolerance = startDistance <= SCROLL_EDGE_TOLERANCE_PX;
+  const withinEndTolerance = endDistance <= SCROLL_EDGE_TOLERANCE_PX;
+  if (withinStartTolerance && withinEndTolerance) {
+    return startDistance <= endDistance ? 0 : max;
+  }
+  if (withinStartTolerance) {
+    return 0;
+  }
+  if (withinEndTolerance) {
+    return max;
+  }
+  return clamped;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/styles.mjs"
+/*!******************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/styles.mjs ***!
+  \******************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   styleDisableScrollbar: () => (/* binding */ styleDisableScrollbar)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+
+const DISABLE_SCROLLBAR_CLASS_NAME = 'base-ui-disable-scrollbar';
+const styleDisableScrollbar = {
+  className: DISABLE_SCROLLBAR_CLASS_NAME,
+  getElement(nonce) {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("style", {
+      nonce: nonce,
+      href: DISABLE_SCROLLBAR_CLASS_NAME,
+      precedence: "base-ui:low",
+      children: `.${DISABLE_SCROLLBAR_CLASS_NAME}{scrollbar-width:none}.${DISABLE_SCROLLBAR_CLASS_NAME}::-webkit-scrollbar{display:none}`
+    });
+  }
+};
+if (true) styleDisableScrollbar.getElement.displayName = "styleDisableScrollbar.getElement";
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/useAnchoredPopupScrollLock.mjs"
+/*!**************************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/useAnchoredPopupScrollLock.mjs ***!
+  \**************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useAnchoredPopupScrollLock: () => (/* binding */ useAnchoredPopupScrollLock)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/owner */ "./node_modules/@base-ui/utils/owner.mjs");
+/* harmony import */ var _base_ui_utils_useScrollLock__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useScrollLock */ "./node_modules/@base-ui/utils/useScrollLock.mjs");
+/* harmony import */ var _base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/useIsoLayoutEffect */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+'use client';
+
+
+
+
+
+
+// Touch-opened popups normally avoid scroll locking so users can still swipe outside to dismiss.
+// This hook re-enables scroll lock only when the popup is effectively full-width.
+// Treat popups with up to 20px of total horizontal gutter as full-width so common ~10px side
+// padding still locks scroll, since that leaves too little outside space for a reliable swipe.
+const VIEWPORT_WIDTH_TOLERANCE_PX = 20;
+
+/**
+ * Manages scroll lock for anchored popups. For non-touch opens, scroll lock is applied when
+ * enabled. For touch opens, scroll lock is applied only when the positioner width is effectively
+ * viewport-sized.
+ */
+function useAnchoredPopupScrollLock(enabled, touchOpen, positionerElement, referenceElement) {
+  const [touchOpenShouldLockScroll, setTouchOpenShouldLockScroll] = react__WEBPACK_IMPORTED_MODULE_0__.useState(false);
+  (0,_base_ui_utils_useIsoLayoutEffect__WEBPACK_IMPORTED_MODULE_3__.useIsoLayoutEffect)(() => {
+    if (!enabled || !touchOpen || positionerElement == null) {
+      setTouchOpenShouldLockScroll(false);
+      return;
+    }
+    const viewportWidth = (0,_base_ui_utils_owner__WEBPACK_IMPORTED_MODULE_1__.ownerDocument)(positionerElement).documentElement.clientWidth;
+    const popupWidth = positionerElement.offsetWidth;
+    setTouchOpenShouldLockScroll(viewportWidth > 0 && popupWidth > 0 && popupWidth >= viewportWidth - VIEWPORT_WIDTH_TOLERANCE_PX);
+  }, [enabled, touchOpen, positionerElement]);
+  (0,_base_ui_utils_useScrollLock__WEBPACK_IMPORTED_MODULE_2__.useScrollLock)(enabled && (!touchOpen || touchOpenShouldLockScroll), referenceElement);
+}
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/react/utils/useFocusableWhenDisabled.mjs"
 /*!************************************************************************!*\
   !*** ./node_modules/@base-ui/react/utils/useFocusableWhenDisabled.mjs ***!
@@ -25567,6 +32169,71 @@ function useFocusableWhenDisabled(parameters) {
   return {
     props
   };
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/react/utils/useOpenInteractionType.mjs"
+/*!**********************************************************************!*\
+  !*** ./node_modules/@base-ui/react/utils/useOpenInteractionType.mjs ***!
+  \**********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useOpenInteractionType: () => (/* binding */ useOpenInteractionType),
+/* harmony export */   useOpenMethodTriggerProps: () => (/* binding */ useOpenMethodTriggerProps)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var _base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/utils/useStableCallback */ "./node_modules/@base-ui/utils/useStableCallback.mjs");
+/* harmony import */ var _base_ui_utils_useEnhancedClickHandler__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @base-ui/utils/useEnhancedClickHandler */ "./node_modules/@base-ui/utils/useEnhancedClickHandler.mjs");
+/* harmony import */ var _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @base-ui/utils/platform */ "./node_modules/@base-ui/utils/platform/os.mjs");
+/* harmony import */ var _internals_useValueChanged_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../internals/useValueChanged.mjs */ "./node_modules/@base-ui/react/internals/useValueChanged.mjs");
+'use client';
+
+
+
+
+
+
+function useOpenMethodTriggerProps(open, setOpenMethod) {
+  const handleTriggerClick = (0,_base_ui_utils_useStableCallback__WEBPACK_IMPORTED_MODULE_1__.useStableCallback)((_, interactionType) => {
+    const isOpen = typeof open === 'function' ? open() : open;
+    if (!isOpen) {
+      setOpenMethod(interactionType || (
+      // On iOS Safari, the hitslop around touch targets means tapping outside an element's
+      // bounds does not fire `pointerdown` but does fire `mousedown`. The `interactionType`
+      // will be "" in that case.
+      _base_ui_utils_platform__WEBPACK_IMPORTED_MODULE_3__.ios ? 'touch' : ''));
+    }
+  });
+  const {
+    onClick,
+    onPointerDown
+  } = (0,_base_ui_utils_useEnhancedClickHandler__WEBPACK_IMPORTED_MODULE_2__.useEnhancedClickHandler)(handleTriggerClick);
+  return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    onClick,
+    onPointerDown
+  }), [onClick, onPointerDown]);
+}
+
+/**
+ * Determines the interaction type (keyboard, mouse, touch, etc.) that opened the component.
+ *
+ * @param open The open state of the component.
+ */
+function useOpenInteractionType(open) {
+  const [openMethod, setOpenMethod] = react__WEBPACK_IMPORTED_MODULE_0__.useState(null);
+  const triggerProps = useOpenMethodTriggerProps(open, setOpenMethod);
+  (0,_internals_useValueChanged_mjs__WEBPACK_IMPORTED_MODULE_4__.useValueChanged)(open, previousOpen => {
+    if (previousOpen && !open) {
+      setOpenMethod(null);
+    }
+  });
+  return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => ({
+    openMethod,
+    triggerProps
+  }), [openMethod, triggerProps]);
 }
 
 /***/ },
@@ -25868,6 +32535,44 @@ function getReactElementRef(element) {
   const reactElement = element;
   const propsWithRef = reactElement.props;
   return ((0,_reactVersion_mjs__WEBPACK_IMPORTED_MODULE_1__.isReactVersionAtLeast)(19) ? propsWithRef?.ref : reactElement.ref) ?? null;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/inertValue.mjs"
+/*!****************************************************!*\
+  !*** ./node_modules/@base-ui/utils/inertValue.mjs ***!
+  \****************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   inertValue: () => (/* binding */ inertValue)
+/* harmony export */ });
+/* harmony import */ var _reactVersion_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./reactVersion.mjs */ "./node_modules/@base-ui/utils/reactVersion.mjs");
+
+function inertValue(value) {
+  if ((0,_reactVersion_mjs__WEBPACK_IMPORTED_MODULE_0__.isReactVersionAtLeast)(19)) {
+    return value;
+  }
+  // compatibility with React < 19
+  return value ? 'true' : undefined;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/isElementDisabled.mjs"
+/*!***********************************************************!*\
+  !*** ./node_modules/@base-ui/utils/isElementDisabled.mjs ***!
+  \***********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   isElementDisabled: () => (/* binding */ isElementDisabled)
+/* harmony export */ });
+function isElementDisabled(element) {
+  return element == null || element.hasAttribute('disabled') || element.getAttribute('aria-disabled') === 'true';
 }
 
 /***/ },
@@ -26870,6 +33575,58 @@ function serializeToDevModeString(input) {
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/utils/useEnhancedClickHandler.mjs"
+/*!*****************************************************************!*\
+  !*** ./node_modules/@base-ui/utils/useEnhancedClickHandler.mjs ***!
+  \*****************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useEnhancedClickHandler: () => (/* binding */ useEnhancedClickHandler)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+/**
+ * Provides a cross-browser way to determine the type of the pointer used to click.
+ * Safari and Firefox do not provide the PointerEvent to the click handler (they use MouseEvent) yet.
+ * Additionally, this implementation detects if the click was triggered by the keyboard.
+ *
+ * @param handler The function to be called when the button is clicked. The first parameter is the original event and the second parameter is the pointer type.
+ */
+function useEnhancedClickHandler(handler) {
+  const lastClickInteractionTypeRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef('');
+  const handlePointerDown = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(event => {
+    if (event.defaultPrevented) {
+      return;
+    }
+    lastClickInteractionTypeRef.current = event.pointerType;
+    handler(event, event.pointerType);
+  }, [handler]);
+  const handleClick = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(event => {
+    // event.detail has the number of clicks performed on the element. 0 means it was triggered by the keyboard.
+    if (event.detail === 0) {
+      handler(event, 'keyboard');
+      return;
+    }
+    if ('pointerType' in event) {
+      // Chrome and Edge correctly use PointerEvent
+      handler(event, event.pointerType);
+    } else {
+      handler(event, lastClickInteractionTypeRef.current);
+    }
+    lastClickInteractionTypeRef.current = '';
+  }, [handler]);
+  return {
+    onClick: handleClick,
+    onPointerDown: handlePointerDown
+  };
+}
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/utils/useId.mjs"
 /*!***********************************************!*\
   !*** ./node_modules/@base-ui/utils/useId.mjs ***!
@@ -27070,6 +33827,30 @@ function update(forkRef, refs) {
 
 /***/ },
 
+/***/ "./node_modules/@base-ui/utils/useOnFirstRender.mjs"
+/*!**********************************************************!*\
+  !*** ./node_modules/@base-ui/utils/useOnFirstRender.mjs ***!
+  \**********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useOnFirstRender: () => (/* binding */ useOnFirstRender)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+function useOnFirstRender(fn) {
+  const ref = react__WEBPACK_IMPORTED_MODULE_0__.useRef(true);
+  if (ref.current) {
+    ref.current = false;
+    fn();
+  }
+}
+
+/***/ },
+
 /***/ "./node_modules/@base-ui/utils/useOnMount.mjs"
 /*!****************************************************!*\
   !*** ./node_modules/@base-ui/utils/useOnMount.mjs ***!
@@ -27095,6 +33876,42 @@ function useOnMount(fn) {
   /* eslint-disable react-hooks/exhaustive-deps */
   react__WEBPACK_IMPORTED_MODULE_0__.useEffect(fn, _empty_mjs__WEBPACK_IMPORTED_MODULE_1__.EMPTY_ARRAY);
   /* eslint-enable react-hooks/exhaustive-deps */
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/usePreviousValue.mjs"
+/*!**********************************************************!*\
+  !*** ./node_modules/@base-ui/utils/usePreviousValue.mjs ***!
+  \**********************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   usePreviousValue: () => (/* binding */ usePreviousValue)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+'use client';
+
+
+
+/**
+ * Returns a previous value of its argument.
+ * @param value Current value.
+ * @returns Previous value, or null if there is no previous value.
+ */
+function usePreviousValue(value) {
+  const [state, setState] = react__WEBPACK_IMPORTED_MODULE_0__.useState({
+    current: value,
+    previous: null
+  });
+  if (!Object.is(value, state.current)) {
+    setState({
+      current: value,
+      previous: state.current
+    });
+  }
+  return state.previous;
 }
 
 /***/ },
@@ -27129,6 +33946,300 @@ function useRefWithInit(init, initArg) {
     ref.current = init(initArg);
   }
   return ref;
+}
+
+/***/ },
+
+/***/ "./node_modules/@base-ui/utils/useScrollLock.mjs"
+/*!*******************************************************!*\
+  !*** ./node_modules/@base-ui/utils/useScrollLock.mjs ***!
+  \*******************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   useScrollLock: () => (/* binding */ useScrollLock)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./owner.mjs */ "./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs");
+/* harmony import */ var _addEventListener_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./addEventListener.mjs */ "./node_modules/@base-ui/utils/addEventListener.mjs");
+/* harmony import */ var _platform_index_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./platform/index.mjs */ "./node_modules/@base-ui/utils/platform/engine.mjs");
+/* harmony import */ var _platform_index_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./platform/index.mjs */ "./node_modules/@base-ui/utils/platform/os.mjs");
+/* harmony import */ var _owner_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./owner.mjs */ "./node_modules/@base-ui/utils/owner.mjs");
+/* harmony import */ var _useIsoLayoutEffect_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./useIsoLayoutEffect.mjs */ "./node_modules/@base-ui/utils/useIsoLayoutEffect.mjs");
+/* harmony import */ var _useTimeout_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./useTimeout.mjs */ "./node_modules/@base-ui/utils/useTimeout.mjs");
+/* harmony import */ var _useAnimationFrame_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./useAnimationFrame.mjs */ "./node_modules/@base-ui/utils/useAnimationFrame.mjs");
+'use client';
+
+
+
+
+
+
+
+
+let originalHtmlStyles = {};
+let originalBodyStyles = {};
+let originalHtmlScrollBehavior = '';
+
+// The viewport's overflow comes from <html> when it establishes its own scroll container, and
+// propagates from <body> otherwise. An `overflow` style on the other element doesn't lock the page.
+function getViewportScroller(html, body) {
+  return (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.isOverflowElement)(html) ? html : body;
+}
+function isPageScrollLocked(win, html, body) {
+  return /hidden|clip/.test(win.getComputedStyle(getViewportScroller(html, body)).overflowY);
+}
+function hasInsetScrollbars(referenceElement) {
+  if (typeof document === 'undefined') {
+    return false;
+  }
+  const doc = (0,_owner_mjs__WEBPACK_IMPORTED_MODULE_4__.ownerDocument)(referenceElement);
+  const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.getWindow)(doc);
+  return win.innerWidth - doc.documentElement.clientWidth > 0;
+}
+function supportsStableScrollbarGutter(referenceElement) {
+  const supported = typeof CSS !== 'undefined' && CSS.supports && CSS.supports('scrollbar-gutter', 'stable');
+  if (!supported || typeof document === 'undefined') {
+    return false;
+  }
+  const doc = (0,_owner_mjs__WEBPACK_IMPORTED_MODULE_4__.ownerDocument)(referenceElement);
+  const html = doc.documentElement;
+  const body = doc.body;
+  const scrollContainer = getViewportScroller(html, body);
+  const originalScrollContainerOverflowY = scrollContainer.style.overflowY;
+  const originalHtmlStyleGutter = html.style.scrollbarGutter;
+  html.style.scrollbarGutter = 'stable';
+  scrollContainer.style.overflowY = 'scroll';
+  const before = scrollContainer.offsetWidth;
+  scrollContainer.style.overflowY = 'hidden';
+  const after = scrollContainer.offsetWidth;
+  scrollContainer.style.overflowY = originalScrollContainerOverflowY;
+  html.style.scrollbarGutter = originalHtmlStyleGutter;
+  return before === after;
+}
+function preventScrollOverlayScrollbars(referenceElement) {
+  const doc = (0,_owner_mjs__WEBPACK_IMPORTED_MODULE_4__.ownerDocument)(referenceElement);
+  const html = doc.documentElement;
+  const body = doc.body;
+
+  // If an `overflow` style is present on <html>, we need to lock it, because a lock on <body>
+  // won't have any effect.
+  // But if <body> has an `overflow` style (like `overflow-x: hidden`), we need to lock it
+  // instead, as sticky elements shift otherwise.
+  const elementToLock = getViewportScroller(html, body);
+  const originalElementToLockStyles = {
+    overflowY: elementToLock.style.overflowY,
+    overflowX: elementToLock.style.overflowX
+  };
+  Object.assign(elementToLock.style, {
+    overflowY: 'hidden',
+    overflowX: 'hidden'
+  });
+  return () => {
+    Object.assign(elementToLock.style, originalElementToLockStyles);
+  };
+}
+function preventScrollInsetScrollbars(referenceElement) {
+  const doc = (0,_owner_mjs__WEBPACK_IMPORTED_MODULE_4__.ownerDocument)(referenceElement);
+  const html = doc.documentElement;
+  const body = doc.body;
+  const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.getWindow)(html);
+  let scrollTop = 0;
+  let scrollLeft = 0;
+  let updateGutterOnly = false;
+  const resizeFrame = _useAnimationFrame_mjs__WEBPACK_IMPORTED_MODULE_7__.AnimationFrame.create();
+
+  // Pinch-zoom in Safari causes a shift. Just don't lock scroll if there's any pinch-zoom.
+  if (_platform_index_mjs__WEBPACK_IMPORTED_MODULE_2__.webkit && (win.visualViewport?.scale ?? 1) !== 1) {
+    return () => {};
+  }
+  function lockScroll() {
+    /* DOM reads: */
+
+    const htmlStyles = win.getComputedStyle(html);
+    const bodyStyles = win.getComputedStyle(body);
+    const htmlScrollbarGutterValue = htmlStyles.scrollbarGutter || '';
+    const hasBothEdges = htmlScrollbarGutterValue.includes('both-edges');
+    const scrollbarGutterValue = hasBothEdges ? 'stable both-edges' : 'stable';
+    scrollTop = html.scrollTop;
+    scrollLeft = html.scrollLeft;
+    originalHtmlStyles = {
+      scrollbarGutter: html.style.scrollbarGutter,
+      overflowY: html.style.overflowY,
+      overflowX: html.style.overflowX
+    };
+    originalHtmlScrollBehavior = html.style.scrollBehavior;
+    originalBodyStyles = {
+      position: body.style.position,
+      height: body.style.height,
+      width: body.style.width,
+      boxSizing: body.style.boxSizing,
+      overflowY: body.style.overflowY,
+      overflowX: body.style.overflowX,
+      scrollBehavior: body.style.scrollBehavior
+    };
+    const isScrollableY = html.scrollHeight > html.clientHeight;
+    const isScrollableX = html.scrollWidth > html.clientWidth;
+    const hasConstantOverflowY = htmlStyles.overflowY === 'scroll' || bodyStyles.overflowY === 'scroll';
+    const hasConstantOverflowX = htmlStyles.overflowX === 'scroll' || bodyStyles.overflowX === 'scroll';
+
+    // Values can be negative in Firefox
+    const scrollbarWidth = Math.max(0, win.innerWidth - body.clientWidth);
+    const scrollbarHeight = Math.max(0, win.innerHeight - body.clientHeight);
+
+    // Avoid shift due to the default <body> margin. This does cause elements to be clipped
+    // with whitespace. Warn if <body> has margins?
+    const marginY = parseFloat(bodyStyles.marginTop) + parseFloat(bodyStyles.marginBottom);
+    const marginX = parseFloat(bodyStyles.marginLeft) + parseFloat(bodyStyles.marginRight);
+    const elementToLock = getViewportScroller(html, body);
+    updateGutterOnly = supportsStableScrollbarGutter(referenceElement);
+
+    /*
+     * DOM writes:
+     * Do not read the DOM past this point!
+     */
+
+    if (updateGutterOnly) {
+      html.style.scrollbarGutter = scrollbarGutterValue;
+      elementToLock.style.overflowY = 'hidden';
+      elementToLock.style.overflowX = 'hidden';
+      return;
+    }
+    Object.assign(html.style, {
+      scrollbarGutter: scrollbarGutterValue,
+      overflowY: 'hidden',
+      overflowX: 'hidden'
+    });
+    if (isScrollableY || hasConstantOverflowY) {
+      html.style.overflowY = 'scroll';
+    }
+    if (isScrollableX || hasConstantOverflowX) {
+      html.style.overflowX = 'scroll';
+    }
+    Object.assign(body.style, {
+      position: 'relative',
+      height: marginY || scrollbarHeight ? `calc(100dvh - ${marginY + scrollbarHeight}px)` : '100dvh',
+      width: marginX || scrollbarWidth ? `calc(100vw - ${marginX + scrollbarWidth}px)` : '100vw',
+      boxSizing: 'border-box',
+      // Assign the longhands that `cleanup` restores, so nothing is left behind.
+      overflowY: 'hidden',
+      overflowX: 'hidden',
+      scrollBehavior: 'unset'
+    });
+    body.scrollTop = scrollTop;
+    body.scrollLeft = scrollLeft;
+    html.setAttribute('data-base-ui-scroll-locked', '');
+    html.style.scrollBehavior = 'unset';
+  }
+  function cleanup() {
+    Object.assign(html.style, originalHtmlStyles);
+    Object.assign(body.style, originalBodyStyles);
+    if (!updateGutterOnly) {
+      html.scrollTop = scrollTop;
+      html.scrollLeft = scrollLeft;
+      html.removeAttribute('data-base-ui-scroll-locked');
+      html.style.scrollBehavior = originalHtmlScrollBehavior;
+    }
+  }
+  function handleResize() {
+    cleanup();
+    resizeFrame.request(lockScroll);
+  }
+  lockScroll();
+  const unsubscribeResize = (0,_addEventListener_mjs__WEBPACK_IMPORTED_MODULE_1__.addEventListener)(win, 'resize', handleResize);
+  return () => {
+    resizeFrame.cancel();
+    cleanup();
+    // Sometimes this cleanup can run after test teardown because it is called
+    // in a `setTimeout(fn, 0)`. Guard the returned cleanup to avoid calling
+    // `removeEventListener` when it is no longer available in tests.
+    if (typeof win.removeEventListener === 'function') {
+      unsubscribeResize();
+    }
+  };
+}
+class ScrollLocker {
+  lockCount = 0;
+  restore = null;
+  timeoutLock = _useTimeout_mjs__WEBPACK_IMPORTED_MODULE_6__.Timeout.create();
+  timeoutUnlock = _useTimeout_mjs__WEBPACK_IMPORTED_MODULE_6__.Timeout.create();
+  acquire(referenceElement) {
+    this.lockCount += 1;
+    if (this.lockCount === 1 && this.restore === null) {
+      this.timeoutLock.start(0, () => this.lock(referenceElement));
+    }
+    return this.release;
+  }
+  release = () => {
+    this.lockCount -= 1;
+    if (this.lockCount === 0 && this.restore) {
+      this.timeoutUnlock.start(0, this.unlock);
+    }
+  };
+  unlock = () => {
+    if (this.lockCount === 0 && this.restore) {
+      this.restore?.();
+      this.restore = null;
+    }
+  };
+  lock(referenceElement) {
+    if (this.lockCount === 0 || this.restore !== null) {
+      return;
+    }
+    const doc = (0,_owner_mjs__WEBPACK_IMPORTED_MODULE_4__.ownerDocument)(referenceElement);
+    const html = doc.documentElement;
+    const body = doc.body;
+    const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__.getWindow)(html);
+
+    // The page is already locked, either by the site author or by a non-Base UI overlay that
+    // hasn't cleaned up yet. Leave it alone and wait for the lock to clear before taking over,
+    // otherwise we'd snapshot the locked state and restore it after our own lock is released.
+    if (isPageScrollLocked(win, html, body)) {
+      const observer = new win.MutationObserver(() => {
+        if (isPageScrollLocked(win, html, body)) {
+          return;
+        }
+        observer.disconnect();
+        this.restore = null;
+        this.lock(referenceElement);
+      });
+
+      // Watch every attribute: locks are applied through inline styles, classes, or attributes
+      // paired with a stylesheet (`data-scroll-locked` in react-remove-scroll, for example).
+      const options = {
+        attributes: true
+      };
+      observer.observe(html, options);
+      observer.observe(body, options);
+      this.restore = () => observer.disconnect();
+      return;
+    }
+    const hasOverlayScrollbars = _platform_index_mjs__WEBPACK_IMPORTED_MODULE_3__.ios || !hasInsetScrollbars(referenceElement);
+
+    // On iOS, scroll locking does not work if the navbar is collapsed. Due to numerous
+    // side effects and bugs that arise on iOS, it must be researched extensively before
+    // being enabled to ensure it doesn't cause the following issues:
+    // - Textboxes must scroll into view when focused, nor cause a glitchy scroll animation.
+    // - The navbar must not force itself into view and cause layout shift.
+    // - Scroll containers must not flicker upon closing a popup when it has an exit animation.
+    this.restore = hasOverlayScrollbars ? preventScrollOverlayScrollbars(referenceElement) : preventScrollInsetScrollbars(referenceElement);
+  }
+}
+const SCROLL_LOCKER = new ScrollLocker();
+
+/**
+ * Locks the scroll of the document when enabled.
+ *
+ * @param enabled - Whether to enable the scroll lock.
+ * @param referenceElement - Element to use as a reference for lock calculations.
+ */
+function useScrollLock(enabled = true, referenceElement = null) {
+  (0,_useIsoLayoutEffect_mjs__WEBPACK_IMPORTED_MODULE_5__.useIsoLayoutEffect)(() => {
+    if (!enabled) {
+      return undefined;
+    }
+    return SCROLL_LOCKER.acquire(referenceElement);
+  }, [enabled, referenceElement]);
 }
 
 /***/ },
@@ -30393,6 +37504,50 @@ var block_table_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED
 
 /***/ },
 
+/***/ "./node_modules/@wordpress/icons/build-module/library/check.mjs"
+/*!**********************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/check.mjs ***!
+  \**********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ check_default)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/icons/src/library/check.tsx
+
+
+var check_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M16.5 7.5 10 13.9l-2.5-2.4-1 1 3.5 3.6 7.5-7.6z" }) });
+
+//# sourceMappingURL=check.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/chevron-down.mjs"
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/chevron-down.mjs ***!
+  \*****************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ chevron_down_default)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/icons/src/library/chevron-down.tsx
+
+
+var chevron_down_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M17.5 11.6L12 16l-5.5-4.4.9-1.2L12 14l4.5-3.6 1 1.2z" }) });
+
+//# sourceMappingURL=chevron-down.mjs.map
+
+
+/***/ },
+
 /***/ "./node_modules/@wordpress/icons/build-module/library/cog.mjs"
 /*!********************************************************************!*\
   !*** ./node_modules/@wordpress/icons/build-module/library/cog.mjs ***!
@@ -31319,6 +38474,28 @@ var InputControl = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.forwardRef
 );
 
 //# sourceMappingURL=input-control.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/constants.mjs"
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/constants.mjs ***!
+  \*******************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ITEM_POPUP_POSITIONER_PROPS: () => (/* binding */ ITEM_POPUP_POSITIONER_PROPS)
+/* harmony export */ });
+// packages/ui/src/form/primitives/constants.ts
+var ITEM_POPUP_POSITIONER_PROPS = {
+  align: "start",
+  sideOffset: 8,
+  collisionPadding: 12
+};
+
+//# sourceMappingURL=constants.mjs.map
 
 
 /***/ },
@@ -32332,6 +39509,1132 @@ var Input = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.forwardRef)(funct
 });
 
 //# sourceMappingURL=input.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/select/group-label.mjs"
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/select/group-label.mjs ***!
+  \****************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   GroupLabel: () => (/* binding */ GroupLabel)
+/* harmony export */ });
+/* harmony import */ var _base_ui_react_select__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/react/select */ "./node_modules/@base-ui/react/select/group-label/SelectGroupLabel.mjs");
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _text_index_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../text/index.mjs */ "./node_modules/@wordpress/ui/build-module/text/text.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/primitives/select/group-label.tsx
+
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/utils/css/item-popup.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("5705fc490f", '@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._380b81b8f79fb10f__dropdown-motion{--wp-ui-dropdown-slide-distance:4px;--wp-ui-dropdown-slide-duration:var(--wpds-motion-duration-md,200ms);--wp-ui-dropdown-slide-easing:var(--wpds-motion-easing-expressive,cubic-bezier(0.25,0,0,1));--wp-ui-dropdown-fade-duration:var(--wpds-motion-duration-sm,100ms);--wp-ui-dropdown-fade-easing:linear;@media not (prefers-reduced-motion){transition-duration:var(--wp-ui-dropdown-slide-duration),var(--wp-ui-dropdown-fade-duration);transition-property:transform,opacity;transition-timing-function:var(--wp-ui-dropdown-slide-easing),var(--wp-ui-dropdown-fade-easing);will-change:transform,opacity}opacity:1;transform:translate(0);&[data-instant]{transition:none}&[data-ending-style],&[data-starting-style]{opacity:0}&[data-side=bottom][data-ending-style],&[data-side=bottom][data-starting-style]{transform:translateY(calc(var(--wp-ui-dropdown-slide-distance)*-1))}&[data-side=top][data-ending-style],&[data-side=top][data-starting-style]{transform:translateY(var(--wp-ui-dropdown-slide-distance))}&[data-side=left][data-ending-style],&[data-side=left][data-starting-style]{transform:translateX(var(--wp-ui-dropdown-slide-distance))}&[data-side=right][data-ending-style],&[data-side=right][data-starting-style]{transform:translateX(calc(var(--wp-ui-dropdown-slide-distance)*-1))}}}}@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._234b520016b4e56f__popup{--wp-ui-popup-padding:var(--wpds-dimension-padding-xs,4px);--_wp-ui-elevation-md:0 2px 3px rgba(0,0,0,.05),0 4px 5px rgba(0,0,0,.04),0 12px 12px rgba(0,0,0,.03),0 16px 16px rgba(0,0,0,.02);background-color:var(--wpds-color-background-surface-neutral-strong,#fff);border:var(--wpds-border-width-xs,1px) solid var(--wpds-color-stroke-surface-neutral,#dbdbdb);border-radius:var(--wpds-border-radius-md,4px);box-shadow:var(--_wp-ui-elevation-md);display:grid;grid-template-areas:"header" "main";grid-template-rows:auto minmax(0,1fr);max-height:min(var(--available-height),480px,60dvh);max-width:var(--available-width);min-width:var(--anchor-width)}.f43dc7c768d7b622__list{color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);display:grid;font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-md,13px);grid-area:main;grid-template-areas:"scrollable" "footer";grid-template-rows:minmax(0,1fr) auto;line-height:var(--wpds-typography-line-height-sm,20px)}._233cd60cdb84a2ef__list-scrollable-container{grid-area:scrollable;overflow-block:auto;overscroll-behavior:contain;scroll-padding-block:var(--wp-ui-popup-padding);&:not(:empty){padding-block:var(--wp-ui-popup-padding)}}.ec4db6f0122263e7__list-footer{grid-area:footer;padding-block:var(--wp-ui-popup-padding);._233cd60cdb84a2ef__list-scrollable-container:not(:empty)+&{border-block-start:var(--wpds-border-width-xs,1px) solid var(--wpds-color-stroke-surface-neutral,#dbdbdb)}}.b3c0d7f103fb10a2__group:not(:first-child){margin-block-start:var(--wpds-dimension-gap-sm,8px)}._21b59380477c306c__group-label{align-items:center;color:var(--wpds-color-foreground-content-neutral-weak,#707070);display:flex;min-height:var(--wpds-dimension-size-md,32px);padding-inline:var(--wpds-dimension-padding-md,12px)}._684ccb7988365b4f__item{--wp-ui-popup-item-height:var(--wpds-dimension-size-lg,40px);--wp-ui-popup-item-padding-inline:var(--wpds-dimension-padding-md,12px);--wp-ui-popup-item-padding-block:var(--wpds-dimension-padding-xs,4px);align-items:center;border-radius:var(--wpds-border-radius-sm,2px);display:flex;gap:var(--wpds-dimension-gap-xs,4px);justify-content:flex-start;margin-inline:var(--wp-ui-popup-padding);min-height:var(--wp-ui-popup-item-height);padding-block:var(--wp-ui-popup-item-padding-block);padding-inline-end:var(--wp-ui-popup-item-padding-inline);padding-inline-start:calc(var(--wp-ui-popup-item-padding-inline) - var(--wpds-dimension-padding-xs, 4px));user-select:none;&:not([data-disabled]){cursor:var(--wpds-cursor-control,pointer)}&.f181b98b0d33282a__is-size-compact{--wp-ui-popup-item-height:var(--wpds-dimension-size-md,32px);--wp-ui-popup-item-padding-inline:var(--wpds-dimension-padding-sm,8px)}&._38f7faff93c61958__is-size-small{--wp-ui-popup-item-height:var(--wpds-dimension-size-sm,24px);--wp-ui-popup-item-padding-inline:var(--wpds-dimension-padding-sm,8px);--wp-ui-popup-item-padding-block:2px}&:not([data-selected]){._92fbe4765dfad5ee__item-indicator-icon{opacity:0}}&[data-highlighted]:not([aria-disabled=true]){background-color:var(--wpds-color-background-interactive-brand-weak-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 12%,#fff));color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);outline:none;@media (forced-colors:active){outline:1px solid Highlight}}&[aria-disabled=true]{background-color:var(--wpds-color-background-interactive-brand-weak-disabled,#0000);color:var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d);@media (forced-colors:active){color:GrayText}}}.a3adcfd0b73ffd40__item-icon{flex-shrink:0}._06c7ff39d2f685b9__empty:not(:empty){--wp-ui-popup-empty-min-height:var(--wpds-dimension-size-lg,40px);--wp-ui-popup-empty-padding-inline:var(--wpds-dimension-padding-md,12px);align-items:center;color:var(--wpds-color-foreground-content-neutral-weak,#707070);display:flex;font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-md,13px);grid-area:main;line-height:var(--wpds-typography-line-height-sm,20px);min-height:var(--wp-ui-popup-empty-min-height);padding-inline:var(--wp-ui-popup-empty-padding-inline)}}}');
+}
+var item_popup_default = { "popup": "_234b520016b4e56f__popup _380b81b8f79fb10f__dropdown-motion", "list": "f43dc7c768d7b622__list", "list-scrollable-container": "_233cd60cdb84a2ef__list-scrollable-container", "list-footer": "ec4db6f0122263e7__list-footer", "group": "b3c0d7f103fb10a2__group", "group-label": "_21b59380477c306c__group-label", "item": "_684ccb7988365b4f__item", "is-size-compact": "f181b98b0d33282a__is-size-compact", "is-size-small": "_38f7faff93c61958__is-size-small", "item-indicator-icon": "_92fbe4765dfad5ee__item-indicator-icon", "item-icon": "a3adcfd0b73ffd40__item-icon", "empty": "_06c7ff39d2f685b9__empty" };
+
+// packages/ui/src/form/primitives/select/group-label.tsx
+
+var GroupLabel = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.forwardRef)(
+  function GroupLabel2({ className, children, ...restProps }, ref) {
+    return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(
+      _text_index_mjs__WEBPACK_IMPORTED_MODULE_3__.Text,
+      {
+        variant: "heading-sm",
+        className: (0,clsx__WEBPACK_IMPORTED_MODULE_1__["default"])(
+          item_popup_default["group-label"],
+          className
+        ),
+        render: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_base_ui_react_select__WEBPACK_IMPORTED_MODULE_0__.SelectGroupLabel, { ref, ...restProps }),
+        children
+      }
+    );
+  }
+);
+
+//# sourceMappingURL=group-label.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/select/group.mjs"
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/select/group.mjs ***!
+  \**********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Group: () => (/* binding */ Group)
+/* harmony export */ });
+/* harmony import */ var _base_ui_react_select__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/react/select */ "./node_modules/@base-ui/react/select/group/SelectGroup.mjs");
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/primitives/select/group.tsx
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/utils/css/item-popup.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("5705fc490f", '@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._380b81b8f79fb10f__dropdown-motion{--wp-ui-dropdown-slide-distance:4px;--wp-ui-dropdown-slide-duration:var(--wpds-motion-duration-md,200ms);--wp-ui-dropdown-slide-easing:var(--wpds-motion-easing-expressive,cubic-bezier(0.25,0,0,1));--wp-ui-dropdown-fade-duration:var(--wpds-motion-duration-sm,100ms);--wp-ui-dropdown-fade-easing:linear;@media not (prefers-reduced-motion){transition-duration:var(--wp-ui-dropdown-slide-duration),var(--wp-ui-dropdown-fade-duration);transition-property:transform,opacity;transition-timing-function:var(--wp-ui-dropdown-slide-easing),var(--wp-ui-dropdown-fade-easing);will-change:transform,opacity}opacity:1;transform:translate(0);&[data-instant]{transition:none}&[data-ending-style],&[data-starting-style]{opacity:0}&[data-side=bottom][data-ending-style],&[data-side=bottom][data-starting-style]{transform:translateY(calc(var(--wp-ui-dropdown-slide-distance)*-1))}&[data-side=top][data-ending-style],&[data-side=top][data-starting-style]{transform:translateY(var(--wp-ui-dropdown-slide-distance))}&[data-side=left][data-ending-style],&[data-side=left][data-starting-style]{transform:translateX(var(--wp-ui-dropdown-slide-distance))}&[data-side=right][data-ending-style],&[data-side=right][data-starting-style]{transform:translateX(calc(var(--wp-ui-dropdown-slide-distance)*-1))}}}}@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._234b520016b4e56f__popup{--wp-ui-popup-padding:var(--wpds-dimension-padding-xs,4px);--_wp-ui-elevation-md:0 2px 3px rgba(0,0,0,.05),0 4px 5px rgba(0,0,0,.04),0 12px 12px rgba(0,0,0,.03),0 16px 16px rgba(0,0,0,.02);background-color:var(--wpds-color-background-surface-neutral-strong,#fff);border:var(--wpds-border-width-xs,1px) solid var(--wpds-color-stroke-surface-neutral,#dbdbdb);border-radius:var(--wpds-border-radius-md,4px);box-shadow:var(--_wp-ui-elevation-md);display:grid;grid-template-areas:"header" "main";grid-template-rows:auto minmax(0,1fr);max-height:min(var(--available-height),480px,60dvh);max-width:var(--available-width);min-width:var(--anchor-width)}.f43dc7c768d7b622__list{color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);display:grid;font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-md,13px);grid-area:main;grid-template-areas:"scrollable" "footer";grid-template-rows:minmax(0,1fr) auto;line-height:var(--wpds-typography-line-height-sm,20px)}._233cd60cdb84a2ef__list-scrollable-container{grid-area:scrollable;overflow-block:auto;overscroll-behavior:contain;scroll-padding-block:var(--wp-ui-popup-padding);&:not(:empty){padding-block:var(--wp-ui-popup-padding)}}.ec4db6f0122263e7__list-footer{grid-area:footer;padding-block:var(--wp-ui-popup-padding);._233cd60cdb84a2ef__list-scrollable-container:not(:empty)+&{border-block-start:var(--wpds-border-width-xs,1px) solid var(--wpds-color-stroke-surface-neutral,#dbdbdb)}}.b3c0d7f103fb10a2__group:not(:first-child){margin-block-start:var(--wpds-dimension-gap-sm,8px)}._21b59380477c306c__group-label{align-items:center;color:var(--wpds-color-foreground-content-neutral-weak,#707070);display:flex;min-height:var(--wpds-dimension-size-md,32px);padding-inline:var(--wpds-dimension-padding-md,12px)}._684ccb7988365b4f__item{--wp-ui-popup-item-height:var(--wpds-dimension-size-lg,40px);--wp-ui-popup-item-padding-inline:var(--wpds-dimension-padding-md,12px);--wp-ui-popup-item-padding-block:var(--wpds-dimension-padding-xs,4px);align-items:center;border-radius:var(--wpds-border-radius-sm,2px);display:flex;gap:var(--wpds-dimension-gap-xs,4px);justify-content:flex-start;margin-inline:var(--wp-ui-popup-padding);min-height:var(--wp-ui-popup-item-height);padding-block:var(--wp-ui-popup-item-padding-block);padding-inline-end:var(--wp-ui-popup-item-padding-inline);padding-inline-start:calc(var(--wp-ui-popup-item-padding-inline) - var(--wpds-dimension-padding-xs, 4px));user-select:none;&:not([data-disabled]){cursor:var(--wpds-cursor-control,pointer)}&.f181b98b0d33282a__is-size-compact{--wp-ui-popup-item-height:var(--wpds-dimension-size-md,32px);--wp-ui-popup-item-padding-inline:var(--wpds-dimension-padding-sm,8px)}&._38f7faff93c61958__is-size-small{--wp-ui-popup-item-height:var(--wpds-dimension-size-sm,24px);--wp-ui-popup-item-padding-inline:var(--wpds-dimension-padding-sm,8px);--wp-ui-popup-item-padding-block:2px}&:not([data-selected]){._92fbe4765dfad5ee__item-indicator-icon{opacity:0}}&[data-highlighted]:not([aria-disabled=true]){background-color:var(--wpds-color-background-interactive-brand-weak-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 12%,#fff));color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);outline:none;@media (forced-colors:active){outline:1px solid Highlight}}&[aria-disabled=true]{background-color:var(--wpds-color-background-interactive-brand-weak-disabled,#0000);color:var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d);@media (forced-colors:active){color:GrayText}}}.a3adcfd0b73ffd40__item-icon{flex-shrink:0}._06c7ff39d2f685b9__empty:not(:empty){--wp-ui-popup-empty-min-height:var(--wpds-dimension-size-lg,40px);--wp-ui-popup-empty-padding-inline:var(--wpds-dimension-padding-md,12px);align-items:center;color:var(--wpds-color-foreground-content-neutral-weak,#707070);display:flex;font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-md,13px);grid-area:main;line-height:var(--wpds-typography-line-height-sm,20px);min-height:var(--wp-ui-popup-empty-min-height);padding-inline:var(--wp-ui-popup-empty-padding-inline)}}}');
+}
+var item_popup_default = { "popup": "_234b520016b4e56f__popup _380b81b8f79fb10f__dropdown-motion", "list": "f43dc7c768d7b622__list", "list-scrollable-container": "_233cd60cdb84a2ef__list-scrollable-container", "list-footer": "ec4db6f0122263e7__list-footer", "group": "b3c0d7f103fb10a2__group", "group-label": "_21b59380477c306c__group-label", "item": "_684ccb7988365b4f__item", "is-size-compact": "f181b98b0d33282a__is-size-compact", "is-size-small": "_38f7faff93c61958__is-size-small", "item-indicator-icon": "_92fbe4765dfad5ee__item-indicator-icon", "item-icon": "a3adcfd0b73ffd40__item-icon", "empty": "_06c7ff39d2f685b9__empty" };
+
+// packages/ui/src/form/primitives/select/group.tsx
+
+var Group = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.forwardRef)(
+  function Group2({ className, children, ...restProps }, ref) {
+    return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(
+      _base_ui_react_select__WEBPACK_IMPORTED_MODULE_0__.SelectGroup,
+      {
+        className: (0,clsx__WEBPACK_IMPORTED_MODULE_1__["default"])(item_popup_default.group, className),
+        ref,
+        ...restProps,
+        children
+      }
+    );
+  }
+);
+
+//# sourceMappingURL=group.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/select/item.mjs"
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/select/item.mjs ***!
+  \*********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Item: () => (/* binding */ Item)
+/* harmony export */ });
+/* harmony import */ var _base_ui_react_select__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/react/select */ "./node_modules/@base-ui/react/select/item/SelectItem.mjs");
+/* harmony import */ var _base_ui_react_select__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/react/select */ "./node_modules/@base-ui/react/select/item-text/SelectItemText.mjs");
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/check.mjs");
+/* harmony import */ var _icon_index_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../icon/index.mjs */ "./node_modules/@wordpress/ui/build-module/icon/icon.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/primitives/select/item.tsx
+
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/utils/css/item-popup.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("5705fc490f", '@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._380b81b8f79fb10f__dropdown-motion{--wp-ui-dropdown-slide-distance:4px;--wp-ui-dropdown-slide-duration:var(--wpds-motion-duration-md,200ms);--wp-ui-dropdown-slide-easing:var(--wpds-motion-easing-expressive,cubic-bezier(0.25,0,0,1));--wp-ui-dropdown-fade-duration:var(--wpds-motion-duration-sm,100ms);--wp-ui-dropdown-fade-easing:linear;@media not (prefers-reduced-motion){transition-duration:var(--wp-ui-dropdown-slide-duration),var(--wp-ui-dropdown-fade-duration);transition-property:transform,opacity;transition-timing-function:var(--wp-ui-dropdown-slide-easing),var(--wp-ui-dropdown-fade-easing);will-change:transform,opacity}opacity:1;transform:translate(0);&[data-instant]{transition:none}&[data-ending-style],&[data-starting-style]{opacity:0}&[data-side=bottom][data-ending-style],&[data-side=bottom][data-starting-style]{transform:translateY(calc(var(--wp-ui-dropdown-slide-distance)*-1))}&[data-side=top][data-ending-style],&[data-side=top][data-starting-style]{transform:translateY(var(--wp-ui-dropdown-slide-distance))}&[data-side=left][data-ending-style],&[data-side=left][data-starting-style]{transform:translateX(var(--wp-ui-dropdown-slide-distance))}&[data-side=right][data-ending-style],&[data-side=right][data-starting-style]{transform:translateX(calc(var(--wp-ui-dropdown-slide-distance)*-1))}}}}@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._234b520016b4e56f__popup{--wp-ui-popup-padding:var(--wpds-dimension-padding-xs,4px);--_wp-ui-elevation-md:0 2px 3px rgba(0,0,0,.05),0 4px 5px rgba(0,0,0,.04),0 12px 12px rgba(0,0,0,.03),0 16px 16px rgba(0,0,0,.02);background-color:var(--wpds-color-background-surface-neutral-strong,#fff);border:var(--wpds-border-width-xs,1px) solid var(--wpds-color-stroke-surface-neutral,#dbdbdb);border-radius:var(--wpds-border-radius-md,4px);box-shadow:var(--_wp-ui-elevation-md);display:grid;grid-template-areas:"header" "main";grid-template-rows:auto minmax(0,1fr);max-height:min(var(--available-height),480px,60dvh);max-width:var(--available-width);min-width:var(--anchor-width)}.f43dc7c768d7b622__list{color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);display:grid;font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-md,13px);grid-area:main;grid-template-areas:"scrollable" "footer";grid-template-rows:minmax(0,1fr) auto;line-height:var(--wpds-typography-line-height-sm,20px)}._233cd60cdb84a2ef__list-scrollable-container{grid-area:scrollable;overflow-block:auto;overscroll-behavior:contain;scroll-padding-block:var(--wp-ui-popup-padding);&:not(:empty){padding-block:var(--wp-ui-popup-padding)}}.ec4db6f0122263e7__list-footer{grid-area:footer;padding-block:var(--wp-ui-popup-padding);._233cd60cdb84a2ef__list-scrollable-container:not(:empty)+&{border-block-start:var(--wpds-border-width-xs,1px) solid var(--wpds-color-stroke-surface-neutral,#dbdbdb)}}.b3c0d7f103fb10a2__group:not(:first-child){margin-block-start:var(--wpds-dimension-gap-sm,8px)}._21b59380477c306c__group-label{align-items:center;color:var(--wpds-color-foreground-content-neutral-weak,#707070);display:flex;min-height:var(--wpds-dimension-size-md,32px);padding-inline:var(--wpds-dimension-padding-md,12px)}._684ccb7988365b4f__item{--wp-ui-popup-item-height:var(--wpds-dimension-size-lg,40px);--wp-ui-popup-item-padding-inline:var(--wpds-dimension-padding-md,12px);--wp-ui-popup-item-padding-block:var(--wpds-dimension-padding-xs,4px);align-items:center;border-radius:var(--wpds-border-radius-sm,2px);display:flex;gap:var(--wpds-dimension-gap-xs,4px);justify-content:flex-start;margin-inline:var(--wp-ui-popup-padding);min-height:var(--wp-ui-popup-item-height);padding-block:var(--wp-ui-popup-item-padding-block);padding-inline-end:var(--wp-ui-popup-item-padding-inline);padding-inline-start:calc(var(--wp-ui-popup-item-padding-inline) - var(--wpds-dimension-padding-xs, 4px));user-select:none;&:not([data-disabled]){cursor:var(--wpds-cursor-control,pointer)}&.f181b98b0d33282a__is-size-compact{--wp-ui-popup-item-height:var(--wpds-dimension-size-md,32px);--wp-ui-popup-item-padding-inline:var(--wpds-dimension-padding-sm,8px)}&._38f7faff93c61958__is-size-small{--wp-ui-popup-item-height:var(--wpds-dimension-size-sm,24px);--wp-ui-popup-item-padding-inline:var(--wpds-dimension-padding-sm,8px);--wp-ui-popup-item-padding-block:2px}&:not([data-selected]){._92fbe4765dfad5ee__item-indicator-icon{opacity:0}}&[data-highlighted]:not([aria-disabled=true]){background-color:var(--wpds-color-background-interactive-brand-weak-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 12%,#fff));color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);outline:none;@media (forced-colors:active){outline:1px solid Highlight}}&[aria-disabled=true]{background-color:var(--wpds-color-background-interactive-brand-weak-disabled,#0000);color:var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d);@media (forced-colors:active){color:GrayText}}}.a3adcfd0b73ffd40__item-icon{flex-shrink:0}._06c7ff39d2f685b9__empty:not(:empty){--wp-ui-popup-empty-min-height:var(--wpds-dimension-size-lg,40px);--wp-ui-popup-empty-padding-inline:var(--wpds-dimension-padding-md,12px);align-items:center;color:var(--wpds-color-foreground-content-neutral-weak,#707070);display:flex;font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-md,13px);grid-area:main;line-height:var(--wpds-typography-line-height-sm,20px);min-height:var(--wp-ui-popup-empty-min-height);padding-inline:var(--wp-ui-popup-empty-padding-inline)}}}');
+}
+var item_popup_default = { "popup": "_234b520016b4e56f__popup _380b81b8f79fb10f__dropdown-motion", "list": "f43dc7c768d7b622__list", "list-scrollable-container": "_233cd60cdb84a2ef__list-scrollable-container", "list-footer": "ec4db6f0122263e7__list-footer", "group": "b3c0d7f103fb10a2__group", "group-label": "_21b59380477c306c__group-label", "item": "_684ccb7988365b4f__item", "is-size-compact": "f181b98b0d33282a__is-size-compact", "is-size-small": "_38f7faff93c61958__is-size-small", "item-indicator-icon": "_92fbe4765dfad5ee__item-indicator-icon", "item-icon": "a3adcfd0b73ffd40__item-icon", "empty": "_06c7ff39d2f685b9__empty" };
+
+// packages/ui/src/utils/css/resets.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("10f3806643", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._336cd3e4e743482f__box-sizing{box-sizing:border-box;*,:after,:before{box-sizing:inherit}}}}");
+}
+var resets_default = { "box-sizing": "_336cd3e4e743482f__box-sizing" };
+
+// packages/ui/src/form/primitives/select/item.tsx
+
+
+var Item = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.forwardRef)(
+  function Item2({ className, value, size = "default", children, ...restProps }, ref) {
+    return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(
+      _base_ui_react_select__WEBPACK_IMPORTED_MODULE_0__.SelectItem,
+      {
+        className: (0,clsx__WEBPACK_IMPORTED_MODULE_2__["default"])(
+          resets_default["box-sizing"],
+          item_popup_default.item,
+          item_popup_default[`is-size-${size}`],
+          className
+        ),
+        value,
+        ref,
+        ...restProps,
+        children: [
+          /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(
+            _icon_index_mjs__WEBPACK_IMPORTED_MODULE_5__.Icon,
+            {
+              icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"],
+              className: (0,clsx__WEBPACK_IMPORTED_MODULE_2__["default"])(
+                item_popup_default["item-icon"],
+                item_popup_default["item-indicator-icon"]
+              ),
+              size: size === "small" ? 20 : 24
+            }
+          ),
+          /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_base_ui_react_select__WEBPACK_IMPORTED_MODULE_1__.SelectItemText, { children })
+        ]
+      }
+    );
+  }
+);
+
+//# sourceMappingURL=item.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/select/popup.mjs"
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/select/popup.mjs ***!
+  \**********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Popup: () => (/* binding */ Popup)
+/* harmony export */ });
+/* harmony import */ var _base_ui_react_select__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/react/select */ "./node_modules/@base-ui/react/select/popup/SelectPopup.mjs");
+/* harmony import */ var _base_ui_react_select__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/react/select */ "./node_modules/@base-ui/react/select/list/SelectList.mjs");
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _portal_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./portal.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/select/portal.mjs");
+/* harmony import */ var _positioner_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./positioner.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/select/positioner.mjs");
+/* harmony import */ var _utils_render_slot_with_children_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../utils/render-slot-with-children.mjs */ "./node_modules/@wordpress/ui/build-module/utils/render-slot-with-children.mjs");
+/* harmony import */ var _utils_theme_provider_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../utils/theme-provider.mjs */ "./node_modules/@wordpress/ui/build-module/utils/theme-provider.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/primitives/select/popup.tsx
+
+
+
+
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/utils/css/item-popup.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("5705fc490f", '@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._380b81b8f79fb10f__dropdown-motion{--wp-ui-dropdown-slide-distance:4px;--wp-ui-dropdown-slide-duration:var(--wpds-motion-duration-md,200ms);--wp-ui-dropdown-slide-easing:var(--wpds-motion-easing-expressive,cubic-bezier(0.25,0,0,1));--wp-ui-dropdown-fade-duration:var(--wpds-motion-duration-sm,100ms);--wp-ui-dropdown-fade-easing:linear;@media not (prefers-reduced-motion){transition-duration:var(--wp-ui-dropdown-slide-duration),var(--wp-ui-dropdown-fade-duration);transition-property:transform,opacity;transition-timing-function:var(--wp-ui-dropdown-slide-easing),var(--wp-ui-dropdown-fade-easing);will-change:transform,opacity}opacity:1;transform:translate(0);&[data-instant]{transition:none}&[data-ending-style],&[data-starting-style]{opacity:0}&[data-side=bottom][data-ending-style],&[data-side=bottom][data-starting-style]{transform:translateY(calc(var(--wp-ui-dropdown-slide-distance)*-1))}&[data-side=top][data-ending-style],&[data-side=top][data-starting-style]{transform:translateY(var(--wp-ui-dropdown-slide-distance))}&[data-side=left][data-ending-style],&[data-side=left][data-starting-style]{transform:translateX(var(--wp-ui-dropdown-slide-distance))}&[data-side=right][data-ending-style],&[data-side=right][data-starting-style]{transform:translateX(calc(var(--wp-ui-dropdown-slide-distance)*-1))}}}}@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._234b520016b4e56f__popup{--wp-ui-popup-padding:var(--wpds-dimension-padding-xs,4px);--_wp-ui-elevation-md:0 2px 3px rgba(0,0,0,.05),0 4px 5px rgba(0,0,0,.04),0 12px 12px rgba(0,0,0,.03),0 16px 16px rgba(0,0,0,.02);background-color:var(--wpds-color-background-surface-neutral-strong,#fff);border:var(--wpds-border-width-xs,1px) solid var(--wpds-color-stroke-surface-neutral,#dbdbdb);border-radius:var(--wpds-border-radius-md,4px);box-shadow:var(--_wp-ui-elevation-md);display:grid;grid-template-areas:"header" "main";grid-template-rows:auto minmax(0,1fr);max-height:min(var(--available-height),480px,60dvh);max-width:var(--available-width);min-width:var(--anchor-width)}.f43dc7c768d7b622__list{color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);display:grid;font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-md,13px);grid-area:main;grid-template-areas:"scrollable" "footer";grid-template-rows:minmax(0,1fr) auto;line-height:var(--wpds-typography-line-height-sm,20px)}._233cd60cdb84a2ef__list-scrollable-container{grid-area:scrollable;overflow-block:auto;overscroll-behavior:contain;scroll-padding-block:var(--wp-ui-popup-padding);&:not(:empty){padding-block:var(--wp-ui-popup-padding)}}.ec4db6f0122263e7__list-footer{grid-area:footer;padding-block:var(--wp-ui-popup-padding);._233cd60cdb84a2ef__list-scrollable-container:not(:empty)+&{border-block-start:var(--wpds-border-width-xs,1px) solid var(--wpds-color-stroke-surface-neutral,#dbdbdb)}}.b3c0d7f103fb10a2__group:not(:first-child){margin-block-start:var(--wpds-dimension-gap-sm,8px)}._21b59380477c306c__group-label{align-items:center;color:var(--wpds-color-foreground-content-neutral-weak,#707070);display:flex;min-height:var(--wpds-dimension-size-md,32px);padding-inline:var(--wpds-dimension-padding-md,12px)}._684ccb7988365b4f__item{--wp-ui-popup-item-height:var(--wpds-dimension-size-lg,40px);--wp-ui-popup-item-padding-inline:var(--wpds-dimension-padding-md,12px);--wp-ui-popup-item-padding-block:var(--wpds-dimension-padding-xs,4px);align-items:center;border-radius:var(--wpds-border-radius-sm,2px);display:flex;gap:var(--wpds-dimension-gap-xs,4px);justify-content:flex-start;margin-inline:var(--wp-ui-popup-padding);min-height:var(--wp-ui-popup-item-height);padding-block:var(--wp-ui-popup-item-padding-block);padding-inline-end:var(--wp-ui-popup-item-padding-inline);padding-inline-start:calc(var(--wp-ui-popup-item-padding-inline) - var(--wpds-dimension-padding-xs, 4px));user-select:none;&:not([data-disabled]){cursor:var(--wpds-cursor-control,pointer)}&.f181b98b0d33282a__is-size-compact{--wp-ui-popup-item-height:var(--wpds-dimension-size-md,32px);--wp-ui-popup-item-padding-inline:var(--wpds-dimension-padding-sm,8px)}&._38f7faff93c61958__is-size-small{--wp-ui-popup-item-height:var(--wpds-dimension-size-sm,24px);--wp-ui-popup-item-padding-inline:var(--wpds-dimension-padding-sm,8px);--wp-ui-popup-item-padding-block:2px}&:not([data-selected]){._92fbe4765dfad5ee__item-indicator-icon{opacity:0}}&[data-highlighted]:not([aria-disabled=true]){background-color:var(--wpds-color-background-interactive-brand-weak-active,color-mix(in oklch,var(--wp-admin-theme-color,#3858e9) 12%,#fff));color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);outline:none;@media (forced-colors:active){outline:1px solid Highlight}}&[aria-disabled=true]{background-color:var(--wpds-color-background-interactive-brand-weak-disabled,#0000);color:var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d);@media (forced-colors:active){color:GrayText}}}.a3adcfd0b73ffd40__item-icon{flex-shrink:0}._06c7ff39d2f685b9__empty:not(:empty){--wp-ui-popup-empty-min-height:var(--wpds-dimension-size-lg,40px);--wp-ui-popup-empty-padding-inline:var(--wpds-dimension-padding-md,12px);align-items:center;color:var(--wpds-color-foreground-content-neutral-weak,#707070);display:flex;font-family:var(--wpds-typography-font-family-body,-apple-system,system-ui,"Segoe UI","Roboto","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif);font-size:var(--wpds-typography-font-size-md,13px);grid-area:main;line-height:var(--wpds-typography-line-height-sm,20px);min-height:var(--wp-ui-popup-empty-min-height);padding-inline:var(--wp-ui-popup-empty-padding-inline)}}}');
+}
+var item_popup_default = { "popup": "_234b520016b4e56f__popup _380b81b8f79fb10f__dropdown-motion", "list": "f43dc7c768d7b622__list", "list-scrollable-container": "_233cd60cdb84a2ef__list-scrollable-container", "list-footer": "ec4db6f0122263e7__list-footer", "group": "b3c0d7f103fb10a2__group", "group-label": "_21b59380477c306c__group-label", "item": "_684ccb7988365b4f__item", "is-size-compact": "f181b98b0d33282a__is-size-compact", "is-size-small": "_38f7faff93c61958__is-size-small", "item-indicator-icon": "_92fbe4765dfad5ee__item-indicator-icon", "item-icon": "a3adcfd0b73ffd40__item-icon", "empty": "_06c7ff39d2f685b9__empty" };
+
+// packages/ui/src/form/primitives/select/popup.tsx
+
+var Popup = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.forwardRef)(
+  function Popup2({ className, portal, positioner, children, ...restProps }, ref) {
+    const popupContent = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_utils_theme_provider_mjs__WEBPACK_IMPORTED_MODULE_7__.ThemeProvider, { children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(
+      _base_ui_react_select__WEBPACK_IMPORTED_MODULE_0__.SelectPopup,
+      {
+        ref,
+        className: (0,clsx__WEBPACK_IMPORTED_MODULE_2__["default"])(item_popup_default.popup, className),
+        ...restProps,
+        children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_base_ui_react_select__WEBPACK_IMPORTED_MODULE_1__.SelectList, { className: item_popup_default.list, children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(
+          "div",
+          {
+            className: item_popup_default["list-scrollable-container"],
+            children
+          }
+        ) })
+      }
+    ) });
+    const positionedPopup = (0,_utils_render_slot_with_children_mjs__WEBPACK_IMPORTED_MODULE_6__.renderSlotWithChildren)(
+      positioner,
+      /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_positioner_mjs__WEBPACK_IMPORTED_MODULE_5__.Positioner, {}),
+      popupContent
+    );
+    return (0,_utils_render_slot_with_children_mjs__WEBPACK_IMPORTED_MODULE_6__.renderSlotWithChildren)(portal, /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_portal_mjs__WEBPACK_IMPORTED_MODULE_4__.Portal, {}), positionedPopup);
+  }
+);
+
+//# sourceMappingURL=popup.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/select/portal.mjs"
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/select/portal.mjs ***!
+  \***********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Portal: () => (/* binding */ Portal)
+/* harmony export */ });
+/* harmony import */ var _base_ui_react_select__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/react/select */ "./node_modules/@base-ui/react/select/portal/SelectPortal.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _utils_wp_compat_overlay_slot_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../utils/wp-compat-overlay-slot.mjs */ "./node_modules/@wordpress/ui/build-module/utils/wp-compat-overlay-slot.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/primitives/select/portal.tsx
+
+
+
+
+var Portal = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.forwardRef)(function SelectPortal({ container, ...restProps }, ref) {
+  return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(
+    _base_ui_react_select__WEBPACK_IMPORTED_MODULE_0__.SelectPortal,
+    {
+      container: container ?? (0,_utils_wp_compat_overlay_slot_mjs__WEBPACK_IMPORTED_MODULE_2__.getWpCompatOverlaySlot)(),
+      ...restProps,
+      ref
+    }
+  );
+});
+
+//# sourceMappingURL=portal.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/select/positioner.mjs"
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/select/positioner.mjs ***!
+  \***************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Positioner: () => (/* binding */ Positioner)
+/* harmony export */ });
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _base_ui_react_select__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/react/select */ "./node_modules/@base-ui/react/select/positioner/SelectPositioner.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _constants_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../constants.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/constants.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/primitives/select/positioner.tsx
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/utils/css/resets.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("10f3806643", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._336cd3e4e743482f__box-sizing{box-sizing:border-box;*,:after,:before{box-sizing:inherit}}}}");
+}
+var resets_default = { "box-sizing": "_336cd3e4e743482f__box-sizing" };
+
+// packages/ui/src/form/primitives/select/style.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("8c70612dd7", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer components{._0ab863136fb95530__positioner{z-index:var(--wp-ui-select-z-index,initial)}}}");
+}
+var style_default = { "positioner": "_0ab863136fb95530__positioner" };
+
+// packages/ui/src/form/primitives/select/positioner.tsx
+
+
+var Positioner = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.forwardRef)(
+  function SelectPositioner({ className, ...props }, ref) {
+    return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(
+      _base_ui_react_select__WEBPACK_IMPORTED_MODULE_1__.SelectPositioner,
+      {
+        ..._constants_mjs__WEBPACK_IMPORTED_MODULE_3__.ITEM_POPUP_POSITIONER_PROPS,
+        alignItemWithTrigger: false,
+        ...props,
+        ref,
+        className: (0,clsx__WEBPACK_IMPORTED_MODULE_0__["default"])(
+          resets_default["box-sizing"],
+          style_default.positioner,
+          className
+        )
+      }
+    );
+  }
+);
+
+//# sourceMappingURL=positioner.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/select/root.mjs"
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/select/root.mjs ***!
+  \*********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Root: () => (/* binding */ Root)
+/* harmony export */ });
+/* harmony import */ var _base_ui_react_select__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/react/select */ "./node_modules/@base-ui/react/select/root/SelectRoot.mjs");
+/* harmony import */ var _utils_direction_provider_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../utils/direction-provider.mjs */ "./node_modules/@wordpress/ui/build-module/utils/direction-provider.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/primitives/select/root.tsx
+
+
+
+function Root(props) {
+  return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_utils_direction_provider_mjs__WEBPACK_IMPORTED_MODULE_1__.DirectionProvider, { children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_base_ui_react_select__WEBPACK_IMPORTED_MODULE_0__.SelectRoot, { ...props }) });
+}
+
+//# sourceMappingURL=root.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/primitives/select/trigger.mjs"
+/*!************************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/primitives/select/trigger.mjs ***!
+  \************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Trigger: () => (/* binding */ Trigger)
+/* harmony export */ });
+/* harmony import */ var _base_ui_react_select__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @base-ui/react/select */ "./node_modules/@base-ui/react/select/trigger/SelectTrigger.mjs");
+/* harmony import */ var _base_ui_react_select__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @base-ui/react/select */ "./node_modules/@base-ui/react/select/value/SelectValue.mjs");
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/chevron-down.mjs");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _input_layout_index_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../input-layout/index.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/input-layout/index.mjs");
+/* harmony import */ var _icon_index_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../icon/index.mjs */ "./node_modules/@wordpress/ui/build-module/icon/icon.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/primitives/select/trigger.tsx
+
+
+
+
+
+
+// packages/style-runtime/src/index.ts
+var STYLE_HASH_ATTRIBUTE = "data-wp-hash";
+function getRuntime() {
+  const globalScope = globalThis;
+  if (globalScope.__wpStyleRuntime) {
+    return globalScope.__wpStyleRuntime;
+  }
+  globalScope.__wpStyleRuntime = {
+    documents: /* @__PURE__ */ new Map(),
+    styles: /* @__PURE__ */ new Map(),
+    injectedStyles: /* @__PURE__ */ new WeakMap()
+  };
+  if (typeof document !== "undefined") {
+    registerDocument(document);
+  }
+  return globalScope.__wpStyleRuntime;
+}
+function documentContainsStyleHash(targetDocument, hash) {
+  if (!targetDocument.head) {
+    return false;
+  }
+  for (const style of targetDocument.head.querySelectorAll(
+    `style[${STYLE_HASH_ATTRIBUTE}]`
+  )) {
+    if (style.getAttribute(STYLE_HASH_ATTRIBUTE) === hash) {
+      return true;
+    }
+  }
+  return false;
+}
+function injectStyle(targetDocument, hash, css) {
+  if (!targetDocument.head) {
+    return;
+  }
+  const runtime = getRuntime();
+  let injectedStyles = runtime.injectedStyles.get(targetDocument);
+  if (!injectedStyles) {
+    injectedStyles = /* @__PURE__ */ new Set();
+    runtime.injectedStyles.set(targetDocument, injectedStyles);
+  }
+  if (injectedStyles.has(hash)) {
+    return;
+  }
+  if (documentContainsStyleHash(targetDocument, hash)) {
+    injectedStyles.add(hash);
+    return;
+  }
+  const style = targetDocument.createElement("style");
+  style.setAttribute(STYLE_HASH_ATTRIBUTE, hash);
+  style.appendChild(targetDocument.createTextNode(css));
+  targetDocument.head.appendChild(style);
+  injectedStyles.add(hash);
+}
+function registerDocument(targetDocument) {
+  const runtime = getRuntime();
+  runtime.documents.set(
+    targetDocument,
+    (runtime.documents.get(targetDocument) ?? 0) + 1
+  );
+  for (const [hash, css] of runtime.styles) {
+    injectStyle(targetDocument, hash, css);
+  }
+  return () => {
+    const count = runtime.documents.get(targetDocument);
+    if (count === void 0) {
+      return;
+    }
+    if (count <= 1) {
+      runtime.documents.delete(targetDocument);
+      return;
+    }
+    runtime.documents.set(targetDocument, count - 1);
+  };
+}
+function registerStyle(hash, css) {
+  const runtime = getRuntime();
+  runtime.styles.set(hash, css);
+  for (const targetDocument of runtime.documents.keys()) {
+    injectStyle(targetDocument, hash, css);
+  }
+}
+
+// packages/ui/src/utils/css/focus.module.scss
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("2ffedd8246", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._64de9947bf305b7a__outset-ring--focus-within-visible:focus-within:has(:focus-visible),.af79fb116edb0dd7__outset-ring--focus:focus,.dfcfdc28396e5d98__outset-ring--focus-visible:focus-visible,.e5cd9ee879f6403a__outset-ring--focus-within:focus-within,:focus-visible ._81935a08e952f267__outset-ring--focus-parent-visible{--focus-color:var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));--_gcd-a-outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));--_gcd-div-outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--focus-color);outline-offset:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px))}._3c9f5ee9fc9c136d__outset-ring--focus-within-except-active:focus-within,.abc777e9713fa711__outset-ring--focus-except-active:focus{outline:none}._3c9f5ee9fc9c136d__outset-ring--focus-within-except-active:focus-within:not(:has(:active)),.abc777e9713fa711__outset-ring--focus-except-active:focus:not(:active){--focus-color:var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));--_gcd-a-outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));--_gcd-div-outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--wpds-color-stroke-focus,var(--wp-admin-theme-color,#3858e9));outline:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px)) solid var(--focus-color);outline-offset:var(--wpds-border-width-focus,var(--wp-admin-border-width-focus,2px))}}}");
+}
+var focus_module_default = { "outset-ring--focus": "af79fb116edb0dd7__outset-ring--focus", "outset-ring--focus-visible": "dfcfdc28396e5d98__outset-ring--focus-visible", "outset-ring--focus-within": "e5cd9ee879f6403a__outset-ring--focus-within", "outset-ring--focus-within-visible": "_64de9947bf305b7a__outset-ring--focus-within-visible", "outset-ring--focus-parent-visible": "_81935a08e952f267__outset-ring--focus-parent-visible", "outset-ring--focus-except-active": "abc777e9713fa711__outset-ring--focus-except-active", "outset-ring--focus-within-except-active": "_3c9f5ee9fc9c136d__outset-ring--focus-within-except-active" };
+
+// packages/ui/src/utils/css/select-trigger.module.css
+if (typeof process === "undefined" || "development" !== "test") {
+  registerStyle("7b4a0ac519", "@layer wp-ui{@layer utilities, components, compositions, overrides;@layer utilities{._6e4e0445ef20426b__trigger-wrapper{&.fa98c865fb77e675__is-minimal{width:fit-content}}._7893295e3f6d1af7__trigger{align-items:center;background-color:transparent;border:none;color:var(--wpds-color-foreground-interactive-neutral,#1e1e1e);display:flex;font-family:inherit;font-size:inherit;gap:var(--wpds-dimension-gap-xs,4px);justify-content:space-between;line-height:1.4;padding-block:4px;padding-inline-end:calc(var(--wp-ui-input-layout-padding-inline) - 4px);padding-inline-start:var(--wp-ui-input-layout-padding-inline);text-align:start;user-select:none;width:100%;&:not([data-disabled]){cursor:var(--wpds-cursor-control,pointer)}&.fa98c865fb77e675__is-minimal{width:auto}&:focus{outline:none}&[data-disabled]{background-color:var(--wpds-color-background-interactive-neutral-weak-disabled,#0000);color:var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d)}}.e760c9339965ce84__trigger-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;._7893295e3f6d1af7__trigger[data-placeholder] &{color:var(--wpds-color-foreground-interactive-neutral-disabled,#8d8d8d)}}._308bc63e43681f99__trigger-caret{flex:0 0 auto}}}");
+}
+var select_trigger_default = { "trigger-wrapper": "_6e4e0445ef20426b__trigger-wrapper", "is-minimal": "fa98c865fb77e675__is-minimal", "trigger": "_7893295e3f6d1af7__trigger", "trigger-value": "e760c9339965ce84__trigger-value", "trigger-caret": "_308bc63e43681f99__trigger-caret" };
+
+// packages/ui/src/form/primitives/select/trigger.tsx
+
+
+
+var Trigger = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_3__.forwardRef)(
+  function Trigger2({
+    className,
+    size,
+    variant,
+    children,
+    placeholder = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)("Select"),
+    ...restProps
+  }, ref) {
+    return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(
+      _input_layout_index_mjs__WEBPACK_IMPORTED_MODULE_6__.InputLayout,
+      {
+        className: (0,clsx__WEBPACK_IMPORTED_MODULE_2__["default"])(
+          focus_module_default["outset-ring--focus-within-except-active"],
+          select_trigger_default["trigger-wrapper"],
+          variant === "minimal" && select_trigger_default["is-minimal"],
+          className
+        ),
+        size,
+        isBorderless: variant === "minimal",
+        children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(
+          _base_ui_react_select__WEBPACK_IMPORTED_MODULE_0__.SelectTrigger,
+          {
+            ...restProps,
+            className: (0,clsx__WEBPACK_IMPORTED_MODULE_2__["default"])(
+              select_trigger_default.trigger,
+              variant === "minimal" && select_trigger_default["is-minimal"]
+            ),
+            "data-can-disable-input-layout": true,
+            ref,
+            children: [
+              /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(
+                _base_ui_react_select__WEBPACK_IMPORTED_MODULE_1__.SelectValue,
+                {
+                  placeholder,
+                  className: select_trigger_default["trigger-value"],
+                  children
+                }
+              ),
+              /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(
+                _icon_index_mjs__WEBPACK_IMPORTED_MODULE_7__.Icon,
+                {
+                  className: select_trigger_default["trigger-caret"],
+                  icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"],
+                  size: 18
+                }
+              )
+            ]
+          }
+        )
+      }
+    );
+  }
+);
+
+//# sourceMappingURL=trigger.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/select-control/context.mjs"
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/select-control/context.mjs ***!
+  \*********************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectControlSizeContext: () => (/* binding */ SelectControlSizeContext),
+/* harmony export */   useSelectControlSizeContext: () => (/* binding */ useSelectControlSizeContext)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+// packages/ui/src/form/select-control/context.tsx
+
+var SelectControlSizeContext = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createContext)(void 0);
+var useSelectControlSizeContext = () => {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useContext)(SelectControlSizeContext);
+};
+
+//# sourceMappingURL=context.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/select-control/index.mjs"
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/select-control/index.mjs ***!
+  \*******************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectControl: () => (/* binding */ SelectControl)
+/* harmony export */ });
+/* harmony import */ var _select_control_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./select-control.mjs */ "./node_modules/@wordpress/ui/build-module/form/select-control/select-control.mjs");
+/* harmony import */ var _primitives_select_group_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../primitives/select/group.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/select/group.mjs");
+/* harmony import */ var _primitives_select_group_label_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../primitives/select/group-label.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/select/group-label.mjs");
+/* harmony import */ var _item_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./item.mjs */ "./node_modules/@wordpress/ui/build-module/form/select-control/item.mjs");
+// packages/ui/src/form/select-control/index.ts
+
+
+
+
+_primitives_select_group_mjs__WEBPACK_IMPORTED_MODULE_1__.Group.displayName = "SelectControl.Group";
+_primitives_select_group_label_mjs__WEBPACK_IMPORTED_MODULE_2__.GroupLabel.displayName = "SelectControl.GroupLabel";
+_item_mjs__WEBPACK_IMPORTED_MODULE_3__.Item.displayName = "SelectControl.Item";
+var SelectControl = Object.assign(_select_control_mjs__WEBPACK_IMPORTED_MODULE_0__.SelectControl, {
+  /**
+   * Groups related items together with an associated label rendered by
+   * `SelectControl.GroupLabel`.
+   */
+  Group: _primitives_select_group_mjs__WEBPACK_IMPORTED_MODULE_1__.Group,
+  /**
+   * Renders a label for a `SelectControl.Group`.
+   */
+  GroupLabel: _primitives_select_group_label_mjs__WEBPACK_IMPORTED_MODULE_2__.GroupLabel,
+  /**
+   * An item rendered inside a `SelectControl` popup.
+   */
+  Item: _item_mjs__WEBPACK_IMPORTED_MODULE_3__.Item
+});
+
+//# sourceMappingURL=index.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/select-control/item.mjs"
+/*!******************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/select-control/item.mjs ***!
+  \******************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Item: () => (/* binding */ Item)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _primitives_index_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../primitives/index.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/select/item.mjs");
+/* harmony import */ var _context_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./context.mjs */ "./node_modules/@wordpress/ui/build-module/form/select-control/context.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/select-control/item.tsx
+
+
+
+
+var Item = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(
+  function Item2({ size: sizeProp, ...restProps }, ref) {
+    const contextSize = (0,_context_mjs__WEBPACK_IMPORTED_MODULE_2__.useSelectControlSizeContext)();
+    const size = sizeProp ?? contextSize;
+    return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_primitives_index_mjs__WEBPACK_IMPORTED_MODULE_1__.Item, { size, ref, ...restProps });
+  }
+);
+
+//# sourceMappingURL=item.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/ui/build-module/form/select-control/select-control.mjs"
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@wordpress/ui/build-module/form/select-control/select-control.mjs ***!
+  \****************************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SelectControl: () => (/* binding */ SelectControl)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _primitives_index_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../primitives/index.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/field/root.mjs");
+/* harmony import */ var _primitives_index_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../primitives/index.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/field/label.mjs");
+/* harmony import */ var _primitives_index_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../primitives/index.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/field/description.mjs");
+/* harmony import */ var _primitives_index_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../primitives/index.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/field/details.mjs");
+/* harmony import */ var _primitives_index_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../primitives/index.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/select/root.mjs");
+/* harmony import */ var _primitives_index_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../primitives/index.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/select/trigger.mjs");
+/* harmony import */ var _primitives_index_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../primitives/index.mjs */ "./node_modules/@wordpress/ui/build-module/form/primitives/select/popup.mjs");
+/* harmony import */ var _context_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./context.mjs */ "./node_modules/@wordpress/ui/build-module/form/select-control/context.mjs");
+/* harmony import */ var _item_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./item.mjs */ "./node_modules/@wordpress/ui/build-module/form/select-control/item.mjs");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/ui/src/form/select-control/select-control.tsx
+
+
+
+
+
+var SelectControl = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(function SelectControl2({
+  className,
+  children,
+  items,
+  label,
+  description,
+  details,
+  hideLabelFromVision,
+  placeholder,
+  size = "default",
+  triggerContent,
+  ...restProps
+}, ref) {
+  return /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_primitives_index_mjs__WEBPACK_IMPORTED_MODULE_1__.Root, { className, children: [
+    /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_primitives_index_mjs__WEBPACK_IMPORTED_MODULE_2__.Label, { hideFromVision: hideLabelFromVision, children: label }),
+    /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_primitives_index_mjs__WEBPACK_IMPORTED_MODULE_5__.Root, { items, ...restProps, children: [
+      /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(
+        _primitives_index_mjs__WEBPACK_IMPORTED_MODULE_6__.Trigger,
+        {
+          ref,
+          placeholder,
+          size,
+          children: triggerContent
+        }
+      ),
+      /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_primitives_index_mjs__WEBPACK_IMPORTED_MODULE_7__.Popup, { children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_context_mjs__WEBPACK_IMPORTED_MODULE_8__.SelectControlSizeContext.Provider, { value: size, children: children !== void 0 ? children : items?.map((item) => /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(
+        _item_mjs__WEBPACK_IMPORTED_MODULE_9__.Item,
+        {
+          value: item,
+          label: item.label,
+          disabled: item.disabled,
+          children: item.label
+        },
+        item.value ?? "null"
+      )) }) })
+    ] }),
+    description && /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_primitives_index_mjs__WEBPACK_IMPORTED_MODULE_3__.Description, { children: description }),
+    details && /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_primitives_index_mjs__WEBPACK_IMPORTED_MODULE_4__.Details, { children: details })
+  ] });
+});
+
+//# sourceMappingURL=select-control.mjs.map
 
 
 /***/ },
