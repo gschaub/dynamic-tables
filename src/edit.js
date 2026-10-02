@@ -102,6 +102,7 @@ import {
 
 import {
 	Cell,
+	NumberIncrementControl,
 	RowMenu,
 	RowHeightModal,
 	ColumnMenu,
@@ -5172,48 +5173,10 @@ export default function Edit(props) {
 													type="number"
 													size="compact"
 													suffix={
-														<InputLayout.Slot padding="minimal">
-															<Stack
-																direction="row"
-																align="center"
-																className="dtbk-increment-steppers"
-															>
-																<IconButton
-																	className="dtbk-increment-steppers__button"
-																	type="button"
-																	label={__('Increment columns', 'dynamic-table-blocks')}
-																	icon={plus}
-																	size="small"
-																	variant="minimal"
-																	disabled={Number(createDraftTable.numColumns) >= 50}
-																	onClick={() =>
-																		onChangeInitialColumnCount(
-																			Number(createDraftTable.numColumns) + 1
-																		)
-																	}
-																/>
-																<span
-																	className="dtbk-increment-steppers__separator"
-																	aria-hidden="true"
-																>
-																	/
-																</span>
-																<IconButton
-																	className="dtbk-increment-steppers__button"
-																	type="button"
-																	label={__('Decrement columns', 'dynamic-table-blocks')}
-																	icon={reset}
-																	size="small"
-																	variant="minimal"
-																	disabled={Number(createDraftTable.numColumns) <= 1}
-																	onClick={() =>
-																		onChangeInitialColumnCount(
-																			Number(createDraftTable.numColumns) - 1
-																		)
-																	}
-																/>
-															</Stack>
-														</InputLayout.Slot>
+														<NumberIncrementControl
+															baseInteger={Number(createDraftTable.numColumns)}
+															onClick={onChangeInitialColumnCount}
+														/>
 													}
 												/>
 
@@ -5229,44 +5192,10 @@ export default function Edit(props) {
 													type="number"
 													size="compact"
 													suffix={
-														<InputLayout.Slot padding="minimal">
-															<Stack
-																direction="row"
-																align="center"
-																className="dtbk-increment-steppers"
-															>
-																<IconButton
-																	className="dtbk-increment-steppers__button"
-																	type="button"
-																	label={__('Increment rows', 'dynamic-table-blocks')}
-																	icon={plus}
-																	size="small"
-																	variant="minimal"
-																	disabled={Number(createDraftTable.numRows) >= 1000}
-																	onClick={() =>
-																		onChangeInitialRowCount(Number(createDraftTable.numRows) + 1)
-																	}
-																/>
-																<span
-																	className="dtbk-increment-steppers__separator"
-																	aria-hidden="true"
-																>
-																	/
-																</span>
-																<IconButton
-																	className="dtbk-increment-steppers__button"
-																	type="button"
-																	label={__('Decrement columns', 'dynamic-table-blocks')}
-																	icon={reset}
-																	size="small"
-																	variant="minimal"
-																	disabled={Number(createDraftTable.numRows) <= 1}
-																	onClick={() =>
-																		onChangeInitialColumnCount(Number(createDraftTable.numRows) - 1)
-																	}
-																/>
-															</Stack>
-														</InputLayout.Slot>
+														<NumberIncrementControl
+															baseInteger={Number(createDraftTable.numRows)}
+															onClick={onChangeInitialRowCount}
+														/>
 													}
 												/>
 											</Stack>

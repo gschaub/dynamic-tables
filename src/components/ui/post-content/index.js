@@ -37,17 +37,18 @@ import '../../../editor.scss';
 import '../../../style.scss';
 
 function RenderCellPostContent(props = {}) {
-	const { cellContent, cellAttributes, cellClasses, cellContentType } = props;
+	const { cellContent, cellAttributes, cellClasses, cellContentType, postContent = null } = props;
 
-	const { type: contentType, settings } = cellContentType;
-	const contentFormat = settings?.format || '';
-	const contentOptions = settings?.formatOptions || {};
+	// const { type: contentType, settings } = cellContentType;
+	console.log('Cell Content Type: ', cellContentType);
+	const contentFormat = cellContentType?.settings?.format || '';
+	const contentOptions = cellContentType?.settings?.formatOptions || {};
 	const displayedAttributes = getDisplayAttributes(contentOptions);
 
 	const { canonical: cellCanonical, options: cellDisplayOptions } = normalizeCellValueAttributes(
 		cellAttributes,
 		cellContent,
-		contentType
+		'post'
 	);
 	const postId = cellCanonical?.postId || 0;
 	const postType = cellCanonical?.postType || 'post';
@@ -57,8 +58,8 @@ function RenderCellPostContent(props = {}) {
 	const [postData, setPostData] = useState(null);
 	const [postError, setPostError] = useState(null);
 	const post = postData?.post;
-	const needsImage = contentOptions?.displayCoverImage > 0;
-	const needsAuthor = contentOptions?.displayAuthor > 0;
+	const needsImage = contentOptions?.displayCoverImage.display;
+	const needsAuthor = contentOptions?.displayAuthor.display;
 	const imageSize = contentOptions?.displayImageSize || 'thumbnail';
 
 	useEffect(() => {
@@ -78,8 +79,8 @@ function RenderCellPostContent(props = {}) {
 				if (!active) return;
 
 				const [image, authorName] = await Promise.all([
-					needsImage ? lookupPostImage(postValue.featured_media, { size: imageSize }) : null,
-					needsAuthor ? lookupPostAuthor(postValue.author) : null,
+					lookupPostImage(postValue.featured_media, { size: imageSize }),
+					lookupPostAuthor(postValue.author),
 				]);
 
 				if (active) {
@@ -162,52 +163,63 @@ function getDisplayAttributes(contentOptions) {
 		displayModifiedDate,
 	} = contentOptions;
 
+	console.log('In GetDisplayAttributes, contentOptions: ', contentOptions);
 	const postDisplayAttributes = Array();
 
-	if (displayTitle > 0) {
+	if (displayTitle.display) {
 		postDisplayAttributes.push({
 			attribute: 'title',
 			slot: displayTitle,
 		});
 	}
 
-	if (displayCoverImage > 0) {
+	if (displayCoverImage.display) {
 		postDisplayAttributes.push({
 			attribute: 'image',
 			slot: displayCoverImage,
 		});
 	}
 
-	if (displayExcerpt > 0) {
+	if (displayExcerpt.display) {
 		postDisplayAttributes.push({
 			attribute: 'excerpt',
 			slot: displayExcerpt,
 		});
 	}
 
-	if (displayAuthor > 0) {
+	if (displayAuthor.display) {
 		postDisplayAttributes.push({
 			attribute: 'author',
 			slot: displayAuthor,
 		});
 	}
 
-	if (displayPublishDate > 0) {
+	if (displayPublishDate.display) {
 		postDisplayAttributes.push({
 			attribute: 'published',
 			slot: displayPublishDate,
 		});
 	}
 
-	if (displayModifiedDate > 0) {
+	if (displayModifiedDate.display) {
 		postDisplayAttributes.push({
 			attribute: 'modified',
 			slot: displayModifiedDate,
 		});
 	}
 
-	// sort array before return
+	// sort array on column location, then display order
+	postDisplayAttributes.sort((a, b) => {
+		const columnCompare = a.slot.column.localeCompare(b.slot.column);
 
+		if (columnCompare !== 0) {
+			return columnCompare;
+		}
+
+		return a.slot.order - b.slot.order;
+	});
+
+	console.log('Post render display array: ', postDisplayAttributes);
 	return postDisplayAttributes;
 }
 
@@ -293,11 +305,6 @@ function renderNarrowContent(
 	contentOptions,
 	cellClasses
 ) {
-	const { post, image, authorName } = postData;
-	const { displayTitleInCover, displayImageSize, linkLocation } = contentOptions;
-
-	const postLink = post.link;
-
 	// Reserved for future use
 	// const postCategoriesApi = post.wp.term.href;
 	// const postTagsApi = post.wp.term.tags;
@@ -305,53 +312,13 @@ function renderNarrowContent(
 	return (
 		<div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
 			{displayedAttributes.map(({ attribute }) => {
-				let formattedContent;
-
-				switch (attribute) {
-					case 'title': {
-						const renderedContent = post.title.rendered;
-						if (displayTitleInCover) break;
-						formattedContent = renderPostTitle(renderedContent, linkLocation, postLink);
-						break;
-					}
-					case 'image': {
-						const link = {
-							isLink: linkLocation === 'image' ? true : false,
-							url: linkLocation === 'image' ? postLink : null,
-						};
-
-						const title = {
-							embedTitle: displayTitleInCover,
-							title: displayTitleInCover ? post.title.rendered : '',
-						};
-
-						formattedContent = renderPostImage(image, 'auto', link, title);
-						break;
-					}
-					case 'excerpt': {
-						const renderedContent = post.excerpt.rendered;
-						formattedContent = renderPostExcept(renderedContent);
-						break;
-					}
-					case 'author': {
-						formattedContent = renderPostAuthor(authorName);
-						break;
-					}
-					case 'published': {
-						const renderedContent = post.date;
-						formattedContent = renderPublishedDate(renderedContent);
-						break;
-					}
-					case 'modified': {
-						const renderedContent = post.modified;
-						formattedContent = renderModifiedDate(renderedContent);
-						break;
-					}
-					default: {
-						break;
-					}
-				}
-
+				console.log('Display attribute: ', attribute);
+				const formattedContent = evaluateDisplayAttributes(
+					attribute,
+					postData,
+					postLinkInNewTab,
+					contentOptions
+				);
 				return <div>{formattedContent}</div>;
 			})}
 		</div>
@@ -365,71 +332,141 @@ function renderWideContent(
 	contentOptions,
 	cellClasses
 ) {
+	return (
+		<div style={{ display: 'block', boxSizing: 'inherit' }}>
+			<div style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '10px 10px' }}>
+				{displayedAttributes.map(({ attribute, slot }) => {
+					let formattedContent;
+					if (slot.column === 'span') {
+						formattedContent = evaluateDisplayAttributes(
+							attribute,
+							postData,
+							postLinkInNewTab,
+							contentOptions
+						);
+						return <div>{formattedContent}</div>;
+					}
+					return null;
+				})}
+			</div>
+
+			<div
+				style={{
+					display: 'flex',
+					flexDirection: 'row',
+					gap: '10px',
+					boxSizing: 'inherit',
+				}}
+			>
+				<div
+					style={{
+						display: 'block',
+						boxSizing: 'inherit',
+						maxHeight: '100%',
+						maxWidth: '100%',
+						flex: '1',
+					}}
+				>
+					<div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+						{displayedAttributes.map(({ attribute, slot }) => {
+							let formattedContent;
+							if (slot.column === 'left') {
+								formattedContent = evaluateDisplayAttributes(
+									attribute,
+									postData,
+									postLinkInNewTab,
+									contentOptions
+								);
+								return <div>{formattedContent}</div>;
+							}
+							return null;
+						})}
+					</div>
+				</div>
+				<div
+					style={{
+						display: 'block',
+						boxSizing: 'inherit',
+						maxHeight: '100%',
+						maxWidth: '100%',
+						flex: '1',
+					}}
+				>
+					<div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+						{displayedAttributes.map(({ attribute, slot }) => {
+							let formattedContent;
+							if (slot.column === 'right') {
+								formattedContent = evaluateDisplayAttributes(
+									attribute,
+									postData,
+									postLinkInNewTab,
+									contentOptions
+								);
+								return <div>{formattedContent}</div>;
+							}
+							return null;
+						})}
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+}
+
+function evaluateDisplayAttributes(displayedAttribute, postData, postLinkInNewTab, contentOptions) {
 	const { post, image, authorName } = postData;
 	const { displayTitleInCover, linkLocation } = contentOptions;
 
 	const postLink = post.link;
 
-	// Reserved for future use
-	// const postCategoriesApi = post.wp.term.href;
-	// const postTagsApi = post.wp.term.tags;
+	let formattedContent;
 
-	return displayedAttributes.map(({ attribute }) => {
-		let formattedContent;
-
-		switch (attribute) {
-			case 'title': {
-				const renderedContent = post.title.rendered;
-				if (displayTitleInCover) break;
-				formattedContent = renderPostTitle(renderedContent, linkLocation, postLink);
-				break;
-			}
-			case 'image': {
-				formattedContent = renderPostImage(
-					image,
-					'auto',
-					{
-						isLink: linkLocation === 'image',
-						url: postLink,
-					},
-					{
-						embedTitle: displayTitleInCover,
-						title: post.title.rendered,
-					}
-				);
-				break;
-			}
-			case 'excerpt': {
-				const renderedContent = post.excerpt.rendered;
-				formattedContent = renderPostExcept(renderedContent);
-				break;
-			}
-			case 'author': {
-				formattedContent = renderPostAuthor(authorName);
-				break;
-			}
-			case 'content': {
-				const renderedContent = post.content.rendered;
-				formattedContent = renderShortContent(renderedContent);
-				break;
-			}
-			case 'published': {
-				const renderedContent = post.date;
-				formattedContent = renderPublishedDate(renderedContent);
-				break;
-			}
-			case 'modified': {
-				const renderedContent = post.modified;
-				formattedContent = renderModifiedDate(renderedContent);
-				break;
-			}
-			default: {
-				break;
-			}
+	switch (displayedAttribute) {
+		case 'title': {
+			const renderedContent = post.title.rendered;
+			if (displayTitleInCover) break;
+			formattedContent = renderPostTitle(renderedContent, linkLocation, postLink);
+			break;
 		}
-
-		return <div>{formattedContent}</div>;
-	});
+		case 'image': {
+			formattedContent = renderPostImage(
+				image,
+				'auto',
+				{
+					isLink: linkLocation === 'image',
+					url: postLink,
+				},
+				{
+					embedTitle: displayTitleInCover,
+					title: post.title.rendered,
+				}
+			);
+			break;
+		}
+		case 'excerpt': {
+			const renderedContent = post.excerpt.rendered;
+			formattedContent = renderPostExcept(renderedContent);
+			break;
+		}
+		case 'author': {
+			formattedContent = renderPostAuthor(authorName);
+			break;
+		}
+		case 'published': {
+			const renderedContent = post.date;
+			formattedContent = renderPublishedDate(renderedContent);
+			break;
+		}
+		case 'modified': {
+			const renderedContent = post.modified;
+			formattedContent = renderModifiedDate(renderedContent);
+			break;
+		}
+		default: {
+			break;
+		}
+	}
+	return formattedContent;
 }
 
 export const CellPostContent = memo(RenderCellPostContent);

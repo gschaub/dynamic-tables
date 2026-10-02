@@ -1705,10 +1705,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
 /* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-column-data-types/style.scss");
 /* harmony import */ var _ui_icon__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../ui/icon */ "./src/components/ui/icon/index.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../utils */ "./src/utils.js");
-/* harmony import */ var _ui_post_content__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../ui/post-content */ "./src/components/ui/post-content/index.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__);
+/* harmony import */ var _ui_number_increment_control__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../ui/number-increment-control */ "./src/components/ui/number-increment-control/index.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../utils */ "./src/utils.js");
+/* harmony import */ var _ui_post_content__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../ui/post-content */ "./src/components/ui/post-content/index.js");
+/* harmony import */ var _post__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./post */ "./src/components/configure-column-data-types/post.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__);
 /* External dependencies */
 
 
@@ -1720,6 +1722,8 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Internal dependencies
  */
+
+
 
 
 
@@ -1746,13 +1750,13 @@ function ConfigureColumnDataType(props = {}) {
     updatedColumn,
     onRequestClose
   } = props;
-  const normalizedColumnDataType = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.normalizeColumnDataType)(columnAttributes?.columnDataType);
+  const normalizedColumnDataType = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.normalizeColumnDataType)(columnAttributes?.columnDataType);
   const [columnName, setColumnName] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnLabel);
   const [dataType, setDataType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType);
   const [dataTypeFormat, setDataTypeFormat] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.format || '');
   const [updateColumnStyle, setUpdateColumnStyle] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.updateColumnStyle || true);
-  const [columnClassNames, setColumnClassNames] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)((0,_utils__WEBPACK_IMPORTED_MODULE_13__.stageClassesForEdit)(columnClasses));
-  const columnClassNamesRender = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.prepareClassesForUse)(columnClassNames);
+  const [columnClassNames, setColumnClassNames] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)((0,_utils__WEBPACK_IMPORTED_MODULE_14__.stageClassesForEdit)(columnClasses));
+  const columnClassNamesRender = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.prepareClassesForUse)(columnClassNames);
 
   // Date specific attributes
   const initDefaultToToday = normalizedColumnDataType?.settings?.defaultToToday === true ? true : false;
@@ -1772,10 +1776,10 @@ function ConfigureColumnDataType(props = {}) {
   const pendingCaretRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const [percentEntryValue, setPercentEntryValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
   const [numberRawValue, setNumberRawValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
-  const sanitizedPreviewNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.sanitizeNumberInput)(numberRawValue, dataTypeFormat);
+  const sanitizedPreviewNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.sanitizeNumberInput)(numberRawValue, dataTypeFormat);
   const showNegativeNumberPreview = redNegative && sanitizedPreviewNumber !== '' && sanitizedPreviewNumber !== '-' && Number(sanitizedPreviewNumber) < 0;
-  const numberEntryValue = dataTypeFormat === 'percent' ? percentEntryValue ?? (0,_utils__WEBPACK_IMPORTED_MODULE_13__.toPercentEntryValue)(numberRawValue) : numberRawValue;
-  const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.formattedNumber)(numberRawValue, dataTypeFormat, thousandSeparator, decimalPlaces, currency, bracketNegative);
+  const numberEntryValue = dataTypeFormat === 'percent' ? percentEntryValue ?? (0,_utils__WEBPACK_IMPORTED_MODULE_14__.toPercentEntryValue)(numberRawValue) : numberRawValue;
+  const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.formattedNumber)(numberRawValue, dataTypeFormat, thousandSeparator, decimalPlaces, currency, bracketNegative);
 
   // Checkbox specific attributes
   const [checkboxHideIfEmpty, setCheckboxHideIfEmpty] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.hideIfEmpty || false);
@@ -1788,24 +1792,27 @@ function ConfigureColumnDataType(props = {}) {
     column: 'none',
     order: 0
   };
-  const [postDisplayElements, setPostDisplayElements] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({
-    displayTitle: normalizedColumnDataType?.settings?.formatOptions?.displayTitle || {
-      ...defaultDisplayElement,
-      display: true,
-      order: 1
-    },
-    displayCoverImage: normalizedColumnDataType?.settings?.formatOptions?.displayCoverImage || defaultDisplayElement,
-    displayExcerpt: normalizedColumnDataType?.settings?.formatOptions?.displayExcerpt || defaultDisplayElement,
-    displayAuthor: normalizedColumnDataType?.settings?.formatOptions?.displayAuthor || defaultDisplayElement,
-    displayShortContent: normalizedColumnDataType?.settings?.formatOptions?.displayShortContent || defaultDisplayElement,
-    displayPublishDate: normalizedColumnDataType?.settings?.formatOptions?.displayPublishDate || defaultDisplayElement,
-    displayModifiedDate: normalizedColumnDataType?.settings?.formatOptions?.displayModifiedDate || defaultDisplayElement
-  });
+  console.log('Retrieved Column Data: ', normalizedColumnDataType);
+  console.log('Initial Post Display Element: ', sortPostDisplayElements(loadPostDisplayElements(normalizedColumnDataType.settings.formatOptions, defaultDisplayElement)));
+  const initialPostDisplayElements = sortPostDisplayElements(loadPostDisplayElements(normalizedColumnDataType.settings.formatOptions, defaultDisplayElement));
+  const [postDisplayElements, setPostDisplayElements] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialPostDisplayElements);
   const [postLinkLocation, setPostLinkLocation] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.linkLocation || 'title');
   const [postTitleInCover, setPostTitleInCover] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.displayTitleInCover || false);
   const [postImageSize, setPostImageSize] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.displayImageSize || 'thumbnail');
-
-  // console.log('data type = ', dataType + ', format = ' + dataTypeFormat);
+  const initialPostItemsNoneColumnCount = countFilteredDisplayItems(initialPostDisplayElements, 'none');
+  const initialPostItemsSpanColumnsCount = countFilteredDisplayItems(initialPostDisplayElements, 'span');
+  const initialPostItemsLeftColumnCount = countFilteredDisplayItems(initialPostDisplayElements, 'left');
+  const initialPostItemsRightColumnCount = countFilteredDisplayItems(initialPostDisplayElements, 'right');
+  const [displayPostItemsNoneColumnCount, setPostDisplayItemsNoneColumnCount] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialPostItemsNoneColumnCount);
+  const [displayPostItemsSpanColumnsCount, setPostDisplayItemsSpanColumnsCount] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialPostItemsSpanColumnsCount);
+  const [displayPostItemsLeftColumnCount, setPostDisplayItemsLeftColumnCount] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialPostItemsLeftColumnCount);
+  const [displayPostItemsRightColumnCount, setPostDisplayItemsRightColumnCount] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialPostItemsRightColumnCount);
+  const postDisplayItemsPerColumn = {
+    none: displayPostItemsNoneColumnCount,
+    span: displayPostItemsSpanColumnsCount,
+    left: displayPostItemsLeftColumnCount,
+    right: displayPostItemsRightColumnCount
+  };
   if (dataType.type === 'post' && !dataTypeFormat) {
     setDataTypeFormat('link');
   }
@@ -1859,8 +1866,8 @@ function ConfigureColumnDataType(props = {}) {
       pendingCaretRef.current = null;
       return;
     }
-    let nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.getCaretIndexFromTokenCount)(input.value, pendingCaretRef.current.tokenCount);
-    nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.normalizeCaretForPresentationPrefix)(input.value, nextCaret, pendingCaretRef.current);
+    let nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.getCaretIndexFromTokenCount)(input.value, pendingCaretRef.current.tokenCount);
+    nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.normalizeCaretForPresentationPrefix)(input.value, nextCaret, pendingCaretRef.current);
     input.setSelectionRange(nextCaret, nextCaret);
     pendingCaretRef.current = null;
   }, [numberEntryValue]);
@@ -2160,11 +2167,11 @@ function ConfigureColumnDataType(props = {}) {
    */
   function onNumberPreviewChange(event) {
     const input = numberEntryInputRef.current;
-    const entryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.sanitizeNumberInput)(event, dataTypeFormat === 'percent' ? 'number' : dataTypeFormat);
+    const entryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.sanitizeNumberInput)(event, dataTypeFormat === 'percent' ? 'number' : dataTypeFormat);
     const selectionStart = input?.selectionStart ?? entryValue.length;
-    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.getFirstNumericIndex)(entryValue);
+    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.getFirstNumericIndex)(entryValue);
     pendingCaretRef.current = {
-      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_13__.countCaretTokens)(entryValue, selectionStart),
+      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_14__.countCaretTokens)(entryValue, selectionStart),
       wasAtStart: selectionStart === 0,
       wasInPrefixZone: firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex
     };
@@ -2175,7 +2182,7 @@ function ConfigureColumnDataType(props = {}) {
       const nextEntryValue = fractionPart.length > revisedDecimalPlaces ? `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}` : entryValue;
       setPercentEntryValue(nextEntryValue);
       revisedDecimalPlaces += 2;
-      nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.fromPercentEntryValue)(nextEntryValue);
+      nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.fromPercentEntryValue)(nextEntryValue);
     } else {
       setPercentEntryValue(null);
     }
@@ -2297,9 +2304,10 @@ function ConfigureColumnDataType(props = {}) {
             displayImageSize: 'thumbnail',
             linkLocation: 'title'
           };
-          setPostLinkLocation('title');
-          setPostTitleInCover(false);
-          setPostImageSize('thumbnail');
+          setPostDisplayItemsNoneColumnCount(1);
+          setPostDisplayItemsSpanColumnsCount(0);
+          setPostDisplayItemsLeftColumnCount(0);
+          setPostDisplayItemsRightColumnCount(0);
           break;
         }
       case 'narrow':
@@ -2308,7 +2316,6 @@ function ConfigureColumnDataType(props = {}) {
             displayTitle: {
               ...defaultDisplayElement,
               display: true,
-              column: 'none',
               order: 1
             },
             displayCoverImage: {
@@ -2332,6 +2339,10 @@ function ConfigureColumnDataType(props = {}) {
             displayImageSize: 'thumbnail',
             linkLocation: 'title'
           };
+          setPostDisplayItemsNoneColumnCount(3);
+          setPostDisplayItemsSpanColumnsCount(0);
+          setPostDisplayItemsLeftColumnCount(0);
+          setPostDisplayItemsRightColumnCount(0);
           break;
         }
       case 'wide':
@@ -2357,7 +2368,7 @@ function ConfigureColumnDataType(props = {}) {
               ...defaultDisplayElement,
               display: true,
               column: 'right',
-              order: 3
+              order: 1
             },
             displayShortContent: defaultDisplayElement,
             displayPublishDate: defaultDisplayElement,
@@ -2366,6 +2377,10 @@ function ConfigureColumnDataType(props = {}) {
             displayImageSize: 'thumbnail',
             linkLocation: 'title'
           };
+          setPostDisplayItemsNoneColumnCount(0);
+          setPostDisplayItemsSpanColumnsCount(0);
+          setPostDisplayItemsLeftColumnCount(2);
+          setPostDisplayItemsRightColumnCount(1);
           break;
         }
       default:
@@ -2380,10 +2395,11 @@ function ConfigureColumnDataType(props = {}) {
       displayPublishDate: formatOptions.displayPublishDate,
       displayModifiedDate: formatOptions.displayModifiedDate
     };
+    const resetDisplayElementsArray = sortPostDisplayElements(loadPostDisplayElements(newDisplayElements, defaultDisplayElement));
     setPostLinkLocation('title');
     setPostTitleInCover(false);
     setPostImageSize('thumbnail');
-    setPostDisplayElements(newDisplayElements);
+    setPostDisplayElements(resetDisplayElementsArray);
     const updatedDataType = {
       type: 'post',
       settings: {
@@ -2403,16 +2419,24 @@ function ConfigureColumnDataType(props = {}) {
    * @param {string} option Formatting option
    */
   function onPostFormatOption(value, option) {
-    console.log('Setting Post Format Option: attribute = ' + option + 'value = ' + value);
+    console.log('Setting Post Format Option: attribute = ' + option);
+    console.log('Setting Post Format Option: value = ', value);
+    const displayToObject = {};
+    postDisplayElements.map(({
+      element,
+      displayAttributes
+    }) => {
+      return displayToObject[element] = displayAttributes;
+    });
+    console.log('Display Options Before Update = ', displayToObject);
     let {
       displayTitle: newDisplayTitle,
       displayCoverImage: newDisplayCoverImage,
       displayExcerpt: newDisplayExcerpt,
       displayAuthor: newDisplayAuthor,
-      displayShortContent: newDisplayShortContent,
       displayPublishDate: newDisplayPublishDate,
       displayModifiedDate: newDisplayModifiedDate
-    } = postDisplayElements;
+    } = displayToObject;
     let newLinkLocation = postLinkLocation;
     let newTitleInCover = postTitleInCover;
     let newImageSize = postImageSize;
@@ -2442,11 +2466,6 @@ function ConfigureColumnDataType(props = {}) {
         updatedElement = 'displayAuthor';
         priorElement = newDisplayAuthor;
         newDisplayAuthor = value;
-        break;
-      case 'display-content':
-        updatedElement = 'displayShortContent';
-        priorElement = newDisplayShortContent;
-        newDisplayShortContent = value;
         break;
       case 'display-published':
         updatedElement = 'displayPublishDate';
@@ -2483,47 +2502,47 @@ function ConfigureColumnDataType(props = {}) {
       displayCoverImage: newDisplayCoverImage,
       displayExcerpt: newDisplayExcerpt,
       displayAuthor: newDisplayAuthor,
-      displayShortContent: newDisplayShortContent,
       displayPublishDate: newDisplayPublishDate,
       displayModifiedDate: newDisplayModifiedDate
     };
     console.log('Updated Post Display Element', newDisplayElements);
-    const updatedElementOrder = newDisplayElements[updatedElement].order;
-    const oldElementOrder = priorElement.order;
-    console.log('Updated Element = ' + updatedElementOrder);
-    console.log('Updated Element Prior Order = ' + oldElementOrder);
+    const updateIsDisplayElement = newDisplayElements[updatedElement] || null;
+    if (updateIsDisplayElement) {
+      const updatedElementDisplay = newDisplayElements[updatedElement].display;
+      const updatedElementOrder = newDisplayElements[updatedElement].order;
+      const oldElementOrder = priorElement.order;
+      console.log('Updated Element = ' + updatedElementOrder);
+      console.log('Updated Element Prior Order = ' + oldElementOrder);
 
-    // Close order gap when an element becomes not displayed
-    if (updatedElementOrder !== oldElementOrder && updatedElementOrder === 0) {
-      for (const element in newDisplayElements) {
-        const elementOrder = newDisplayElements[element].order;
-        const elementDisplay = newDisplayElements[element].display;
-        if (elementDisplay && elementOrder > oldElementOrder && element !== updatedElement) {
-          newDisplayElements[element].order = elementOrder - 1;
+      // Close order gap when an element becomes not displayed
+      if (updatedElementOrder !== oldElementOrder && updatedElementOrder === 0) {
+        for (const element in newDisplayElements) {
+          const elementOrder = newDisplayElements[element].order;
+          const elementDisplay = newDisplayElements[element].display;
+          if (elementDisplay && elementOrder > oldElementOrder && element !== updatedElement) {
+            newDisplayElements[element].order = elementOrder - 1;
+          }
+        }
+      }
+
+      // Increment order order for elements when an element becomes goes down in order
+      if (updatedElementDisplay && updatedElementOrder !== oldElementOrder) {
+        for (const element in newDisplayElements) {
+          const elementOrder = newDisplayElements[element].order;
+          const elementDisplay = newDisplayElements[element].display;
+          if (elementDisplay && elementOrder === updatedElementOrder && element !== updatedElement) {
+            newDisplayElements[element].order = oldElementOrder;
+          }
         }
       }
     }
-
-    // Increment order order for elements when an element becomes goes down in order
-    if (updatedElementOrder !== oldElementOrder && updatedElementOrder > 0) {
-      for (const element in newDisplayElements) {
-        const elementOrder = newDisplayElements[element].order;
-        const elementDisplay = newDisplayElements[element].display;
-        console.log('Current element (' + element + ') order:' + elementOrder);
-        console.log('Updated element key = ' + updatedElement);
-        console.log('Comparison Element Order = ' + updatedElementOrder);
-        if (elementDisplay && elementOrder >= updatedElementOrder && element !== updatedElement) {
-          console.log('Updating Element Order');
-          newDisplayElements[element].order = elementOrder + 1;
-        }
-      }
-    }
-
-    // for (const element of newDisplayElements) {
-    // 	if element
-    // }
-
-    setPostDisplayElements(newDisplayElements);
+    console.log('Updated Display Elements: ', newDisplayElements);
+    const orderedDisplayAttributes = sortPostDisplayElements(loadPostDisplayElements(newDisplayElements, defaultDisplayElement));
+    setPostDisplayElements(orderedDisplayAttributes);
+    setPostDisplayItemsNoneColumnCount(countFilteredDisplayItems(orderedDisplayAttributes, 'none'));
+    setPostDisplayItemsSpanColumnsCount(countFilteredDisplayItems(orderedDisplayAttributes, 'span'));
+    setPostDisplayItemsLeftColumnCount(countFilteredDisplayItems(orderedDisplayAttributes, 'left'));
+    setPostDisplayItemsRightColumnCount(countFilteredDisplayItems(orderedDisplayAttributes, 'right'));
     setPostLinkLocation(newLinkLocation);
     setPostTitleInCover(newTitleInCover);
     setPostImageSize(newImageSize);
@@ -2536,7 +2555,6 @@ function ConfigureColumnDataType(props = {}) {
           displayCoverImage: newDisplayCoverImage,
           displayExcerpt: newDisplayExcerpt,
           displayAuthor: newDisplayAuthor,
-          displayShortContent: newDisplayShortContent,
           displayPublishDate: newDisplayPublishDate,
           displayModifiedDate: newDisplayModifiedDate,
           displayTitleInCover: newTitleInCover,
@@ -2547,6 +2565,77 @@ function ConfigureColumnDataType(props = {}) {
     };
     setDataType(updatedDataType);
   }
+  function onPostUpdate(updatedPostConfig) {
+    const updatedDataType = {
+      type: 'post',
+      updatedPostConfig
+    };
+    setDataType(updatedDataType);
+  }
+  function countFilteredDisplayItems(items, column) {
+    const filteredItems = items.filter(el => el.displayAttributes.display && el.displayAttributes.column === column);
+    return filteredItems?.length || 0;
+  }
+  function loadPostDisplayElements(columnData, defaultElement) {
+    const displayElements = Array();
+    displayElements.push({
+      element: 'displayTitle',
+      elementName: 'Title',
+      updateOption: 'display-title',
+      defaultOrder: 1,
+      displayAttributes: columnData?.displayTitle || defaultElement
+    });
+    displayElements.push({
+      element: 'displayExcerpt',
+      elementName: 'Excerpt',
+      updateOption: 'display-excerpt',
+      defaultOrder: 2,
+      displayAttributes: columnData?.displayExcerpt || defaultElement
+    });
+    displayElements.push({
+      element: 'displayCoverImage',
+      elementName: 'Cover Image',
+      updateOption: 'display-image',
+      defaultOrder: 3,
+      displayAttributes: columnData?.displayCoverImage || defaultElement
+    });
+    displayElements.push({
+      element: 'displayAuthor',
+      elementName: 'Author',
+      updateOption: 'display-author',
+      defaultOrder: 4,
+      displayAttributes: columnData?.displayAuthor || defaultElement
+    });
+    displayElements.push({
+      element: 'displayPublishDate',
+      elementName: 'Published Date',
+      updateOption: 'display-published',
+      defaultOrder: 5,
+      displayAttributes: columnData?.displayPublishDate || defaultElement
+    });
+    displayElements.push({
+      element: 'displayModifiedDate',
+      elementName: 'Last Modified Date',
+      updateOption: 'display-modified',
+      defaultOrder: 6,
+      displayAttributes: columnData?.displayModifiedDate || defaultElement
+    });
+    return displayElements;
+  }
+  function sortPostDisplayElements(displayElements) {
+    displayElements.sort((a, b) => {
+      if (a.displayAttributes.display !== b.displayAttributes.display) {
+        return a.displayAttributes.display ? -1 : 1;
+      }
+      if (!a.displayAttributes.display) {
+        return a.defaultOrder - b.defaultOrder;
+      }
+      const columnCompare = a.displayAttributes.column.localeCompare(b.displayAttributes.column);
+      return columnCompare || a.displayAttributes.order - b.displayAttributes.order;
+    });
+    return displayElements;
+  }
+
   /**
    * Change column data types and set formatting defaults
    *
@@ -2659,7 +2748,7 @@ function ConfigureColumnDataType(props = {}) {
         break;
     }
     setColumnClassNames(newColumnClassNames);
-    const updatedColumnClasses = (0,_utils__WEBPACK_IMPORTED_MODULE_13__.prepareClassesForUse)(newColumnClassNames);
+    const updatedColumnClasses = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.prepareClassesForUse)(newColumnClassNames);
     updatedColumn(event, 'dataType', tableId, columnId, columnName, updatedColumnAttributes, updatedColumnClasses);
     close();
   }
@@ -2668,7 +2757,7 @@ function ConfigureColumnDataType(props = {}) {
   });
 
   // console.log('Column Content Type: ', dataType);
-
+  console.log('Post Display Elements: ', postDisplayElements);
   // console.log(dataType.type);
   // console.log(dataTypeFormat);
 
@@ -2683,8 +2772,14 @@ function ConfigureColumnDataType(props = {}) {
     }]
   };
   const testCellClasses = '';
-  const testCellContentType = dataType;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Modal, {
+  // const testCellContentType = dataType;
+  const testCellContentType = {
+    settings: {
+      format: dataType.settings.format,
+      formatOptions: dataType.settings.formatOptions
+    }
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Modal, {
     title: "Configure Column Content Type",
     overlayClassName: "configure-column-modal",
     onRequestClose: handleCancel,
@@ -2692,32 +2787,32 @@ function ConfigureColumnDataType(props = {}) {
     isDismissible: false,
     shouldCloseOnClickOutside: false,
     size: "large",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("form", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("form", {
       className: "configure-data-type--form configure-column-modal__form",
       onSubmit: onUpdate,
       onMouseDown: stopProp,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
         className: "configure-column-modal__body",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
           className: "configure-column-modal__body-inner",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
             spacing: 4,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("p", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("p", {
               className: "column-label",
               children: ["For column ", columnName]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
                   children: "Basics"
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                   spacing: 3,
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalInputControl, {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalInputControl, {
                     label: "Column Name",
                     value: columnName,
                     onChange: value => setColumnName(value)
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
                     label: "Content Type",
                     value: dataType.type,
                     onChange: onUpdateDataType,
@@ -2747,26 +2842,26 @@ function ConfigureColumnDataType(props = {}) {
                   })]
                 })
               })]
-            }), dataType.type === 'date-time' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
+            }), dataType.type === 'date-time' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
                   children: "Content settings"
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                   spacing: 3,
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
                     children: "Select the specific date/time appearance."
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
                     gap: 24,
                     align: "stretch",
                     className: "configure-column-modal__split",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__left",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                         spacing: 3,
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
                           label: "Format",
                           selected: dataTypeFormat,
                           options: [{
@@ -2780,16 +2875,16 @@ function ConfigureColumnDataType(props = {}) {
                             value: 'datetime-local'
                           }],
                           onChange: value => onDateTimeType(value)
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
                           className: "configure-column-modal__options",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
                             children: "Options"
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: "Default to today's date",
                             checked: dateDefaultToToday,
                             onChange: e => onDateDefaultToToday(e, dataTypeFormat)
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Auto format column?',
                             checked: updateColumnStyle,
@@ -2797,16 +2892,16 @@ function ConfigureColumnDataType(props = {}) {
                           })]
                         })]
                       })
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__right",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
                         className: "configure-column-modal__preview",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
                           id: previewId,
                           label: "Preview",
                           help: "This is only a preview; it won\u2019t change saved values.",
-                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
                             className: renderColumnClasses,
                             type: dataTypeFormat,
                             label: '',
@@ -2821,26 +2916,26 @@ function ConfigureColumnDataType(props = {}) {
                   })]
                 })
               })]
-            }), dataType.type === 'number' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
+            }), dataType.type === 'number' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
                   children: "Content settings"
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                   spacing: 3,
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
                     children: "Select the specific number type."
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
                     gap: 24,
                     align: "stretch",
                     className: "configure-column-modal__split",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__left",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                         spacing: 3,
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
                           label: "Number Type",
                           selected: dataTypeFormat,
                           options: [{
@@ -2857,37 +2952,37 @@ function ConfigureColumnDataType(props = {}) {
                             value: 'currency'
                           }],
                           onChange: value => onNumberFormat(value)
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
                           className: "configure-column-modal__options",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
                             children: "Formatting Options"
-                          }), (dataTypeFormat === 'number' || dataTypeFormat === 'percent' || dataTypeFormat === 'currency') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+                          }), (dataTypeFormat === 'number' || dataTypeFormat === 'percent' || dataTypeFormat === 'currency') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
                             className: "configure-column-modal__input",
                             type: 'number',
                             label: 'Decimal Places',
                             value: decimalPlaces,
                             onChange: e => onNumberFormatOption(e, 'decimal')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Thousand Separator',
                             checked: thousandSeparator,
                             onChange: e => onNumberFormatOption(e, 'thousand')
-                          }), dataTypeFormat === 'currency' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), dataTypeFormat === 'currency' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Currency',
                             checked: currency,
                             onChange: e => onNumberFormatOption(e, 'currency')
-                          }), (dataTypeFormat === 'number' || dataTypeFormat === 'integer' || dataTypeFormat === 'currency') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), (dataTypeFormat === 'number' || dataTypeFormat === 'integer' || dataTypeFormat === 'currency') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Bracket negative numbers?',
                             checked: bracketNegative,
                             onChange: e => onNumberFormatOption(e, 'bracket-negative')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Display negative numbers in red?',
                             checked: redNegative,
                             onChange: e => onNumberFormatOption(e, 'red-negative')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Auto format column?',
                             checked: updateColumnStyle,
@@ -2895,18 +2990,18 @@ function ConfigureColumnDataType(props = {}) {
                           })]
                         })]
                       })
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__right",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
                         className: "configure-column-modal__preview",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
                           id: previewId,
                           label: "Preview",
                           help: "This is only a preview; it won\u2019t change saved values.",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
                             ref: numberEntryWrapperRef,
-                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
                               className: `configure-column-modal__input-preview ${renderColumnClasses}`,
                               type: 'text',
                               inputMode: dataTypeFormat === 'integer' ? 'numeric' : 'decimal',
@@ -2919,7 +3014,7 @@ function ConfigureColumnDataType(props = {}) {
                                 setPercentEntryValue(null);
                               }
                             })
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
                             className: `configure-column-modal__display-preview ${renderColumnClasses}`,
                             type: 'text',
                             inputMode: dataTypeFormat === 'integer' ? 'numeric' : 'decimal',
@@ -2934,26 +3029,26 @@ function ConfigureColumnDataType(props = {}) {
                   })]
                 })
               })]
-            }), dataType.type === 'checkbox' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
+            }), dataType.type === 'checkbox' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
                   children: "Content settings"
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                   spacing: 3,
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
                     children: "Select the specific checkbox type."
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
                     gap: 24,
                     align: "stretch",
                     className: "configure-column-modal__split",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__left",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                         spacing: 3,
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
                           label: "Checkbox Type",
                           selected: dataTypeFormat,
                           options: [{
@@ -2970,21 +3065,21 @@ function ConfigureColumnDataType(props = {}) {
                             value: 'freeform'
                           }],
                           onChange: value => onCheckboxFormat(value)
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
                           className: "configure-column-modal__options",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
                             children: "Formatting Options"
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Hide checkbox when no value exists?',
                             checked: checkboxHideIfEmpty,
                             onChange: e => onCheckboxFormatOption(e, 'hideEmpty')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Default to "Checked"',
                             checked: checkboxDefaultToChecked,
                             onChange: e => onCheckboxFormatOption(e, 'default-checked')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Auto format column?',
                             checked: updateColumnStyle,
@@ -2992,12 +3087,12 @@ function ConfigureColumnDataType(props = {}) {
                           })]
                         })]
                       })
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__right",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
                         className: "configure-column-modal__preview configure-column-modal__preview--checkbox",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
                           id: previewId,
                           label: "Preview",
                           style: {
@@ -3006,38 +3101,38 @@ function ConfigureColumnDataType(props = {}) {
                             height: '20%'
                           },
                           className: "configure-column-modal__checkbox-preview-control",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
                             className: "configure-column-modal__checkbox-preview-state",
-                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
                               children: "When Checked"
-                            }), dataTypeFormat === 'standard' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                            }), dataTypeFormat === 'standard' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: true
-                            }), dataTypeFormat === 'toggle' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+                            }), dataTypeFormat === 'toggle' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: true
-                            }), dataTypeFormat === 'icon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.StatusIcon, {
+                            }), dataTypeFormat === 'icon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.StatusIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: true
-                            }), dataTypeFormat === 'freeform' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.FreeformCheckboxIcon, {
+                            }), dataTypeFormat === 'freeform' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.FreeformCheckboxIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: true,
                               scale: 0.6
                             })]
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
                             className: "configure-column-modal__checkbox-preview-state",
-                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
                               children: "When Unchecked"
-                            }), dataTypeFormat === 'standard' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                            }), dataTypeFormat === 'standard' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: false
-                            }), dataTypeFormat === 'toggle' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+                            }), dataTypeFormat === 'toggle' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: false
-                            }), dataTypeFormat === 'icon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.StatusIcon, {
+                            }), dataTypeFormat === 'icon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.StatusIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: false
-                            }), dataTypeFormat === 'freeform' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.FreeformCheckboxIcon, {
+                            }), dataTypeFormat === 'freeform' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.FreeformCheckboxIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: false,
                               scale: 0.6
@@ -3049,187 +3144,155 @@ function ConfigureColumnDataType(props = {}) {
                   })]
                 })
               })]
-            }), dataType.type === 'post' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
-                  children: "Content settings"
-                })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
-                  spacing: 3,
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
-                    children: "Select the specific content display options."
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
-                    gap: 24,
-                    align: "stretch",
-                    className: "configure-column-modal__split",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
-                      className: "configure-column-modal__left",
-                      isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
-                        spacing: 3,
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
-                          label: "Post Layout",
-                          selected: dataTypeFormat,
-                          options: [{
-                            label: 'Link Only',
-                            value: 'link'
-                          }, {
-                            label: 'Wide',
-                            value: 'wide'
-                          }, {
-                            label: 'Narrow',
-                            value: 'narrow'
-                          }],
-                          onChange: value => onPostFormat(value)
-                        }), dataTypeFormat !== 'link' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
-                          className: "configure-column-modal__options",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("strong", {
-                            children: "Formatting Options"
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_6__.Root, {
-                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_7__.Header, {
-                              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Title, {
-                                children: "Content Elements To Display"
-                              })
-                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.Content, {
-                              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("table", {
-                                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("thead", {
-                                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("tr", {
-                                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("th", {
-                                      children: "Element"
-                                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("th", {
-                                      children: "Display?"
-                                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("th", {
-                                      children: "Order"
-                                    }), dataTypeFormat === 'wide' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("th", {
-                                      children: "Location"
-                                    })]
-                                  })
-                                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("tbody", {
-                                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(DislpayPostElementRow, {
-                                    elementName: "Title",
-                                    displayElement: postDisplayElements.displayTitle,
-                                    updateOption: "display-title",
-                                    postFormat: dataTypeFormat,
-                                    onChange: onPostFormatOption
-                                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(DislpayPostElementRow, {
-                                    elementName: "Excerpt",
-                                    displayElement: postDisplayElements.displayExcerpt,
-                                    updateOption: "display-excerpt",
-                                    postFormat: dataTypeFormat,
-                                    onChange: onPostFormatOption
-                                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(DislpayPostElementRow, {
-                                    elementName: "Author",
-                                    displayElement: postDisplayElements.displayAuthor,
-                                    updateOption: "display-author",
-                                    postFormat: dataTypeFormat,
-                                    onChange: onPostFormatOption
-                                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(DislpayPostElementRow, {
-                                    elementName: "Cover Image",
-                                    displayElement: postDisplayElements.displayCoverImage,
-                                    updateOption: "display-image",
-                                    postFormat: dataTypeFormat,
-                                    onChange: onPostFormatOption
-                                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(DislpayPostElementRow, {
-                                    elementName: "Published Date",
-                                    displayElement: postDisplayElements.displayPublishDate,
-                                    updateOption: "display-published",
-                                    postFormat: dataTypeFormat,
-                                    onChange: onPostFormatOption
-                                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(DislpayPostElementRow, {
-                                    elementName: "Last Modified Date",
-                                    displayElement: postDisplayElements.displayModifiedDate,
-                                    updateOption: "display-modified",
-                                    postFormat: dataTypeFormat,
-                                    onChange: onPostFormatOption
+            }), dataType.type === 'post' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_post__WEBPACK_IMPORTED_MODULE_16__.ConfigurePostColumnDataType, {
+                persistedPostFormat: normalizedColumnDataType?.settings,
+                onChange: onPostUpdate
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
+                    children: "Content settings"
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+                    spacing: 3,
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                      children: "Select the specific content display options."
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
+                      gap: 24,
+                      align: "stretch",
+                      className: "configure-column-modal__split",
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                        className: "configure-column-modal__left",
+                        isBlock: true,
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+                          spacing: 3,
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                            label: "Post Layout",
+                            selected: dataTypeFormat,
+                            options: [{
+                              label: 'Link Only',
+                              value: 'link'
+                            }, {
+                              label: 'Wide',
+                              value: 'wide'
+                            }, {
+                              label: 'Narrow',
+                              value: 'narrow'
+                            }],
+                            onChange: value => onPostFormat(value)
+                          }), dataTypeFormat !== 'link' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+                            className: "configure-column-modal__options",
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
+                              children: "Formatting Options"
+                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_6__.Root, {
+                              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_7__.Header, {
+                                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Title, {
+                                  children: "Content Elements To Display"
+                                })
+                              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.Content, {
+                                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("table", {
+                                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("thead", {
+                                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("tr", {
+                                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("th", {
+                                        children: "Element"
+                                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("th", {
+                                        children: "Display?"
+                                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("th", {
+                                        children: "Order"
+                                      }), dataTypeFormat === 'wide' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("th", {
+                                        children: "Location"
+                                      })]
+                                    })
+                                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("tbody", {
+                                    children: postDisplayElements.map(({
+                                      elementName,
+                                      updateOption,
+                                      displayAttributes
+                                    }) => {
+                                      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(DislpayPostElementRow, {
+                                        elementName: elementName,
+                                        displayElement: displayAttributes,
+                                        updateOption: updateOption,
+                                        postFormat: dataTypeFormat,
+                                        columnItemCount: postDisplayItemsPerColumn,
+                                        onChange: onPostFormatOption
+                                      });
+                                    })
                                   })]
+                                })
+                              })]
+                            }), (() => {
+                              const coverImage = postDisplayElements.find(({
+                                element
+                              }) => element === 'displayCoverImage');
+                              const title = postDisplayElements.find(({
+                                element
+                              }) => element === 'displayTitle');
+                              console.log('Cover Impage:', coverImage);
+                              console.log('Title:', title);
+                              return coverImage.displayAttributes.display > 0 && title.displayAttributes.display > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                                label: 'Display title in Cover Image?',
+                                checked: postTitleInCover,
+                                onChange: checked => onPostFormatOption(checked, 'title-in-cover')
+                              });
+                            })(), (() => {
+                              const coverImage = postDisplayElements.find(({
+                                element
+                              }) => element === 'displayCoverImage');
+                              console.log('Cover Impage:', coverImage);
+                              return coverImage.displayAttributes.display > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
+                                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                                  label: "Link Location",
+                                  selected: postLinkLocation,
+                                  options: [{
+                                    label: 'Title',
+                                    value: 'title'
+                                  }, {
+                                    label: 'Cover Image',
+                                    value: 'image'
+                                  }],
+                                  onChange: value => onPostFormatOption(value, 'link-location')
+                                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+                                  label: "Image Size",
+                                  value: postImageSize,
+                                  defaultValue: "thumbnail",
+                                  onValueChange: value => onPostFormatOption(value, 'image-size'),
+                                  items: [{
+                                    value: 'thumbnail',
+                                    label: 'Thumbnail: (150 x 150)'
+                                  }, {
+                                    value: 'medium',
+                                    label: 'Medium: (300 x 300)'
+                                  }, {
+                                    value: 'medium_large',
+                                    label: 'Medium/Large (768 Wide)'
+                                  }, {
+                                    value: 'large',
+                                    label: 'Large (1024 x 1024)'
+                                  }]
                                 })]
-                              })
-                            })]
-                          }), postDisplayElements.displayCoverImage > 0 && postDisplayElements.displayTitle > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl
-                          // className="configure-column-modal__checkbox"
-                          , {
-                            label: 'Display title in Cover Image?',
-                            checked: postTitleInCover,
-                            onChange: checked => onPostFormatOption(checked, 'title-in-cover')
-                          }), postDisplayElements.displayCoverImage > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.Fragment, {
-                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
-                              label: "Link Location",
-                              selected: postLinkLocation,
-                              options: [{
-                                label: 'Title',
-                                value: 'title'
-                              }, {
-                                label: 'Cover Image',
-                                value: 'image'
-                              }],
-                              onChange: value => onPostFormatOption(value, 'link-location')
-                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
-                              label: "Image Size",
-                              value: postImageSize,
-                              defaultValue: "thumbnail",
-                              onValueChange: value => onPostFormatOption(value, 'image-size'),
-                              items: [{
-                                value: 'thumbnail',
-                                label: 'Thumbnail: (150 x 150)'
-                              }, {
-                                value: 'medium',
-                                label: 'Medium: (300 x 300)'
-                              }, {
-                                value: 'medium_large',
-                                label: 'Medium/Large (768 Wide)'
-                              }, {
-                                value: 'large',
-                                label: 'Large (1024 x 1024)'
-                              }]
-                            })]
+                              });
+                            })()]
                           })]
-                        })]
-                      })
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
-                      className: "configure-column-modal__right",
-                      isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
-                        style: {
-                          display: 'flex',
-                          flexDirection: 'column'
-                        },
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
-                          id: previewId,
-                          label: "Preview",
-                          style: {
-                            alignContent: 'center',
-                            flexWrap: 'wrap',
-                            height: '20%'
-                          },
-                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
-                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
-                              children: "Post Cell Preview"
-                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_ui_post_content__WEBPACK_IMPORTED_MODULE_14__.CellPostContent, {
-                              cellContent: testCellContent,
-                              cellAttributes: testCellAttributes,
-                              cellClasses: testCellClasses,
-                              cellContentType: testCellContentType
-                            })]
-                          })
                         })
-                      })
+                      }), " */}"]
                     })]
-                  })]
-                })
+                  })
+                })]
               })]
             })]
           })
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
         className: "configure-column-modal__footer",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
           className: "configure-column-modal__button-group",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
             variant: "secondary",
             onClick: handleCancel,
             children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Cancel', 'dynamic-table-blocks')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
             variant: "primary",
             type: "submit",
             children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Update', 'dynamic-table-blocks')
@@ -3245,6 +3308,7 @@ function DislpayPostElementRow(props) {
     displayElement,
     updateOption,
     postFormat,
+    columnItemCount,
     onChange
   } = props;
   const {
@@ -3254,17 +3318,29 @@ function DislpayPostElementRow(props) {
   } = displayElement;
   const labelOrderSuffix = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Display Order', 'dynamic-table-blocks');
   const labelColumnSuffix = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Display Column', 'dynamic-table-blocks');
+  function maxDisplayItems(column, columnItemCount) {
+    if (column === 'none') return columnItemCount.none;
+    if (column === 'span') return columnItemCount.span;
+    if (column === 'left') return columnItemCount.left;
+    if (column === 'right') return columnItemCount.right;
+    return 0;
+  }
+
+  // console.log('Items per column type = ', columnItemCount);
+  // console.log('Items in column (' + elementName + ')= ' + maxDisplayItems(column, columnItemCount));
+
   function onDisplayUpdate(updatedValue, updatedDisplayOption, updatedAttribute) {
     let newDisplay = display;
     let newColumn = column;
-    let newOrder = order;
+    let newOrder = Number(order);
     switch (updatedAttribute) {
       case 'display':
         {
           newDisplay = updatedValue;
           if (updatedValue) {
             newColumn = postFormat === 'wide' ? 'left' : 'none';
-            newOrder = 1;
+            const itemCount = maxDisplayItems(newColumn, columnItemCount);
+            newOrder = itemCount + 1;
           } else {
             newColumn = 'none';
             newOrder = 0;
@@ -3273,12 +3349,19 @@ function DislpayPostElementRow(props) {
         }
       case 'column':
         {
+          console.log('Upated column value: ', updatedValue);
+          const itemCount = maxDisplayItems(updatedValue, columnItemCount);
           newColumn = updatedValue;
+          newOrder = itemCount + 1;
           break;
         }
       case 'order':
         {
-          newOrder = updatedValue;
+          const itemCount = maxDisplayItems(column, columnItemCount);
+          if (Number(updatedValue) < 1 || Number(updatedValue) > itemCount) {
+            return;
+          }
+          newOrder = Number(updatedValue);
           break;
         }
       default:
@@ -3291,45 +3374,842 @@ function DislpayPostElementRow(props) {
       column: newColumn,
       order: newOrder
     };
+    console.log('Changed Display Element ( ' + updatedDisplayOption + '): ', updatedDisplayElement);
     onChange(updatedDisplayElement, updatedDisplayOption);
   }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("tr", {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("td", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("tr", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("td", {
       children: elementName
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("td", {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("td", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
         checked: display,
         onChange: checked => onDisplayUpdate(checked, updateOption, 'display')
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("td", {
-      children: display ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_4__.InputControl, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("td", {
+      children: display ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_4__.InputControl, {
         label: elementName + ' ' + labelOrderSuffix,
         hideLabelFromVision: true,
         min: 1,
         step: 1,
+        max: maxDisplayItems(column, columnItemCount),
         value: order || 1,
         onValueChange: value => onDisplayUpdate(value, updateOption, 'order'),
         type: "number",
-        size: "compact"
+        size: "compact",
+        suffix: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_ui_number_increment_control__WEBPACK_IMPORTED_MODULE_13__.NumberIncrementControl, {
+          baseInteger: Number(order),
+          iconPair: "arrow-up-down",
+          reverseIcons: true,
+          onClick: value => onDisplayUpdate(value, updateOption, 'order')
+        })
       }) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('n/a', 'dynamic-table-blocks')
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("td", {
-      children: postFormat === 'wide' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("td", {
+      children: postFormat === 'wide' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
         label: elementName + ' ' + labelColumnSuffix,
         hideLabelFromVision: true,
         value: column || 'none',
-        onValueChange: value => onDisplayUpdate(value, updateOption, 'column'),
+        onValueChange: value => onDisplayUpdate(value.value, updateOption, 'column'),
         items: [{
           value: 'left',
           label: 'Left'
         }, {
           value: 'right',
           label: 'Right'
+        }, {
+          value: 'span',
+          label: 'Span Columns'
         }]
       })
     })]
   });
 }
 const ColumnDataTypeModal = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.memo)(ConfigureColumnDataType);
+
+/***/ },
+
+/***/ "./src/components/configure-column-data-types/post.js"
+/*!************************************************************!*\
+  !*** ./src/components/configure-column-data-types/post.js ***!
+  \************************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ConfigurePostColumnDataType: () => (/* binding */ ConfigurePostColumnDataType),
+/* harmony export */   getPostFormatDefaults: () => (/* binding */ getPostFormatDefaults)
+/* harmony export */ });
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/form/input-control/input-control.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/form/select-control/index.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/root.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/header.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/title.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/content.mjs");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-column-data-types/style.scss");
+/* harmony import */ var _ui_number_increment_control__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../ui/number-increment-control */ "./src/components/ui/number-increment-control/index.js");
+/* harmony import */ var _ui_post_content__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../ui/post-content */ "./src/components/ui/post-content/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__);
+/* External dependencies */
+
+
+
+
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+/**
+ * React component to configure data types for a column.
+ *
+ * @since    1.1.2
+ *
+ * @param {Object} props
+ * @return {Object} Updated column properties
+ */
+
+function ConfigurePostColumnDataType(props = {}) {
+  const {
+    persistedPostFormat,
+    columnClasses,
+    onChange
+  } = props;
+  const instanceId = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_0__.useInstanceId)(ConfigurePostColumnDataType);
+  const previewId = `dtbk-preview-${instanceId}`;
+  const [postFormat, setPostFormat] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(persistedPostFormat?.format || '');
+  const [postOptions, setPostOptions] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(persistedPostFormat?.formatOptions || '');
+  const defaultDisplayElement = {
+    display: false,
+    column: 'none',
+    order: 0
+  };
+  console.log('Retrieved Column Data: ', persistedPostFormat);
+  console.log('Initial Post Display Element: ', sortPostDisplayElements(loadPostDisplayElements(persistedPostFormat.formatOptions, defaultDisplayElement)));
+  const initialPostDisplayElements = sortPostDisplayElements(loadPostDisplayElements(persistedPostFormat.formatOptions, defaultDisplayElement));
+  const [postDisplayElements, setPostDisplayElements] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialPostDisplayElements);
+  const [postLinkLocation, setPostLinkLocation] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(persistedPostFormat.formatOptions?.linkLocation || 'title');
+  const [postTitleInCover, setPostTitleInCover] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(persistedPostFormat.formatOptions?.displayTitleInCover || false);
+  const [postImageSize, setPostImageSize] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(persistedPostFormat.formatOptions?.displayImageSize || 'thumbnail');
+  const initialPostItemsNoneColumnCount = countFilteredDisplayItems(initialPostDisplayElements, 'none');
+  const initialPostItemsSpanColumnsCount = countFilteredDisplayItems(initialPostDisplayElements, 'span');
+  const initialPostItemsLeftColumnCount = countFilteredDisplayItems(initialPostDisplayElements, 'left');
+  const initialPostItemsRightColumnCount = countFilteredDisplayItems(initialPostDisplayElements, 'right');
+  const [displayPostItemsNoneColumnCount, setPostDisplayItemsNoneColumnCount] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialPostItemsNoneColumnCount);
+  const [displayPostItemsSpanColumnsCount, setPostDisplayItemsSpanColumnsCount] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialPostItemsSpanColumnsCount);
+  const [displayPostItemsLeftColumnCount, setPostDisplayItemsLeftColumnCount] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialPostItemsLeftColumnCount);
+  const [displayPostItemsRightColumnCount, setPostDisplayItemsRightColumnCount] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialPostItemsRightColumnCount);
+  const postDisplayItemsPerColumn = {
+    none: displayPostItemsNoneColumnCount,
+    span: displayPostItemsSpanColumnsCount,
+    left: displayPostItemsLeftColumnCount,
+    right: displayPostItemsRightColumnCount
+  };
+  if (!postFormat) setPostFormat('link');
+
+  /**
+   * Update post format and set default options
+   *
+   * @since 1.4.11
+   *
+   * @param {string} postFormat Post format to set
+   */
+  function onPostFormat(postFormat) {
+    console.log('Setting Post Format');
+    setPostFormat(postFormat);
+    const {
+      newDisplayElements,
+      newDisplayOptions
+    } = getPostFormatDefaults(postFormat, defaultDisplayElement);
+    switch (postFormat) {
+      case 'link':
+        {
+          setPostDisplayItemsNoneColumnCount(1);
+          setPostDisplayItemsSpanColumnsCount(0);
+          setPostDisplayItemsLeftColumnCount(0);
+          setPostDisplayItemsRightColumnCount(0);
+          break;
+        }
+      case 'narrow':
+        {
+          setPostDisplayItemsNoneColumnCount(3);
+          setPostDisplayItemsSpanColumnsCount(0);
+          setPostDisplayItemsLeftColumnCount(0);
+          setPostDisplayItemsRightColumnCount(0);
+          break;
+        }
+      case 'wide':
+        {
+          setPostDisplayItemsNoneColumnCount(0);
+          setPostDisplayItemsSpanColumnsCount(0);
+          setPostDisplayItemsLeftColumnCount(2);
+          setPostDisplayItemsRightColumnCount(1);
+          break;
+        }
+      default:
+        return;
+    }
+    const resetDisplayElementsArray = sortPostDisplayElements(loadPostDisplayElements(newDisplayElements, defaultDisplayElement));
+    setPostLinkLocation('title');
+    setPostTitleInCover(false);
+    setPostImageSize('thumbnail');
+    setPostDisplayElements(resetDisplayElementsArray);
+    const updatedDataType = {
+      settings: {
+        format: postFormat,
+        formatOptions: newDisplayOptions
+      }
+    };
+    setPostOptions(newDisplayOptions);
+    updatePostConfig(updatedDataType);
+  }
+
+  /**
+   * Update post formatting options based on configuration input
+   *
+   * @since 1.4.11
+   *
+   * @param {Object} value  Formatting value to set
+   * @param {string} option Formatting option
+   */
+  function onPostFormatOption(value, option) {
+    console.log('Setting Post Format Option: attribute = ' + option);
+    console.log('Setting Post Format Option: value = ', value);
+    const displayToObject = {};
+    postDisplayElements.map(({
+      element,
+      displayAttributes
+    }) => {
+      return displayToObject[element] = displayAttributes;
+    });
+    console.log('Display Options Before Update = ', displayToObject);
+    let {
+      displayTitle: newDisplayTitle,
+      displayCoverImage: newDisplayCoverImage,
+      displayExcerpt: newDisplayExcerpt,
+      displayAuthor: newDisplayAuthor,
+      displayPublishDate: newDisplayPublishDate,
+      displayModifiedDate: newDisplayModifiedDate
+    } = displayToObject;
+    let newLinkLocation = postLinkLocation;
+    let newTitleInCover = postTitleInCover;
+    let newImageSize = postImageSize;
+    let updatedElement;
+    let priorElement;
+    switch (option) {
+      case 'display-title':
+        updatedElement = 'displayTitle';
+        priorElement = newDisplayTitle;
+        newDisplayTitle = value;
+        break;
+      case 'display-image':
+        updatedElement = 'displayCoverImage';
+        priorElement = newDisplayCoverImage;
+        newDisplayCoverImage = value;
+        if (newDisplayCoverImage === 0) {
+          newLinkLocation = 'title';
+          newTitleInCover = false;
+        }
+        break;
+      case 'display-excerpt':
+        updatedElement = 'displayExcerpt';
+        priorElement = newDisplayExcerpt;
+        newDisplayExcerpt = value;
+        break;
+      case 'display-author':
+        updatedElement = 'displayAuthor';
+        priorElement = newDisplayAuthor;
+        newDisplayAuthor = value;
+        break;
+      case 'display-published':
+        updatedElement = 'displayPublishDate';
+        priorElement = newDisplayPublishDate;
+        newDisplayPublishDate = value;
+        break;
+      case 'display-modified':
+        updatedElement = 'displayModifiedDate';
+        priorElement = newDisplayModifiedDate;
+        newDisplayModifiedDate = value;
+        break;
+      case 'title-in-cover':
+        if (newDisplayCoverImage !== 0) {
+          newTitleInCover = value;
+        } else {
+          newTitleInCover = false;
+        }
+        break;
+      case 'link-location':
+        if (newDisplayCoverImage !== 0) {
+          newLinkLocation = value;
+        } else {
+          newLinkLocation = 'title';
+        }
+        break;
+      case 'image-size':
+        newImageSize = value;
+        break;
+      default:
+        return;
+    }
+    const newDisplayElements = {
+      displayTitle: newDisplayTitle,
+      displayCoverImage: newDisplayCoverImage,
+      displayExcerpt: newDisplayExcerpt,
+      displayAuthor: newDisplayAuthor,
+      displayPublishDate: newDisplayPublishDate,
+      displayModifiedDate: newDisplayModifiedDate
+    };
+    console.log('Updated Post Display Element', newDisplayElements);
+    const updateIsDisplayElement = newDisplayElements[updatedElement] || null;
+    if (updateIsDisplayElement) {
+      const updatedElementDisplay = newDisplayElements[updatedElement].display;
+      const updatedElementOrder = newDisplayElements[updatedElement].order;
+      const oldElementOrder = priorElement.order;
+      console.log('Updated Element = ' + updatedElementOrder);
+      console.log('Updated Element Prior Order = ' + oldElementOrder);
+
+      // Close order gap when an element becomes not displayed
+      if (updatedElementOrder !== oldElementOrder && updatedElementOrder === 0) {
+        for (const element in newDisplayElements) {
+          const elementOrder = newDisplayElements[element].order;
+          const elementDisplay = newDisplayElements[element].display;
+          if (elementDisplay && elementOrder > oldElementOrder && element !== updatedElement) {
+            newDisplayElements[element].order = elementOrder - 1;
+          }
+        }
+      }
+
+      // Increment order order for elements when an element becomes goes down in order
+      if (updatedElementDisplay && updatedElementOrder !== oldElementOrder) {
+        for (const element in newDisplayElements) {
+          const elementOrder = newDisplayElements[element].order;
+          const elementDisplay = newDisplayElements[element].display;
+          if (elementDisplay && elementOrder === updatedElementOrder && element !== updatedElement) {
+            newDisplayElements[element].order = oldElementOrder;
+          }
+        }
+      }
+    }
+    console.log('Updated Display Elements: ', newDisplayElements);
+    const orderedDisplayAttributes = sortPostDisplayElements(loadPostDisplayElements(newDisplayElements, defaultDisplayElement));
+    setPostDisplayElements(orderedDisplayAttributes);
+    setPostDisplayItemsNoneColumnCount(countFilteredDisplayItems(orderedDisplayAttributes, 'none'));
+    setPostDisplayItemsSpanColumnsCount(countFilteredDisplayItems(orderedDisplayAttributes, 'span'));
+    setPostDisplayItemsLeftColumnCount(countFilteredDisplayItems(orderedDisplayAttributes, 'left'));
+    setPostDisplayItemsRightColumnCount(countFilteredDisplayItems(orderedDisplayAttributes, 'right'));
+    setPostLinkLocation(newLinkLocation);
+    setPostTitleInCover(newTitleInCover);
+    setPostImageSize(newImageSize);
+    const updatedFormatOptions = {
+      displayTitle: newDisplayTitle,
+      displayCoverImage: newDisplayCoverImage,
+      displayExcerpt: newDisplayExcerpt,
+      displayAuthor: newDisplayAuthor,
+      displayPublishDate: newDisplayPublishDate,
+      displayModifiedDate: newDisplayModifiedDate,
+      displayTitleInCover: newTitleInCover,
+      displayImageSize: newImageSize,
+      linkLocation: newLinkLocation
+    };
+    const updatedPostSettings = {
+      setting: {
+        format: postFormat,
+        formatOptions: updatedFormatOptions
+      }
+    };
+    setPostOptions(updatedFormatOptions);
+    updatePostConfig(updatedPostSettings);
+  }
+  function countFilteredDisplayItems(items, column) {
+    const filteredItems = items.filter(el => el.displayAttributes.display && el.displayAttributes.column === column);
+    return filteredItems?.length || 0;
+  }
+  function loadPostDisplayElements(columnData, defaultElement) {
+    const displayElements = Array();
+    displayElements.push({
+      element: 'displayTitle',
+      elementName: 'Title',
+      updateOption: 'display-title',
+      defaultOrder: 1,
+      displayAttributes: columnData?.displayTitle || defaultElement
+    });
+    displayElements.push({
+      element: 'displayExcerpt',
+      elementName: 'Excerpt',
+      updateOption: 'display-excerpt',
+      defaultOrder: 2,
+      displayAttributes: columnData?.displayExcerpt || defaultElement
+    });
+    displayElements.push({
+      element: 'displayCoverImage',
+      elementName: 'Cover Image',
+      updateOption: 'display-image',
+      defaultOrder: 3,
+      displayAttributes: columnData?.displayCoverImage || defaultElement
+    });
+    displayElements.push({
+      element: 'displayAuthor',
+      elementName: 'Author',
+      updateOption: 'display-author',
+      defaultOrder: 4,
+      displayAttributes: columnData?.displayAuthor || defaultElement
+    });
+    displayElements.push({
+      element: 'displayPublishDate',
+      elementName: 'Published Date',
+      updateOption: 'display-published',
+      defaultOrder: 5,
+      displayAttributes: columnData?.displayPublishDate || defaultElement
+    });
+    displayElements.push({
+      element: 'displayModifiedDate',
+      elementName: 'Last Modified Date',
+      updateOption: 'display-modified',
+      defaultOrder: 6,
+      displayAttributes: columnData?.displayModifiedDate || defaultElement
+    });
+    return displayElements;
+  }
+  function sortPostDisplayElements(displayElements) {
+    displayElements.sort((a, b) => {
+      if (a.displayAttributes.display !== b.displayAttributes.display) {
+        return a.displayAttributes.display ? -1 : 1;
+      }
+      if (!a.displayAttributes.display) {
+        return a.defaultOrder - b.defaultOrder;
+      }
+      const columnCompare = a.displayAttributes.column.localeCompare(b.displayAttributes.column);
+      return columnCompare || a.displayAttributes.order - b.displayAttributes.order;
+    });
+    return displayElements;
+  }
+
+  // 		case 'post':
+  // 			setDataTypeFormat('link');
+  // 			onPostFormat('link');
+  // 			newColumnClassNames.delete('grid-control__body-columns--number-align-right');
+  // 			newColumnClassNames.delete('grid-control__body-columns--date-align-right');
+  // 			setColumnClassNames(newColumnClassNames);
+  // 			return;
+
+  // 		columnDataType: dataType,
+  // 		case 'post':
+  // 			break;
+  // 	}
+
+  function updatePostConfig(updatedPostConfig) {
+    onChange(updatedPostConfig);
+  }
+  const testCellContent = 'Test Content';
+  const testCellAttributes = {
+    canonical: {
+      postId: 196,
+      postType: 'post'
+    },
+    ref: [{
+      postId: '196'
+    }]
+  };
+  const testCellClasses = '';
+  const testCellContentType = {
+    settings: {
+      format: postFormat,
+      formatOptions: postOptions
+    }
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("strong", {
+        children: "Content settings"
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+        spacing: 3,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
+          children: "Select the specific content display options."
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
+          gap: 24,
+          align: "stretch",
+          className: "configure-column-modal__split",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+            className: "configure-column-modal__left",
+            isBlock: true,
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+              spacing: 3,
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                label: "Post Layout",
+                selected: postFormat,
+                options: [{
+                  label: 'Link Only',
+                  value: 'link'
+                }, {
+                  label: 'Wide',
+                  value: 'wide'
+                }, {
+                  label: 'Narrow',
+                  value: 'narrow'
+                }],
+                onChange: value => onPostFormat(value)
+              }), postFormat !== 'link' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
+                className: "configure-column-modal__options",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("strong", {
+                  children: "Formatting Options"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_6__.Root, {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_7__.Header, {
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Title, {
+                      children: "Content Elements To Display"
+                    })
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.Content, {
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("table", {
+                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("thead", {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("tr", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("th", {
+                            children: "Element"
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("th", {
+                            children: "Display?"
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("th", {
+                            children: "Order"
+                          }), postFormat === 'wide' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("th", {
+                            children: "Location"
+                          })]
+                        })
+                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("tbody", {
+                        children: postDisplayElements.map(({
+                          elementName,
+                          updateOption,
+                          displayAttributes
+                        }) => {
+                          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(DislpayPostElementRow, {
+                            elementName: elementName,
+                            displayElement: displayAttributes,
+                            updateOption: updateOption,
+                            postFormat: postFormat,
+                            columnItemCount: postDisplayItemsPerColumn,
+                            onChange: onPostFormatOption
+                          });
+                        })
+                      })]
+                    })
+                  })]
+                }), (() => {
+                  const coverImage = postDisplayElements.find(({
+                    element
+                  }) => element === 'displayCoverImage');
+                  const title = postDisplayElements.find(({
+                    element
+                  }) => element === 'displayTitle');
+                  console.log('Cover Impage:', coverImage);
+                  console.log('Title:', title);
+                  return coverImage.displayAttributes.display > 0 && title.displayAttributes.display > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                    label: 'Display title in Cover Image?',
+                    checked: postTitleInCover,
+                    onChange: checked => onPostFormatOption(checked, 'title-in-cover')
+                  });
+                })(), (() => {
+                  const coverImage = postDisplayElements.find(({
+                    element
+                  }) => element === 'displayCoverImage');
+                  console.log('Cover Impage:', coverImage);
+                  return coverImage.displayAttributes.display > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                      label: "Link Location",
+                      selected: postLinkLocation,
+                      options: [{
+                        label: 'Title',
+                        value: 'title'
+                      }, {
+                        label: 'Cover Image',
+                        value: 'image'
+                      }],
+                      onChange: value => onPostFormatOption(value, 'link-location')
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+                      label: "Image Size",
+                      value: postImageSize,
+                      defaultValue: "thumbnail",
+                      onValueChange: value => onPostFormatOption(value, 'image-size'),
+                      items: [{
+                        value: 'thumbnail',
+                        label: 'Thumbnail: (150 x 150)'
+                      }, {
+                        value: 'medium',
+                        label: 'Medium: (300 x 300)'
+                      }, {
+                        value: 'medium_large',
+                        label: 'Medium/Large (768 Wide)'
+                      }, {
+                        value: 'large',
+                        label: 'Large (1024 x 1024)'
+                      }]
+                    })]
+                  });
+                })()]
+              })]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+            className: "configure-column-modal__right",
+            isBlock: true,
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
+              style: {
+                display: 'flex',
+                flexDirection: 'column'
+              },
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
+                id: previewId,
+                label: "Preview",
+                style: {
+                  alignContent: 'center',
+                  flexWrap: 'wrap',
+                  height: '20%'
+                },
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
+                    children: "Post Cell Preview"
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_ui_post_content__WEBPACK_IMPORTED_MODULE_12__.CellPostContent, {
+                    cellContent: testCellContent,
+                    cellAttributes: testCellAttributes,
+                    cellClasses: testCellClasses,
+                    cellContentType: testCellContentType
+                  })]
+                })
+              })
+            })
+          })]
+        })]
+      })
+    })]
+  });
+}
+function DislpayPostElementRow(props) {
+  const {
+    elementName,
+    displayElement,
+    updateOption,
+    postFormat,
+    columnItemCount,
+    onChange
+  } = props;
+  const {
+    display,
+    order,
+    column
+  } = displayElement;
+  const labelOrderSuffix = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Display Order', 'dynamic-table-blocks');
+  const labelColumnSuffix = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Display Column', 'dynamic-table-blocks');
+  function maxDisplayItems(column, columnItemCount) {
+    if (column === 'none') return columnItemCount.none;
+    if (column === 'span') return columnItemCount.span;
+    if (column === 'left') return columnItemCount.left;
+    if (column === 'right') return columnItemCount.right;
+    return 0;
+  }
+
+  // console.log('Items per column type = ', columnItemCount);
+  // console.log('Items in column (' + elementName + ')= ' + maxDisplayItems(column, columnItemCount));
+
+  function onPostDisplayUpdate(updatedValue, updatedDisplayOption, updatedAttribute) {
+    let newDisplay = display;
+    let newColumn = column;
+    let newOrder = Number(order);
+    switch (updatedAttribute) {
+      case 'display':
+        {
+          newDisplay = updatedValue;
+          if (updatedValue) {
+            newColumn = postFormat === 'wide' ? 'left' : 'none';
+            const itemCount = maxDisplayItems(newColumn, columnItemCount);
+            newOrder = itemCount + 1;
+          } else {
+            newColumn = 'none';
+            newOrder = 0;
+          }
+          break;
+        }
+      case 'column':
+        {
+          console.log('Upated column value: ', updatedValue);
+          const itemCount = maxDisplayItems(updatedValue, columnItemCount);
+          newColumn = updatedValue;
+          newOrder = itemCount + 1;
+          break;
+        }
+      case 'order':
+        {
+          const itemCount = maxDisplayItems(column, columnItemCount);
+          if (Number(updatedValue) < 1 || Number(updatedValue) > itemCount) {
+            return;
+          }
+          newOrder = Number(updatedValue);
+          break;
+        }
+      default:
+        {
+          break;
+        }
+    }
+    const updatedDisplayElement = {
+      display: newDisplay,
+      column: newColumn,
+      order: newOrder
+    };
+    console.log('Changed Display Element ( ' + updatedDisplayOption + '): ', updatedDisplayElement);
+    onChange(updatedDisplayElement, updatedDisplayOption);
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("tr", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("td", {
+      children: elementName
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("td", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+        checked: display,
+        onChange: checked => onPostDisplayUpdate(checked, updateOption, 'display')
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("td", {
+      children: display ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_4__.InputControl, {
+        label: elementName + ' ' + labelOrderSuffix,
+        hideLabelFromVision: true,
+        min: 1,
+        step: 1,
+        max: maxDisplayItems(column, columnItemCount),
+        value: order || 1,
+        onValueChange: value => onPostDisplayUpdate(value, updateOption, 'order'),
+        type: "number",
+        size: "compact",
+        suffix: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_ui_number_increment_control__WEBPACK_IMPORTED_MODULE_11__.NumberIncrementControl, {
+          baseInteger: Number(order),
+          iconPair: "arrow-up-down",
+          reverseIcons: true,
+          onClick: value => onPostDisplayUpdate(value, updateOption, 'order')
+        })
+      }) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('n/a', 'dynamic-table-blocks')
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("td", {
+      children: postFormat === 'wide' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
+        label: elementName + ' ' + labelColumnSuffix,
+        hideLabelFromVision: true,
+        value: column || 'none',
+        onValueChange: value => onPostDisplayUpdate(value.value, updateOption, 'column'),
+        items: [{
+          value: 'left',
+          label: 'Left'
+        }, {
+          value: 'right',
+          label: 'Right'
+        }, {
+          value: 'span',
+          label: 'Span Columns'
+        }]
+      })
+    })]
+  });
+}
+function getPostFormatDefaults(postFormat, defaultDisplayElement) {
+  let formatOptions;
+  switch (postFormat) {
+    case 'link':
+      {
+        formatOptions = {
+          displayTitle: {
+            ...defaultDisplayElement,
+            display: true,
+            order: 1
+          },
+          displayCoverImage: defaultDisplayElement,
+          displayExcerpt: defaultDisplayElement,
+          displayAuthor: defaultDisplayElement,
+          displayPublishDate: defaultDisplayElement,
+          displayModifiedDate: defaultDisplayElement
+        };
+        break;
+      }
+    case 'narrow':
+      {
+        formatOptions = {
+          displayTitle: {
+            ...defaultDisplayElement,
+            display: true,
+            order: 1
+          },
+          displayCoverImage: {
+            ...defaultDisplayElement,
+            order: 0
+          },
+          displayExcerpt: {
+            ...defaultDisplayElement,
+            display: true,
+            order: 2
+          },
+          displayAuthor: {
+            ...defaultDisplayElement,
+            display: true,
+            order: 3
+          },
+          displayPublishDate: defaultDisplayElement,
+          displayModifiedDate: defaultDisplayElement
+        };
+        break;
+      }
+    case 'wide':
+      {
+        formatOptions = {
+          displayTitle: {
+            ...defaultDisplayElement,
+            display: true,
+            column: 'left',
+            order: 1
+          },
+          displayCoverImage: {
+            ...defaultDisplayElement,
+            order: 0
+          },
+          displayExcerpt: {
+            ...defaultDisplayElement,
+            display: true,
+            column: 'left',
+            order: 2
+          },
+          displayAuthor: {
+            ...defaultDisplayElement,
+            display: true,
+            column: 'right',
+            order: 1
+          },
+          displayPublishDate: defaultDisplayElement,
+          displayModifiedDate: defaultDisplayElement
+        };
+        break;
+      }
+    default:
+      return;
+  }
+  const displayOptions = {
+    ...formatOptions,
+    displayTitleInCover: false,
+    displayImageSize: 'thumbnail',
+    linkLocation: 'title'
+  };
+  const displayElements = {
+    displayTitle: formatOptions.displayTitle,
+    displayCoverImage: formatOptions.displayCoverImage,
+    displayExcerpt: formatOptions.displayExcerpt,
+    displayAuthor: formatOptions.displayAuthor,
+    displayShortContent: formatOptions.displayShortContent,
+    displayPublishDate: formatOptions.displayPublishDate,
+    displayModifiedDate: formatOptions.displayModifiedDate
+  };
+  return {
+    displayOptions,
+    displayElements
+  };
+}
 
 /***/ },
 
@@ -4211,6 +5091,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   ColumnWidthModal: () => (/* reexport safe */ _configure_column_width__WEBPACK_IMPORTED_MODULE_2__.ColumnWidthModal),
 /* harmony export */   EditCellContentModal: () => (/* reexport safe */ _cell_advanced_edit_modal__WEBPACK_IMPORTED_MODULE_7__.EditCellContentModal),
 /* harmony export */   FreeformCheckboxIcon: () => (/* reexport safe */ _ui__WEBPACK_IMPORTED_MODULE_0__.FreeformCheckboxIcon),
+/* harmony export */   NumberIncrementControl: () => (/* reexport safe */ _ui__WEBPACK_IMPORTED_MODULE_0__.NumberIncrementControl),
 /* harmony export */   PostAuthor: () => (/* reexport safe */ _ui__WEBPACK_IMPORTED_MODULE_0__.PostAuthor),
 /* harmony export */   PostImage: () => (/* reexport safe */ _ui__WEBPACK_IMPORTED_MODULE_0__.PostImage),
 /* harmony export */   PostTimeToRead: () => (/* reexport safe */ _ui__WEBPACK_IMPORTED_MODULE_0__.PostTimeToRead),
@@ -5477,13 +6358,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Cell: () => (/* reexport safe */ _cell__WEBPACK_IMPORTED_MODULE_0__.Cell),
 /* harmony export */   CellPostContent: () => (/* reexport safe */ _post_content__WEBPACK_IMPORTED_MODULE_1__.CellPostContent),
-/* harmony export */   FreeformCheckboxIcon: () => (/* reexport safe */ _icon__WEBPACK_IMPORTED_MODULE_6__.FreeformCheckboxIcon),
+/* harmony export */   FreeformCheckboxIcon: () => (/* reexport safe */ _icon__WEBPACK_IMPORTED_MODULE_7__.FreeformCheckboxIcon),
+/* harmony export */   NumberIncrementControl: () => (/* reexport safe */ _number_increment_control__WEBPACK_IMPORTED_MODULE_6__.NumberIncrementControl),
 /* harmony export */   PostAuthor: () => (/* reexport safe */ _post_content_post_author__WEBPACK_IMPORTED_MODULE_2__.PostAuthor),
 /* harmony export */   PostImage: () => (/* reexport safe */ _post_content_post_image__WEBPACK_IMPORTED_MODULE_3__.PostImage),
 /* harmony export */   PostTimeToRead: () => (/* reexport safe */ _post_content_post_read_time__WEBPACK_IMPORTED_MODULE_4__.PostTimeToRead),
 /* harmony export */   PostWordCount: () => (/* reexport safe */ _post_content_post_word_count__WEBPACK_IMPORTED_MODULE_5__.PostWordCount),
-/* harmony export */   StatusIcon: () => (/* reexport safe */ _icon__WEBPACK_IMPORTED_MODULE_6__.StatusIcon),
-/* harmony export */   TableCheckbox: () => (/* reexport safe */ _icon__WEBPACK_IMPORTED_MODULE_6__.TableCheckbox)
+/* harmony export */   StatusIcon: () => (/* reexport safe */ _icon__WEBPACK_IMPORTED_MODULE_7__.StatusIcon),
+/* harmony export */   TableCheckbox: () => (/* reexport safe */ _icon__WEBPACK_IMPORTED_MODULE_7__.TableCheckbox)
 /* harmony export */ });
 /* harmony import */ var _cell__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cell */ "./src/components/ui/cell/index.js");
 /* harmony import */ var _post_content__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./post-content */ "./src/components/ui/post-content/index.js");
@@ -5491,7 +6373,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _post_content_post_image__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./post-content/post-image */ "./src/components/ui/post-content/post-image.js");
 /* harmony import */ var _post_content_post_read_time__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./post-content/post-read-time */ "./src/components/ui/post-content/post-read-time.js");
 /* harmony import */ var _post_content_post_word_count__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./post-content/post-word-count */ "./src/components/ui/post-content/post-word-count.js");
-/* harmony import */ var _icon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./icon */ "./src/components/ui/icon/index.js");
+/* harmony import */ var _number_increment_control__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./number-increment-control */ "./src/components/ui/number-increment-control/index.js");
+/* harmony import */ var _icon__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./icon */ "./src/components/ui/icon/index.js");
 /* Export table cells */
 
 
@@ -5500,6 +6383,109 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+/***/ },
+
+/***/ "./src/components/ui/number-increment-control/index.js"
+/*!*************************************************************!*\
+  !*** ./src/components/ui/number-increment-control/index.js ***!
+  \*************************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   NumberIncrementControl: () => (/* binding */ NumberIncrementControl)
+/* harmony export */ });
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/stack/stack.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/icon-button/icon-button.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/form/primitives/input-layout/index.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/chevron-down.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/chevron-up.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/plus.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/reset.mjs");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./style.scss */ "./src/components/ui/number-increment-control/style.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__);
+/* External dependencies */
+
+// import { plus, reset, chevronDownSmall, chevronUpSmall } from '@wordpress/icons';
+
+
+
+/* Internal dependencies */
+
+
+function NumberIncrementControl(props) {
+  const {
+    baseInteger,
+    iconPair = 'plus-minus',
+    reverseIcons = false,
+    onClick
+  } = props;
+  const getIcons = (pair, reverseIcons) => {
+    switch (pair) {
+      case 'plus-minus':
+        {
+          return {
+            iconIncrement: !reverseIcons ? _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"] : _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
+            iconDecrement: !reverseIcons ? _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"] : _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"]
+          };
+        }
+      case 'arrow-up-down':
+        {
+          return {
+            iconIncrement: !reverseIcons ? _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"] : _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"],
+            iconDecrement: !reverseIcons ? _wordpress_icons__WEBPACK_IMPORTED_MODULE_3__["default"] : _wordpress_icons__WEBPACK_IMPORTED_MODULE_4__["default"]
+          };
+        }
+      default:
+        {
+          return {
+            iconIncrement: !reverseIcons ? _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"] : _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"],
+            iconDecrement: !reverseIcons ? _wordpress_icons__WEBPACK_IMPORTED_MODULE_6__["default"] : _wordpress_icons__WEBPACK_IMPORTED_MODULE_5__["default"]
+          };
+        }
+    }
+  };
+  const {
+    iconIncrement,
+    iconDecrement
+  } = getIcons(iconPair, reverseIcons);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_2__.InputLayout.Slot, {
+    padding: "minimal",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_0__.Stack, {
+      direction: "row",
+      align: "center",
+      className: "dtbk-increment-steppers",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_1__.IconButton, {
+        className: "dtbk-increment-steppers__button",
+        type: "button",
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Increment columns', 'dynamic-table-blocks'),
+        icon: iconIncrement,
+        size: "small",
+        variant: "minimal",
+        disabled: Number(baseInteger) >= 50,
+        onClick: () => onClick(Number(baseInteger) + 1)
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("span", {
+        className: "dtbk-increment-steppers__separator",
+        "aria-hidden": "true",
+        children: "/"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_1__.IconButton, {
+        className: "dtbk-increment-steppers__button",
+        type: "button",
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_7__.__)('Decrement columns', 'dynamic-table-blocks'),
+        icon: iconDecrement,
+        size: "small",
+        variant: "minimal",
+        disabled: Number(baseInteger) <= 1,
+        onClick: () => onClick(Number(baseInteger) - 1)
+      })]
+    })
+  });
+}
 
 /***/ },
 
@@ -5559,27 +6545,27 @@ function RenderCellPostContent(props = {}) {
     cellContent,
     cellAttributes,
     cellClasses,
-    cellContentType
+    cellContentType,
+    postContent = null
   } = props;
-  const {
-    type: contentType,
-    settings
-  } = cellContentType;
-  const contentFormat = settings?.format || '';
-  const contentOptions = settings?.formatOptions || {};
+
+  // const { type: contentType, settings } = cellContentType;
+  console.log('Cell Content Type: ', cellContentType);
+  const contentFormat = cellContentType?.settings?.format || '';
+  const contentOptions = cellContentType?.settings?.formatOptions || {};
   const displayedAttributes = getDisplayAttributes(contentOptions);
   const {
     canonical: cellCanonical,
     options: cellDisplayOptions
-  } = (0,_cell_advanced_edit_modal_value__WEBPACK_IMPORTED_MODULE_11__.normalizeCellValueAttributes)(cellAttributes, cellContent, contentType);
+  } = (0,_cell_advanced_edit_modal_value__WEBPACK_IMPORTED_MODULE_11__.normalizeCellValueAttributes)(cellAttributes, cellContent, 'post');
   const postId = cellCanonical?.postId || 0;
   const postType = cellCanonical?.postType || 'post';
   const postLinkInNewTab = cellDisplayOptions?.newTab || false;
   const [postData, setPostData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [postError, setPostError] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const post = postData?.post;
-  const needsImage = contentOptions?.displayCoverImage > 0;
-  const needsAuthor = contentOptions?.displayAuthor > 0;
+  const needsImage = contentOptions?.displayCoverImage.display;
+  const needsAuthor = contentOptions?.displayAuthor.display;
   const imageSize = contentOptions?.displayImageSize || 'thumbnail';
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     const request = new AbortController();
@@ -5593,9 +6579,9 @@ function RenderCellPostContent(props = {}) {
           signal: request.signal
         });
         if (!active) return;
-        const [image, authorName] = await Promise.all([needsImage ? (0,_get_external_data__WEBPACK_IMPORTED_MODULE_4__.lookupPostImage)(postValue.featured_media, {
+        const [image, authorName] = await Promise.all([(0,_get_external_data__WEBPACK_IMPORTED_MODULE_4__.lookupPostImage)(postValue.featured_media, {
           size: imageSize
-        }) : null, needsAuthor ? (0,_get_external_data__WEBPACK_IMPORTED_MODULE_4__.lookupPostAuthor)(postValue.author) : null]);
+        }), (0,_get_external_data__WEBPACK_IMPORTED_MODULE_4__.lookupPostAuthor)(postValue.author)]);
         if (active) {
           setPostData({
             post: postValue,
@@ -5661,46 +6647,54 @@ function getDisplayAttributes(contentOptions) {
     displayPublishDate,
     displayModifiedDate
   } = contentOptions;
+  console.log('In GetDisplayAttributes, contentOptions: ', contentOptions);
   const postDisplayAttributes = Array();
-  if (displayTitle > 0) {
+  if (displayTitle.display) {
     postDisplayAttributes.push({
       attribute: 'title',
       slot: displayTitle
     });
   }
-  if (displayCoverImage > 0) {
+  if (displayCoverImage.display) {
     postDisplayAttributes.push({
       attribute: 'image',
       slot: displayCoverImage
     });
   }
-  if (displayExcerpt > 0) {
+  if (displayExcerpt.display) {
     postDisplayAttributes.push({
       attribute: 'excerpt',
       slot: displayExcerpt
     });
   }
-  if (displayAuthor > 0) {
+  if (displayAuthor.display) {
     postDisplayAttributes.push({
       attribute: 'author',
       slot: displayAuthor
     });
   }
-  if (displayPublishDate > 0) {
+  if (displayPublishDate.display) {
     postDisplayAttributes.push({
       attribute: 'published',
       slot: displayPublishDate
     });
   }
-  if (displayModifiedDate > 0) {
+  if (displayModifiedDate.display) {
     postDisplayAttributes.push({
       attribute: 'modified',
       slot: displayModifiedDate
     });
   }
 
-  // sort array before return
-
+  // sort array on column location, then display order
+  postDisplayAttributes.sort((a, b) => {
+    const columnCompare = a.slot.column.localeCompare(b.slot.column);
+    if (columnCompare !== 0) {
+      return columnCompare;
+    }
+    return a.slot.order - b.slot.order;
+  });
+  console.log('Post render display array: ', postDisplayAttributes);
   return postDisplayAttributes;
 }
 function renderPostTitle(renderedContent, linkLocation, postLink) {
@@ -5810,18 +6804,6 @@ function renderModifiedDate(renderedContent) {
   });
 }
 function renderNarrowContent(postData, postLinkInNewTab, displayedAttributes, contentOptions, cellClasses) {
-  const {
-    post,
-    image,
-    authorName
-  } = postData;
-  const {
-    displayTitleInCover,
-    displayImageSize,
-    linkLocation
-  } = contentOptions;
-  const postLink = post.link;
-
   // Reserved for future use
   // const postCategoriesApi = post.wp.term.href;
   // const postTagsApi = post.wp.term.tags;
@@ -5835,56 +6817,8 @@ function renderNarrowContent(postData, postLinkInNewTab, displayedAttributes, co
     children: displayedAttributes.map(({
       attribute
     }) => {
-      let formattedContent;
-      switch (attribute) {
-        case 'title':
-          {
-            const renderedContent = post.title.rendered;
-            if (displayTitleInCover) break;
-            formattedContent = renderPostTitle(renderedContent, linkLocation, postLink);
-            break;
-          }
-        case 'image':
-          {
-            const link = {
-              isLink: linkLocation === 'image' ? true : false,
-              url: linkLocation === 'image' ? postLink : null
-            };
-            const title = {
-              embedTitle: displayTitleInCover,
-              title: displayTitleInCover ? post.title.rendered : ''
-            };
-            formattedContent = renderPostImage(image, 'auto', link, title);
-            break;
-          }
-        case 'excerpt':
-          {
-            const renderedContent = post.excerpt.rendered;
-            formattedContent = renderPostExcept(renderedContent);
-            break;
-          }
-        case 'author':
-          {
-            formattedContent = renderPostAuthor(authorName);
-            break;
-          }
-        case 'published':
-          {
-            const renderedContent = post.date;
-            formattedContent = renderPublishedDate(renderedContent);
-            break;
-          }
-        case 'modified':
-          {
-            const renderedContent = post.modified;
-            formattedContent = renderModifiedDate(renderedContent);
-            break;
-          }
-        default:
-          {
-            break;
-          }
-      }
+      console.log('Display attribute: ', attribute);
+      const formattedContent = evaluateDisplayAttributes(attribute, postData, postLinkInNewTab, contentOptions);
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
         children: formattedContent
       });
@@ -5892,6 +6826,99 @@ function renderNarrowContent(postData, postLinkInNewTab, displayedAttributes, co
   });
 }
 function renderWideContent(postData, postLinkInNewTab, displayedAttributes, contentOptions, cellClasses) {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("div", {
+    style: {
+      display: 'block',
+      boxSizing: 'inherit'
+    },
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+      style: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
+        padding: '10px 10px'
+      },
+      children: displayedAttributes.map(({
+        attribute,
+        slot
+      }) => {
+        let formattedContent;
+        if (slot.column === 'span') {
+          formattedContent = evaluateDisplayAttributes(attribute, postData, postLinkInNewTab, contentOptions);
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+            children: formattedContent
+          });
+        }
+        return null;
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)("div", {
+      style: {
+        display: 'flex',
+        flexDirection: 'row',
+        gap: '10px',
+        boxSizing: 'inherit'
+      },
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+        style: {
+          display: 'block',
+          boxSizing: 'inherit',
+          maxHeight: '100%',
+          maxWidth: '100%',
+          flex: '1'
+        },
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+          style: {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px'
+          },
+          children: displayedAttributes.map(({
+            attribute,
+            slot
+          }) => {
+            let formattedContent;
+            if (slot.column === 'left') {
+              formattedContent = evaluateDisplayAttributes(attribute, postData, postLinkInNewTab, contentOptions);
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+                children: formattedContent
+              });
+            }
+            return null;
+          })
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+        style: {
+          display: 'block',
+          boxSizing: 'inherit',
+          maxHeight: '100%',
+          maxWidth: '100%',
+          flex: '1'
+        },
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+          style: {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px'
+          },
+          children: displayedAttributes.map(({
+            attribute,
+            slot
+          }) => {
+            let formattedContent;
+            if (slot.column === 'right') {
+              formattedContent = evaluateDisplayAttributes(attribute, postData, postLinkInNewTab, contentOptions);
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+                children: formattedContent
+              });
+            }
+            return null;
+          })
+        })
+      })]
+    })]
+  });
+}
+function evaluateDisplayAttributes(displayedAttribute, postData, postLinkInNewTab, contentOptions) {
   const {
     post,
     image,
@@ -5902,72 +6929,55 @@ function renderWideContent(postData, postLinkInNewTab, displayedAttributes, cont
     linkLocation
   } = contentOptions;
   const postLink = post.link;
-
-  // Reserved for future use
-  // const postCategoriesApi = post.wp.term.href;
-  // const postTagsApi = post.wp.term.tags;
-
-  return displayedAttributes.map(({
-    attribute
-  }) => {
-    let formattedContent;
-    switch (attribute) {
-      case 'title':
-        {
-          const renderedContent = post.title.rendered;
-          if (displayTitleInCover) break;
-          formattedContent = renderPostTitle(renderedContent, linkLocation, postLink);
-          break;
-        }
-      case 'image':
-        {
-          formattedContent = renderPostImage(image, 'auto', {
-            isLink: linkLocation === 'image',
-            url: postLink
-          }, {
-            embedTitle: displayTitleInCover,
-            title: post.title.rendered
-          });
-          break;
-        }
-      case 'excerpt':
-        {
-          const renderedContent = post.excerpt.rendered;
-          formattedContent = renderPostExcept(renderedContent);
-          break;
-        }
-      case 'author':
-        {
-          formattedContent = renderPostAuthor(authorName);
-          break;
-        }
-      case 'content':
-        {
-          const renderedContent = post.content.rendered;
-          formattedContent = renderShortContent(renderedContent);
-          break;
-        }
-      case 'published':
-        {
-          const renderedContent = post.date;
-          formattedContent = renderPublishedDate(renderedContent);
-          break;
-        }
-      case 'modified':
-        {
-          const renderedContent = post.modified;
-          formattedContent = renderModifiedDate(renderedContent);
-          break;
-        }
-      default:
-        {
-          break;
-        }
-    }
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
-      children: formattedContent
-    });
-  });
+  let formattedContent;
+  switch (displayedAttribute) {
+    case 'title':
+      {
+        const renderedContent = post.title.rendered;
+        if (displayTitleInCover) break;
+        formattedContent = renderPostTitle(renderedContent, linkLocation, postLink);
+        break;
+      }
+    case 'image':
+      {
+        formattedContent = renderPostImage(image, 'auto', {
+          isLink: linkLocation === 'image',
+          url: postLink
+        }, {
+          embedTitle: displayTitleInCover,
+          title: post.title.rendered
+        });
+        break;
+      }
+    case 'excerpt':
+      {
+        const renderedContent = post.excerpt.rendered;
+        formattedContent = renderPostExcept(renderedContent);
+        break;
+      }
+    case 'author':
+      {
+        formattedContent = renderPostAuthor(authorName);
+        break;
+      }
+    case 'published':
+      {
+        const renderedContent = post.date;
+        formattedContent = renderPublishedDate(renderedContent);
+        break;
+      }
+    case 'modified':
+      {
+        const renderedContent = post.modified;
+        formattedContent = renderModifiedDate(renderedContent);
+        break;
+      }
+    default:
+      {
+        break;
+      }
+  }
+  return formattedContent;
 }
 const CellPostContent = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.memo)(RenderCellPostContent);
 
@@ -8619,30 +9629,26 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/stack/stack.mjs");
 /* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/form/input-control/input-control.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/icon-button/icon-button.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/root.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/header.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/title.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/content.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/form/primitives/input-layout/index.mjs");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__);
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/block-table.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/plus.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/reset.mjs");
-/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/search.mjs");
-/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./data */ "./src/data/index.js");
-/* harmony import */ var _data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./data/table-entity-adapter */ "./src/data/table-entity-adapter.js");
-/* harmony import */ var _hooks__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./hooks */ "./src/hooks.js");
-/* harmony import */ var _messages__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./messages */ "./src/messages.js");
-/* harmony import */ var _summary_table_refresh__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./summary-table-refresh */ "./src/summary-table-refresh.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
-/* harmony import */ var _table_defaults__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./table-defaults */ "./src/table-defaults.js");
-/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./style */ "./src/style.js");
-/* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./components */ "./src/components/index.js");
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__);
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/root.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/header.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/title.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/content.mjs");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_14__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/block-table.mjs");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/search.mjs");
+/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./data */ "./src/data/index.js");
+/* harmony import */ var _data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./data/table-entity-adapter */ "./src/data/table-entity-adapter.js");
+/* harmony import */ var _hooks__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./hooks */ "./src/hooks.js");
+/* harmony import */ var _messages__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./messages */ "./src/messages.js");
+/* harmony import */ var _summary_table_refresh__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./summary-table-refresh */ "./src/summary-table-refresh.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
+/* harmony import */ var _table_defaults__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./table-defaults */ "./src/table-defaults.js");
+/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./style */ "./src/style.js");
+/* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./components */ "./src/components/index.js");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__);
 /* External dependencies */
 
 
@@ -8726,7 +9732,7 @@ const ORDERED_LIST_ITEM_STYLE_OPTIONS = [{
  * @param {Object} props
  */
 function Edit(props) {
-  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.useBlockProps)({
+  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_14__.useBlockProps)({
     className: 'dynamic-table-edit-block'
   });
   /* External Store Action useDispatch declarations */
@@ -8752,67 +9758,67 @@ function Edit(props) {
   /* Table Store Action useDispatch declarations */
   const {
     receiveTable
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     receiveNewTable
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     updateSummaryTable
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     refreshSummaryTables
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     cloneTable
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     createTableEntity
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     saveTableEntity
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     addColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     addRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     removeColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     removeRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     moveColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     moveRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     updateTableProp
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     updateRow
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     updateColumn
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     updateCell
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     updateTableEntity: dispatchUpdateTableEntity
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     updateTableBorder
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     processUnmountedTables
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     processDeletedTables
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useDispatch)(_data__WEBPACK_IMPORTED_MODULE_17__.store);
   const {
     createNotice,
     removeNotice
@@ -8843,13 +9849,13 @@ function Edit(props) {
   const h5Ref = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
   const h6Ref = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
   const paragraphRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
-  const h1Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_23__.useGetElementStyles)(h1Ref);
-  const h2Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_23__.useGetElementStyles)(h2Ref);
-  const h3Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_23__.useGetElementStyles)(h3Ref);
-  const h4Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_23__.useGetElementStyles)(h4Ref);
-  const h5Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_23__.useGetElementStyles)(h5Ref);
-  const h6Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_23__.useGetElementStyles)(h6Ref);
-  const paragraphStyles = (0,_hooks__WEBPACK_IMPORTED_MODULE_23__.useGetElementStyles)(paragraphRef);
+  const h1Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_19__.useGetElementStyles)(h1Ref);
+  const h2Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_19__.useGetElementStyles)(h2Ref);
+  const h3Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_19__.useGetElementStyles)(h3Ref);
+  const h4Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_19__.useGetElementStyles)(h4Ref);
+  const h5Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_19__.useGetElementStyles)(h5Ref);
+  const h6Styles = (0,_hooks__WEBPACK_IMPORTED_MODULE_19__.useGetElementStyles)(h6Ref);
+  const paragraphStyles = (0,_hooks__WEBPACK_IMPORTED_MODULE_19__.useGetElementStyles)(paragraphRef);
   const dynamicHtmlElementStyles = [{
     key: 'h1',
     name: 'Head 1',
@@ -8920,7 +9926,7 @@ function Edit(props) {
     hasEntityRecord: requestedTableHasEntity,
     hasFinishedResolving: requestedTableHasFinishedResolving,
     isResolving: requestedTableIsResolving
-  } = (0,_hooks__WEBPACK_IMPORTED_MODULE_23__.useGetTable)(tableRequest.tableId, {
+  } = (0,_hooks__WEBPACK_IMPORTED_MODULE_19__.useGetTable)(tableRequest.tableId, {
     isTableStale: true,
     shouldFetch: shouldFetchRequestedTable
   });
@@ -8980,7 +9986,7 @@ function Edit(props) {
   function startEditingCell(id) {
     const nextId = String(id);
     if (String(editingCellIdRef.current ?? '') !== nextId) {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_24__.speakMessage)('editing-cell', {
+      (0,_messages__WEBPACK_IMPORTED_MODULE_20__.speakMessage)('editing-cell', {
         args: {
           cellId: nextId
         }
@@ -9001,7 +10007,7 @@ function Edit(props) {
   function stopEditingCell(announce = true) {
     const currentId = editingCellIdRef.current;
     if (announce && currentId) {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_24__.speakMessage)('stopped-editing-cell', {
+      (0,_messages__WEBPACK_IMPORTED_MODULE_20__.speakMessage)('stopped-editing-cell', {
         args: {
           cellId: currentId
         }
@@ -9457,7 +10463,7 @@ function Edit(props) {
   const editorColumnMenuTagId = `${editorTableTagIdBase}-column-menu`;
   const getEditorColumnHeaderTagId = columnId => `${editorTableTagIdBase}-column-${String(columnId).trim()}-header`;
   const editorCellMenuTagId = `${editorTableTagIdBase}-cell-menu`;
-  const [themeColors = []] = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.useSettings)('color.palette');
+  const [themeColors = []] = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_14__.useSettings)('color.palette');
   const borderBoxColors = themeColors.map(({
     color,
     name
@@ -9477,7 +10483,7 @@ function Edit(props) {
   const currentTableId = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
     const {
       getTableIdByBlock
-    } = select(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_17__.store);
     return getTableIdByBlock(block_table_ref);
   }, [block_table_ref]);
 
@@ -9546,7 +10552,7 @@ function Edit(props) {
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
     const {
       getUnmountedTables
-    } = select(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_17__.store);
     return {
       unmountedTables: getUnmountedTables()
     };
@@ -9560,7 +10566,7 @@ function Edit(props) {
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
     if (!Object.keys(unmountedTables).length) return;
     void processUnmountedTables(unmountedTables).catch(error => {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_24__.showMessageNotice)(createNotice, 'unmounted-reconcile-error');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_20__.showMessageNotice)(createNotice, 'unmounted-reconcile-error');
     });
   }, [unmountedTables]);
 
@@ -9576,7 +10582,7 @@ function Edit(props) {
   } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => {
     const {
       getDeletedTables
-    } = select(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_17__.store);
     return {
       deletedTables: getDeletedTables()
     };
@@ -9590,7 +10596,7 @@ function Edit(props) {
    *
    * @type {boolean} Post changes have been saved
    */
-  const postChangesAreSaved = (0,_hooks__WEBPACK_IMPORTED_MODULE_23__.usePostChangesSaved)();
+  const postChangesAreSaved = (0,_hooks__WEBPACK_IMPORTED_MODULE_19__.usePostChangesSaved)();
   const previousPostChangesAreSaved = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_1__.usePrevious)(postChangesAreSaved);
   const didJustFinishPostSave = postChangesAreSaved && !previousPostChangesAreSaved;
 
@@ -9652,8 +10658,8 @@ function Edit(props) {
   const {
     postId,
     postType
-  } = (0,_hooks__WEBPACK_IMPORTED_MODULE_23__.useEditorIdentity)(props);
-  const inInserterBlock = !(0,_hooks__WEBPACK_IMPORTED_MODULE_23__.useNotInInserterPreview)();
+  } = (0,_hooks__WEBPACK_IMPORTED_MODULE_19__.useEditorIdentity)(props);
+  const inInserterBlock = !(0,_hooks__WEBPACK_IMPORTED_MODULE_19__.useNotInInserterPreview)();
   const blockEditingMode = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.useSelect)(select => select('core/block-editor')?.getBlockEditingMode?.(props.clientId) ?? 'default', [props.clientId]);
   const isContentOnlyMode = blockEditingMode === 'contentOnly';
 
@@ -9751,7 +10757,7 @@ function Edit(props) {
     const {
       getSummaryTables,
       isResolving
-    } = select(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_17__.store);
     const selectorArgs = [true];
     const allTables = getSummaryTables(true);
     const allTablesIsResolving = isResolving('getSummaryTables', selectorArgs);
@@ -9764,7 +10770,7 @@ function Edit(props) {
     if (tableCreationMethod !== 'existing-table') {
       return null;
     }
-    const nextExistingTableOptions = (0,_summary_table_refresh__WEBPACK_IMPORTED_MODULE_25__.getLoadedSummaryTableOptions)(allTables);
+    const nextExistingTableOptions = (0,_summary_table_refresh__WEBPACK_IMPORTED_MODULE_21__.getLoadedSummaryTableOptions)(allTables);
     if (nextExistingTableOptions.length > 1) {
       return nextExistingTableOptions;
     }
@@ -9778,7 +10784,7 @@ function Edit(props) {
    * @since 1.4.0
    */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
-    return (0,_summary_table_refresh__WEBPACK_IMPORTED_MODULE_25__.registerSummaryTableRefreshSubscriber)({
+    return (0,_summary_table_refresh__WEBPACK_IMPORTED_MODULE_21__.registerSummaryTableRefreshSubscriber)({
       tableCreationMethod,
       refreshSummaryTables,
       createNotice,
@@ -9805,7 +10811,7 @@ function Edit(props) {
       hasStartedResolution,
       hasFinishedResolution,
       isResolving
-    } = select(_data__WEBPACK_IMPORTED_MODULE_21__.store);
+    } = select(_data__WEBPACK_IMPORTED_MODULE_17__.store);
     const selectorArgs = [table_id, isTableStale];
     if (block_table_ref === '') {
       return {
@@ -9830,7 +10836,7 @@ function Edit(props) {
   }, [table_id, isTableStale, block_table_ref]);
 
   // Keep editor controls consistent with this block's border preference.
-  const table = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useMemo)(() => storedTable?.block_table_ref ? (0,_data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_22__.withTableBorders)(storedTable, showBorders) : storedTable, [storedTable, showBorders]);
+  const table = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useMemo)(() => storedTable?.block_table_ref ? (0,_data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_18__.withTableBorders)(storedTable, showBorders) : storedTable, [storedTable, showBorders]);
 
   // Table is no longer stale once it has finished resolving
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
@@ -9898,7 +10904,7 @@ function Edit(props) {
         await saveTableEntity(entityId);
       } catch (error) {
         if (!isActive) return;
-        (0,_messages__WEBPACK_IMPORTED_MODULE_24__.showMessageNotice)(createNotice, 'update-entity-error');
+        (0,_messages__WEBPACK_IMPORTED_MODULE_20__.showMessageNotice)(createNotice, 'update-entity-error');
         setTableOperation({
           kind: 'error',
           blockTableRef: tableRequest.blockTableRef,
@@ -9932,13 +10938,13 @@ function Edit(props) {
    *
    * @since 1.4.5
    */
-  (0,_hooks__WEBPACK_IMPORTED_MODULE_23__.useTableUndoRedoEffect)(table.table_id, ({
+  (0,_hooks__WEBPACK_IMPORTED_MODULE_19__.useTableUndoRedoEffect)(table.table_id, ({
     editedTable
   }) => {
-    if ((0,_data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_22__.areTableAndEntityRecordsEqual)(table, editedTable)) {
+    if ((0,_data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_18__.areTableAndEntityRecordsEqual)(table, editedTable)) {
       return;
     }
-    const reconciledTable = (0,_data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_22__.entityRecordToTable)(editedTable, {
+    const reconciledTable = (0,_data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_18__.entityRecordToTable)(editedTable, {
       includeBorders: showBorders
     });
     if (!reconciledTable) {
@@ -10061,7 +11067,7 @@ function Edit(props) {
           await saveTableEntity(table.table_id);
         }
       } finally {
-        await (0,_summary_table_refresh__WEBPACK_IMPORTED_MODULE_25__.runSummaryTableRefresh)({
+        await (0,_summary_table_refresh__WEBPACK_IMPORTED_MODULE_21__.runSummaryTableRefresh)({
           refreshSummaryTables,
           createNotice,
           showErrorNotice: true
@@ -10069,7 +11075,7 @@ function Edit(props) {
       }
     };
     void finalizePostSaveTableChanges().catch(error => {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_24__.showMessageNotice)(createNotice, 'post-save-sync-error');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_20__.showMessageNotice)(createNotice, 'post-save-sync-error');
     });
   }, [didJustFinishPostSave, deletedTables, tableLoaded, table.table_id, table.table_status, tableHasPendingEntityEdits, refreshSummaryTables, createNotice, updateTableEntity]);
 
@@ -10201,7 +11207,7 @@ function Edit(props) {
     if (locked) {
       return;
     }
-    const cloneBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.generateBlockTableRef)();
+    const cloneBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.generateBlockTableRef)();
     props.setAttributes({
       block_table_ref: cloneBlockTableRef
     });
@@ -10246,7 +11252,7 @@ function Edit(props) {
     if (Number(table.post_id) !== 0) return;
     setTableAttributes(table.table_id, 'post_id', '', 'PROP', String(props.context.postId), true, 'ignore');
     void saveTableEntity(table.table_id).catch(error => {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_24__.showMessageNotice)(createNotice, 'post-id-sync-error');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_20__.showMessageNotice)(createNotice, 'post-id-sync-error');
     });
   }, [tableHasStartedResolving, tableHasFinishedResolving, isAwaitingTableAttachment, props.context.postId, table.table_id, table.post_id]);
 
@@ -10325,7 +11331,7 @@ function Edit(props) {
       // Persist the table with its "unknown" status
       void saveTableEntity(tableId).catch(error => {
         console.error('Error saving Dynamic Table state during unmount cleanup', error);
-        (0,_messages__WEBPACK_IMPORTED_MODULE_24__.showMessageNotice)(createNotice, 'unmount-save-error');
+        (0,_messages__WEBPACK_IMPORTED_MODULE_20__.showMessageNotice)(createNotice, 'unmount-save-error');
       });
     };
   }, []);
@@ -10388,7 +11394,7 @@ function Edit(props) {
         column_id,
         attributes
       }) => {
-        map[column_id] = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.normalizeColumnDataType)(attributes?.columnDataType);
+        map[column_id] = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.normalizeColumnDataType)(attributes?.columnDataType);
       });
     }
     return map;
@@ -10427,16 +11433,16 @@ function Edit(props) {
    */
   function insertColumn(tableId, columnId, direction) {
     const newColumnId = direction === 'right' ? Number(columnId) + 1 : Number(columnId);
-    const newColumn = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_27__.getDefaultColumn)(tableId, newColumnId);
-    const newColumnLabel = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.numberToLetter)(newColumnId);
+    const newColumn = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_23__.getDefaultColumn)(tableId, newColumnId);
+    const newColumnLabel = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.numberToLetter)(newColumnId);
     const tableCells = table.rows.map(({
       row_id
-    }) => Number(row_id)).filter(rowId => Number.isFinite(rowId)).sort((a, b) => a - b).map(rowId => rowId === 0 ? (0,_table_defaults__WEBPACK_IMPORTED_MODULE_27__.getDefaultCell)(tableId, newColumnId, rowId, 'Border') : (0,_table_defaults__WEBPACK_IMPORTED_MODULE_27__.getDefaultCell)(tableId, newColumnId, rowId));
+    }) => Number(row_id)).filter(rowId => Number.isFinite(rowId)).sort((a, b) => a - b).map(rowId => rowId === 0 ? (0,_table_defaults__WEBPACK_IMPORTED_MODULE_23__.getDefaultCell)(tableId, newColumnId, rowId, 'Border') : (0,_table_defaults__WEBPACK_IMPORTED_MODULE_23__.getDefaultCell)(tableId, newColumnId, rowId));
     addColumn(tableId, columnId, direction, newColumn, tableCells);
     setTableStale(false);
 
     // Accessibility announcement
-    (0,_messages__WEBPACK_IMPORTED_MODULE_24__.speakMessage)(direction === 'right' ? 'column-inserted-right' : 'column-inserted-left', {
+    (0,_messages__WEBPACK_IMPORTED_MODULE_20__.speakMessage)(direction === 'right' ? 'column-inserted-right' : 'column-inserted-left', {
       args: {
         columnLabel: newColumnLabel
       }
@@ -10457,15 +11463,15 @@ function Edit(props) {
    */
   function insertRow(tableId, rowId, direction) {
     const newRowId = direction === 'below' ? Number(rowId) + 1 : Number(rowId);
-    const newRow = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_27__.getDefaultRow)(tableId, newRowId);
+    const newRow = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_23__.getDefaultRow)(tableId, newRowId);
     const tableCells = table.columns.map(({
       column_id
-    }) => Number(column_id)).filter(columnId => Number.isFinite(columnId)).sort((a, b) => a - b).map(columnId => columnId === 0 ? (0,_table_defaults__WEBPACK_IMPORTED_MODULE_27__.getDefaultCell)(tableId, columnId, newRowId, 'Border') : (0,_table_defaults__WEBPACK_IMPORTED_MODULE_27__.getDefaultCell)(tableId, columnId, newRowId));
+    }) => Number(column_id)).filter(columnId => Number.isFinite(columnId)).sort((a, b) => a - b).map(columnId => columnId === 0 ? (0,_table_defaults__WEBPACK_IMPORTED_MODULE_23__.getDefaultCell)(tableId, columnId, newRowId, 'Border') : (0,_table_defaults__WEBPACK_IMPORTED_MODULE_23__.getDefaultCell)(tableId, columnId, newRowId));
     addRow(tableId, rowId, direction, newRow, tableCells);
     setTableStale(false);
 
     // Accessibility announcement
-    (0,_messages__WEBPACK_IMPORTED_MODULE_24__.speakMessage)(direction === 'below' ? 'row-inserted-below' : 'row-inserted-above', {
+    (0,_messages__WEBPACK_IMPORTED_MODULE_20__.speakMessage)(direction === 'below' ? 'row-inserted-below' : 'row-inserted-above', {
       args: {
         rowNumber: newRowId
       }
@@ -10485,9 +11491,9 @@ function Edit(props) {
     setTableStale(false);
 
     // Accessibility announcement
-    (0,_messages__WEBPACK_IMPORTED_MODULE_24__.speakMessage)('column-deleted', {
+    (0,_messages__WEBPACK_IMPORTED_MODULE_20__.speakMessage)('column-deleted', {
       args: {
-        columnLabel: (0,_utils__WEBPACK_IMPORTED_MODULE_26__.numberToLetter)(Number(columnId))
+        columnLabel: (0,_utils__WEBPACK_IMPORTED_MODULE_22__.numberToLetter)(Number(columnId))
       }
     });
     return updateTableEntity(tableId);
@@ -10507,7 +11513,7 @@ function Edit(props) {
     setTableStale(false);
 
     // Accessibility announcement
-    (0,_messages__WEBPACK_IMPORTED_MODULE_24__.speakMessage)('row-deleted', {
+    (0,_messages__WEBPACK_IMPORTED_MODULE_20__.speakMessage)('row-deleted', {
       args: {
         rowNumber: Number(rowId)
       }
@@ -10530,9 +11536,9 @@ function Edit(props) {
     setTableStale(false);
 
     // Accessibility announcement
-    (0,_messages__WEBPACK_IMPORTED_MODULE_24__.speakMessage)(direction === 'right' ? 'column-moved-right' : 'column-moved-left', {
+    (0,_messages__WEBPACK_IMPORTED_MODULE_20__.speakMessage)(direction === 'right' ? 'column-moved-right' : 'column-moved-left', {
       args: {
-        columnLabel: (0,_utils__WEBPACK_IMPORTED_MODULE_26__.numberToLetter)(Number(columnId))
+        columnLabel: (0,_utils__WEBPACK_IMPORTED_MODULE_22__.numberToLetter)(Number(columnId))
       }
     });
     return updateTableEntity(tableId);
@@ -10553,7 +11559,7 @@ function Edit(props) {
     setTableStale(false);
 
     // Accessibility announcement
-    (0,_messages__WEBPACK_IMPORTED_MODULE_24__.speakMessage)(direction === 'down' ? 'row-moved-down' : 'row-moved-up', {
+    (0,_messages__WEBPACK_IMPORTED_MODULE_20__.speakMessage)(direction === 'down' ? 'row-moved-down' : 'row-moved-up', {
       args: {
         rowNumber: Number(rowId)
       }
@@ -10641,7 +11647,7 @@ function Edit(props) {
    * @param {boolean} isChecked Are borders being toggled on?
    */
   function onToggleBorders(table, isChecked) {
-    const updatedTable = (0,_data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_22__.withTableBorders)(table, isChecked);
+    const updatedTable = (0,_data_table_entity_adapter__WEBPACK_IMPORTED_MODULE_18__.withTableBorders)(table, isChecked);
     updateTableBorder(table.table_id, updatedTable.rows, updatedTable.columns, updatedTable.cells);
     setShowBorders(isChecked);
     setTableStale(false);
@@ -10662,8 +11668,8 @@ function Edit(props) {
    */
   function createTable(columnCount, rowCount, tableName, columns) {
     setTableStale(false);
-    const newBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.generateBlockTableRef)();
-    const newTable = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_27__.initTable)(newBlockTableRef, columnCount, rowCount, tableName, columns);
+    const newBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.generateBlockTableRef)();
+    const newTable = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_23__.initTable)(newBlockTableRef, columnCount, rowCount, tableName, columns);
     props.setAttributes({
       block_table_ref: newBlockTableRef
     });
@@ -10705,7 +11711,7 @@ function Edit(props) {
     if (!tableRequest.tableId || requestedTableIsResolving) {
       return;
     }
-    const nextBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.generateBlockTableRef)();
+    const nextBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.generateBlockTableRef)();
     setTableOperation({
       kind: 'attaching',
       blockTableRef: nextBlockTableRef,
@@ -10752,8 +11758,8 @@ function Edit(props) {
     if (!props.clientId || !isNewBlock) {
       return;
     }
-    ;(0,_messages__WEBPACK_IMPORTED_MODULE_24__.removeMessageNotice)(removeNotice, 'invalid-num-columns');
-    (0,_messages__WEBPACK_IMPORTED_MODULE_24__.removeMessageNotice)(removeNotice, 'invalid-num-rows');
+    ;(0,_messages__WEBPACK_IMPORTED_MODULE_20__.removeMessageNotice)(removeNotice, 'invalid-num-columns');
+    (0,_messages__WEBPACK_IMPORTED_MODULE_20__.removeMessageNotice)(removeNotice, 'invalid-num-rows');
     const blockEditorDispatch = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.dispatch)('core/block-editor');
     if (typeof blockEditorDispatch?.removeBlock !== 'function') {
       return;
@@ -10807,14 +11813,14 @@ function Edit(props) {
   function onChangeInitialColumnCount(num_columns) {
     let newNumColumns = num_columns;
     if (!Number.isInteger(num_columns) || num_columns < 1 || num_columns > 50) {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_24__.showMessageNotice)(createNotice, 'invalid-num-columns', {
+      (0,_messages__WEBPACK_IMPORTED_MODULE_20__.showMessageNotice)(createNotice, 'invalid-num-columns', {
         args: {
           count: num_columns
         }
       });
       newNumColumns = Number(createDraftTable.numColumns);
     } else {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_24__.removeMessageNotice)(removeNotice, 'invalid-num-columns');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_20__.removeMessageNotice)(removeNotice, 'invalid-num-columns');
     }
     const priorColumns = createDraftTable.columns;
     const priorColumnCount = priorColumns.length;
@@ -10850,14 +11856,14 @@ function Edit(props) {
   function onChangeInitialRowCount(num_rows) {
     let newNumRows = num_rows;
     if (!Number.isInteger(num_rows) || num_rows < 1 || num_rows > 1000) {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_24__.showMessageNotice)(createNotice, 'invalid-num-rows', {
+      (0,_messages__WEBPACK_IMPORTED_MODULE_20__.showMessageNotice)(createNotice, 'invalid-num-rows', {
         args: {
           count: num_rows
         }
       });
       newNumRows = Number(createDraftTable.numRows);
     } else {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_24__.removeMessageNotice)(removeNotice, 'invalid-num-rows');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_20__.removeMessageNotice)(removeNotice, 'invalid-num-rows');
     }
     setCreateDraftTable(prev => ({
       ...prev,
@@ -10896,7 +11902,7 @@ function Edit(props) {
   function onGridFocusCapture(event) {
     if (!hasAnnouncedGridHelpRef.current) {
       hasAnnouncedGridHelpRef.current = true;
-      (0,_messages__WEBPACK_IMPORTED_MODULE_24__.speakMessage)('editor-grid-help');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_20__.speakMessage)('editor-grid-help');
     }
     const el = event.target.closest?.('[data-cell-id]');
     if (!el) return;
@@ -11595,7 +12601,7 @@ function Edit(props) {
     const {
       column_id,
       row_id
-    } = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.getCellIdCoordinates)(cellId);
+    } = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.getCellIdCoordinates)(cellId);
     switch (updateType) {
       case 'copyCell':
       case 'cutCell':
@@ -11670,7 +12676,7 @@ function Edit(props) {
     const {
       column_id,
       row_id
-    } = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.getCellIdCoordinates)(cellId);
+    } = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.getCellIdCoordinates)(cellId);
     const cellData = table.cells.find(c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id));
     if (cellData) {
       const columnDataTypeObject = getClipboardDataType(column_id, row_id);
@@ -11683,7 +12689,7 @@ function Edit(props) {
       const {
         formattedText,
         plainText
-      } = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.formatClipboardContent)(cellContent, cellValueAttr, columnDataTypeSettings);
+      } = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.formatClipboardContent)(cellContent, cellValueAttr, columnDataTypeSettings);
       const clipboardPayload = {
         inUse: true,
         clipboardAction: updateType === 'copyCell' ? 'copy' : 'cut',
@@ -11701,7 +12707,7 @@ function Edit(props) {
       setCellClipboard({
         ...clipboardPayload
       });
-      (0,_messages__WEBPACK_IMPORTED_MODULE_24__.speakMessage)(updateType === 'cutCell' ? 'cell-cut' : 'cell-copied');
+      (0,_messages__WEBPACK_IMPORTED_MODULE_20__.speakMessage)(updateType === 'cutCell' ? 'cell-cut' : 'cell-copied');
       copyCellToSystemClipboard(formattedText, plainText);
     }
   }
@@ -11718,7 +12724,7 @@ function Edit(props) {
     const {
       column_id,
       row_id
-    } = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.getCellIdCoordinates)(cellId);
+    } = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.getCellIdCoordinates)(cellId);
     const {
       inUse,
       clipboardAction,
@@ -11744,7 +12750,7 @@ function Edit(props) {
       updatedCellValueAttr: cellValueAttr
     };
     if (!matchedDataTypes) {
-      convertedCellContent = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.coerceCellData)(cellContent, cellValueAttr, currentColumnDataTypeObject, columnDataType, cellFormattedText);
+      convertedCellContent = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.coerceCellData)(cellContent, cellValueAttr, currentColumnDataTypeObject, columnDataType, cellFormattedText);
     }
     const {
       incompatibleDataTypes,
@@ -11752,8 +12758,8 @@ function Edit(props) {
       updatedCellValueAttr
     } = convertedCellContent;
     if (incompatibleDataTypes) {
-      (0,_messages__WEBPACK_IMPORTED_MODULE_24__.publishMessage)(createNotice, 'paste-content-type-mismatch', {
-        target: _messages__WEBPACK_IMPORTED_MODULE_24__.MESSAGE_TARGETS.STORE_SNACKBAR,
+      (0,_messages__WEBPACK_IMPORTED_MODULE_20__.publishMessage)(createNotice, 'paste-content-type-mismatch', {
+        target: _messages__WEBPACK_IMPORTED_MODULE_20__.MESSAGE_TARGETS.STORE_SNACKBAR,
         announceMode: 'manual'
       });
       return;
@@ -11770,7 +12776,7 @@ function Edit(props) {
       resetCellClipboard();
     }
     updateTableEntity(table_id);
-    (0,_messages__WEBPACK_IMPORTED_MODULE_24__.speakMessage)('cell-pasted');
+    (0,_messages__WEBPACK_IMPORTED_MODULE_20__.speakMessage)('cell-pasted');
   }
 
   /**
@@ -11888,7 +12894,7 @@ function Edit(props) {
       }
       const clickedColumn = table.columns.find(c => String(c.column_id) === String(column_id));
       const attrs = clickedColumn?.attributes || {};
-      const columnLabel = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.numberToLetter)(Number(column_id));
+      const columnLabel = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.numberToLetter)(Number(column_id));
       openColumnMenu(e, String(column_id), columnLabel, attrs);
     }
     if (Number(row_id) !== 0 && Number(column_id) === 0) {
@@ -11902,7 +12908,7 @@ function Edit(props) {
     if (Number(row_id) !== 0 && Number(column_id) !== 0) {
       const clickedCell = table?.cells?.find(c => Number(c.row_id) === Number(row_id) && Number(c.column_id) === Number(column_id));
       const relatedRow = table?.rows?.find(r => Number(r.row_id) === Number(row_id));
-      const cellId = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.numberToLetter)(Number(column_id)) + row_id;
+      const cellId = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.numberToLetter)(Number(column_id)) + row_id;
       if (isContentOnlyMode) {
         return;
       }
@@ -11931,7 +12937,7 @@ function Edit(props) {
     setTableAttributes(table.table_id, 'table', '', 'ATTRIBUTES', updatedTableAttributes);
 
     // Accessibility announcement
-    (0,_messages__WEBPACK_IMPORTED_MODULE_24__.speakMessage)(isChecked ? 'table-title-hidden' : 'table-title-shown');
+    (0,_messages__WEBPACK_IMPORTED_MODULE_20__.speakMessage)(isChecked ? 'table-title-hidden' : 'table-title-shown');
   }
 
   /**
@@ -12201,78 +13207,78 @@ function Edit(props) {
   /**
    * Set variables used to render the dynamic table
    */
-  const gridColumnStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.processColumns)(isNewBlock, tableIsResolving, enableFutureFeatures, table.columns);
-  const gridHeaderRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.processHeaderRow)(isNewBlock, tableIsResolving, table.rows);
-  const gridBodyRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.processBodyRows)(isNewBlock, tableIsResolving, table.rows);
+  const gridColumnStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.processColumns)(isNewBlock, tableIsResolving, enableFutureFeatures, table.columns);
+  const gridHeaderRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.processHeaderRow)(isNewBlock, tableIsResolving, table.rows);
+  const gridBodyRowStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.processBodyRows)(isNewBlock, tableIsResolving, table.rows);
   const startGridHeaderRowNbrStyle = showBorders ? 2 : 1;
-  const endGridHeaderRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.endGridRowNbr)(1, 'Header', liveNumRows, enableHeaderRow, showBorders, false);
-  const startGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.startGridRowNbr)(enableHeaderRow, showBorders);
-  const endGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.endGridRowNbr)(startGridBodyRowNbrStyle, 'Body', liveNumRows, enableHeaderRow, showBorders, false);
+  const endGridHeaderRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.endGridRowNbr)(1, 'Header', liveNumRows, enableHeaderRow, showBorders, false);
+  const startGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.startGridRowNbr)(enableHeaderRow, showBorders);
+  const endGridBodyRowNbrStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.endGridRowNbr)(startGridBodyRowNbrStyle, 'Body', liveNumRows, enableHeaderRow, showBorders, false);
   const horizontalScrollStyle = allowHorizontalScroll ? 'auto' : 'hidden';
-  const gridBandedRowTextColor = (0,_style__WEBPACK_IMPORTED_MODULE_28__.gridBandedRowTextColorStyle)(isNewBlock, tableIsResolving, bandedTextColor);
-  const gridBandedRowBackgroundColor = (0,_style__WEBPACK_IMPORTED_MODULE_28__.gridBandedRowBackgroundColorStyle)(isNewBlock, tableIsResolving, bandedRowBackgroundColor);
-  const gridShowInnerLines = (0,_style__WEBPACK_IMPORTED_MODULE_28__.gridInnerBorderStyle)(isNewBlock, tableIsResolving, showGridLines);
-  const gridInnerLineWidth = (0,_style__WEBPACK_IMPORTED_MODULE_28__.gridInnerBorderWidthStyle)(isNewBlock, tableIsResolving, showGridLines, gridLineWidth);
+  const gridBandedRowTextColor = (0,_style__WEBPACK_IMPORTED_MODULE_24__.gridBandedRowTextColorStyle)(isNewBlock, tableIsResolving, bandedTextColor);
+  const gridBandedRowBackgroundColor = (0,_style__WEBPACK_IMPORTED_MODULE_24__.gridBandedRowBackgroundColorStyle)(isNewBlock, tableIsResolving, bandedRowBackgroundColor);
+  const gridShowInnerLines = (0,_style__WEBPACK_IMPORTED_MODULE_24__.gridInnerBorderStyle)(isNewBlock, tableIsResolving, showGridLines);
+  const gridInnerLineWidth = (0,_style__WEBPACK_IMPORTED_MODULE_24__.gridInnerBorderWidthStyle)(isNewBlock, tableIsResolving, showGridLines, gridLineWidth);
   const headerRowStickyStyle = headerRowSticky ? 'auto' : 'hidden';
   const headerRowStickyClass = headerRowSticky ? 'grid-control__header--sticky ' : '';
-  const gridHeaderBackgroundColorStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getGridHeaderBackgroundColorStyle)(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor);
+  const gridHeaderBackgroundColorStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getGridHeaderBackgroundColorStyle)(isNewBlock, tableIsResolving, gridHeaderBackgroundColor, blockProps.style.backgroundColor);
 
   /**
    * Header Styling
    */
-  const headerTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, headerAlignment);
-  const headerBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyleType)(headerBorder);
+  const headerTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, headerAlignment);
+  const headerBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyleType)(headerBorder);
 
   // Top header border
-  const headerBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(headerBorder, 'top', 'color', headerBorderStyleType);
-  const headerBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(headerBorder, 'top', 'style', headerBorderStyleType);
-  const headerBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(headerBorder, 'top', 'width', headerBorderStyleType);
+  const headerBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(headerBorder, 'top', 'color', headerBorderStyleType);
+  const headerBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(headerBorder, 'top', 'style', headerBorderStyleType);
+  const headerBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(headerBorder, 'top', 'width', headerBorderStyleType);
 
   // Right header border
-  const headerBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(headerBorder, 'right', 'color', headerBorderStyleType);
-  const headerBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(headerBorder, 'right', 'style', headerBorderStyleType);
-  const headerBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(headerBorder, 'right', 'width', headerBorderStyleType);
+  const headerBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(headerBorder, 'right', 'color', headerBorderStyleType);
+  const headerBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(headerBorder, 'right', 'style', headerBorderStyleType);
+  const headerBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(headerBorder, 'right', 'width', headerBorderStyleType);
 
   // Bottom header border
-  const headerBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(headerBorder, 'bottom', 'color', headerBorderStyleType);
-  const headerBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(headerBorder, 'bottom', 'style', headerBorderStyleType);
-  const headerBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(headerBorder, 'bottom', 'width', headerBorderStyleType);
+  const headerBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(headerBorder, 'bottom', 'color', headerBorderStyleType);
+  const headerBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(headerBorder, 'bottom', 'style', headerBorderStyleType);
+  const headerBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(headerBorder, 'bottom', 'width', headerBorderStyleType);
 
   // Left header border
-  const headerBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(headerBorder, 'left', 'color', headerBorderStyleType);
-  const headerBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(headerBorder, 'left', 'style', headerBorderStyleType);
-  const headerBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(headerBorder, 'left', 'width', headerBorderStyleType);
+  const headerBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(headerBorder, 'left', 'color', headerBorderStyleType);
+  const headerBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(headerBorder, 'left', 'style', headerBorderStyleType);
+  const headerBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(headerBorder, 'left', 'width', headerBorderStyleType);
 
   /**
    * Body Styling
    */
-  const bodyTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, bodyAlignment);
-  const bodyBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyleType)(bodyBorder);
+  const bodyTextAlignmentStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getHeaderTextAlignmentStyle)(isNewBlock, tableIsResolving, bodyAlignment);
+  const bodyBorderStyleType = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyleType)(bodyBorder);
   // Top body border
-  const bodyBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(bodyBorder, 'top', 'color', bodyBorderStyleType);
-  const bodyBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(bodyBorder, 'top', 'style', bodyBorderStyleType);
-  const bodyBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(bodyBorder, 'top', 'width', bodyBorderStyleType);
+  const bodyBorderTopColor = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(bodyBorder, 'top', 'color', bodyBorderStyleType);
+  const bodyBorderTopStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(bodyBorder, 'top', 'style', bodyBorderStyleType);
+  const bodyBorderTopWidth = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(bodyBorder, 'top', 'width', bodyBorderStyleType);
 
   // Right body border
-  const bodyBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(bodyBorder, 'right', 'color', bodyBorderStyleType);
-  const bodyBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(bodyBorder, 'right', 'style', bodyBorderStyleType);
-  const bodyBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(bodyBorder, 'right', 'width', bodyBorderStyleType);
+  const bodyBorderRightColor = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(bodyBorder, 'right', 'color', bodyBorderStyleType);
+  const bodyBorderRightStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(bodyBorder, 'right', 'style', bodyBorderStyleType);
+  const bodyBorderRightWidth = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(bodyBorder, 'right', 'width', bodyBorderStyleType);
 
   // Bottom body border
-  const bodyBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(bodyBorder, 'bottom', 'color', bodyBorderStyleType);
-  const bodyBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(bodyBorder, 'bottom', 'style', bodyBorderStyleType);
-  const bodyBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(bodyBorder, 'bottom', 'width', bodyBorderStyleType);
+  const bodyBorderBottomColor = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(bodyBorder, 'bottom', 'color', bodyBorderStyleType);
+  const bodyBorderBottomStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(bodyBorder, 'bottom', 'style', bodyBorderStyleType);
+  const bodyBorderBottomWidth = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(bodyBorder, 'bottom', 'width', bodyBorderStyleType);
 
   // Left body border
-  const bodyBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(bodyBorder, 'left', 'color', bodyBorderStyleType);
-  const bodyBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(bodyBorder, 'left', 'style', bodyBorderStyleType);
-  const bodyBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_28__.getBorderStyle)(bodyBorder, 'left', 'width', bodyBorderStyleType);
+  const bodyBorderLeftColor = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(bodyBorder, 'left', 'color', bodyBorderStyleType);
+  const bodyBorderLeftStyle = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(bodyBorder, 'left', 'style', bodyBorderStyleType);
+  const bodyBorderLeftWidth = (0,_style__WEBPACK_IMPORTED_MODULE_24__.getBorderStyle)(bodyBorder, 'left', 'width', bodyBorderStyleType);
 
   // Accessibility support
-  const editorGridTitleText = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.htmlToIndexText)(table?.table_name || '').trim();
+  const editorGridTitleText = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.htmlToIndexText)(table?.table_name || '').trim();
   const editorGridAccessibleName = editorGridTitleText || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Dynamic table');
   const editorGridLabelledBy = !hideTitle && editorGridTitleText ? editorTitleTagId : undefined;
-  const editorGridHelpText = (0,_messages__WEBPACK_IMPORTED_MODULE_24__.getMessageText)('editor-grid-help');
+  const editorGridHelpText = (0,_messages__WEBPACK_IMPORTED_MODULE_20__.getMessageText)('editor-grid-help');
 
   // Create table settings
   const createTableDisabled = tableCreationMethod === 'choose' || isAwaitingTableAttachment || tableCreationMethod === 'existing-table' && (!tableRequest.tableId || requestedTableIsResolving);
@@ -12282,8 +13288,8 @@ function Edit(props) {
    *
    * @since 1.2.0
    */
-  const renderRowMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.Fragment, {
-    children: rowMenu.isOpen && rowMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_components__WEBPACK_IMPORTED_MODULE_29__.RowMenu, {
+  const renderRowMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.Fragment, {
+    children: rowMenu.isOpen && rowMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_components__WEBPACK_IMPORTED_MODULE_25__.RowMenu, {
       menuId: editorRowMenuTagId,
       anchor: rowMenu.anchorEl,
       table: table,
@@ -12301,8 +13307,8 @@ function Edit(props) {
    *
    * @since 1.2.0
    */
-  const renderRowHeightModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.Fragment, {
-    children: !isContentOnlyMode && rowHeightModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_components__WEBPACK_IMPORTED_MODULE_29__.RowHeightModal, {
+  const renderRowHeightModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.Fragment, {
+    children: !isContentOnlyMode && rowHeightModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_components__WEBPACK_IMPORTED_MODULE_25__.RowHeightModal, {
       tableId: table_id,
       rowId: rowHeightModal.rowId,
       rowLabel: rowHeightModal.rowLabel,
@@ -12317,8 +13323,8 @@ function Edit(props) {
    *
    * @since 1.2.0
    */
-  const renderColumnMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.Fragment, {
-    children: !isContentOnlyMode && columnMenu.isOpen && columnMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_components__WEBPACK_IMPORTED_MODULE_29__.ColumnMenu, {
+  const renderColumnMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.Fragment, {
+    children: !isContentOnlyMode && columnMenu.isOpen && columnMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_components__WEBPACK_IMPORTED_MODULE_25__.ColumnMenu, {
       menuId: editorColumnMenuTagId,
       anchor: columnMenu.anchorEl,
       table: table,
@@ -12335,8 +13341,8 @@ function Edit(props) {
    *
    * @since 1.2.0
    */
-  const renderColumnDataTypeModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.Fragment, {
-    children: !isContentOnlyMode && columnDataTypeModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_components__WEBPACK_IMPORTED_MODULE_29__.ColumnDataTypeModal, {
+  const renderColumnDataTypeModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.Fragment, {
+    children: !isContentOnlyMode && columnDataTypeModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_components__WEBPACK_IMPORTED_MODULE_25__.ColumnDataTypeModal, {
       tableId: table_id,
       columnId: columnDataTypeModal.columnId,
       columnLabel: columnDataTypeModal.columnLabel,
@@ -12353,8 +13359,8 @@ function Edit(props) {
    *
    * @since 1.2.0
    */
-  const renderColumnWidthModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.Fragment, {
-    children: !isContentOnlyMode && columnWidthModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_components__WEBPACK_IMPORTED_MODULE_29__.ColumnWidthModal, {
+  const renderColumnWidthModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.Fragment, {
+    children: !isContentOnlyMode && columnWidthModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_components__WEBPACK_IMPORTED_MODULE_25__.ColumnWidthModal, {
       tableId: table_id,
       columnId: columnWidthModal.columnId,
       columnLabel: columnWidthModal.columnLabel,
@@ -12370,8 +13376,8 @@ function Edit(props) {
    *
    * @since 1.3.1
    */
-  const renderCellMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.Fragment, {
-    children: !isContentOnlyMode && cellMenu.isOpen && cellMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_components__WEBPACK_IMPORTED_MODULE_29__.CellMenu, {
+  const renderCellMenu = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.Fragment, {
+    children: !isContentOnlyMode && cellMenu.isOpen && cellMenu.anchorEl && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_components__WEBPACK_IMPORTED_MODULE_25__.CellMenu, {
       menuId: editorCellMenuTagId,
       anchor: cellMenu.anchorEl,
       table: table,
@@ -12389,8 +13395,8 @@ function Edit(props) {
    *
    * @since 1.4.6
    */
-  const renderEditCellContentModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.Fragment, {
-    children: !isContentOnlyMode && editCellContentModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_components__WEBPACK_IMPORTED_MODULE_29__.EditCellContentModal, {
+  const renderEditCellContentModal = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.Fragment, {
+    children: !isContentOnlyMode && editCellContentModal.isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_components__WEBPACK_IMPORTED_MODULE_25__.EditCellContentModal, {
       tableId: table_id,
       cellId: editCellContentModal.cellId,
       cellContent: editCellContentModal.cellContent,
@@ -12410,46 +13416,46 @@ function Edit(props) {
    * @since 1.4.7 Add support to identify title element type
    * @since 1.4.10 Add support for wide display on a table
    */
-  const renderControls = !isContentOnlyMode && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.InspectorControls, {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Panel, {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
+  const renderControls = !isContentOnlyMode && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_14__.InspectorControls, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Panel, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
           title: "Definition",
           initialOpen: true,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("div", {
               className: "grid-control__inspector-controls--read-only",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("span", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("span", {
                 className: "grid-control__inspector-controls--read-only-label",
                 children: "Table Name:"
-              }), (0,_utils__WEBPACK_IMPORTED_MODULE_26__.htmlToIndexText)(table.table_name)]
+              }), (0,_utils__WEBPACK_IMPORTED_MODULE_22__.htmlToIndexText)(table.table_name)]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("div", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("div", {
               className: "grid-control__inspector-controls--read-only",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("span", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("span", {
                 className: "grid-control__inspector-controls--read-only-label",
                 children: "Table Columns/Rows:"
               }), liveNumColumns, "/", liveNumRows]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
               label: "Show table borders",
               __nextHasNoMarginBottom: true,
               checked: showBorders,
               onChange: e => onToggleBorders(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
               label: "Hide Table Title",
               __nextHasNoMarginBottom: true,
               checked: hideTitle,
               onChange: e => onHideTitle(table, e)
             })
-          }), !hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("div", {
+          }), !hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("div", {
               className: "dtbk-panel-indent-control",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CustomSelectControl, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CustomSelectControl, {
                 className: "dtbk-inspector-select-control dtbk-inspector-custom-select-control",
                 label: "Table Title Format",
                 __nextHasNoMarginBottom: true,
@@ -12466,16 +13472,16 @@ function Edit(props) {
               })
             })
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
           title: "Front End",
           initialOpen: false,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("div", {
               className: "dtbk-inspector-select-control",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("span", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("span", {
                 className: "dtbk-inspector-select-control__label",
                 children: "Front End Display Format"
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
                 label: "Front End Display Format",
                 hideLabelFromVision: true,
                 __nextHasNoMarginBottom: true,
@@ -12495,15 +13501,15 @@ function Edit(props) {
                 }]
               })]
             })
-          }), renderMode !== 'table' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("div", {
+          }), renderMode !== 'table' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("div", {
             className: "dtbk-panel-indent-control",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("div", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("div", {
                 className: "dtbk-inspector-select-control",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("span", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("span", {
                   className: "dtbk-inspector-select-control__label",
                   children: "Item Style"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
                   label: "Item Style",
                   hideLabelFromVision: true,
                   __nextHasNoMarginBottom: true,
@@ -12516,39 +13522,39 @@ function Edit(props) {
               })
             })
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
           title: "Table Header",
           initialOpen: false,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
               label: "First Row as Header?",
               __nextHasNoMarginBottom: true,
               checked: enableHeaderRow,
               onChange: e => onEnableHeaderRow(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
               label: "Freeze Header Row?",
               __nextHasNoMarginBottom: true,
               disabled: !enableHeaderRow,
               checked: headerRowSticky,
               onChange: e => onHeaderRowSticky(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("span", {
               className: "inspector-controls-menu__header-alignment--middle",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.AlignmentControl, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_14__.AlignmentControl, {
                 id: editorHeaderAlignmentTagId,
                 value: headerAlignment,
                 onChange: e => onAlignHeader(table, e)
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("label", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("label", {
                 className: "inspector-controls-nemu__label--left-margin",
                 htmlFor: editorHeaderAlignmentTagId,
                 children: "Text Alignment"
               })]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.BorderBoxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.BorderBoxControl, {
               className: "border-box-workaround",
               __experimentalIsRenderedInSidebar: true,
               label: "Borders",
@@ -12558,31 +13564,31 @@ function Edit(props) {
               onChange: e => onHeaderBorder(table, e)
             })
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
           title: "Table Body",
           initialOpen: false,
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
               label: "Allow Horizontal Scroll?",
               __nextHasNoMarginBottom: true,
               checked: allowHorizontalScroll,
               onChange: e => onAllowHorizontalScroll(table, e)
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("span", {
               className: "inspector-controls-menu__header-alignment--middle",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.AlignmentControl, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_14__.AlignmentControl, {
                 id: editorBodyAlignmentTagId,
                 value: bodyAlignment,
                 onChange: e => onAlignBody(table, e)
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("label", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("label", {
                 className: "inspector-controls-menu__label--left-margin",
                 htmlFor: editorBodyAlignmentTagId,
                 children: "Text Alignment"
               })]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.BorderBoxControl, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.BorderBoxControl, {
               className: "border-box-workaround",
               __experimentalIsRenderedInSidebar: true,
               label: "Borders",
@@ -12594,19 +13600,19 @@ function Edit(props) {
           })]
         })]
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.InspectorControls, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_14__.InspectorControls, {
       group: "styles",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
         title: "Banded Table Rows",
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
             label: "Display Banded Rows",
             __nextHasNoMarginBottom: true,
             checked: bandedRows,
             onChange: e => onShowBandedRows(table, e)
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.PanelColorSettings, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_14__.PanelColorSettings, {
           __experimentalIsRenderedInSidebar: true,
           title: 'Banded Row Color',
           colors: themeColors,
@@ -12620,18 +13626,18 @@ function Edit(props) {
             label: 'Background'
           }]
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelBody, {
         title: "Grid Lines",
         initialOpen: false,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.CheckboxControl, {
             label: "Display Inner Grid Lines",
             __nextHasNoMarginBottom: true,
             checked: showGridLines,
             onChange: e => onShowGridLines(table, e)
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalNumberControl, {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.__experimentalNumberControl, {
             label: "Inner Grid Line Width",
             value: gridLineWidth,
             labelPosition: "side",
@@ -12639,7 +13645,7 @@ function Edit(props) {
           })
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.InspectorControls, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_14__.InspectorControls, {
       group: "typography"
     })]
   });
@@ -12649,7 +13655,7 @@ function Edit(props) {
    *
    * @since 1.4.7
    */
-  const renderElementStyleRefs = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("div", {
+  const renderElementStyleRefs = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("div", {
     "aria-hidden": "true",
     style: {
       position: 'absolute',
@@ -12659,31 +13665,31 @@ function Edit(props) {
       clipPath: 'inset(50%)',
       whiteSpace: 'nowrap'
     },
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("h1", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("h1", {
       ref: h1Ref
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("h2", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("h2", {
       ref: h2Ref
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("h3", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("h3", {
       ref: h3Ref
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("h4", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("h4", {
       ref: h4Ref
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("h5", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("h5", {
       ref: h5Ref
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("h6", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("h6", {
       ref: h6Ref
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("p", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("p", {
       ref: paragraphRef
     })]
   });
   const tableCreationMethodLabel = tableCreationMethod === 'new' ? 'New' : 'Existing';
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("div", {
     ...blockProps,
-    children: [renderElementStyleRefs, !isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.Fragment, {
-      children: [renderRowMenu, renderRowHeightModal, renderColumnMenu, renderColumnDataTypeModal, renderColumnWidthModal, renderCellMenu, renderEditCellContentModal, renderControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("div", {
+    children: [renderElementStyleRefs, !isNewBlock && !tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.Fragment, {
+      children: [renderRowMenu, renderRowHeightModal, renderColumnMenu, renderColumnDataTypeModal, renderColumnWidthModal, renderCellMenu, renderEditCellContentModal, renderControls, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("div", {
         style: {
           display: 'block'
         },
-        children: [!hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.RichText, {
+        children: [!hideTitle && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_14__.RichText, {
           id: editorTitleTagId,
           className: "dtbk-table-title",
           style: {
@@ -12703,11 +13709,11 @@ function Edit(props) {
             cacheUndoEdits.current = false;
           },
           value: table.table_name
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("p", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("p", {
           id: editorGridHelpTagId,
           className: "screen-reader-text",
           children: editorGridHelpText
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("div", {
           id: editorGridTagId,
           role: "grid",
           "aria-rowcount": Number(navMaxRow),
@@ -12720,12 +13726,12 @@ function Edit(props) {
           ,
           onFocusCapture: onGridFocusCapture,
           tabIndex: 0,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("div", {
             className: "grid-scroller",
             style: {
               '--headerRowSticky': headerRowStickyStyle
             },
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("div", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("div", {
               className: 'grid-control ' + headerRowStickyClass,
               style: {
                 '--gridTemplateColumns': gridColumnStyle,
@@ -12735,7 +13741,7 @@ function Edit(props) {
                 '--gridNumRows': liveNumRows,
                 '--gridAlignment': gridAlignment
               },
-              children: [showBorders && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("div", {
+              children: [showBorders && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("div", {
                 className: 'grid-control__border',
                 role: "presentation",
                 children: table.cells.filter(cell => cell.attributes.border && cell.row_id === '0').map(({
@@ -12747,12 +13753,12 @@ function Edit(props) {
                   attributes,
                   classes
                 }) => {
-                  const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.setBorderContent)(row_id, column_id, content);
+                  const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.setBorderContent)(row_id, column_id, content);
                   const isFirstColumn = column_id === '1' ? true : false;
-                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
-                    children: [isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("div", {
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+                    children: [isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("div", {
                       className: 'grid-control__border-cells'
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_components__WEBPACK_IMPORTED_MODULE_29__.Cell, {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_components__WEBPACK_IMPORTED_MODULE_25__.Cell, {
                       cellType: "border",
                       isContentOnlyMode: isContentOnlyMode,
                       dataFormat: columnDataTypes[column_id],
@@ -12764,7 +13770,7 @@ function Edit(props) {
                       cellBaseClasses: classes,
                       cellClassNames: classes,
                       borderHandleProps: {
-                        ariaLabel: `Column ${(0,_utils__WEBPACK_IMPORTED_MODULE_26__.numberToLetter)(Number(column_id))} options`,
+                        ariaLabel: `Column ${(0,_utils__WEBPACK_IMPORTED_MODULE_22__.numberToLetter)(Number(column_id))} options`,
                         controls: editorColumnMenuTagId,
                         expanded: columnMenu.isOpen && String(columnMenu.columnId) === String(column_id)
                       },
@@ -12776,7 +13782,7 @@ function Edit(props) {
                 row_id
               }) => {
                 const renderedRow = row_id;
-                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("div", {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("div", {
                   className: "grid-control__header",
                   role: "row",
                   "aria-rowindex": Number(row_id),
@@ -12810,7 +13816,7 @@ function Edit(props) {
                     let calculatedClasses = '';
                     const isFirstColumn = column_id === '1' ? true : false;
                     const isBorder = attributes.border;
-                    const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.setBorderContent)(row_id, column_id, content);
+                    const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.setBorderContent)(row_id, column_id, content);
                     const showGridLinesCSS = gridShowInnerLines;
                     const gridLineWidthCSS = gridInnerLineWidth;
                     const isClipboard = cellClipboard.inUse && cellClipboard.columnId === Number(column_id) && cellClipboard.rowId === Number(row_id);
@@ -12823,10 +13829,10 @@ function Edit(props) {
                       // Show distinct border when cell has focus
                       calculatedClasses = calculatedClasses + 'grid-control__body-cells--focused ';
                     }
-                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
-                      children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("div", {
+                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+                      children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("div", {
                         className: 'grid-control__border-cells'
-                      }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_components__WEBPACK_IMPORTED_MODULE_29__.Cell, {
+                      }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_components__WEBPACK_IMPORTED_MODULE_25__.Cell, {
                         cellType: "border",
                         isContentOnlyMode: isContentOnlyMode,
                         dataFormat: columnDataTypes[column_id],
@@ -12843,13 +13849,13 @@ function Edit(props) {
                           expanded: rowMenu.isOpen && String(rowMenu.rowId) === String(row_id)
                         },
                         onMouseDown: onMouseMenuClick
-                      }), isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("div", {
+                      }), isFirstColumn && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("div", {
                         className: 'grid-control__header-cells',
                         style: {
                           '--showGridLines': showGridLinesCSS,
                           '--gridLineWidth': gridLineWidthCSS
                         }
-                      }), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_components__WEBPACK_IMPORTED_MODULE_29__.Cell, {
+                      }), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_components__WEBPACK_IMPORTED_MODULE_25__.Cell, {
                         cellType: 'header',
                         dataFormat: columnDataTypes[column_id],
                         cell_id: cell_id,
@@ -12900,7 +13906,7 @@ function Edit(props) {
                     }, `header-cell:${cell_id}`);
                   })
                 }, `header-row:${row_id}`);
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("div", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("div", {
                 className: 'grid-control__body',
                 role: "rowgroup",
                 style: {
@@ -12937,7 +13943,7 @@ function Edit(props) {
                   if (bandedRows && bandedRowOffset == 1 && Number(row_id) > 1 && (Number(row_id) + bandedRowOffset) % 2 === 0) {
                     calculatedClasses = calculatedClasses + 'grid-control__body-rows--banded-row ';
                   }
-                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("div", {
+                  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("div", {
                     className: 'grid-control__body-row ' + calculatedClasses,
                     role: "row",
                     "aria-rowindex": Number(row_id),
@@ -12960,7 +13966,7 @@ function Edit(props) {
                       let calculatedClasses = '';
                       const isFirstColumn = column_id === '1' ? true : false;
                       const isBorder = attributes?.border;
-                      const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_26__.setBorderContent)(row_id, column_id, content);
+                      const borderContent = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.setBorderContent)(row_id, column_id, content);
                       const showGridLinesCSS = gridShowInnerLines;
                       const gridLineWidthCSS = gridInnerLineWidth;
                       const isClipboard = cellClipboard.inUse && cellClipboard.columnId === Number(column_id) && cellClipboard.rowId === Number(row_id);
@@ -12973,10 +13979,10 @@ function Edit(props) {
                         // Show distinct border when cell has focus
                         calculatedClasses = calculatedClasses + 'grid-control__body-cells--focused ';
                       }
-                      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
-                        children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("div", {
+                      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+                        children: [isFirstColumn && isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("div", {
                           className: 'grid-control__border-cells'
-                        }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_components__WEBPACK_IMPORTED_MODULE_29__.Cell, {
+                        }), isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_components__WEBPACK_IMPORTED_MODULE_25__.Cell, {
                           cellType: "border",
                           isContentOnlyMode: isContentOnlyMode,
                           dataFormat: columnDataTypes[column_id],
@@ -12993,7 +13999,7 @@ function Edit(props) {
                             expanded: rowMenu.isOpen && String(rowMenu.rowId) === String(row_id)
                           },
                           onMouseDown: onMouseMenuClick
-                        }), isFirstColumn && !isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("div", {
+                        }), isFirstColumn && !isBorder && enableFutureFeatures && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("div", {
                           className: 'grid-control__body-cells grid-control__body-cells--zoom',
                           style: {
                             '--showGridLines': showGridLinesCSS,
@@ -13002,11 +14008,11 @@ function Edit(props) {
                           "data-col": Number(column_id),
                           "data-row": Number(row_id),
                           tabIndex: isFocused ? 0 : -1,
-                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
                             href: "#",
-                            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_20__["default"]
+                            icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_16__["default"]
                           })
-                        }, cell_id), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_components__WEBPACK_IMPORTED_MODULE_29__.Cell, {
+                        }, cell_id), !isBorder && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_components__WEBPACK_IMPORTED_MODULE_25__.Cell, {
                           cellType: 'body',
                           dataFormat: columnDataTypes[column_id],
                           cell_id: cell_id,
@@ -13062,20 +14068,20 @@ function Edit(props) {
           })
         })]
       })]
-    }), !isNewBlock && tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("span", {
+    }), !isNewBlock && tableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("span", {
       className: 'dtbk-spinner-message',
-      children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Loading Dynamic Table…', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
-    }), isNewBlock && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Placeholder, {
+      children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Loading Dynamic Table…', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
+    }), isNewBlock && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Placeholder, {
       label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Dynamic Table', 'dynamic-table-blocks'),
-      icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_16__.BlockIcon, {
-        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_17__["default"],
+      icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_14__.BlockIcon, {
+        icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_15__["default"],
         showColors: true
       }),
       instructions: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Create a new dynamic table.', 'dynamic-table-blocks'),
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("form", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("form", {
         className: "blocks-table__placeholder-form",
         onSubmit: onCreateTable,
-        children: [tableCreationMethod === 'choose' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
+        children: [tableCreationMethod === 'choose' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
           label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table creation method:', 'dynamic-table-blocks'),
           onChange: onCreateTableMethod,
           options: [{
@@ -13089,14 +14095,14 @@ function Edit(props) {
             label: 'Existing Table'
           }],
           __nextHasNoMarginBottom: true
-        }), tableCreationMethod !== 'choose' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("p", {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("strong", {
-              children: ["Table creation method: ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("em", {
+        }), tableCreationMethod !== 'choose' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("p", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("strong", {
+              children: ["Table creation method: ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("em", {
                 children: tableCreationMethodLabel
               })]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("hr", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("hr", {
             style: {
               alignSelf: 'stretch',
               width: '100%',
@@ -13105,36 +14111,36 @@ function Edit(props) {
               borderTop: '1px solid #dcdcde'
             }
           })]
-        }), tableCreationMethod === 'existing-table' && activeExistingTableOptions === null && (allTablesIsResolving || isRefreshingAllTables) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("span", {
+        }), tableCreationMethod === 'existing-table' && activeExistingTableOptions === null && (allTablesIsResolving || isRefreshingAllTables) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("span", {
           className: 'dtbk-spinner-message',
-          children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Retrieving table list…', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
-        }), tableCreationMethod === 'existing-table' && activeExistingTableOptions !== null && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.Fragment, {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
+          children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Retrieving table list…', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
+        }), tableCreationMethod === 'existing-table' && activeExistingTableOptions !== null && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.Fragment, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.SelectControl, {
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Select table:', 'dynamic-table-blocks'),
             onChange: onAssignRequestedTableId,
             value: tableRequest.tableId || '',
             options: activeExistingTableOptions,
             __nextHasNoMarginBottom: true
-          }), tableRequest.action !== 'idle' && requestedTableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("span", {
+          }), tableRequest.action !== 'idle' && requestedTableIsResolving && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("span", {
             className: 'dtbk-spinner-message',
-            children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Retrieving selected table…', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
+            children: [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Retrieving selected table…', 'dynamic-table-blocks'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Spinner, {})]
           })]
-        }), tableCreationMethod === 'new' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.Fragment, {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_11__.Root, {
+        }), tableCreationMethod === 'new' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.Fragment, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_10__.Root, {
             className: "dtbk-new-dt",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_12__.Header, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_11__.Header, {
               className: "dtbk-new-dt_header",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_13__.Title, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_12__.Title, {
                 children: "New Table Definition"
               })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_14__.Content, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_13__.Content, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
                 direction: "row",
                 gap: "24px",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
                   direction: "column",
                   className: "dtbk-configure-column-split__left",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
                     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Name', 'dynamic-table-blocks'),
                     placeholder: "New Table",
                     required: true,
@@ -13145,7 +14151,7 @@ function Edit(props) {
                     value: createDraftTable.tableName,
                     className: "blocks-table__placeholder-input dtbk-full-width-input",
                     size: "compact"
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
                     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Columns', 'dynamic-table-blocks'),
                     min: 1,
                     max: 50,
@@ -13156,38 +14162,11 @@ function Edit(props) {
                     className: "blocks-table__placeholder-input",
                     type: "number",
                     size: "compact",
-                    suffix: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_15__.InputLayout.Slot, {
-                      padding: "minimal",
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
-                        direction: "row",
-                        align: "center",
-                        className: "dtbk-increment-steppers",
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_10__.IconButton, {
-                          className: "dtbk-increment-steppers__button",
-                          type: "button",
-                          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Increment columns', 'dynamic-table-blocks'),
-                          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_18__["default"],
-                          size: "small",
-                          variant: "minimal",
-                          disabled: Number(createDraftTable.numColumns) >= 50,
-                          onClick: () => onChangeInitialColumnCount(Number(createDraftTable.numColumns) + 1)
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("span", {
-                          className: "dtbk-increment-steppers__separator",
-                          "aria-hidden": "true",
-                          children: "/"
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_10__.IconButton, {
-                          className: "dtbk-increment-steppers__button",
-                          type: "button",
-                          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Decrement columns', 'dynamic-table-blocks'),
-                          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_19__["default"],
-                          size: "small",
-                          variant: "minimal",
-                          disabled: Number(createDraftTable.numColumns) <= 1,
-                          onClick: () => onChangeInitialColumnCount(Number(createDraftTable.numColumns) - 1)
-                        })]
-                      })
+                    suffix: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_components__WEBPACK_IMPORTED_MODULE_25__.NumberIncrementControl, {
+                      baseInteger: Number(createDraftTable.numColumns),
+                      onClick: onChangeInitialColumnCount
                     })
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
                     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Rows', 'dynamic-table-blocks'),
                     min: 1,
                     max: 1000,
@@ -13198,63 +14177,36 @@ function Edit(props) {
                     className: "blocks-table__placeholder-input",
                     type: "number",
                     size: "compact",
-                    suffix: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_15__.InputLayout.Slot, {
-                      padding: "minimal",
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
-                        direction: "row",
-                        align: "center",
-                        className: "dtbk-increment-steppers",
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_10__.IconButton, {
-                          className: "dtbk-increment-steppers__button",
-                          type: "button",
-                          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Increment rows', 'dynamic-table-blocks'),
-                          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_18__["default"],
-                          size: "small",
-                          variant: "minimal",
-                          disabled: Number(createDraftTable.numRows) >= 1000,
-                          onClick: () => onChangeInitialRowCount(Number(createDraftTable.numRows) + 1)
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("span", {
-                          className: "dtbk-increment-steppers__separator",
-                          "aria-hidden": "true",
-                          children: "/"
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_10__.IconButton, {
-                          className: "dtbk-increment-steppers__button",
-                          type: "button",
-                          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Decrement columns', 'dynamic-table-blocks'),
-                          icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_19__["default"],
-                          size: "small",
-                          variant: "minimal",
-                          disabled: Number(createDraftTable.numRows) <= 1,
-                          onClick: () => onChangeInitialColumnCount(Number(createDraftTable.numRows) - 1)
-                        })]
-                      })
+                    suffix: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_components__WEBPACK_IMPORTED_MODULE_25__.NumberIncrementControl, {
+                      baseInteger: Number(createDraftTable.numRows),
+                      onClick: onChangeInitialRowCount
                     })
                   })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
                   direction: "column",
                   className: "dtbk-configure-column-split__right",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("table", {
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("caption", {
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("table", {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("caption", {
                       children: "Column Definitions"
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("thead", {
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("tr", {
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("th", {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("thead", {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("tr", {
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("th", {
                           children: "Number"
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("th", {
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("th", {
                           children: "Name"
                         })]
                       })
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("tbody", {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("tbody", {
                       children: createDraftTable.columns.map(({
                         column_id,
                         column_name
                       }) => {
-                        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("tr", {
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("td", {
+                        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("tr", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("td", {
                             className: "dtbk-create-table",
                             children: column_id
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("td", {
-                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("td", {
+                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
                               placeholder: "New Column",
                               onValueChange: value => setCreateDraftTable(prev => ({
                                 ...prev,
@@ -13275,7 +14227,7 @@ function Edit(props) {
               })
             })]
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("hr", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("hr", {
           style: {
             alignSelf: 'stretch',
             width: '100%',
@@ -13283,16 +14235,16 @@ function Edit(props) {
             border: 0,
             borderTop: '1px solid #dcdcde'
           }
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("div", {
           className: "dtbk-modal__footer",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsxs)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("div", {
             className: "dtbk-modal__button-group",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
               variant: "secondary",
               type: "button",
               onClick: onCancelNewBlock,
               children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Cancel', 'dynamic-table-blocks')
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_31__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.Button, {
               disabled: createTableDisabled,
               variant: "primary",
               type: "submit",
@@ -16917,6 +17869,18 @@ __webpack_require__.r(__webpack_exports__);
 /*!*****************************************************!*\
   !*** ./src/components/row-dropdown-menu/style.scss ***!
   \*****************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ },
+
+/***/ "./src/components/ui/number-increment-control/style.scss"
+/*!***************************************************************!*\
+  !*** ./src/components/ui/number-increment-control/style.scss ***!
+  \***************************************************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -37544,6 +38508,28 @@ __webpack_require__.r(__webpack_exports__);
 var chevron_down_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M17.5 11.6L12 16l-5.5-4.4.9-1.2L12 14l4.5-3.6 1 1.2z" }) });
 
 //# sourceMappingURL=chevron-down.mjs.map
+
+
+/***/ },
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/chevron-up.mjs"
+/*!***************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/chevron-up.mjs ***!
+  \***************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ chevron_up_default)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+// packages/icons/src/library/chevron-up.tsx
+
+
+var chevron_up_default = /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor", children: /* @__PURE__ */ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, { d: "M6.5 12.4L12 8l5.5 4.4-.9 1.2L12 10l-4.5 3.6-1-1.2z" }) });
+
+//# sourceMappingURL=chevron-up.mjs.map
 
 
 /***/ },
