@@ -39,15 +39,10 @@ export function ConfigurePostColumnDataType(props = {}) {
 	const { persistedPostFormat, columnClasses, onChange } = props;
 	const instanceId = useInstanceId(ConfigurePostColumnDataType);
 	const previewId = `dtbk-preview-${instanceId}`;
+	console.log('Initiial post format', persistedPostFormat);
 
 	const [postFormat, setPostFormat] = useState(persistedPostFormat?.format || '');
 	const [postOptions, setPostOptions] = useState(persistedPostFormat?.formatOptions || '');
-
-	const defaultDisplayElement = {
-		display: false,
-		column: 'none',
-		order: 0,
-	};
 
 	console.log('Retrieved Column Data: ', persistedPostFormat);
 
@@ -123,11 +118,11 @@ export function ConfigurePostColumnDataType(props = {}) {
 	function onPostFormat(postFormat) {
 		console.log('Setting Post Format');
 		setPostFormat(postFormat);
-
-		const { newDisplayElements, newDisplayOptions } = getPostFormatDefaults(
+		const { displayOptions, displayElements } = getPostFormatDefaults(
 			postFormat,
 			defaultDisplayElement
 		);
+		console.log('Default post display options: ', displayOptions);
 
 		switch (postFormat) {
 			case 'link': {
@@ -156,7 +151,7 @@ export function ConfigurePostColumnDataType(props = {}) {
 		}
 
 		const resetDisplayElementsArray = sortPostDisplayElements(
-			loadPostDisplayElements(newDisplayElements, defaultDisplayElement)
+			loadPostDisplayElements(displayElements, defaultDisplayElement)
 		);
 
 		setPostLinkLocation('title');
@@ -167,11 +162,11 @@ export function ConfigurePostColumnDataType(props = {}) {
 		const updatedDataType = {
 			settings: {
 				format: postFormat,
-				formatOptions: newDisplayOptions,
+				formatOptions: displayOptions,
 			},
 		};
 
-		setPostOptions(newDisplayOptions);
+		setPostOptions(displayOptions);
 		updatePostConfig(updatedDataType);
 	}
 
@@ -463,6 +458,8 @@ export function ConfigurePostColumnDataType(props = {}) {
 			formatOptions: postOptions,
 		},
 	};
+
+	console.log('Test Content Format', testCellContentType);
 
 	return (
 		<Card>
@@ -822,12 +819,15 @@ export function getPostFormatDefaults(postFormat, defaultDisplayElement) {
 			return;
 	}
 
+	console.log('New display format options: ', formatOptions);
 	const displayOptions = {
 		...formatOptions,
 		displayTitleInCover: false,
 		displayImageSize: 'thumbnail',
 		linkLocation: 'title',
 	};
+
+	console.log('New extended display format options: ', displayOptions);
 
 	const displayElements = {
 		displayTitle: formatOptions.displayTitle,
@@ -839,5 +839,13 @@ export function getPostFormatDefaults(postFormat, defaultDisplayElement) {
 		displayModifiedDate: formatOptions.displayModifiedDate,
 	};
 
+	console.log('New extended display elements: ', displayElements);
+
 	return { displayOptions, displayElements };
 }
+
+export const defaultDisplayElement = {
+	display: false,
+	column: 'none',
+	order: 0,
+};

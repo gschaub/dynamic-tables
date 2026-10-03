@@ -1696,21 +1696,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/form/input-control/input-control.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/form/select-control/index.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/root.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/header.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/title.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/content.mjs");
-/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-column-data-types/style.scss");
-/* harmony import */ var _ui_icon__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../ui/icon */ "./src/components/ui/icon/index.js");
-/* harmony import */ var _ui_number_increment_control__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../ui/number-increment-control */ "./src/components/ui/number-increment-control/index.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../utils */ "./src/utils.js");
-/* harmony import */ var _ui_post_content__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../ui/post-content */ "./src/components/ui/post-content/index.js");
-/* harmony import */ var _post__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./post */ "./src/components/configure-column-data-types/post.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__);
+/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! clsx */ "./node_modules/clsx/dist/clsx.mjs");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./style.scss */ "./src/components/configure-column-data-types/style.scss");
+/* harmony import */ var _ui_icon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../ui/icon */ "./src/components/ui/icon/index.js");
+/* harmony import */ var _ui_number_increment_control__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../ui/number-increment-control */ "./src/components/ui/number-increment-control/index.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../utils */ "./src/utils.js");
+/* harmony import */ var _ui_post_content__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../ui/post-content */ "./src/components/ui/post-content/index.js");
+/* harmony import */ var _post__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./post */ "./src/components/configure-column-data-types/post.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__);
 /* External dependencies */
 
 
@@ -1750,13 +1744,13 @@ function ConfigureColumnDataType(props = {}) {
     updatedColumn,
     onRequestClose
   } = props;
-  const normalizedColumnDataType = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.normalizeColumnDataType)(columnAttributes?.columnDataType);
+  const normalizedColumnDataType = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.normalizeColumnDataType)(columnAttributes?.columnDataType);
   const [columnName, setColumnName] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnLabel);
   const [dataType, setDataType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType);
   const [dataTypeFormat, setDataTypeFormat] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.format || '');
   const [updateColumnStyle, setUpdateColumnStyle] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.updateColumnStyle || true);
-  const [columnClassNames, setColumnClassNames] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)((0,_utils__WEBPACK_IMPORTED_MODULE_14__.stageClassesForEdit)(columnClasses));
-  const columnClassNamesRender = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.prepareClassesForUse)(columnClassNames);
+  const [columnClassNames, setColumnClassNames] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)((0,_utils__WEBPACK_IMPORTED_MODULE_8__.stageClassesForEdit)(columnClasses));
+  const columnClassNamesRender = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.prepareClassesForUse)(columnClassNames);
 
   // Date specific attributes
   const initDefaultToToday = normalizedColumnDataType?.settings?.defaultToToday === true ? true : false;
@@ -1776,10 +1770,10 @@ function ConfigureColumnDataType(props = {}) {
   const pendingCaretRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const [percentEntryValue, setPercentEntryValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
   const [numberRawValue, setNumberRawValue] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
-  const sanitizedPreviewNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.sanitizeNumberInput)(numberRawValue, dataTypeFormat);
+  const sanitizedPreviewNumber = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.sanitizeNumberInput)(numberRawValue, dataTypeFormat);
   const showNegativeNumberPreview = redNegative && sanitizedPreviewNumber !== '' && sanitizedPreviewNumber !== '-' && Number(sanitizedPreviewNumber) < 0;
-  const numberEntryValue = dataTypeFormat === 'percent' ? percentEntryValue ?? (0,_utils__WEBPACK_IMPORTED_MODULE_14__.toPercentEntryValue)(numberRawValue) : numberRawValue;
-  const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.formattedNumber)(numberRawValue, dataTypeFormat, thousandSeparator, decimalPlaces, currency, bracketNegative);
+  const numberEntryValue = dataTypeFormat === 'percent' ? percentEntryValue ?? (0,_utils__WEBPACK_IMPORTED_MODULE_8__.toPercentEntryValue)(numberRawValue) : numberRawValue;
+  const numberDisplayValue = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.formattedNumber)(numberRawValue, dataTypeFormat, thousandSeparator, decimalPlaces, currency, bracketNegative);
 
   // Checkbox specific attributes
   const [checkboxHideIfEmpty, setCheckboxHideIfEmpty] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.hideIfEmpty || false);
@@ -1787,32 +1781,6 @@ function ConfigureColumnDataType(props = {}) {
   const isCheckboxDataType = normalizedColumnDataType?.type === 'checkbox' ? true : false;
 
   // Post specific attributes
-  const defaultDisplayElement = {
-    display: false,
-    column: 'none',
-    order: 0
-  };
-  console.log('Retrieved Column Data: ', normalizedColumnDataType);
-  console.log('Initial Post Display Element: ', sortPostDisplayElements(loadPostDisplayElements(normalizedColumnDataType.settings.formatOptions, defaultDisplayElement)));
-  const initialPostDisplayElements = sortPostDisplayElements(loadPostDisplayElements(normalizedColumnDataType.settings.formatOptions, defaultDisplayElement));
-  const [postDisplayElements, setPostDisplayElements] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialPostDisplayElements);
-  const [postLinkLocation, setPostLinkLocation] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.linkLocation || 'title');
-  const [postTitleInCover, setPostTitleInCover] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.displayTitleInCover || false);
-  const [postImageSize, setPostImageSize] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(normalizedColumnDataType?.settings?.formatOptions?.displayImageSize || 'thumbnail');
-  const initialPostItemsNoneColumnCount = countFilteredDisplayItems(initialPostDisplayElements, 'none');
-  const initialPostItemsSpanColumnsCount = countFilteredDisplayItems(initialPostDisplayElements, 'span');
-  const initialPostItemsLeftColumnCount = countFilteredDisplayItems(initialPostDisplayElements, 'left');
-  const initialPostItemsRightColumnCount = countFilteredDisplayItems(initialPostDisplayElements, 'right');
-  const [displayPostItemsNoneColumnCount, setPostDisplayItemsNoneColumnCount] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialPostItemsNoneColumnCount);
-  const [displayPostItemsSpanColumnsCount, setPostDisplayItemsSpanColumnsCount] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialPostItemsSpanColumnsCount);
-  const [displayPostItemsLeftColumnCount, setPostDisplayItemsLeftColumnCount] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialPostItemsLeftColumnCount);
-  const [displayPostItemsRightColumnCount, setPostDisplayItemsRightColumnCount] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialPostItemsRightColumnCount);
-  const postDisplayItemsPerColumn = {
-    none: displayPostItemsNoneColumnCount,
-    span: displayPostItemsSpanColumnsCount,
-    left: displayPostItemsLeftColumnCount,
-    right: displayPostItemsRightColumnCount
-  };
   if (dataType.type === 'post' && !dataTypeFormat) {
     setDataTypeFormat('link');
   }
@@ -1866,8 +1834,8 @@ function ConfigureColumnDataType(props = {}) {
       pendingCaretRef.current = null;
       return;
     }
-    let nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.getCaretIndexFromTokenCount)(input.value, pendingCaretRef.current.tokenCount);
-    nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.normalizeCaretForPresentationPrefix)(input.value, nextCaret, pendingCaretRef.current);
+    let nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getCaretIndexFromTokenCount)(input.value, pendingCaretRef.current.tokenCount);
+    nextCaret = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.normalizeCaretForPresentationPrefix)(input.value, nextCaret, pendingCaretRef.current);
     input.setSelectionRange(nextCaret, nextCaret);
     pendingCaretRef.current = null;
   }, [numberEntryValue]);
@@ -2167,11 +2135,11 @@ function ConfigureColumnDataType(props = {}) {
    */
   function onNumberPreviewChange(event) {
     const input = numberEntryInputRef.current;
-    const entryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.sanitizeNumberInput)(event, dataTypeFormat === 'percent' ? 'number' : dataTypeFormat);
+    const entryValue = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.sanitizeNumberInput)(event, dataTypeFormat === 'percent' ? 'number' : dataTypeFormat);
     const selectionStart = input?.selectionStart ?? entryValue.length;
-    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.getFirstNumericIndex)(entryValue);
+    const firstNumericIndex = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getFirstNumericIndex)(entryValue);
     pendingCaretRef.current = {
-      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_14__.countCaretTokens)(entryValue, selectionStart),
+      tokenCount: (0,_utils__WEBPACK_IMPORTED_MODULE_8__.countCaretTokens)(entryValue, selectionStart),
       wasAtStart: selectionStart === 0,
       wasInPrefixZone: firstNumericIndex !== -1 && selectionStart > 0 && selectionStart <= firstNumericIndex
     };
@@ -2182,7 +2150,7 @@ function ConfigureColumnDataType(props = {}) {
       const nextEntryValue = fractionPart.length > revisedDecimalPlaces ? `${integerPart}.${fractionPart.slice(0, revisedDecimalPlaces)}` : entryValue;
       setPercentEntryValue(nextEntryValue);
       revisedDecimalPlaces += 2;
-      nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.fromPercentEntryValue)(nextEntryValue);
+      nextRawValue = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.fromPercentEntryValue)(nextEntryValue);
     } else {
       setPercentEntryValue(null);
     }
@@ -2281,359 +2249,28 @@ function ConfigureColumnDataType(props = {}) {
    *
    * @param {string} postFormat Post format to set
    */
-  function onPostFormat(postFormat) {
-    console.log('Setting Post Format');
+  function defaultPostFormat(postFormat) {
     setDataTypeFormat(postFormat);
-    let formatOptions;
-    switch (postFormat) {
-      case 'link':
-        {
-          formatOptions = {
-            displayTitle: {
-              ...defaultDisplayElement,
-              display: true,
-              order: 1
-            },
-            displayCoverImage: defaultDisplayElement,
-            displayExcerpt: defaultDisplayElement,
-            displayAuthor: defaultDisplayElement,
-            displayShortContent: defaultDisplayElement,
-            displayPublishDate: defaultDisplayElement,
-            displayModifiedDate: defaultDisplayElement,
-            displayTitleInCover: false,
-            displayImageSize: 'thumbnail',
-            linkLocation: 'title'
-          };
-          setPostDisplayItemsNoneColumnCount(1);
-          setPostDisplayItemsSpanColumnsCount(0);
-          setPostDisplayItemsLeftColumnCount(0);
-          setPostDisplayItemsRightColumnCount(0);
-          break;
-        }
-      case 'narrow':
-        {
-          formatOptions = {
-            displayTitle: {
-              ...defaultDisplayElement,
-              display: true,
-              order: 1
-            },
-            displayCoverImage: {
-              ...defaultDisplayElement,
-              order: 0
-            },
-            displayExcerpt: {
-              ...defaultDisplayElement,
-              display: true,
-              order: 2
-            },
-            displayAuthor: {
-              ...defaultDisplayElement,
-              display: true,
-              order: 3
-            },
-            displayShortContent: defaultDisplayElement,
-            displayPublishDate: defaultDisplayElement,
-            displayModifiedDate: defaultDisplayElement,
-            displayTitleInCover: false,
-            displayImageSize: 'thumbnail',
-            linkLocation: 'title'
-          };
-          setPostDisplayItemsNoneColumnCount(3);
-          setPostDisplayItemsSpanColumnsCount(0);
-          setPostDisplayItemsLeftColumnCount(0);
-          setPostDisplayItemsRightColumnCount(0);
-          break;
-        }
-      case 'wide':
-        {
-          formatOptions = {
-            displayTitle: {
-              ...defaultDisplayElement,
-              display: true,
-              column: 'left',
-              order: 1
-            },
-            displayCoverImage: {
-              ...defaultDisplayElement,
-              order: 0
-            },
-            displayExcerpt: {
-              ...defaultDisplayElement,
-              display: true,
-              column: 'left',
-              order: 2
-            },
-            displayAuthor: {
-              ...defaultDisplayElement,
-              display: true,
-              column: 'right',
-              order: 1
-            },
-            displayShortContent: defaultDisplayElement,
-            displayPublishDate: defaultDisplayElement,
-            displayModifiedDate: defaultDisplayElement,
-            displayTitleInCover: false,
-            displayImageSize: 'thumbnail',
-            linkLocation: 'title'
-          };
-          setPostDisplayItemsNoneColumnCount(0);
-          setPostDisplayItemsSpanColumnsCount(0);
-          setPostDisplayItemsLeftColumnCount(2);
-          setPostDisplayItemsRightColumnCount(1);
-          break;
-        }
-      default:
-        return;
-    }
-    const newDisplayElements = {
-      displayTitle: formatOptions.displayTitle,
-      displayCoverImage: formatOptions.displayCoverImage,
-      displayExcerpt: formatOptions.displayExcerpt,
-      displayAuthor: formatOptions.displayAuthor,
-      displayShortContent: formatOptions.displayShortContent,
-      displayPublishDate: formatOptions.displayPublishDate,
-      displayModifiedDate: formatOptions.displayModifiedDate
-    };
-    const resetDisplayElementsArray = sortPostDisplayElements(loadPostDisplayElements(newDisplayElements, defaultDisplayElement));
-    setPostLinkLocation('title');
-    setPostTitleInCover(false);
-    setPostImageSize('thumbnail');
-    setPostDisplayElements(resetDisplayElementsArray);
+    const {
+      displayOptions
+    } = (0,_post__WEBPACK_IMPORTED_MODULE_10__.getPostFormatDefaults)(postFormat, _post__WEBPACK_IMPORTED_MODULE_10__.defaultDisplayElement);
+    console.log('Reset Post display options: ', displayOptions);
     const updatedDataType = {
       type: 'post',
       settings: {
         format: postFormat,
-        formatOptions: formatOptions
+        formatOptions: displayOptions
       }
     };
-    setDataType(updatedDataType);
-  }
-
-  /**
-   * Update post formatting options based on configuration input
-   *
-   * @since 1.4.11
-   *
-   * @param {Object} value  Formatting value to set
-   * @param {string} option Formatting option
-   */
-  function onPostFormatOption(value, option) {
-    console.log('Setting Post Format Option: attribute = ' + option);
-    console.log('Setting Post Format Option: value = ', value);
-    const displayToObject = {};
-    postDisplayElements.map(({
-      element,
-      displayAttributes
-    }) => {
-      return displayToObject[element] = displayAttributes;
-    });
-    console.log('Display Options Before Update = ', displayToObject);
-    let {
-      displayTitle: newDisplayTitle,
-      displayCoverImage: newDisplayCoverImage,
-      displayExcerpt: newDisplayExcerpt,
-      displayAuthor: newDisplayAuthor,
-      displayPublishDate: newDisplayPublishDate,
-      displayModifiedDate: newDisplayModifiedDate
-    } = displayToObject;
-    let newLinkLocation = postLinkLocation;
-    let newTitleInCover = postTitleInCover;
-    let newImageSize = postImageSize;
-    let updatedElement;
-    let priorElement;
-    switch (option) {
-      case 'display-title':
-        updatedElement = 'displayTitle';
-        priorElement = newDisplayTitle;
-        newDisplayTitle = value;
-        break;
-      case 'display-image':
-        updatedElement = 'displayCoverImage';
-        priorElement = newDisplayCoverImage;
-        newDisplayCoverImage = value;
-        if (newDisplayCoverImage === 0) {
-          newLinkLocation = 'title';
-          newTitleInCover = false;
-        }
-        break;
-      case 'display-excerpt':
-        updatedElement = 'displayExcerpt';
-        priorElement = newDisplayExcerpt;
-        newDisplayExcerpt = value;
-        break;
-      case 'display-author':
-        updatedElement = 'displayAuthor';
-        priorElement = newDisplayAuthor;
-        newDisplayAuthor = value;
-        break;
-      case 'display-published':
-        updatedElement = 'displayPublishDate';
-        priorElement = newDisplayPublishDate;
-        newDisplayPublishDate = value;
-        break;
-      case 'display-modified':
-        updatedElement = 'displayModifiedDate';
-        priorElement = newDisplayModifiedDate;
-        newDisplayModifiedDate = value;
-        break;
-      case 'title-in-cover':
-        if (newDisplayCoverImage !== 0) {
-          newTitleInCover = value;
-        } else {
-          newTitleInCover = false;
-        }
-        break;
-      case 'link-location':
-        if (newDisplayCoverImage !== 0) {
-          newLinkLocation = value;
-        } else {
-          newLinkLocation = 'title';
-        }
-        break;
-      case 'image-size':
-        newImageSize = value;
-        break;
-      default:
-        return;
-    }
-    const newDisplayElements = {
-      displayTitle: newDisplayTitle,
-      displayCoverImage: newDisplayCoverImage,
-      displayExcerpt: newDisplayExcerpt,
-      displayAuthor: newDisplayAuthor,
-      displayPublishDate: newDisplayPublishDate,
-      displayModifiedDate: newDisplayModifiedDate
-    };
-    console.log('Updated Post Display Element', newDisplayElements);
-    const updateIsDisplayElement = newDisplayElements[updatedElement] || null;
-    if (updateIsDisplayElement) {
-      const updatedElementDisplay = newDisplayElements[updatedElement].display;
-      const updatedElementOrder = newDisplayElements[updatedElement].order;
-      const oldElementOrder = priorElement.order;
-      console.log('Updated Element = ' + updatedElementOrder);
-      console.log('Updated Element Prior Order = ' + oldElementOrder);
-
-      // Close order gap when an element becomes not displayed
-      if (updatedElementOrder !== oldElementOrder && updatedElementOrder === 0) {
-        for (const element in newDisplayElements) {
-          const elementOrder = newDisplayElements[element].order;
-          const elementDisplay = newDisplayElements[element].display;
-          if (elementDisplay && elementOrder > oldElementOrder && element !== updatedElement) {
-            newDisplayElements[element].order = elementOrder - 1;
-          }
-        }
-      }
-
-      // Increment order order for elements when an element becomes goes down in order
-      if (updatedElementDisplay && updatedElementOrder !== oldElementOrder) {
-        for (const element in newDisplayElements) {
-          const elementOrder = newDisplayElements[element].order;
-          const elementDisplay = newDisplayElements[element].display;
-          if (elementDisplay && elementOrder === updatedElementOrder && element !== updatedElement) {
-            newDisplayElements[element].order = oldElementOrder;
-          }
-        }
-      }
-    }
-    console.log('Updated Display Elements: ', newDisplayElements);
-    const orderedDisplayAttributes = sortPostDisplayElements(loadPostDisplayElements(newDisplayElements, defaultDisplayElement));
-    setPostDisplayElements(orderedDisplayAttributes);
-    setPostDisplayItemsNoneColumnCount(countFilteredDisplayItems(orderedDisplayAttributes, 'none'));
-    setPostDisplayItemsSpanColumnsCount(countFilteredDisplayItems(orderedDisplayAttributes, 'span'));
-    setPostDisplayItemsLeftColumnCount(countFilteredDisplayItems(orderedDisplayAttributes, 'left'));
-    setPostDisplayItemsRightColumnCount(countFilteredDisplayItems(orderedDisplayAttributes, 'right'));
-    setPostLinkLocation(newLinkLocation);
-    setPostTitleInCover(newTitleInCover);
-    setPostImageSize(newImageSize);
-    const updatedDataType = {
-      ...dataType,
-      settings: {
-        format: dataType.settings.format,
-        formatOptions: {
-          displayTitle: newDisplayTitle,
-          displayCoverImage: newDisplayCoverImage,
-          displayExcerpt: newDisplayExcerpt,
-          displayAuthor: newDisplayAuthor,
-          displayPublishDate: newDisplayPublishDate,
-          displayModifiedDate: newDisplayModifiedDate,
-          displayTitleInCover: newTitleInCover,
-          displayImageSize: newImageSize,
-          linkLocation: newLinkLocation
-        }
-      }
-    };
+    console.log('Reset Post data type: ', updatedDataType);
     setDataType(updatedDataType);
   }
   function onPostUpdate(updatedPostConfig) {
     const updatedDataType = {
       type: 'post',
-      updatedPostConfig
+      settings: updatedPostConfig
     };
     setDataType(updatedDataType);
-  }
-  function countFilteredDisplayItems(items, column) {
-    const filteredItems = items.filter(el => el.displayAttributes.display && el.displayAttributes.column === column);
-    return filteredItems?.length || 0;
-  }
-  function loadPostDisplayElements(columnData, defaultElement) {
-    const displayElements = Array();
-    displayElements.push({
-      element: 'displayTitle',
-      elementName: 'Title',
-      updateOption: 'display-title',
-      defaultOrder: 1,
-      displayAttributes: columnData?.displayTitle || defaultElement
-    });
-    displayElements.push({
-      element: 'displayExcerpt',
-      elementName: 'Excerpt',
-      updateOption: 'display-excerpt',
-      defaultOrder: 2,
-      displayAttributes: columnData?.displayExcerpt || defaultElement
-    });
-    displayElements.push({
-      element: 'displayCoverImage',
-      elementName: 'Cover Image',
-      updateOption: 'display-image',
-      defaultOrder: 3,
-      displayAttributes: columnData?.displayCoverImage || defaultElement
-    });
-    displayElements.push({
-      element: 'displayAuthor',
-      elementName: 'Author',
-      updateOption: 'display-author',
-      defaultOrder: 4,
-      displayAttributes: columnData?.displayAuthor || defaultElement
-    });
-    displayElements.push({
-      element: 'displayPublishDate',
-      elementName: 'Published Date',
-      updateOption: 'display-published',
-      defaultOrder: 5,
-      displayAttributes: columnData?.displayPublishDate || defaultElement
-    });
-    displayElements.push({
-      element: 'displayModifiedDate',
-      elementName: 'Last Modified Date',
-      updateOption: 'display-modified',
-      defaultOrder: 6,
-      displayAttributes: columnData?.displayModifiedDate || defaultElement
-    });
-    return displayElements;
-  }
-  function sortPostDisplayElements(displayElements) {
-    displayElements.sort((a, b) => {
-      if (a.displayAttributes.display !== b.displayAttributes.display) {
-        return a.displayAttributes.display ? -1 : 1;
-      }
-      if (!a.displayAttributes.display) {
-        return a.defaultOrder - b.defaultOrder;
-      }
-      const columnCompare = a.displayAttributes.column.localeCompare(b.displayAttributes.column);
-      return columnCompare || a.displayAttributes.order - b.displayAttributes.order;
-    });
-    return displayElements;
   }
 
   /**
@@ -2684,10 +2321,11 @@ function ConfigureColumnDataType(props = {}) {
         break;
       case 'post':
         setDataTypeFormat('link');
-        onPostFormat('link');
+        defaultPostFormat('link');
         newColumnClassNames.delete('grid-control__body-columns--number-align-right');
         newColumnClassNames.delete('grid-control__body-columns--date-align-right');
         setColumnClassNames(newColumnClassNames);
+        console.log('Content Type set to post');
         return;
       default:
         updatedDataType = {
@@ -2748,38 +2386,19 @@ function ConfigureColumnDataType(props = {}) {
         break;
     }
     setColumnClassNames(newColumnClassNames);
-    const updatedColumnClasses = (0,_utils__WEBPACK_IMPORTED_MODULE_14__.prepareClassesForUse)(newColumnClassNames);
+    const updatedColumnClasses = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.prepareClassesForUse)(newColumnClassNames);
     updatedColumn(event, 'dataType', tableId, columnId, columnName, updatedColumnAttributes, updatedColumnClasses);
     close();
   }
-  const renderColumnClasses = (0,clsx__WEBPACK_IMPORTED_MODULE_10__["default"])(columnClassNamesRender, {
+  const renderColumnClasses = (0,clsx__WEBPACK_IMPORTED_MODULE_4__["default"])(columnClassNamesRender, {
     'grid-control__body-columns--number-red': showNegativeNumberPreview
   });
 
   // console.log('Column Content Type: ', dataType);
-  console.log('Post Display Elements: ', postDisplayElements);
+  // console.log('Post Display Elements: ', postDisplayElements);
   // console.log(dataType.type);
-  // console.log(dataTypeFormat);
-
-  const testCellContent = 'Test Content';
-  const testCellAttributes = {
-    canonical: {
-      postId: 196,
-      postType: 'post'
-    },
-    ref: [{
-      postId: '196'
-    }]
-  };
-  const testCellClasses = '';
-  // const testCellContentType = dataType;
-  const testCellContentType = {
-    settings: {
-      format: dataType.settings.format,
-      formatOptions: dataType.settings.formatOptions
-    }
-  };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Modal, {
+  console.log(dataType);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Modal, {
     title: "Configure Column Content Type",
     overlayClassName: "configure-column-modal",
     onRequestClose: handleCancel,
@@ -2787,32 +2406,32 @@ function ConfigureColumnDataType(props = {}) {
     isDismissible: false,
     shouldCloseOnClickOutside: false,
     size: "large",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("form", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("form", {
       className: "configure-data-type--form configure-column-modal__form",
       onSubmit: onUpdate,
       onMouseDown: stopProp,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
         className: "configure-column-modal__body",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
           className: "configure-column-modal__body-inner",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
             spacing: 4,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("p", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("p", {
               className: "column-label",
               children: ["For column ", columnName]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("strong", {
                   children: "Basics"
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                   spacing: 3,
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalInputControl, {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalInputControl, {
                     label: "Column Name",
                     value: columnName,
                     onChange: value => setColumnName(value)
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.SelectControl, {
                     label: "Content Type",
                     value: dataType.type,
                     onChange: onUpdateDataType,
@@ -2842,26 +2461,26 @@ function ConfigureColumnDataType(props = {}) {
                   })]
                 })
               })]
-            }), dataType.type === 'date-time' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
+            }), dataType.type === 'date-time' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("strong", {
                   children: "Content settings"
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                   spacing: 3,
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
                     children: "Select the specific date/time appearance."
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
                     gap: 24,
                     align: "stretch",
                     className: "configure-column-modal__split",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__left",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                         spacing: 3,
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
                           label: "Format",
                           selected: dataTypeFormat,
                           options: [{
@@ -2875,16 +2494,16 @@ function ConfigureColumnDataType(props = {}) {
                             value: 'datetime-local'
                           }],
                           onChange: value => onDateTimeType(value)
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
                           className: "configure-column-modal__options",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("strong", {
                             children: "Options"
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: "Default to today's date",
                             checked: dateDefaultToToday,
                             onChange: e => onDateDefaultToToday(e, dataTypeFormat)
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Auto format column?',
                             checked: updateColumnStyle,
@@ -2892,16 +2511,16 @@ function ConfigureColumnDataType(props = {}) {
                           })]
                         })]
                       })
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__right",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
                         className: "configure-column-modal__preview",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
                           id: previewId,
                           label: "Preview",
                           help: "This is only a preview; it won\u2019t change saved values.",
-                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
                             className: renderColumnClasses,
                             type: dataTypeFormat,
                             label: '',
@@ -2916,26 +2535,26 @@ function ConfigureColumnDataType(props = {}) {
                   })]
                 })
               })]
-            }), dataType.type === 'number' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
+            }), dataType.type === 'number' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("strong", {
                   children: "Content settings"
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                   spacing: 3,
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
                     children: "Select the specific number type."
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
                     gap: 24,
                     align: "stretch",
                     className: "configure-column-modal__split",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__left",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                         spacing: 3,
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
                           label: "Number Type",
                           selected: dataTypeFormat,
                           options: [{
@@ -2952,37 +2571,37 @@ function ConfigureColumnDataType(props = {}) {
                             value: 'currency'
                           }],
                           onChange: value => onNumberFormat(value)
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
                           className: "configure-column-modal__options",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("strong", {
                             children: "Formatting Options"
-                          }), (dataTypeFormat === 'number' || dataTypeFormat === 'percent' || dataTypeFormat === 'currency') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+                          }), (dataTypeFormat === 'number' || dataTypeFormat === 'percent' || dataTypeFormat === 'currency') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
                             className: "configure-column-modal__input",
                             type: 'number',
                             label: 'Decimal Places',
                             value: decimalPlaces,
                             onChange: e => onNumberFormatOption(e, 'decimal')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Thousand Separator',
                             checked: thousandSeparator,
                             onChange: e => onNumberFormatOption(e, 'thousand')
-                          }), dataTypeFormat === 'currency' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), dataTypeFormat === 'currency' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Currency',
                             checked: currency,
                             onChange: e => onNumberFormatOption(e, 'currency')
-                          }), (dataTypeFormat === 'number' || dataTypeFormat === 'integer' || dataTypeFormat === 'currency') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), (dataTypeFormat === 'number' || dataTypeFormat === 'integer' || dataTypeFormat === 'currency') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Bracket negative numbers?',
                             checked: bracketNegative,
                             onChange: e => onNumberFormatOption(e, 'bracket-negative')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Display negative numbers in red?',
                             checked: redNegative,
                             onChange: e => onNumberFormatOption(e, 'red-negative')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Auto format column?',
                             checked: updateColumnStyle,
@@ -2990,18 +2609,18 @@ function ConfigureColumnDataType(props = {}) {
                           })]
                         })]
                       })
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__right",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
                         className: "configure-column-modal__preview",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
                           id: previewId,
                           label: "Preview",
                           help: "This is only a preview; it won\u2019t change saved values.",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
                             ref: numberEntryWrapperRef,
-                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
                               className: `configure-column-modal__input-preview ${renderColumnClasses}`,
                               type: 'text',
                               inputMode: dataTypeFormat === 'integer' ? 'numeric' : 'decimal',
@@ -3014,7 +2633,7 @@ function ConfigureColumnDataType(props = {}) {
                                 setPercentEntryValue(null);
                               }
                             })
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
                             className: `configure-column-modal__display-preview ${renderColumnClasses}`,
                             type: 'text',
                             inputMode: dataTypeFormat === 'integer' ? 'numeric' : 'decimal',
@@ -3029,26 +2648,26 @@ function ConfigureColumnDataType(props = {}) {
                   })]
                 })
               })]
-            }), dataType.type === 'checkbox' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
+            }), dataType.type === 'checkbox' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("strong", {
                   children: "Content settings"
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                   spacing: 3,
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
                     children: "Select the specific checkbox type."
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
                     gap: 24,
                     align: "stretch",
                     className: "configure-column-modal__split",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__left",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
                         spacing: 3,
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
                           label: "Checkbox Type",
                           selected: dataTypeFormat,
                           options: [{
@@ -3065,21 +2684,21 @@ function ConfigureColumnDataType(props = {}) {
                             value: 'freeform'
                           }],
                           onChange: value => onCheckboxFormat(value)
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
                           className: "configure-column-modal__options",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("strong", {
                             children: "Formatting Options"
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Hide checkbox when no value exists?',
                             checked: checkboxHideIfEmpty,
                             onChange: e => onCheckboxFormatOption(e, 'hideEmpty')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Default to "Checked"',
                             checked: checkboxDefaultToChecked,
                             onChange: e => onCheckboxFormatOption(e, 'default-checked')
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                             className: "configure-column-modal__checkbox",
                             label: 'Auto format column?',
                             checked: updateColumnStyle,
@@ -3087,12 +2706,12 @@ function ConfigureColumnDataType(props = {}) {
                           })]
                         })]
                       })
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
                       className: "configure-column-modal__right",
                       isBlock: true,
-                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
                         className: "configure-column-modal__preview configure-column-modal__preview--checkbox",
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
+                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.BaseControl, {
                           id: previewId,
                           label: "Preview",
                           style: {
@@ -3101,38 +2720,38 @@ function ConfigureColumnDataType(props = {}) {
                             height: '20%'
                           },
                           className: "configure-column-modal__checkbox-preview-control",
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
                             className: "configure-column-modal__checkbox-preview-state",
-                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
                               children: "When Checked"
-                            }), dataTypeFormat === 'standard' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                            }), dataTypeFormat === 'standard' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: true
-                            }), dataTypeFormat === 'toggle' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+                            }), dataTypeFormat === 'toggle' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: true
-                            }), dataTypeFormat === 'icon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.StatusIcon, {
+                            }), dataTypeFormat === 'icon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_6__.StatusIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: true
-                            }), dataTypeFormat === 'freeform' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.FreeformCheckboxIcon, {
+                            }), dataTypeFormat === 'freeform' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_6__.FreeformCheckboxIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: true,
                               scale: 0.6
                             })]
-                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
                             className: "configure-column-modal__checkbox-preview-state",
-                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
                               children: "When Unchecked"
-                            }), dataTypeFormat === 'standard' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
+                            }), dataTypeFormat === 'standard' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: false
-                            }), dataTypeFormat === 'toggle' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
+                            }), dataTypeFormat === 'toggle' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.ToggleControl, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: false
-                            }), dataTypeFormat === 'icon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.StatusIcon, {
+                            }), dataTypeFormat === 'icon' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_6__.StatusIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: false
-                            }), dataTypeFormat === 'freeform' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_12__.FreeformCheckboxIcon, {
+                            }), dataTypeFormat === 'freeform' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_ui_icon__WEBPACK_IMPORTED_MODULE_6__.FreeformCheckboxIcon, {
                               className: "configure-column-modal__checkbox-preview",
                               checked: false,
                               scale: 0.6
@@ -3144,155 +2763,21 @@ function ConfigureColumnDataType(props = {}) {
                   })]
                 })
               })]
-            }), dataType.type === 'post' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_post__WEBPACK_IMPORTED_MODULE_16__.ConfigurePostColumnDataType, {
-                persistedPostFormat: normalizedColumnDataType?.settings,
-                onChange: onPostUpdate
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
-                    children: "Content settings"
-                  })
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardBody, {
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
-                    spacing: 3,
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
-                      children: "Select the specific content display options."
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Flex, {
-                      gap: 24,
-                      align: "stretch",
-                      className: "configure-column-modal__split",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.FlexItem, {
-                        className: "configure-column-modal__left",
-                        isBlock: true,
-                        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalVStack, {
-                          spacing: 3,
-                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
-                            label: "Post Layout",
-                            selected: dataTypeFormat,
-                            options: [{
-                              label: 'Link Only',
-                              value: 'link'
-                            }, {
-                              label: 'Wide',
-                              value: 'wide'
-                            }, {
-                              label: 'Narrow',
-                              value: 'narrow'
-                            }],
-                            onChange: value => onPostFormat(value)
-                          }), dataTypeFormat !== 'link' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
-                            className: "configure-column-modal__options",
-                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("strong", {
-                              children: "Formatting Options"
-                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_6__.Root, {
-                              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_7__.Header, {
-                                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Title, {
-                                  children: "Content Elements To Display"
-                                })
-                              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.Content, {
-                                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("table", {
-                                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("thead", {
-                                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("tr", {
-                                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("th", {
-                                        children: "Element"
-                                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("th", {
-                                        children: "Display?"
-                                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("th", {
-                                        children: "Order"
-                                      }), dataTypeFormat === 'wide' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("th", {
-                                        children: "Location"
-                                      })]
-                                    })
-                                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("tbody", {
-                                    children: postDisplayElements.map(({
-                                      elementName,
-                                      updateOption,
-                                      displayAttributes
-                                    }) => {
-                                      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(DislpayPostElementRow, {
-                                        elementName: elementName,
-                                        displayElement: displayAttributes,
-                                        updateOption: updateOption,
-                                        postFormat: dataTypeFormat,
-                                        columnItemCount: postDisplayItemsPerColumn,
-                                        onChange: onPostFormatOption
-                                      });
-                                    })
-                                  })]
-                                })
-                              })]
-                            }), (() => {
-                              const coverImage = postDisplayElements.find(({
-                                element
-                              }) => element === 'displayCoverImage');
-                              const title = postDisplayElements.find(({
-                                element
-                              }) => element === 'displayTitle');
-                              console.log('Cover Impage:', coverImage);
-                              console.log('Title:', title);
-                              return coverImage.displayAttributes.display > 0 && title.displayAttributes.display > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
-                                label: 'Display title in Cover Image?',
-                                checked: postTitleInCover,
-                                onChange: checked => onPostFormatOption(checked, 'title-in-cover')
-                              });
-                            })(), (() => {
-                              const coverImage = postDisplayElements.find(({
-                                element
-                              }) => element === 'displayCoverImage');
-                              console.log('Cover Impage:', coverImage);
-                              return coverImage.displayAttributes.display > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.Fragment, {
-                                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.RadioControl, {
-                                  label: "Link Location",
-                                  selected: postLinkLocation,
-                                  options: [{
-                                    label: 'Title',
-                                    value: 'title'
-                                  }, {
-                                    label: 'Cover Image',
-                                    value: 'image'
-                                  }],
-                                  onChange: value => onPostFormatOption(value, 'link-location')
-                                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
-                                  label: "Image Size",
-                                  value: postImageSize,
-                                  defaultValue: "thumbnail",
-                                  onValueChange: value => onPostFormatOption(value, 'image-size'),
-                                  items: [{
-                                    value: 'thumbnail',
-                                    label: 'Thumbnail: (150 x 150)'
-                                  }, {
-                                    value: 'medium',
-                                    label: 'Medium: (300 x 300)'
-                                  }, {
-                                    value: 'medium_large',
-                                    label: 'Medium/Large (768 Wide)'
-                                  }, {
-                                    value: 'large',
-                                    label: 'Large (1024 x 1024)'
-                                  }]
-                                })]
-                              });
-                            })()]
-                          })]
-                        })
-                      }), " */}"]
-                    })]
-                  })
-                })]
-              })]
+            }), dataType.type === 'post' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_post__WEBPACK_IMPORTED_MODULE_10__.ConfigurePostColumnDataType, {
+              persistedPostFormat: dataType?.settings,
+              onChange: onPostUpdate
             })]
           })
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
         className: "configure-column-modal__footer",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
           className: "configure-column-modal__button-group",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
             variant: "secondary",
             onClick: handleCancel,
             children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Cancel', 'dynamic-table-blocks')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
             variant: "primary",
             type: "submit",
             children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Update', 'dynamic-table-blocks')
@@ -3300,127 +2785,6 @@ function ConfigureColumnDataType(props = {}) {
         })
       })]
     })
-  });
-}
-function DislpayPostElementRow(props) {
-  const {
-    elementName,
-    displayElement,
-    updateOption,
-    postFormat,
-    columnItemCount,
-    onChange
-  } = props;
-  const {
-    display,
-    order,
-    column
-  } = displayElement;
-  const labelOrderSuffix = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Display Order', 'dynamic-table-blocks');
-  const labelColumnSuffix = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Display Column', 'dynamic-table-blocks');
-  function maxDisplayItems(column, columnItemCount) {
-    if (column === 'none') return columnItemCount.none;
-    if (column === 'span') return columnItemCount.span;
-    if (column === 'left') return columnItemCount.left;
-    if (column === 'right') return columnItemCount.right;
-    return 0;
-  }
-
-  // console.log('Items per column type = ', columnItemCount);
-  // console.log('Items in column (' + elementName + ')= ' + maxDisplayItems(column, columnItemCount));
-
-  function onDisplayUpdate(updatedValue, updatedDisplayOption, updatedAttribute) {
-    let newDisplay = display;
-    let newColumn = column;
-    let newOrder = Number(order);
-    switch (updatedAttribute) {
-      case 'display':
-        {
-          newDisplay = updatedValue;
-          if (updatedValue) {
-            newColumn = postFormat === 'wide' ? 'left' : 'none';
-            const itemCount = maxDisplayItems(newColumn, columnItemCount);
-            newOrder = itemCount + 1;
-          } else {
-            newColumn = 'none';
-            newOrder = 0;
-          }
-          break;
-        }
-      case 'column':
-        {
-          console.log('Upated column value: ', updatedValue);
-          const itemCount = maxDisplayItems(updatedValue, columnItemCount);
-          newColumn = updatedValue;
-          newOrder = itemCount + 1;
-          break;
-        }
-      case 'order':
-        {
-          const itemCount = maxDisplayItems(column, columnItemCount);
-          if (Number(updatedValue) < 1 || Number(updatedValue) > itemCount) {
-            return;
-          }
-          newOrder = Number(updatedValue);
-          break;
-        }
-      default:
-        {
-          break;
-        }
-    }
-    const updatedDisplayElement = {
-      display: newDisplay,
-      column: newColumn,
-      order: newOrder
-    };
-    console.log('Changed Display Element ( ' + updatedDisplayOption + '): ', updatedDisplayElement);
-    onChange(updatedDisplayElement, updatedDisplayOption);
-  }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsxs)("tr", {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("td", {
-      children: elementName
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("td", {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CheckboxControl, {
-        checked: display,
-        onChange: checked => onDisplayUpdate(checked, updateOption, 'display')
-      })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("td", {
-      children: display ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_4__.InputControl, {
-        label: elementName + ' ' + labelOrderSuffix,
-        hideLabelFromVision: true,
-        min: 1,
-        step: 1,
-        max: maxDisplayItems(column, columnItemCount),
-        value: order || 1,
-        onValueChange: value => onDisplayUpdate(value, updateOption, 'order'),
-        type: "number",
-        size: "compact",
-        suffix: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_ui_number_increment_control__WEBPACK_IMPORTED_MODULE_13__.NumberIncrementControl, {
-          baseInteger: Number(order),
-          iconPair: "arrow-up-down",
-          reverseIcons: true,
-          onClick: value => onDisplayUpdate(value, updateOption, 'order')
-        })
-      }) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('n/a', 'dynamic-table-blocks')
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)("td", {
-      children: postFormat === 'wide' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_17__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_5__.SelectControl, {
-        label: elementName + ' ' + labelColumnSuffix,
-        hideLabelFromVision: true,
-        value: column || 'none',
-        onValueChange: value => onDisplayUpdate(value.value, updateOption, 'column'),
-        items: [{
-          value: 'left',
-          label: 'Left'
-        }, {
-          value: 'right',
-          label: 'Right'
-        }, {
-          value: 'span',
-          label: 'Span Columns'
-        }]
-      })
-    })]
   });
 }
 const ColumnDataTypeModal = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.memo)(ConfigureColumnDataType);
@@ -3436,6 +2800,7 @@ const ColumnDataTypeModal = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.m
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   ConfigurePostColumnDataType: () => (/* binding */ ConfigurePostColumnDataType),
+/* harmony export */   defaultDisplayElement: () => (/* binding */ defaultDisplayElement),
 /* harmony export */   getPostFormatDefaults: () => (/* binding */ getPostFormatDefaults)
 /* harmony export */ });
 /* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
@@ -3488,13 +2853,9 @@ function ConfigurePostColumnDataType(props = {}) {
   } = props;
   const instanceId = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_0__.useInstanceId)(ConfigurePostColumnDataType);
   const previewId = `dtbk-preview-${instanceId}`;
+  console.log('Initiial post format', persistedPostFormat);
   const [postFormat, setPostFormat] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(persistedPostFormat?.format || '');
   const [postOptions, setPostOptions] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(persistedPostFormat?.formatOptions || '');
-  const defaultDisplayElement = {
-    display: false,
-    column: 'none',
-    order: 0
-  };
   console.log('Retrieved Column Data: ', persistedPostFormat);
   console.log('Initial Post Display Element: ', sortPostDisplayElements(loadPostDisplayElements(persistedPostFormat.formatOptions, defaultDisplayElement)));
   const initialPostDisplayElements = sortPostDisplayElements(loadPostDisplayElements(persistedPostFormat.formatOptions, defaultDisplayElement));
@@ -3529,9 +2890,10 @@ function ConfigurePostColumnDataType(props = {}) {
     console.log('Setting Post Format');
     setPostFormat(postFormat);
     const {
-      newDisplayElements,
-      newDisplayOptions
+      displayOptions,
+      displayElements
     } = getPostFormatDefaults(postFormat, defaultDisplayElement);
+    console.log('Default post display options: ', displayOptions);
     switch (postFormat) {
       case 'link':
         {
@@ -3560,7 +2922,7 @@ function ConfigurePostColumnDataType(props = {}) {
       default:
         return;
     }
-    const resetDisplayElementsArray = sortPostDisplayElements(loadPostDisplayElements(newDisplayElements, defaultDisplayElement));
+    const resetDisplayElementsArray = sortPostDisplayElements(loadPostDisplayElements(displayElements, defaultDisplayElement));
     setPostLinkLocation('title');
     setPostTitleInCover(false);
     setPostImageSize('thumbnail');
@@ -3568,10 +2930,10 @@ function ConfigurePostColumnDataType(props = {}) {
     const updatedDataType = {
       settings: {
         format: postFormat,
-        formatOptions: newDisplayOptions
+        formatOptions: displayOptions
       }
     };
-    setPostOptions(newDisplayOptions);
+    setPostOptions(displayOptions);
     updatePostConfig(updatedDataType);
   }
 
@@ -3828,6 +3190,7 @@ function ConfigurePostColumnDataType(props = {}) {
       formatOptions: postOptions
     }
   };
+  console.log('Test Content Format', testCellContentType);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Card, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardHeader, {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("strong", {
@@ -4190,12 +3553,14 @@ function getPostFormatDefaults(postFormat, defaultDisplayElement) {
     default:
       return;
   }
+  console.log('New display format options: ', formatOptions);
   const displayOptions = {
     ...formatOptions,
     displayTitleInCover: false,
     displayImageSize: 'thumbnail',
     linkLocation: 'title'
   };
+  console.log('New extended display format options: ', displayOptions);
   const displayElements = {
     displayTitle: formatOptions.displayTitle,
     displayCoverImage: formatOptions.displayCoverImage,
@@ -4205,11 +3570,17 @@ function getPostFormatDefaults(postFormat, defaultDisplayElement) {
     displayPublishDate: formatOptions.displayPublishDate,
     displayModifiedDate: formatOptions.displayModifiedDate
   };
+  console.log('New extended display elements: ', displayElements);
   return {
     displayOptions,
     displayElements
   };
 }
+const defaultDisplayElement = {
+  display: false,
+  column: 'none',
+  order: 0
+};
 
 /***/ },
 
