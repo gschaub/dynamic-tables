@@ -7,8 +7,31 @@ import { __ } from '@wordpress/i18n';
 /* Internal dependencies */
 import './style.scss';
 
+/**
+ * React component for a number spinner with multiple presentation options.
+ *
+ * @since    1.5.0
+ *
+ * @param {Object} props
+ * @return {HTMLElement} Rendered HTML for the component
+ */
 export function NumberIncrementControl(props) {
-	const { baseInteger, iconPair = 'plus-minus', reverseIcons = false, onClick } = props;
+	const {
+		baseInteger,
+		iconPair = 'plus-minus',
+		reverseIcons = false,
+		wrapper = 'none',
+		showValue = false,
+		onClick,
+	} = props;
+
+	// Support a pill shape container for the spinner buttons
+	const wrapperClassName =
+		wrapper === 'pill'
+			? 'dtbk-increment-steppers dtbk-increment-steppers--pill'
+			: 'dtbk-increment-steppers';
+
+
 	const getIcons = (pair, reverseIcons) => {
 		switch (pair) {
 			case 'plus-minus': {
@@ -36,7 +59,7 @@ export function NumberIncrementControl(props) {
 
 	return (
 		<InputLayout.Slot padding="minimal">
-			<Stack direction="row" align="center" className="dtbk-increment-steppers">
+			<Stack direction="row" align="center" className={wrapperClassName}>
 				<IconButton
 					className="dtbk-increment-steppers__button"
 					type="button"
@@ -47,9 +70,13 @@ export function NumberIncrementControl(props) {
 					disabled={Number(baseInteger) >= 50}
 					onClick={() => onClick(Number(baseInteger) + 1)}
 				/>
-				<span className="dtbk-increment-steppers__separator" aria-hidden="true">
-					/
-				</span>
+				{showValue ? (
+					<span className="dtbk-increment-steppers__value">{baseInteger}</span>
+				) : (
+					<span className="dtbk-increment-steppers__separator" aria-hidden="true">
+						/
+					</span>
+				)}
 				<IconButton
 					className="dtbk-increment-steppers__button"
 					type="button"

@@ -1159,6 +1159,7 @@ export default function Edit(props) {
 	 *
 	 * @since 1.0.0
 	 * @since 1.3.0 Refactored
+	 * @since 1.5.0 Support async required for external data
 	 */
 	const {
 		table: storedTable,
@@ -1199,11 +1200,18 @@ export default function Edit(props) {
 		[table_id, isTableStale, block_table_ref]
 	);
 
-	// Keep editor controls consistent with this block's border preference.
-	const table = useMemo(
-		() => (storedTable?.block_table_ref ? withTableBorders(storedTable, showBorders) : storedTable),
-		[storedTable, showBorders]
-	);
+	const table = useMemo(() => {
+		const normalizedTable = {
+			...(storedTable || {}),
+			rows: Array.isArray(storedTable?.rows) ? storedTable.rows : [],
+			columns: Array.isArray(storedTable?.columns) ? storedTable.columns : [],
+			cells: Array.isArray(storedTable?.cells) ? storedTable.cells : [],
+		};
+
+		return normalizedTable.block_table_ref
+			? withTableBorders(normalizedTable, showBorders)
+			: normalizedTable;
+	}, [storedTable, showBorders]);
 
 	// Table is no longer stale once it has finished resolving
 	useEffect(() => {
@@ -5143,7 +5151,7 @@ export default function Edit(props) {
 										<Card.Title>New Table Definition</Card.Title>
 									</Card.Header>
 									<Card.Content>
-										<Stack direction="row" gap="24px">
+										<Stack direction="row" gap="md">
 											{/* Left column */}
 											<Stack direction="column" className="dtbk-configure-column-split__left">
 												<InputControl

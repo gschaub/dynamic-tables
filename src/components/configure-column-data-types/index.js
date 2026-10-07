@@ -19,15 +19,6 @@ import {
 	CardBody,
 	CardHeader,
 } from '@wordpress/components';
-import {
-	Card as NewCard,
-	Stack,
-	InputControl as NewInputControl,
-	CheckboxControl as NewCheckboxControl,
-	SelectControl as NewSelectControl,
-	InputLayout,
-	IconButton,
-} from '@wordpress/ui';
 import clsx from 'clsx';
 
 /**
@@ -35,7 +26,6 @@ import clsx from 'clsx';
  */
 import './style.scss';
 import { FreeformCheckboxIcon, StatusIcon } from '../ui/icon';
-import { NumberIncrementControl } from '../ui/number-increment-control';
 import {
 	normalizeColumnDataType,
 	stageClassesForEdit,
@@ -49,7 +39,6 @@ import {
 	getFirstNumericIndex,
 	normalizeCaretForPresentationPrefix,
 } from '../../utils';
-import { CellPostContent } from '../ui/post-content';
 import { ConfigurePostColumnDataType, getPostFormatDefaults, defaultDisplayElement } from './post';
 
 /**
@@ -156,6 +145,9 @@ function ConfigureColumnDataType(props = {}) {
 	if (dataType.type === 'post' && !dataTypeFormat) {
 		setDataTypeFormat('link');
 	}
+	const postSettings = dataType?.settings;
+	console.log('Data Type: ', dataType);
+	console.log('Post Settings: ', postSettings);
 
 	// Column width attributes
 	const [columnWidthType, setColumnWidthType] = useState(columnAttributes.columnWidthType);
@@ -694,7 +686,6 @@ function ConfigureColumnDataType(props = {}) {
 	function defaultPostFormat(postFormat) {
 		setDataTypeFormat(postFormat);
 		const { displayOptions } = getPostFormatDefaults(postFormat, defaultDisplayElement);
-		console.log('Reset Post display options: ', displayOptions);
 
 		const updatedDataType = {
 			type: 'post',
@@ -703,8 +694,6 @@ function ConfigureColumnDataType(props = {}) {
 				formatOptions: displayOptions,
 			},
 		};
-
-		console.log('Reset Post data type: ', updatedDataType);
 
 		setDataType(updatedDataType);
 	}
@@ -856,11 +845,6 @@ function ConfigureColumnDataType(props = {}) {
 	const renderColumnClasses = clsx(columnClassNamesRender, {
 		'grid-control__body-columns--number-red': showNegativeNumberPreview,
 	});
-
-	// console.log('Column Content Type: ', dataType);
-	// console.log('Post Display Elements: ', postDisplayElements);
-	// console.log(dataType.type);
-	console.log(dataType);
 
 	return (
 		<Modal
@@ -1234,10 +1218,7 @@ function ConfigureColumnDataType(props = {}) {
 
 							{/* Post Settings */}
 							{dataType.type === 'post' && (
-								<ConfigurePostColumnDataType
-									persistedPostFormat={dataType?.settings}
-									onChange={onPostUpdate}
-								/>
+								<ConfigurePostColumnDataType postSettings={postSettings} onChange={onPostUpdate} />
 							)}
 						</VStack>
 					</div>

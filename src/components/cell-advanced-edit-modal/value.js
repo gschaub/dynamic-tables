@@ -23,6 +23,7 @@ export function isWebUrl(value) {
  * Support updates required for changes to cell value attribute definitions.
  *
  * @since    1.4.10
+ * @since    1.5.0  Add support for external data
  *
  * @param {Object} value       Cell value attributes
  * @param {string} content     Cell content
@@ -30,26 +31,34 @@ export function isWebUrl(value) {
  * @return {Object}            Normalized cell value attributes
  */
 export function normalizeCellValueAttributes(value = {}, content = '', contentType) {
-	const cannonical = { ...value?.cannonical };
+	const canonical = {
+		...(value?.['cannonical'] || {}),
+		...(value?.canonical || {}),
+	};
 	const options = { ...value?.options };
 	const refs = [...(value?.refs ?? [])];
 	const meta = { ...value?.meta };
+	const externalData = { ...value?.externalData };
 	const indexText = value?.indexText;
 
 	/* Backwards compatibility for old newTab location for links*/
-	if (options.newTab == null && typeof cannonical.newTab === 'boolean') {
-		options.newTab = cannonical.newTab;
+	if (options?.newTab == null && typeof canonical?.newTab === 'boolean') {
+		options.newTab = canonical.newTab;
 	}
-	delete cannonical.newTab;
+	delete canonical?.newTab;
 
 	const attributes = {
 		...value,
-		cannonical,
+		canonical,
 		options,
 		refs,
 		meta,
+		externalData,
 		indexText,
 	};
+
+	// Remove the legacy misspelled property from normalized values.
+	delete attributes['cannonical'];
 
 	return attributes;
 }
@@ -65,12 +74,22 @@ export function normalizeCellValueAttributes(value = {}, content = '', contentTy
  * @return {Object | null}    Combobox Option
  */
 export function getPostOption(attributes) {
-	const postId = Number(attributes?.cannonical?.postId);
-	if (!Number.isSafeInteger(postId) || postId <= 0) return null;
+	const postId = Number(attributes?.canonical?.postId);
+	const postType = attributes?.canonical?.postType;
+
+	if (
+		!Number.isSafeInteger(postId) ||
+		postId <= 0 ||
+		typeof postType !== 'string' ||
+		postType.length === 0
+	) {
+		return null;
+	}
+
 	return {
 		value: String(postId),
 		label: attributes.indexText || __('No title found', 'dynamic-table-blocks'),
-		postType: attributes.cannonical.postType || 'post',
+		postType: postType,
 	};
 }
 
@@ -125,8 +144,8 @@ export function buildCellContent(contentType, attributes, columnOptions = {}, po
 			break;
 		}
 		default: {
-			label = String(attributes.cannonical?.label || '');
-			url = String(attributes.cannonical?.url || '').trim();
+			label = String(attributes.canonical?.label || '');
+			url = String(attributes.canonical?.url || '').trim();
 		}
 	}
 
@@ -152,8 +171,8 @@ export function buildCellContent(contentType, attributes, columnOptions = {}, po
 export function setPostDetails(attributes, post) {
 	return {
 		...attributes,
-		cannonical: {
-			...attributes.cannonical,
+		canonical: {
+			...attributes.canonical,
 			postId: post.postId,
 			postType: post.postType,
 		},
@@ -171,12 +190,12 @@ export function setPostDetails(attributes, post) {
  * @return {Object}           Updated cell attributes for a post type cell
  */
 export function removePostDetails(attributes) {
-	const cannonical = { ...attributes.cannonical };
-	delete cannonical.postId;
-	delete cannonical.postType;
+	const canonical = { ...attributes.canonical };
+	delete canonical.postId;
+	delete canonical.postType;
 	return {
 		...attributes,
-		cannonical,
+		canonical,
 		refs: [],
 		indexText: '',
 	};

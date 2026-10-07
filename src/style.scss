@@ -183,6 +183,67 @@
 	// justify-content: var(--gridAlignment);
 }
 
+// Styles for post content type
+.dtbk-post-content {
+	box-sizing: border-box;
+	min-inline-size: 0;
+	max-inline-size: 100%;
+	font-size: var(--dtbk-post-content-font-size, 13px);
+	white-space: normal;
+	overflow-wrap: anywhere;
+}
+
+.dtbk-post-content--narrow {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.dtbk-post-content--wide {
+	display: block;
+}
+
+.dtbk-post-image {
+	display: flex;
+	inline-size: 100%;
+	min-inline-size: 0;
+	white-space: normal;
+}
+
+.dtbk-post-image__link,
+.dtbk-post-image__frame {
+	display: inline-block;
+	max-inline-size: 100%;
+}
+
+.dtbk-post-image__frame {
+	position: relative;
+	vertical-align: top;
+	white-space: normal;
+}
+
+.dtbk-post-image__media {
+	display: block;
+	max-inline-size: 100%;
+	block-size: auto;
+}
+
+.dtbk-post-image__title {
+	position: absolute;
+	inset-inline: 0;
+	inset-block-end: 0;
+	box-sizing: border-box;
+	padding: 12px;
+	background: rgba(0, 0, 0, 0.65);
+	color: #fff;
+	font: inherit;
+	font-weight: 600;
+	line-height: 1.3;
+	white-space: normal;
+	overflow-wrap: anywhere;
+}
+
+// Styles for checkbox content type
 .grid-control__body-cells--checkbox {
 	display: flex;
 	justify-content: center !important;

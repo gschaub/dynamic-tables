@@ -30,4 +30,57 @@
         user-select: none;
         pointer-events: none;
     }
+
+	.dtbk-increment-steppers__value {
+		min-width: 2ch;
+		font-size: 13px;
+		font-variant-numeric: tabular-nums;
+		line-height: 1;
+		text-align: center;
+	}
+
+	&--pill {
+		--dtbk-increment-steppers-disabled-color: #dcdcde;
+		width: fit-content;
+		padding: 2px 4px;
+		background: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+		border-radius: 9999px;
+		font-weight: 700;
+
+		.dtbk-increment-steppers__button {
+			background: transparent;
+
+			svg {
+				stroke: currentColor;
+				stroke-width: 1.25px;
+				stroke-linecap: round;
+				stroke-linejoin: round;
+			}
+
+			&:not([data-disabled]):not(:disabled) {
+				color: #fff;
+
+				&:hover {
+					color: #fff;
+					background: rgba(255, 255, 255, 0.16);
+				}
+			}
+
+			&[data-disabled],
+			&:disabled {
+				color: var(--dtbk-increment-steppers-disabled-color);
+				background: transparent;
+				opacity: 1;
+			}
+		}
+
+		.dtbk-increment-steppers__separator {
+			color: var(--dtbk-increment-steppers-disabled-color);
+			opacity: 1;
+		}
+
+		.dtbk-increment-steppers__value {
+			color: white;
+		}
+	}
 }

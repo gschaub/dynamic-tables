@@ -77,9 +77,25 @@ function appendReadableToken(buffer, token) {
 }
 
 /**
+ * Determines if an object is empty or null.
+ *
+ * @since 1.5.0
+ *
+ * @param {Object} obj Object to test
+ * @return {boolean} True if the object is empty, false otherwise
+ */
+export function isEmptyObject(obj) {
+	return (
+		obj && // Exclude null and undefined
+		Object.keys(obj).length === 0 &&
+		obj.constructor === Object // Ensure it's a plain object, not a Date/Array
+	);
+}
+
+/**
  * Create index text from HTML for search and accessibility purposes.
  *
- * @since 3.1.0
+ * @since 1.3.0
  *
  * @param {string} html Passed html string
  * @return  {string}    Plain text
@@ -91,7 +107,7 @@ export function htmlToIndexText(html = '') {
 /**
  * Convert html to plain text retaining line breaks and tabs.
  *
- * @since 3.1.0
+ * @since 1.3.0
  *
  * @param {string} html Passed html string
  * @return  {string}    Plain text with line breaks and tabs converted for readability

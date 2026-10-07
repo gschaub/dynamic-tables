@@ -2,13 +2,14 @@
 import { store as coreStore } from '@wordpress/core-data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import { store as noticeStore } from '@wordpress/notices';
-import { __ } from '@wordpress/i18n';
 
 /* Internal dependencies */
 import TYPES from './action-types.js';
 import { showMessageNotice } from '../messages';
 import { computeCellIds } from '../utils';
-import { isDeepEqual } from './table-entity-adapter';
+import { isDeepEqual, removeExternalCellData } from './table-entity-adapter';
+import { lookupPosts, lookupPostAuthors, lookupPostImages } from '../get-external-data';
+import { getPostStatistics } from '../components/ui/post-content/post-statistics';
 
 /* Load constants */
 const {
@@ -48,10 +49,61 @@ export function receiveNewTable(table) {
 }
 
 /**
+ * Build the external-data lookup request for a cell.
+ *
+ * @since    1.5.0
+ *
+ * @param {Object} cell   Cell to inspect.
+ * @param {Object} column Column containing the cell.
+ *
+ * @return {Object|null} External-data request, or null when no lookup is needed.
+ */
+const buildExternalDataRequest = (cell, column) => {
+	const dataType = column?.attributes?.columnDataType?.type;
+
+	switch (dataType) {
+		case 'post': {
+			const cellValue = cell?.attributes?.value;
+			const canonicalValue = {
+				...(cellValue?.cannonical || {}),
+				...(cellValue?.canonical || {}),
+			};
+			const postId = Number(canonicalValue?.postId);
+			const postType = canonicalValue?.postType;
+			const columnOptions = column.attributes?.columnDataType?.settings?.formatOptions;
+
+			if (
+				!Number.isSafeInteger(postId) ||
+				postId <= 0 ||
+				typeof postType !== 'string' ||
+				postType.length === 0
+			) {
+				return null;
+			}
+
+			return {
+				dataType,
+				cellDetails: {
+					row_id: cell.row_id,
+					column_id: cell.column_id,
+					post_id: postId,
+					post_type: postType,
+					image_size: columnOptions?.displayImageSize || 'thumbnail',
+				},
+			};
+		}
+
+		default:
+			return null;
+	}
+};
+
+/**
  * Returns action object used in signalling a new table has been received
  * from REST service.
  *
  * @since    1.0.0
+ * @since    1.5.0 Add support for retrieval of external data at hydration time.
  *
  * @param {number}       table_id        Identifier key for the table
  * @param {string}       block_table_ref Cross reference identified linking table to block within post
@@ -65,41 +117,242 @@ export function receiveNewTable(table) {
  * @param {Array|Object} cells           Array of table cell objects
  * @return {Object} Action object
  */
-export function receiveTable(
-	table_id,
-	block_table_ref,
-	table_status,
-	post_id,
-	table_name,
-	attributes,
-	classes,
-	rows,
-	columns,
-	cells
-) {
-	return {
-		type: RECEIVE_HYDRATE,
-		tableId: table_id,
-		table: {
-			table_id,
-			block_table_ref,
-			table_status,
-			post_id,
-			table_name,
-			attributes,
-			classes,
-			rows,
-			columns,
-			cells,
-		},
+export const receiveTable =
+	(
+		table_id,
+		block_table_ref,
+		table_status,
+		post_id,
+		table_name,
+		attributes,
+		classes,
+		rows,
+		columns,
+		cells
+	) =>
+	async ({ dispatch }) => {
+		const externalColumnTypes = Array();
+
+		// Retrieve cell data for all content types that require external data.
+		columns.forEach(column => {
+			cells.forEach(cell => {
+				if (cell.column_id !== column.column_id) {
+					return;
+				}
+
+				const externalDataRequest = buildExternalDataRequest(cell, column);
+
+				if (externalDataRequest) {
+					externalColumnTypes.push(externalDataRequest);
+				}
+			});
+		});
+
+		let hydratedCells = cells;
+
+		if (externalColumnTypes.length !== 0) {
+			// Retrieve external data
+			const updatedExternalColumnTypes = await dispatch.getExternalData(externalColumnTypes);
+
+			const externalDataByCell = new Map(
+				updatedExternalColumnTypes
+					.filter(item => item.cellDetails?.externalData)
+					.map(({ cellDetails }) => [
+						`${cellDetails.column_id}:${cellDetails.row_id}`,
+						cellDetails.externalData,
+					])
+			);
+
+			// Update cells with external data
+			hydratedCells = cells.map(cell => {
+				const externalData = externalDataByCell.get(`${cell.column_id}:${cell.row_id}`);
+
+				if (!externalData) {
+					return cell;
+				}
+
+				return {
+					...cell,
+					attributes: {
+						...cell.attributes,
+						value: {
+							...cell.attributes?.value,
+							externalData,
+						},
+					},
+				};
+			});
+		}
+
+		return dispatch({
+			type: RECEIVE_HYDRATE,
+			tableId: table_id,
+			table: {
+				table_id,
+				block_table_ref,
+				table_status,
+				post_id,
+				table_name,
+				attributes,
+				classes,
+				rows,
+				columns,
+				cells: hydratedCells,
+			},
+		});
 	};
-}
+
+/**
+ * Lookup and return external data based on column type and attach it the appropriate cells
+ *
+ * @since    1.5.0
+ *
+ * @param {Array|Object} externalColumnTypes Array of table row objects
+ * @return {Object} Action object
+ */
+export const getExternalData = externalColumnTypes => async () => {
+	const externalDataTypes = ['post'];
+	let updatedExternalColumnTypes = externalColumnTypes;
+
+	for (const columnType of externalDataTypes) {
+		switch (columnType) {
+			case 'post': {
+				const postIdsByType = updatedExternalColumnTypes
+					.filter(item => item.dataType === 'post')
+					.reduce((groupedPosts, { cellDetails }) => {
+						const postId = Number(cellDetails.post_id);
+						const postType = cellDetails.post_type;
+
+						if (
+							!Number.isSafeInteger(postId) ||
+							postId <= 0 ||
+							typeof postType !== 'string' ||
+							postType.length === 0
+						) {
+							return groupedPosts;
+						}
+
+						if (!groupedPosts.has(postType)) {
+							groupedPosts.set(postType, new Set());
+						}
+
+						groupedPosts.get(postType).add(postId);
+						return groupedPosts;
+					}, new Map());
+
+				const postRequests = Array.from(postIdsByType, ([postType, postIds]) => ({
+					postType,
+					postIds: Array.from(postIds),
+				}));
+
+				// Retrieve every unique post, grouped by post type.
+				const postResults = await Promise.all(
+					postRequests.map(async ({ postType, postIds }) => ({
+						postType,
+						posts: await lookupPosts(postIds, { postType }),
+					}))
+				);
+
+				const postsByKey = new Map();
+
+				postResults.forEach(({ postType, posts }) => {
+					posts.forEach(post => {
+						postsByKey.set(`${postType}:${post.id}`, post);
+					});
+				});
+
+				const posts = postResults.flatMap(({ posts: retrievedPosts }) => retrievedPosts);
+				const authorIds = posts.map(post => post.author);
+				const imageIdsBySize = new Map();
+
+				updatedExternalColumnTypes
+					.filter(item => item.dataType === 'post')
+					.forEach(({ cellDetails }) => {
+						const post = postsByKey.get(`${cellDetails.post_type}:${cellDetails.post_id}`);
+						const mediaId = Number(post?.featured_media);
+
+						if (!Number.isSafeInteger(mediaId) || mediaId <= 0) {
+							return;
+						}
+
+						const imageSize = cellDetails.image_size;
+
+						if (!imageIdsBySize.has(imageSize)) {
+							imageIdsBySize.set(imageSize, new Set());
+						}
+
+						imageIdsBySize.get(imageSize).add(mediaId);
+					});
+
+				const [authors, imageResults] = await Promise.all([
+					lookupPostAuthors(authorIds),
+					Promise.all(
+						Array.from(imageIdsBySize, async ([imageSize, mediaIds]) => ({
+							imageSize,
+							images: await lookupPostImages(Array.from(mediaIds), {
+								size: imageSize,
+							}),
+						}))
+					),
+				]);
+
+				const authorsById = new Map(
+					authors.map(({ authorId, authorName }) => [authorId, authorName])
+				);
+				const imagesByKey = new Map();
+
+				imageResults.forEach(({ imageSize, images }) => {
+					images.forEach(({ mediaId, image }) => {
+						imagesByKey.set(`${imageSize}:${mediaId}`, image);
+					});
+				});
+
+				updatedExternalColumnTypes = updatedExternalColumnTypes.map(item => {
+					if (item.dataType !== 'post') {
+						return item;
+					}
+
+					const { cellDetails } = item;
+					const postType = cellDetails.post_type;
+					const post = postsByKey.get(`${postType}:${cellDetails.post_id}`);
+
+					if (!post) {
+						return item;
+					}
+
+					const authorName = authorsById.get(Number(post.author)) ?? null;
+					const image = imagesByKey.get(`${cellDetails.image_size}:${post.featured_media}`) ?? null;
+
+					return {
+						...item,
+						cellDetails: {
+							...cellDetails,
+							externalData: {
+								post,
+								image,
+								authorName,
+								statistics: getPostStatistics(post),
+							},
+						},
+					};
+				});
+
+				break;
+			}
+			default: {
+				break;
+			}
+		}
+	}
+	return updatedExternalColumnTypes;
+};
 
 /**
  * Signals that table needs to be cloned, setting the table_id to zero and providng
  * a new table postId and blockTableRef.
  *
  * @since    1.1.0
+ * @since    1.5.0 Remove external data before cloning a table
  *
  * @param {*} tableId
  * @param {*} postId
@@ -138,6 +391,7 @@ export const cloneTable =
 			const cloneCell = {
 				...cell,
 				table_id: '0',
+				attributes: removeExternalCellData(cell.attributes),
 			};
 			cellsWithResetId.push(cloneCell);
 		});
@@ -176,7 +430,7 @@ export const cloneTable =
 			computeCellIds(table.cells);
 			const cells = table.cells;
 
-			dispatch.receiveTable(
+			await dispatch.receiveTable(
 				table_id,
 				block_table_ref,
 				table_status,
@@ -200,7 +454,9 @@ export const cloneTable =
  * persists the data as soon as the table is created, before post is saved/published.
  *
  * @since    1.0.0
+ * @since    1.5.0 Remove external data creating a persisted table entity
  *
+ * @param {number} tableIdToCreate Identifier key for the table
  * @return  {Object} Action object
  */
 export const createTableEntity =
@@ -230,7 +486,10 @@ export const createTableEntity =
 			},
 			rows: [...rows],
 			columns: [...columns],
-			cells: [...cells],
+			cells: cells.map(cell => ({
+				...cell,
+				attributes: removeExternalCellData(cell.attributes),
+			})),
 		};
 
 		try {
@@ -258,10 +517,6 @@ export const createTableEntity =
 export const saveTableEntity =
 	tableId =>
 	async ({ registry }) => {
-		const editedTableData = registry
-			.select(coreStore)
-			.getEditedEntityRecord('dynamic-table-blocks', 'table', tableId);
-
 		try {
 			return await registry
 				.dispatch(coreStore)
@@ -278,12 +533,13 @@ export const saveTableEntity =
  *
  * @since    1.0.0
  * @since    1.4.5 - Add undo/redo support
+ * @since    1.5.0 - Remove external data before updating a table
  *
- * @param {*}                         tableId                    Identifier key for the table
- * @param {string}                    [overrideTableStatus]      Updates the table's status if populated
- * @param {Object|null}               [tableOverride]            Optionally uses this source table
- * @param {Object}                    [options]                  Entity update options
- * @param {'record'|'cache'|'ignore'} [options.history='record'] Undo history behavior
+ * @param {number}                    tableId             Identifier key for the table
+ * @param {string}                    overrideTableStatus Updates the table's status if populated
+ * @param {Object|null}               tableOverride       Optionally uses this source table
+ * @param {Object}                    options             Entity update options
+ * @param {'record'|'cache'|'ignore'} options.history     Undo history behavior
  * @return  {Object} Action Object
  */
 export const updateTableEntity =
@@ -323,7 +579,7 @@ export const updateTableEntity =
 				table_id,
 				column_id,
 				row_id,
-				attributes,
+				attributes: removeExternalCellData(attributes),
 				classes,
 				content: typeof content === 'boolean' ? String(content) : (content ?? ''),
 			})
@@ -843,6 +1099,7 @@ export const updateColumn = (tableId, columnId, attribute, value) => {
  * Signal an update to a cell attribute/prop.
  *
  * @since    1.0.0
+ * @since    1.5.0 Add support for retrieval of external data at hydration time.
  *
  * @param {number}        tableId   Identifier key for the table
  * @param {string}        cellId    Identifier for a table cell
@@ -851,12 +1108,96 @@ export const updateColumn = (tableId, columnId, attribute, value) => {
  * @return {Object} Action object
  */
 export const updateCell = (tableId, cellId, attribute, value) => {
-	return {
-		type: UPDATE_CELL,
-		tableId,
-		cellId,
-		attribute,
-		value,
+	if (attribute !== 'attributes') {
+		return {
+			type: UPDATE_CELL,
+			tableId,
+			cellId,
+			attribute,
+			value,
+		};
+	}
+
+	return async ({ select, dispatch }) => {
+		const updatedAttributes = removeExternalCellData(value);
+
+		/*
+		 * Update the canonical cell data before beginning the asynchronous
+		 * lookup. This preserves the existing updateTableEntity call order.
+		 */
+		dispatch({
+			type: UPDATE_CELL,
+			tableId,
+			cellId,
+			attribute,
+			value: updatedAttributes,
+		});
+
+		const table = select.getTable(tableId, false);
+		const currentCell = table?.cells?.find(cell => cell.cell_id === cellId);
+
+		if (!currentCell) {
+			return;
+		}
+
+		const column = table?.columns?.find(
+			item => String(item.column_id) === String(currentCell.column_id)
+		);
+		const externalDataRequest = buildExternalDataRequest(
+			{
+				...currentCell,
+				attributes: updatedAttributes,
+			},
+			column
+		);
+
+		/*
+		 * Empty or corrupt canonical data is still stored, but it does not
+		 * trigger an external lookup.
+		 */
+		if (!externalDataRequest) {
+			return;
+		}
+
+		try {
+			const [hydratedRequest] = await dispatch.getExternalData([externalDataRequest]);
+			const externalData = hydratedRequest?.cellDetails?.externalData;
+
+			if (!externalData) {
+				return;
+			}
+
+			/*
+			 * Confirm that the cell was not changed again while the external
+			 * request was running.
+			 */
+			const latestTable = select.getTable(tableId, false);
+			const latestCell = latestTable?.cells?.find(cell => cell.cell_id === cellId);
+			const latestColumn = latestTable?.columns?.find(
+				item => String(item.column_id) === String(latestCell?.column_id)
+			);
+			const latestRequest = buildExternalDataRequest(latestCell, latestColumn);
+
+			if (!isDeepEqual(latestRequest, externalDataRequest)) {
+				return;
+			}
+
+			dispatch({
+				type: UPDATE_CELL,
+				tableId,
+				cellId,
+				attribute,
+				value: {
+					...latestCell.attributes,
+					value: {
+						...latestCell.attributes?.value,
+						externalData,
+					},
+				},
+			});
+		} catch (error) {
+			console.error('Error retrieving external cell data', error);
+		}
 	};
 };
 

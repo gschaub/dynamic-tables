@@ -1,23 +1,14 @@
 /* External dependencies */
 import { useInstanceId } from '@wordpress/compose';
-import { useLayoutEffect, useRef, useState, memo } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { BaseControl, RadioControl } from '@wordpress/components';
 import {
-	BaseControl,
-	CheckboxControl,
-	RadioControl,
-	__experimentalVStack as VStack,
-	Flex,
-	FlexItem,
 	Card,
-	CardBody,
-	CardHeader,
-} from '@wordpress/components';
-import {
-	Card as NewCard,
+	Stack,
 	InputControl as NewInputControl,
-	CheckboxControl as NewCheckboxControl,
-	SelectControl as NewSelectControl,
+	CheckboxControl,
+	SelectControl,
 } from '@wordpress/ui';
 
 /**
@@ -36,38 +27,24 @@ import { CellPostContent } from '../ui/post-content';
  * @return {Object} Updated column properties
  */
 export function ConfigurePostColumnDataType(props = {}) {
-	const { persistedPostFormat, columnClasses, onChange } = props;
+	const { postSettings, columnClasses, onChange } = props;
 	const instanceId = useInstanceId(ConfigurePostColumnDataType);
 	const previewId = `dtbk-preview-${instanceId}`;
-	console.log('Initiial post format', persistedPostFormat);
+	console.log('Initiial post format', postSettings);
 
-	const [postFormat, setPostFormat] = useState(persistedPostFormat?.format || '');
-	const [postOptions, setPostOptions] = useState(persistedPostFormat?.formatOptions || '');
-
-	console.log('Retrieved Column Data: ', persistedPostFormat);
-
-	console.log(
-		'Initial Post Display Element: ',
-		sortPostDisplayElements(
-			loadPostDisplayElements(persistedPostFormat.formatOptions, defaultDisplayElement)
-		)
-	);
+	const { format: postFormat, formatOptions: postOptions } = postSettings || {};
 
 	const initialPostDisplayElements = sortPostDisplayElements(
-		loadPostDisplayElements(persistedPostFormat.formatOptions, defaultDisplayElement)
+		loadPostDisplayElements(postOptions, defaultDisplayElement)
 	);
 	const [postDisplayElements, setPostDisplayElements] = useState(initialPostDisplayElements);
 
-	const [postLinkLocation, setPostLinkLocation] = useState(
-		persistedPostFormat.formatOptions?.linkLocation || 'title'
-	);
+	const [postLinkLocation, setPostLinkLocation] = useState(postOptions?.linkLocation || 'title');
 	const [postTitleInCover, setPostTitleInCover] = useState(
-		persistedPostFormat.formatOptions?.displayTitleInCover || false
+		postOptions?.displayTitleInCover || false
 	);
 
-	const [postImageSize, setPostImageSize] = useState(
-		persistedPostFormat.formatOptions?.displayImageSize || 'thumbnail'
-	);
+	const [postImageSize, setPostImageSize] = useState(postOptions?.displayImageSize || 'thumbnail');
 
 	const initialPostItemsNoneColumnCount = countFilteredDisplayItems(
 		initialPostDisplayElements,
@@ -106,8 +83,6 @@ export function ConfigurePostColumnDataType(props = {}) {
 		right: displayPostItemsRightColumnCount,
 	};
 
-	if (!postFormat) setPostFormat('link');
-
 	/**
 	 * Update post format and set default options
 	 *
@@ -116,13 +91,10 @@ export function ConfigurePostColumnDataType(props = {}) {
 	 * @param {string} postFormat Post format to set
 	 */
 	function onPostFormat(postFormat) {
-		console.log('Setting Post Format');
-		setPostFormat(postFormat);
 		const { displayOptions, displayElements } = getPostFormatDefaults(
 			postFormat,
 			defaultDisplayElement
 		);
-		console.log('Default post display options: ', displayOptions);
 
 		switch (postFormat) {
 			case 'link': {
@@ -160,13 +132,10 @@ export function ConfigurePostColumnDataType(props = {}) {
 		setPostDisplayElements(resetDisplayElementsArray);
 
 		const updatedDataType = {
-			settings: {
-				format: postFormat,
-				formatOptions: displayOptions,
-			},
+			format: postFormat,
+			formatOptions: displayOptions,
 		};
 
-		setPostOptions(displayOptions);
 		updatePostConfig(updatedDataType);
 	}
 
@@ -179,14 +148,10 @@ export function ConfigurePostColumnDataType(props = {}) {
 	 * @param {string} option Formatting option
 	 */
 	function onPostFormatOption(value, option) {
-		console.log('Setting Post Format Option: attribute = ' + option);
-		console.log('Setting Post Format Option: value = ', value);
-
 		const displayToObject = {};
-		postDisplayElements.map(({ element, displayAttributes }) => {
-			return (displayToObject[element] = displayAttributes);
+		postDisplayElements.forEach(({ element, displayAttributes }) => {
+			displayToObject[element] = { ...displayAttributes };
 		});
-		console.log('Display Options Before Update = ', displayToObject);
 
 		let {
 			displayTitle: newDisplayTitle,
@@ -240,14 +205,27 @@ export function ConfigurePostColumnDataType(props = {}) {
 				newDisplayModifiedDate = value;
 				break;
 			case 'title-in-cover':
-				if (newDisplayCoverImage !== 0) {
+				updatedElement = 'displayTitle';
+				priorElement = newDisplayTitle;
+
+				if (newDisplayCoverImage.display) {
+					if (value) {
+						newDisplayTitle = { display: true, column: 'none', order: 0 };
+						newLinkLocation = 'image';
+					} else {
+						newDisplayTitle = {
+							display: true,
+							column: postFormat === 'narrow' ? 'none' : 'left',
+							order: 1,
+						};
+					}
 					newTitleInCover = value;
 				} else {
 					newTitleInCover = false;
 				}
 				break;
 			case 'link-location':
-				if (newDisplayCoverImage !== 0) {
+				if (newDisplayCoverImage.display) {
 					newLinkLocation = value;
 				} else {
 					newLinkLocation = 'title';
@@ -269,45 +247,77 @@ export function ConfigurePostColumnDataType(props = {}) {
 			displayModifiedDate: newDisplayModifiedDate,
 		};
 
-		console.log('Updated Post Display Element', newDisplayElements);
+		const updatedDisplayElement = newDisplayElements[updatedElement] || null;
+		if (updatedDisplayElement && priorElement) {
+			const updatedElementDisplay = updatedDisplayElement.display;
+			const updatedElementColumn = updatedDisplayElement.column;
+			const updatedElementOrder = updatedDisplayElement.order;
 
-		const updateIsDisplayElement = newDisplayElements[updatedElement] || null;
-		if (updateIsDisplayElement) {
-			const updatedElementDisplay = newDisplayElements[updatedElement].display;
-			const updatedElementOrder = newDisplayElements[updatedElement].order;
+			const oldElementDisplay = priorElement.display;
+			const oldElementColumn = priorElement.column;
 			const oldElementOrder = priorElement.order;
 
-			console.log('Updated Element = ' + updatedElementOrder);
-			console.log('Updated Element Prior Order = ' + oldElementOrder);
-
-			// Close order gap when an element becomes not displayed
-			if (updatedElementOrder !== oldElementOrder && updatedElementOrder === 0) {
+			/*
+			 * Remove the changed element from its previous position. This closes
+			 * the gap when it is hidden, moved to another column, or reordered
+			 * within its current column.
+			 */
+			if (
+				oldElementDisplay &&
+				oldElementOrder > 0 &&
+				(!updatedElementDisplay ||
+					updatedElementColumn !== oldElementColumn ||
+					updatedElementOrder !== oldElementOrder)
+			) {
 				for (const element in newDisplayElements) {
-					const elementOrder = newDisplayElements[element].order;
-					const elementDisplay = newDisplayElements[element].display;
-					if (elementDisplay && elementOrder > oldElementOrder && element !== updatedElement) {
-						newDisplayElements[element].order = elementOrder - 1;
+					const displayElement = newDisplayElements[element];
+
+					if (
+						element !== updatedElement &&
+						displayElement.display &&
+						displayElement.column === oldElementColumn &&
+						displayElement.order > oldElementOrder
+					) {
+						displayElement.order -= 1;
 					}
 				}
 			}
 
-			// Increment order order for elements when an element becomes goes down in order
-			if (updatedElementDisplay && updatedElementOrder !== oldElementOrder) {
+			/*
+			 * Insert the changed element at its new position. A newly displayed
+			 * element or an element moved between columns arrives with the last
+			 * available order, so no existing target-column elements are shifted
+			 * in those cases. Reordering within a column shifts every element at
+			 * or after the insertion point.
+			 */
+
+			/*
+			 * Insert the changed element at its new ordered position. Elements
+			 * already at or after that position move down to make room. An order
+			 * of zero means the element is displayed outside the ordered flow.
+			 */
+			if (
+				updatedElementDisplay &&
+				updatedElementOrder > 0 &&
+				(!oldElementDisplay ||
+					updatedElementColumn !== oldElementColumn ||
+					updatedElementOrder !== oldElementOrder)
+			) {
 				for (const element in newDisplayElements) {
-					const elementOrder = newDisplayElements[element].order;
-					const elementDisplay = newDisplayElements[element].display;
+					const displayElement = newDisplayElements[element];
+
 					if (
-						elementDisplay &&
-						elementOrder === updatedElementOrder &&
-						element !== updatedElement
+						element !== updatedElement &&
+						displayElement.display &&
+						displayElement.column === updatedElementColumn &&
+						displayElement.order >= updatedElementOrder
 					) {
-						newDisplayElements[element].order = oldElementOrder;
+						displayElement.order += 1;
 					}
 				}
 			}
 		}
 
-		console.log('Updated Display Elements: ', newDisplayElements);
 		const orderedDisplayAttributes = sortPostDisplayElements(
 			loadPostDisplayElements(newDisplayElements, defaultDisplayElement)
 		);
@@ -339,20 +349,22 @@ export function ConfigurePostColumnDataType(props = {}) {
 		};
 
 		const updatedPostSettings = {
-			setting: {
-				format: postFormat,
-				formatOptions: updatedFormatOptions,
-			},
+			format: postFormat,
+			formatOptions: updatedFormatOptions,
 		};
 
-		setPostOptions(updatedFormatOptions);
 		updatePostConfig(updatedPostSettings);
 	}
 
 	function countFilteredDisplayItems(items, column) {
-		const filteredItems = items.filter(
-			el => el.displayAttributes.display && el.displayAttributes.column === column
-		);
+		const filteredItems = items.filter(el => {
+			return (
+				el.displayAttributes.display &&
+				el.displayAttributes.order > 0 &&
+				el.displayAttributes.column === column
+			);
+		});
+
 		return filteredItems?.length || 0;
 	}
 
@@ -426,55 +438,41 @@ export function ConfigurePostColumnDataType(props = {}) {
 		return displayElements;
 	}
 
-	// 		case 'post':
-	// 			setDataTypeFormat('link');
-	// 			onPostFormat('link');
-	// 			newColumnClassNames.delete('grid-control__body-columns--number-align-right');
-	// 			newColumnClassNames.delete('grid-control__body-columns--date-align-right');
-	// 			setColumnClassNames(newColumnClassNames);
-	// 			return;
-
-	// 		columnDataType: dataType,
-	// 		case 'post':
-	// 			break;
-	// 	}
-
 	function updatePostConfig(updatedPostConfig) {
 		onChange(updatedPostConfig);
 	}
 
 	const testCellContent = 'Test Content';
 	const testCellAttributes = {
-		canonical: {
-			postId: 196,
-			postType: 'post',
+		value: {
+			canonical: {
+				postId: 196,
+				postType: 'post',
+			},
+			ref: [{ postId: '196' }],
 		},
-		ref: [{ postId: '196' }],
 	};
 	const testCellClasses = '';
-	const testCellContentType = {
-		settings: {
-			format: postFormat,
-			formatOptions: postOptions,
-		},
-	};
+	const testCellContentType = postSettings;
 
 	console.log('Test Content Format', testCellContentType);
 
 	return (
-		<Card>
-			<CardHeader>
-				<strong>Content settings</strong>
-			</CardHeader>
-			<CardBody>
-				<VStack spacing={3}>
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>
+					<strong>Content settings</strong>
+				</Card.Title>
+			</Card.Header>
+			<Card.Content>
+				<Stack direction="column" gap="md">
 					<div>Select the specific content display options.</div>
 
 					{/* True split layout */}
-					<Flex gap={24} align="stretch" className="configure-column-modal__split">
+					<Stack direction="row" gap="md" align="stretch">
 						{/* Left column */}
-						<FlexItem className="configure-column-modal__left" isBlock>
-							<VStack spacing={3}>
+						<div className="configure-column-modal__left">
+							<Stack direction="column" gap="sm">
 								<RadioControl
 									label="Post Layout"
 									selected={postFormat}
@@ -487,17 +485,17 @@ export function ConfigurePostColumnDataType(props = {}) {
 								/>
 
 								{postFormat !== 'link' && (
-									<div className="configure-column-modal__options">
+									<Stack direction="column" gap="md" className="configure-column-modal__options">
 										<strong>Formatting Options</strong>
-										<NewCard.Root>
-											<NewCard.Header>
-												<NewCard.Title>Content Elements To Display</NewCard.Title>
-											</NewCard.Header>
-											<NewCard.Content>
+										<Card.Root>
+											<Card.Header>
+												<Card.Title>Content Elements To Display</Card.Title>
+											</Card.Header>
+											<Card.Content>
 												<table>
 													<thead>
 														<tr>
-															<th>Element</th>
+															<th style={{ textAlign: 'left' }}>Element</th>
 															<th>Display?</th>
 															<th>Order</th>
 															{postFormat === 'wide' && <th>Location</th>}
@@ -506,6 +504,20 @@ export function ConfigurePostColumnDataType(props = {}) {
 													<tbody>
 														{postDisplayElements.map(
 															({ elementName, updateOption, displayAttributes }) => {
+																if (postOptions?.displayTitleInCover) {
+																	return (
+																		updateOption !== 'display-title' && (
+																			<DislpayPostElementRow
+																				elementName={elementName}
+																				displayElement={displayAttributes}
+																				updateOption={updateOption}
+																				postFormat={postFormat}
+																				columnItemCount={postDisplayItemsPerColumn}
+																				onChange={onPostFormatOption}
+																			/>
+																		)
+																	);
+																}
 																return (
 																	<DislpayPostElementRow
 																		elementName={elementName}
@@ -520,51 +532,18 @@ export function ConfigurePostColumnDataType(props = {}) {
 														)}
 													</tbody>
 												</table>
-											</NewCard.Content>
-										</NewCard.Root>
+											</Card.Content>
+										</Card.Root>
 
 										{(() => {
 											const coverImage = postDisplayElements.find(
 												({ element }) => element === 'displayCoverImage'
 											);
-											const title = postDisplayElements.find(
-												({ element }) => element === 'displayTitle'
-											);
-
-											console.log('Cover Impage:', coverImage);
-											console.log('Title:', title);
 
 											return (
-												coverImage.displayAttributes.display > 0 &&
-												title.displayAttributes.display > 0 && (
-													<CheckboxControl
-														label={'Display title in Cover Image?'}
-														checked={postTitleInCover}
-														onChange={checked => onPostFormatOption(checked, 'title-in-cover')}
-													/>
-												)
-											);
-										})()}
-
-										{(() => {
-											const coverImage = postDisplayElements.find(
-												({ element }) => element === 'displayCoverImage'
-											);
-											console.log('Cover Impage:', coverImage);
-
-											return (
-												coverImage.displayAttributes.display > 0 && (
+												coverImage.displayAttributes.display && (
 													<>
-														<RadioControl
-															label="Link Location"
-															selected={postLinkLocation}
-															options={[
-																{ label: 'Title', value: 'title' },
-																{ label: 'Cover Image', value: 'image' },
-															]}
-															onChange={value => onPostFormatOption(value, 'link-location')}
-														/>
-														<NewSelectControl
+														<SelectControl
 															label="Image Size"
 															value={postImageSize}
 															defaultValue="thumbnail"
@@ -583,13 +562,52 @@ export function ConfigurePostColumnDataType(props = {}) {
 												)
 											);
 										})()}
-									</div>
+
+										{(() => {
+											const coverImage = postDisplayElements.find(
+												({ element }) => element === 'displayCoverImage'
+											);
+											const title = postDisplayElements.find(
+												({ element }) => element === 'displayTitle'
+											);
+
+											// console.log('Cover Image:', coverImage);
+											// console.log('Title:', title);
+
+											return (
+												coverImage.displayAttributes.display &&
+												title.displayAttributes.display && (
+													<>
+														<CheckboxControl
+															label={'Display title in Cover Image?'}
+															checked={postTitleInCover}
+															onCheckedChange={checked =>
+																onPostFormatOption(checked, 'title-in-cover')
+															}
+														/>
+
+														{!postTitleInCover && (
+															<RadioControl
+																label="Link Location"
+																selected={postLinkLocation}
+																options={[
+																	{ label: 'Title', value: 'title' },
+																	{ label: 'Cover Image', value: 'image' },
+																]}
+																onChange={value => onPostFormatOption(value, 'link-location')}
+															/>
+														)}
+													</>
+												)
+											);
+										})()}
+									</Stack>
 								)}
-							</VStack>
-						</FlexItem>
+							</Stack>
+						</div>
 
 						{/* Right column */}
-						<FlexItem className="configure-column-modal__right" isBlock>
+						<div className="configure-column-modal__right">
 							<div style={{ display: 'flex', flexDirection: 'column' }}>
 								<BaseControl
 									id={previewId}
@@ -602,16 +620,16 @@ export function ConfigurePostColumnDataType(props = {}) {
 											cellContent={testCellContent}
 											cellAttributes={testCellAttributes}
 											cellClasses={testCellClasses}
-											cellContentType={testCellContentType}
+											contentType={postSettings}
 										/>
 									</div>
 								</BaseControl>
 							</div>
-						</FlexItem>
-					</Flex>
-				</VStack>
-			</CardBody>
-		</Card>
+						</div>
+					</Stack>
+				</Stack>
+			</Card.Content>
+		</Card.Root>
 	);
 }
 
@@ -629,9 +647,6 @@ function DislpayPostElementRow(props) {
 		if (column === 'right') return columnItemCount.right;
 		return 0;
 	}
-
-	// console.log('Items per column type = ', columnItemCount);
-	// console.log('Items in column (' + elementName + ')= ' + maxDisplayItems(column, columnItemCount));
 
 	function onPostDisplayUpdate(updatedValue, updatedDisplayOption, updatedAttribute) {
 		let newDisplay = display;
@@ -684,58 +699,66 @@ function DislpayPostElementRow(props) {
 	return (
 		<tr>
 			<td>{elementName}</td>
-			<td>
-				<CheckboxControl
-					checked={display}
-					onChange={checked => onPostDisplayUpdate(checked, updateOption, 'display')}
-				/>
+			<td style={{ verticalAlign: 'middle' }}>
+				<Stack direction="row" align="center" justify="center">
+					<CheckboxControl
+						label={elementName}
+						hideLabelFromVision
+						checked={display}
+						onCheckedChange={checked => onPostDisplayUpdate(checked, updateOption, 'display')}
+					/>
+				</Stack>
 			</td>
 
-			<td>
-				{display ? (
-					<NewInputControl
-						label={elementName + ' ' + labelOrderSuffix}
-						hideLabelFromVision
-						min={1}
-						step={1}
-						max={maxDisplayItems(column, columnItemCount)}
-						value={order || 1}
-						onValueChange={value => onPostDisplayUpdate(value, updateOption, 'order')}
-						type="number"
-						size="compact"
-						suffix={
-							<NumberIncrementControl
-								baseInteger={Number(order)}
-								iconPair="arrow-up-down"
-								reverseIcons
-								onClick={value => onPostDisplayUpdate(value, updateOption, 'order')}
-							/>
-						}
-					/>
-				) : (
-					__('n/a', 'dynamic-table-blocks')
-				)}
+			<td style={{ verticalAlign: 'middle' }}>
+				<Stack direction="row" align="center" justify="center">
+					{display ? (
+						// <NewInputControl
+						// 	label={elementName + ' ' + labelOrderSuffix}
+						// 	hideLabelFromVision
+						// 	min={1}
+						// 	step={1}
+						// 	max={maxDisplayItems(column, columnItemCount)}
+						// 	value={order || 1}
+						// 	onValueChange={value => onPostDisplayUpdate(value, updateOption, 'order')}
+						// 	type="number"
+						// 	size="compact"
+						// 	suffix={
+						<NumberIncrementControl
+							baseInteger={Number(order)}
+							iconPair="arrow-up-down"
+							reverseIcons
+							wrapper="pill"
+							// showValue
+							onClick={value => onPostDisplayUpdate(value, updateOption, 'order')}
+						/>
+					) : (
+						__('n/a', 'dynamic-table-blocks')
+					)}
+				</Stack>
 			</td>
-			<td>
-				{postFormat === 'wide' && (
-					<NewSelectControl
-						label={elementName + ' ' + labelColumnSuffix}
-						hideLabelFromVision
-						value={column || 'none'}
-						onValueChange={value => onPostDisplayUpdate(value.value, updateOption, 'column')}
-						items={[
-							{
-								value: 'left',
-								label: 'Left',
-							},
-							{ value: 'right', label: 'Right' },
-							{
-								value: 'span',
-								label: 'Span Columns',
-							},
-						]}
-					/>
-				)}
+			<td style={{ verticalAlign: 'middle' }}>
+				<Stack direction="row" align="center" justify="center">
+					{postFormat === 'wide' && (
+						<SelectControl
+							label={elementName + ' ' + labelColumnSuffix}
+							hideLabelFromVision
+							value={column || 'none'}
+							onValueChange={value => onPostDisplayUpdate(value.value, updateOption, 'column')}
+							items={[
+								{
+									value: 'left',
+									label: 'Left',
+								},
+								{ value: 'right', label: 'Right' },
+								{
+									value: 'span',
+									label: 'Span Columns',
+								},
+							]}
+						/>
+					)}
+				</Stack>
 			</td>
 		</tr>
 	);

@@ -3,6 +3,11 @@
   max-height: calc(100vh - 40px);
 }
 
+/* Let the form footer sit flush against the bottom of the modal frame. */
+.configure-column-modal .components-modal__content {
+	padding-bottom: 0;
+}
+
 /* Make the modal content a body + sticky footer layout */
 .configure-column-modal__form {
 	display: flex;

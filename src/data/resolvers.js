@@ -35,7 +35,7 @@ export const getTable =
 			computeCellIds(table.cells);
 			const cells = table.cells;
 
-			dispatch.receiveTable(
+			await dispatch.receiveTable(
 				table_id,
 				block_table_ref,
 				table_status,

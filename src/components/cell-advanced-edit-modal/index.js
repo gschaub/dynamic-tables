@@ -150,7 +150,8 @@ function EditCellContent(props = {}) {
 	const [saveError, setSaveError] = useState('');
 
 	// link spectific configuration
-	const initialLinkUrlRef = useRef(String(cellAttributes?.cannonical?.url || '').trim());
+	const initialLinkUrlRef = useRef(String(currentCellValueAttributes?.canonical?.url || '').trim());
+
 	const [linkErrors, setLinkErrors] = useState({});
 
 	// post state
@@ -228,14 +229,14 @@ function EditCellContent(props = {}) {
 						case 'url': {
 							attributes = {
 								...attributes,
-								cannonical: { ...attributes.cannonical, url: value },
+								canonical: { ...attributes.canonical, url: value },
 							};
 							break;
 						}
 						case 'label': {
 							attributes = {
 								...attributes,
-								cannonical: { ...attributes.cannonical, label: value },
+								canonical: { ...attributes.canonical, label: value },
 								indexText: value,
 							};
 							break;
@@ -476,11 +477,11 @@ function EditCellContent(props = {}) {
 			case 'link': {
 				const errors = {};
 
-				if (!String(attributes.cannonical.label || '').trim()) {
+				if (!String(attributes.canonical.label || '').trim()) {
 					errors.label = __('The link label cannot be empty.', 'dynamic-table-blocks');
 				}
 
-				if (!isWebUrl(attributes.cannonical.url)) {
+				if (!isWebUrl(attributes.canonical.url)) {
 					errors.url = __('Enter a valid web address.', 'dynamic-table-blocks');
 				}
 				setLinkErrors(errors);
@@ -514,7 +515,7 @@ function EditCellContent(props = {}) {
 		try {
 			switch (contentType) {
 				case 'link': {
-					const url = String(attributes.cannonical.url).trim();
+					const url = String(attributes.canonical.url).trim();
 					let resolvedUrl = url;
 
 					if (url !== initialLinkUrlRef.current) {
@@ -535,8 +536,8 @@ function EditCellContent(props = {}) {
 
 					attributes = {
 						...attributes,
-						cannonical: { ...attributes.cannonical, url: resolvedUrl },
-						indexText: String(attributes.cannonical.label || ''),
+						canonical: { ...attributes.canonical, url: resolvedUrl },
+						indexText: String(attributes.canonical.label || ''),
 					};
 					break;
 				}
@@ -630,7 +631,7 @@ function EditCellContent(props = {}) {
 													inputMode="url"
 													label={__('Link URL', 'dynamic-table-blocks')}
 													placeholder="https://www.example.com"
-													value={currentCellValueAttributes?.cannonical?.url || ''}
+													value={currentCellValueAttributes?.canonical?.url || ''}
 													onChange={value => updateCellValue('url', value)}
 													help={linkErrors.url || undefined}
 													aria-invalid={linkErrors.url ? 'true' : undefined}
@@ -639,7 +640,7 @@ function EditCellContent(props = {}) {
 												<TextControl
 													type="text"
 													label={__('Link Label', 'dynamic-table-blocks')}
-													value={currentCellValueAttributes?.cannonical?.label || ''}
+													value={currentCellValueAttributes?.canonical?.label || ''}
 													onChange={value => updateCellValue('label', value)}
 													help={linkErrors.label || undefined}
 													aria-invalid={linkErrors.label ? 'true' : undefined}

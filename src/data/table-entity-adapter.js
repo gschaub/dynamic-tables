@@ -41,9 +41,48 @@ export function isDeepEqual(left, right) {
 }
 
 /**
+ * Remove editor-only external data from cell attributes.
+ *
+ * @since    1.5.0
+ *
+ * @param {Object} attributes Cell attributes.
+ * @return {Object} Attributes safe for persistence.
+ */
+export function removeExternalCellData(attributes) {
+	if (!attributes?.value) {
+		return attributes;
+	}
+
+	const hasExternalData = Object.prototype.hasOwnProperty.call(attributes.value, 'externalData');
+	const hasLegacyCanonical = Object.prototype.hasOwnProperty.call(attributes.value, 'cannonical');
+
+	if (!hasExternalData && !hasLegacyCanonical) {
+		return attributes;
+	}
+
+	const value = { ...attributes.value };
+
+	if (hasLegacyCanonical) {
+		value.canonical = {
+			...(value.cannonical || {}),
+			...(value.canonical || {}),
+		};
+		delete value.cannonical;
+	}
+
+	delete value.externalData;
+
+	return {
+		...attributes,
+		value,
+	};
+}
+
+/**
  * Project a local table into the entity shape used for comparison.
  *
  * @since    1.4.5
+ * @since    1.5.0 Remove editor-only external data for comparison purposes
  *
  * @param {Object}        sourceTable Local table
  * @param {number|string} recordId    Entity record ID
@@ -85,7 +124,7 @@ function tableToComparableEntityRecord(sourceTable, recordId = sourceTable?.tabl
 				table_id: cellTableId,
 				column_id,
 				row_id,
-				attributes: cellAttributes,
+				attributes: removeExternalCellData(cellAttributes),
 				classes: cellClasses,
 				content: typeof content === 'boolean' ? String(content) : (content ?? ''),
 			})

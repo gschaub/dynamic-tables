@@ -1,78 +1,69 @@
 /* External dependencies */
 import { useState, useEffect, memo, RawHTML } from '@wordpress/element';
-import apiFetch from '@wordpress/api-fetch';
-import { __, _n, sprintf } from '@wordpress/i18n';
-import {
-	Modal,
-	Button,
-	CheckboxControl,
-	TextControl,
-	ComboboxControl,
-	Notice,
-} from '@wordpress/components';
-import { Card, Stack } from '@wordpress/ui';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import { lookupPost, lookupPostImage, lookupPostAuthor } from '../../../get-external-data';
-import { htmlToIndexText, formatedDisplayDate } from '../../../utils';
-import { PostAuthor } from './post-author';
-import { PostImage } from './post-image';
-import { PostTimeToRead } from './post-read-time';
-import { PostWordCount } from './post-word-count';
+import { isEmptyObject, formatedDisplayDate, htmlToIndexText } from '../../../utils';
 import { getPostStatistics } from './post-statistics';
 import {
 	normalizeCellValueAttributes,
-	getPostOption,
-	getNewTab,
-	getCellLinkUrl,
-	buildCellContent,
-	isWebUrl,
 	setPostDetails,
-	removePostDetails,
+	getCellLinkUrl,
+	isWebUrl,
 } from '../../cell-advanced-edit-modal/value';
 
 import '../../../editor.scss';
 import '../../../style.scss';
 
 function RenderCellPostContent(props = {}) {
-	const { cellContent, cellAttributes, cellClasses, cellContentType, postContent = null } = props;
+	const { cellContent, cellAttributes, cellClasses, contentType } = props;
 
-	// const { type: contentType, settings } = cellContentType;
-	console.log('Cell Content Type: ', cellContentType);
-	const contentFormat = cellContentType?.settings?.format || '';
-	const contentOptions = cellContentType?.settings?.formatOptions || {};
+	const contentFormat = contentType?.format || '';
+	const contentOptions = contentType?.formatOptions || {};
 	const displayedAttributes = getDisplayAttributes(contentOptions);
 
-	const { canonical: cellCanonical, options: cellDisplayOptions } = normalizeCellValueAttributes(
-		cellAttributes,
-		cellContent,
-		'post'
-	);
-	const postId = cellCanonical?.postId || 0;
-	const postType = cellCanonical?.postType || 'post';
+	const {
+		canonical: cellCanonical,
+		options: cellDisplayOptions,
+		externalData,
+		indexText: cellIndexText,
+	} = normalizeCellValueAttributes(cellAttributes?.value, cellContent, 'post');
+
+	const isExternalDataEmpty = isEmptyObject(externalData);
+	const postId = Number(cellCanonical?.postId);
+	const postType = cellCanonical?.postType;
+	const hasValidPostReference =
+		Number.isSafeInteger(postId) &&
+		postId > 0 &&
+		typeof postType === 'string' &&
+		postType.length > 0;
 
 	const postLinkInNewTab = cellDisplayOptions?.newTab || false;
 
-	const [postData, setPostData] = useState(null);
-	const [postError, setPostError] = useState(null);
+	const [fetchedPostData, setFetchedPostData] = useState(null);
+	const postData = isExternalDataEmpty ? fetchedPostData : externalData;
 	const post = postData?.post;
-	const needsImage = contentOptions?.displayCoverImage.display;
-	const needsAuthor = contentOptions?.displayAuthor.display;
+	const needsImage = contentOptions?.displayCoverImage?.display;
+	const needsAuthor = contentOptions?.displayAuthor?.display;
 	const imageSize = contentOptions?.displayImageSize || 'thumbnail';
 
 	useEffect(() => {
+		setFetchedPostData(null);
+
+		if (!isExternalDataEmpty || !hasValidPostReference || contentFormat === 'link') {
+			return undefined;
+		}
+
 		const request = new AbortController();
 		let active = true;
-
-		setPostData(null);
-		setPostError(null);
 
 		async function getPost() {
 			try {
 				const postValue = await lookupPost(postId, {
-					postType: postType,
+					postType,
 					signal: request.signal,
 				});
 
@@ -84,39 +75,44 @@ function RenderCellPostContent(props = {}) {
 				]);
 
 				if (active) {
-					setPostData({
+					setFetchedPostData({
 						post: postValue,
 						image,
 						authorName,
 						statistics: getPostStatistics(postValue),
 					});
 				}
-			} catch (error) {
+			} catch {
 				if (active) {
-					setPostError(error?.message || __('Unable to load the post.', 'dynamic-table-blocks'));
+					setFetchedPostData(null);
 				}
 			}
 		}
 
-		if (contentFormat !== 'link') {
-			getPost();
-		}
+		getPost();
 
 		return () => {
 			active = false;
 			request.abort();
 		};
-	}, [postId, postType, contentFormat, needsImage, needsAuthor, imageSize]);
+	}, [
+		isExternalDataEmpty,
+		hasValidPostReference,
+		postId,
+		postType,
+		contentFormat,
+		needsImage,
+		needsAuthor,
+		imageSize,
+	]);
+
+	console.log('Content format = ' + contentFormat);
+
+	if (!hasValidPostReference) {
+		return null;
+	}
 
 	if (contentFormat !== 'link') {
-		if (postError) {
-			return (
-				<Notice status="error" isDismissible={false}>
-					{postError}
-				</Notice>
-			);
-		}
-
 		if (!post || Number(post.id) !== Number(postId) || post.type !== postType) {
 			return null;
 		}
@@ -125,10 +121,27 @@ function RenderCellPostContent(props = {}) {
 	switch (contentFormat) {
 		case 'link': {
 			// Render link
-			return cellContent;
+			const postLink = post?.link || getCellLinkUrl(cellContent);
+
+			if (!isWebUrl(postLink)) {
+				return null;
+			}
+
+			const linkLabel = cellIndexText || htmlToIndexText(cellContent);
+
+			return (
+				<a
+					href={postLink}
+					target={postLinkInNewTab ? '_blank' : '_top'}
+					rel={postLinkInNewTab ? 'noopener noreferrer' : undefined}
+				>
+					{linkLabel}
+				</a>
+			);
 		}
 		case 'narrow': {
 			// Render narrow
+			console.log('calling narrow render');
 			return renderNarrowContent(
 				postData,
 				postLinkInNewTab,
@@ -148,7 +161,7 @@ function RenderCellPostContent(props = {}) {
 			);
 		}
 		default: {
-			break;
+			return null;
 		}
 	}
 }
@@ -232,9 +245,38 @@ function renderPostTitle(renderedContent, linkLocation, postLink) {
 }
 
 function renderPostImage(image, sizes, link, title) {
+	if (!image) {
+		return null;
+	}
+
+	const renderedImage = (
+		<span className="dtbk-post-image__frame">
+			<img
+				className="dtbk-post-image__media"
+				src={image.src}
+				loading={image.loading}
+				srcSet={sizes ? image.srcSet : undefined}
+				sizes={sizes}
+				alt={image.alt}
+				width={image.width}
+				height={image.height}
+			/>
+
+			{title.embedTitle && (
+				<span className="dtbk-post-image__title">{htmlToIndexText(title.title)}</span>
+			)}
+		</span>
+	);
+
 	return (
-		<div style={{ display: 'flex', width: '100%' }}>
-			<PostImage image={image} sizes={sizes} link={link} title={title} />
+		<div className="dtbk-post-image">
+			{link.isLink ? (
+				<a className="dtbk-post-image__link" href={link.url}>
+					{renderedImage}
+				</a>
+			) : (
+				renderedImage
+			)}
 		</div>
 	);
 }
@@ -263,9 +305,7 @@ function renderPostAuthor(authorName) {
 			<div style={{}}>
 				<strong>{contentLabel}</strong>
 			</div>
-			<span>
-				<PostAuthor authorName={authorName} />
-			</span>
+			<span>{authorName || ''}</span>
 		</div>
 	);
 }
@@ -309,8 +349,9 @@ function renderNarrowContent(
 	// const postCategoriesApi = post.wp.term.href;
 	// const postTagsApi = post.wp.term.tags;
 
+	console.log('Display Attributes for Narrow Render: ', displayedAttributes);
 	return (
-		<div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+		<div className="dtbk-post-content dtbk-post-content--narrow">
 			{displayedAttributes.map(({ attribute }) => {
 				console.log('Display attribute: ', attribute);
 				const formattedContent = evaluateDisplayAttributes(
@@ -319,6 +360,10 @@ function renderNarrowContent(
 					postLinkInNewTab,
 					contentOptions
 				);
+				if (!formattedContent) {
+					console.log('No formatted content for attribute: ', attribute);
+					return null;
+				}
 				return <div>{formattedContent}</div>;
 			})}
 		</div>
@@ -332,8 +377,10 @@ function renderWideContent(
 	contentOptions,
 	cellClasses
 ) {
+	console.log('Display Attributes for Wide Render: ', displayedAttributes);
+
 	return (
-		<div style={{ display: 'block', boxSizing: 'inherit' }}>
+		<div className="dtbk-post-content dtbk-post-content--wide">
 			<div style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '10px 10px' }}>
 				{displayedAttributes.map(({ attribute, slot }) => {
 					let formattedContent;
@@ -425,6 +472,7 @@ function evaluateDisplayAttributes(displayedAttribute, postData, postLinkInNewTa
 		case 'title': {
 			const renderedContent = post.title.rendered;
 			if (displayTitleInCover) break;
+			console.log('Preparing title render');
 			formattedContent = renderPostTitle(renderedContent, linkLocation, postLink);
 			break;
 		}

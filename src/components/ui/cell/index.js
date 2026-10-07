@@ -7,6 +7,7 @@ import { Icon, pencil as edit } from '@wordpress/icons';
 import clsx from 'clsx';
 
 /* Internal dependencies */
+import { CellPostContent } from '../post-content';
 import {
 	getCellIdCoordinates,
 	formatedDisplayDate,
@@ -83,6 +84,10 @@ import '../../../editor.scss';
  * @since 1.1.1
  * @since 1.2.0  Added column data type logic and Date/Time render
  * @since 1.2.4  Added support for number column content type
+ * @since 1.4.3  Added support for checkbox column content type
+ * @since 1.4.6  Added support for link column content type
+ * @since 1.4.10 Added support for post column content type
+ * @since 1.5.0  Enhanced post content rendering for additional rendering formats
  *
  * @param {Object} props Passed attributes
  * @return {Object} events for cell content editing
@@ -714,10 +719,11 @@ export function Cell(props) {
 			if (!isEditing) {
 				return (
 					<>
-						<RichText.Content
-							tagName="span"
-							className="grid-control__cell-edit-content"
-							value={cellContent}
+						<CellPostContent
+							cellContent={cellContent}
+							cellAttributes={cellAttributes}
+							cellClasses={renderClassesDisplay}
+							contentType={settings}
 						/>
 						{renderCellEditButton(__('Edit link cell', 'dynamic-table-blocks'))}
 					</>
