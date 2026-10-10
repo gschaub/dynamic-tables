@@ -36,6 +36,7 @@ if ( is_wp_error( $table ) ) {
 	error_log( 'The following error occured when rendering table: ' . implode( ', ', $table->get_error_messages() ) );
 } else {
 
+	$table = get_table_external_data( $table );
 	$table_header  = $table['header'];
 	$table_name    = $table_header['table_name'];
 	$table_columns = $table['columns'];
