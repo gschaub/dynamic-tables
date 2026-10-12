@@ -1,6 +1,6 @@
 <?php
 /**
- * Functions that render the table body based on the render mode.
+ * Functions to retrieve external cell data based on its column content type.
  *
  * @since 1.5.0
  */
@@ -69,6 +69,11 @@ function get_table_external_data( array $table ) {
 					? $cell_value['canonical']
 					: array();
 				$canonical_value = array_merge( $legacy_canonical, $canonical );
+
+				if ( isset( $cell_value['cannonical'] ) ) {
+					$table['cells'][ $cell_index ]['attributes']['value']['canonical'] = $canonical_value;
+					unset( $table['cells'][ $cell_index ]['attributes']['value']['cannonical'] );
+				}
 
 				$cell_post_id   = (int) ( $canonical_value['postId'] ?? 0 );
 				$cell_post_type = (string) ( $canonical_value['postType'] ?? '' );

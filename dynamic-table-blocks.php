@@ -108,20 +108,29 @@ final class DynamicTableBlocks {
 		}
 
 		// Register included files
-		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-table-blocks-rest-api.php';
-		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-table-blocks-db-persist.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/admin/upgrades.php';
-		require_once plugin_dir_path( __FILE__ ) . 'includes/render/render-helper.php';
-		require_once plugin_dir_path( __FILE__ ) . 'includes/render/render-body.php';
-		require_once plugin_dir_path( __FILE__ ) . 'includes/render/get-external-data.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/table-defaults.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/utility-functions.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-table-blocks-global-styles.php';
-		require_once plugin_dir_path( __FILE__ ) . 'includes/rest-endpoints/link-resolver.php';
-		require_once plugin_dir_path( __FILE__ ) . 'includes/api/dynamic-table-blocks-api.php';
-		require_once plugin_dir_path( __FILE__ ) . 'includes/api/api-helpers.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/cron-trait-schedulable.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/maintenance.php';
+
+		// Register plugin API files
+		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-table-blocks-db-persist.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/api/dynamic-table-blocks-api.php';
+
+		// Register REST API files
+		require_once plugin_dir_path( __FILE__ ) . 'includes/dynamic-table-blocks-rest-api.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/api/api-helpers.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/rest-endpoints/link-resolver.php';
+
+
+		// Register render helper files
+		require_once plugin_dir_path( __FILE__ ) . 'includes/render/render-helper.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/render/render-body.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/render/render-post-cells.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/render/get-external-data.php';
+
 
 		// Register Include admin.
 		$admin_screen = 'false';

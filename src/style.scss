@@ -203,6 +203,11 @@
 	display: block;
 }
 
+.dtb-post-excerpt > p:first-child {
+	margin: 0;
+	padding: 0;
+}
+
 .dtbk-post-image {
 	display: flex;
 	inline-size: 100%;

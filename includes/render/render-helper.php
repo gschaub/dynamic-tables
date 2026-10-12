@@ -1136,6 +1136,7 @@ function render_link_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width
  * Render Post cell data types
  *
  * @since 1.4.10
+ * @since 1.5.0   Add support for multiple display options
  *
  * @param  array   $cell                   Cell data and attributes to be rendered
  * @param  string  $grid_show_inner_lines  Show inner grid lines for cell?
@@ -1166,7 +1167,7 @@ function render_post_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width
 		</div>
 		<?php
 	} elseif ( $content_only ) {
-		echo ( $cell['content'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		format_post_cell( $cell );
 	} else {
 		// Display only.
 		?>
@@ -1176,7 +1177,7 @@ function render_post_cell( $cell, $grid_show_inner_lines, $grid_inner_line_width
 			style="--showGridLines: <?php echo esc_attr( $grid_show_inner_lines ); ?>;
 				--gridLineWidth: <?php echo esc_attr( $grid_inner_line_width ); ?>"
 		>
-			<?php echo ( $cell['content'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php format_post_cell($cell); ?>
 		</div>
 		<?php
 	}
