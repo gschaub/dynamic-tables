@@ -1,15 +1,8 @@
 /* External dependencies */
-import { useInstanceId } from '@wordpress/compose';
 import { useState } from '@wordpress/element';
+import { escapeAttribute, escapeEditableHTML } from '@wordpress/escape-html';
 import { __ } from '@wordpress/i18n';
-import { BaseControl, RadioControl } from '@wordpress/components';
-import {
-	Card,
-	Stack,
-	InputControl as NewInputControl,
-	CheckboxControl,
-	SelectControl,
-} from '@wordpress/ui';
+import { Card, Stack, CheckboxControl, RadioGroupControl, SelectControl } from '@wordpress/ui';
 
 /**
  * Internal dependencies
@@ -17,19 +10,66 @@ import {
 import './style.scss';
 import { NumberIncrementControl } from '../ui/number-increment-control';
 import { CellPostContent } from '../ui/post-content';
+import { SelectPost } from '../select-post';
+
+const wideColumnSplitItems = [
+	{
+		value: 'equal',
+		label: 'Equal: 50% / 50%',
+	},
+	{
+		value: 'left-third',
+		label: 'Left 1/3 / Right 2/3',
+	},
+	{
+		value: 'right-third',
+		label: 'Left 2/3 / Right 1/3',
+	},
+	{
+		value: 'fit-left',
+		label: 'Fit Left Content / Fill Right',
+	},
+];
+
+const postImageSizeItems = [
+	{
+		value: 'thumbnail',
+		label: 'Thumbnail: (150 x 150)',
+	},
+	{
+		value: 'medium',
+		label: 'Medium: (300 x 300)',
+	},
+	{
+		value: 'medium_large',
+		label: 'Medium/Large (768 Wide)',
+	},
+	{
+		value: 'large',
+		label: 'Large (1024 x 1024)',
+	},
+];
+
+const postDisplayColumnItems = [
+	{ value: 'left', label: 'Left' },
+	{ value: 'right', label: 'Right' },
+	{ value: 'span', label: 'Span Columns' },
+];
 
 /**
- * React component to configure data types for a column.
+ * React component to configure post formatting options for a column.
  *
- * @since    1.1.2
+ * @since    1.5.0
  *
- * @param {Object} props
+ * @param {Object} props                    Components props
+ * @param {Object} props.postSettings       Post format and disply options
+ * @param {string} props.columnClasses      Classes that are specific to this column
+ * @param {Object} props.columnPreviewWidth Cell content to render
+ * @param {string} props.onChange
  * @return {Object} Updated column properties
  */
 export function ConfigurePostColumnDataType(props = {}) {
-	const { postSettings, columnClasses, onChange } = props;
-	const instanceId = useInstanceId(ConfigurePostColumnDataType);
-	const previewId = `dtbk-preview-${instanceId}`;
+	const { postSettings, columnClasses = '', columnPreviewWidth, onChange } = props;
 	console.log('Initiial post format', postSettings);
 
 	const { format: postFormat, formatOptions: postOptions } = postSettings || {};
@@ -43,8 +83,12 @@ export function ConfigurePostColumnDataType(props = {}) {
 	const [postTitleInCover, setPostTitleInCover] = useState(
 		postOptions?.displayTitleInCover || false
 	);
-
 	const [postImageSize, setPostImageSize] = useState(postOptions?.displayImageSize || 'thumbnail');
+	const [postWideColumnSplit, setPostWideColumnSplit] = useState(
+		postOptions?.wideColumnSplit ?? 'equal'
+	);
+
+	const [samplePost, setSamplePost] = useState(null);
 
 	const initialPostItemsNoneColumnCount = countFilteredDisplayItems(
 		initialPostDisplayElements,
@@ -86,7 +130,7 @@ export function ConfigurePostColumnDataType(props = {}) {
 	/**
 	 * Update post format and set default options
 	 *
-	 * @since 1.4.11
+	 * @since 1.5.0
 	 *
 	 * @param {string} postFormat Post format to set
 	 */
@@ -129,6 +173,7 @@ export function ConfigurePostColumnDataType(props = {}) {
 		setPostLinkLocation('title');
 		setPostTitleInCover(false);
 		setPostImageSize('thumbnail');
+		setPostWideColumnSplit('equal');
 		setPostDisplayElements(resetDisplayElementsArray);
 
 		const updatedDataType = {
@@ -142,7 +187,7 @@ export function ConfigurePostColumnDataType(props = {}) {
 	/**
 	 * Update post formatting options based on configuration input
 	 *
-	 * @since 1.4.11
+	 * @since 1.5.0
 	 *
 	 * @param {Object} value  Formatting value to set
 	 * @param {string} option Formatting option
@@ -165,6 +210,7 @@ export function ConfigurePostColumnDataType(props = {}) {
 		let newLinkLocation = postLinkLocation;
 		let newTitleInCover = postTitleInCover;
 		let newImageSize = postImageSize;
+		let newWideColumnSplit = postWideColumnSplit;
 
 		let updatedElement;
 		let priorElement;
@@ -234,6 +280,9 @@ export function ConfigurePostColumnDataType(props = {}) {
 			case 'image-size':
 				newImageSize = value;
 				break;
+			case 'wide-column-split':
+				newWideColumnSplit = value;
+				break;
 			default:
 				return;
 		}
@@ -284,14 +333,6 @@ export function ConfigurePostColumnDataType(props = {}) {
 			}
 
 			/*
-			 * Insert the changed element at its new position. A newly displayed
-			 * element or an element moved between columns arrives with the last
-			 * available order, so no existing target-column elements are shifted
-			 * in those cases. Reordering within a column shifts every element at
-			 * or after the insertion point.
-			 */
-
-			/*
 			 * Insert the changed element at its new ordered position. Elements
 			 * already at or after that position move down to make room. An order
 			 * of zero means the element is displayed outside the ordered flow.
@@ -335,6 +376,7 @@ export function ConfigurePostColumnDataType(props = {}) {
 		setPostLinkLocation(newLinkLocation);
 		setPostTitleInCover(newTitleInCover);
 		setPostImageSize(newImageSize);
+		setPostWideColumnSplit(newWideColumnSplit);
 
 		const updatedFormatOptions = {
 			displayTitle: newDisplayTitle,
@@ -345,6 +387,7 @@ export function ConfigurePostColumnDataType(props = {}) {
 			displayModifiedDate: newDisplayModifiedDate,
 			displayTitleInCover: newTitleInCover,
 			displayImageSize: newImageSize,
+			wideColumnSplit: newWideColumnSplit,
 			linkLocation: newLinkLocation,
 		};
 
@@ -356,6 +399,15 @@ export function ConfigurePostColumnDataType(props = {}) {
 		updatePostConfig(updatedPostSettings);
 	}
 
+	/**
+	 * Count the number of items to be displayed for a specified formatted column
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param {Array}  items  Post elements available for display
+	 * @param {string} column Column for which items are to be counted
+	 * @return {number} number of items to be displayed for the specified column
+	 */
 	function countFilteredDisplayItems(items, column) {
 		const filteredItems = items.filter(el => {
 			return (
@@ -368,6 +420,15 @@ export function ConfigurePostColumnDataType(props = {}) {
 		return filteredItems?.length || 0;
 	}
 
+	/**
+	 * Converts the available post elements for display from an object to an array
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param {Object} columnData     All post elements available for display
+	 * @param {Object} defaultElement Default display element
+	 * @return {Object[]}             Array of objects that define post elements
+	 */
 	function loadPostDisplayElements(columnData, defaultElement) {
 		const displayElements = Array();
 
@@ -422,6 +483,14 @@ export function ConfigurePostColumnDataType(props = {}) {
 		return displayElements;
 	}
 
+	/**
+	 * Sorts elements for display by column and then order within the column
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param {Object[]} displayElements Elements available for display
+	 * @return {Object[]}} Sorted displayElements
+	 */
 	function sortPostDisplayElements(displayElements) {
 		displayElements.sort((a, b) => {
 			if (a.displayAttributes.display !== b.displayAttributes.display) {
@@ -438,24 +507,47 @@ export function ConfigurePostColumnDataType(props = {}) {
 		return displayElements;
 	}
 
+	/**
+	 * Return the column content format for the post column
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param {Object} updatedPostConfig Updated post column format
+	 */
 	function updatePostConfig(updatedPostConfig) {
 		onChange(updatedPostConfig);
 	}
 
-	const testCellContent = 'Test Content';
-	const testCellAttributes = {
-		value: {
-			canonical: {
-				postId: 196,
-				postType: 'post',
-			},
-			ref: [{ postId: '196' }],
-		},
-	};
-	const testCellClasses = '';
-	const testCellContentType = postSettings;
+	/**
+	 * Store the post selected by SelectPost.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param {Object|null} post Selected post or null.
+	 */
+	function onPostSelection(post) {
+		setSamplePost(post);
+	}
 
-	console.log('Test Content Format', testCellContentType);
+	const sampleCellContent = samplePost
+		? '<a href="' +
+			escapeAttribute(samplePost.url) +
+			'">' +
+			escapeEditableHTML(samplePost.title) +
+			'</a>'
+		: '';
+	const sampleCellAttributes = {
+		value: samplePost
+			? {
+					canonical: {
+						postId: samplePost.postId,
+						postType: samplePost.postType,
+					},
+					refs: [{ postId: samplePost.postId }],
+					indexText: samplePost.title,
+				}
+			: {},
+	};
 
 	return (
 		<Card.Root>
@@ -467,32 +559,31 @@ export function ConfigurePostColumnDataType(props = {}) {
 			<Card.Content>
 				<Stack direction="column" gap="md">
 					<div>Select the specific content display options.</div>
+					<RadioGroupControl
+						label="Post Layout"
+						value={postFormat}
+						items={[
+							{ label: 'Link Only', value: 'link' },
+							{ label: 'Wide', value: 'wide' },
+							{ label: 'Narrow', value: 'narrow' },
+						]}
+						onValueChange={value => onPostFormat(value)}
+					/>
 
 					{/* True split layout */}
-					<Stack direction="row" gap="md" align="stretch">
+					<Stack direction="row" gap="md" align="stretch" className="configure-column-modal__split">
 						{/* Left column */}
 						<div className="configure-column-modal__left">
 							<Stack direction="column" gap="sm">
-								<RadioControl
-									label="Post Layout"
-									selected={postFormat}
-									options={[
-										{ label: 'Link Only', value: 'link' },
-										{ label: 'Wide', value: 'wide' },
-										{ label: 'Narrow', value: 'narrow' },
-									]}
-									onChange={value => onPostFormat(value)}
-								/>
-
 								{postFormat !== 'link' && (
-									<Stack direction="column" gap="md" className="configure-column-modal__options">
-										<strong>Formatting Options</strong>
+									<Stack direction="column" gap="md">
+										<strong style={{ textAlign: 'center' }}>Formatting Options</strong>
 										<Card.Root>
 											<Card.Header>
 												<Card.Title>Content Elements To Display</Card.Title>
 											</Card.Header>
 											<Card.Content>
-												<table>
+												<table className="configure-column-modal__post-elements-table">
 													<thead>
 														<tr>
 															<th style={{ textAlign: 'left' }}>Element</th>
@@ -535,6 +626,17 @@ export function ConfigurePostColumnDataType(props = {}) {
 											</Card.Content>
 										</Card.Root>
 
+										{postFormat === 'wide' && (
+											<SelectControl
+												label="Column Proportions"
+												value={wideColumnSplitItems.find(
+													({ value }) => value === postWideColumnSplit
+												)}
+												onValueChange={item => onPostFormatOption(item.value, 'wide-column-split')}
+												items={wideColumnSplitItems}
+											/>
+										)}
+
 										{(() => {
 											const coverImage = postDisplayElements.find(
 												({ element }) => element === 'displayCoverImage'
@@ -545,18 +647,11 @@ export function ConfigurePostColumnDataType(props = {}) {
 													<>
 														<SelectControl
 															label="Image Size"
-															value={postImageSize}
-															defaultValue="thumbnail"
-															onValueChange={value => onPostFormatOption(value, 'image-size')}
-															items={[
-																{ value: 'thumbnail', label: 'Thumbnail: (150 x 150)' },
-																{ value: 'medium', label: 'Medium: (300 x 300)' },
-																{
-																	value: 'medium_large',
-																	label: 'Medium/Large (768 Wide)',
-																},
-																{ value: 'large', label: 'Large (1024 x 1024)' },
-															]}
+															value={postImageSizeItems.find(
+																({ value }) => value === postImageSize
+															)}
+															onValueChange={item => onPostFormatOption(item.value, 'image-size')}
+															items={postImageSizeItems}
 														/>
 													</>
 												)
@@ -571,9 +666,6 @@ export function ConfigurePostColumnDataType(props = {}) {
 												({ element }) => element === 'displayTitle'
 											);
 
-											// console.log('Cover Image:', coverImage);
-											// console.log('Title:', title);
-
 											return (
 												coverImage.displayAttributes.display &&
 												title.displayAttributes.display && (
@@ -587,14 +679,14 @@ export function ConfigurePostColumnDataType(props = {}) {
 														/>
 
 														{!postTitleInCover && (
-															<RadioControl
+															<RadioGroupControl
 																label="Link Location"
-																selected={postLinkLocation}
-																options={[
+																value={postLinkLocation}
+																items={[
 																	{ label: 'Title', value: 'title' },
 																	{ label: 'Cover Image', value: 'image' },
 																]}
-																onChange={value => onPostFormatOption(value, 'link-location')}
+																onValueChange={value => onPostFormatOption(value, 'link-location')}
 															/>
 														)}
 													</>
@@ -608,23 +700,45 @@ export function ConfigurePostColumnDataType(props = {}) {
 
 						{/* Right column */}
 						<div className="configure-column-modal__right">
-							<div style={{ display: 'flex', flexDirection: 'column' }}>
-								<BaseControl
-									id={previewId}
-									label="Preview"
-									style={{ alignContent: 'center', flexWrap: 'wrap', height: '20%' }}
-								>
-									<div>
-										<div>Post Cell Preview</div>
-										<CellPostContent
-											cellContent={testCellContent}
-											cellAttributes={testCellAttributes}
-											cellClasses={testCellClasses}
-											contentType={postSettings}
-										/>
-									</div>
-								</BaseControl>
-							</div>
+							<Stack direction="column" gap="md">
+								<strong style={{ textAlign: 'center' }}>Preview</strong>
+								<Card.Root>
+									<Card.Content>
+										<div>Select Post To Preview</div>
+										<SelectPost onChange={onPostSelection} />
+									</Card.Content>
+								</Card.Root>
+
+								<Card.Root>
+									<Card.Content>
+										<div>Formatted Preview</div>
+										<div
+											className={
+												'configure-column-modal__post-preview-cell ' +
+												'grid-control__body-cells grid-control__cellEditor ' +
+												columnClasses
+											}
+											style={{
+												inlineSize: columnPreviewWidth ? `${columnPreviewWidth}px` : '100%',
+											}}
+										>
+											{samplePost && (
+												<CellPostContent
+													cellContent={sampleCellContent}
+													cellAttributes={sampleCellAttributes}
+													cellClasses={columnClasses}
+													contentType={postSettings}
+												/>
+											)}
+											{!samplePost && (
+												<p>
+													<em style={{ alignText: 'center' }}>Select a post to preview</em>
+												</p>
+											)}
+										</div>
+									</Card.Content>
+								</Card.Root>
+							</Stack>
 						</div>
 					</Stack>
 				</Stack>
@@ -637,7 +751,6 @@ function DislpayPostElementRow(props) {
 	const { elementName, displayElement, updateOption, postFormat, columnItemCount, onChange } =
 		props;
 	const { display, order, column } = displayElement;
-	const labelOrderSuffix = __('Display Order', 'dynamic-table-blocks');
 	const labelColumnSuffix = __('Display Column', 'dynamic-table-blocks');
 
 	function maxDisplayItems(column, columnItemCount) {
@@ -713,17 +826,6 @@ function DislpayPostElementRow(props) {
 			<td style={{ verticalAlign: 'middle' }}>
 				<Stack direction="row" align="center" justify="center">
 					{display ? (
-						// <NewInputControl
-						// 	label={elementName + ' ' + labelOrderSuffix}
-						// 	hideLabelFromVision
-						// 	min={1}
-						// 	step={1}
-						// 	max={maxDisplayItems(column, columnItemCount)}
-						// 	value={order || 1}
-						// 	onValueChange={value => onPostDisplayUpdate(value, updateOption, 'order')}
-						// 	type="number"
-						// 	size="compact"
-						// 	suffix={
 						<NumberIncrementControl
 							baseInteger={Number(order)}
 							iconPair="arrow-up-down"
@@ -739,25 +841,19 @@ function DislpayPostElementRow(props) {
 			</td>
 			<td style={{ verticalAlign: 'middle' }}>
 				<Stack direction="row" align="center" justify="center">
-					{postFormat === 'wide' && (
-						<SelectControl
-							label={elementName + ' ' + labelColumnSuffix}
-							hideLabelFromVision
-							value={column || 'none'}
-							onValueChange={value => onPostDisplayUpdate(value.value, updateOption, 'column')}
-							items={[
-								{
-									value: 'left',
-									label: 'Left',
-								},
-								{ value: 'right', label: 'Right' },
-								{
-									value: 'span',
-									label: 'Span Columns',
-								},
-							]}
-						/>
-					)}
+					{postFormat === 'wide' &&
+						(display ? (
+							<SelectControl
+								label={elementName + ' ' + labelColumnSuffix}
+								size="compact"
+								hideLabelFromVision
+								value={postDisplayColumnItems.find(({ value }) => value === column)}
+								onValueChange={item => onPostDisplayUpdate(item.value, updateOption, 'column')}
+								items={postDisplayColumnItems}
+							/>
+						) : (
+							__('n/a', 'dynamic-table-blocks')
+						))}
 				</Stack>
 			</td>
 		</tr>
@@ -847,6 +943,7 @@ export function getPostFormatDefaults(postFormat, defaultDisplayElement) {
 		...formatOptions,
 		displayTitleInCover: false,
 		displayImageSize: 'thumbnail',
+		wideColumnSplit: 'equal',
 		linkLocation: 'title',
 	};
 

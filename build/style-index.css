@@ -155,9 +155,11 @@
   min-height: 1.5em;
 }
 .dtbk-post-content {
+  flex: 1 1 100%;
   box-sizing: border-box;
   min-inline-size: 0;
   max-inline-size: 100%;
+  inline-size: 100%;
   font-size: var(--dtbk-post-content-font-size, 13px);
   white-space: normal;
   overflow-wrap: anywhere;
@@ -169,6 +171,41 @@
 }
 .dtbk-post-content--wide {
   display: block;
+}
+.dtbk-post-content__columns {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  box-sizing: inherit;
+}
+.dtbk-post-content__column {
+  display: block;
+  box-sizing: inherit;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  max-block-size: 100%;
+}
+.dtbk-post-content__columns[data-column-split=equal] > .dtbk-post-content__column {
+  flex: 1 1 0;
+}
+.dtbk-post-content__columns[data-column-split=left-third] > .dtbk-post-content__column--left {
+  flex: 1 1 0;
+}
+.dtbk-post-content__columns[data-column-split=left-third] > .dtbk-post-content__column--right {
+  flex: 2 1 0;
+}
+.dtbk-post-content__columns[data-column-split=right-third] > .dtbk-post-content__column--left {
+  flex: 2 1 0;
+}
+.dtbk-post-content__columns[data-column-split=right-third] > .dtbk-post-content__column--right {
+  flex: 1 1 0;
+}
+.dtbk-post-content__columns[data-column-split=fit-left] > .dtbk-post-content__column--left {
+  flex: 0 1 auto;
+  max-inline-size: 50%;
+}
+.dtbk-post-content__columns[data-column-split=fit-left] > .dtbk-post-content__column--right {
+  flex: 1 1 0;
 }
 .dtb-post-excerpt > p:first-child {
   margin: 0;
@@ -467,7 +504,7 @@
   opacity: 1;
 }
 .dtbk-increment-steppers--pill .dtbk-increment-steppers__separator {
-  color: var(--dtbk-increment-steppers-disabled-color);
+  color: white;
   opacity: 1;
 }
 .dtbk-increment-steppers--pill .dtbk-increment-steppers__value {
@@ -738,6 +775,14 @@ fieldset {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 6px;
   background: rgba(0, 0, 0, 0.02);
+}
+.configure-column-modal__post-elements-table tbody td {
+  padding-block: 4px;
+}
+.configure-column-modal__post-preview-cell {
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  margin: 0 auto;
 }
 .grid-control__body-columns--date-align-right .components-input-control__backdrop,
 .grid-control__body-columns--date-align-right input.components-input-control__input,

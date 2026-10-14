@@ -178,6 +178,16 @@
 
 }
 
+.configure-column-modal__post-elements-table tbody td {
+	padding-block: 4px;
+}
+
+.configure-column-modal__post-preview-cell {
+	box-sizing: border-box;
+	max-inline-size: 100%;
+	margin: 0 auto;
+}
+
 .grid-control__body-columns--date-align-right .components-input-control__backdrop,
 .grid-control__body-columns--date-align-right input.components-input-control__input,
 .grid-control__body-columns--date-align-right input.components-text-control__input {

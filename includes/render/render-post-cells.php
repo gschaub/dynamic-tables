@@ -148,6 +148,8 @@ function render_wide_content(
 	$displayed_attributes,
 	$content_options
 ) {
+	$wide_column_split = $content_options['wideColumnSplit'] ?? 'equal';
+
 	?>
 	<div class="dtbk-post-content dtbk-post-content--wide">
 		<div style="display: flex; flex-direction: column; gap: 10px; padding: 10px 10px;"><?php
@@ -158,17 +160,11 @@ function render_wide_content(
 				$content_options
 			);?>
 		</div>
-		<div style="display: flex;
-					flex-direction: row;
-					gap: 10px;
-					box-sizing: inherit;"
+		<div
+			class="dtbk-post-content__columns"
+			data-column-split="<?php echo esc_attr( $wide_column_split ); ?>"
 		>
-			<div style="display: block;
-						box-sizing: inherit;
-						max-height: 100%;
-						max-width: 100%;
-						flex: 1;"
-			>
+			<div class="dtbk-post-content__column dtbk-post-content__column--left">
 				<div style="display: flex; flex-direction: column; gap: 10px;"><?php
 					render_post_attribute_column(
 						'left',
@@ -179,12 +175,7 @@ function render_wide_content(
 					?>
 				</div>
 			</div>
-			<div style="display: block;
-						box-sizing: inherit;
-						max-height: 100%;
-						max-width: 100%;
-						flex: 1;"
-			>
+			<div class="dtbk-post-content__column dtbk-post-content__column--right">
 				<div style="display: flex; flex-direction: column; gap: 10px;"><?php
 					render_post_attribute_column(
 						'right',

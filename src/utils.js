@@ -1,5 +1,6 @@
 /* External dependencies */
 import { dateI18n } from '@wordpress/date';
+import { decodeEntities } from '@wordpress/html-entities';
 import { create, getTextContent } from '@wordpress/rich-text';
 
 const LETTER_MAP = {
@@ -101,7 +102,9 @@ export function isEmptyObject(obj) {
  * @return  {string}    Plain text
  */
 export function htmlToIndexText(html = '') {
-	return getTextContent(create({ html })).replace(/\s+/g, ' ').trim();
+	return decodeEntities(getTextContent(create({ html })))
+		.replace(/\s+/g, ' ')
+		.trim();
 }
 
 /**

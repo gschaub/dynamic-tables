@@ -58,6 +58,7 @@ function ConfigureColumnDataType(props = {}) {
 		columnLabel,
 		columnAttributes,
 		columnClasses,
+		columnPreviewWidth,
 		updatedColumn,
 		onRequestClose,
 	} = props;
@@ -1218,7 +1219,12 @@ function ConfigureColumnDataType(props = {}) {
 
 							{/* Post Settings */}
 							{dataType.type === 'post' && (
-								<ConfigurePostColumnDataType postSettings={postSettings} onChange={onPostUpdate} />
+								<ConfigurePostColumnDataType
+									postSettings={postSettings}
+									columnClasses={columnClassNamesRender}
+									columnPreviewWidth={columnPreviewWidth}
+									onChange={onPostUpdate}
+								/>
 							)}
 						</VStack>
 					</div>

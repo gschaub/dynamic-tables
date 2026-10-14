@@ -2,21 +2,13 @@
 import { useState, useRef, useEffect, memo } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
-import {
-	Modal,
-	Button,
-	CheckboxControl,
-	TextControl,
-	ComboboxControl,
-	Notice,
-} from '@wordpress/components';
+import { Modal, Button, CheckboxControl, TextControl, Notice } from '@wordpress/components';
 import { Card, Stack } from '@wordpress/ui';
 
 /**
  * Internal dependencies
  */
-import { lookupPost } from '../../get-external-data';
-import { htmlToIndexText } from '../../utils';
+import { SelectPost } from '../select-post';
 import {
 	normalizeCellValueAttributes,
 	getPostOption,
@@ -35,6 +27,7 @@ import '../../editor.scss';
  * Keep only the last edit request.
  *
  * @since    1.4.10
+ *
  * @description Keep only the latest request active and abort it when the modal unmounts.
  */
 function useLatestRequest() {
@@ -64,50 +57,6 @@ function useLatestRequest() {
 		return true;
 	};
 	return { ref, begin, cancel, isCurrent, finish };
-}
-
-/**
- * Keep one combobox's state and requests together.
- *
- * @param {Object|Function|null} initialOption Initial selection or its initializer.
- * @return {Object} Independent combobox state and request handlers.
- */
-function useComboboxState(initialOption = null) {
-	const [selectedOption, setSelectedOption] = useState(initialOption);
-	const [selectOptions, setSelectOptions] = useState([]);
-
-	const selectedValue = selectedOption?.value ?? null;
-	const comboboxOptions =
-		selectedOption && !selectOptions.some(option => option.value === selectedValue)
-			? [selectedOption, ...selectOptions]
-			: selectOptions;
-
-	const searchRequest = useLatestRequest();
-
-	const [isSearching, setIsSearching] = useState(false);
-	const [searchError, setSearchError] = useState('');
-	const selectionRequest = useLatestRequest();
-	const [isLoading, setIsLoading] = useState(false);
-	const [selectionError, setSelectionError] = useState('');
-
-	return {
-		selectedOption,
-		setSelectedOption,
-		selectedValue,
-		comboboxOptions,
-		selectOptions,
-		setSelectOptions,
-		searchRequest,
-		isSearching,
-		setIsSearching,
-		searchError,
-		setSearchError,
-		selectionRequest,
-		isLoading,
-		setIsLoading,
-		selectionError,
-		setSelectionError,
-	};
 }
 
 /**
@@ -155,31 +104,11 @@ function EditCellContent(props = {}) {
 	const [linkErrors, setLinkErrors] = useState({});
 
 	// post state
-	const postCombobox = useComboboxState(() => getPostOption(currentCell.attributes));
-	const {
-		selectedOption: selectedPostOption,
-		setSelectedOption: setSelectedPostOption,
-		setSelectOptions: setPostSelectOptions,
-	} = postCombobox;
-
-	const {
-		searchRequest: postSearchRequest,
-		isSearching: isSearchingPosts,
-		setIsSearching: setIsSearchingPosts,
-		searchError: postSearchError,
-		setSearchError: setPostSearchError,
-	} = postCombobox;
-
-	const {
-		selectionRequest: postRequest,
-		isLoading: isLoadingPost,
-		setIsLoading: setIsLoadingPost,
-		selectionError: postError,
-		setSelectionError: setPostError,
-	} = postCombobox;
-
-	const selectedPostId = postCombobox.selectedValue;
-	const postComboboxOptions = postCombobox.comboboxOptions;
+	const [postSelectionStatus, setPostSelectionStatus] = useState(() => ({
+		isLoading: false,
+		isValid: Boolean(getPostOption(currentCell.attributes)),
+	}));
+	const { isLoading: isLoadingPost, isValid: isPostSelectionValid } = postSelectionStatus;
 
 	/**
 	 * Stop event processing in favor of custom processing.
@@ -199,10 +128,28 @@ function EditCellContent(props = {}) {
 	 * @since    1.4.10 Update to support aborts
 	 */
 	function handleCancel() {
-		postSearchRequest.cancel();
-		postRequest.cancel();
 		saveRequest.cancel();
 		onRequestClose?.();
+	}
+
+	/**
+	 * Store the post selected by SelectPost.
+	 *
+	 * @param {Object|null} post Selected post or null.
+	 */
+	function onPostSelection(post) {
+		if (saveRequest.ref.current) return;
+		updateCellValue('post', post);
+	}
+
+	/**
+	 * Update whether the post link opens in a new tab.
+	 *
+	 * @param {boolean} value Whether to open in a new tab.
+	 */
+	function onPostNewTabSelection(value) {
+		if (saveRequest.ref.current) return;
+		updateCellValue('newTab', value);
 	}
 
 	/**
@@ -292,181 +239,17 @@ function EditCellContent(props = {}) {
 	}
 
 	/**
-	 * Retrieve a WordPress post.
-	 *
-	 * @since    1.4.10
-	 *
-	 * @param {string|null} value onChange event from post selection
-	 */
-	async function onPostSelection(value) {
-		if (saveRequest.ref.current) return;
-		postSearchRequest.cancel();
-		postRequest.cancel();
-		setIsSearchingPosts(false);
-		setIsLoadingPost(false);
-		setPostSearchError('');
-		setPostError('');
-		setSaveError('');
-
-		if (value === null || value === '') {
-			setSelectedPostOption(null);
-			setPostSelectOptions([]);
-			updateCellValue('post', null);
-			return;
-		}
-
-		const option = postComboboxOptions.find(item => item.value === String(value) && !item.disabled);
-		if (!option) {
-			setPostError(__('Choose a post from the search results.', 'dynamic-table-blocks'));
-			return;
-		}
-
-		setSelectedPostOption(option);
-		const request = postRequest.begin();
-		setIsLoadingPost(true);
-
-		try {
-			const fetchedPost = await lookupPost(option.value, {
-				postType: option.postType,
-				signal: request.signal,
-			});
-
-			if (!postRequest.isCurrent(request)) return;
-
-			const post = {
-				postId: Number(fetchedPost.id),
-				postType: fetchedPost.type,
-				title: htmlToIndexText(fetchedPost.title.rendered),
-				url: fetchedPost.link,
-				author: fetchedPost.author,
-			};
-
-			if (!isWebUrl(post.url)) {
-				throw new Error(__('The post has an invalid web address.', 'dynamic-table-blocks'));
-			}
-
-			const nextOption = {
-				value: String(post.postId),
-				label: post.title || __('No title found', 'dynamic-table-blocks'),
-				postType: post.postType,
-				title: post.title,
-				url: post.url,
-			};
-
-			setSelectedPostOption(nextOption);
-			updateCellValue('post', post);
-
-			setPostSelectOptions(previous =>
-				previous.map(item => (item.value === nextOption.value ? nextOption : item))
-			);
-		} catch (error) {
-			if (postRequest.isCurrent(request)) {
-				setPostError(
-					error?.message ||
-						__('The post could not be loaded. Select it again to retry.', 'dynamic-table-blocks')
-				);
-			}
-		} finally {
-			if (postRequest.finish(request)) setIsLoadingPost(false);
-		}
-	}
-
-	/**
-	 * Update whether the post link opens in a new tab.
-	 *
-	 * @since    1.4.10
-	 *
-	 * @param {boolean} value Whether to open in a new tab.
-	 */
-	function onPostNewTabSelection(value) {
-		if (saveRequest.ref.current) {
-			return;
-		}
-		updateCellValue('newTab', value);
-	}
-
-	/**
-	 * Query WordPress Posts.
-	 *
-	 * @since    1.4.10
-	 *
-	 * @param {string} value Text on which to search
-	 */
-	async function onPostSearch(value) {
-		if (saveRequest.ref.current) return;
-		postSearchRequest.cancel();
-		setIsSearchingPosts(false);
-		setPostSearchError('');
-		const searchTerm = String(value ?? '').trim();
-		const noResults = [
-			{
-				value: '',
-				label: __('No matching content found or search term is too short.', 'dynamic-table-blocks'),
-				disabled: true,
-			},
-		];
-
-		if (!searchTerm && selectedPostOption) {
-			setPostSelectOptions([]);
-			return;
-		}
-
-		if (searchTerm.length < 3) {
-			setPostSelectOptions(noResults);
-			return;
-		}
-
-		const request = postSearchRequest.begin();
-		setIsSearchingPosts(true);
-		try {
-			const posts = await apiFetch({
-				path: '/wp/v2/search?type=post&search=' + encodeURIComponent(searchTerm),
-				signal: request.signal,
-			});
-
-			if (!postSearchRequest.isCurrent(request)) return;
-			if (!Array.isArray(posts)) {
-				throw new Error(__('The search response was invalid.', 'dynamic-table-blocks'));
-			}
-
-			const options = posts
-				.filter(
-					post =>
-						Number.isSafeInteger(Number(post.id)) &&
-						Number(post.id) > 0 &&
-						typeof post.subtype === 'string'
-				)
-				.map(post => ({
-					value: String(post.id),
-					label: htmlToIndexText(post.title || '') || __('No title found', 'dynamic-table-blocks'),
-					postType: post.subtype,
-				}));
-
-			setPostSelectOptions(options.length ? options : noResults);
-		} catch (error) {
-			if (postSearchRequest.isCurrent(request)) {
-				setPostSelectOptions([]);
-				setPostSearchError(
-					error?.message || __('The search failed. Try again.', 'dynamic-table-blocks')
-				);
-			}
-		} finally {
-			if (postSearchRequest.finish(request)) setIsSearchingPosts(false);
-		}
-	}
-
-	/**
 	 * Return new cell content and value attributes.
 	 *
 	 * @since    1.4.6
-	 * @since    1.4.10 - Add support for post contentType
+	 * @since    1.5.0 - Add support for post contentType
 	 *
 	 * @param {Object} event Form submit
 	 */
 	async function onUpdate(event) {
 		event?.preventDefault?.();
 
-		if (saveRequest.ref.current || postRequest.ref.current) return;
+		if (saveRequest.ref.current || isLoadingPost) return;
 		setSaveError('');
 
 		let attributes = currentCell.attributes;
@@ -491,9 +274,8 @@ function EditCellContent(props = {}) {
 
 			// Validate post content type before saving
 			case 'post': {
-				const committedOption = getPostOption(attributes);
-				if (!selectedPostOption || postError || committedOption?.value !== selectedPostId) {
-					setPostError(
+				if (!isPostSelectionValid || !getPostOption(attributes)) {
+					setSaveError(
 						__('Select a post and wait for it to load before updating.', 'dynamic-table-blocks')
 					);
 					return;
@@ -507,8 +289,6 @@ function EditCellContent(props = {}) {
 			}
 		}
 
-		postSearchRequest.cancel();
-		setIsSearchingPosts(false);
 		const request = saveRequest.begin();
 		setIsSaving(true);
 
@@ -665,28 +445,21 @@ function EditCellContent(props = {}) {
 										</Card.Header>
 										<Card.Content>
 											<Stack direction="column" gap="lg">
-												{(postError || postSearchError) && (
-													<Notice status="error" isDismissible={false}>
-														{postError || postSearchError}
-													</Notice>
-												)}
-
-												<ComboboxControl
-													label={__('Content Title', 'dynamic-table-blocks')}
-													placeholder={__('Search WordPress content', 'dynamic-table-blocks')}
-													help={__('Type at least 3 characters to search.', 'dynamic-table-blocks')}
-													isLoading={isSearchingPosts || isLoadingPost}
-													options={postComboboxOptions}
-													value={selectedPostId}
-													expandOnFocus={false}
-													onFilterValueChange={onPostSearch}
+												<SelectPost
+													initialPost={{
+														postId: currentCellValueAttributes?.canonical?.postId,
+														postType: currentCellValueAttributes?.canonical?.postType,
+														title: currentCellValueAttributes?.indexText,
+													}}
+													disabled={isSaving}
 													onChange={onPostSelection}
+													onStatusChange={setPostSelectionStatus}
 												/>
 
 												<CheckboxControl
 													label={__('Open in new tab?', 'dynamic-table-blocks')}
 													checked={newTab}
-													disabled={isLoadingPost || Boolean(postError)}
+													disabled={isLoadingPost || !isPostSelectionValid}
 													onChange={onPostNewTabSelection}
 												/>
 											</Stack>

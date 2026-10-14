@@ -28,7 +28,7 @@ import {
 	BorderBoxControl,
 	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
-import { Card, Stack, InputControl, InputLayout, IconButton } from '@wordpress/ui';
+import { Card, Stack, InputControl } from '@wordpress/ui';
 import {
 	RichText,
 	useBlockProps,
@@ -38,7 +38,7 @@ import {
 	InspectorControls,
 	PanelColorSettings,
 } from '@wordpress/block-editor';
-import { search, blockTable as icon, plus, reset } from '@wordpress/icons';
+import { search, blockTable as icon } from '@wordpress/icons';
 
 /* Internal dependencies */
 import { store as tableStore } from './data';
@@ -576,6 +576,7 @@ export default function Edit(props) {
 		columnLabel: '',
 		columnAttributes: null,
 		columnClasses: '',
+		columnPreviewWidth: null,
 	});
 
 	/**
@@ -596,6 +597,10 @@ export default function Edit(props) {
 		e?.stopPropagation?.();
 
 		suppressNextInvokerRestoreRef.current = true;
+
+		const measuredWidth = columnMenu.anchorEl?.getBoundingClientRect?.().width;
+		const columnPreviewWidth =
+			Number.isFinite(measuredWidth) && measuredWidth > 0 ? measuredWidth : null;
 
 		setColumnDataTypeModal({
 			isOpen: true,
@@ -4154,6 +4159,7 @@ export default function Edit(props) {
 					columnLabel={columnDataTypeModal.columnLabel}
 					columnAttributes={columnDataTypeModal.columnAttributes}
 					columnClasses={columnDataTypeModal.columnClasses}
+					columnPreviewWidth={columnDataTypeModal.columnPreviewWidth}
 					enableProFeatures={enableProFeatures}
 					updatedColumn={onUpdateColumn}
 					onRequestClose={closeColumnDataTypeModal}

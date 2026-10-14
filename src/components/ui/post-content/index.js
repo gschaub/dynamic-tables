@@ -10,7 +10,6 @@ import { isEmptyObject, formatedDisplayDate, htmlToIndexText } from '../../../ut
 import { getPostStatistics } from './post-statistics';
 import {
 	normalizeCellValueAttributes,
-	setPostDetails,
 	getCellLinkUrl,
 	isWebUrl,
 } from '../../cell-advanced-edit-modal/value';
@@ -18,6 +17,18 @@ import {
 import '../../../editor.scss';
 import '../../../style.scss';
 
+/**
+ * Render formatted post content in a cell
+ *
+ * @since    1.5.0
+ *
+ * @param {Object}             props
+ * @param {string|HTMLElement} props.cellContent    Cached content in the cell's content attribute
+ * @param {Object}             props.cellAttributes Cell content to render
+ * @param {string}             props.cellClasses    Configurable cell classes to be applied to the render
+ * @param {Object}             props.contentType    Column content configuration
+ * @return {void}
+ */
 function RenderCellPostContent(props = {}) {
 	const { cellContent, cellAttributes, cellClasses, contentType } = props;
 
@@ -237,9 +248,11 @@ function getDisplayAttributes(contentOptions) {
 }
 
 function renderPostTitle(renderedContent, linkLocation, postLink) {
+	const postTitle = htmlToIndexText(renderedContent);
+
 	return (
 		<div style={{ fontWeight: '600', textAlign: 'center' }}>
-			{linkLocation === 'title' ? <a href={postLink}>{renderedContent}</a> : renderedContent}
+			{linkLocation === 'title' ? <a href={postLink}>{postTitle}</a> : postTitle}
 		</div>
 	);
 }
@@ -378,6 +391,7 @@ function renderWideContent(
 	cellClasses
 ) {
 	console.log('Display Attributes for Wide Render: ', displayedAttributes);
+	const wideColumnSplit = contentOptions?.wideColumnSplit ?? 'equal';
 
 	return (
 		<div className="dtbk-post-content dtbk-post-content--wide">
@@ -398,21 +412,24 @@ function renderWideContent(
 			</div>
 
 			<div
-				style={{
-					display: 'flex',
-					flexDirection: 'row',
-					gap: '10px',
-					boxSizing: 'inherit',
-				}}
+				className="dtbk-post-content__columns"
+				data-column-split={wideColumnSplit}
+				// style={{
+				// 	display: 'flex',
+				// 	flexDirection: 'row',
+				// 	gap: '10px',
+				// 	boxSizing: 'inherit',
+				// }}
 			>
 				<div
-					style={{
-						display: 'block',
-						boxSizing: 'inherit',
-						maxHeight: '100%',
-						maxWidth: '100%',
-						flex: '1',
-					}}
+					className="dtbk-post-content__column dtbk-post-content__column--left"
+					// style={{
+					// 	display: 'block',
+					// 	boxSizing: 'inherit',
+					// 	maxHeight: '100%',
+					// 	maxWidth: '100%',
+					// 	flex: '1',
+					// }}
 				>
 					<div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
 						{displayedAttributes.map(({ attribute, slot }) => {
@@ -431,13 +448,14 @@ function renderWideContent(
 					</div>
 				</div>
 				<div
-					style={{
-						display: 'block',
-						boxSizing: 'inherit',
-						maxHeight: '100%',
-						maxWidth: '100%',
-						flex: '1',
-					}}
+					className="dtbk-post-content__column dtbk-post-content__column--right"
+					// style={{
+					// 	display: 'block',
+					// 	boxSizing: 'inherit',
+					// 	maxHeight: '100%',
+					// 	maxWidth: '100%',
+					// 	flex: '1',
+					// }}
 				>
 					<div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
 						{displayedAttributes.map(({ attribute, slot }) => {
