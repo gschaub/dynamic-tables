@@ -70,7 +70,6 @@ const postDisplayColumnItems = [
  */
 export function ConfigurePostColumnDataType(props = {}) {
 	const { postSettings, columnClasses = '', columnPreviewWidth, onChange } = props;
-	console.log('Initiial post format', postSettings);
 
 	const { format: postFormat, formatOptions: postOptions } = postSettings || {};
 
@@ -747,12 +746,35 @@ export function ConfigurePostColumnDataType(props = {}) {
 	);
 }
 
+/**
+ * React component to support display configuration for a single post element
+ *
+ * @since 1.5.0
+ *
+ * @param {Object}   props
+ * @param {string}   props.elementName     Description of post element
+ * @param {Object}   props.displayElement  Element display configuration
+ * @param {string}   props.updateOption    Handle for updates to display configuration
+ * @param {string}   props.postFormat      Current post display format (link|narrow|wide)
+ * @param {number}   props.columnItemCount Number of elements by location currently being displayed
+ * @param {Function} props.onChange        Handles display configuration updates
+ * @return {Element}                       Rendered table row
+ */
 function DislpayPostElementRow(props) {
 	const { elementName, displayElement, updateOption, postFormat, columnItemCount, onChange } =
 		props;
 	const { display, order, column } = displayElement;
 	const labelColumnSuffix = __('Display Column', 'dynamic-table-blocks');
 
+	/**
+	 * Current number of items to be displayed for the current column location
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param {string} column          Column to which this display element belongs
+	 * @param {Object} columnItemCount Total items to be displayed for all locations
+	 * @return {number}                Number of items for display for the column
+	 */
 	function maxDisplayItems(column, columnItemCount) {
 		if (column === 'none') return columnItemCount.none;
 		if (column === 'span') return columnItemCount.span;
@@ -761,6 +783,15 @@ function DislpayPostElementRow(props) {
 		return 0;
 	}
 
+	/**
+	 * Apply configuration update selected by user
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param {string|number|boolean} updatedValue         New value
+	 * @param {string}                updatedDisplayOption Display element being updated
+	 * @param {string}                updatedAttribute     Specific element attribute being updated
+	 */
 	function onPostDisplayUpdate(updatedValue, updatedDisplayOption, updatedAttribute) {
 		let newDisplay = display;
 		let newColumn = column;
@@ -780,7 +811,6 @@ function DislpayPostElementRow(props) {
 				break;
 			}
 			case 'column': {
-				console.log('Upated column value: ', updatedValue);
 				const itemCount = maxDisplayItems(updatedValue, columnItemCount);
 				newColumn = updatedValue;
 				newOrder = itemCount + 1;
@@ -804,8 +834,6 @@ function DislpayPostElementRow(props) {
 			column: newColumn,
 			order: newOrder,
 		};
-
-		console.log('Changed Display Element ( ' + updatedDisplayOption + '): ', updatedDisplayElement);
 		onChange(updatedDisplayElement, updatedDisplayOption);
 	}
 
@@ -831,7 +859,6 @@ function DislpayPostElementRow(props) {
 							iconPair="arrow-up-down"
 							reverseIcons
 							wrapper="pill"
-							// showValue
 							onClick={value => onPostDisplayUpdate(value, updateOption, 'order')}
 						/>
 					) : (
@@ -860,6 +887,15 @@ function DislpayPostElementRow(props) {
 	);
 }
 
+/**
+ * Default post display elements and options for a given post format
+ *
+ * @since 1.5.0
+ *
+ * @param {string} postFormat            Format to default
+ * @param {Object} defaultDisplayElement Default display element
+ * @return {Object|null}                 Default post display configuration
+ */
 export function getPostFormatDefaults(postFormat, defaultDisplayElement) {
 	let formatOptions;
 
@@ -935,10 +971,9 @@ export function getPostFormatDefaults(postFormat, defaultDisplayElement) {
 			break;
 		}
 		default:
-			return;
+			return null;
 	}
 
-	console.log('New display format options: ', formatOptions);
 	const displayOptions = {
 		...formatOptions,
 		displayTitleInCover: false,
@@ -946,8 +981,6 @@ export function getPostFormatDefaults(postFormat, defaultDisplayElement) {
 		wideColumnSplit: 'equal',
 		linkLocation: 'title',
 	};
-
-	console.log('New extended display format options: ', displayOptions);
 
 	const displayElements = {
 		displayTitle: formatOptions.displayTitle,
@@ -959,11 +992,14 @@ export function getPostFormatDefaults(postFormat, defaultDisplayElement) {
 		displayModifiedDate: formatOptions.displayModifiedDate,
 	};
 
-	console.log('New extended display elements: ', displayElements);
-
 	return { displayOptions, displayElements };
 }
 
+/**
+ * Default display element attributes for initialization
+ *
+ * @since 1.5.0
+ */
 export const defaultDisplayElement = {
 	display: false,
 	column: 'none',

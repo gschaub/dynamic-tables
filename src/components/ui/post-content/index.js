@@ -117,8 +117,6 @@ function RenderCellPostContent(props = {}) {
 		imageSize,
 	]);
 
-	console.log('Content format = ' + contentFormat);
-
 	if (!hasValidPostReference) {
 		return null;
 	}
@@ -152,7 +150,6 @@ function RenderCellPostContent(props = {}) {
 		}
 		case 'narrow': {
 			// Render narrow
-			console.log('calling narrow render');
 			return renderNarrowContent(
 				postData,
 				postLinkInNewTab,
@@ -177,6 +174,14 @@ function RenderCellPostContent(props = {}) {
 	}
 }
 
+/**
+ * Retrieve post elements for display, put them in an array, and sort them
+ *
+ * @since 1.5.0
+ *
+ * @param {Object} contentOptions Displayable post elements
+ * @return {Array} Sorted array of post element to be displayed
+ */
 function getDisplayAttributes(contentOptions) {
 	const {
 		displayTitle,
@@ -187,7 +192,6 @@ function getDisplayAttributes(contentOptions) {
 		displayModifiedDate,
 	} = contentOptions;
 
-	console.log('In GetDisplayAttributes, contentOptions: ', contentOptions);
 	const postDisplayAttributes = Array();
 
 	if (displayTitle.display) {
@@ -243,20 +247,51 @@ function getDisplayAttributes(contentOptions) {
 		return a.slot.order - b.slot.order;
 	});
 
-	console.log('Post render display array: ', postDisplayAttributes);
 	return postDisplayAttributes;
 }
 
-function renderPostTitle(renderedContent, linkLocation, postLink) {
+/**
+ * Markup to render the post's title
+ *
+ * @since 1.5.0
+ *
+ * @param {string}  renderedContent  The post's title
+ * @param {string}  linkLocation     Where to  place the post's link
+ * @param {URL}     postLink         The post's URL
+ * @param {boolean} postLinkInNewTab Open the link in a new tab?
+ * @return {Element} Markup to render the title
+ */
+function renderPostTitle(renderedContent, linkLocation, postLink, postLinkInNewTab) {
 	const postTitle = htmlToIndexText(renderedContent);
 
 	return (
 		<div style={{ fontWeight: '600', textAlign: 'center' }}>
-			{linkLocation === 'title' ? <a href={postLink}>{postTitle}</a> : postTitle}
+			{linkLocation === 'title' ? (
+				<a
+					href={postLink}
+					target={postLinkInNewTab ? '_blank' : '_top'}
+					rel={postLinkInNewTab ? 'noopener noreferrer' : undefined}
+				>
+					{postTitle}
+				</a>
+			) : (
+				postTitle
+			)}
 		</div>
 	);
 }
 
+/**
+ * Markup to render the post's cover image
+ *
+ * @since 1.5.0
+ *
+ * @param {Object} image The post's image and related meta
+ * @param {string} sizes Image sizes attribute
+ * @param {Object} link  The post's URL
+ * @param {Object} title The post's title
+ * @return {Element|null} Markup to render the cover image
+ */
 function renderPostImage(image, sizes, link, title) {
 	if (!image) {
 		return null;
@@ -284,7 +319,12 @@ function renderPostImage(image, sizes, link, title) {
 	return (
 		<div className="dtbk-post-image">
 			{link.isLink ? (
-				<a className="dtbk-post-image__link" href={link.url}>
+				<a
+					className="dtbk-post-image__link"
+					href={link.url}
+					target={link.newTab ? '_blank' : '_top'}
+					rel={link.newTab ? 'noopener noreferrer' : undefined}
+				>
 					{renderedImage}
 				</a>
 			) : (
@@ -294,6 +334,14 @@ function renderPostImage(image, sizes, link, title) {
 	);
 }
 
+/**
+ * Markup to render the post's excerpt
+ *
+ * @since 1.5.0
+ *
+ * @param {string} renderedContent The post's excerpt
+ * @return {Element} Markup to render the excerpt
+ */
 function renderPostExcept(renderedContent) {
 	return (
 		<div style={{ display: 'flex', gap: '8px', width: '100%' }}>
@@ -310,6 +358,14 @@ function renderPostExcept(renderedContent) {
 	);
 }
 
+/**
+ * Markup to render the posts author's name
+ *
+ * @since 1.5.0
+ *
+ * @param {string} authorName The name of the post's author
+ * @return {Element} Markup to render the author name
+ */
 function renderPostAuthor(authorName) {
 	const contentLabel = __('Author:', 'dynamic-table-blocks');
 
@@ -323,6 +379,14 @@ function renderPostAuthor(authorName) {
 	);
 }
 
+/**
+ * Markup to render the post's original publish date
+ *
+ * @since 1.5.0
+ *
+ * @param {string} renderedContent The post's publication date
+ * @return {Element} Markup to render the publication date
+ */
 function renderPublishedDate(renderedContent) {
 	const contentLabel = __('Published:', 'dynamic-table-blocks');
 	const displayDate = formatedDisplayDate(renderedContent, 'date');
@@ -337,6 +401,14 @@ function renderPublishedDate(renderedContent) {
 	);
 }
 
+/**
+ * Markup to render the date the post was last updated
+ *
+ * @since 1.5.0
+ *
+ * @param {string} renderedContent The post's modified date
+ * @return {Element} Markup to render the last modified date
+ */
 function renderModifiedDate(renderedContent) {
 	const contentLabel = __('Last Updated:', 'dynamic-table-blocks');
 	const displayDate = formatedDisplayDate(renderedContent, 'date');
@@ -351,6 +423,18 @@ function renderModifiedDate(renderedContent) {
 	);
 }
 
+/**
+ * Create HTML markup to render the table cell for the post in narrow format
+ *
+ * @since 1.5.0
+ *
+ * @param {Object}  postData            The post's data for rendering
+ * @param {boolean} postLinkInNewTab    Should the post be displayed in a new tab?
+ * @param {Array}   displayedAttributes Sorted list of post elements to be displayed
+ * @param {Object}  contentOptions      Render format options for the post
+ * @param {string}  cellClasses         CSS classes to be applied to the cell
+ * @return {Element} Markup to render the post
+ */
 function renderNarrowContent(
 	postData,
 	postLinkInNewTab,
@@ -362,11 +446,9 @@ function renderNarrowContent(
 	// const postCategoriesApi = post.wp.term.href;
 	// const postTagsApi = post.wp.term.tags;
 
-	console.log('Display Attributes for Narrow Render: ', displayedAttributes);
 	return (
 		<div className="dtbk-post-content dtbk-post-content--narrow">
 			{displayedAttributes.map(({ attribute }) => {
-				console.log('Display attribute: ', attribute);
 				const formattedContent = evaluateDisplayAttributes(
 					attribute,
 					postData,
@@ -374,7 +456,6 @@ function renderNarrowContent(
 					contentOptions
 				);
 				if (!formattedContent) {
-					console.log('No formatted content for attribute: ', attribute);
 					return null;
 				}
 				return <div>{formattedContent}</div>;
@@ -383,6 +464,18 @@ function renderNarrowContent(
 	);
 }
 
+/**
+ * Create HTML markup to render the table cell for the post in wide format
+ *
+ * @since 1.5.0
+ *
+ * @param {Object}  postData            The post's data for rendering
+ * @param {boolean} postLinkInNewTab    Should the post be displayed in a new tab?
+ * @param {Array}   displayedAttributes Sorted list of post elements to be displayed
+ * @param {Object}  contentOptions      Render format options for the post
+ * @param {string}  cellClasses         CSS classes to be applied to the cell
+ * @return {Element} Markup to render the post
+ */
 function renderWideContent(
 	postData,
 	postLinkInNewTab,
@@ -390,7 +483,6 @@ function renderWideContent(
 	contentOptions,
 	cellClasses
 ) {
-	console.log('Display Attributes for Wide Render: ', displayedAttributes);
 	const wideColumnSplit = contentOptions?.wideColumnSplit ?? 'equal';
 
 	return (
@@ -411,26 +503,8 @@ function renderWideContent(
 				})}
 			</div>
 
-			<div
-				className="dtbk-post-content__columns"
-				data-column-split={wideColumnSplit}
-				// style={{
-				// 	display: 'flex',
-				// 	flexDirection: 'row',
-				// 	gap: '10px',
-				// 	boxSizing: 'inherit',
-				// }}
-			>
-				<div
-					className="dtbk-post-content__column dtbk-post-content__column--left"
-					// style={{
-					// 	display: 'block',
-					// 	boxSizing: 'inherit',
-					// 	maxHeight: '100%',
-					// 	maxWidth: '100%',
-					// 	flex: '1',
-					// }}
-				>
+			<div className="dtbk-post-content__columns" data-column-split={wideColumnSplit}>
+				<div className="dtbk-post-content__column dtbk-post-content__column--left">
 					<div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
 						{displayedAttributes.map(({ attribute, slot }) => {
 							let formattedContent;
@@ -447,16 +521,7 @@ function renderWideContent(
 						})}
 					</div>
 				</div>
-				<div
-					className="dtbk-post-content__column dtbk-post-content__column--right"
-					// style={{
-					// 	display: 'block',
-					// 	boxSizing: 'inherit',
-					// 	maxHeight: '100%',
-					// 	maxWidth: '100%',
-					// 	flex: '1',
-					// }}
-				>
+				<div className="dtbk-post-content__column dtbk-post-content__column--right">
 					<div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
 						{displayedAttributes.map(({ attribute, slot }) => {
 							let formattedContent;
@@ -478,6 +543,17 @@ function renderWideContent(
 	);
 }
 
+/**
+ * Retrieve and return HTML markup associated with each displayed post element
+ *
+ * @since 1.5.2
+ *
+ * @param {Object}  displayedAttribute The post attribute to be rendered
+ * @param {Object}  postData           The post's data for rendering
+ * @param {boolean} postLinkInNewTab   Should the post be displayed in a new tab?
+ * @param {Object}  contentOptions     Render format options for the post
+ * @return {Element} Markup to render the specific post element
+ */
 function evaluateDisplayAttributes(displayedAttribute, postData, postLinkInNewTab, contentOptions) {
 	const { post, image, authorName } = postData;
 	const { displayTitleInCover, linkLocation } = contentOptions;
@@ -490,8 +566,7 @@ function evaluateDisplayAttributes(displayedAttribute, postData, postLinkInNewTa
 		case 'title': {
 			const renderedContent = post.title.rendered;
 			if (displayTitleInCover) break;
-			console.log('Preparing title render');
-			formattedContent = renderPostTitle(renderedContent, linkLocation, postLink);
+			formattedContent = renderPostTitle(renderedContent, linkLocation, postLink, postLinkInNewTab);
 			break;
 		}
 		case 'image': {
@@ -501,6 +576,7 @@ function evaluateDisplayAttributes(displayedAttribute, postData, postLinkInNewTa
 				{
 					isLink: linkLocation === 'image',
 					url: postLink,
+					newTab: postLinkInNewTab,
 				},
 				{
 					embedTitle: displayTitleInCover,

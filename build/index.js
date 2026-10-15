@@ -1619,8 +1619,6 @@ function ConfigureColumnDataType(props = {}) {
     setDataTypeFormat('link');
   }
   const postSettings = dataType?.settings;
-  console.log('Data Type: ', dataType);
-  console.log('Post Settings: ', postSettings);
 
   // Column width attributes
   const [columnWidthType, setColumnWidthType] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(columnAttributes.columnWidthType);
@@ -2082,7 +2080,7 @@ function ConfigureColumnDataType(props = {}) {
   /**
    * Update post format and set default options
    *
-   * @since 1.4.11
+   * @since 1.5.0
    *
    * @param {string} postFormat Post format to set
    */
@@ -2112,8 +2110,9 @@ function ConfigureColumnDataType(props = {}) {
    * Change column data types and set formatting defaults
    *
    * @since    1.2.0
-   * @since    1.2.4  Add number format
-   * @since    1.4.3  Add checkbox format
+   * @since    1.2.4   Add number format
+   * @since    1.4.3   Add checkbox format
+   * @since    1.4.10  Add post format
    *
    * @param {Object} event Event object to change data type
    * @return {void}
@@ -2160,7 +2159,6 @@ function ConfigureColumnDataType(props = {}) {
         newColumnClassNames.delete('grid-control__body-columns--number-align-right');
         newColumnClassNames.delete('grid-control__body-columns--date-align-right');
         setColumnClassNames(newColumnClassNames);
-        console.log('Content Type set to post');
         return;
       default:
         updatedDataType = {
@@ -2178,7 +2176,9 @@ function ConfigureColumnDataType(props = {}) {
    * Return new column data type settings.
    *
    * @since    1.2.0
-   * @since    1.4.3 - Update for checkbox content type
+   * @since    1.2.4  - Add number format
+   * @since    1.4.3  - Update for checkbox content type
+   * @since    1.4.10 - Update for post content type
    *
    * @param {Object} event Form submit
    */
@@ -2725,7 +2725,6 @@ function ConfigurePostColumnDataType(props = {}) {
     columnPreviewWidth,
     onChange
   } = props;
-  console.log('Initiial post format', postSettings);
   const {
     format: postFormat,
     formatOptions: postOptions
@@ -3308,6 +3307,21 @@ function ConfigurePostColumnDataType(props = {}) {
     })]
   });
 }
+
+/**
+ * React component to support display configuration for a single post element
+ *
+ * @since 1.5.0
+ *
+ * @param {Object}   props
+ * @param {string}   props.elementName     Description of post element
+ * @param {Object}   props.displayElement  Element display configuration
+ * @param {string}   props.updateOption    Handle for updates to display configuration
+ * @param {string}   props.postFormat      Current post display format (link|narrow|wide)
+ * @param {number}   props.columnItemCount Number of elements by location currently being displayed
+ * @param {Function} props.onChange        Handles display configuration updates
+ * @return {Element}                       Rendered table row
+ */
 function DislpayPostElementRow(props) {
   const {
     elementName,
@@ -3323,6 +3337,16 @@ function DislpayPostElementRow(props) {
     column
   } = displayElement;
   const labelColumnSuffix = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Display Column', 'dynamic-table-blocks');
+
+  /**
+   * Current number of items to be displayed for the current column location
+   *
+   * @since 1.5.0
+   *
+   * @param {string} column          Column to which this display element belongs
+   * @param {Object} columnItemCount Total items to be displayed for all locations
+   * @return {number}                Number of items for display for the column
+   */
   function maxDisplayItems(column, columnItemCount) {
     if (column === 'none') return columnItemCount.none;
     if (column === 'span') return columnItemCount.span;
@@ -3330,6 +3354,16 @@ function DislpayPostElementRow(props) {
     if (column === 'right') return columnItemCount.right;
     return 0;
   }
+
+  /**
+   * Apply configuration update selected by user
+   *
+   * @since 1.5.0
+   *
+   * @param {string|number|boolean} updatedValue         New value
+   * @param {string}                updatedDisplayOption Display element being updated
+   * @param {string}                updatedAttribute     Specific element attribute being updated
+   */
   function onPostDisplayUpdate(updatedValue, updatedDisplayOption, updatedAttribute) {
     let newDisplay = display;
     let newColumn = column;
@@ -3350,7 +3384,6 @@ function DislpayPostElementRow(props) {
         }
       case 'column':
         {
-          console.log('Upated column value: ', updatedValue);
           const itemCount = maxDisplayItems(updatedValue, columnItemCount);
           newColumn = updatedValue;
           newOrder = itemCount + 1;
@@ -3375,7 +3408,6 @@ function DislpayPostElementRow(props) {
       column: newColumn,
       order: newOrder
     };
-    console.log('Changed Display Element ( ' + updatedDisplayOption + '): ', updatedDisplayElement);
     onChange(updatedDisplayElement, updatedDisplayOption);
   }
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)("tr", {
@@ -3408,9 +3440,7 @@ function DislpayPostElementRow(props) {
           baseInteger: Number(order),
           iconPair: "arrow-up-down",
           reverseIcons: true,
-          wrapper: "pill"
-          // showValue
-          ,
+          wrapper: "pill",
           onClick: value => onPostDisplayUpdate(value, updateOption, 'order')
         }) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('n/a', 'dynamic-table-blocks')
       })
@@ -3436,6 +3466,16 @@ function DislpayPostElementRow(props) {
     })]
   });
 }
+
+/**
+ * Default post display elements and options for a given post format
+ *
+ * @since 1.5.0
+ *
+ * @param {string} postFormat            Format to default
+ * @param {Object} defaultDisplayElement Default display element
+ * @return {Object|null}                 Default post display configuration
+ */
 function getPostFormatDefaults(postFormat, defaultDisplayElement) {
   let formatOptions;
   switch (postFormat) {
@@ -3513,9 +3553,8 @@ function getPostFormatDefaults(postFormat, defaultDisplayElement) {
         break;
       }
     default:
-      return;
+      return null;
   }
-  console.log('New display format options: ', formatOptions);
   const displayOptions = {
     ...formatOptions,
     displayTitleInCover: false,
@@ -3523,7 +3562,6 @@ function getPostFormatDefaults(postFormat, defaultDisplayElement) {
     wideColumnSplit: 'equal',
     linkLocation: 'title'
   };
-  console.log('New extended display format options: ', displayOptions);
   const displayElements = {
     displayTitle: formatOptions.displayTitle,
     displayCoverImage: formatOptions.displayCoverImage,
@@ -3533,12 +3571,17 @@ function getPostFormatDefaults(postFormat, defaultDisplayElement) {
     displayPublishDate: formatOptions.displayPublishDate,
     displayModifiedDate: formatOptions.displayModifiedDate
   };
-  console.log('New extended display elements: ', displayElements);
   return {
     displayOptions,
     displayElements
   };
 }
+
+/**
+ * Default display element attributes for initialization
+ *
+ * @since 1.5.0
+ */
 const defaultDisplayElement = {
   display: false,
   column: 'none',
@@ -6385,7 +6428,6 @@ function RenderCellPostContent(props = {}) {
       request.abort();
     };
   }, [isExternalDataEmpty, hasValidPostReference, postId, postType, contentFormat, needsImage, needsAuthor, imageSize]);
-  console.log('Content format = ' + contentFormat);
   if (!hasValidPostReference) {
     return null;
   }
@@ -6413,7 +6455,6 @@ function RenderCellPostContent(props = {}) {
     case 'narrow':
       {
         // Render narrow
-        console.log('calling narrow render');
         return renderNarrowContent(postData, postLinkInNewTab, displayedAttributes, contentOptions, cellClasses);
       }
     case 'wide':
@@ -6427,6 +6468,15 @@ function RenderCellPostContent(props = {}) {
       }
   }
 }
+
+/**
+ * Retrieve post elements for display, put them in an array, and sort them
+ *
+ * @since 1.5.0
+ *
+ * @param {Object} contentOptions Displayable post elements
+ * @return {Array} Sorted array of post element to be displayed
+ */
 function getDisplayAttributes(contentOptions) {
   const {
     displayTitle,
@@ -6436,7 +6486,6 @@ function getDisplayAttributes(contentOptions) {
     displayPublishDate,
     displayModifiedDate
   } = contentOptions;
-  console.log('In GetDisplayAttributes, contentOptions: ', contentOptions);
   const postDisplayAttributes = Array();
   if (displayTitle.display) {
     postDisplayAttributes.push({
@@ -6483,10 +6532,21 @@ function getDisplayAttributes(contentOptions) {
     }
     return a.slot.order - b.slot.order;
   });
-  console.log('Post render display array: ', postDisplayAttributes);
   return postDisplayAttributes;
 }
-function renderPostTitle(renderedContent, linkLocation, postLink) {
+
+/**
+ * Markup to render the post's title
+ *
+ * @since 1.5.0
+ *
+ * @param {string}  renderedContent  The post's title
+ * @param {string}  linkLocation     Where to  place the post's link
+ * @param {URL}     postLink         The post's URL
+ * @param {boolean} postLinkInNewTab Open the link in a new tab?
+ * @return {Element} Markup to render the title
+ */
+function renderPostTitle(renderedContent, linkLocation, postLink, postLinkInNewTab) {
   const postTitle = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.htmlToIndexText)(renderedContent);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
     style: {
@@ -6495,10 +6555,24 @@ function renderPostTitle(renderedContent, linkLocation, postLink) {
     },
     children: linkLocation === 'title' ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("a", {
       href: postLink,
+      target: postLinkInNewTab ? '_blank' : '_top',
+      rel: postLinkInNewTab ? 'noopener noreferrer' : undefined,
       children: postTitle
     }) : postTitle
   });
 }
+
+/**
+ * Markup to render the post's cover image
+ *
+ * @since 1.5.0
+ *
+ * @param {Object} image The post's image and related meta
+ * @param {string} sizes Image sizes attribute
+ * @param {Object} link  The post's URL
+ * @param {Object} title The post's title
+ * @return {Element|null} Markup to render the cover image
+ */
 function renderPostImage(image, sizes, link, title) {
   if (!image) {
     return null;
@@ -6524,10 +6598,21 @@ function renderPostImage(image, sizes, link, title) {
     children: link.isLink ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("a", {
       className: "dtbk-post-image__link",
       href: link.url,
+      target: link.newTab ? '_blank' : '_top',
+      rel: link.newTab ? 'noopener noreferrer' : undefined,
       children: renderedImage
     }) : renderedImage
   });
 }
+
+/**
+ * Markup to render the post's excerpt
+ *
+ * @since 1.5.0
+ *
+ * @param {string} renderedContent The post's excerpt
+ * @return {Element} Markup to render the excerpt
+ */
 function renderPostExcept(renderedContent) {
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
     style: {
@@ -6550,6 +6635,15 @@ function renderPostExcept(renderedContent) {
     })]
   });
 }
+
+/**
+ * Markup to render the posts author's name
+ *
+ * @since 1.5.0
+ *
+ * @param {string} authorName The name of the post's author
+ * @return {Element} Markup to render the author name
+ */
 function renderPostAuthor(authorName) {
   const contentLabel = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Author:', 'dynamic-table-blocks');
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
@@ -6568,6 +6662,15 @@ function renderPostAuthor(authorName) {
     })]
   });
 }
+
+/**
+ * Markup to render the post's original publish date
+ *
+ * @since 1.5.0
+ *
+ * @param {string} renderedContent The post's publication date
+ * @return {Element} Markup to render the publication date
+ */
 function renderPublishedDate(renderedContent) {
   const contentLabel = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Published:', 'dynamic-table-blocks');
   const displayDate = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.formatedDisplayDate)(renderedContent, 'date');
@@ -6587,6 +6690,15 @@ function renderPublishedDate(renderedContent) {
     })]
   });
 }
+
+/**
+ * Markup to render the date the post was last updated
+ *
+ * @since 1.5.0
+ *
+ * @param {string} renderedContent The post's modified date
+ * @return {Element} Markup to render the last modified date
+ */
 function renderModifiedDate(renderedContent) {
   const contentLabel = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Last Updated:', 'dynamic-table-blocks');
   const displayDate = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.formatedDisplayDate)(renderedContent, 'date');
@@ -6606,21 +6718,31 @@ function renderModifiedDate(renderedContent) {
     })]
   });
 }
+
+/**
+ * Create HTML markup to render the table cell for the post in narrow format
+ *
+ * @since 1.5.0
+ *
+ * @param {Object}  postData            The post's data for rendering
+ * @param {boolean} postLinkInNewTab    Should the post be displayed in a new tab?
+ * @param {Array}   displayedAttributes Sorted list of post elements to be displayed
+ * @param {Object}  contentOptions      Render format options for the post
+ * @param {string}  cellClasses         CSS classes to be applied to the cell
+ * @return {Element} Markup to render the post
+ */
 function renderNarrowContent(postData, postLinkInNewTab, displayedAttributes, contentOptions, cellClasses) {
   // Reserved for future use
   // const postCategoriesApi = post.wp.term.href;
   // const postTagsApi = post.wp.term.tags;
 
-  console.log('Display Attributes for Narrow Render: ', displayedAttributes);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
     className: "dtbk-post-content dtbk-post-content--narrow",
     children: displayedAttributes.map(({
       attribute
     }) => {
-      console.log('Display attribute: ', attribute);
       const formattedContent = evaluateDisplayAttributes(attribute, postData, postLinkInNewTab, contentOptions);
       if (!formattedContent) {
-        console.log('No formatted content for attribute: ', attribute);
         return null;
       }
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
@@ -6629,8 +6751,20 @@ function renderNarrowContent(postData, postLinkInNewTab, displayedAttributes, co
     })
   });
 }
+
+/**
+ * Create HTML markup to render the table cell for the post in wide format
+ *
+ * @since 1.5.0
+ *
+ * @param {Object}  postData            The post's data for rendering
+ * @param {boolean} postLinkInNewTab    Should the post be displayed in a new tab?
+ * @param {Array}   displayedAttributes Sorted list of post elements to be displayed
+ * @param {Object}  contentOptions      Render format options for the post
+ * @param {string}  cellClasses         CSS classes to be applied to the cell
+ * @return {Element} Markup to render the post
+ */
 function renderWideContent(postData, postLinkInNewTab, displayedAttributes, contentOptions, cellClasses) {
-  console.log('Display Attributes for Wide Render: ', displayedAttributes);
   const wideColumnSplit = contentOptions?.wideColumnSplit ?? 'equal';
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
     className: "dtbk-post-content dtbk-post-content--wide",
@@ -6656,24 +6790,9 @@ function renderWideContent(postData, postLinkInNewTab, displayedAttributes, cont
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
       className: "dtbk-post-content__columns",
-      "data-column-split": wideColumnSplit
-      // style={{
-      // 	display: 'flex',
-      // 	flexDirection: 'row',
-      // 	gap: '10px',
-      // 	boxSizing: 'inherit',
-      // }}
-      ,
+      "data-column-split": wideColumnSplit,
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
-        className: "dtbk-post-content__column dtbk-post-content__column--left"
-        // style={{
-        // 	display: 'block',
-        // 	boxSizing: 'inherit',
-        // 	maxHeight: '100%',
-        // 	maxWidth: '100%',
-        // 	flex: '1',
-        // }}
-        ,
+        className: "dtbk-post-content__column dtbk-post-content__column--left",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
           style: {
             display: 'flex',
@@ -6695,15 +6814,7 @@ function renderWideContent(postData, postLinkInNewTab, displayedAttributes, cont
           })
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
-        className: "dtbk-post-content__column dtbk-post-content__column--right"
-        // style={{
-        // 	display: 'block',
-        // 	boxSizing: 'inherit',
-        // 	maxHeight: '100%',
-        // 	maxWidth: '100%',
-        // 	flex: '1',
-        // }}
-        ,
+        className: "dtbk-post-content__column dtbk-post-content__column--right",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
           style: {
             display: 'flex',
@@ -6728,6 +6839,18 @@ function renderWideContent(postData, postLinkInNewTab, displayedAttributes, cont
     })]
   });
 }
+
+/**
+ * Retrieve and return HTML markup associated with each displayed post element
+ *
+ * @since 1.5.2
+ *
+ * @param {Object}  displayedAttribute The post attribute to be rendered
+ * @param {Object}  postData           The post's data for rendering
+ * @param {boolean} postLinkInNewTab   Should the post be displayed in a new tab?
+ * @param {Object}  contentOptions     Render format options for the post
+ * @return {Element} Markup to render the specific post element
+ */
 function evaluateDisplayAttributes(displayedAttribute, postData, postLinkInNewTab, contentOptions) {
   const {
     post,
@@ -6745,15 +6868,15 @@ function evaluateDisplayAttributes(displayedAttribute, postData, postLinkInNewTa
       {
         const renderedContent = post.title.rendered;
         if (displayTitleInCover) break;
-        console.log('Preparing title render');
-        formattedContent = renderPostTitle(renderedContent, linkLocation, postLink);
+        formattedContent = renderPostTitle(renderedContent, linkLocation, postLink, postLinkInNewTab);
         break;
       }
     case 'image':
       {
         formattedContent = renderPostImage(image, 'auto', {
           isLink: linkLocation === 'image',
-          url: postLink
+          url: postLink,
+          newTab: postLinkInNewTab
         }, {
           embedTitle: displayTitleInCover,
           title: post.title.rendered

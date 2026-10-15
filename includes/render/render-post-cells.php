@@ -81,6 +81,7 @@ function format_post_cell($cell, $cell_classes = '') {
 			if ( $content_format === 'narrow' ) {
 				render_narrow_content(
 					$external_data,
+					$post_link_in_new_tab,
 					$displayed_attributes,
 					$content_options
 				);
@@ -89,6 +90,7 @@ function format_post_cell($cell, $cell_classes = '') {
 
 			render_wide_content(
 				$external_data,
+				$post_link_in_new_tab,
 				$displayed_attributes,
 				$content_options,
 			);
@@ -104,12 +106,14 @@ function format_post_cell($cell, $cell_classes = '') {
  * @since 1.5.0
  *
  * @param  array $post_data              Retrieved post data
+ * @param  bool  $post_link_in_new_tab   Whether post links open in a new tab
  * @param  array $displayed_attributes   Specific post attributes to be rendered
  * @param  array $content_options        Column display format options
  * @return void
  */
 function render_narrow_content(
 	$post_data,
+	$post_link_in_new_tab,
 	$displayed_attributes,
 	$content_options,
 ) {
@@ -120,6 +124,7 @@ function render_narrow_content(
 			$formatted_content = get_display_attribute_markup(
 				$displayed_attribute['attribute'],
 				$post_data,
+				$post_link_in_new_tab,
 				$content_options
 			);
 
@@ -139,12 +144,14 @@ function render_narrow_content(
  * @since 1.5.0
  *
  * @param  array $post_data              Retrieved post data
+ * @param  bool  $post_link_in_new_tab   Whether post links open in a new tab
  * @param  array $displayed_attributes   Specific post attributes to be rendered
  * @param  array $content_options        Column display format options
  * @return void
  */
 function render_wide_content(
 	$post_data,
+	$post_link_in_new_tab,
 	$displayed_attributes,
 	$content_options
 ) {
@@ -156,6 +163,7 @@ function render_wide_content(
 			render_post_attribute_column(
 				'span',
 				$post_data,
+				$post_link_in_new_tab,
 				$displayed_attributes,
 				$content_options
 			);?>
@@ -169,6 +177,7 @@ function render_wide_content(
 					render_post_attribute_column(
 						'left',
 						$post_data,
+						$post_link_in_new_tab,
 						$displayed_attributes,
 						$content_options
 					);
@@ -180,6 +189,7 @@ function render_wide_content(
 					render_post_attribute_column(
 						'right',
 						$post_data,
+						$post_link_in_new_tab,
 						$displayed_attributes,
 						$content_options
 					);
@@ -197,6 +207,7 @@ function render_wide_content(
  *
  * @param  string $column                Column into which to render attribute
  * @param  array $post_data              Retrieved post data
+ * @param  bool  $post_link_in_new_tab   Whether post links open in a new tab
  * @param  array $displayed_attributes   Specific post attributes to be rendered
  * @param  array $content_options        Column display format options
  * @return void
@@ -204,6 +215,7 @@ function render_wide_content(
 function render_post_attribute_column(
 	$column,
 	$post_data,
+	$post_link_in_new_tab,
 	$displayed_attributes,
 	$content_options
 ) {
@@ -215,6 +227,7 @@ function render_post_attribute_column(
 		$formatted_content = get_display_attribute_markup(
 			$displayed_attribute['attribute'],
 			$post_data,
+			$post_link_in_new_tab,
 			$content_options
 		);
 
@@ -233,12 +246,14 @@ function render_post_attribute_column(
  *
  * @param  array $displayed_attribute    Specific post attribute to be rendered
  * @param  array $post_data              Retrieved post data
+ * @param  bool  $post_link_in_new_tab   Whether post links open in a new tab
  * @param  array $content_options        Column display format options
  * @return string                        HTML markup
  */
 function get_display_attribute_markup(
 	$displayed_attribute,
 	$post_data,
+	$post_link_in_new_tab,
 	$content_options
 ) {
 	ob_start();
@@ -246,6 +261,7 @@ function get_display_attribute_markup(
 	evaluate_display_attributes(
 		$displayed_attribute,
 		$post_data,
+		$post_link_in_new_tab,
 		$content_options
 	);
 
@@ -262,12 +278,14 @@ function get_display_attribute_markup(
  *
  * @param  array $displayed_attribute    Specific post attribute to be rendered
  * @param  array $post_data              Retrieved post data
+ * @param  bool  $post_link_in_new_tab   Whether post links open in a new tab
  * @param  array $content_options        Column display format options
  * @return string                        HTML markup
  */
 function evaluate_display_attributes(
 	$displayed_attribute,
 	$post_data,
+	$post_link_in_new_tab,
 	$content_options
 ) {
 	$post = $post_data['post'];
@@ -284,7 +302,8 @@ function evaluate_display_attributes(
 			render_post_title(
 				$post['title']['rendered'],
 				$link_location,
-				$post_link
+				$post_link,
+				$post_link_in_new_tab
 			);
 			break;
 		case 'image':
@@ -294,6 +313,7 @@ function evaluate_display_attributes(
 				array(
 					'is_link' => $link_location === 'image',
 					'url'     => $post_link,
+					'new_tab' => $post_link_in_new_tab,
 				),
 				array(
 					'embed_title' => $display_title_in_cover,
@@ -326,12 +346,19 @@ function evaluate_display_attributes(
  * @param  string $rendered_content  Post title as text
  * @param  string $link_location     Where the post link is to be located
  * @param  string $post_link         Post link url
+ * @param  bool   $post_link_in_new_tab Whether the link opens in a new tab
  * @return void
  */
-function render_post_title($rendered_content, $link_location, $post_link) {?>
+function render_post_title($rendered_content, $link_location, $post_link, $post_link_in_new_tab) {?>
 	<div style="font-weight: 600; text-align: center;"><?php
 		if ( 'title' === $link_location ) { ?>
-			<a href="<?php echo esc_url($post_link); ?>">
+			<a
+				href="<?php echo esc_url($post_link); ?>"
+				target="<?php echo $post_link_in_new_tab ? '_blank' : '_top'; ?>"
+				<?php if ( $post_link_in_new_tab ) { ?>
+					rel="noopener noreferrer"
+				<?php } ?>
+			>
 				<?php echo esc_html($rendered_content); ?>
 			</a><?php
 		} else {
@@ -358,7 +385,14 @@ function render_post_image($image, $sizes, $link, $title) {
 
 	<div class="dtbk-post-image">
 		<?php if ( $link['is_link'] ) { ?>
-			<a class="dtbk-post-image__link" href="<?php echo esc_url( $link['url'] ); ?>">
+			<a
+				class="dtbk-post-image__link"
+				href="<?php echo esc_url( $link['url'] ); ?>"
+				target="<?php echo $link['new_tab'] ? '_blank' : '_top'; ?>"
+				<?php if ( $link['new_tab'] ) { ?>
+					rel="noopener noreferrer"
+				<?php } ?>
+			>
 		<?php } ?>
 
 		<span class="dtbk-post-image__frame">

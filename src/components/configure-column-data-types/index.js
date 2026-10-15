@@ -147,8 +147,6 @@ function ConfigureColumnDataType(props = {}) {
 		setDataTypeFormat('link');
 	}
 	const postSettings = dataType?.settings;
-	console.log('Data Type: ', dataType);
-	console.log('Post Settings: ', postSettings);
 
 	// Column width attributes
 	const [columnWidthType, setColumnWidthType] = useState(columnAttributes.columnWidthType);
@@ -680,7 +678,7 @@ function ConfigureColumnDataType(props = {}) {
 	/**
 	 * Update post format and set default options
 	 *
-	 * @since 1.4.11
+	 * @since 1.5.0
 	 *
 	 * @param {string} postFormat Post format to set
 	 */
@@ -712,8 +710,9 @@ function ConfigureColumnDataType(props = {}) {
 	 * Change column data types and set formatting defaults
 	 *
 	 * @since    1.2.0
-	 * @since    1.2.4  Add number format
-	 * @since    1.4.3  Add checkbox format
+	 * @since    1.2.4   Add number format
+	 * @since    1.4.3   Add checkbox format
+	 * @since    1.4.10  Add post format
 	 *
 	 * @param {Object} event Event object to change data type
 	 * @return {void}
@@ -761,7 +760,6 @@ function ConfigureColumnDataType(props = {}) {
 				newColumnClassNames.delete('grid-control__body-columns--number-align-right');
 				newColumnClassNames.delete('grid-control__body-columns--date-align-right');
 				setColumnClassNames(newColumnClassNames);
-				console.log('Content Type set to post');
 				return;
 			default:
 				updatedDataType = {
@@ -779,7 +777,9 @@ function ConfigureColumnDataType(props = {}) {
 	 * Return new column data type settings.
 	 *
 	 * @since    1.2.0
-	 * @since    1.4.3 - Update for checkbox content type
+	 * @since    1.2.4  - Add number format
+	 * @since    1.4.3  - Update for checkbox content type
+	 * @since    1.4.10 - Update for post content type
 	 *
 	 * @param {Object} event Form submit
 	 */
