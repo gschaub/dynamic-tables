@@ -3,6 +3,8 @@ import { count } from '@wordpress/wordcount';
 /**
  * Calculate statistics from the retrieved post's rendered content.
  *
+ * @since 1.5.0
+ *
  * @param {Object} post WordPress REST API post.
  * @return {Object|null} Statistics, or null when content is unavailable.
  */

@@ -6930,6 +6930,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
 
+/**
+ * React component to render the post author's name
+ *
+ * @since 1.5.0
+ * @param {string} authorName The post author's name
+ * @return {Element} Markup for author's name
+ */
 function PostAuthor({
   authorName
 }) {
@@ -6965,12 +6972,26 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function PostImage({
-  image,
-  sizes,
-  link = {},
-  title = {}
-}) {
+/**
+ * React component to render the post's cover image
+ *
+ * @since 1.5.0
+ *
+ * @param {Object} props
+ * @param {Object} props.image The post's image and related meta
+ * @param {string} props.sizes Image sizes attribute
+ * @param {Object} props.link  The post's URL
+ * @param {Object} props.title The post's title
+ * @return {Element|null} Markup to render the cover image
+ */
+
+function PostImage(props = {}) {
+  const {
+    image,
+    sizes,
+    link = {},
+    title = {}
+  } = props;
   if (!image) {
     return null;
   }
@@ -7012,7 +7033,10 @@ function PostImage({
   });
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
     children: [link.isLink && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("a", {
+      className: "dtbk-post-image__link",
       href: link.url,
+      target: link.newTab ? '_blank' : '_top',
+      rel: link.newTab ? 'noopener noreferrer' : undefined,
       children: renderedImage
     }), !link.isLink && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
       children: renderedImage
@@ -7046,6 +7070,14 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
+
+/**
+ * React component to render the post's read time
+ *
+ * @since 1.5.0
+ * @param {string|null} readingMinutes Number of minutes required to read the post
+ * @return {Element} Markup for read time
+ */
 
 function PostTimeToRead({
   readingMinutes
@@ -7085,6 +7117,8 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * Calculate statistics from the retrieved post's rendered content.
+ *
+ * @since 1.5.0
  *
  * @param {Object} post WordPress REST API post.
  * @return {Object|null} Statistics, or null when content is unavailable.
@@ -7128,6 +7162,14 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
+
+/**
+ * React component to render the post's word count
+ *
+ * @since 1.5.0
+ * @param {string|null} wordCount Number of words in the post
+ * @return {Element} Markup for read time
+ */
 
 function PostWordCount({
   wordCount
@@ -14561,16 +14603,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
 /* External dependencies */
-// import apiFetch from '@wordpress/api-fetch';
 
 
-// import { useSelect } from '@wordpress/data';
 
 
 /**
  * Retrieve a WordPress post.
  *
  * @since    1.4.10
+ * @since    1.5.1   Update to replace apiFetch with post entity lookup through CoreData
+ *
  * Description - Retrieve a post, page, or REST-enabled custom post type.
  *
  * @param {number|string} postId           Post ID.

@@ -1,14 +1,14 @@
 /* External dependencies */
-// import apiFetch from '@wordpress/api-fetch';
 import { store as coreDataStore } from '@wordpress/core-data';
 import { resolveSelect } from '@wordpress/data';
-// import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Retrieve a WordPress post.
  *
  * @since    1.4.10
+ * @since    1.5.1   Update to replace apiFetch with post entity lookup through CoreData
+ *
  * Description - Retrieve a post, page, or REST-enabled custom post type.
  *
  * @param {number|string} postId           Post ID.

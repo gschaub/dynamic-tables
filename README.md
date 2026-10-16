@@ -2,7 +2,7 @@
 **Contributors:** [glschaub](https://profiles.wordpress.org/glschaub/), [myfamilyweb](https://profiles.wordpress.org/myfamilyweb/)  
 **Tags:**              tables, data table, responsive tables, table block, gutenberg table  
 **Tested up to:**      7.1  
-**Stable tag:**        1.4.10  
+**Stable tag:**        1.5.0  
 **License:**           GPL-2.0-or-later  
 **License URI:**       https://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -74,7 +74,7 @@ Current supported content types include:
 * Date/Time (date, time, date/time)
 * Checkbox (standard, toggle, icon, freeform)
 * Links
-* Site Content (e.g., posts, pages)
+* Highly formatted Site Content (e.g., posts, pages)
 
 Formatting is applied consistently across an entire column while preserving the underlying value.
 
@@ -191,6 +191,11 @@ No. This plugin is free to use. However, we are planning for a premium version o
 10. Set column width (corresponding configuration is available for rows too)
 
 ## Changelog ##
+### 1.5.0 ###
+* Added retrieval of all external data before loading pages as needed
+* Added retrieval of all external data on cell update as needed
+* Significantly enhanced ability to format and display post information in a cell
+
 ### 1.4.10 ###
 * Added site content (e.g., posts, pages, etc.) column content type
 * Added support for wide display of the table

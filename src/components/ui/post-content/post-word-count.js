@@ -7,6 +7,13 @@ import { _n, sprintf } from '@wordpress/i18n';
 import '../../../editor.scss';
 import '../../../style.scss';
 
+/**
+ * React component to render the post's word count
+ *
+ * @since 1.5.0
+ * @param {string|null} wordCount Number of words in the post
+ * @return {Element} Markup for read time
+ */
 export function PostWordCount({ wordCount }) {
 	if (wordCount === null || wordCount === undefined) {
 		return null;

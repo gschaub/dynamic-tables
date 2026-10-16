@@ -7,6 +7,13 @@ import { _n, sprintf } from '@wordpress/i18n';
 import '../../../editor.scss';
 import '../../../style.scss';
 
+/**
+ * React component to render the post's read time
+ *
+ * @since 1.5.0
+ * @param {string|null} readingMinutes Number of minutes required to read the post
+ * @return {Element} Markup for read time
+ */
 export function PostTimeToRead({ readingMinutes }) {
 	if (readingMinutes === null || readingMinutes === undefined) {
 		return null;

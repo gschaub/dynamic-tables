@@ -5,7 +5,21 @@ import { htmlToIndexText } from '../../../utils';
 import '../../../editor.scss';
 import '../../../style.scss';
 
-export function PostImage({ image, sizes, link = {}, title = {} }) {
+/**
+ * React component to render the post's cover image
+ *
+ * @since 1.5.0
+ *
+ * @param {Object} props
+ * @param {Object} props.image The post's image and related meta
+ * @param {string} props.sizes Image sizes attribute
+ * @param {Object} props.link  The post's URL
+ * @param {Object} props.title The post's title
+ * @return {Element|null} Markup to render the cover image
+ */
+export function PostImage(props = {}) {
+	const { image, sizes, link = {}, title = {} } = props;
+
 	if (!image) {
 		return null;
 	}
@@ -53,7 +67,16 @@ export function PostImage({ image, sizes, link = {}, title = {} }) {
 
 	return (
 		<>
-			{link.isLink && <a href={link.url}>{renderedImage}</a>}
+			{link.isLink && (
+				<a
+					className="dtbk-post-image__link"
+					href={link.url}
+					target={link.newTab ? '_blank' : '_top'}
+					rel={link.newTab ? 'noopener noreferrer' : undefined}
+				>
+					{renderedImage}
+				</a>
+			)}
 			{!link.isLink && <>{renderedImage}</>}
 		</>
 	);
