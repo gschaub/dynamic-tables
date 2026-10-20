@@ -104,9 +104,11 @@ const buildExternalDataRequest = (cell, column) => {
  *
  * @since    1.0.0
  * @since    1.5.0 Add support for retrieval of external data at hydration time.
+ * @since    2.0.0 Updates for schema version 2
  *
  * @param {number}       table_id        Identifier key for the table
  * @param {string}       block_table_ref Cross reference identified linking table to block within post
+ * @param {string}       table_type      Table storage type
  * @param {string}       table_status    Status of retrieved table
  * @param {number}       post_id         Identifier key for the post in which the table appears
  * @param {string}       table_name      Descriptive name of table
@@ -121,6 +123,7 @@ export const receiveTable =
 	(
 		table_id,
 		block_table_ref,
+		table_type,
 		table_status,
 		post_id,
 		table_name,
@@ -190,6 +193,7 @@ export const receiveTable =
 			table: {
 				table_id,
 				block_table_ref,
+				table_type,
 				table_status,
 				post_id,
 				table_name,
@@ -353,6 +357,7 @@ export const getExternalData = externalColumnTypes => async () => {
  *
  * @since    1.1.0
  * @since    1.5.0 Remove external data before cloning a table
+ * @since    2.0.0 Updates for schema version 2
  *
  * @param {*} tableId
  * @param {*} postId
@@ -362,7 +367,7 @@ export const getExternalData = externalColumnTypes => async () => {
 export const cloneTable =
 	(tableId, postId, blockTableRef) =>
 	async ({ select, dispatch, registry }) => {
-		const { table_name, attributes, classes, rows, columns, cells } = select.getTable(
+		const { table_type, table_name, attributes, classes, rows, columns, cells } = select.getTable(
 			tableId,
 			true
 		);
@@ -401,6 +406,7 @@ export const cloneTable =
 			header: {
 				id: '0',
 				block_table_ref: blockTableRef,
+				table_type: table_type,
 				status: 'new',
 				post_id: postId,
 				table_name: table_name,
@@ -420,6 +426,7 @@ export const cloneTable =
 			const table = tableEntity;
 			const table_id = table.id;
 			const block_table_ref = table.header.block_table_ref;
+			const table_type = table.header.table_type;
 			const table_status = table.header.status;
 			const post_id = table.header.post_id;
 			const table_name = table.header.table_name;
@@ -433,6 +440,7 @@ export const cloneTable =
 			await dispatch.receiveTable(
 				table_id,
 				block_table_ref,
+				table_type,
 				table_status,
 				post_id,
 				table_name,
@@ -455,16 +463,18 @@ export const cloneTable =
  *
  * @since    1.0.0
  * @since    1.5.0 Remove external data creating a persisted table entity
+ * @since    2.0.0 Updates for schema version 2
  *
- * @param {number} tableIdToCreate Identifier key for the table
+ * @param {Object} tableToCreate Border-free table produced by initTable()
  * @return  {Object} Action object
  */
 export const createTableEntity =
-	(tableIdToCreate = '0') =>
-	async ({ select, dispatch, registry }) => {
+	tableToCreate =>
+	async ({ dispatch, registry }) => {
 		const {
 			table_id,
 			block_table_ref,
+			table_type,
 			post_id,
 			table_name,
 			attributes,
@@ -472,12 +482,14 @@ export const createTableEntity =
 			rows,
 			columns,
 			cells,
-		} = select.getTable(tableIdToCreate, true);
+		} = tableToCreate;
+
 		const newTable = {
 			title: table_name,
 			header: {
 				id: table_id,
 				block_table_ref: block_table_ref,
+				table_type: table_type,
 				status: 'new',
 				post_id: post_id,
 				table_name: table_name,
@@ -534,6 +546,7 @@ export const saveTableEntity =
  * @since    1.0.0
  * @since    1.4.5 - Add undo/redo support
  * @since    1.5.0 - Remove external data before updating a table
+ * @since    2.0.0 - Updates for schema version 2
  *
  * @param {number}                    tableId             Identifier key for the table
  * @param {string}                    overrideTableStatus Updates the table's status if populated
@@ -550,6 +563,7 @@ export const updateTableEntity =
 		const {
 			table_id,
 			block_table_ref,
+			table_type,
 			table_status,
 			post_id,
 			table_name,
@@ -598,6 +612,7 @@ export const updateTableEntity =
 			header: {
 				id: table_id,
 				block_table_ref: block_table_ref,
+				table_type: table_type,
 				status: tableStatus(overrideTableStatus, table_status),
 				post_id: post_id,
 				table_name: table_name,

@@ -74,6 +74,7 @@ import {
 
 import {
 	generateBlockTableRef,
+	generateTablePartRef,
 	numberToLetter,
 	getCellIdCoordinates,
 	setBorderContent,
@@ -1228,6 +1229,7 @@ export default function Edit(props) {
 	 * Attach existing table to block when table is ready for attachment.
 	 *
 	 * @since 1.4.0
+	 * @since 2.0.0 - Updates for schema version 2
 	 */
 	useEffect(() => {
 		if (tableRequest.action !== 'receive') return;
@@ -1248,6 +1250,7 @@ export default function Edit(props) {
 		updateSummaryTable({
 			table_id: attachedTableId,
 			block_table_ref: tableRequest.blockTableRef,
+			table_type: attachedTable.table_type,
 			table_status: attachedTable.table_status,
 			post_id: String(postId),
 		});
@@ -1255,6 +1258,7 @@ export default function Edit(props) {
 		receiveTable(
 			attachedTableId,
 			attachedTable.block_table_ref,
+			attachedTable.table_type,
 			attachedTable.table_status,
 			attachedTable.post_id,
 			attachedTable.table_name,
@@ -1373,6 +1377,7 @@ export default function Edit(props) {
 	 * stack and role the table state forward or backward as appropriate.
 	 *
 	 * @since 1.4.5
+     * @since 2.0.0 - Updates for schema version 2
 	 */
 	useTableUndoRedoEffect(table.table_id, ({ editedTable }) => {
 		if (areTableAndEntityRecordsEqual(table, editedTable)) {
@@ -1395,6 +1400,7 @@ export default function Edit(props) {
 		receiveTable(
 			reconciledTable.table_id,
 			reconciledTable.block_table_ref,
+			reconciledTable.table_type,
 			reconciledTable.table_status,
 			reconciledTable.post_id,
 			reconciledTable.table_name,
@@ -1945,6 +1951,7 @@ export default function Edit(props) {
 	 *
 	 * @since 1.0.0
 	 * @since 1.2.2  Allow column to be added either left or right the current column
+	 * @since 2.0.0  Updates for schema version 2
 	 *
 	 * @param {number} tableId   Identifier key for the table
 	 * @param {number} columnId  Identifier for the table column
@@ -1953,7 +1960,17 @@ export default function Edit(props) {
 	 */
 	function insertColumn(tableId, columnId, direction) {
 		const newColumnId = direction === 'right' ? Number(columnId) + 1 : Number(columnId);
-		const newColumn = getDefaultColumn(tableId, newColumnId);
+		const usedColumnRefs = new Set(
+			table.columns
+				.filter(column => Number(column.column_id) > 0)
+				.map(column => String(column.column_ref))
+		);
+		const newColumn = getDefaultColumn(
+			tableId,
+			newColumnId,
+			'Body',
+			generateTablePartRef(usedColumnRefs)
+		);
 		const newColumnLabel = numberToLetter(newColumnId);
 
 		const tableCells = table.rows
@@ -1982,6 +1999,7 @@ export default function Edit(props) {
 	 *
 	 * @since 1.0.0
 	 * @since 1.2.2  Allow row to be added either above or below the current row
+	 * @since 2.0.0  Updates for schema version 2
 	 *
 	 * @param {number} tableId   Identifier key for the table
 	 * @param {number} rowId     Identifier for the table row
@@ -1990,8 +2008,10 @@ export default function Edit(props) {
 	 */
 	function insertRow(tableId, rowId, direction) {
 		const newRowId = direction === 'below' ? Number(rowId) + 1 : Number(rowId);
-		const newRow = getDefaultRow(tableId, newRowId);
-
+		const usedRowRefs = new Set(
+			table.rows.filter(row => Number(row.row_id) > 0).map(row => String(row.row_ref))
+		);
+		const newRow = getDefaultRow(tableId, newRowId, 'Body', generateTablePartRef(usedRowRefs));
 		const tableCells = table.columns
 			.map(({ column_id }) => Number(column_id))
 			.filter(columnId => Number.isFinite(columnId))
@@ -2195,6 +2215,7 @@ export default function Edit(props) {
 	 * @since 1.3.0 - Refactor to support WordPress RTC
 	 * @since 1.4.4 - Show borders when table is created
 	 * @since 1.4.9 - Bring user defined columns into table creation
+	 * @since 2.0.0 - Updates for schema version 2
 	 *
 	 * @param {number} columnCount Number of columns in table
 	 * @param {number} rowCount    Number of rows in table
@@ -2204,7 +2225,14 @@ export default function Edit(props) {
 	function createTable(columnCount, rowCount, tableName, columns) {
 		setTableStale(false);
 		const newBlockTableRef = generateBlockTableRef();
-		const newTable = initTable(newBlockTableRef, columnCount, rowCount, tableName, columns);
+		const newTable = initTable(
+			newBlockTableRef,
+			'local',
+			columnCount,
+			rowCount,
+			tableName,
+			columns
+		);
 
 		props.setAttributes({ block_table_ref: newBlockTableRef });
 		receiveNewTable(newTable);
@@ -2215,7 +2243,7 @@ export default function Edit(props) {
 			sourceTableId: 0,
 			error: null,
 		});
-		createTableEntity()
+		createTableEntity(newTable.table)
 			.then(createdTableId => {
 				props.setAttributes({
 					original_post_type: postType,

@@ -64,6 +64,7 @@ function get_table_statuses() {
  * Create or update a dynamic table.
  *
  * @since 1.0.0
+ * @since 2.0.0 - Updates for schema version 2
  *
  * @param $tablearr - Table data for update.
  * @param $wp_error - Do we return WP_Error objects for REST API processing.
@@ -81,6 +82,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 		'header' => array(
 			'id'              => '0',
 			'block_table_ref' => '',
+			'table_type'      => '',
 			'status'          => 'unknown',
 			'post_id'         => '',
 			'table_name'      => '',
@@ -97,6 +99,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 		$default_row = array(
 			'table_id'   => '0',
 			'row_id'     => $row['row_id'],
+			'row_ref'    => $row['row_ref'],
 			'attributes' => array(),
 			'classes'    => '',
 		);
@@ -107,6 +110,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 		$default_column = array(
 			'table_id'    => '0',
 			'column_id'   => $column['column_id'],
+			'column_ref'  => $column['column_ref'],
 			'column_name' => '',
 			'attributes'  => array(),
 			'classes'     => '',
@@ -159,6 +163,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 	$results = null;
 
 	$block_table_ref       = $tablearr['header']['block_table_ref'];
+	$table_type            = $tablearr['header']['table_type'];
 	$status                = $tablearr['header']['status'];
 	$post_id               = $tablearr['header']['post_id'];
 	$table_name            = $tablearr['header']['table_name'];
@@ -167,7 +172,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 
 	if ( $update ) {
 		$update_table = new PersistTableData();
-		$results      = $update_table->update_table( $table_id, $block_table_ref, $status, $post_id, $table_name, $serialized_attributes, $classes );
+		$results      = $update_table->update_table( $table_id, $block_table_ref, $table_type, $status, $post_id, $table_name, $serialized_attributes, $classes );
 
 		if ( ! $results['success'] ) {
 			if ( $wp_error ) {
@@ -176,7 +181,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 		}
 	} else {
 		$new_table = new PersistTableData();
-		$results   = $new_table->create_table_data( $block_table_ref, $status, $post_id, $table_name, $serialized_attributes, $classes );
+		$results   = $new_table->create_table_data( $block_table_ref, $table_type, $status, $post_id, $table_name, $serialized_attributes, $classes );
 
 		if ( ! $results['success'] ) {
 			if ( $wp_error ) {
@@ -289,6 +294,7 @@ function update_table_data( $tablearr, $wp_error = false ) {
  *  Updates the database for row changes to the table object
  *
  * @since 1.0.0
+ * @since 2.0.0 - Updates for schema version 2
  *
  * @param int   $table_id - Table id.
  * @param array $request_rows - Rows to load in database.
@@ -300,10 +306,11 @@ function update_table_rows( $table_id, $request_rows ) {
 
 	foreach ( $request_rows as $index => $row ) {
 		$row_id                = $row['row_id'];
+		$row_ref               = $row['row_ref'];
 		$serialized_attributes = maybe_serialize( $row['attributes'] );
 		$classes               = $row['classes'];
 
-		$rows[] = array( $table_id, $row_id, $serialized_attributes, $classes );
+		$rows[] = array( $table_id, $row_id, $row_ref, $serialized_attributes, $classes );
 	}
 
 	$update_table_rows = new PersistTableData();
@@ -320,6 +327,7 @@ function update_table_rows( $table_id, $request_rows ) {
  *  Updates the database for column changes to the table object
  *
  * @since 1.0.0
+ * @since 2.0.0 - Updates for schema version 2
  *
  * @param int   $table_id - Table id.
  * @param array $request_columns - Columns to load in database.
@@ -331,11 +339,19 @@ function update_table_columns( $table_id, $request_columns ) {
 
 	foreach ( $request_columns as $index => $column ) {
 		$column_id             = $column['column_id'];
+		$column_ref            = $column['column_ref'];
 		$column_name           = $column['column_name'];
 		$serialized_attributes = maybe_serialize( $column['attributes'] );
 		$classes               = $column['classes'];
 
-		$columns[] = array( $table_id, $column_id, $column_name, $serialized_attributes, $classes );
+		$columns[] = array(
+			$table_id,
+			$column_id,
+			$column_ref,
+			$column_name,
+			$serialized_attributes,
+			$classes,
+		);
 	}
 
 	$update_table_columns = new PersistTableData();

@@ -6,6 +6,7 @@ import { computeCellIds } from '../utils';
  * Requests a table's record from the REST API.
  *
  * @since    1.0.0
+ * @since    2.0.0 - Updates for schema version 2
  *
  * @param {number}  tableId      Identifier key for the table
  * @param {boolean} isTableStale Whether the current state is stale
@@ -25,6 +26,7 @@ export const getTable =
 			const table = tableEntity;
 			const table_id = table.id;
 			const block_table_ref = table.header.block_table_ref;
+			const table_type = table.header.table_type;
 			const table_status = table.header.status;
 			const post_id = table.header.post_id;
 			const table_name = table.header.table_name;
@@ -38,6 +40,7 @@ export const getTable =
 			await dispatch.receiveTable(
 				table_id,
 				block_table_ref,
+				table_type,
 				table_status,
 				post_id,
 				table_name,

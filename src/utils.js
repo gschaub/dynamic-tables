@@ -325,15 +325,26 @@ export function generateBlockTableRef() {
 /**
  * Create a unique identifyier for reference use
  *
- * @since 1.4.9
+ * @since 2.0.0  Update generation method
  *
- * @return  {string} Unique reference identifier
+ * @param {Set<string>} usedRefs References already assigned within the table.
+ * @return {string} Unique numeric reference.
  */
-export function generateTablePartRef() {
-	const bytes = new Uint8Array(16);
-	window.crypto.getRandomValues(bytes);
+export function generateTablePartRef(usedRefs) {
+	if (!(usedRefs instanceof Set)) {
+		throw new TypeError('usedRefs must be a Set');
+	}
 
-	return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+	let nextRef = 1;
+
+	while (usedRefs.has(String(nextRef))) {
+		nextRef += 1;
+	}
+
+	const ref = String(nextRef);
+	usedRefs.add(ref);
+
+	return ref;
 }
 
 /**

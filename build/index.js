@@ -7376,9 +7376,11 @@ const buildExternalDataRequest = (cell, column) => {
  *
  * @since    1.0.0
  * @since    1.5.0 Add support for retrieval of external data at hydration time.
+ * @since    2.0.0 Updates for schema version 2
  *
  * @param {number}       table_id        Identifier key for the table
  * @param {string}       block_table_ref Cross reference identified linking table to block within post
+ * @param {string}       table_type      Table storage type
  * @param {string}       table_status    Status of retrieved table
  * @param {number}       post_id         Identifier key for the post in which the table appears
  * @param {string}       table_name      Descriptive name of table
@@ -7389,7 +7391,7 @@ const buildExternalDataRequest = (cell, column) => {
  * @param {Array|Object} cells           Array of table cell objects
  * @return {Object} Action object
  */
-const receiveTable = (table_id, block_table_ref, table_status, post_id, table_name, attributes, classes, rows, columns, cells) => async ({
+const receiveTable = (table_id, block_table_ref, table_type, table_status, post_id, table_name, attributes, classes, rows, columns, cells) => async ({
   dispatch
 }) => {
   const externalColumnTypes = Array();
@@ -7438,6 +7440,7 @@ const receiveTable = (table_id, block_table_ref, table_status, post_id, table_na
     table: {
       table_id,
       block_table_ref,
+      table_type,
       table_status,
       post_id,
       table_name,
@@ -7588,6 +7591,7 @@ const getExternalData = externalColumnTypes => async () => {
  *
  * @since    1.1.0
  * @since    1.5.0 Remove external data before cloning a table
+ * @since    2.0.0 Updates for schema version 2
  *
  * @param {*} tableId
  * @param {*} postId
@@ -7600,6 +7604,7 @@ const cloneTable = (tableId, postId, blockTableRef) => async ({
   registry
 }) => {
   const {
+    table_type,
     table_name,
     attributes,
     classes,
@@ -7637,6 +7642,7 @@ const cloneTable = (tableId, postId, blockTableRef) => async ({
     header: {
       id: '0',
       block_table_ref: blockTableRef,
+      table_type: table_type,
       status: 'new',
       post_id: postId,
       table_name: table_name,
@@ -7652,6 +7658,7 @@ const cloneTable = (tableId, postId, blockTableRef) => async ({
     const table = tableEntity;
     const table_id = table.id;
     const block_table_ref = table.header.block_table_ref;
+    const table_type = table.header.table_type;
     const table_status = table.header.status;
     const post_id = table.header.post_id;
     const table_name = table.header.table_name;
@@ -7661,7 +7668,7 @@ const cloneTable = (tableId, postId, blockTableRef) => async ({
     const columns = table.columns;
     (0,_utils__WEBPACK_IMPORTED_MODULE_5__.computeCellIds)(table.cells);
     const cells = table.cells;
-    await dispatch.receiveTable(table_id, block_table_ref, table_status, post_id, table_name, attributes, classes, rows, columns, cells);
+    await dispatch.receiveTable(table_id, block_table_ref, table_type, table_status, post_id, table_name, attributes, classes, rows, columns, cells);
     return tableEntity.id;
   } catch (error) {
     console.error('Error in cloneTable', error);
@@ -7675,18 +7682,19 @@ const cloneTable = (tableId, postId, blockTableRef) => async ({
  *
  * @since    1.0.0
  * @since    1.5.0 Remove external data creating a persisted table entity
+ * @since    2.0.0 Updates for schema version 2
  *
- * @param {number} tableIdToCreate Identifier key for the table
+ * @param {Object} tableToCreate Border-free table produced by initTable()
  * @return  {Object} Action object
  */
-const createTableEntity = (tableIdToCreate = '0') => async ({
-  select,
+const createTableEntity = tableToCreate => async ({
   dispatch,
   registry
 }) => {
   const {
     table_id,
     block_table_ref,
+    table_type,
     post_id,
     table_name,
     attributes,
@@ -7694,12 +7702,13 @@ const createTableEntity = (tableIdToCreate = '0') => async ({
     rows,
     columns,
     cells
-  } = select.getTable(tableIdToCreate, true);
+  } = tableToCreate;
   const newTable = {
     title: table_name,
     header: {
       id: table_id,
       block_table_ref: block_table_ref,
+      table_type: table_type,
       status: 'new',
       post_id: post_id,
       table_name: table_name,
@@ -7750,6 +7759,7 @@ const saveTableEntity = tableId => async ({
  * @since    1.0.0
  * @since    1.4.5 - Add undo/redo support
  * @since    1.5.0 - Remove external data before updating a table
+ * @since    2.0.0 - Updates for schema version 2
  *
  * @param {number}                    tableId             Identifier key for the table
  * @param {string}                    overrideTableStatus Updates the table's status if populated
@@ -7768,6 +7778,7 @@ const updateTableEntity = (tableId, overrideTableStatus = '', tableOverride = nu
   const {
     table_id,
     block_table_ref,
+    table_type,
     table_status,
     post_id,
     table_name,
@@ -7818,6 +7829,7 @@ const updateTableEntity = (tableId, overrideTableStatus = '', tableOverride = nu
     header: {
       id: table_id,
       block_table_ref: block_table_ref,
+      table_type: table_type,
       status: tableStatus(overrideTableStatus, table_status),
       post_id: post_id,
       table_name: table_name,
@@ -8515,7 +8527,8 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Fetch summary tables from the REST API and normalize them for the allTables store.
  *
- * @since 3.1.2
+ * @since 1.3.2
+ * @since 2.0.0 - Updates for schema version 2
  *
  * @return {Promise<Object>} Summary tables keyed by table id
  */
@@ -8535,6 +8548,7 @@ async function fetchSummaryTablesFromApi() {
     allTables[id] = {
       table_id: id,
       block_table_ref: header.block_table_ref,
+      table_type: header.table_type,
       table_status: header.status,
       post_id: header.post_id,
       table_name: header.table_name,
@@ -8552,7 +8566,8 @@ async function fetchSummaryTablesFromApi() {
  * This keeps the summary picker accurate before post save finishes by preserving
  * local "new" and "deleted" state that may not yet exist in the REST response.
  *
- * @since 3.1.2
+ * @since 1.3.2
+ * @since 2.0.0 - Updates for schema version 2
  *
  * @param {Object} tables             API summary tables
  * @param {Object} args               Local overlay state
@@ -8570,6 +8585,7 @@ function reconcileSummaryTablesWithLocalState(tables, {
   Object.values(unsavedTables).forEach(({
     table_id,
     block_table_ref,
+    table_type,
     table_status,
     post_id,
     table_name,
@@ -8586,6 +8602,7 @@ function reconcileSummaryTablesWithLocalState(tables, {
       ...(reconciledTables[table_id] || {}),
       table_id,
       block_table_ref,
+      table_type,
       table_status,
       post_id,
       table_name,
@@ -8873,6 +8890,7 @@ const {
  *
  * @since    1.0.0
  * @since    1.4.0   Implement combined reducer to support multiple state slices.
+ * @since    2.0.0   Updates for schema version 2
  *
  * @param {Object} state  Current table
  * @param {Object} action Action activity to be performed
@@ -8957,11 +8975,8 @@ const table = (state = {
           columnsWithNewId_InsertColumn.push(column);
         } else {
           const newColumn_InsertColumn = {
-            table_id: column.table_id,
-            column_id: String(Number(column.column_id) + 1),
-            column_name: column.column_name,
-            attributes: column.attributes,
-            classes: column.classes
+            ...column,
+            column_id: String(Number(column.column_id) + 1)
           };
           columnsWithNewId_InsertColumn.push(newColumn_InsertColumn);
         }
@@ -9018,10 +9033,8 @@ const table = (state = {
           rowsWithNewId_InsertRow.push(row);
         } else {
           const newRow_InsertRow = {
-            table_id: row.table_id,
-            row_id: String(Number(row.row_id) + 1),
-            attributes: row.attributes,
-            classes: row.classes
+            ...row,
+            row_id: String(Number(row.row_id) + 1)
           };
           rowsWithNewId_InsertRow.push(newRow_InsertRow);
         }
@@ -9077,11 +9090,8 @@ const table = (state = {
           columnsWithNewId_DeleteColumn.push(column);
         } else if (Number(column.column_id) > Number(action.columnId)) {
           const newColumn_DeleteColumn = {
-            table_id: column.table_id,
-            column_id: String(Number(column.column_id) - 1),
-            column_name: column.column_name,
-            attributes: column.attributes,
-            classes: column.classes
+            ...column,
+            column_id: String(Number(column.column_id) - 1)
           };
           columnsWithNewId_DeleteColumn.push(newColumn_DeleteColumn);
         }
@@ -9133,10 +9143,8 @@ const table = (state = {
           rowsWithNewId_DeleteRow.push(row);
         } else if (Number(row.row_id) > Number(action.rowId)) {
           const newRow_DeleteRow = {
-            table_id: row.table_id,
-            row_id: String(Number(row.row_id) - 1),
-            attributes: row.attributes,
-            classes: row.classes
+            ...row,
+            row_id: String(Number(row.row_id) - 1)
           };
           rowsWithNewId_DeleteRow.push(newRow_DeleteRow);
         }
@@ -9186,22 +9194,13 @@ const table = (state = {
 
       // Move columns
       const movedColumns = [];
-      moveColumnState.columns.map(({
-        table_id,
-        column_id,
-        column_name,
-        attributes,
-        classes
-      }) => {
-        let newColumnId = column_id;
-        if (Number(column_id) === Number(action.columnId)) newColumnId = String(targetMoveColumnNewId);
-        if (Number(column_id) === targetMoveColumnNewId) newColumnId = String(action.columnId);
+      moveColumnState.columns.map(column => {
+        let newColumnId = column.column_id;
+        if (Number(column.column_id) === Number(action.columnId)) newColumnId = String(targetMoveColumnNewId);
+        if (Number(column.column_id) === targetMoveColumnNewId) newColumnId = String(action.columnId);
         return movedColumns.push({
-          table_id: table_id,
-          column_id: newColumnId,
-          column_name: column_name,
-          attributes: attributes,
-          classes: classes
+          ...column,
+          column_id: newColumnId
         });
       });
       const sortedMovedColumns = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.tableSort)('columns', movedColumns);
@@ -9254,20 +9253,13 @@ const table = (state = {
 
       // Move rows
       const movedRows = [];
-      moveRowState.rows.map(({
-        table_id,
-        row_id,
-        attributes,
-        classes
-      }) => {
-        let newRowId = row_id;
-        if (Number(row_id) === Number(action.rowId)) newRowId = String(targetMoveRowNewId);
-        if (Number(row_id) === targetMoveRowNewId) newRowId = String(action.rowId);
+      moveRowState.rows.map(row => {
+        let newRowId = row.row_id;
+        if (Number(row.row_id) === Number(action.rowId)) newRowId = String(targetMoveRowNewId);
+        if (Number(row.row_id) === targetMoveRowNewId) newRowId = String(action.rowId);
         return movedRows.push({
-          table_id: table_id,
-          row_id: newRowId,
-          attributes: attributes,
-          classes: classes
+          ...row,
+          row_id: newRowId
         });
       });
       const sortedMovedRows = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.tableSort)('rows', movedRows);
@@ -9473,6 +9465,7 @@ __webpack_require__.r(__webpack_exports__);
  * Requests a table's record from the REST API.
  *
  * @since    1.0.0
+ * @since    2.0.0 - Updates for schema version 2
  *
  * @param {number}  tableId      Identifier key for the table
  * @param {boolean} isTableStale Whether the current state is stale
@@ -9489,6 +9482,7 @@ const getTable = (tableId, isTableStale) => async ({
     const table = tableEntity;
     const table_id = table.id;
     const block_table_ref = table.header.block_table_ref;
+    const table_type = table.header.table_type;
     const table_status = table.header.status;
     const post_id = table.header.post_id;
     const table_name = table.header.table_name;
@@ -9498,7 +9492,7 @@ const getTable = (tableId, isTableStale) => async ({
     const columns = table.columns;
     (0,_utils__WEBPACK_IMPORTED_MODULE_1__.computeCellIds)(table.cells);
     const cells = table.cells;
-    await dispatch.receiveTable(table_id, block_table_ref, table_status, post_id, table_name, attributes, classes, rows, columns, cells);
+    await dispatch.receiveTable(table_id, block_table_ref, table_type, table_status, post_id, table_name, attributes, classes, rows, columns, cells);
   } catch (error) {
     console.log('Error in getTable - Table ID = ' + tableId);
     alert('            ...Resolver - async error - ' + JSON.stringify(error, null, 4));
@@ -9527,6 +9521,7 @@ __webpack_require__.r(__webpack_exports__);
  * the table from the REST api.
  *
  * @since    1.0.0
+ * @since    2.0.0 - Updates for schema version 2
  *
  * @param {Object}  state        Current state of tables
  * @param {number}  tableId      Identifier key for the table
@@ -9538,6 +9533,7 @@ function getTable(state, tableId, isTableStale) {
     return {
       table_id: tableId,
       block_table_ref: '',
+      table_type: '',
       post_id: '',
       table_status: '',
       table_name: '',
@@ -9752,6 +9748,7 @@ function removeExternalCellData(attributes) {
  *
  * @since    1.4.5
  * @since    1.5.0 Remove editor-only external data for comparison purposes
+ * @since    2.0.0 Updates for schema version 2
  *
  * @param {Object}        sourceTable Local table
  * @param {number|string} recordId    Entity record ID
@@ -9761,6 +9758,7 @@ function tableToComparableEntityRecord(sourceTable, recordId = sourceTable?.tabl
   const {
     table_id,
     block_table_ref,
+    table_type,
     table_status,
     post_id,
     table_name,
@@ -9797,6 +9795,7 @@ function tableToComparableEntityRecord(sourceTable, recordId = sourceTable?.tabl
     header: {
       id: table_id,
       block_table_ref,
+      table_type,
       status: table_status,
       post_id,
       table_name,
@@ -9875,6 +9874,7 @@ function entityRecordToTable(entityRecord, {
   const table = {
     table_id: tableId,
     block_table_ref: header.block_table_ref ?? '',
+    table_type: header.table_type ?? '',
     table_status: header.status ?? '',
     post_id: header.post_id ?? '',
     table_name: header.table_name ?? entityTitle,
@@ -11169,6 +11169,7 @@ function Edit(props) {
    * Attach existing table to block when table is ready for attachment.
    *
    * @since 1.4.0
+   * @since 2.0.0 - Updates for schema version 2
    */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
     if (tableRequest.action !== 'receive') return;
@@ -11187,10 +11188,11 @@ function Edit(props) {
     updateSummaryTable({
       table_id: attachedTableId,
       block_table_ref: tableRequest.blockTableRef,
+      table_type: attachedTable.table_type,
       table_status: attachedTable.table_status,
       post_id: String(postId)
     });
-    receiveTable(attachedTableId, attachedTable.block_table_ref, attachedTable.table_status, attachedTable.post_id, attachedTable.table_name, attachedTable.attributes, attachedTable.classes, attachedTable.rows, attachedTable.columns, attachedTable.cells);
+    receiveTable(attachedTableId, attachedTable.block_table_ref, attachedTable.table_type, attachedTable.table_status, attachedTable.post_id, attachedTable.table_name, attachedTable.attributes, attachedTable.classes, attachedTable.rows, attachedTable.columns, attachedTable.cells);
     props.setAttributes({
       original_post_type: postType,
       original_post_id: Number(postId),
@@ -11258,6 +11260,7 @@ function Edit(props) {
    * stack and role the table state forward or backward as appropriate.
    *
    * @since 1.4.5
+      * @since 2.0.0 - Updates for schema version 2
    */
   (0,_hooks__WEBPACK_IMPORTED_MODULE_19__.useTableUndoRedoEffect)(table.table_id, ({
     editedTable
@@ -11277,7 +11280,7 @@ function Edit(props) {
      * the restored value back to core-data would create a feedback path
      * during undo/redo.
      */
-    receiveTable(reconciledTable.table_id, reconciledTable.block_table_ref, reconciledTable.table_status, reconciledTable.post_id, reconciledTable.table_name, reconciledTable.attributes, reconciledTable.classes, reconciledTable.rows, reconciledTable.columns, reconciledTable.cells);
+    receiveTable(reconciledTable.table_id, reconciledTable.block_table_ref, reconciledTable.table_type, reconciledTable.table_status, reconciledTable.post_id, reconciledTable.table_name, reconciledTable.attributes, reconciledTable.classes, reconciledTable.rows, reconciledTable.columns, reconciledTable.cells);
 
     /*
      * Prevent an active cell editor or settings control from writing its
@@ -11746,6 +11749,7 @@ function Edit(props) {
    *
    * @since 1.0.0
    * @since 1.2.2  Allow column to be added either left or right the current column
+   * @since 2.0.0  Updates for schema version 2
    *
    * @param {number} tableId   Identifier key for the table
    * @param {number} columnId  Identifier for the table column
@@ -11754,7 +11758,8 @@ function Edit(props) {
    */
   function insertColumn(tableId, columnId, direction) {
     const newColumnId = direction === 'right' ? Number(columnId) + 1 : Number(columnId);
-    const newColumn = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_23__.getDefaultColumn)(tableId, newColumnId);
+    const usedColumnRefs = new Set(table.columns.filter(column => Number(column.column_id) > 0).map(column => String(column.column_ref)));
+    const newColumn = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_23__.getDefaultColumn)(tableId, newColumnId, 'Body', (0,_utils__WEBPACK_IMPORTED_MODULE_22__.generateTablePartRef)(usedColumnRefs));
     const newColumnLabel = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.numberToLetter)(newColumnId);
     const tableCells = table.rows.map(({
       row_id
@@ -11776,6 +11781,7 @@ function Edit(props) {
    *
    * @since 1.0.0
    * @since 1.2.2  Allow row to be added either above or below the current row
+   * @since 2.0.0  Updates for schema version 2
    *
    * @param {number} tableId   Identifier key for the table
    * @param {number} rowId     Identifier for the table row
@@ -11784,7 +11790,8 @@ function Edit(props) {
    */
   function insertRow(tableId, rowId, direction) {
     const newRowId = direction === 'below' ? Number(rowId) + 1 : Number(rowId);
-    const newRow = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_23__.getDefaultRow)(tableId, newRowId);
+    const usedRowRefs = new Set(table.rows.filter(row => Number(row.row_id) > 0).map(row => String(row.row_ref)));
+    const newRow = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_23__.getDefaultRow)(tableId, newRowId, 'Body', (0,_utils__WEBPACK_IMPORTED_MODULE_22__.generateTablePartRef)(usedRowRefs));
     const tableCells = table.columns.map(({
       column_id
     }) => Number(column_id)).filter(columnId => Number.isFinite(columnId)).sort((a, b) => a - b).map(columnId => columnId === 0 ? (0,_table_defaults__WEBPACK_IMPORTED_MODULE_23__.getDefaultCell)(tableId, columnId, newRowId, 'Border') : (0,_table_defaults__WEBPACK_IMPORTED_MODULE_23__.getDefaultCell)(tableId, columnId, newRowId));
@@ -11981,6 +11988,7 @@ function Edit(props) {
    * @since 1.3.0 - Refactor to support WordPress RTC
    * @since 1.4.4 - Show borders when table is created
    * @since 1.4.9 - Bring user defined columns into table creation
+   * @since 2.0.0 - Updates for schema version 2
    *
    * @param {number} columnCount Number of columns in table
    * @param {number} rowCount    Number of rows in table
@@ -11990,7 +11998,7 @@ function Edit(props) {
   function createTable(columnCount, rowCount, tableName, columns) {
     setTableStale(false);
     const newBlockTableRef = (0,_utils__WEBPACK_IMPORTED_MODULE_22__.generateBlockTableRef)();
-    const newTable = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_23__.initTable)(newBlockTableRef, columnCount, rowCount, tableName, columns);
+    const newTable = (0,_table_defaults__WEBPACK_IMPORTED_MODULE_23__.initTable)(newBlockTableRef, 'local', columnCount, rowCount, tableName, columns);
     props.setAttributes({
       block_table_ref: newBlockTableRef
     });
@@ -12002,7 +12010,7 @@ function Edit(props) {
       sourceTableId: 0,
       error: null
     });
-    createTableEntity().then(createdTableId => {
+    createTableEntity(newTable.table).then(createdTableId => {
       props.setAttributes({
         original_post_type: postType,
         original_post_id: Number(postId),
@@ -16709,26 +16717,30 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Create a new dynamic table
  *
- * @since    1.0.0
+ * @since 1.0.0
  * @since 1.4.9 - Bring user defined columns into table creation
+ * @since 2.0.0 - Updates for schema version 2
  *
  * @param {string} newBlockTableRef Block table cross reference unique string
+ * @param {string} tableType        Type assigned by this creation process
  * @param {number} columnCount      Number of columns to include in the table
  * @param {number} rowCount         Number of rows to include in the table
  * @param {string} tableName        Name of the new table
  * @param {Array}  columns          Table columns
  * @return  {Object} New Dynamic Table
  */
-function initTable(newBlockTableRef, columnCount, rowCount, tableName, columns) {
+function initTable(newBlockTableRef, tableType, columnCount, rowCount, tableName, columns) {
   const tableCells = initTableCells(Number(columnCount), Number(rowCount));
   const rowArray = [];
+  const rowRefs = new Set();
   for (let i = 1; i <= rowCount; i++) {
-    const row = getDefaultRow('0', i);
+    const row = getDefaultRow('0', i, 'Body', (0,_utils__WEBPACK_IMPORTED_MODULE_0__.generateTablePartRef)(rowRefs));
     rowArray.push(row);
   }
   const columnArray = [];
+  const columnRefs = new Set();
   for (let i = 1; i <= columnCount; i++) {
-    const column = getDefaultColumn('0', i);
+    const column = getDefaultColumn('0', i, 'Body', (0,_utils__WEBPACK_IMPORTED_MODULE_0__.generateTablePartRef)(columnRefs));
     const columnInputName = columns[i - 1]?.column_name || '';
     column.column_name = columnInputName !== '' ? columnInputName : column.column_name;
     columnArray.push(column);
@@ -16737,6 +16749,7 @@ function initTable(newBlockTableRef, columnCount, rowCount, tableName, columns) 
     table: {
       table_id: '0',
       block_table_ref: newBlockTableRef,
+      table_type: tableType,
       post_id: '0',
       table_status: 'new',
       table_name: tableName,
@@ -16784,18 +16797,24 @@ function initTableCells(init_num_columns, init_num_rows) {
  * Get a new row with default values.
  *
  * @since    1.0.0
+ * @since    2.0.0 - Updates for schema version 2
  *
  * @param {number} tableId     Table id to assign to row
  * @param {number} rowId       Row id to assign to row
  * @param {string} rowLocation Border or another value, default = body
+ * @param {string} rowRef      Stable reference for a persisted row
  * @return  {Array} New table row
  */
-function getDefaultRow(tableId, rowId, rowLocation = 'Body') {
+function getDefaultRow(tableId, rowId, rowLocation = 'Body', rowRef) {
   let row;
+  if (rowLocation !== 'Border' && (rowRef === undefined || rowRef === null)) {
+    throw new TypeError('A persisted row requires rowRef');
+  }
   if (rowLocation === 'Border') {
     row = {
       table_id: String(tableId),
       row_id: String(rowId),
+      row_ref: '0',
       attributes: getDefaultTableAttributes('rows', rowLocation),
       classes: getDefaultTableClasses('rows')
     };
@@ -16803,6 +16822,7 @@ function getDefaultRow(tableId, rowId, rowLocation = 'Body') {
     row = {
       table_id: String(tableId),
       row_id: String(rowId),
+      row_ref: String(rowRef),
       attributes: getDefaultTableAttributes('rows', rowLocation),
       classes: getDefaultTableClasses('rows')
     };
@@ -16815,18 +16835,24 @@ function getDefaultRow(tableId, rowId, rowLocation = 'Body') {
  *
  * @since    1.0.0
  * @since    1.4.9 - Updated default column name
+ * @since    2.0.0 - Updates for schema version 2
  *
  * @param {number} tableId        Table id to assign to column
  * @param {number} columnId       Column id to assign to column
  * @param {string} columnLocation Border or another value, default = body
+ * @param {string} columnRef      Stable reference for a persisted column
  * @return  {Array} New table column
  */
-function getDefaultColumn(tableId, columnId, columnLocation = 'Body') {
+function getDefaultColumn(tableId, columnId, columnLocation = 'Body', columnRef) {
   let column;
+  if (columnLocation !== 'Border' && (columnRef === undefined || columnRef === null)) {
+    throw new TypeError('A persisted column requires columnRef');
+  }
   if (columnLocation === 'Border') {
     column = {
       table_id: String(tableId),
       column_id: String(columnId),
+      column_ref: '0',
       column_name: 'Border Column ' + String(columnId),
       attributes: getDefaultTableAttributes('columns', columnLocation),
       classes: ''
@@ -16835,6 +16861,7 @@ function getDefaultColumn(tableId, columnId, columnLocation = 'Body') {
     column = {
       table_id: String(tableId),
       column_id: String(columnId),
+      column_ref: String(columnRef),
       column_name: 'Column ' + (0,_utils__WEBPACK_IMPORTED_MODULE_0__.numberToLetter)(Number(columnId)),
       attributes: getDefaultTableAttributes('columns', columnLocation),
       classes: getDefaultTableClasses('columns')
@@ -17356,14 +17383,22 @@ function generateBlockTableRef() {
 /**
  * Create a unique identifyier for reference use
  *
- * @since 1.4.9
+ * @since 2.0.0  Update generation method
  *
- * @return  {string} Unique reference identifier
+ * @param {Set<string>} usedRefs References already assigned within the table.
+ * @return {string} Unique numeric reference.
  */
-function generateTablePartRef() {
-  const bytes = new Uint8Array(16);
-  window.crypto.getRandomValues(bytes);
-  return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+function generateTablePartRef(usedRefs) {
+  if (!(usedRefs instanceof Set)) {
+    throw new TypeError('usedRefs must be a Set');
+  }
+  let nextRef = 1;
+  while (usedRefs.has(String(nextRef))) {
+    nextRef += 1;
+  }
+  const ref = String(nextRef);
+  usedRefs.add(ref);
+  return ref;
 }
 
 /**

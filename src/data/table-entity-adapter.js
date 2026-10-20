@@ -83,6 +83,7 @@ export function removeExternalCellData(attributes) {
  *
  * @since    1.4.5
  * @since    1.5.0 Remove editor-only external data for comparison purposes
+ * @since    2.0.0 Updates for schema version 2
  *
  * @param {Object}        sourceTable Local table
  * @param {number|string} recordId    Entity record ID
@@ -92,6 +93,7 @@ function tableToComparableEntityRecord(sourceTable, recordId = sourceTable?.tabl
 	const {
 		table_id,
 		block_table_ref,
+		table_type,
 		table_status,
 		post_id,
 		table_name,
@@ -136,6 +138,7 @@ function tableToComparableEntityRecord(sourceTable, recordId = sourceTable?.tabl
 		header: {
 			id: table_id,
 			block_table_ref,
+			table_type,
 			status: table_status,
 			post_id,
 			table_name,
@@ -235,6 +238,7 @@ export function entityRecordToTable(entityRecord, { includeBorders = false } = {
 	const table = {
 		table_id: tableId,
 		block_table_ref: header.block_table_ref ?? '',
+		table_type: header.table_type ?? '',
 		table_status: header.status ?? '',
 		post_id: header.post_id ?? '',
 		table_name: header.table_name ?? entityTitle,

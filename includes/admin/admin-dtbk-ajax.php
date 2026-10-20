@@ -612,6 +612,7 @@ class DTBK_Admin_Ajax {
 	 * Transform JSON input to standard dynamic tables array
 	 *
 	 * @since 1.4.0
+	 * @since 2.0.0 - Added support for schema 2.0
 	 *
 	 * @param array $uploaded_file File metadata
 	 * @param array $options       User selected import options
@@ -634,7 +635,7 @@ class DTBK_Admin_Ajax {
 			$warnings[] = __( 'This backup contains multiple tables. Review the selected backup item before importing.', 'dynamic-table-blocks' );
 		}
 
-		if ( isset( $parsed['schema_version'] ) && (int) $parsed['schema_version'] > 1 ) {
+		if ( isset( $parsed['schema_version'] ) && (int) $parsed['schema_version'] > 2 ) {
 			$warnings[] = __( 'This backup was created by a newer schema version. Review the preview carefully.', 'dynamic-table-blocks' );
 		}
 
@@ -773,6 +774,7 @@ class DTBK_Admin_Ajax {
 	 * Transform JSON table array into
 	 *
 	 * @since 1.4.0
+	 * @since 2.0.0 - Added support for schema 2.0
 	 *
 	 * @param array $source_table Imported JSON table
 	 * @param array $target_table Existing table with the imported table's table_id
@@ -850,6 +852,17 @@ class DTBK_Admin_Ajax {
 			);
 		}
 
+		$row_refs = $this->prepare_import_part_refs(
+			$source_rows,
+			'row_ref',
+			'row_id'
+		);
+		$column_refs = $this->prepare_import_part_refs(
+			$source_columns,
+			'column_ref',
+			'column_id'
+		);
+
 		foreach ( $source_rows as $row ) {
 			$row_id = (int) $row['row_id'];
 			if ( isset( $row_ids[ $row_id ] ) ) {
@@ -864,6 +877,7 @@ class DTBK_Admin_Ajax {
 			$normalized_rows[]  = array(
 				'table_id'   => $target_id,
 				'row_id'     => $row_id,
+				'row_ref'    => $row_refs[ $row_id ],
 				'attributes' => array_merge(
 					get_default_row_attributes(),
 					is_array( $row['attributes'] ?? null ) ? $row['attributes'] : array()
@@ -886,6 +900,7 @@ class DTBK_Admin_Ajax {
 			$normalized_columns[]     = array(
 				'table_id'    => $target_id,
 				'column_id'   => $column_id,
+				'column_ref'  => $column_refs[ $column_id ],
 				'column_name' => isset( $column['column_name'] ) ? (string) $column['column_name'] : '',
 				'attributes'  => array_merge(
 					get_default_column_attributes(),
@@ -961,6 +976,9 @@ class DTBK_Admin_Ajax {
 			'header'  => array(
 				'id'              => $target_id,
 				'block_table_ref' => $is_create ? '' : (string) ( $target_header['block_table_ref'] ?? '' ),
+				'table_type'      => isset( $source_header['table_type'] )
+					? (string) $source_header['table_type']
+					: 'local',
 				'status'          => $is_create ? 'loaded' : (string) ( $target_header['status'] ?? 'loaded' ),
 				'post_id'         => $is_create ? 0 : (int) ( $target_header['post_id'] ?? 0 ),
 				'table_name'      => $table_name,
@@ -1034,9 +1052,56 @@ class DTBK_Admin_Ajax {
 	}
 
 	/**
+	 * Preserve a complete valid imported ref set or regenerate it from IDs.
+	 *
+	 * @since 2.0.0
+	 *
+	 * Version 1 backups do not contain refs. In that case the imported table
+	 * receives refs before it is sent through REST for persistence.
+	 *
+	 * @param array  $items     Imported rows or columns.
+	 * @param string $ref_field Reference field name.
+	 * @param string $id_field  Positional ID field name.
+	 * @return array<int,int> References indexed by positional ID.
+	 */
+	private function prepare_import_part_refs( array $items, $ref_field, $id_field ) {
+		$refs      = array();
+		$used_refs = array();
+
+		foreach ( $items as $item ) {
+			$id  = (int) $item[ $id_field ];
+			$ref = filter_var(
+				$item[ $ref_field ] ?? null,
+				FILTER_VALIDATE_INT,
+				array( 'options' => array( 'min_range' => 1 ) )
+			);
+
+			if ( false === $ref || isset( $used_refs[ $ref ] ) ) {
+				$refs = array();
+				break;
+			}
+
+			$refs[ $id ]      = (int) $ref;
+			$used_refs[ $ref ] = true;
+		}
+
+		if ( count( $refs ) === count( $items ) ) {
+			return $refs;
+		}
+
+		foreach ( $items as $item ) {
+			$id          = (int) $item[ $id_field ];
+			$refs[ $id ] = $id;
+		}
+
+		return $refs;
+	}
+
+	/**
 	 * Transform CSV input to standard dynamic tables array
 	 *
 	 * @since 1.4.0
+	 * @since 2.0.0 - Added support for schema 2.0
 	 *
 	 * @param array $uploaded_file File metadata
 	 * @param array $options       User selected import options
@@ -1113,6 +1178,7 @@ class DTBK_Admin_Ajax {
 			'header'  => array(
 				'id'              => $target_id,
 				'block_table_ref' => '',
+				'table_type'      => 'local',
 				'status'          => 'loaded',
 				'post_id'         => 0,
 				'table_name'      => $table_name,
@@ -1138,6 +1204,7 @@ class DTBK_Admin_Ajax {
 			$table['columns'][] = array(
 				'table_id'    => $target_id,
 				'column_id'   => $column_id,
+				'column_ref'  => $column_id,
 				'column_name' => $column_name,
 				'attributes'  => $this->build_csv_column_attributes(),
 				'classes'     => '',
@@ -1152,6 +1219,7 @@ class DTBK_Admin_Ajax {
 			$table['rows'][] = array(
 				'table_id'   => $target_id,
 				'row_id'     => $row_id,
+				'row_ref'    => $row_id,
 				'attributes' => array_merge(
 					get_default_row_attributes(),
 					array( 'isHeader' => (bool) $is_header )
@@ -1635,6 +1703,7 @@ class DTBK_Admin_Ajax {
 	 * Create requests must not send readonly ids inside the header object.
 	 *
 	 * @since 1.4.0
+	 * @since 2.0.0 - Added support for schema 2.0
 	 *
 	 * @param array $table Table payload.
 	 * @return array
@@ -1646,6 +1715,7 @@ class DTBK_Admin_Ajax {
 			'title'   => isset( $table['title'] ) ? (string) $table['title'] : '',
 			'header'  => array(
 				'block_table_ref' => isset( $header['block_table_ref'] ) ? (string) $header['block_table_ref'] : '',
+				'table_type'      => (string) $header['table_type'],
 				'status'          => isset( $header['status'] ) ? (string) $header['status'] : 'loaded',
 				'post_id'         => isset( $header['post_id'] ) ? (int) $header['post_id'] : 0,
 				'table_name'      => isset( $header['table_name'] ) ? (string) $header['table_name'] : '',

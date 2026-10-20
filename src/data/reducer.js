@@ -32,6 +32,7 @@ const {
  *
  * @since    1.0.0
  * @since    1.4.0   Implement combined reducer to support multiple state slices.
+ * @since    2.0.0   Updates for schema version 2
  *
  * @param {Object} state  Current table
  * @param {Object} action Action activity to be performed
@@ -125,11 +126,8 @@ const table = (
 					columnsWithNewId_InsertColumn.push(column);
 				} else {
 					const newColumn_InsertColumn = {
-						table_id: column.table_id,
+						...column,
 						column_id: String(Number(column.column_id) + 1),
-						column_name: column.column_name,
-						attributes: column.attributes,
-						classes: column.classes,
 					};
 					columnsWithNewId_InsertColumn.push(newColumn_InsertColumn);
 				}
@@ -193,10 +191,8 @@ const table = (
 					rowsWithNewId_InsertRow.push(row);
 				} else {
 					const newRow_InsertRow = {
-						table_id: row.table_id,
+						...row,
 						row_id: String(Number(row.row_id) + 1),
-						attributes: row.attributes,
-						classes: row.classes,
 					};
 					rowsWithNewId_InsertRow.push(newRow_InsertRow);
 				}
@@ -256,11 +252,8 @@ const table = (
 					columnsWithNewId_DeleteColumn.push(column);
 				} else if (Number(column.column_id) > Number(action.columnId)) {
 					const newColumn_DeleteColumn = {
-						table_id: column.table_id,
+						...column,
 						column_id: String(Number(column.column_id) - 1),
-						column_name: column.column_name,
-						attributes: column.attributes,
-						classes: column.classes,
 					};
 					columnsWithNewId_DeleteColumn.push(newColumn_DeleteColumn);
 				}
@@ -314,10 +307,8 @@ const table = (
 					rowsWithNewId_DeleteRow.push(row);
 				} else if (Number(row.row_id) > Number(action.rowId)) {
 					const newRow_DeleteRow = {
-						table_id: row.table_id,
+						...row,
 						row_id: String(Number(row.row_id) - 1),
-						attributes: row.attributes,
-						classes: row.classes,
 					};
 					rowsWithNewId_DeleteRow.push(newRow_DeleteRow);
 				}
@@ -372,19 +363,17 @@ const table = (
 			// Move columns
 			const movedColumns = [];
 
-			moveColumnState.columns.map(({ table_id, column_id, column_name, attributes, classes }) => {
-				let newColumnId = column_id;
+			moveColumnState.columns.map(column => {
+				let newColumnId = column.column_id;
 
-				if (Number(column_id) === Number(action.columnId))
+				if (Number(column.column_id) === Number(action.columnId))
 					newColumnId = String(targetMoveColumnNewId);
-				if (Number(column_id) === targetMoveColumnNewId) newColumnId = String(action.columnId);
+				if (Number(column.column_id) === targetMoveColumnNewId)
+					newColumnId = String(action.columnId);
 
 				return movedColumns.push({
-					table_id: table_id,
+					...column,
 					column_id: newColumnId,
-					column_name: column_name,
-					attributes: attributes,
-					classes: classes,
 				});
 			});
 
@@ -441,17 +430,15 @@ const table = (
 			// Move rows
 			const movedRows = [];
 
-			moveRowState.rows.map(({ table_id, row_id, attributes, classes }) => {
-				let newRowId = row_id;
+			moveRowState.rows.map(row => {
+				let newRowId = row.row_id;
 
-				if (Number(row_id) === Number(action.rowId)) newRowId = String(targetMoveRowNewId);
-				if (Number(row_id) === targetMoveRowNewId) newRowId = String(action.rowId);
+				if (Number(row.row_id) === Number(action.rowId)) newRowId = String(targetMoveRowNewId);
+				if (Number(row.row_id) === targetMoveRowNewId) newRowId = String(action.rowId);
 
 				return movedRows.push({
-					table_id: table_id,
+					...row,
 					row_id: newRowId,
-					attributes: attributes,
-					classes: classes,
 				});
 			});
 

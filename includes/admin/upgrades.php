@@ -11,6 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once __DIR__ . '/database-schema.php';
+
 class DynamicTableBlocksVersionManagement {
 
 	/**
@@ -21,7 +23,7 @@ class DynamicTableBlocksVersionManagement {
 	 *
 	 * @var string
 	 */
-	protected $current_db_version;
+	protected $current_db_version = '0.0.0';
 
 	/**
 	 * Class Instanciation
@@ -29,14 +31,22 @@ class DynamicTableBlocksVersionManagement {
 	 * Includes the WD upgrade library and gets the installed database version.
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.0 Changed dtbk-version to dtbk_version
 	 *
 	 * @return void
 	 */
 	public function __construct() {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		if ( get_option( 'dtbk-version' ) ) {
-				$this->current_db_version = get_option( 'dtbk-version' );
+		$installed_version = get_option( 'dtbk_version', false );
+
+		// Support the legacy option name used by older upgrade checks.
+		if ( $installed_version === false ) {
+			$installed_version = get_option( 'dtbk-version', false );
+		}
+
+		if ( $installed_version !== false ) {
+			$this->current_db_version = $installed_version;
 		}
 	}
 
@@ -132,6 +142,7 @@ class DynamicTableBlocksVersionManagement {
 	 *
 	 * @since 1.0.0
 	 * @since 1.4.6 - Added option to enable default block styles.
+	 * @since 2.0.0 - Moved SQL to a separate file and removed unreliable code.
 	 *
 	 * @return void
 	 */
@@ -165,70 +176,226 @@ class DynamicTableBlocksVersionManagement {
 			$maintenance->ensure_cron_scheduled();
 		}
 
-		// Create/Update database
-		if ( ! isset( $current_db_version ) ) {
-			global $wpdb;
-
-			$charset_collate = $wpdb->get_charset_collate();
-
-			// Plugin tables
-			$dtbk_header_tbl  = $wpdb->prefix . 'dtbk_tables';
-			$dtbk_columns_tbl = $wpdb->prefix . 'dtbk_table_columns';
-			$dtbk_rows_tbl    = $wpdb->prefix . 'dtbk_table_rows';
-			$dtbk_cells_tbl   = $wpdb->prefix . 'dtbk_table_cells';
-
-			/**
-			 * Create plugin tables
-			 */
-			$sql = "CREATE TABLE $dtbk_header_tbl (
-            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            block_table_ref varchar(15) NOT NULL,
-            status varchar(10) NOT NULL,
-            post_id bigint(20) unsigned NOT NULL,
-            table_name varchar(60) NOT NULL,
-            attributes text DEFAULT NULL,
-            classes text DEFAULT NULL,
-            PRIMARY KEY  (id),
-            KEY  post (post_id,id)
-        )  $charset_collate;";
-
-			dbDelta( $sql );
-
-			$sql = "CREATE TABLE $dtbk_columns_tbl (
-            table_id bigint(20) unsigned NOT NULL,
-            column_id int(11) NOT NULL,
-            column_name varchar(60) NOT NULL DEFAULT ' ',
-            attributes text DEFAULT NULL,
-            classes text DEFAULT NULL,
-            PRIMARY KEY  (table_id,column_id)
-        )  $charset_collate;";
-
-			dbDelta( $sql );
-
-			$sql = "CREATE TABLE $dtbk_rows_tbl (
-            table_id bigint(20) unsigned NOT NULL,
-            row_id int(11) NOT NULL,
-            attributes text DEFAULT NULL,
-            classes text DEFAULT NULL,
-           PRIMARY KEY  (table_id,row_id)
-        )  $charset_collate;";
-
-			dbDelta( $sql );
-
-			$sql = "CREATE TABLE $dtbk_cells_tbl (
-            table_id bigint(20) unsigned NOT NULL,
-            column_id int(11) NOT NULL,
-            row_id int(11) NOT NULL,
-            attributes text DEFAULT NULL,
-            classes text DEFAULT NULL,
-            content longtext DEFAULT NULL,
-            PRIMARY KEY  (table_id,column_id,row_id)
-        )  $charset_collate;";
-
-			dbDelta( $sql );
-
-			add_option( 'dtbk_version', DTBK_VERSION );
+		if ( ! $this->maybe_upgrade() ) {
+			wp_die(
+				esc_html__( 'Dynamic Tables could not create or update its database tables.', 'dynamic-table-blocks' ),
+				esc_html__( 'Dynamic Tables activation failed', 'dynamic-table-blocks' ),
+				array( 'back_link' => true )
+			);
 		}
+	}
+
+	/**
+	 * Return database migrations in the order they must run.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return array Database upgrades indexed by version.
+	 */
+	private function get_database_upgrades() {
+		return array(
+			'2.0.0' => array(
+				'nullable_columns' => array(
+					array(
+						'table_suffix'        => 'dtbk_tables',
+						'column_name'         => 'table_type',
+						'nullable_definition' => 'varchar(32) DEFAULT NULL',
+						'after_column'        => 'block_table_ref',
+					),
+					array(
+						'table_suffix'        => 'dtbk_table_columns',
+						'column_name'         => 'column_ref',
+						'nullable_definition' => 'int(11) DEFAULT NULL',
+						'after_column'        => 'column_id',
+					),
+					array(
+						'table_suffix'        => 'dtbk_table_rows',
+						'column_name'         => 'row_ref',
+						'nullable_definition' => 'int(11) DEFAULT NULL',
+						'after_column'        => 'row_id',
+					),
+				),
+				'migration'        => 'upgrade_to_2_0_0',
+			),
+		);
+	}
+
+	/**
+	 * Apply the canonical schema for all or selected plugin tables.
+	 *
+	 * Future migrations can pass only the table suffixes changed by that
+	 * version. An empty list applies the complete current schema.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string[] $table_suffixes Optional DTBK table suffixes to update.
+	 * @return bool True when the requested schema was applied successfully.
+	 */
+	private function apply_database_schema( $table_suffixes = array() ) {
+		global $wpdb;
+
+		$queries = dtbk_get_database_schema_queries(
+			$wpdb->prefix,
+			$table_suffixes
+		);
+
+		if ( empty( $queries ) ) {
+			return false;
+		}
+
+		foreach ( $queries as $sql ) {
+			$wpdb->last_error = '';
+			dbDelta( $sql );
+
+			if ( $wpdb->last_error !== '' ) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Add new columns as nullable before applying the canonical schema.
+	 *
+	 * @since 2.0.0
+	 *
+	 * This permits existing rows to be populated before a later ALTER TABLE
+	 * statement makes each column NOT NULL.
+	 *
+	 * Tables that do not exist are skipped because dbDelta() will create them
+	 * directly from the canonical schema.
+	 *
+	 * @param array $columns Column definitions to prepare.
+	 * @return bool Whether all required columns were prepared successfully.
+	 */
+	private function prepare_nullable_columns( $columns ) {
+		global $wpdb;
+
+		foreach ( $columns as $column ) {
+			$required_keys = array(
+				'table_suffix',
+				'column_name',
+				'nullable_definition',
+				'after_column',
+			);
+
+			foreach ( $required_keys as $required_key ) {
+				if ( empty( $column[ $required_key ] ) ) {
+					return false;
+				}
+			}
+
+			$identifiers = array(
+				$column['table_suffix'],
+				$column['column_name'],
+				$column['after_column'],
+			);
+
+			foreach ( $identifiers as $identifier ) {
+				if ( ! preg_match( '/^[A-Za-z0-9_]+$/', $identifier ) ) {
+					return false;
+				}
+			}
+
+			$table_name = $wpdb->prefix . $column['table_suffix'];
+
+			/*
+			 * Direct, uncached schema queries are intentional during database
+			 * upgrades. Dynamic identifiers are safe because they were
+			 * restricted to letters, numbers, and underscores above.
+			 */
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.SchemaChange
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+			$table_exists = $wpdb->get_var(
+				$wpdb->prepare(
+					'SHOW TABLES LIKE %s',
+					$wpdb->esc_like( $table_name )
+				)
+			);
+
+			if ( $table_name !== $table_exists ) {
+				continue;
+			}
+
+			$column_exists = $wpdb->get_var(
+				$wpdb->prepare(
+					"SHOW COLUMNS FROM `{$table_name}` LIKE %s",
+					$column['column_name']
+				)
+			);
+
+			if ( $column_exists ) {
+				continue;
+			}
+
+			$wpdb->last_error = '';
+			$wpdb->query(
+				"ALTER TABLE `{$table_name}`
+				ADD COLUMN `{$column['column_name']}`
+				{$column['nullable_definition']}
+				AFTER `{$column['after_column']}`"
+			);
+
+			if ( $wpdb->last_error ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Upgrade the database schema to version 2.0.0.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return bool True when the migration succeeded.
+	 */
+	private function upgrade_to_2_0_0() {
+		global $wpdb;
+
+		/*
+		 * dbDelta() adds missing columns and indexes, but it does not reliably
+		 * manage column order, nullability, data migrations, or table
+		 * character-set conversions. Apply the remaining 2.0.0 changes
+		 * explicitly to the four pre-v2 tables.
+		 */
+		$version_updates = array(
+			"UPDATE `{$wpdb->prefix}dtbk_tables`
+				SET `table_type` = 'local'
+				WHERE `table_type` IS NULL",
+			"UPDATE `{$wpdb->prefix}dtbk_table_columns`
+				SET `column_ref` = `column_id`
+				WHERE `column_ref` IS NULL",
+			"UPDATE `{$wpdb->prefix}dtbk_table_rows`
+				SET `row_ref` = `row_id`
+				WHERE `row_ref` IS NULL",
+			"ALTER TABLE `{$wpdb->prefix}dtbk_tables`
+				MODIFY COLUMN `table_type` varchar(32) NOT NULL AFTER `block_table_ref`,
+				CONVERT TO CHARACTER SET latin1",
+			"ALTER TABLE `{$wpdb->prefix}dtbk_table_columns`
+				MODIFY COLUMN `column_ref` int(11) NOT NULL AFTER `column_id`,
+				CONVERT TO CHARACTER SET latin1",
+			"ALTER TABLE `{$wpdb->prefix}dtbk_table_rows`
+				MODIFY COLUMN `row_ref` int(11) NOT NULL AFTER `row_id`,
+				CONVERT TO CHARACTER SET latin1",
+			"ALTER TABLE `{$wpdb->prefix}dtbk_table_cells`
+				CONVERT TO CHARACTER SET latin1",
+		);
+
+		foreach ( $version_updates as $sql ) {
+			$wpdb->last_error = '';
+
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+			if ( false === $wpdb->query( $sql ) || '' !== $wpdb->last_error ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private function remove_environment_on_deactivation() {
@@ -259,43 +426,108 @@ class DynamicTableBlocksVersionManagement {
 	}
 
 	/**
+	 * Prepare and apply all pending database migrations.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return bool True when no upgrade is required or the upgrade succeeded.
+	 */
+	public function maybe_upgrade() {
+		$pending_upgrades = array();
+
+		foreach ( $this->get_database_upgrades() as $version => $upgrade ) {
+			if ( ! $this->dtbk_version_compare( $this->current_db_version, '<', $version ) ) {
+				continue;
+			}
+
+			$pending_upgrades[ $version ] = $upgrade;
+		}
+
+		if ( empty( $pending_upgrades ) ) {
+			return ! $this->dynamic_tables_has_upgrade();
+		}
+
+		/*
+		 * Stage nullable columns for every pending version before applying the
+		 * latest canonical schema. This protects installations that skip one
+		 * or more plugin versions from receiving a new NOT NULL column before
+		 * its legacy rows have been populated.
+		 */
+		foreach ( $pending_upgrades as $upgrade ) {
+			$nullable_columns = $upgrade['nullable_columns'] ?? array();
+
+			if (
+				! is_array( $nullable_columns )
+				|| (
+					! empty( $nullable_columns )
+					&& ! $this->prepare_nullable_columns( $nullable_columns )
+				)
+			) {
+				return false;
+			}
+		}
+
+		if ( ! $this->apply_database_schema() ) {
+			return false;
+		}
+
+		foreach ( $pending_upgrades as $version => $upgrade ) {
+			$migration_method = $upgrade['migration'] ?? '';
+
+			if (
+				! is_string( $migration_method )
+				|| ! is_callable( array( $this, $migration_method ) )
+				|| ! $this->{$migration_method}()
+			) {
+				return false;
+			}
+
+			/*
+			 * Record each completed migration separately. If a later migration
+			 * fails, the successful migrations will not run again on retry.
+			 */
+			$this->dtbk_update_db_version( $version );
+		}
+
+		/*
+		 * This also catches a DTBK_UPGRADE_VERSION increase for which no
+		 * corresponding migration was added to get_database_upgrades().
+		 */
+		return ! $this->dynamic_tables_has_upgrade();
+	}
+
+	/**
 	 *  dynamic_tables_has_upgrade
 	 *
-	 *  Returns true if this site has an upgrade avaialble.
+	 *  Returns true if this site has an upgrade available.
 	 *
-	 *  @since   1.0.0
+	 *  @since 1.0.0
+	 *  @since 2.0.0 Update version upgrade detection mechanism
 	 *
-	 *  @param   void
 	 *  @return  bool
 	 */
 	public function dynamic_tables_has_upgrade() {
-
-		// Set current version the lowest possible version if not previously installed
-		if ( ! isset( $this->current_db_version ) ) {
-			$this->current_db_version = '0.0.0';
-		}
-
-		if ( $this->current_db_version && $this->dtbk_version_compare( $this->current_db_version, '<', DTBK_UPGRADE_VERSION ) ) {
-			return true;
-		}
-
-		if ( $this->current_db_version !== DTBK_VERSION ) {
-			$this->dtbk_update_db_version( DTBK_VERSION );
-		}
-
-		return false;
+		return $this->dtbk_version_compare(
+			$this->current_db_version,
+			'<',
+			DTBK_UPGRADE_VERSION
+		);
 	}
 
 	/*
 	 *  Updates the DT DB version.
 	 *
 	 *  @since   1.0.0
+	 *  @since   2.0.0 Update version upgrade detection mechanism
 	 *
 	 *  @param   string $version The new version.
 	 *  @return  void
 	 */
-	function dtbk_update_db_version( $version = '' ) {
+	public function dtbk_update_db_version( $version = '' ) {
 		update_option( 'dtbk_version', $version );
+		delete_option( 'dtbk-version' );
+
+		$this->current_db_version = $version;
 	}
 
 	/**

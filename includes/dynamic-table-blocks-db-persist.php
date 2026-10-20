@@ -211,16 +211,18 @@ class PersistTableData {
 	 *  Performs a SQL Insert via the WordPress wpdb class and connection
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.0 - Updates for schema version 2
 	 *
-	 * @param string $block_table_ref     block_table_ref value that links the table to a specific post block
+	 * @param string $block_table_ref   block_table_ref value that links the table to a specific post block
+	 * @param string $table_type        Table storage type
 	 * @param string $status            Status value of the table being created
-	 * @param int    $post_id               Post id value to post to which the table is attached
-	 * @param string $table_name         Descriptive name of the table being created
+	 * @param int    $post_id           Post id value to post to which the table is attached
+	 * @param string $table_name        Descriptive name of the table being created
 	 * @param string $attributes        Serialized array of table attributes
 	 * @param string $classes           HTML classes associated with the table
 	 * @return array Sresult            Success status and new table id
 	 */
-	public function create_table_data( $block_table_ref, $status, $post_id, $table_name, $attributes, $classes ) {
+	public function create_table_data( $block_table_ref, $table_type, $status, $post_id, $table_name, $attributes, $classes ) {
 		$success = false;
 		global $wpdb;
 
@@ -230,6 +232,7 @@ class PersistTableData {
 
 		$data = array(
 			'block_table_ref' => $block_table_ref,
+			'table_type'      => $table_type,
 			'post_id'         => $post_id,
 			'status'          => $status,
 			'table_name'      => $table_name,
@@ -237,7 +240,7 @@ class PersistTableData {
 			'classes'         => $classes,
 		);
 
-		$format = array( '%s', '%d', '%s', '%s', '%s', '%s' );
+		$format = array( '%s', '%s', '%d', '%s', '%s', '%s', '%s' );
 
 		$inserted = $wpdb->insert( $db_table, $data, $format );
 		$table_id = $wpdb->insert_id;
@@ -261,17 +264,19 @@ class PersistTableData {
 	 *  Update the dynamic table database header table dtbk_tables based on criteria received
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.0 - Updates for schema version 2
 	 *
-	 * @param int    $table_id              ID value of the table being updated.
-	 * @param string $block_table_ref     block_table_ref value that links the table to a specific post block.
+	 * @param int    $table_id          ID value of the table being updated.
+	 * @param string $block_table_ref   block_table_ref value that links the table to a specific post block.
+	 * @param string $table_type        Table storage type.
 	 * @param string $status            Status value of the table being created.
-	 * @param int    $post_id               Post id value to post to which the table is attached.
-	 * @param string $table_name         Descriptive name of the table being updated.
+	 * @param int    $post_id           Post id value to post to which the table is attached.
+	 * @param string $table_name        Descriptive name of the table being updated.
 	 * @param string $attributes        Serialized array table attributes
 	 * @param string $classes           HTML classes associated with the table
 	 * @return array Sresult            Success status and updated header values
 	 */
-	public function update_table( $table_id, $block_table_ref, $status, $post_id, $table_name, $attributes, $classes ) {
+	public function update_table( $table_id, $block_table_ref, $table_type, $status, $post_id, $table_name, $attributes, $classes ) {
 		$success      = false;
 		$updated_rows = 0;
 		global $wpdb;
@@ -320,6 +325,10 @@ class PersistTableData {
 			$block_table_ref = $query_results['block_table_ref'];
 		}
 
+		if ( $table_type === null ) {
+			$table_type = $query_results['table_type'];
+		}
+
 		if ( $status === null ) {
 			$status = $query_results['status'];
 		}
@@ -352,6 +361,15 @@ class PersistTableData {
 				'type'  => 'set',
 				'field' => 'block_table_ref',
 				'value' => $block_table_ref,
+			)
+		);
+
+		array_push(
+			$this->request_args,
+			array(
+				'type'  => 'set',
+				'field' => 'table_type',
+				'value' => $table_type,
 			)
 		);
 
@@ -409,7 +427,7 @@ class PersistTableData {
 				'updated_rows' => '0',
 			);
 		}
-		$set_format = array( '%s', '%s', '%d', '%s', '%s', '%s' );
+		$set_format = array( '%s', '%s', '%s', '%d', '%s', '%s', '%s' );
 
 		/**
 		 * Create arrays with required args for the update and
@@ -482,6 +500,7 @@ class PersistTableData {
 	 *  Update the dynamic table database row table dtbk_table_rows based on criteria received
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.0 - Updates for schema version 2
 	 *
 	 * @param int   $table_id              ID value of the table being updated
 	 * @param array $rows               Revised dynamic table row data for update
@@ -542,9 +561,12 @@ class PersistTableData {
 						$arg_row_id = $arg;
 						break;
 					case '2':
-						$arg_attributes = $arg;
+						$arg_row_ref = $arg;
 						break;
 					case '3':
+						$arg_attributes = $arg;
+						break;
+					case '4':
 						$arg_classes = $arg;
 						break;
 				}
@@ -567,6 +589,15 @@ class PersistTableData {
 					'type'  => 'value',
 					'field' => 'row_id',
 					'value' => $arg_row_id,
+				)
+			);
+
+			array_push(
+				$this->request_args,
+				array(
+					'type'  => 'value',
+					'field' => 'row_ref',
+					'value' => $arg_row_ref,
 				)
 			);
 
@@ -617,6 +648,7 @@ class PersistTableData {
 	 *  Update the dynamic table database column table dtbk_table_columnss based on criteria received
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.0 - Updates for schema version 2
 	 *
 	 * @param int   $table_id              ID value of the table being updated
 	 * @param array $columns               Revised dynamic table column data for update
@@ -676,12 +708,15 @@ class PersistTableData {
 						$arg_column_id = $arg;
 						break;
 					case '2':
-						$arg_column_name = $arg;
+						$arg_column_ref = $arg;
 						break;
 					case '3':
-						$arg_attributes = $arg;
+						$arg_column_name = $arg;
 						break;
 					case '4':
+						$arg_attributes = $arg;
+						break;
+					case '5':
 						$arg_classes = $arg;
 				}
 			}
@@ -703,6 +738,15 @@ class PersistTableData {
 					'type'  => 'value',
 					'field' => 'column_id',
 					'value' => $arg_column_id,
+				)
+			);
+
+			array_push(
+				$this->request_args,
+				array(
+					'type'  => 'value',
+					'field' => 'column_ref',
+					'value' => $arg_column_ref,
 				)
 			);
 
@@ -1678,6 +1722,7 @@ class PersistTableData {
 	 *
 	 * @since 1.0.0
 	 * @since 1.4.0                  Added support for IN and NOT IN operators
+	 * @since 2.0.0 - Updates for schema version 2
 	 *
 	 * @param string $trans_type     SQL transaction type and position of the statement in query
 	 *                               or specific field names of INSERT transactions.
@@ -1694,6 +1739,8 @@ class PersistTableData {
 			case 'post_id':
 			case 'column_id':
 			case 'row_id':
+			case 'column_ref':
+			case 'row_ref':
 				$field_format = '%d';
 				break;
 		}

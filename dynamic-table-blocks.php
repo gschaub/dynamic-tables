@@ -4,7 +4,7 @@
  * Description:       Create custom table blocks with highly customizable and responsive formats
  * Requires at least: 6.1
  * Requires PHP:      8.0
- * Version:           1.5.0
+ * Version:           2.0.0
  * Author:            Gregory Schaub
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -21,10 +21,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Current plugin DB version
-// global $dtbk_version;
-// $dtbk_version = '1.0';
-
 /**
  * Controlling class and entry point for Dynamic Tables.
  *
@@ -40,7 +36,7 @@ final class DynamicTableBlocks {
 	 * @var string
 	 */
 
-	public $version = '1.5.0';
+	public $version = '2.0.0';
 
 	/**
 	 * The plugin settings array.
@@ -60,7 +56,6 @@ final class DynamicTableBlocks {
 	 * @var DynamicTableBlocks
 	 */
 	private static $instance = null;
-	// public $instance = array();
 
 	/**
 	 * We don't instantiate through a constructor
@@ -100,8 +95,8 @@ final class DynamicTableBlocks {
 		define( 'DTBK_PATH', plugin_dir_path( __FILE__ ) );
 		define( 'DTBK_BASENAME', plugin_basename( __FILE__ ) );
 		define( 'DTBK_VERSION', $this->version );
-		define( 'DTBK_MAJOR_VERSION', 1 );
-		define( 'DTBK_UPGRADE_VERSION', '0.0.9' ); // Highest version with an upgrade routine. See upgrades.php.
+		define( 'DTBK_MAJOR_VERSION', 2 );
+		define( 'DTBK_UPGRADE_VERSION', '2.0.0' ); // Highest database schema version. See upgrades.php.
 		define( 'DTBK_IS_MULTISITE', is_multisite() ? true : false );
 		if ( DTBK_IS_MULTISITE ) {
 			define( 'DTBK_ALLOW_MULTISITE_ACTIVATION', false );
@@ -149,7 +144,7 @@ final class DynamicTableBlocks {
 
 		register_activation_hook( __FILE__, array( $version_management, 'activate_dynamic_table_blocks' ) );
 		register_deactivation_hook( __FILE__, array( $version_management, 'uninstall_dynamic_table_blocks' ) );
-		$version_management->dynamic_tables_has_upgrade( DTBK_UPGRADE_VERSION );
+		$version_management->maybe_upgrade();
 
 		// Initialize Web Services
 		add_action( 'rest_api_init', array( $this, 'establish_services' ) );

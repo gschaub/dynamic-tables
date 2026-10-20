@@ -1,32 +1,36 @@
 /* Internal dependencies */
-import { numberToLetter } from './utils';
+import { numberToLetter, generateTablePartRef } from './utils';
 
 /**
  * Create a new dynamic table
  *
- * @since    1.0.0
+ * @since 1.0.0
  * @since 1.4.9 - Bring user defined columns into table creation
+ * @since 2.0.0 - Updates for schema version 2
  *
  * @param {string} newBlockTableRef Block table cross reference unique string
+ * @param {string} tableType        Type assigned by this creation process
  * @param {number} columnCount      Number of columns to include in the table
  * @param {number} rowCount         Number of rows to include in the table
  * @param {string} tableName        Name of the new table
  * @param {Array}  columns          Table columns
  * @return  {Object} New Dynamic Table
  */
-export function initTable(newBlockTableRef, columnCount, rowCount, tableName, columns) {
+export function initTable(newBlockTableRef, tableType, columnCount, rowCount, tableName, columns) {
 	const tableCells = initTableCells(Number(columnCount), Number(rowCount));
 	const rowArray = [];
+	const rowRefs = new Set();
 
 	for (let i = 1; i <= rowCount; i++) {
-		const row = getDefaultRow('0', i);
+		const row = getDefaultRow('0', i, 'Body', generateTablePartRef(rowRefs));
 		rowArray.push(row);
 	}
 
 	const columnArray = [];
+	const columnRefs = new Set();
 
 	for (let i = 1; i <= columnCount; i++) {
-		const column = getDefaultColumn('0', i);
+		const column = getDefaultColumn('0', i, 'Body', generateTablePartRef(columnRefs));
 		const columnInputName = columns[i - 1]?.column_name || '';
 		column.column_name = columnInputName !== '' ? columnInputName : column.column_name;
 		columnArray.push(column);
@@ -36,6 +40,7 @@ export function initTable(newBlockTableRef, columnCount, rowCount, tableName, co
 		table: {
 			table_id: '0',
 			block_table_ref: newBlockTableRef,
+			table_type: tableType,
 			post_id: '0',
 			table_status: 'new',
 			table_name: tableName,
@@ -86,18 +91,26 @@ export function initTableCells(init_num_columns, init_num_rows) {
  * Get a new row with default values.
  *
  * @since    1.0.0
+ * @since    2.0.0 - Updates for schema version 2
  *
  * @param {number} tableId     Table id to assign to row
  * @param {number} rowId       Row id to assign to row
  * @param {string} rowLocation Border or another value, default = body
+ * @param {string} rowRef      Stable reference for a persisted row
  * @return  {Array} New table row
  */
-export function getDefaultRow(tableId, rowId, rowLocation = 'Body') {
+export function getDefaultRow(tableId, rowId, rowLocation = 'Body', rowRef) {
 	let row;
+
+	if (rowLocation !== 'Border' && (rowRef === undefined || rowRef === null)) {
+		throw new TypeError('A persisted row requires rowRef');
+	}
+
 	if (rowLocation === 'Border') {
 		row = {
 			table_id: String(tableId),
 			row_id: String(rowId),
+			row_ref: '0',
 			attributes: getDefaultTableAttributes('rows', rowLocation),
 			classes: getDefaultTableClasses('rows'),
 		};
@@ -105,6 +118,7 @@ export function getDefaultRow(tableId, rowId, rowLocation = 'Body') {
 		row = {
 			table_id: String(tableId),
 			row_id: String(rowId),
+			row_ref: String(rowRef),
 			attributes: getDefaultTableAttributes('rows', rowLocation),
 			classes: getDefaultTableClasses('rows'),
 		};
@@ -117,18 +131,26 @@ export function getDefaultRow(tableId, rowId, rowLocation = 'Body') {
  *
  * @since    1.0.0
  * @since    1.4.9 - Updated default column name
+ * @since    2.0.0 - Updates for schema version 2
  *
  * @param {number} tableId        Table id to assign to column
  * @param {number} columnId       Column id to assign to column
  * @param {string} columnLocation Border or another value, default = body
+ * @param {string} columnRef      Stable reference for a persisted column
  * @return  {Array} New table column
  */
-export function getDefaultColumn(tableId, columnId, columnLocation = 'Body') {
+export function getDefaultColumn(tableId, columnId, columnLocation = 'Body', columnRef) {
 	let column;
+
+	if (columnLocation !== 'Border' && (columnRef === undefined || columnRef === null)) {
+		throw new TypeError('A persisted column requires columnRef');
+	}
+
 	if (columnLocation === 'Border') {
 		column = {
 			table_id: String(tableId),
 			column_id: String(columnId),
+			column_ref: '0',
 			column_name: 'Border Column ' + String(columnId),
 			attributes: getDefaultTableAttributes('columns', columnLocation),
 			classes: '',
@@ -137,6 +159,7 @@ export function getDefaultColumn(tableId, columnId, columnLocation = 'Body') {
 		column = {
 			table_id: String(tableId),
 			column_id: String(columnId),
+			column_ref: String(columnRef),
 			column_name: 'Column ' + numberToLetter(Number(columnId)),
 			attributes: getDefaultTableAttributes('columns', columnLocation),
 			classes: getDefaultTableClasses('columns'),

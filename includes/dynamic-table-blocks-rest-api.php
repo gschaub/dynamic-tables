@@ -928,6 +928,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * Prepares a single table for create or update.
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.0 - Updates for schema version 2
 	 *
 	 * @param \WP_REST_Request $request Request object.
 	 * @return \stdClass|\WP_Error Post object or WP_Error.
@@ -972,6 +973,12 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			if ( ! empty( $schema_header['properties']['block_table_ref'] ) &&
 			isset( $request['header']['block_table_ref'] ) ) {
 				$prepared_table->header['block_table_ref'] = $request['header']['block_table_ref'];
+			}
+
+			// Table type.
+			if ( ! empty( $schema_header['properties']['table_type'] ) &&
+			isset( $request['header']['table_type'] ) ) {
+				$prepared_table->header['table_type'] = (string) $request['header']['table_type'];
 			}
 
 			// Table status.
@@ -1036,6 +1043,12 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 					$prepared_table->rows[ $key ]['row_id'] = (int) $request['rows'][ $key ]['row_id'];
 				}
 
+				// Row Reference
+				if ( ! empty( $schema_row['properties']['row_ref'] ) &&
+				isset( $request['rows'][ $key ]['row_ref'] ) ) {
+					$prepared_table->rows[ $key ]['row_ref'] = (int) $request['rows'][ $key ]['row_ref'];
+				}
+
 				// Row attributes
 				if ( ! empty( $schema_row['properties']['attributes'] ) &&
 				isset( $request['rows'][ $key ]['attributes'] ) ) {
@@ -1078,6 +1091,12 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				if ( ! empty( $schema_column['properties']['column_id'] ) &&
 				isset( $request['columns'][ $key ]['column_id'] ) ) {
 					$prepared_table->columns[ $key ]['column_id'] = (int) $request['columns'][ $key ]['column_id'];
+				}
+
+				// Colunmn's Column Reference
+				if ( ! empty( $schema_column['properties']['column_ref'] ) &&
+				isset( $request['columns'][ $key ]['column_ref'] ) ) {
+					$prepared_table->columns[ $key ]['column_ref'] = (int) $request['columns'][ $key ]['column_ref'];
 				}
 
 				// Colunmn's Column Name
@@ -1161,6 +1180,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * Prepares a single table output for response.
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.0 Add Table type, column ref, and row ref field
 	 *
 	 * @param Table            $item      Table object.
 	 * @param \WP_REST_Request $request   Request object.
@@ -1186,6 +1206,9 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 		}
 		if ( rest_is_field_included( 'header.block_table_ref', $fields ) ) {
 			$data['header']['block_table_ref'] = $table['header']['block_table_ref'];
+		}
+		if ( rest_is_field_included( 'header.table_type', $fields ) ) {
+			$data['header']['table_type'] = $table['header']['table_type'];
 		}
 		if ( rest_is_field_included( 'header.status', $fields ) ) {
 			$data['header']['status'] = $table['header']['status'];
@@ -1232,6 +1255,10 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 					$data['rows'][ $key ]['row_id'] = $row['row_id'];
 				}
 
+				if ( rest_is_field_included( 'rows.row.row_ref', $fields ) ) {
+					$data['rows'][ $key ]['row_ref'] = $row['row_ref'];
+				}
+
 				if ( rest_is_field_included( 'rows.row.attributes', $fields ) ) {
 					$data['rows'][ $key ]['attributes'] = $row['attributes'];
 				}
@@ -1253,6 +1280,10 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 
 				if ( rest_is_field_included( 'columns.column.column_id', $fields ) ) {
 					$data['columns'][ $key ]['column_id'] = $column['column_id'];
+				}
+
+				if ( rest_is_field_included( 'columns.column.column_ref', $fields ) ) {
+					$data['columns'][ $key ]['column_ref'] = $column['column_ref'];
 				}
 
 				if ( rest_is_field_included( 'columns.column.column_name', $fields ) ) {
@@ -1338,6 +1369,7 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 	 * Retrieves the table's schema, conforming to JSON Schema.
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.0 - Updates for schema version 2
 	 *
 	 * @return array Item schema data.
 	 */
@@ -1374,6 +1406,11 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 						),
 						'block_table_ref' => array(
 							'description' => __( 'Link to specific table block on post.', 'dynamic-table-blocks' ),
+							'type'        => 'string',
+							'context'     => array( 'view', 'edit' ),
+						),
+						'table_type'      => array(
+							'description' => __( 'Table storage type.', 'dynamic-table-blocks' ),
 							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
 						),
@@ -1433,6 +1470,12 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 								'row_id'     => array(
 									'description' => __( 'Table Row Number.', 'dynamic-table-blocks' ),
 									'type'        => 'integer',
+									'context'     => array( 'view', 'edit' ),
+								),
+								'row_ref'    => array(
+									'description' => __( 'Stable table row reference.', 'dynamic-table-blocks' ),
+									'type'        => 'integer',
+									'minimum'     => 1,
 									'context'     => array( 'view', 'edit' ),
 								),
 								'attributes' => array(
@@ -1502,6 +1545,12 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 								'column_id'   => array(
 									'description' => __( 'Table Column Number.', 'dynamic-table-blocks' ),
 									'type'        => 'integer',
+									'context'     => array( 'view', 'edit' ),
+								),
+								'column_ref'  => array(
+									'description' => __( 'Stable table column reference.', 'dynamic-table-blocks' ),
+									'type'        => 'integer',
+									'minimum'     => 1,
 									'context'     => array( 'view', 'edit' ),
 								),
 								'column_name' => array(

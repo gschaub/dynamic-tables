@@ -437,6 +437,13 @@ class DTBK_Admin {
 		echo '<div id="dt-js-notices" aria-live="polite"> </div>';
 	}
 
+	/**
+	 * Support administrative table exports
+	 *
+	 * @since 1.4.0
+	 *
+	 * @return void
+	 */
 	public function handle_export_download() {
 
 		$cap = dtbk_get_setting( 'capability' );
@@ -470,6 +477,15 @@ class DTBK_Admin {
 		}
 	}
 
+	/**
+	 * Stream table through JSON backup
+	 *
+	 * @since 1.1.1
+	 * @since 2.0.0 - Added support for schema 2.0
+	 *
+	 * @param array $ids List of one or more id's to export
+	 * @return void
+	 */
 	private function export_stream_json_backup( array $ids ): void {
 
 		@set_time_limit( 0 );
@@ -489,7 +505,7 @@ class DTBK_Admin {
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- Write to output stream.
 		fwrite( $out, "{\n" );
 		fwrite( $out, '"schema":"dtbk-backup",' );
-		fwrite( $out, '"schema_version":1,' );
+		fwrite( $out, '"schema_version":2,' );
 		fwrite( $out, '"exported_at":"' . gmdate( 'c' ) . '",' );
 		fwrite( $out, "\"items\":[\n" );
 
@@ -520,6 +536,14 @@ class DTBK_Admin {
 		exit;
 	}
 
+	/**
+	 * Support administrative table exports
+	 *
+	 * @since 1.4.2
+	 *
+	 * @param array $ids List of one or more id's to export
+	 * @return void
+	 */
 	private function export_stream_csv( array $ids ): void {
 		if ( 1 !== count( $ids ) ) {
 			wp_die(
@@ -575,6 +599,15 @@ class DTBK_Admin {
 		exit;
 	}
 
+	/**
+	 * Prepare table output for csv stream
+	 *
+	 * @since 1.4.2
+	 *
+	 * @param resource $out Output file pointer
+	 * @param array $table  Table to be output
+	 * @return void
+	 */
 	private function stream_csv_table( $out, array $table ): void {
 		$rows    = isset( $table['rows'] ) && is_array( $table['rows'] ) ? array_values( $table['rows'] ) : array();
 		$columns = isset( $table['columns'] ) && is_array( $table['columns'] ) ? array_values( $table['columns'] ) : array();
@@ -637,6 +670,15 @@ class DTBK_Admin {
 		}
 	}
 
+	/**
+	 * Prepare cell content for csv output
+	 *
+	 * @since 1.4.2
+	 *
+	 * @param array $cell   Cell to be output
+	 * @param array $column Column content formatting rules
+	 * @return string
+	 */
 	private function get_csv_export_cell_value( array $cell, array $column = array() ): string {
 		$column_data_type = isset( $column['attributes']['columnDataType'] ) && is_array( $column['attributes']['columnDataType'] )
 			? $column['attributes']['columnDataType']
@@ -681,6 +723,14 @@ class DTBK_Admin {
 		return '';
 	}
 
+	/**
+	 * Convert HTML to plain text for csv output
+	 *
+	 * @since 1.4.2
+	 *
+	 * @param string $value HTML value
+	 * @return string Plain text
+	 */
 	private function html_to_csv_text( $value ): string {
 		$value = (string) $value;
 
@@ -709,7 +759,14 @@ class DTBK_Admin {
 		return $this->normalize_csv_export_text( $normalized_text );
 	}
 
-
+	/**
+	 * Extract text from an HTML element
+	 *
+	 * @since 1.4.2
+	 *
+	 * @param string $value HTML element
+	 * @return string Plain text
+	 */
 	private function extract_csv_text_from_html( string $value ): string {
 		$dom   = new \DOMDocument();
 		$flags = 0;
@@ -748,6 +805,15 @@ class DTBK_Admin {
 		return implode( '', $tokens );
 	}
 
+	/**
+	 * Replace HTML elements with text characters and line break tokens
+	 *
+	 * @since 1.4.2
+	 *
+	 * @param \DOMNode $node  HTML element node
+	 * @param array $tokens   Line end tokens
+	 * @return void
+	 */
 	private function append_csv_node_text( \DOMNode $node, array &$tokens ): void {
 		if ( XML_TEXT_NODE === $node->nodeType || XML_CDATA_SECTION_NODE === $node->nodeType ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Native DOMDocument property.
 			$this->append_csv_text_token( $tokens, $node->textContent ?? '' ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Native DOMDocument property.
@@ -797,6 +863,14 @@ class DTBK_Admin {
 		$tokens[] = $token;
 	}
 
+	/**
+	 * Subsitute HTML Element for links
+	 *
+	 * @since 1.4.2
+	 *
+	 * @param \DOMElement $node HTML element node
+	 * @return string
+	 */
 	private function get_csv_link_surrogate( \DOMElement $node ): string {
 		$link_tokens = array();
 		foreach ( $node->childNodes as $child_node ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- Native DOMDocument property.
@@ -817,6 +891,14 @@ class DTBK_Admin {
 		return $link_text === $href ? $link_text : $link_text . ' (' . $href . ')';
 	}
 
+	/**
+	 * Subsitute HTML Element for images
+	 *
+	 * @since 1.4.2
+	 *
+	 * @param \DOMElement $node HTML element node
+	 * @return string
+	 */
 	private function get_csv_image_surrogate( \DOMElement $node ): string {
 		$alt = trim( html_entity_decode( (string) $node->getAttribute( 'alt' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
 		$src = trim( html_entity_decode( (string) $node->getAttribute( 'src' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
@@ -836,8 +918,15 @@ class DTBK_Admin {
 		return '[image]';
 	}
 
+	/**
+	 * Update export text to remove unsupported plain text characters
+	 *
+	 * @since 1.4.2
+	 *
+	 * @param string $value Row text string
+	 * @return string       Clean text
+	 */
 	private function normalize_csv_export_text( string $value ): string {
-
 		$value = str_replace( array( "\r\n", "\r", "\xc2\xa0" ), array( "\n", "\n", ' ' ), $value );
 		$value = preg_replace( '/[^\S\n]+/u', ' ', $value );
 		$value = preg_replace( '/ *\n */u', "\n", $value );
@@ -846,6 +935,14 @@ class DTBK_Admin {
 		return trim( (string) $value );
 	}
 
+	/**
+	 * Retrieve table via it's REST api
+	 *
+	 * @since 1.1.1
+	 *
+	 * @param integer $table_id Table's ID
+	 * @return array            REST response containing table data
+	 */
 	private function fetch_table_via_rest( int $table_id ) {
 
 		$route   = '/dynamic-table-blocks/v1/tables/' . $table_id;

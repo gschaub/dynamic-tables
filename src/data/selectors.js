@@ -3,6 +3,7 @@
  * the table from the REST api.
  *
  * @since    1.0.0
+ * @since    2.0.0 - Updates for schema version 2
  *
  * @param {Object}  state        Current state of tables
  * @param {number}  tableId      Identifier key for the table
@@ -14,6 +15,7 @@ export function getTable(state, tableId, isTableStale) {
 		return {
 			table_id: tableId,
 			block_table_ref: '',
+			table_type: '',
 			post_id: '',
 			table_status: '',
 			table_name: '',
