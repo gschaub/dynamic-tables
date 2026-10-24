@@ -59,6 +59,7 @@ export function getSelectedPostOption(post) {
  * Convert REST API search results to combobox options.
  *
  * @since    1.5.0
+ * @since    1.5.1 - Fix post type not returned
  *
  * @param {Array} posts WordPress search results.
  * @return {Array} Combobox options.
@@ -79,6 +80,7 @@ export function getPostSearchOptions(posts) {
 		return {
 			value: String(postId),
 			label: htmlToIndexText(post.title) || __('No title found', 'dynamic-table-blocks'),
+			postType: post.subtype,
 		};
 	});
 }
