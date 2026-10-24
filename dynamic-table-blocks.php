@@ -4,7 +4,7 @@
  * Description:       Create custom table blocks with highly customizable and responsive formats
  * Requires at least: 6.1
  * Requires PHP:      8.0
- * Version:           1.5.0
+ * Version:           1.5.1
  * Author:            Gregory Schaub
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -40,7 +40,7 @@ final class DynamicTableBlocks {
 	 * @var string
 	 */
 
-	public $version = '1.5.0';
+	public $version = '1.5.1';
 
 	/**
 	 * The plugin settings array.
