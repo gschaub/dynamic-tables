@@ -168,10 +168,13 @@ jobs:
 
       - name: Build release ZIP from branch
         run: |
-          mkdir -p zipdir
-          rsync -av --exclude ".git" ./ zipdir/
+          mkdir -p "zipdir/${PLUGIN_SLUG}"
+          rsync -av \
+            --exclude ".git" \
+            --exclude "zipdir" \
+            ./ "zipdir/${PLUGIN_SLUG}/"
           cd zipdir
-          zip -r "../${PLUGIN_SLUG}-v${VERSION}.zip" .
+          zip -r "../${PLUGIN_SLUG}-v${VERSION}.zip" "${PLUGIN_SLUG}"
           cd ..
           rm -rf zipdir
 
