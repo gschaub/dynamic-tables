@@ -294,6 +294,7 @@ class DTBK_Admin_Ajax {
 	 * Build lightweight table metadata for the status dialog.
 	 *
 	 * @since 1.4.1
+	 * @since 2.0.0 - Prefer description over name
 	 *
 	 * @param array $table Full table response.
 	 * @return array
@@ -301,8 +302,12 @@ class DTBK_Admin_Ajax {
 	private function build_status_table_meta( array $table ) {
 		$header = is_array( $table['header'] ?? null ) ? $table['header'] : array();
 
+		$label = isset( $header['table_administrative_description'] )
+			? (string) $header['table_administrative_description']
+			: (string) ( $header['table_name'] ?? '' );
+
 		return array(
-			'name'    => isset( $header['table_name'] ) ? (string) $header['table_name'] : '',
+			'name'    => $label,
 			'status'  => isset( $header['status'] ) ? (string) $header['status'] : '',
 			'post_id' => isset( $header['post_id'] ) ? (int) $header['post_id'] : 0,
 		);
@@ -472,14 +477,19 @@ class DTBK_Admin_Ajax {
 			$this->send_import_error( $result );
 		}
 
-		$result_table_id   = isset( $result['id'] ) ? (int) $result['id'] : (int) $prepared['table']['id'];
-		$result_table_name = isset( $result['header']['table_name'] ) ? $result['header']['table_name'] : $prepared['table']['header']['table_name'];
+		$result_table_id     = isset( $result['id'] ) ? (int) $result['id'] : (int) $prepared['table']['id'];
+		$result_header       = is_array( $result['header'] ?? null )
+			? $result['header']
+			: $prepared['table']['header'];
+		$result_table_label  = isset( $result_header['table_administrative_description'] )
+			? $result_header['table_administrative_description']
+			: $result_header['table_name'];
 
 		wp_send_json_success(
 			array(
 				'message'   => __( 'Table imported successfully.', 'dynamic-table-blocks' ),
 				'tableId'   => $result_table_id,
-				'tableName' => $result_table_name,
+				'tableName' => $result_table_label,
 			),
 			200
 		);
@@ -677,11 +687,13 @@ class DTBK_Admin_Ajax {
 			return $table;
 		}
 
-		$source_name = '';
-		if ( ! empty( $item['table']['header']['table_name'] ) ) {
-			$source_name = (string) $item['table']['header']['table_name'];
+		$source_label = '';
+		if ( isset( $item['table']['header']['table_administrative_description'] ) ) {
+			$source_label = (string) $item['table']['header']['table_administrative_description'];
+		} elseif ( ! empty( $item['table']['header']['table_name'] ) ) {
+			$source_label = (string) $item['table']['header']['table_name'];
 		} elseif ( ! empty( $item['table']['title'] ) ) {
-			$source_name = (string) $item['table']['title'];
+			$source_label = (string) $item['table']['title'];
 		}
 
 		return array(
@@ -690,7 +702,7 @@ class DTBK_Admin_Ajax {
 				'source'   => array(
 					'importedTableId'   => $imported_table_id,
 					'fileName'          => $uploaded_file['name'],
-					'tableName'         => $source_name,
+					'tableName'         => $source_label,
 					'itemCount'         => $item_count,
 					'selectedItemIndex' => $item_index,
 					'availableItems'    => $this->build_json_item_options( $items ),
@@ -699,7 +711,9 @@ class DTBK_Admin_Ajax {
 					'importedTableId'   => $imported_table_id,
 					'hasExistingTable'  => $has_existing_target,
 					'existingTableId'   => $has_existing_target ? (int) $existing_target['id'] : 0,
-					'existingTableName' => $has_existing_target ? (string) ( $existing_target['header']['table_name'] ?? '' ) : '',
+					'existingTableName' => $has_existing_target
+						? (string) ( $existing_target['header']['table_administrative_description'] ?? $existing_target['header']['table_name'] ?? '' )
+						: '',
 				),
 				'warnings' => $warnings,
 				'options'  => array(
@@ -964,6 +978,10 @@ class DTBK_Admin_Ajax {
 			$table_name = (string) ( $target_header['table_name'] ?? '' );
 		}
 
+		$table_administrative_description = isset( $source_header['table_administrative_description'] )
+			? (string) $source_header['table_administrative_description']
+			: $table_name;
+
 		$source_header_attributes = $this->normalize_import_table_attributes( $source_header['attributes'] ?? array() );
 		$target_header_attributes = $this->normalize_import_table_attributes( $target_header['attributes'] ?? array() );
 		$header_attributes        = $is_create
@@ -974,16 +992,17 @@ class DTBK_Admin_Ajax {
 			'id'      => $target_id,
 			'title'   => $table_name,
 			'header'  => array(
-				'id'              => $target_id,
-				'block_table_ref' => $is_create ? '' : (string) ( $target_header['block_table_ref'] ?? '' ),
-				'table_type'      => isset( $source_header['table_type'] )
+				'id'                               => $target_id,
+				'block_table_ref'                  => $is_create ? '' : (string) ( $target_header['block_table_ref'] ?? '' ),
+				'table_type'                       => isset( $source_header['table_type'] )
 					? (string) $source_header['table_type']
 					: 'local',
-				'status'          => $is_create ? 'loaded' : (string) ( $target_header['status'] ?? 'loaded' ),
-				'post_id'         => $is_create ? 0 : (int) ( $target_header['post_id'] ?? 0 ),
-				'table_name'      => $table_name,
-				'attributes'      => $header_attributes,
-				'classes'         => $is_create
+				'status'                           => $is_create ? 'loaded' : (string) ( $target_header['status'] ?? 'loaded' ),
+				'post_id'                          => $is_create ? 0 : (int) ( $target_header['post_id'] ?? 0 ),
+				'table_name'                       => $table_name,
+				'table_administrative_description' => $table_administrative_description,
+				'attributes'                       => $header_attributes,
+				'classes'                          => $is_create
 					? ( isset( $source_header['classes'] ) ? (string) $source_header['classes'] : '' )
 					: ( isset( $source_header['classes'] )
 						? (string) $source_header['classes']
@@ -1176,14 +1195,15 @@ class DTBK_Admin_Ajax {
 			'id'      => $target_id,
 			'title'   => $table_name,
 			'header'  => array(
-				'id'              => $target_id,
-				'block_table_ref' => '',
-				'table_type'      => 'local',
-				'status'          => 'loaded',
-				'post_id'         => 0,
-				'table_name'      => $table_name,
-				'attributes'      => $table_attributes,
-				'classes'         => '',
+				'id'                               => $target_id,
+				'block_table_ref'                  => '',
+				'table_type'                       => 'local',
+				'status'                           => 'loaded',
+				'post_id'                          => 0,
+				'table_name'                       => $table_name,
+				'table_administrative_description' => $table_name,
+				'attributes'                       => $table_attributes,
+				'classes'                          => '',
 			),
 			'rows'    => array(),
 			'columns' => array(),
@@ -1710,17 +1730,22 @@ class DTBK_Admin_Ajax {
 	 */
 	private function prepare_import_create_request( array $table ) {
 		$header = is_array( $table['header'] ?? null ) ? $table['header'] : array();
+		$table_name = isset( $header['table_name'] ) ? (string) $header['table_name'] : '';
+		$table_administrative_description = isset( $header['table_administrative_description'] )
+			? (string) $header['table_administrative_description']
+			: $table_name;
 
 		return array(
 			'title'   => isset( $table['title'] ) ? (string) $table['title'] : '',
 			'header'  => array(
-				'block_table_ref' => isset( $header['block_table_ref'] ) ? (string) $header['block_table_ref'] : '',
-				'table_type'      => (string) $header['table_type'],
-				'status'          => isset( $header['status'] ) ? (string) $header['status'] : 'loaded',
-				'post_id'         => isset( $header['post_id'] ) ? (int) $header['post_id'] : 0,
-				'table_name'      => isset( $header['table_name'] ) ? (string) $header['table_name'] : '',
-				'attributes'      => is_array( $header['attributes'] ?? null ) ? $header['attributes'] : array(),
-				'classes'         => isset( $header['classes'] ) ? (string) $header['classes'] : '',
+				'block_table_ref'                  => isset( $header['block_table_ref'] ) ? (string) $header['block_table_ref'] : '',
+				'table_type'                       => (string) $header['table_type'],
+				'status'                           => isset( $header['status'] ) ? (string) $header['status'] : 'loaded',
+				'post_id'                          => isset( $header['post_id'] ) ? (int) $header['post_id'] : 0,
+				'table_name'                       => isset( $header['table_name'] ) ? (string) $header['table_name'] : '',
+				'table_administrative_description' => $table_administrative_description,
+				'attributes'                       => is_array( $header['attributes'] ?? null ) ? $header['attributes'] : array(),
+				'classes'                          => isset( $header['classes'] ) ? (string) $header['classes'] : '',
 			),
 			'rows'    => array_values( is_array( $table['rows'] ?? null ) ? $table['rows'] : array() ),
 			'columns' => array_values( is_array( $table['columns'] ?? null ) ? $table['columns'] : array() ),
@@ -1832,7 +1857,9 @@ class DTBK_Admin_Ajax {
 			$table = isset( $item['table'] ) && is_array( $item['table'] ) ? $item['table'] : array();
 			$label = '';
 
-			if ( ! empty( $table['header']['table_name'] ) ) {
+			if ( isset( $table['header']['table_administrative_description'] ) ) {
+				$label = (string) $table['header']['table_administrative_description'];
+			} elseif ( ! empty( $table['header']['table_name'] ) ) {
 				$label = (string) $table['header']['table_name'];
 			} elseif ( ! empty( $table['title'] ) ) {
 				$label = (string) $table['title'];

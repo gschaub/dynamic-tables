@@ -218,11 +218,12 @@ class PersistTableData {
 	 * @param string $status            Status value of the table being created
 	 * @param int    $post_id           Post id value to post to which the table is attached
 	 * @param string $table_name        Descriptive name of the table being created
+	 * @param string $table_administrative_description Administrative description of the table
 	 * @param string $attributes        Serialized array of table attributes
 	 * @param string $classes           HTML classes associated with the table
 	 * @return array Sresult            Success status and new table id
 	 */
-	public function create_table_data( $block_table_ref, $table_type, $status, $post_id, $table_name, $attributes, $classes ) {
+	public function create_table_data( $block_table_ref, $table_type, $status, $post_id, $table_name, $table_administrative_description, $attributes, $classes ) {
 		$success = false;
 		global $wpdb;
 
@@ -231,16 +232,17 @@ class PersistTableData {
 		$db_table = $wpdb->prefix . 'dtbk_tables';
 
 		$data = array(
-			'block_table_ref' => $block_table_ref,
-			'table_type'      => $table_type,
-			'post_id'         => $post_id,
-			'status'          => $status,
-			'table_name'      => $table_name,
-			'attributes'      => $attributes,
-			'classes'         => $classes,
+			'block_table_ref'                  => $block_table_ref,
+			'table_type'                       => $table_type,
+			'post_id'                          => $post_id,
+			'status'                           => $status,
+			'table_name'                       => $table_name,
+			'table_administrative_description' => $table_administrative_description,
+			'attributes'                       => $attributes,
+			'classes'                          => $classes,
 		);
 
-		$format = array( '%s', '%s', '%d', '%s', '%s', '%s', '%s' );
+		$format = array( '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s' );
 
 		$inserted = $wpdb->insert( $db_table, $data, $format );
 		$table_id = $wpdb->insert_id;
@@ -272,11 +274,12 @@ class PersistTableData {
 	 * @param string $status            Status value of the table being created.
 	 * @param int    $post_id           Post id value to post to which the table is attached.
 	 * @param string $table_name        Descriptive name of the table being updated.
+	 * @param string $table_administrative_description Administrative description of the table
 	 * @param string $attributes        Serialized array table attributes
 	 * @param string $classes           HTML classes associated with the table
 	 * @return array Sresult            Success status and updated header values
 	 */
-	public function update_table( $table_id, $block_table_ref, $table_type, $status, $post_id, $table_name, $attributes, $classes ) {
+	public function update_table( $table_id, $block_table_ref, $table_type, $status, $post_id, $table_name, $table_administrative_description, $attributes, $classes ) {
 		$success      = false;
 		$updated_rows = 0;
 		global $wpdb;
@@ -341,6 +344,10 @@ class PersistTableData {
 			$table_name = sanitize_text_field( $query_results['table_name'] );
 		}
 
+		if ( $table_administrative_description === null ) {
+			$table_administrative_description = sanitize_text_field( $query_results['table_administrative_description'] );
+		}
+
 		if ( $attributes === null ) {
 			$attributes = $query_results['attributes'];
 		}
@@ -397,6 +404,15 @@ class PersistTableData {
 				'type'  => 'set',
 				'field' => 'table_name',
 				'value' => $table_name,
+			)
+		);
+
+		array_push(
+			$this->request_args,
+			array(
+				'type'  => 'set',
+				'field' => 'table_administrative_description',
+				'value' => $table_administrative_description,
 			)
 		);
 
@@ -1257,6 +1273,7 @@ class PersistTableData {
 	 *  Retrieve a dynamic table id based on a reference value
 	 *
 	 * @since 1.1.0
+	 * @since 2.0.0 - Handle table id not found and return false
 	 *
 	 * @param string $ref_type          database field(s) for table id lookup
 	 * @param string $ref_id            Related reference id(s)
@@ -1290,6 +1307,15 @@ class PersistTableData {
 		);
 
 		$query_results = $this->get_table_data( $return_collection );
+
+		if ( ! is_array( $query_results ) || ! isset( $query_results['id'] ) ) {
+			$this->result = array(
+				'success' => false,
+				'result'  => null,
+			);
+
+			return $this->result;
+		}
 
 		$table_id = $query_results['id'];
 		$success  = true;

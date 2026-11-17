@@ -26,6 +26,7 @@ export async function fetchSummaryTablesFromApi() {
 			table_status: header.status,
 			post_id: header.post_id,
 			table_name: header.table_name,
+			table_administrative_description: header.table_administrative_description,
 			total_rows: header.total_rows,
 			total_columns: header.total_columns,
 			columns: column_structures,
@@ -64,6 +65,7 @@ export function reconcileSummaryTablesWithLocalState(
 			table_status,
 			post_id,
 			table_name,
+			table_administrative_description,
 			rows = [],
 			columns = [],
 		}) => {
@@ -78,6 +80,7 @@ export function reconcileSummaryTablesWithLocalState(
 				table_status,
 				post_id,
 				table_name,
+				table_administrative_description,
 				total_rows: summaryRows.length,
 				total_columns: summaryColumns.length,
 				columns: summaryColumns,

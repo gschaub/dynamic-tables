@@ -44,6 +44,7 @@ export function initTable(newBlockTableRef, tableType, columnCount, rowCount, ta
 			post_id: '0',
 			table_status: 'new',
 			table_name: tableName,
+			table_administrative_description: tableName,
 			attributes: getDefaultTableAttributes('table'),
 			classes: getDefaultTableClasses('table'),
 			rows: rowArray,

@@ -39,6 +39,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 	 * Prepares the list of dynamic tables to be displayed.
 	 *
 	 * @since 1.1.0
+	 * @since 2.0.0 - Fix a search match bug
 	 *
 	 * @return void
 	 */
@@ -47,24 +48,30 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		// Get table data
 		$tables      = get_tables();
 		$table_items = array();
+		$search_term = isset( $_POST['s'] )
+			? sanitize_text_field( wp_unslash( $_POST['s'] ) )
+			: '';
 
 		foreach ( $tables as $table ) {
 			$table_data = $this->prepare_table( $table );
 
-			// Filter results if submitted a search string
-			if ( ! isset( $_POST['s'] ) ) {
+			if ( '' === $search_term ) {
 				$table_items[] = $table_data;
-			} else {
-				$found = false;
-				foreach ( $table_data as $column ) {
-					if ( ! $found ) {
-						if ( stripos( strtolower( $column ), strtolower( $_POST['s'] ) ) !== false ) {
-							$found = true;
-						}
-					}
-				}
-				if ( $found ) {
+				continue;
+			}
+
+			$searchable_values = array_merge(
+				array_values( $table_data ),
+				array(
+					(string) $table['table_name'],
+					(string) $table['table_administrative_description'],
+				)
+			);
+
+			foreach ( $searchable_values as $searchable_value ) {
+				if ( false !== stripos( wp_strip_all_tags( (string) $searchable_value ), $search_term ) ) {
 					$table_items[] = $table_data;
+					break;
 				}
 			}
 		}
@@ -84,7 +91,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 			$per_page = 5; // Default if not set or invalid
 		}
 
-		$current_page = $this->get_pagenum();
+		$current_page = '' !== $search_term ? 1 : $this->get_pagenum();
 		$num_tables   = count( $table_items );
 
 		$table_items = array_slice( $table_items, ( ( $current_page - 1 ) * $per_page ), $per_page );
@@ -128,7 +135,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 	public function get_columns() {
 		$columns = array(
 			'cb'       => '<input type="checkbox" />',
-			'name'     => __( 'Table Name', 'dynamic-table-blocks' ),
+			'name'     => __( 'Table Description', 'dynamic-table-blocks' ),
 			'id'       => __( 'ID', 'dynamic-table-blocks' ),
 			'status'   => __( 'Status', 'dynamic-table-blocks' ),
 			'post'     => __( 'Post', 'dynamic-table-blocks' ),
@@ -172,7 +179,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 	 */
 	protected function get_sortable_columns() {
 		$sortable_columns = array(
-			'name'     => array( 'name', false, __( 'Table Name', 'dynamic-table-blocks' ), __( 'Decsription of Table Contents', 'dynamic-table-blocks' ) ),
+			'name'     => array( 'name', false, __( 'Table Description', 'dynamic-table-blocks' ), __( 'Description of Table Contents', 'dynamic-table-blocks' ) ),
 			'status'   => array( 'status', false, __( 'Table Status', 'dynamic-table-blocks' ) ),
 			'post'     => array( 'post', false ),
 			'posttype' => array( 'posttype', false ),
@@ -214,6 +221,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 	 * Prepare the data for each row that will be displayed
 	 *
 	 * @since 1.1.0
+	 * @since 2.0.0 Replace table name display for new description
 	 *
 	 * @param  array $table   Data from database associated with each table list item
 	 * @return array          Transformed table item data
@@ -237,7 +245,7 @@ class DTBK_List_Dynamic_Table_Blocks extends \WP_List_Table {
 		}
 
 		$transformed_table = array(
-			'name'     => $table['table_name'],
+			'name'     => $table['table_administrative_description'],
 			'id'       => ( (int) $table['id'] ),
 			'status'   => $table['status'],
 			'post'     => $post_display,

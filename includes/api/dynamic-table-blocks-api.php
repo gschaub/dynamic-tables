@@ -80,14 +80,15 @@ function create_table_data( $tablearr, $wp_error = false ) {
 	$defaults = array(
 		'id'     => '0',
 		'header' => array(
-			'id'              => '0',
-			'block_table_ref' => '',
-			'table_type'      => '',
-			'status'          => 'unknown',
-			'post_id'         => '',
-			'table_name'      => '',
-			'attributes'      => array(),
-			'classes'         => '',
+			'id'                               => '0',
+			'block_table_ref'                  => '',
+			'table_type'                       => '',
+			'status'                           => 'unknown',
+			'post_id'                          => '',
+			'table_name'                       => '',
+			'table_administrative_description' => '',
+			'attributes'                       => array(),
+			'classes'                          => '',
 		),
 	);
 
@@ -162,17 +163,18 @@ function create_table_data( $tablearr, $wp_error = false ) {
 
 	$results = null;
 
-	$block_table_ref       = $tablearr['header']['block_table_ref'];
-	$table_type            = $tablearr['header']['table_type'];
-	$status                = $tablearr['header']['status'];
-	$post_id               = $tablearr['header']['post_id'];
-	$table_name            = $tablearr['header']['table_name'];
-	$serialized_attributes = maybe_serialize( $tablearr['header']['attributes'] );
-	$classes               = $tablearr['header']['classes'];
+	$block_table_ref                             = $tablearr['header']['block_table_ref'];
+	$table_type                                  = $tablearr['header']['table_type'];
+	$status                                      = $tablearr['header']['status'];
+	$post_id                                     = $tablearr['header']['post_id'];
+	$table_name                                  = $tablearr['header']['table_name'];
+	$table_administrative_description            = $tablearr['header']['table_administrative_description'];
+	$serialized_attributes                       = maybe_serialize( $tablearr['header']['attributes'] );
+	$classes                                     = $tablearr['header']['classes'];
 
 	if ( $update ) {
 		$update_table = new PersistTableData();
-		$results      = $update_table->update_table( $table_id, $block_table_ref, $table_type, $status, $post_id, $table_name, $serialized_attributes, $classes );
+		$results      = $update_table->update_table( $table_id, $block_table_ref, $table_type, $status, $post_id, $table_name, $table_administrative_description, $serialized_attributes, $classes );
 
 		if ( ! $results['success'] ) {
 			if ( $wp_error ) {
@@ -181,7 +183,7 @@ function create_table_data( $tablearr, $wp_error = false ) {
 		}
 	} else {
 		$new_table = new PersistTableData();
-		$results   = $new_table->create_table_data( $block_table_ref, $table_type, $status, $post_id, $table_name, $serialized_attributes, $classes );
+		$results   = $new_table->create_table_data( $block_table_ref, $table_type, $status, $post_id, $table_name, $table_administrative_description, $serialized_attributes, $classes );
 
 		if ( ! $results['success'] ) {
 			if ( $wp_error ) {

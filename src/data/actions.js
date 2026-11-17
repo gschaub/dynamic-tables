@@ -99,24 +99,47 @@ const buildExternalDataRequest = (cell, column) => {
 };
 
 /**
+ * Reset a cell whose external reference no longer resolves.
+ *
+ * @since    2.0.0
+ *
+ * This matches the shape produced when a user manually clears a cell while
+ * preserving unrelated cell-level attributes such as border settings.
+ *
+ * @param {Object} cell Cell containing the missing external reference.
+ * @return {Object} Empty cell.
+ */
+const clearMissingExternalReference = cell => ({
+	...cell,
+	attributes: {
+		...(cell.attributes || {}),
+		value: { indexText: '' },
+	},
+	classes: '',
+	content: '',
+});
+
+/**
  * Returns action object used in signalling a new table has been received
  * from REST service.
  *
  * @since    1.0.0
  * @since    1.5.0 Add support for retrieval of external data at hydration time.
- * @since    2.0.0 Updates for schema version 2
+ * @since    2.0.0 Updates for schema version 2 and fix bug that caused table to crash when
+ *                 post ids, authors, images, etc. are not found
  *
- * @param {number}       table_id        Identifier key for the table
- * @param {string}       block_table_ref Cross reference identified linking table to block within post
- * @param {string}       table_type      Table storage type
- * @param {string}       table_status    Status of retrieved table
- * @param {number}       post_id         Identifier key for the post in which the table appears
- * @param {string}       table_name      Descriptive name of table
- * @param {Array}        attributes      Table header level attributes
- * @param {string}       classes         Table header level classes
- * @param {Array|Object} rows            Array of table row objects
- * @param {Array|Object} columns         Array of table column objects
- * @param {Array|Object} cells           Array of table cell objects
+ * @param {number}       table_id                         Identifier key for the table
+ * @param {string}       block_table_ref                  Cross reference identified linking table to block within post
+ * @param {string}       table_type                       Table storage type
+ * @param {string}       table_status                     Status of retrieved table
+ * @param {number}       post_id                          Identifier key for the post in which the table appears
+ * @param {string}       table_name                       Descriptive name of table
+ * @param {string}       table_administrative_description Administrative description of table
+ * @param {Array}        attributes                       Table header level attributes
+ * @param {string}       classes                          Table header level classes
+ * @param {Array|Object} rows                             Array of table row objects
+ * @param {Array|Object} columns                          Array of table column objects
+ * @param {Array|Object} cells                            Array of table cell objects
  * @return {Object} Action object
  */
 export const receiveTable =
@@ -127,6 +150,7 @@ export const receiveTable =
 		table_status,
 		post_id,
 		table_name,
+		table_administrative_description,
 		attributes,
 		classes,
 		rows,
@@ -152,23 +176,33 @@ export const receiveTable =
 		});
 
 		let hydratedCells = cells;
+		let clearedMissingReference = false;
 
 		if (externalColumnTypes.length !== 0) {
 			// Retrieve external data
 			const updatedExternalColumnTypes = await dispatch.getExternalData(externalColumnTypes);
 
-			const externalDataByCell = new Map(
-				updatedExternalColumnTypes
-					.filter(item => item.cellDetails?.externalData)
-					.map(({ cellDetails }) => [
-						`${cellDetails.column_id}:${cellDetails.row_id}`,
-						cellDetails.externalData,
-					])
+			const externalCellDataByCoordinate = new Map(
+				updatedExternalColumnTypes.map(({ cellDetails }) => [
+					`${cellDetails.column_id}:${cellDetails.row_id}`,
+					cellDetails,
+				])
 			);
 
 			// Update cells with external data
 			hydratedCells = cells.map(cell => {
-				const externalData = externalDataByCell.get(`${cell.column_id}:${cell.row_id}`);
+				const cellDetails = externalCellDataByCoordinate.get(`${cell.column_id}:${cell.row_id}`);
+
+				if (!cellDetails) {
+					return cell;
+				}
+
+				if (cellDetails.referenceMissing) {
+					clearedMissingReference = true;
+					return clearMissingExternalReference(cell);
+				}
+
+				const externalData = cellDetails.externalData;
 
 				if (!externalData) {
 					return cell;
@@ -187,7 +221,7 @@ export const receiveTable =
 			});
 		}
 
-		return dispatch({
+		const receiveAction = dispatch({
 			type: RECEIVE_HYDRATE,
 			tableId: table_id,
 			table: {
@@ -197,6 +231,7 @@ export const receiveTable =
 				table_status,
 				post_id,
 				table_name,
+				table_administrative_description,
 				attributes,
 				classes,
 				rows,
@@ -204,6 +239,14 @@ export const receiveTable =
 				cells: hydratedCells,
 			},
 		});
+
+		if (clearedMissingReference && Number(table_id) > 0) {
+			dispatch.updateTableEntity(table_id, undefined, undefined, {
+				history: 'ignore',
+			});
+		}
+
+		return receiveAction;
 	};
 
 /**
@@ -251,10 +294,25 @@ export const getExternalData = externalColumnTypes => async () => {
 
 				// Retrieve every unique post, grouped by post type.
 				const postResults = await Promise.all(
-					postRequests.map(async ({ postType, postIds }) => ({
-						postType,
-						posts: await lookupPosts(postIds, { postType }),
-					}))
+					postRequests.map(async ({ postType, postIds }) => {
+						try {
+							return {
+								postType,
+								posts: await lookupPosts(postIds, { postType }),
+								lookupFailed: false,
+							};
+						} catch {
+							return {
+								postType,
+								posts: [],
+								lookupFailed: true,
+							};
+						}
+					})
+				);
+
+				const failedPostTypes = new Set(
+					postResults.filter(({ lookupFailed }) => lookupFailed).map(({ postType }) => postType)
 				);
 
 				const postsByKey = new Map();
@@ -289,13 +347,13 @@ export const getExternalData = externalColumnTypes => async () => {
 					});
 
 				const [authors, imageResults] = await Promise.all([
-					lookupPostAuthors(authorIds),
+					lookupPostAuthors(authorIds).catch(() => []),
 					Promise.all(
 						Array.from(imageIdsBySize, async ([imageSize, mediaIds]) => ({
 							imageSize,
 							images: await lookupPostImages(Array.from(mediaIds), {
 								size: imageSize,
-							}),
+							}).catch(() => []),
 						}))
 					),
 				]);
@@ -318,10 +376,21 @@ export const getExternalData = externalColumnTypes => async () => {
 
 					const { cellDetails } = item;
 					const postType = cellDetails.post_type;
+
+					if (failedPostTypes.has(postType)) {
+						return item;
+					}
+
 					const post = postsByKey.get(`${postType}:${cellDetails.post_id}`);
 
 					if (!post) {
-						return item;
+						return {
+							...item,
+							cellDetails: {
+								...cellDetails,
+								referenceMissing: true,
+							},
+						};
 					}
 
 					const authorName = authorsById.get(Number(post.author)) ?? null;
@@ -367,10 +436,16 @@ export const getExternalData = externalColumnTypes => async () => {
 export const cloneTable =
 	(tableId, postId, blockTableRef) =>
 	async ({ select, dispatch, registry }) => {
-		const { table_type, table_name, attributes, classes, rows, columns, cells } = select.getTable(
-			tableId,
-			true
-		);
+		const {
+			table_type,
+			table_name,
+			table_administrative_description,
+			attributes,
+			classes,
+			rows,
+			columns,
+			cells,
+		} = select.getTable(tableId, true);
 
 		const rowsWithResetId = [];
 		const columnsWithResetId = [];
@@ -410,6 +485,7 @@ export const cloneTable =
 				status: 'new',
 				post_id: postId,
 				table_name: table_name,
+				table_administrative_description: table_administrative_description,
 				attributes: attributes,
 				classes: classes,
 			},
@@ -430,6 +506,7 @@ export const cloneTable =
 			const table_status = table.header.status;
 			const post_id = table.header.post_id;
 			const table_name = table.header.table_name;
+			const table_administrative_description = table.header.table_administrative_description;
 			const attributes = table.header.attributes;
 			const classes = table.header.classes;
 			const rows = table.rows;
@@ -444,6 +521,7 @@ export const cloneTable =
 				table_status,
 				post_id,
 				table_name,
+				table_administrative_description,
 				attributes,
 				classes,
 				rows,
@@ -477,6 +555,7 @@ export const createTableEntity =
 			table_type,
 			post_id,
 			table_name,
+			table_administrative_description,
 			attributes,
 			classes,
 			rows,
@@ -493,6 +572,7 @@ export const createTableEntity =
 				status: 'new',
 				post_id: post_id,
 				table_name: table_name,
+				table_administrative_description: table_administrative_description,
 				attributes: attributes,
 				classes: classes,
 			},
@@ -567,6 +647,7 @@ export const updateTableEntity =
 			table_status,
 			post_id,
 			table_name,
+			table_administrative_description,
 			attributes,
 			classes,
 			rows,
@@ -616,6 +697,7 @@ export const updateTableEntity =
 				status: tableStatus(overrideTableStatus, table_status),
 				post_id: post_id,
 				table_name: table_name,
+				table_administrative_description: table_administrative_description,
 				attributes: attributes,
 				classes: classes,
 			},

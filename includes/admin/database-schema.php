@@ -32,6 +32,7 @@ CREATE TABLE {{prefix}}dtbk_tables (
 	status varchar(10) NOT NULL,
 	post_id bigint(20) unsigned NOT NULL,
 	table_name varchar(60) NOT NULL,
+	table_administrative_description varchar(60) NOT NULL,
 	attributes text DEFAULT NULL,
 	classes text DEFAULT NULL,
 	PRIMARY KEY  (id),

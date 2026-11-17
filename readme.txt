@@ -191,6 +191,13 @@ No. This plugin is free to use. However, we are planning for a premium version o
 10. Set column width (corresponding configuration is available for rows too)
 
 == Changelog ==
+= 2.0.0 =
+* Fixed bug that caused the table to crash if a page reference was not found
+* Introduced broad database schema updates to support future functionality.
+
+= 1.5.1 =
+* Fixed a bug that prevented pages and custom post types from being selected for Site Content cells
+
 = 1.5.0 =
 * Added retrieval of all external data before loading pages as needed
 * Added retrieval of all external data on cell update as needed

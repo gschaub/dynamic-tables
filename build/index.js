@@ -3132,11 +3132,11 @@ function ConfigurePostColumnDataType(props = {}) {
             label: 'Link Only',
             value: 'link'
           }, {
-            label: 'Wide',
-            value: 'wide'
-          }, {
             label: 'Narrow',
             value: 'narrow'
+          }, {
+            label: 'Wide',
+            value: 'wide'
           }],
           onValueChange: value => onPostFormat(value)
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_3__.Stack, {
@@ -5128,6 +5128,7 @@ function getSelectedPostOption(post) {
  * Convert REST API search results to combobox options.
  *
  * @since    1.5.0
+ * @since    1.5.1 - Fix post type not returned
  *
  * @param {Array} posts WordPress search results.
  * @return {Array} Combobox options.
@@ -5140,7 +5141,8 @@ function getPostSearchOptions(posts) {
     }
     return {
       value: String(postId),
-      label: (0,_utils__WEBPACK_IMPORTED_MODULE_1__.htmlToIndexText)(post.title) || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No title found', 'dynamic-table-blocks')
+      label: (0,_utils__WEBPACK_IMPORTED_MODULE_1__.htmlToIndexText)(post.title) || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('No title found', 'dynamic-table-blocks'),
+      postType: post.subtype
     };
   });
 }
@@ -7371,27 +7373,52 @@ const buildExternalDataRequest = (cell, column) => {
 };
 
 /**
+ * Reset a cell whose external reference no longer resolves.
+ *
+ * @since    2.0.0
+ *
+ * This matches the shape produced when a user manually clears a cell while
+ * preserving unrelated cell-level attributes such as border settings.
+ *
+ * @param {Object} cell Cell containing the missing external reference.
+ * @return {Object} Empty cell.
+ */
+const clearMissingExternalReference = cell => ({
+  ...cell,
+  attributes: {
+    ...(cell.attributes || {}),
+    value: {
+      indexText: ''
+    }
+  },
+  classes: '',
+  content: ''
+});
+
+/**
  * Returns action object used in signalling a new table has been received
  * from REST service.
  *
  * @since    1.0.0
  * @since    1.5.0 Add support for retrieval of external data at hydration time.
- * @since    2.0.0 Updates for schema version 2
+ * @since    2.0.0 Updates for schema version 2 and fix bug that caused table to crash when
+ *                 post ids, authors, images, etc. are not found
  *
- * @param {number}       table_id        Identifier key for the table
- * @param {string}       block_table_ref Cross reference identified linking table to block within post
- * @param {string}       table_type      Table storage type
- * @param {string}       table_status    Status of retrieved table
- * @param {number}       post_id         Identifier key for the post in which the table appears
- * @param {string}       table_name      Descriptive name of table
- * @param {Array}        attributes      Table header level attributes
- * @param {string}       classes         Table header level classes
- * @param {Array|Object} rows            Array of table row objects
- * @param {Array|Object} columns         Array of table column objects
- * @param {Array|Object} cells           Array of table cell objects
+ * @param {number}       table_id                         Identifier key for the table
+ * @param {string}       block_table_ref                  Cross reference identified linking table to block within post
+ * @param {string}       table_type                       Table storage type
+ * @param {string}       table_status                     Status of retrieved table
+ * @param {number}       post_id                          Identifier key for the post in which the table appears
+ * @param {string}       table_name                       Descriptive name of table
+ * @param {string}       table_administrative_description Administrative description of table
+ * @param {Array}        attributes                       Table header level attributes
+ * @param {string}       classes                          Table header level classes
+ * @param {Array|Object} rows                             Array of table row objects
+ * @param {Array|Object} columns                          Array of table column objects
+ * @param {Array|Object} cells                            Array of table cell objects
  * @return {Object} Action object
  */
-const receiveTable = (table_id, block_table_ref, table_type, table_status, post_id, table_name, attributes, classes, rows, columns, cells) => async ({
+const receiveTable = (table_id, block_table_ref, table_type, table_status, post_id, table_name, table_administrative_description, attributes, classes, rows, columns, cells) => async ({
   dispatch
 }) => {
   const externalColumnTypes = Array();
@@ -7409,16 +7436,25 @@ const receiveTable = (table_id, block_table_ref, table_type, table_status, post_
     });
   });
   let hydratedCells = cells;
+  let clearedMissingReference = false;
   if (externalColumnTypes.length !== 0) {
     // Retrieve external data
     const updatedExternalColumnTypes = await dispatch.getExternalData(externalColumnTypes);
-    const externalDataByCell = new Map(updatedExternalColumnTypes.filter(item => item.cellDetails?.externalData).map(({
+    const externalCellDataByCoordinate = new Map(updatedExternalColumnTypes.map(({
       cellDetails
-    }) => [`${cellDetails.column_id}:${cellDetails.row_id}`, cellDetails.externalData]));
+    }) => [`${cellDetails.column_id}:${cellDetails.row_id}`, cellDetails]));
 
     // Update cells with external data
     hydratedCells = cells.map(cell => {
-      const externalData = externalDataByCell.get(`${cell.column_id}:${cell.row_id}`);
+      const cellDetails = externalCellDataByCoordinate.get(`${cell.column_id}:${cell.row_id}`);
+      if (!cellDetails) {
+        return cell;
+      }
+      if (cellDetails.referenceMissing) {
+        clearedMissingReference = true;
+        return clearMissingExternalReference(cell);
+      }
+      const externalData = cellDetails.externalData;
       if (!externalData) {
         return cell;
       }
@@ -7434,7 +7470,7 @@ const receiveTable = (table_id, block_table_ref, table_type, table_status, post_
       };
     });
   }
-  return dispatch({
+  const receiveAction = dispatch({
     type: RECEIVE_HYDRATE,
     tableId: table_id,
     table: {
@@ -7444,6 +7480,7 @@ const receiveTable = (table_id, block_table_ref, table_type, table_status, post_
       table_status,
       post_id,
       table_name,
+      table_administrative_description,
       attributes,
       classes,
       rows,
@@ -7451,6 +7488,12 @@ const receiveTable = (table_id, block_table_ref, table_type, table_status, post_
       cells: hydratedCells
     }
   });
+  if (clearedMissingReference && Number(table_id) > 0) {
+    dispatch.updateTableEntity(table_id, undefined, undefined, {
+      history: 'ignore'
+    });
+  }
+  return receiveAction;
 };
 
 /**
@@ -7491,12 +7534,28 @@ const getExternalData = externalColumnTypes => async () => {
           const postResults = await Promise.all(postRequests.map(async ({
             postType,
             postIds
-          }) => ({
-            postType,
-            posts: await (0,_get_external_data__WEBPACK_IMPORTED_MODULE_7__.lookupPosts)(postIds, {
-              postType
-            })
-          })));
+          }) => {
+            try {
+              return {
+                postType,
+                posts: await (0,_get_external_data__WEBPACK_IMPORTED_MODULE_7__.lookupPosts)(postIds, {
+                  postType
+                }),
+                lookupFailed: false
+              };
+            } catch {
+              return {
+                postType,
+                posts: [],
+                lookupFailed: true
+              };
+            }
+          }));
+          const failedPostTypes = new Set(postResults.filter(({
+            lookupFailed
+          }) => lookupFailed).map(({
+            postType
+          }) => postType));
           const postsByKey = new Map();
           postResults.forEach(({
             postType,
@@ -7525,11 +7584,11 @@ const getExternalData = externalColumnTypes => async () => {
             }
             imageIdsBySize.get(imageSize).add(mediaId);
           });
-          const [authors, imageResults] = await Promise.all([(0,_get_external_data__WEBPACK_IMPORTED_MODULE_7__.lookupPostAuthors)(authorIds), Promise.all(Array.from(imageIdsBySize, async ([imageSize, mediaIds]) => ({
+          const [authors, imageResults] = await Promise.all([(0,_get_external_data__WEBPACK_IMPORTED_MODULE_7__.lookupPostAuthors)(authorIds).catch(() => []), Promise.all(Array.from(imageIdsBySize, async ([imageSize, mediaIds]) => ({
             imageSize,
             images: await (0,_get_external_data__WEBPACK_IMPORTED_MODULE_7__.lookupPostImages)(Array.from(mediaIds), {
               size: imageSize
-            })
+            }).catch(() => [])
           })))]);
           const authorsById = new Map(authors.map(({
             authorId,
@@ -7555,9 +7614,18 @@ const getExternalData = externalColumnTypes => async () => {
               cellDetails
             } = item;
             const postType = cellDetails.post_type;
+            if (failedPostTypes.has(postType)) {
+              return item;
+            }
             const post = postsByKey.get(`${postType}:${cellDetails.post_id}`);
             if (!post) {
-              return item;
+              return {
+                ...item,
+                cellDetails: {
+                  ...cellDetails,
+                  referenceMissing: true
+                }
+              };
             }
             const authorName = authorsById.get(Number(post.author)) ?? null;
             const image = imagesByKey.get(`${cellDetails.image_size}:${post.featured_media}`) ?? null;
@@ -7606,6 +7674,7 @@ const cloneTable = (tableId, postId, blockTableRef) => async ({
   const {
     table_type,
     table_name,
+    table_administrative_description,
     attributes,
     classes,
     rows,
@@ -7646,6 +7715,7 @@ const cloneTable = (tableId, postId, blockTableRef) => async ({
       status: 'new',
       post_id: postId,
       table_name: table_name,
+      table_administrative_description: table_administrative_description,
       attributes: attributes,
       classes: classes
     },
@@ -7662,13 +7732,14 @@ const cloneTable = (tableId, postId, blockTableRef) => async ({
     const table_status = table.header.status;
     const post_id = table.header.post_id;
     const table_name = table.header.table_name;
+    const table_administrative_description = table.header.table_administrative_description;
     const attributes = table.header.attributes;
     const classes = table.header.classes;
     const rows = table.rows;
     const columns = table.columns;
     (0,_utils__WEBPACK_IMPORTED_MODULE_5__.computeCellIds)(table.cells);
     const cells = table.cells;
-    await dispatch.receiveTable(table_id, block_table_ref, table_type, table_status, post_id, table_name, attributes, classes, rows, columns, cells);
+    await dispatch.receiveTable(table_id, block_table_ref, table_type, table_status, post_id, table_name, table_administrative_description, attributes, classes, rows, columns, cells);
     return tableEntity.id;
   } catch (error) {
     console.error('Error in cloneTable', error);
@@ -7697,6 +7768,7 @@ const createTableEntity = tableToCreate => async ({
     table_type,
     post_id,
     table_name,
+    table_administrative_description,
     attributes,
     classes,
     rows,
@@ -7712,6 +7784,7 @@ const createTableEntity = tableToCreate => async ({
       status: 'new',
       post_id: post_id,
       table_name: table_name,
+      table_administrative_description: table_administrative_description,
       attributes: attributes,
       classes: classes
     },
@@ -7782,6 +7855,7 @@ const updateTableEntity = (tableId, overrideTableStatus = '', tableOverride = nu
     table_status,
     post_id,
     table_name,
+    table_administrative_description,
     attributes,
     classes,
     rows,
@@ -7833,6 +7907,7 @@ const updateTableEntity = (tableId, overrideTableStatus = '', tableOverride = nu
       status: tableStatus(overrideTableStatus, table_status),
       post_id: post_id,
       table_name: table_name,
+      table_administrative_description: table_administrative_description,
       attributes: attributes,
       classes: classes
     },
@@ -8552,6 +8627,7 @@ async function fetchSummaryTablesFromApi() {
       table_status: header.status,
       post_id: header.post_id,
       table_name: header.table_name,
+      table_administrative_description: header.table_administrative_description,
       total_rows: header.total_rows,
       total_columns: header.total_columns,
       columns: column_structures
@@ -8589,6 +8665,7 @@ function reconcileSummaryTablesWithLocalState(tables, {
     table_status,
     post_id,
     table_name,
+    table_administrative_description,
     rows = [],
     columns = []
   }) => {
@@ -8606,6 +8683,7 @@ function reconcileSummaryTablesWithLocalState(tables, {
       table_status,
       post_id,
       table_name,
+      table_administrative_description,
       total_rows: summaryRows.length,
       total_columns: summaryColumns.length,
       columns: summaryColumns
@@ -9486,13 +9564,14 @@ const getTable = (tableId, isTableStale) => async ({
     const table_status = table.header.status;
     const post_id = table.header.post_id;
     const table_name = table.header.table_name;
+    const table_administrative_description = table.header.table_administrative_description;
     const attributes = table.header.attributes;
     const classes = table.header.classes;
     const rows = table.rows;
     const columns = table.columns;
     (0,_utils__WEBPACK_IMPORTED_MODULE_1__.computeCellIds)(table.cells);
     const cells = table.cells;
-    await dispatch.receiveTable(table_id, block_table_ref, table_type, table_status, post_id, table_name, attributes, classes, rows, columns, cells);
+    await dispatch.receiveTable(table_id, block_table_ref, table_type, table_status, post_id, table_name, table_administrative_description, attributes, classes, rows, columns, cells);
   } catch (error) {
     console.log('Error in getTable - Table ID = ' + tableId);
     alert('            ...Resolver - async error - ' + JSON.stringify(error, null, 4));
@@ -9537,6 +9616,7 @@ function getTable(state, tableId, isTableStale) {
       post_id: '',
       table_status: '',
       table_name: '',
+      table_administrative_description: '',
       attributes: [],
       classes: '',
       rows: [],
@@ -9762,6 +9842,7 @@ function tableToComparableEntityRecord(sourceTable, recordId = sourceTable?.tabl
     table_status,
     post_id,
     table_name,
+    table_administrative_description,
     attributes,
     classes,
     rows = [],
@@ -9799,6 +9880,7 @@ function tableToComparableEntityRecord(sourceTable, recordId = sourceTable?.tabl
       status: table_status,
       post_id,
       table_name,
+      table_administrative_description,
       attributes,
       classes
     },
@@ -9878,6 +9960,7 @@ function entityRecordToTable(entityRecord, {
     table_status: header.status ?? '',
     post_id: header.post_id ?? '',
     table_name: header.table_name ?? entityTitle,
+    table_administrative_description: header.table_administrative_description ?? header.table_name ?? entityTitle,
     attributes: header.attributes ?? {},
     classes: header.classes ?? '',
     rows,
@@ -9938,8 +10021,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/stack/stack.mjs");
-/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/form/input-control/input-control.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/form/input-control/input-control.mjs");
+/* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/stack/stack.mjs");
 /* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/root.mjs");
 /* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/header.mjs");
 /* harmony import */ var _wordpress_ui__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @wordpress/ui */ "./node_modules/@wordpress/ui/build-module/card/title.mjs");
@@ -11192,7 +11275,7 @@ function Edit(props) {
       table_status: attachedTable.table_status,
       post_id: String(postId)
     });
-    receiveTable(attachedTableId, attachedTable.block_table_ref, attachedTable.table_type, attachedTable.table_status, attachedTable.post_id, attachedTable.table_name, attachedTable.attributes, attachedTable.classes, attachedTable.rows, attachedTable.columns, attachedTable.cells);
+    receiveTable(attachedTableId, attachedTable.block_table_ref, attachedTable.table_type, attachedTable.table_status, attachedTable.post_id, attachedTable.table_name, attachedTable.table_administrative_description, attachedTable.attributes, attachedTable.classes, attachedTable.rows, attachedTable.columns, attachedTable.cells);
     props.setAttributes({
       original_post_type: postType,
       original_post_id: Number(postId),
@@ -11203,7 +11286,7 @@ function Edit(props) {
       ...prev,
       action: 'attach'
     }));
-  }, [tableRequest.action, tableRequest.blockTableRef, tableRequest.tableId, requestedTable?.table_id, requestedTable?.table_name, requestedTable?.attributes, requestedTable?.classes, requestedTable?.rows, requestedTable?.columns, requestedTable?.cells, requestedTableHasEntity, requestedTableHasFinishedResolving, requestedTableIsResolving, postId, postType, updateSummaryTable, receiveTable]);
+  }, [tableRequest.action, tableRequest.blockTableRef, tableRequest.tableId, requestedTable?.table_id, requestedTable?.table_name, requestedTable?.table_administrative_description, requestedTable?.attributes, requestedTable?.classes, requestedTable?.rows, requestedTable?.columns, requestedTable?.cells, requestedTableHasEntity, requestedTableHasFinishedResolving, requestedTableIsResolving, postId, postType, updateSummaryTable, receiveTable]);
 
   /**
    * Attach existing table to block when table is ready for attachment.
@@ -11280,7 +11363,7 @@ function Edit(props) {
      * the restored value back to core-data would create a feedback path
      * during undo/redo.
      */
-    receiveTable(reconciledTable.table_id, reconciledTable.block_table_ref, reconciledTable.table_type, reconciledTable.table_status, reconciledTable.post_id, reconciledTable.table_name, reconciledTable.attributes, reconciledTable.classes, reconciledTable.rows, reconciledTable.columns, reconciledTable.cells);
+    receiveTable(reconciledTable.table_id, reconciledTable.block_table_ref, reconciledTable.table_type, reconciledTable.table_status, reconciledTable.post_id, reconciledTable.table_name, reconciledTable.table_administrative_description, reconciledTable.attributes, reconciledTable.classes, reconciledTable.rows, reconciledTable.columns, reconciledTable.cells);
 
     /*
      * Prevent an active cell editor or settings control from writing its
@@ -13743,8 +13826,9 @@ function Edit(props) {
    * Render inspector controls side panel
    *
    * @since 1.2.0
-   * @since 1.4.7 Add support to identify title element type
+   * @since 1.4.7  Add support to identify title element type
    * @since 1.4.10 Add support for wide display on a table
+   * @since 2.0.0  Add Description field
    */
   const renderControls = !isContentOnlyMode && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_14__.InspectorControls, {
@@ -13759,6 +13843,24 @@ function Edit(props) {
                 className: "grid-control__inspector-controls--read-only-label",
                 children: "Table Name:"
               }), (0,_utils__WEBPACK_IMPORTED_MODULE_22__.htmlToIndexText)(table.table_name)]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.InputControl, {
+              label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Description:', 'dynamic-table-blocks'),
+              onBlur: () => {
+                cacheUndoEdits.current = false;
+              },
+              onFocus: () => {
+                cacheUndoEdits.current = false;
+              },
+              onValueChange: value => {
+                const history = cacheUndoEdits.current ? 'cache' : 'record';
+                setTableAttributes(table_id, 'table_administrative_description', '', 'PROP', value, true, history);
+                cacheUndoEdits.current = true;
+              },
+              value: table.table_administrative_description ?? '',
+              className: "dtbk-full-width-input",
+              size: "compact"
             })
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__.PanelRow, {
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("div", {
@@ -14464,13 +14566,13 @@ function Edit(props) {
                 children: "New Table Definition"
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_13__.Content, {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.Stack, {
                 direction: "row",
                 gap: "md",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.Stack, {
                   direction: "column",
                   className: "dtbk-configure-column-split__left",
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.InputControl, {
                     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Name', 'dynamic-table-blocks'),
                     placeholder: "New Table",
                     required: true,
@@ -14481,7 +14583,7 @@ function Edit(props) {
                     value: createDraftTable.tableName,
                     className: "blocks-table__placeholder-input dtbk-full-width-input",
                     size: "compact"
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.InputControl, {
                     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Columns', 'dynamic-table-blocks'),
                     min: 1,
                     max: 50,
@@ -14496,7 +14598,7 @@ function Edit(props) {
                       baseInteger: Number(createDraftTable.numColumns),
                       onClick: onChangeInitialColumnCount
                     })
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.InputControl, {
                     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Table Rows', 'dynamic-table-blocks'),
                     min: 1,
                     max: 1000,
@@ -14512,7 +14614,7 @@ function Edit(props) {
                       onClick: onChangeInitialRowCount
                     })
                   })]
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.Stack, {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.Stack, {
                   direction: "column",
                   className: "dtbk-configure-column-split__right",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsxs)("table", {
@@ -14536,7 +14638,7 @@ function Edit(props) {
                             className: "dtbk-create-table",
                             children: column_id
                           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)("td", {
-                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_9__.InputControl, {
+                            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_27__.jsx)(_wordpress_ui__WEBPACK_IMPORTED_MODULE_8__.InputControl, {
                               placeholder: "New Column",
                               onValueChange: value => setCreateDraftTable(prev => ({
                                 ...prev,
@@ -14656,6 +14758,7 @@ async function lookupPost(postId, {
  * Retrieve multiple WordPress posts of the same post type.
  *
  * @since    1.5.0
+ * @since    2.0.0 - Prevent failure for posts not found
  *
  * @param {Array<number|string>} postIds          Post IDs.
  * @param {Object}               options          Lookup options.
@@ -14697,14 +14800,7 @@ async function lookupPosts(postIds, {
   }
   const posts = results.flat();
   const postsById = new Map(posts.map(post => [Number(post?.id), post]));
-  const hasIncompletePost = ids.some(id => {
-    const post = postsById.get(id);
-    return typeof post?.link !== 'string' || typeof post?.title?.rendered !== 'string' || typeof post?.type !== 'string';
-  });
-  if (hasIncompletePost) {
-    throw new Error((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('One or more post responses were incomplete.', 'dynamic-table-blocks'));
-  }
-  return ids.map(id => postsById.get(id));
+  return ids.map(id => postsById.get(id)).filter(Boolean);
 }
 
 /**
@@ -16673,6 +16769,7 @@ function registerSummaryTableRefreshSubscriber(options) {
  * dropdown when attaching a block to an existing table.
  *
  * @since 1.4.0
+ * @since 2.0.0 - Add Table Decsription
  *
  * @param {Object} allTables All summarized dynamic tables currently in state
  * @return {Array} Array of all tables available for block creation throught attachment
@@ -16685,10 +16782,11 @@ function getLoadedSummaryTableOptions(allTables) {
     table_status
   }) => table_status === 'loaded').map(({
     table_id,
-    table_name
+    table_name,
+    table_administrative_description
   }) => ({
     value: String(table_id),
-    label: `${table_name} (${table_id})`
+    label: `${table_administrative_description ?? table_name} (${table_id})`
   }))];
 }
 
@@ -16753,6 +16851,7 @@ function initTable(newBlockTableRef, tableType, columnCount, rowCount, tableName
       post_id: '0',
       table_status: 'new',
       table_name: tableName,
+      table_administrative_description: tableName,
       attributes: getDefaultTableAttributes('table'),
       classes: getDefaultTableClasses('table'),
       rows: rowArray,

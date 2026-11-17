@@ -563,8 +563,8 @@ export function ConfigurePostColumnDataType(props = {}) {
 						value={postFormat}
 						items={[
 							{ label: 'Link Only', value: 'link' },
-							{ label: 'Wide', value: 'wide' },
 							{ label: 'Narrow', value: 'narrow' },
+							{ label: 'Wide', value: 'wide' },
 						]}
 						onValueChange={value => onPostFormat(value)}
 					/>

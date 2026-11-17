@@ -1000,6 +1000,12 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 				$prepared_table->header['table_name'] = $request['header']['table_name'];
 			}
 
+			// Table administrative description.
+			if ( ! empty( $schema_header['properties']['table_administrative_description'] ) &&
+			isset( $request['header']['table_administrative_description'] ) ) {
+				$prepared_table->header['table_administrative_description'] = $request['header']['table_administrative_description'];
+			}
+
 			// Table attributes.
 			if ( ! empty( $schema_header['properties']['attributes'] ) &&
 			isset( $request['header']['attributes'] ) ) {
@@ -1222,6 +1228,11 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 			$data['header']['table_name'] = $table['header']['table_name'];
 		}
 
+		if ( rest_is_field_included( 'header.table_administrative_description', $fields ) &&
+			isset( $table['header']['table_administrative_description'] ) ) {
+			$data['header']['table_administrative_description'] = $table['header']['table_administrative_description'];
+		}
+
 		if ( rest_is_field_included( 'header.attributes', $fields ) &&
 			isset( $table['header']['attributes'] ) ) {
 			$data['header']['attributes'] = $table['header']['attributes'];
@@ -1398,53 +1409,57 @@ class Dynamic_Tables_REST_Controller extends \WP_REST_Controller {
 					'type'        => 'object',
 					'context'     => array( 'view', 'edit' ),
 					'properties'  => array(
-						'id'              => array(
+						'id'                               => array(
 							'description' => __( 'Table ID.', 'dynamic-table-blocks' ),
 							'type'        => 'integer',
 							'context'     => array( 'view', 'edit' ),
 							'readonly'    => true,
 						),
-						'block_table_ref' => array(
+						'block_table_ref'                  => array(
 							'description' => __( 'Link to specific table block on post.', 'dynamic-table-blocks' ),
 							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
 						),
-						'table_type'      => array(
+						'table_type'                       => array(
 							'description' => __( 'Table storage type.', 'dynamic-table-blocks' ),
 							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
 						),
-						'status'          => array(
+						'status'                           => array(
 							'description' => __( 'Status of table within context of its assigned post.', 'dynamic-table-blocks' ),
 							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
 						),
-						'post_id'         => array(
+						'post_id'                          => array(
 							'description' => __( 'Unique identifier for the post.', 'dynamic-table-blocks' ),
 							'type'        => 'integer',
 							'context'     => array( 'view', 'edit' ),
 						),
-						'table_name'      => array(
+						'table_name'                       => array(
 							'description' => __( 'Table name which can include html style elements.', 'dynamic-table-blocks' ),
 							'type'        => 'string',
 						),
-						'attributes'      => array(
+						'table_administrative_description' => array(
+							'description' => __( 'Description of the table outside of the immediate post context.', 'dynamic-table-blocks' ),
+							'type'        => 'string',
+						),
+						'attributes'                       => array(
 							'description' => __( 'Tablewide attributes.', 'dynamic-table-blocks' ),
 							'type'        => 'object',
 							'context'     => array( 'view', 'edit' ),
 						),
-						'classes'         => array(
+						'classes'                          => array(
 							'description' => __( 'Tablewide css classes.', 'dynamic-table-blocks' ),
 							'type'        => 'string',
 							'context'     => array( 'view', 'edit' ),
 						),
-						'total_rows'      => array(
+						'total_rows'                       => array(
 							'description' => __( 'Number of rows in the table.', 'dynamic-table-blocks' ),
 							'type'        => 'integer',
 							'readonly'    => true,
 							'context'     => array( 'view' ),
 						),
-						'total_columns'   => array(
+						'total_columns'                    => array(
 							'description' => __( 'Number of columns in the table.', 'dynamic-table-blocks' ),
 							'type'        => 'integer',
 							'readonly'    => true,

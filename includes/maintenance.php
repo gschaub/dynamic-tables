@@ -264,8 +264,8 @@ class DTBK_Maintenance {
 					$this->process_table_post_matches( $matching_post_history, $table );
 				} elseif (
 					isset( $table['status'], $table['post_id'] ) &&
-					'loaded' === $table['status'] &&
-					0 === (int) $table['post_id']
+					$table['status'] === 'loaded' &&
+					(int) $table['post_id'] === 0
 				) {
 					// Loaded tables with post_id = 0 are valid unattached library tables.
 					// They should remain available for future attachment, not be marked orphaned.
@@ -364,6 +364,7 @@ class DTBK_Maintenance {
 	 *               the table.  Updates the cloned post to reference the new table.
 	 *
 	 * @since 1.1.0
+	 * @since 2.0.0 - Add wp_template to the list of updatable post types and fix allow updates to process
 	 *
 	 * @param  int    $post_id   Post ID of the new post
 	 * @param  object $post      Post object of the new post
@@ -388,7 +389,7 @@ class DTBK_Maintenance {
 			}
 
 			// Skip post revisions and autosaves.
-			if ( wp_is_post_revision( $post_id ) || get_post_status( $post ) === 'trash' || $update ) {
+			if ( wp_is_post_revision( $post_id ) || get_post_status( $post ) === 'trash' ) {
 				return;
 			}
 
@@ -397,8 +398,8 @@ class DTBK_Maintenance {
 				return;
 			}
 
-			// Allow updates for wp_block and wp_template_part.
-			if ( $update && ! in_array( $post->post_type, array( 'wp_block', 'wp_template_part' ), true ) ) {
+			// Allow updates for wp_block, wp_template, and wp_template_part.
+			if ( $update && ! in_array( $post->post_type, array( 'wp_block', 'wp_template', 'wp_template_part' ), true ) ) {
 				return;
 			}
 
@@ -444,11 +445,13 @@ class DTBK_Maintenance {
 	 * Creates a new table object and updates the block reference for each Dynamic Tables block
 	 *
 	 * @since 1.1.0
+	 * @since 2.0.0 - Fix error handling in returned rest error
+	 *
 	 *
 	 * @param  array $blocks   Array of blocks from the post content
 	 * @param  int   $post_id  Post ID of the new post
 	 * @param  bool  $changed  Have any of the blocks been changed
-	 * @return array|WP_Error            Updated array of blocks or WP_Error on failure
+	 * @return array|\WP_Error            Updated array of blocks or WP_Error on failure
 	 */
 	protected function deduplicate_blocks( $blocks, $post_id, &$changed ) {
 		foreach ( $blocks as &$block ) {
@@ -477,7 +480,11 @@ class DTBK_Maintenance {
 
 				$original_table = get_table_by_ref( $old_ref );
 
-				if ( empty( $original_table ) || empty( $original_table['header'] ) ) {
+				if ( is_wp_error( $original_table ) ) {
+					return $original_table;
+				}
+
+				if ( ! is_array( $original_table ) || empty( $original_table['header'] ) ) {
 					return new \WP_Error(
 						'dtbk_table_not_found',
 						__( 'Dynamic Tables table could not be found for that reference.', 'dynamic-table-blocks' )

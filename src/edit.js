@@ -1262,6 +1262,7 @@ export default function Edit(props) {
 			attachedTable.table_status,
 			attachedTable.post_id,
 			attachedTable.table_name,
+			attachedTable.table_administrative_description,
 			attachedTable.attributes,
 			attachedTable.classes,
 			attachedTable.rows,
@@ -1286,6 +1287,7 @@ export default function Edit(props) {
 		tableRequest.tableId,
 		requestedTable?.table_id,
 		requestedTable?.table_name,
+		requestedTable?.table_administrative_description,
 		requestedTable?.attributes,
 		requestedTable?.classes,
 		requestedTable?.rows,
@@ -1404,6 +1406,7 @@ export default function Edit(props) {
 			reconciledTable.table_status,
 			reconciledTable.post_id,
 			reconciledTable.table_name,
+			reconciledTable.table_administrative_description,
 			reconciledTable.attributes,
 			reconciledTable.classes,
 			reconciledTable.rows,
@@ -4267,8 +4270,9 @@ export default function Edit(props) {
 	 * Render inspector controls side panel
 	 *
 	 * @since 1.2.0
-	 * @since 1.4.7 Add support to identify title element type
+	 * @since 1.4.7  Add support to identify title element type
 	 * @since 1.4.10 Add support for wide display on a table
+	 * @since 2.0.0  Add Description field
 	 */
 	const renderControls = !isContentOnlyMode && (
 		<>
@@ -4282,6 +4286,35 @@ export default function Edit(props) {
 								</span>
 								{htmlToIndexText(table.table_name)}
 							</div>
+						</PanelRow>
+
+						<PanelRow>
+							<InputControl
+								label={__('Table Description:', 'dynamic-table-blocks')}
+								onBlur={() => {
+									cacheUndoEdits.current = false;
+								}}
+								onFocus={() => {
+									cacheUndoEdits.current = false;
+								}}
+								onValueChange={value => {
+									const history = cacheUndoEdits.current ? 'cache' : 'record';
+
+									setTableAttributes(
+										table_id,
+										'table_administrative_description',
+										'',
+										'PROP',
+										value,
+										true,
+										history
+									);
+									cacheUndoEdits.current = true;
+								}}
+								value={table.table_administrative_description ?? ''}
+								className="dtbk-full-width-input"
+								size="compact"
+							/>
 						</PanelRow>
 
 						<PanelRow>

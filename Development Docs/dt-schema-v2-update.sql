@@ -21,8 +21,11 @@ ALTER TABLE `wp_3_dtbk_table_rows`
 
 -- Populate legacy records before enforcing NOT NULL.
 UPDATE `wp_3_dtbk_tables`
-SET `table_type` = 'local'
-WHERE `table_type` IS NULL;
+SET `table_type` = COALESCE(`table_type`, 'local'),
+    `table_administrative_description` =
+      COALESCE(`table_administrative_description`, `table_name`)
+WHERE `table_type` IS NULL
+   OR `table_administrative_description` IS NULL;
 
 UPDATE `wp_3_dtbk_table_columns`
 SET `column_ref` = `column_id`
@@ -33,7 +36,12 @@ SET `row_ref` = `row_id`
 WHERE `row_ref` IS NULL;
 
 ALTER TABLE `wp_3_dtbk_tables`
-  MODIFY COLUMN `table_type` varchar(32) NOT NULL AFTER `block_table_ref`;
+  MODIFY COLUMN `table_type` varchar(32) NOT NULL AFTER `block_table_ref`,
+  MODIFY COLUMN `table_administrative_description` varchar(60) NOT NULL AFTER `table_name`;
+
+ALTER TABLE `wp_3_dtbk_tables`
+  ADD COLUMN IF NOT EXISTS `table_administrative_description`
+    varchar(60) DEFAULT NULL AFTER `table_name`;
 
 ALTER TABLE `wp_3_dtbk_table_columns`
   MODIFY COLUMN `column_ref` int(11) NOT NULL AFTER `column_id`,

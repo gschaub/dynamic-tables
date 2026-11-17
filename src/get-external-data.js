@@ -50,6 +50,7 @@ export async function lookupPost(postId, { postType = 'post', signal } = {}) {
  * Retrieve multiple WordPress posts of the same post type.
  *
  * @since    1.5.0
+ * @since    2.0.0 - Prevent failure for posts not found
  *
  * @param {Array<number|string>} postIds          Post IDs.
  * @param {Object}               options          Lookup options.
@@ -106,21 +107,7 @@ export async function lookupPosts(postIds, { postType, signal } = {}) {
 	const posts = results.flat();
 	const postsById = new Map(posts.map(post => [Number(post?.id), post]));
 
-	const hasIncompletePost = ids.some(id => {
-		const post = postsById.get(id);
-
-		return (
-			typeof post?.link !== 'string' ||
-			typeof post?.title?.rendered !== 'string' ||
-			typeof post?.type !== 'string'
-		);
-	});
-
-	if (hasIncompletePost) {
-		throw new Error(__('One or more post responses were incomplete.', 'dynamic-table-blocks'));
-	}
-
-	return ids.map(id => postsById.get(id));
+	return ids.map(id => postsById.get(id)).filter(Boolean);
 }
 
 /**

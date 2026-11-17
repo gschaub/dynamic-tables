@@ -203,6 +203,12 @@ class DynamicTableBlocksVersionManagement {
 						'after_column'        => 'block_table_ref',
 					),
 					array(
+						'table_suffix'        => 'dtbk_tables',
+						'column_name'         => 'table_administrative_description',
+						'nullable_definition' => 'varchar(60) DEFAULT NULL',
+						'after_column'        => 'table_name',
+					),
+					array(
 						'table_suffix'        => 'dtbk_table_columns',
 						'column_name'         => 'column_ref',
 						'nullable_definition' => 'int(11) DEFAULT NULL',
@@ -365,8 +371,11 @@ class DynamicTableBlocksVersionManagement {
 		 */
 		$version_updates = array(
 			"UPDATE `{$wpdb->prefix}dtbk_tables`
-				SET `table_type` = 'local'
-				WHERE `table_type` IS NULL",
+				SET `table_type` = COALESCE(`table_type`, 'local'),
+					`table_administrative_description` =
+						COALESCE(`table_administrative_description`, `table_name`)
+				WHERE `table_type` IS NULL
+					OR `table_administrative_description` IS NULL",
 			"UPDATE `{$wpdb->prefix}dtbk_table_columns`
 				SET `column_ref` = `column_id`
 				WHERE `column_ref` IS NULL",
@@ -375,6 +384,7 @@ class DynamicTableBlocksVersionManagement {
 				WHERE `row_ref` IS NULL",
 			"ALTER TABLE `{$wpdb->prefix}dtbk_tables`
 				MODIFY COLUMN `table_type` varchar(32) NOT NULL AFTER `block_table_ref`,
+				MODIFY COLUMN `table_administrative_description` varchar(60) NOT NULL AFTER `table_name`,
 				CONVERT TO CHARACTER SET latin1",
 			"ALTER TABLE `{$wpdb->prefix}dtbk_table_columns`
 				MODIFY COLUMN `column_ref` int(11) NOT NULL AFTER `column_id`,

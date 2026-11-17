@@ -30,6 +30,7 @@ export const getTable =
 			const table_status = table.header.status;
 			const post_id = table.header.post_id;
 			const table_name = table.header.table_name;
+			const table_administrative_description = table.header.table_administrative_description;
 			const attributes = table.header.attributes;
 			const classes = table.header.classes;
 			const rows = table.rows;
@@ -44,6 +45,7 @@ export const getTable =
 				table_status,
 				post_id,
 				table_name,
+				table_administrative_description,
 				attributes,
 				classes,
 				rows,

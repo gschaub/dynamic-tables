@@ -19,6 +19,7 @@ export function getTable(state, tableId, isTableStale) {
 			post_id: '',
 			table_status: '',
 			table_name: '',
+			table_administrative_description: '',
 			attributes: [],
 			classes: '',
 			rows: [],

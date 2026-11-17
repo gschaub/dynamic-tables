@@ -197,6 +197,7 @@ export function registerSummaryTableRefreshSubscriber(options) {
  * dropdown when attaching a block to an existing table.
  *
  * @since 1.4.0
+ * @since 2.0.0 - Add Table Decsription
  *
  * @param {Object} allTables All summarized dynamic tables currently in state
  * @return {Array} Array of all tables available for block creation throught attachment
@@ -206,9 +207,9 @@ export function getLoadedSummaryTableOptions(allTables) {
 		{ value: '', label: 'Choose table...' },
 		...Object.values(allTables || {})
 			.filter(({ table_status }) => table_status === 'loaded')
-			.map(({ table_id, table_name }) => ({
+			.map(({ table_id, table_name, table_administrative_description }) => ({
 				value: String(table_id),
-				label: `${table_name} (${table_id})`,
+				label: `${table_administrative_description ?? table_name} (${table_id})`,
 			})),
 	];
 }
