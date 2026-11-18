@@ -1379,7 +1379,7 @@ export default function Edit(props) {
 	 * stack and role the table state forward or backward as appropriate.
 	 *
 	 * @since 1.4.5
-     * @since 2.0.0 - Updates for schema version 2
+	 * @since 2.0.0 - Updates for schema version 2
 	 */
 	useTableUndoRedoEffect(table.table_id, ({ editedTable }) => {
 		if (areTableAndEntityRecordsEqual(table, editedTable)) {
@@ -3338,7 +3338,8 @@ export default function Edit(props) {
 			}
 			case 'editedCellContent': {
 				const currentCellData = table.cells.find(
-					c => c.column_id === Number(column_id) && Number(c.row_id) === Number(row_id)
+					// c => c.column_id === Number(column_id) && Number(c.row_id) === Number(row_id)
+					c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id)
 				);
 
 				const currentCellValueAttr = currentCellData?.attributes || {};

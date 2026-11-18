@@ -1,6 +1,6 @@
 /* Internal dependencies */
 import { getDefaultCell, getDefaultColumn, getDefaultRow } from '../table-defaults';
-import { numberToLetter, tableSort } from '../utils';
+import { assertUniqueCellIds, numberToLetter, tableSort } from '../utils';
 
 /**
  * Compare JSON-compatible values without depending on object property order.
@@ -75,6 +75,51 @@ export function removeExternalCellData(attributes) {
 	return {
 		...attributes,
 		value,
+	};
+}
+
+/**
+ * Normalize table coordinates for use in the local table store.
+ *
+ * REST and entity records may represent coordinate identifiers as either
+ * numbers or strings. Local table state consistently uses strings.
+ *
+ * @since 2.0.0
+ *
+ * @param {Array} rows    Table rows.
+ * @param {Array} columns Table columns.
+ * @param {Array} cells   Table cells.
+ * @return {Object} Table parts with normalized coordinates.
+ */
+export function normalizeTableCoordinates(rows, columns, cells) {
+	const normalizedRows = rows.map(row => ({
+		...row,
+		row_id: String(row.row_id),
+	}));
+
+	const normalizedColumns = columns.map(column => ({
+		...column,
+		column_id: String(column.column_id),
+	}));
+
+	const normalizedCells = cells.map(cell => {
+		const columnId = String(cell.column_id);
+		const rowId = String(cell.row_id);
+
+		return {
+			...cell,
+			column_id: columnId,
+			row_id: rowId,
+			cell_id: numberToLetter(columnId) + rowId,
+		};
+	});
+
+	assertUniqueCellIds(normalizedCells);
+
+	return {
+		rows: normalizedRows,
+		columns: normalizedColumns,
+		cells: normalizedCells,
 	};
 }
 
@@ -217,20 +262,17 @@ export function entityRecordToTable(entityRecord, { includeBorders = false } = {
 		return null;
 	}
 
-	const rows = (Array.isArray(entityRecord?.rows) ? entityRecord.rows : [])
-		.filter(row => String(row?.row_id) !== '0')
-		.map(row => ({ ...row }));
-
-	const columns = (Array.isArray(entityRecord?.columns) ? entityRecord.columns : [])
-		.filter(column => String(column?.column_id) !== '0')
-		.map(column => ({ ...column }));
-
-	const cells = (Array.isArray(entityRecord?.cells) ? entityRecord.cells : [])
-		.filter(cell => String(cell?.row_id) !== '0' && String(cell?.column_id) !== '0')
-		.map(cell => ({
-			...cell,
-			cell_id: numberToLetter(cell.column_id) + cell.row_id,
-		}));
+	const { rows, columns, cells } = normalizeTableCoordinates(
+		(Array.isArray(entityRecord?.rows) ? entityRecord.rows : []).filter(
+			row => String(row?.row_id) !== '0'
+		),
+		(Array.isArray(entityRecord?.columns) ? entityRecord.columns : []).filter(
+			column => String(column?.column_id) !== '0'
+		),
+		(Array.isArray(entityRecord?.cells) ? entityRecord.cells : []).filter(
+			cell => String(cell?.row_id) !== '0' && String(cell?.column_id) !== '0'
+		)
+	);
 
 	const entityTitle =
 		typeof entityRecord?.title === 'string'

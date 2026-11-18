@@ -7421,11 +7421,16 @@ const clearMissingExternalReference = cell => ({
 const receiveTable = (table_id, block_table_ref, table_type, table_status, post_id, table_name, table_administrative_description, attributes, classes, rows, columns, cells) => async ({
   dispatch
 }) => {
+  const {
+    rows: normalizedRows,
+    columns: normalizedColumns,
+    cells: normalizedCells
+  } = (0,_table_entity_adapter__WEBPACK_IMPORTED_MODULE_6__.normalizeTableCoordinates)(rows, columns, cells);
   const externalColumnTypes = Array();
 
   // Retrieve cell data for all content types that require external data.
-  columns.forEach(column => {
-    cells.forEach(cell => {
+  normalizedColumns.forEach(column => {
+    normalizedCells.forEach(cell => {
       if (cell.column_id !== column.column_id) {
         return;
       }
@@ -7435,7 +7440,7 @@ const receiveTable = (table_id, block_table_ref, table_type, table_status, post_
       }
     });
   });
-  let hydratedCells = cells;
+  let hydratedCells = normalizedCells;
   let clearedMissingReference = false;
   if (externalColumnTypes.length !== 0) {
     // Retrieve external data
@@ -7445,7 +7450,7 @@ const receiveTable = (table_id, block_table_ref, table_type, table_status, post_
     }) => [`${cellDetails.column_id}:${cellDetails.row_id}`, cellDetails]));
 
     // Update cells with external data
-    hydratedCells = cells.map(cell => {
+    hydratedCells = normalizedCells.map(cell => {
       const cellDetails = externalCellDataByCoordinate.get(`${cell.column_id}:${cell.row_id}`);
       if (!cellDetails) {
         return cell;
@@ -7483,8 +7488,8 @@ const receiveTable = (table_id, block_table_ref, table_type, table_status, post_
       table_administrative_description,
       attributes,
       classes,
-      rows,
-      columns,
+      rows: normalizedRows,
+      columns: normalizedColumns,
       cells: hydratedCells
     }
   });
@@ -7867,13 +7872,13 @@ const updateTableEntity = (tableId, overrideTableStatus = '', tableOverride = nu
   const safeCells = Array.isArray(cells) ? cells : [];
 
   // Remove border row if it exists
-  const filteredRows = safeRows.filter(row => row.row_id !== '0');
+  const filteredRows = safeRows.filter(row => String(row.row_id) !== '0');
 
   // Remove border column if it exists
-  const filteredColumns = safeColumns.filter(column => column.column_id !== '0');
+  const filteredColumns = safeColumns.filter(column => String(column.column_id) !== '0');
 
   // Remove border cells if they exists
-  const filteredCells = safeCells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
+  const filteredCells = safeCells.filter(cell => String(cell.row_id) !== '0' && String(cell.column_id) !== '0');
 
   // Remove cell_id from cells. They don't go back to the webservice
   const transformedCells = filteredCells.map(({
@@ -9466,6 +9471,9 @@ const table = (state = {
 const reducer = (state = {}, action) => {
   const tableKey = action.tableId;
   const newTableState = table(state[tableKey], action);
+  if (Array.isArray(newTableState.table?.cells)) {
+    (0,_utils__WEBPACK_IMPORTED_MODULE_2__.assertUniqueCellIds)(newTableState.table.cells);
+  }
   if (JSON.stringify(newTableState.table) === '{}') {
     return state;
   }
@@ -9750,6 +9758,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   areTableAndEntityRecordsEqual: () => (/* binding */ areTableAndEntityRecordsEqual),
 /* harmony export */   entityRecordToTable: () => (/* binding */ entityRecordToTable),
 /* harmony export */   isDeepEqual: () => (/* binding */ isDeepEqual),
+/* harmony export */   normalizeTableCoordinates: () => (/* binding */ normalizeTableCoordinates),
 /* harmony export */   removeExternalCellData: () => (/* binding */ removeExternalCellData),
 /* harmony export */   withTableBorders: () => (/* binding */ withTableBorders)
 /* harmony export */ });
@@ -9820,6 +9829,46 @@ function removeExternalCellData(attributes) {
   return {
     ...attributes,
     value
+  };
+}
+
+/**
+ * Normalize table coordinates for use in the local table store.
+ *
+ * REST and entity records may represent coordinate identifiers as either
+ * numbers or strings. Local table state consistently uses strings.
+ *
+ * @since 2.0.0
+ *
+ * @param {Array} rows    Table rows.
+ * @param {Array} columns Table columns.
+ * @param {Array} cells   Table cells.
+ * @return {Object} Table parts with normalized coordinates.
+ */
+function normalizeTableCoordinates(rows, columns, cells) {
+  const normalizedRows = rows.map(row => ({
+    ...row,
+    row_id: String(row.row_id)
+  }));
+  const normalizedColumns = columns.map(column => ({
+    ...column,
+    column_id: String(column.column_id)
+  }));
+  const normalizedCells = cells.map(cell => {
+    const columnId = String(cell.column_id);
+    const rowId = String(cell.row_id);
+    return {
+      ...cell,
+      column_id: columnId,
+      row_id: rowId,
+      cell_id: (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(columnId) + rowId
+    };
+  });
+  (0,_utils__WEBPACK_IMPORTED_MODULE_1__.assertUniqueCellIds)(normalizedCells);
+  return {
+    rows: normalizedRows,
+    columns: normalizedColumns,
+    cells: normalizedCells
   };
 }
 
@@ -9942,16 +9991,11 @@ function entityRecordToTable(entityRecord, {
   if (tableId === undefined || tableId === null) {
     return null;
   }
-  const rows = (Array.isArray(entityRecord?.rows) ? entityRecord.rows : []).filter(row => String(row?.row_id) !== '0').map(row => ({
-    ...row
-  }));
-  const columns = (Array.isArray(entityRecord?.columns) ? entityRecord.columns : []).filter(column => String(column?.column_id) !== '0').map(column => ({
-    ...column
-  }));
-  const cells = (Array.isArray(entityRecord?.cells) ? entityRecord.cells : []).filter(cell => String(cell?.row_id) !== '0' && String(cell?.column_id) !== '0').map(cell => ({
-    ...cell,
-    cell_id: (0,_utils__WEBPACK_IMPORTED_MODULE_1__.numberToLetter)(cell.column_id) + cell.row_id
-  }));
+  const {
+    rows,
+    columns,
+    cells
+  } = normalizeTableCoordinates((Array.isArray(entityRecord?.rows) ? entityRecord.rows : []).filter(row => String(row?.row_id) !== '0'), (Array.isArray(entityRecord?.columns) ? entityRecord.columns : []).filter(column => String(column?.column_id) !== '0'), (Array.isArray(entityRecord?.cells) ? entityRecord.cells : []).filter(cell => String(cell?.row_id) !== '0' && String(cell?.column_id) !== '0'));
   const entityTitle = typeof entityRecord?.title === 'string' ? entityRecord.title : entityRecord?.title?.raw ?? entityRecord?.title?.rendered ?? '';
   const table = {
     table_id: tableId,
@@ -11343,7 +11387,7 @@ function Edit(props) {
    * stack and role the table state forward or backward as appropriate.
    *
    * @since 1.4.5
-      * @since 2.0.0 - Updates for schema version 2
+   * @since 2.0.0 - Updates for schema version 2
    */
   (0,_hooks__WEBPACK_IMPORTED_MODULE_19__.useTableUndoRedoEffect)(table.table_id, ({
     editedTable
@@ -13058,7 +13102,9 @@ function Edit(props) {
         }
       case 'editedCellContent':
         {
-          const currentCellData = table.cells.find(c => c.column_id === Number(column_id) && Number(c.row_id) === Number(row_id));
+          const currentCellData = table.cells.find(
+          // c => c.column_id === Number(column_id) && Number(c.row_id) === Number(row_id)
+          c => Number(c.column_id) === Number(column_id) && Number(c.row_id) === Number(row_id));
           const currentCellValueAttr = currentCellData?.attributes || {};
           const updatedCellAttrs = {
             ...currentCellValueAttr,
@@ -16973,23 +17019,27 @@ function getDefaultColumn(tableId, columnId, columnLocation = 'Body', columnRef)
  * Get a new cell with default values.
  *
  * @since    1.0.0
+ * @since    2.0.0 Ensure consistent variable data types
  *
- * @param {number} tableId      Table id to assign to cell
- * @param {number} columnId     Column id to assign to column
- * @param {number} rowId        Row id to assign to row
- * @param {string} cellLocation Border or another value, default = body
+ * @param {number|string} tableId      Table id to assign to cell
+ * @param {number|string} columnId     Column id to assign to column
+ * @param {number|string} rowId        Row id to assign to row
+ * @param {string}        cellLocation Border or another value, default = body
  * @return {Array} New table cell
  */
 function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') {
   let cell;
-  const columnLetter = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.numberToLetter)(columnId);
-  const borderContent = rowId == 0 ? columnLetter : String(rowId);
+  const normalizedColumnId = String(columnId);
+  const normalizedRowId = String(rowId);
+  const columnLetter = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.numberToLetter)(normalizedColumnId);
+  const isBorderRow = normalizedRowId === '0';
+  const borderContent = isBorderRow ? columnLetter : normalizedRowId;
   if (cellLocation === 'Border') {
     cell = {
       table_id: String(tableId),
-      column_id: String(columnId),
-      row_id: String(rowId),
-      cell_id: rowId === 0 ? columnLetter + '0' : '0' + String(rowId),
+      column_id: normalizedColumnId,
+      row_id: normalizedRowId,
+      cell_id: isBorderRow ? columnLetter + '0' : '0' + normalizedRowId,
       attributes: getDefaultTableAttributes('cells', cellLocation),
       classes: 'grid-control__border-cells hover',
       content: borderContent
@@ -16997,9 +17047,9 @@ function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') {
   } else {
     cell = {
       table_id: String(tableId),
-      column_id: String(columnId),
-      row_id: String(rowId),
-      cell_id: columnLetter + rowId,
+      column_id: normalizedColumnId,
+      row_id: normalizedRowId,
+      cell_id: columnLetter + normalizedRowId,
       attributes: getDefaultTableAttributes('cells', cellLocation),
       classes: getDefaultTableClasses('cells'),
       content: ''
@@ -17172,6 +17222,7 @@ function getDefaultTableClasses(tableComponent) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   DEFAULT_COLUMN_DATA_TYPE: () => (/* binding */ DEFAULT_COLUMN_DATA_TYPE),
+/* harmony export */   assertUniqueCellIds: () => (/* binding */ assertUniqueCellIds),
 /* harmony export */   coerceCellData: () => (/* binding */ coerceCellData),
 /* harmony export */   computeCellIds: () => (/* binding */ computeCellIds),
 /* harmony export */   countCaretTokens: () => (/* binding */ countCaretTokens),
@@ -17212,34 +17263,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const LETTER_MAP = {
-  1: 'A',
-  2: 'B',
-  3: 'C',
-  4: 'D',
-  5: 'E',
-  6: 'F',
-  7: 'G',
-  8: 'H',
-  9: 'I',
-  a: 'J',
-  b: 'K',
-  c: 'L',
-  d: 'M',
-  e: 'N',
-  f: 'O',
-  g: 'P',
-  h: 'Q',
-  i: 'R',
-  j: 'S',
-  k: 'T',
-  l: 'U',
-  m: 'V',
-  n: 'W',
-  o: 'X',
-  p: 'Y',
-  q: 'Z'
-};
 const READABLE_LINE_BREAK_TAGS = new Set(['BLOCKQUOTE', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI', 'OL', 'P', 'PRE', 'TABLE', 'TR', 'UL']);
 const READABLE_TAB_BREAK_TAGS = new Set(['TD', 'TH']);
 const TWO_DIGIT_YEAR_CURRENT_CENTURY = 2000;
@@ -17343,17 +17366,23 @@ function htmlToReadableText(html = '') {
  * @since 1.0.0
  * @since 1.1.0 Refactored
  *
- * @param {number} letterNumber Integer
+ * @param {number|string} letterNumber Positive column number
  * @return  {string} Column letter
  */
 function numberToLetter(letterNumber) {
-  if (letterNumber === 0) {
+  const columnNumber = Number(letterNumber);
+  if (columnNumber === 0) {
     return '0';
   }
-  const digits = letterNumber.toString(26);
+  if (!Number.isSafeInteger(columnNumber) || columnNumber < 0) {
+    return '';
+  }
+  let remaining = columnNumber;
   let result = '';
-  for (let i = 0; i < digits.length; i++) {
-    result += LETTER_MAP[digits[i]] ?? '';
+  while (remaining > 0) {
+    remaining -= 1;
+    result = String.fromCharCode(65 + remaining % 26) + result;
+    remaining = Math.floor(remaining / 26);
   }
   return result;
 }
@@ -17390,6 +17419,28 @@ function updateArray(arrayIn, key, id, updatedData) {
     ...item,
     ...updatedData
   } : item);
+}
+
+/**
+ * Confirm that every cell has a unique derived identifier.
+ *
+ * @since 2.0.0
+ *
+ * @param {Array} cells Table cells.
+ * @throws {Error} When more than one cell has the same identifier.
+ * @return {Array} The unchanged cell array.
+ */
+function assertUniqueCellIds(cells) {
+  const cellsById = new Map();
+  cells.forEach(cell => {
+    const cellId = cell.cell_id;
+    if (cellsById.has(cellId)) {
+      const existingCell = cellsById.get(cellId);
+      throw new Error(`Duplicate cell id (${cellId}) for coordinates ` + `${existingCell.column_id}:${existingCell.row_id} and ` + `${cell.column_id}:${cell.row_id}`);
+    }
+    cellsById.set(cellId, cell);
+  });
+  return cells;
 }
 function escapeHtml(value) {
   return String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');

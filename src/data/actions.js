@@ -7,7 +7,11 @@ import { store as noticeStore } from '@wordpress/notices';
 import TYPES from './action-types.js';
 import { showMessageNotice } from '../messages';
 import { computeCellIds } from '../utils';
-import { isDeepEqual, removeExternalCellData } from './table-entity-adapter';
+import {
+	isDeepEqual,
+	removeExternalCellData,
+	normalizeTableCoordinates,
+} from './table-entity-adapter';
 import { lookupPosts, lookupPostAuthors, lookupPostImages } from '../get-external-data';
 import { getPostStatistics } from '../components/ui/post-content/post-statistics';
 
@@ -158,11 +162,17 @@ export const receiveTable =
 		cells
 	) =>
 	async ({ dispatch }) => {
+		const {
+			rows: normalizedRows,
+			columns: normalizedColumns,
+			cells: normalizedCells,
+		} = normalizeTableCoordinates(rows, columns, cells);
+
 		const externalColumnTypes = Array();
 
 		// Retrieve cell data for all content types that require external data.
-		columns.forEach(column => {
-			cells.forEach(cell => {
+		normalizedColumns.forEach(column => {
+			normalizedCells.forEach(cell => {
 				if (cell.column_id !== column.column_id) {
 					return;
 				}
@@ -175,7 +185,7 @@ export const receiveTable =
 			});
 		});
 
-		let hydratedCells = cells;
+		let hydratedCells = normalizedCells;
 		let clearedMissingReference = false;
 
 		if (externalColumnTypes.length !== 0) {
@@ -190,7 +200,7 @@ export const receiveTable =
 			);
 
 			// Update cells with external data
-			hydratedCells = cells.map(cell => {
+			hydratedCells = normalizedCells.map(cell => {
 				const cellDetails = externalCellDataByCoordinate.get(`${cell.column_id}:${cell.row_id}`);
 
 				if (!cellDetails) {
@@ -234,8 +244,8 @@ export const receiveTable =
 				table_administrative_description,
 				attributes,
 				classes,
-				rows,
-				columns,
+				rows: normalizedRows,
+				columns: normalizedColumns,
 				cells: hydratedCells,
 			},
 		});
@@ -660,13 +670,15 @@ export const updateTableEntity =
 		const safeCells = Array.isArray(cells) ? cells : [];
 
 		// Remove border row if it exists
-		const filteredRows = safeRows.filter(row => row.row_id !== '0');
+		const filteredRows = safeRows.filter(row => String(row.row_id) !== '0');
 
 		// Remove border column if it exists
-		const filteredColumns = safeColumns.filter(column => column.column_id !== '0');
+		const filteredColumns = safeColumns.filter(column => String(column.column_id) !== '0');
 
 		// Remove border cells if they exists
-		const filteredCells = safeCells.filter(cell => cell.row_id !== '0' && cell.column_id !== '0');
+		const filteredCells = safeCells.filter(
+			cell => String(cell.row_id) !== '0' && String(cell.column_id) !== '0'
+		);
 
 		// Remove cell_id from cells. They don't go back to the webservice
 		const transformedCells = filteredCells.map(

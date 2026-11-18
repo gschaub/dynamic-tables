@@ -3,35 +3,6 @@ import { dateI18n } from '@wordpress/date';
 import { decodeEntities } from '@wordpress/html-entities';
 import { create, getTextContent } from '@wordpress/rich-text';
 
-const LETTER_MAP = {
-	1: 'A',
-	2: 'B',
-	3: 'C',
-	4: 'D',
-	5: 'E',
-	6: 'F',
-	7: 'G',
-	8: 'H',
-	9: 'I',
-	a: 'J',
-	b: 'K',
-	c: 'L',
-	d: 'M',
-	e: 'N',
-	f: 'O',
-	g: 'P',
-	h: 'Q',
-	i: 'R',
-	j: 'S',
-	k: 'T',
-	l: 'U',
-	m: 'V',
-	n: 'W',
-	o: 'X',
-	p: 'Y',
-	q: 'Z',
-};
-
 const READABLE_LINE_BREAK_TAGS = new Set([
 	'BLOCKQUOTE',
 	'DIV',
@@ -177,19 +148,27 @@ export function htmlToReadableText(html = '') {
  * @since 1.0.0
  * @since 1.1.0 Refactored
  *
- * @param {number} letterNumber Integer
+ * @param {number|string} letterNumber Positive column number
  * @return  {string} Column letter
  */
 export function numberToLetter(letterNumber) {
-	if (letterNumber === 0) {
+	const columnNumber = Number(letterNumber);
+
+	if (columnNumber === 0) {
 		return '0';
 	}
 
-	const digits = letterNumber.toString(26);
+	if (!Number.isSafeInteger(columnNumber) || columnNumber < 0) {
+		return '';
+	}
+
+	let remaining = columnNumber;
 	let result = '';
 
-	for (let i = 0; i < digits.length; i++) {
-		result += LETTER_MAP[digits[i]] ?? '';
+	while (remaining > 0) {
+		remaining -= 1;
+		result = String.fromCharCode(65 + (remaining % 26)) + result;
+		remaining = Math.floor(remaining / 26);
 	}
 
 	return result;
@@ -224,6 +203,37 @@ export function letterToNumber(numberLetter) {
  */
 export function updateArray(arrayIn, key, id, updatedData) {
 	return arrayIn.map(item => (item[key] === id ? { ...item, ...updatedData } : item));
+}
+
+/**
+ * Confirm that every cell has a unique derived identifier.
+ *
+ * @since 2.0.0
+ *
+ * @param {Array} cells Table cells.
+ * @throws {Error} When more than one cell has the same identifier.
+ * @return {Array} The unchanged cell array.
+ */
+export function assertUniqueCellIds(cells) {
+	const cellsById = new Map();
+
+	cells.forEach(cell => {
+		const cellId = cell.cell_id;
+
+		if (cellsById.has(cellId)) {
+			const existingCell = cellsById.get(cellId);
+
+			throw new Error(
+				`Duplicate cell id (${cellId}) for coordinates ` +
+					`${existingCell.column_id}:${existingCell.row_id} and ` +
+					`${cell.column_id}:${cell.row_id}`
+			);
+		}
+
+		cellsById.set(cellId, cell);
+	});
+
+	return cells;
 }
 
 function escapeHtml(value) {

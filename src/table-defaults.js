@@ -173,24 +173,28 @@ export function getDefaultColumn(tableId, columnId, columnLocation = 'Body', col
  * Get a new cell with default values.
  *
  * @since    1.0.0
+ * @since    2.0.0 Ensure consistent variable data types
  *
- * @param {number} tableId      Table id to assign to cell
- * @param {number} columnId     Column id to assign to column
- * @param {number} rowId        Row id to assign to row
- * @param {string} cellLocation Border or another value, default = body
+ * @param {number|string} tableId      Table id to assign to cell
+ * @param {number|string} columnId     Column id to assign to column
+ * @param {number|string} rowId        Row id to assign to row
+ * @param {string}        cellLocation Border or another value, default = body
  * @return {Array} New table cell
  */
 export function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') {
 	let cell;
-	const columnLetter = numberToLetter(columnId);
-	const borderContent = rowId == 0 ? columnLetter : String(rowId);
+	const normalizedColumnId = String(columnId);
+	const normalizedRowId = String(rowId);
+	const columnLetter = numberToLetter(normalizedColumnId);
+	const isBorderRow = normalizedRowId === '0';
+	const borderContent = isBorderRow ? columnLetter : normalizedRowId;
 
 	if (cellLocation === 'Border') {
 		cell = {
 			table_id: String(tableId),
-			column_id: String(columnId),
-			row_id: String(rowId),
-			cell_id: rowId === 0 ? columnLetter + '0' : '0' + String(rowId),
+			column_id: normalizedColumnId,
+			row_id: normalizedRowId,
+			cell_id: isBorderRow ? columnLetter + '0' : '0' + normalizedRowId,
 			attributes: getDefaultTableAttributes('cells', cellLocation),
 			classes: 'grid-control__border-cells hover',
 			content: borderContent,
@@ -198,9 +202,9 @@ export function getDefaultCell(tableId, columnId, rowId, cellLocation = 'Body') 
 	} else {
 		cell = {
 			table_id: String(tableId),
-			column_id: String(columnId),
-			row_id: String(rowId),
-			cell_id: columnLetter + rowId,
+			column_id: normalizedColumnId,
+			row_id: normalizedRowId,
+			cell_id: columnLetter + normalizedRowId,
 			attributes: getDefaultTableAttributes('cells', cellLocation),
 			classes: getDefaultTableClasses('cells'),
 			content: '',

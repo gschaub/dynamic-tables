@@ -37,51 +37,28 @@ function get_image_urls() {
 /**
  * Converts a column id (number) to the column id letter
  *
- * Converts the column number to a letter by converting the number to base
- * 26, separating each number, translating the number to a letter, and then
- * concatinating the letters.  This allows a column to be represented by letters
- * in the same way a spreadsheet does.
+ * Converts a positive column number to its spreadsheet-style letter
+ * representation. Zero is reserved for table borders.
  *
  * @since 1.0.0
- * @param  int $letter_number Integer to be converted to a string of one or more letters
- * @return void string Letter representation of number provided
+ * @since 2.0.0 - Correct spreadsheet-style conversion for column 26 and beyond
+ *
+ * @param int $letter_number Integer to be converted to a string of one or more letters
+ * @return string Letter representation of the provided number.
  */
 function number_to_letter( $letter_number ) {
+	$column_number = (int) $letter_number;
 
-	$letter_map = array();
+	if ( 0 === $column_number ) {
+		return '0';
+	}
 
-	$letter_map += array( '1' => 'A' );
-	$letter_map += array( '2' => 'B' );
-	$letter_map += array( '3' => 'C' );
-	$letter_map += array( '4' => 'D' );
-	$letter_map += array( '5' => 'E' );
-	$letter_map += array( '6' => 'F' );
-	$letter_map += array( '7' => 'G' );
-	$letter_map += array( '8' => 'H' );
-	$letter_map += array( '9' => 'I' );
-	$letter_map += array( 'a' => 'J' );
-	$letter_map += array( 'b' => 'K' );
-	$letter_map += array( 'c' => 'L' );
-	$letter_map += array( 'd' => 'M' );
-	$letter_map += array( 'e' => 'N' );
-	$letter_map += array( 'f' => 'O' );
-	$letter_map += array( 'g' => 'P' );
-	$letter_map += array( 'h' => 'Q' );
-	$letter_map += array( 'i' => 'R' );
-	$letter_map += array( 'j' => 'S' );
-	$letter_map += array( 'k' => 'T' );
-	$letter_map += array( 'l' => 'U' );
-	$letter_map += array( 'm' => 'V' );
-	$letter_map += array( 'n' => 'W' );
-	$letter_map += array( 'o' => 'X' );
-	$letter_map += array( 'p' => 'Y' );
-	$letter_map += array( 'q' => 'Z' );
+	$letter_digit = '';
 
-	$letter_lookup = str_split( base_convert( $letter_number, 10, 26 ) );
-	$letter_digit  = '';
-
-	foreach ( $letter_lookup as $letter ) {
-		$letter_digit .= $letter_map[ $letter ];
+	while ( $column_number > 0 ) {
+		--$column_number;
+		$letter_digit = chr( ord( 'A' ) + ( $column_number % 26 ) ) . $letter_digit;
+		$column_number = intdiv( $column_number, 26 );
 	}
 
 	return $letter_digit;

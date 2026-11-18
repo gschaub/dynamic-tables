@@ -5,7 +5,7 @@ import { combineReducers } from '@wordpress/data';
 
 /* Internal dependencies */
 import TYPES from './action-types';
-import { numberToLetter, updateArray, tableSort } from '../utils';
+import { assertUniqueCellIds, numberToLetter, updateArray, tableSort } from '../utils';
 import { reducer as allTables } from './all-tables';
 
 const {
@@ -592,6 +592,10 @@ const table = (
 const reducer = (state = {}, action) => {
 	const tableKey = action.tableId;
 	const newTableState = table(state[tableKey], action);
+
+	if (Array.isArray(newTableState.table?.cells)) {
+		assertUniqueCellIds(newTableState.table.cells);
+	}
 
 	if (JSON.stringify(newTableState.table) === '{}') {
 		return state;

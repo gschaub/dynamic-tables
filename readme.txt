@@ -192,7 +192,8 @@ No. This plugin is free to use. However, we are planning for a premium version o
 
 == Changelog ==
 = 2.0.0 =
-* Fixed bug that caused the table to crash if a page reference was not found
+* Fixed bug that caused the table to crash if a page reference was not found.
+* Fixed bug that can corrupt tables with 10 or more columns.
 * Introduced broad database schema updates to support future functionality.
 
 = 1.5.1 =
