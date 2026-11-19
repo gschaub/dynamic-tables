@@ -6577,7 +6577,10 @@ function renderPostTitle(renderedContent, linkLocation, postLink, postLinkInNewT
  */
 function renderPostImage(image, sizes, link, title) {
   if (!image) {
-    return null;
+    if (!link.isLink && !title.embedTitle) {
+      return null;
+    }
+    return renderPostTitle(title.title, 'title', link.url, link.newTab);
   }
   const renderedImage = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("span", {
     className: "dtbk-post-image__frame",
@@ -6869,7 +6872,7 @@ function evaluateDisplayAttributes(displayedAttribute, postData, postLinkInNewTa
     case 'title':
       {
         const renderedContent = post.title.rendered;
-        if (displayTitleInCover) break;
+        if (displayTitleInCover || !image && linkLocation === 'image') break;
         formattedContent = renderPostTitle(renderedContent, linkLocation, postLink, postLinkInNewTab);
         break;
       }

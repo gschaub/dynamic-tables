@@ -294,7 +294,11 @@ function renderPostTitle(renderedContent, linkLocation, postLink, postLinkInNewT
  */
 function renderPostImage(image, sizes, link, title) {
 	if (!image) {
-		return null;
+		if (!link.isLink && !title.embedTitle) {
+			return null;
+		}
+
+		return renderPostTitle(title.title, 'title', link.url, link.newTab);
 	}
 
 	const renderedImage = (
@@ -565,7 +569,7 @@ function evaluateDisplayAttributes(displayedAttribute, postData, postLinkInNewTa
 	switch (displayedAttribute) {
 		case 'title': {
 			const renderedContent = post.title.rendered;
-			if (displayTitleInCover) break;
+			if (displayTitleInCover || (!image && linkLocation === 'image')) break;
 			formattedContent = renderPostTitle(renderedContent, linkLocation, postLink, postLinkInNewTab);
 			break;
 		}

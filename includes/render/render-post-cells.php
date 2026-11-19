@@ -298,7 +298,10 @@ function evaluate_display_attributes(
 
 	switch ( $displayed_attribute ) {
 		case 'title':
-			if ($display_title_in_cover) return;
+			if ( $display_title_in_cover || ( ! $image && 'image' === $link_location ) ) {
+				return;
+			}
+
 			render_post_title(
 				$post['title']['rendered'],
 				$link_location,
@@ -380,6 +383,17 @@ function render_post_title($rendered_content, $link_location, $post_link, $post_
  */
 function render_post_image($image, $sizes, $link, $title) {
 	if ( ! $image ) {
+		if ( ! $link['is_link'] && ! $title['embed_title'] ) {
+			return;
+		}
+
+		render_post_title(
+			html_to_index_text( $title['title'] ),
+			'title',
+			$link['url'],
+			$link['new_tab']
+		);
+
 		return;
 	}?>
 

@@ -192,9 +192,10 @@ No. This plugin is free to use. However, we are planning for a premium version o
 
 == Changelog ==
 = 2.0.0 =
+* Introduced broad database schema updates to support future functionality.
+* Have Site Content cells display the content title and link if those are configured to appear in the image, but no image is associated with the content.
 * Fixed bug that caused the table to crash if a page reference was not found.
 * Fixed bug that can corrupt tables with 10 or more columns.
-* Introduced broad database schema updates to support future functionality.
 
 = 1.5.1 =
 * Fixed a bug that prevented pages and custom post types from being selected for Site Content cells
