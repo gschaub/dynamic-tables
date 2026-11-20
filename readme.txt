@@ -192,10 +192,12 @@ No. This plugin is free to use. However, we are planning for a premium version o
 
 == Changelog ==
 = 2.0.0 =
-* Introduced broad database schema updates to support future functionality.
-* Have Site Content cells display the content title and link if those are configured to appear in the image, but no image is associated with the content.
-* Fixed bug that caused the table to crash if a page reference was not found.
-* Fixed bug that can corrupt tables with 10 or more columns.
+* Introduced broad database schema updates to support future functionality
+* Make Site Content cells display the content title and link if those are configured to appear in the image, but no image is associated with the content
+* Provided for easier arrow navigation within a General cell
+* Fixed a bug that prevented formatting of General cell content
+* Fixed a bug that caused the table to crash if a page reference was not found
+* Fixed a bug that can corrupt tables with 10 or more columns
 
 = 1.5.1 =
 * Fixed a bug that prevented pages and custom post types from being selected for Site Content cells
@@ -213,8 +215,8 @@ No. This plugin is free to use. However, we are planning for a premium version o
 = 1.4.9 =
 * Allow for specification of column names during table creation
 * Allow for copy/paste across different content types where possible
-* The enter key will now stop editing for General content types.
-* alt+enter will now insert a new line for General content types.
+* The enter key will now stop editing for General content types
+* alt+enter will now insert a new line for General content types
 
 = 1.4.8 =
 * Made the green border for the current cell turn off when focus shifts to another block and turn on when focus returns
@@ -237,7 +239,7 @@ No. This plugin is free to use. However, we are planning for a premium version o
 
 = 1.4.4 =
 * Show borders when table is created
-* Fix bug that prevents allowing checkbox to be hidden when no content is found.
+* Fix bug that prevents allowing checkbox to be hidden when no content is found
 * Initial foundation for undo/redo feature
 
 = 1.4.3 =

@@ -2564,6 +2564,147 @@ export default function Edit(props) {
 	}, [table.rows]);
 
 	/**
+	 * Get the current collapsed caret position within a RichText editor.
+	 *
+	 * @since 2.0.0
+	 *
+	 * The text offset is used only to identify the absolute beginning or end.
+	 * Visual caret movement remains under browser control.
+	 *
+	 * @param {HTMLElement} editor RichText editing element.
+	 * @return {Object|null} Current caret state, or null when there is no collapsed caret.
+	 */
+	function getRichTextCaretState(editor) {
+		const doc = editor.ownerDocument;
+		const selection = doc.getSelection();
+
+		if (
+			!selection ||
+			!selection.isCollapsed ||
+			selection.rangeCount === 0 ||
+			!selection.focusNode ||
+			!editor.contains(selection.focusNode)
+		) {
+			return null;
+		}
+
+		const contentRange = doc.createRange();
+		contentRange.selectNodeContents(editor);
+
+		const leadingRange = contentRange.cloneRange();
+		leadingRange.setEnd(selection.focusNode, selection.focusOffset);
+
+		return {
+			node: selection.focusNode,
+			offset: selection.focusOffset,
+			textOffset: leadingRange.toString().length,
+			textLength: contentRange.toString().length,
+		};
+	}
+
+	/**
+	 * Move a RichText caret to the beginning or end of its content.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param {HTMLElement} editor  RichText editing element.
+	 * @param {boolean}     atStart Move to the beginning rather than the end.
+	 */
+	function setRichTextCaretBoundary(editor, atStart) {
+		const doc = editor.ownerDocument;
+		const selection = doc.getSelection();
+
+		if (!selection) return;
+
+		const range = doc.createRange();
+		range.selectNodeContents(editor);
+		range.collapse(atStart);
+		selection.removeAllRanges();
+		selection.addRange(range);
+	}
+
+	/**
+	 * Exit RichText editing and restore grid focus, optionally in an adjacent cell.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param {HTMLElement} editor    RichText editing element.
+	 * @param {string}      direction Arrow key identifying the adjacent cell.
+	 */
+	function exitRichTextEditMode(editor, direction = '') {
+		const cell = editor.closest('[data-cell-id]');
+
+		if (!cell) return;
+
+		let col = Number(cell.dataset.col);
+		let row = Number(cell.dataset.row);
+
+		if (!Number.isFinite(col) || !Number.isFinite(row)) return;
+
+		switch (direction) {
+			case 'ArrowUp':
+				row = Math.max(1, row - 1);
+				break;
+			case 'ArrowDown':
+				row = Math.min(navMaxRow, row + 1);
+				break;
+			case 'ArrowLeft':
+				col = Math.max(1, col - 1);
+				break;
+			case 'ArrowRight':
+				col = Math.min(navMaxCol, col + 1);
+				break;
+			default:
+				break;
+		}
+
+		stopEditingCell();
+		window.requestAnimationFrame(() => {
+			focusCell(col, row);
+		});
+	}
+
+	/**
+	 * Let the browser process a RichText arrow key, then handle an unchanged caret
+	 * as a request to move toward or beyond the cell boundary.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param {HTMLElement} editor RichText editing element.
+	 * @param {string}      key    Arrow key being processed.
+	 */
+	function handleRichTextArrowKey(editor, key) {
+		const before = getRichTextCaretState(editor);
+		const cellId = editor.closest('[data-cell-id]')?.dataset.cellId;
+
+		if (!before || !cellId) return;
+
+		window.requestAnimationFrame(() => {
+			if (String(editingCellIdRef.current ?? '') !== String(cellId)) return;
+
+			const after = getRichTextCaretState(editor);
+			const caretMoved = after && (after.node !== before.node || after.offset !== before.offset);
+
+			if (!after || caretMoved) return;
+
+			const towardStart = key === 'ArrowLeft' || key === 'ArrowUp';
+			const atBoundary = towardStart
+				? after.textOffset === 0
+				: after.textOffset === after.textLength;
+			const isVertical = key === 'ArrowUp' || key === 'ArrowDown';
+
+			if (!atBoundary) {
+				if (isVertical) {
+					setRichTextCaretBoundary(editor, towardStart);
+				}
+				return;
+			}
+
+			exitRichTextEditMode(editor, key);
+		});
+	}
+
+	/**
 	 * Handle keyboard navigation within the active dynamic table block and updates focus appropriately
 	 *
 	 * @since 1.1.1
@@ -2573,6 +2714,7 @@ export default function Edit(props) {
 	 * @since 1.4.3 - Update for checkbox data entry
 	 * @since 1.4.5 - Add support for standard keyboard undo/redo shortcuts
 	 * @since 1.4.9 - Enter key (but not alt/enter) ends edit mode for RichText
+	 * @since 2.0.0 - Preserve native RichText caret movement within cells
 	 *
 	 * @param {Object} event onKeyDown event
 	 * @return {void}
@@ -2582,7 +2724,6 @@ export default function Edit(props) {
 		const isShiftOnly = !event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
 		const isAltShiftOnly = event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey;
 		const isCtlOnly = !event.altKey && !event.shiftKey && (event.ctrlKey || event.metaKey);
-		const isAnyModifierKey = event.altKey || event.shiftKey || event.ctrlKey || event.metaKey;
 		const isPrimaryKeyOnly = !event.altKey && !event.shiftKey && !event.ctrlKey && !event.metaKey;
 
 		const key = String(event.key || '').toLowerCase();
@@ -2596,7 +2737,7 @@ export default function Edit(props) {
 			return;
 		}
 
-		// While editing, allow Tab/arrow keys to exit edit mode and continue with grid navigation.
+		// Handle editor-specific exit keys before continuing with grid navigation.
 		if (editingCellId) {
 			const editExitNavKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab']);
 			const editTarget = gridRef.current?.ownerDocument?.activeElement;
@@ -2613,6 +2754,21 @@ export default function Edit(props) {
 				['numeric', 'decimal'].includes(editTargetInputMode);
 			const isDateTimeEditor = ['date', 'time', 'datetime-local'].includes(editTargetInputType);
 			if (cellClipboard.inUse) resetCellClipboard();
+
+			const isRichTextArrowKey =
+				isGeneralContentEditor &&
+				['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key);
+
+			if (isRichTextArrowKey) {
+				/*
+				 * Modified arrows and selections retain native RichText behavior.
+				 * An unmodified collapsed caret is observed after the browser moves it.
+				 */
+				if (isPrimaryKeyOnly && !event.isComposing) {
+					handleRichTextArrowKey(generalContentEditor, event.key);
+				}
+				return;
+			}
 
 			if (event.key === 'Escape') {
 				event.preventDefault();
@@ -2633,7 +2789,7 @@ export default function Edit(props) {
 			}
 
 			// ENTER exits RichText editing except for exactly ALT+ENTER.
-			// For native date/time editors, Enter should commit via blur and exit edit mode.
+			// Native date/time and number editors commit and exit through blur.
 			if (
 				event.key === 'Enter' &&
 				!event.isComposing &&
@@ -2641,6 +2797,12 @@ export default function Edit(props) {
 			) {
 				event.preventDefault();
 				event.stopPropagation();
+
+				if (isGeneralContentEditor) {
+					exitRichTextEditMode(generalContentEditor);
+					return;
+				}
+
 				editTarget?.blur?.();
 				return;
 			}
@@ -2652,7 +2814,7 @@ export default function Edit(props) {
 				return;
 			}
 
-			// Let Tab/arrow keys fall through to navigation.
+			// Let Tab and remaining arrow keys fall through to grid navigation.
 			// Do not clear editing state yet; date/time inputs persist on blur.
 			if (!editExitNavKeys.has(event.key)) {
 				return;

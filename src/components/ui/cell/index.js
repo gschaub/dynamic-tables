@@ -564,11 +564,6 @@ export function Cell(props) {
 				value={cellContent}
 				readOnly={!isEditing}
 				spellCheck={true}
-				onBlur={() => {
-					if (isEditing) {
-						onRequestStopEdit?.();
-					}
-				}}
 				onChange={
 					!isEditing
 						? undefined
