@@ -591,7 +591,17 @@ const table = (
  */
 const reducer = (state = {}, action) => {
 	const tableKey = action.tableId;
-	const newTableState = table(state[tableKey], action);
+
+	const currentTableState = state[tableKey];
+	const newTableState = table(currentTableState, action);
+
+	/*
+	 * Combined reducers receive every store action. Preserve this state slice
+	 * when the single-table reducer does not handle the action.
+	 */
+	if (newTableState === currentTableState) {
+		return state;
+	}
 
 	if (Array.isArray(newTableState.table?.cells)) {
 		assertUniqueCellIds(newTableState.table.cells);

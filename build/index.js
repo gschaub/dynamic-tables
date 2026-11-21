@@ -9468,7 +9468,16 @@ const table = (state = {
  */
 const reducer = (state = {}, action) => {
   const tableKey = action.tableId;
-  const newTableState = table(state[tableKey], action);
+  const currentTableState = state[tableKey];
+  const newTableState = table(currentTableState, action);
+
+  /*
+   * Combined reducers receive every store action. Preserve this state slice
+   * when the single-table reducer does not handle the action.
+   */
+  if (newTableState === currentTableState) {
+    return state;
+  }
   if (Array.isArray(newTableState.table?.cells)) {
     (0,_utils__WEBPACK_IMPORTED_MODULE_2__.assertUniqueCellIds)(newTableState.table.cells);
   }
@@ -10356,6 +10365,7 @@ function Edit(props) {
     // idle | receive | attach
     blockTableRef: ''
   });
+  const receivingTableRequestRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useRef)('');
   const shouldFetchRequestedTable = Number(tableRequest.tableId) > 0 && tableRequest.action === 'receive';
   const {
     table: requestedTable,
@@ -11304,6 +11314,13 @@ function Edit(props) {
     if (!requestedTable?.table_id) return;
     if (!requestedTableHasEntity) return;
     const attachedTableId = Number(tableRequest.tableId);
+    const requestKey = `${attachedTableId}:${tableRequest.blockTableRef}`;
+
+    /* Prevent store updates in this effect from reprocessing the same request. */
+    if (receivingTableRequestRef.current === requestKey) {
+      return;
+    }
+    receivingTableRequestRef.current = requestKey;
     const attachedTable = {
       ...requestedTable,
       block_table_ref: tableRequest.blockTableRef,

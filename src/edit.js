@@ -280,6 +280,8 @@ export default function Edit(props) {
 		blockTableRef: '',
 	});
 
+	const receivingTableRequestRef = useRef('');
+
 	const shouldFetchRequestedTable =
 		Number(tableRequest.tableId) > 0 && tableRequest.action === 'receive';
 
@@ -1240,6 +1242,14 @@ export default function Edit(props) {
 		if (!requestedTableHasEntity) return;
 
 		const attachedTableId = Number(tableRequest.tableId);
+		const requestKey = `${attachedTableId}:${tableRequest.blockTableRef}`;
+
+		/* Prevent store updates in this effect from reprocessing the same request. */
+		if (receivingTableRequestRef.current === requestKey) {
+			return;
+		}
+		receivingTableRequestRef.current = requestKey;
+
 		const attachedTable = {
 			...requestedTable,
 			block_table_ref: tableRequest.blockTableRef,
