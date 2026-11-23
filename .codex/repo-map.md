@@ -9,21 +9,20 @@ Only the most important directories and entry points are listed here.
 
 src/
 
-Contains the JavaScript and React code used in the Gutenberg editor.
+Contains the plugin's JavaScript and React source code.
 
 Important areas include:
 
-- components/
-  Reusable React components used by the table editor.
-
-- edit/
-  The main block editor interface.
-
-- store/
-  Local state management used by the table editor.
+- blocks/dynamic-tables/
+  Source code and metadata for the Dynamic Tables block.
 
 - utilities/
   Helper functions and shared logic.
+
+- admin/
+  Source code for administrative interfaces.
+
+Additional shared component directories may be added alongside `blocks/` and `admin/`.
 
 
 ## Build Output

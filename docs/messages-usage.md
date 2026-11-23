@@ -1,6 +1,6 @@
 # Message Framework Usage
 
-This note documents the current Gutenberg message framework in `src/messages.js`.
+This note documents the current Gutenberg message framework in `src/blocks/messages.js`.
 
 The library is built around keyed messages, each of which may contain a notice portion, an announcement portion, or both. A single message key can be used as:
 
@@ -12,7 +12,7 @@ The library is built around keyed messages, each of which may contain a notice p
 
 ## Imports
 
-These examples assume the importing file is also inside `src/`, like `src/edit.js`.
+These examples assume the importing file is also inside `src/blocks/`, like `src/blocks/edit.js`.
 If you import from another folder, adjust the relative path.
 
 ```js

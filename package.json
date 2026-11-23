@@ -4,7 +4,7 @@
 	"description": "Create custom table blocks with highly customizable and responsive formats",
 	"author": "Gregory Schaub",
 	"license": "GPL-2.0-or-later",
-	"main": "build/index.js",
+	"main": "build/blocks/dynamic-tables/index.js",
 	"scripts": {
 		"build": "wp-scripts build --webpack-copy-php",
 		"format": "wp-scripts format",

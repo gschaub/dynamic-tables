@@ -227,7 +227,7 @@ final class DynamicTableBlocks {
 	 * @return void
 	 */
 	public function dynamic_table_block_init() {
-		register_block_type_from_metadata( __DIR__ . '/build' );
+		register_block_type_from_metadata( __DIR__ . '/build/blocks/dynamic-tables' );
 
 		/**
 		 * Define settings

@@ -61,7 +61,7 @@ Important notes:
 - Changes are synchronized to the REST API
 - Undo/redo behavior may be implemented at the state layer
 
-React components frequently import other components and utilities across the `src\` directory.
+React components may import block-specific or shared components and utilities across the `src\` directory.
 
 ---
 
@@ -163,7 +163,7 @@ No translations currently exist
 Third-party tool license files
 
 - `src/`
-WordPress Gutenberg/React source code
+WordPress block, administrative, and shared JavaScript/React source code
 
 - `vendor/`
 Composer dependencies
