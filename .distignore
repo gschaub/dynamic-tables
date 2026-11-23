@@ -18,6 +18,7 @@ src
 node_modules
 
 README.md
+DEVELOPMENT.md
 Table-JSON-schema.json
 phpcs.xml
 package.json
